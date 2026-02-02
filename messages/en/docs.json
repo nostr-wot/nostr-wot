@@ -1,0 +1,168 @@
+{
+  "meta": {
+    "title": "Documentation",
+    "description": "API documentation for Nostr Web of Trust. Learn how to integrate the WoT Extension and Oracle API."
+  },
+  "hero": {
+    "title": "Documentation",
+    "subtitle": "Everything you need to integrate Web of Trust into your application."
+  },
+  "sidebar": {
+    "gettingStarted": "Getting Started",
+    "overview": "Overview",
+    "quickStart": "Quick Start",
+    "extensionApi": "Extension API",
+    "setup": "Setup",
+    "oracleApi": "Oracle API",
+    "resources": "Resources",
+    "extensionGuide": "Extension Guide",
+    "oracleGuide": "Oracle Guide"
+  },
+  "overview": {
+    "title": "Overview",
+    "description": "Nostr Web of Trust provides two complementary tools for trust-based filtering:",
+    "extension": {
+      "title": "WoT Extension",
+      "description": "Browser extension exposing",
+      "api": "window.nostr.wot",
+      "forClientSide": "for client-side queries"
+    },
+    "oracle": {
+      "title": "WoT Oracle",
+      "description": "REST API for server-side queries at scale"
+    },
+    "fundamentalQuestion": "Both answer the same fundamental question:",
+    "question": "\"What is the social distance between two pubkeys?\""
+  },
+  "quickStart": {
+    "title": "Quick Start",
+    "browser": "Browser (with Extension)",
+    "server": "Server (with Oracle API)",
+    "comments": {
+      "checkExtension": "// Check if extension is available",
+      "getDistance": "// Get distance to a pubkey",
+      "withinWot": "// Within web of trust",
+      "outsideWot": "// Outside web of trust or not connected",
+      "usingFetch": "// Using fetch"
+    }
+  },
+  "extensionSetup": {
+    "title": "Extension Setup",
+    "description": "The WoT Extension injects the",
+    "api": "window.nostr.wot",
+    "objectInto": "object into every page. Check for its existence before using:",
+    "comments": {
+      "featureDetection": "// Feature detection",
+      "waitForExtension": "// Wait for extension to load"
+    }
+  },
+  "getDistance": {
+    "title": "getDistance(targetPubkey)",
+    "description": "Returns the number of hops from the user's pubkey to the target.",
+    "parameters": "Parameters",
+    "paramName": "Name",
+    "paramType": "Type",
+    "paramDescription": "Description",
+    "targetPubkey": "Hex or npub format pubkey",
+    "returns": "Returns",
+    "returnsDescription": "Hop count, or",
+    "null": "null",
+    "ifNotConnected": "if not connected.",
+    "example": "Example",
+    "cases": {
+      "notConnected": "Not connected",
+      "thisIsYou": "This is you",
+      "directFollow": "Direct follow",
+      "hopsAway": "hops away"
+    }
+  },
+  "isInMyWot": {
+    "title": "isInMyWoT(targetPubkey, maxHops?)",
+    "description": "Boolean check if a pubkey is within your web of trust threshold.",
+    "parameters": "Parameters",
+    "paramName": "Name",
+    "paramType": "Type",
+    "paramDefault": "Default",
+    "paramDescription": "Description",
+    "targetPubkey": "Hex or npub format pubkey",
+    "maxHops": "Maximum hops to consider \"trusted\"",
+    "returns": "Returns",
+    "example": "Example",
+    "comments": {
+      "defaultThreshold": "// Check with default threshold (3 hops)",
+      "stricterCheck": "// Stricter check (2 hops)",
+      "filterList": "// Filter a list of pubkeys"
+    }
+  },
+  "getDistanceBetween": {
+    "title": "getDistanceBetween(fromPubkey, toPubkey)",
+    "description": "Query the distance between any two pubkeys, not just from your own.",
+    "parameters": "Parameters",
+    "paramName": "Name",
+    "paramType": "Type",
+    "paramDescription": "Description",
+    "fromPubkey": "Source pubkey",
+    "toPubkey": "Target pubkey",
+    "returns": "Returns",
+    "example": "Example",
+    "comments": {
+      "checkConnection": "// Check how connected two other users are"
+    }
+  },
+  "oracleDistance": {
+    "title": "GET /distance",
+    "description": "Query the social distance between two pubkeys.",
+    "queryParameters": "Query Parameters",
+    "paramName": "Name",
+    "paramType": "Type",
+    "paramRequired": "Required",
+    "paramDescription": "Description",
+    "from": "Source pubkey (hex)",
+    "to": "Target pubkey (hex)",
+    "response": "Response",
+    "example": "Example"
+  },
+  "oracleBatch": {
+    "title": "POST /distance/batch",
+    "description": "Query distances from one pubkey to multiple targets.",
+    "requestBody": "Request Body",
+    "response": "Response",
+    "example": "Example"
+  },
+  "oracleStats": {
+    "title": "GET /stats",
+    "description": "Get statistics about the indexed graph.",
+    "response": "Response"
+  },
+  "oracleHealth": {
+    "title": "GET /health",
+    "description": "Health check endpoint for monitoring and load balancers.",
+    "response": "Response"
+  },
+  "rateLimits": {
+    "title": "Rate Limits",
+    "description": "The public Oracle instance at",
+    "url": "wot-oracle.mappingbitcoin.com",
+    "hasLimits": "has the following limits:",
+    "limits": {
+      "requestsPerMinute": "100 requests per minute per IP",
+      "batchCount": "Batch requests count as 1 request",
+      "headers": "Rate limit headers:"
+    },
+    "selfHost": "For higher limits,",
+    "selfHostLink": "self-host your own instance"
+  },
+  "errorHandling": {
+    "title": "Error Handling",
+    "comments": {
+      "extensionApi": "// Extension API",
+      "timeout": "// Query took too long",
+      "offline": "// Local mode and no cached data",
+      "oracleApi": "// Oracle API - HTTP status codes",
+      "success": "// 200 - Success",
+      "invalidPubkey": "// 400 - Invalid pubkey format",
+      "rateLimited": "// 429 - Rate limited",
+      "serverError": "// 500 - Server error"
+    }
+  }
+}

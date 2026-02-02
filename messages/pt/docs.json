@@ -1,0 +1,168 @@
+{
+  "meta": {
+    "title": "Documentação",
+    "description": "Documentação da API para Nostr Web of Trust. Aprenda como integrar a Extensão WoT e API Oracle."
+  },
+  "hero": {
+    "title": "Documentação",
+    "subtitle": "Tudo que você precisa para integrar Web of Trust em seu aplicativo."
+  },
+  "sidebar": {
+    "gettingStarted": "Primeiros Passos",
+    "overview": "Visão Geral",
+    "quickStart": "Início Rápido",
+    "extensionApi": "API da Extensão",
+    "setup": "Configuração",
+    "oracleApi": "API Oracle",
+    "resources": "Recursos",
+    "extensionGuide": "Guia da Extensão",
+    "oracleGuide": "Guia do Oracle"
+  },
+  "overview": {
+    "title": "Visão Geral",
+    "description": "Nostr Web of Trust fornece duas ferramentas complementares para filtragem baseada em confiança:",
+    "extension": {
+      "title": "Extensão WoT",
+      "description": "Extensão de navegador expondo",
+      "api": "window.nostr.wot",
+      "forClientSide": "para consultas do lado do cliente"
+    },
+    "oracle": {
+      "title": "WoT Oracle",
+      "description": "API REST para consultas do lado do servidor em escala"
+    },
+    "fundamentalQuestion": "Ambos respondem a mesma pergunta fundamental:",
+    "question": "\"Qual é a distância social entre duas pubkeys?\""
+  },
+  "quickStart": {
+    "title": "Início Rápido",
+    "browser": "Navegador (com Extensão)",
+    "server": "Servidor (com API Oracle)",
+    "comments": {
+      "checkExtension": "// Verifica se a extensão está disponível",
+      "getDistance": "// Obtém distância para uma pubkey",
+      "withinWot": "// Dentro da web of trust",
+      "outsideWot": "// Fora da web of trust ou não conectado",
+      "usingFetch": "// Usando fetch"
+    }
+  },
+  "extensionSetup": {
+    "title": "Configuração da Extensão",
+    "description": "A Extensão WoT injeta o objeto",
+    "api": "window.nostr.wot",
+    "objectInto": "em cada página. Verifique sua existência antes de usar:",
+    "comments": {
+      "featureDetection": "// Detecção de recurso",
+      "waitForExtension": "// Aguardar extensão carregar"
+    }
+  },
+  "getDistance": {
+    "title": "getDistance(targetPubkey)",
+    "description": "Retorna o número de saltos da pubkey do usuário até o alvo.",
+    "parameters": "Parâmetros",
+    "paramName": "Nome",
+    "paramType": "Tipo",
+    "paramDescription": "Descrição",
+    "targetPubkey": "Pubkey em formato hex ou npub",
+    "returns": "Retorna",
+    "returnsDescription": "Contagem de saltos, ou",
+    "null": "null",
+    "ifNotConnected": "se não conectado.",
+    "example": "Exemplo",
+    "cases": {
+      "notConnected": "Não conectado",
+      "thisIsYou": "Este é você",
+      "directFollow": "Seguidor direto",
+      "hopsAway": "saltos de distância"
+    }
+  },
+  "isInMyWot": {
+    "title": "isInMyWoT(targetPubkey, maxHops?)",
+    "description": "Verificação booleana se uma pubkey está dentro do limite da sua web of trust.",
+    "parameters": "Parâmetros",
+    "paramName": "Nome",
+    "paramType": "Tipo",
+    "paramDefault": "Padrão",
+    "paramDescription": "Descrição",
+    "targetPubkey": "Pubkey em formato hex ou npub",
+    "maxHops": "Máximo de saltos para considerar \"confiável\"",
+    "returns": "Retorna",
+    "example": "Exemplo",
+    "comments": {
+      "defaultThreshold": "// Verificar com limite padrão (3 saltos)",
+      "stricterCheck": "// Verificação mais rigorosa (2 saltos)",
+      "filterList": "// Filtrar uma lista de pubkeys"
+    }
+  },
+  "getDistanceBetween": {
+    "title": "getDistanceBetween(fromPubkey, toPubkey)",
+    "description": "Consulte a distância entre quaisquer duas pubkeys, não apenas da sua.",
+    "parameters": "Parâmetros",
+    "paramName": "Nome",
+    "paramType": "Tipo",
+    "paramDescription": "Descrição",
+    "fromPubkey": "Pubkey de origem",
+    "toPubkey": "Pubkey de destino",
+    "returns": "Retorna",
+    "example": "Exemplo",
+    "comments": {
+      "checkConnection": "// Verifica quão conectados dois outros usuários estão"
+    }
+  },
+  "oracleDistance": {
+    "title": "GET /distance",
+    "description": "Consulte a distância social entre duas pubkeys.",
+    "queryParameters": "Parâmetros de Consulta",
+    "paramName": "Nome",
+    "paramType": "Tipo",
+    "paramRequired": "Obrigatório",
+    "paramDescription": "Descrição",
+    "from": "Pubkey de origem (hex)",
+    "to": "Pubkey de destino (hex)",
+    "response": "Resposta",
+    "example": "Exemplo"
+  },
+  "oracleBatch": {
+    "title": "POST /distance/batch",
+    "description": "Consulte distâncias de uma pubkey para múltiplos alvos.",
+    "requestBody": "Corpo da Requisição",
+    "response": "Resposta",
+    "example": "Exemplo"
+  },
+  "oracleStats": {
+    "title": "GET /stats",
+    "description": "Obtenha estatísticas sobre o grafo indexado.",
+    "response": "Resposta"
+  },
+  "oracleHealth": {
+    "title": "GET /health",
+    "description": "Endpoint de verificação de saúde para monitoramento e balanceadores de carga.",
+    "response": "Resposta"
+  },
+  "rateLimits": {
+    "title": "Limites de Taxa",
+    "description": "A instância pública do Oracle em",
+    "url": "wot-oracle.mappingbitcoin.com",
+    "hasLimits": "tem os seguintes limites:",
+    "limits": {
+      "requestsPerMinute": "100 requisições por minuto por IP",
+      "batchCount": "Requisições batch contam como 1 requisição",
+      "headers": "Cabeçalhos de limite de taxa:"
+    },
+    "selfHost": "Para limites maiores,",
+    "selfHostLink": "auto-hospede sua própria instância"
+  },
+  "errorHandling": {
+    "title": "Tratamento de Erros",
+    "comments": {
+      "extensionApi": "// API da Extensão",
+      "timeout": "// Consulta demorou muito",
+      "offline": "// Modo local e sem dados em cache",
+      "oracleApi": "// API Oracle - códigos de status HTTP",
+      "success": "// 200 - Sucesso",
+      "invalidPubkey": "// 400 - Formato de pubkey inválido",
+      "rateLimited": "// 429 - Limite de taxa excedido",
+      "serverError": "// 500 - Erro do servidor"
+    }
+  }
+}

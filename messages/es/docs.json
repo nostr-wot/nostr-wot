@@ -1,0 +1,168 @@
+{
+  "meta": {
+    "title": "Documentación",
+    "description": "Documentación de API para Nostr Web of Trust. Aprende cómo integrar la Extensión WoT y API Oracle."
+  },
+  "hero": {
+    "title": "Documentación",
+    "subtitle": "Todo lo que necesitas para integrar Web of Trust en tu aplicación."
+  },
+  "sidebar": {
+    "gettingStarted": "Primeros Pasos",
+    "overview": "Resumen",
+    "quickStart": "Inicio Rápido",
+    "extensionApi": "API de Extensión",
+    "setup": "Configuración",
+    "oracleApi": "API Oracle",
+    "resources": "Recursos",
+    "extensionGuide": "Guía de Extensión",
+    "oracleGuide": "Guía de Oracle"
+  },
+  "overview": {
+    "title": "Resumen",
+    "description": "Nostr Web of Trust proporciona dos herramientas complementarias para filtrado basado en confianza:",
+    "extension": {
+      "title": "Extensión WoT",
+      "description": "Extensión de navegador que expone",
+      "api": "window.nostr.wot",
+      "forClientSide": "para consultas del lado del cliente"
+    },
+    "oracle": {
+      "title": "WoT Oracle",
+      "description": "API REST para consultas del lado del servidor a escala"
+    },
+    "fundamentalQuestion": "Ambos responden la misma pregunta fundamental:",
+    "question": "\"¿Cuál es la distancia social entre dos pubkeys?\""
+  },
+  "quickStart": {
+    "title": "Inicio Rápido",
+    "browser": "Navegador (con Extensión)",
+    "server": "Servidor (con API Oracle)",
+    "comments": {
+      "checkExtension": "// Verifica si la extensión está disponible",
+      "getDistance": "// Obtén distancia a una pubkey",
+      "withinWot": "// Dentro de la web of trust",
+      "outsideWot": "// Fuera de la web of trust o no conectado",
+      "usingFetch": "// Usando fetch"
+    }
+  },
+  "extensionSetup": {
+    "title": "Configuración de Extensión",
+    "description": "La Extensión WoT inyecta el objeto",
+    "api": "window.nostr.wot",
+    "objectInto": "en cada página. Verifica su existencia antes de usar:",
+    "comments": {
+      "featureDetection": "// Detección de característica",
+      "waitForExtension": "// Esperar a que cargue la extensión"
+    }
+  },
+  "getDistance": {
+    "title": "getDistance(targetPubkey)",
+    "description": "Devuelve el número de saltos desde la pubkey del usuario hasta el objetivo.",
+    "parameters": "Parámetros",
+    "paramName": "Nombre",
+    "paramType": "Tipo",
+    "paramDescription": "Descripción",
+    "targetPubkey": "Pubkey en formato hex o npub",
+    "returns": "Retorna",
+    "returnsDescription": "Conteo de saltos, o",
+    "null": "null",
+    "ifNotConnected": "si no está conectado.",
+    "example": "Ejemplo",
+    "cases": {
+      "notConnected": "No conectado",
+      "thisIsYou": "Este eres tú",
+      "directFollow": "Seguimiento directo",
+      "hopsAway": "saltos de distancia"
+    }
+  },
+  "isInMyWot": {
+    "title": "isInMyWoT(targetPubkey, maxHops?)",
+    "description": "Verificación booleana si una pubkey está dentro del umbral de tu web of trust.",
+    "parameters": "Parámetros",
+    "paramName": "Nombre",
+    "paramType": "Tipo",
+    "paramDefault": "Predeterminado",
+    "paramDescription": "Descripción",
+    "targetPubkey": "Pubkey en formato hex o npub",
+    "maxHops": "Máximo de saltos para considerar \"confiable\"",
+    "returns": "Retorna",
+    "example": "Ejemplo",
+    "comments": {
+      "defaultThreshold": "// Verificar con umbral predeterminado (3 saltos)",
+      "stricterCheck": "// Verificación más estricta (2 saltos)",
+      "filterList": "// Filtrar una lista de pubkeys"
+    }
+  },
+  "getDistanceBetween": {
+    "title": "getDistanceBetween(fromPubkey, toPubkey)",
+    "description": "Consulta la distancia entre cualquier par de pubkeys, no solo desde la tuya.",
+    "parameters": "Parámetros",
+    "paramName": "Nombre",
+    "paramType": "Tipo",
+    "paramDescription": "Descripción",
+    "fromPubkey": "Pubkey de origen",
+    "toPubkey": "Pubkey de destino",
+    "returns": "Retorna",
+    "example": "Ejemplo",
+    "comments": {
+      "checkConnection": "// Verifica qué tan conectados están dos usuarios"
+    }
+  },
+  "oracleDistance": {
+    "title": "GET /distance",
+    "description": "Consulta la distancia social entre dos pubkeys.",
+    "queryParameters": "Parámetros de Consulta",
+    "paramName": "Nombre",
+    "paramType": "Tipo",
+    "paramRequired": "Requerido",
+    "paramDescription": "Descripción",
+    "from": "Pubkey de origen (hex)",
+    "to": "Pubkey de destino (hex)",
+    "response": "Respuesta",
+    "example": "Ejemplo"
+  },
+  "oracleBatch": {
+    "title": "POST /distance/batch",
+    "description": "Consulta distancias de una pubkey a múltiples objetivos.",
+    "requestBody": "Cuerpo de Solicitud",
+    "response": "Respuesta",
+    "example": "Ejemplo"
+  },
+  "oracleStats": {
+    "title": "GET /stats",
+    "description": "Obtén estadísticas sobre el grafo indexado.",
+    "response": "Respuesta"
+  },
+  "oracleHealth": {
+    "title": "GET /health",
+    "description": "Endpoint de verificación de salud para monitoreo y balanceadores de carga.",
+    "response": "Respuesta"
+  },
+  "rateLimits": {
+    "title": "Límites de Tasa",
+    "description": "La instancia pública de Oracle en",
+    "url": "wot-oracle.mappingbitcoin.com",
+    "hasLimits": "tiene los siguientes límites:",
+    "limits": {
+      "requestsPerMinute": "100 solicitudes por minuto por IP",
+      "batchCount": "Las solicitudes batch cuentan como 1 solicitud",
+      "headers": "Encabezados de límite de tasa:"
+    },
+    "selfHost": "Para límites más altos,",
+    "selfHostLink": "auto-hospeda tu propia instancia"
+  },
+  "errorHandling": {
+    "title": "Manejo de Errores",
+    "comments": {
+      "extensionApi": "// API de Extensión",
+      "timeout": "// La consulta tardó demasiado",
+      "offline": "// Modo local y sin datos en caché",
+      "oracleApi": "// API Oracle - códigos de estado HTTP",
+      "success": "// 200 - Éxito",
+      "invalidPubkey": "// 400 - Formato de pubkey inválido",
+      "rateLimited": "// 429 - Límite de tasa excedido",
+      "serverError": "// 500 - Error del servidor"
+    }
+  }
+}

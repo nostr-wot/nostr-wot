@@ -1,0 +1,224 @@
+{
+  "hero": {
+    "badge": "Recursos da Extensão WoT",
+    "title": "Sua Web of Trust,",
+    "titleHighlight": "Em Todo Lugar",
+    "description": "Assuma o controle de em quem você confia no Nostr. Construa seu próprio grafo de confiança, leve-o para cada aplicação e defina exatamente o que \"confiável\" significa para você."
+  },
+  "universalApi": {
+    "badge": "API WoT Universal",
+    "title": "Sua Web of Trust, disponível em cada site Nostr",
+    "description": "Uma vez instalado, qualquer aplicação Nostr pode perguntar: \"Esta pessoa está na minha rede?\" Sem mais reconstruir confiança do zero em cada cliente. Seu grafo de confiança te segue.",
+    "compatibleApps": "+ qualquer app com API"
+  },
+  "chooseSource": {
+    "badge": "Escolha sua Fonte",
+    "title": "Duas formas de alimentar sua Web of Trust",
+    "description": "Escolha o que se adapta às suas necessidades",
+    "remote": {
+      "title": "Oracle Remoto",
+      "description": "Conecte-se a um servidor oracle WoT confiável. Consultas rápidas, sem armazenamento, sempre atualizado.",
+      "features": {
+        "instant": "Buscas instantâneas (<50ms)",
+        "noStorage": "Sem armazenamento local necessário",
+        "default": "Padrão: nostr-wot.com (grátis)",
+        "selfHosted": "Ou conecte ao seu próprio oracle"
+      },
+      "bestFor": "Maioria dos usuários, mobile, dispositivos com pouco armazenamento"
+    },
+    "local": {
+      "title": "Grafo Local",
+      "description": "Construa e armazene seu grafo de confiança inteiramente no seu navegador. Privacidade total, funciona offline.",
+      "features": {
+        "privacy": "Dados nunca saem do seu dispositivo",
+        "relays": "Sincronize dos relays que você escolher",
+        "offline": "Funciona sem internet",
+        "export": "Exporte/importe seu grafo"
+      },
+      "bestFor": "Maximalistas de privacidade, uso offline, desenvolvedores"
+    },
+    "hybrid": {
+      "title": "Modo Híbrido",
+      "description": "O melhor dos dois mundos. Verifique localmente primeiro, recorra ao remoto se necessário.",
+      "features": {
+        "fast": "Consultas mais rápidas possíveis",
+        "privacy": "Privacidade para conexões próximas",
+        "coverage": "Cobertura completa via oracle",
+        "fallback": "Fallback gracioso offline"
+      },
+      "recommended": "Recomendado"
+    }
+  },
+  "trustScoring": {
+    "badge": "Pontuação de Confiança Personalizada",
+    "title": "Nem todos os seguidos são iguais",
+    "description": "Defina o que confiança significa para você",
+    "distance": {
+      "title": "Multiplicadores de Distância",
+      "description": "Atribua pesos com base em quão longe alguém está de você:",
+      "headers": {
+        "hops": "Saltos",
+        "default": "Padrão",
+        "custom": "Personalizado"
+      },
+      "rows": {
+        "direct": "1 (direto)",
+        "fof": "2 (amigo de amigo)",
+        "adjustable": "Ajustável"
+      }
+    },
+    "bonuses": {
+      "title": "Bônus de Relacionamento",
+      "description": "Aumente a confiança para sinais mais fortes:",
+      "headers": {
+        "signal": "Sinal",
+        "multiplier": "Multiplicador"
+      },
+      "rows": {
+        "mutual": "Seguimento mútuo",
+        "paths": "Múltiplos caminhos",
+        "recent": "Interação recente",
+        "longTerm": "Longo prazo (>1 ano)"
+      }
+    },
+    "thresholds": {
+      "title": "Limites de Confiança",
+      "description": "Defina seus próprios limites:",
+      "trusted": {
+        "label": "Confiável",
+        "range": "0.7 – 1.0",
+        "meaning": "Mostrar conteúdo livremente"
+      },
+      "neutral": {
+        "label": "Neutro",
+        "range": "0.3 – 0.7",
+        "meaning": "Mostrar com cautela"
+      },
+      "untrusted": {
+        "label": "Não confiável",
+        "range": "0 – 0.3",
+        "meaning": "Ocultar ou sinalizar"
+      }
+    }
+  },
+  "formula": {
+    "badge": "Fórmula de Pontuação",
+    "title": "Transparente. Auditável. Sua.",
+    "example": {
+      "title": "Exemplo:",
+      "description": "Alice está a 2 saltos de distância, vocês têm amigos mútuos e 3 caminhos distintos os conectam.",
+      "note": "Você controla cada variável."
+    }
+  },
+  "settings": {
+    "badge": "Configurações Avançadas",
+    "title": "Ajuste tudo ao seu gosto",
+    "relays": {
+      "title": "Seleção de Relays (Modo Local)",
+      "description": "Escolha de quais relays sincronizar:"
+    },
+    "syncDepth": {
+      "title": "Profundidade de Sincronização",
+      "description": "Quão longe rastrear da sua pubkey:",
+      "headers": {
+        "depth": "Profundidade",
+        "nodes": "Nós",
+        "storage": "Armazenamento",
+        "time": "Tempo"
+      }
+    },
+    "cache": {
+      "title": "Configurações de Cache",
+      "ttl": "TTL:",
+      "ttlDesc": "Quanto tempo manter resultados em cache",
+      "ttlDefault": "padrão: 5 min",
+      "maxEntries": "Máx. entradas:",
+      "maxEntriesDesc": "Limitar uso de memória",
+      "maxEntriesDefault": "padrão: 10.000"
+    },
+    "lists": {
+      "title": "Lista de Bloqueio e Confiança",
+      "blocklist": {
+        "title": "Lista de Bloqueio",
+        "description": "Exclua pubkeys manualmente. Usuários bloqueados pontuam 0, independente da distância.",
+        "add": "+ Adicionar pubkey bloqueada"
+      },
+      "trustlist": {
+        "title": "Lista de Confiança",
+        "description": "Sobrescreva a pontuação para pubkeys específicas.",
+        "add": "+ Adicionar pubkey confiável → sempre pontua 1.0"
+      }
+    }
+  },
+  "dashboard": {
+    "badge": "Painel",
+    "title": "Veja sua Web of Trust de relance",
+    "nodes": "Nós",
+    "edges": "Conexões",
+    "cacheHitRate": "Taxa de Acertos do Cache",
+    "avgQueryTime": "Tempo Médio de Consulta",
+    "lastSync": "Última sincronização: {time}",
+    "visualize": {
+      "title": "Visualizar",
+      "comingSoon": "(em breve)",
+      "description": "Grafo interativo mostrando sua rede de confiança"
+    }
+  },
+  "privacy": {
+    "badge": "Privacidade",
+    "title": "Seus dados, suas regras",
+    "remote": {
+      "title": "Modo Remoto",
+      "description": "Consultas enviadas ao oracle (pares de pubkeys visíveis para o servidor)",
+      "features": {
+        "noContent": "Sem dados de conteúdo compartilhados",
+        "onlyPubkey": "Apenas buscas de pubkey"
+      }
+    },
+    "local": {
+      "title": "Modo Local",
+      "description": "Tudo permanece no seu navegador",
+      "features": {
+        "noExternal": "Sem requisições externas",
+        "noTracking": "Sem rastreamento",
+        "noAnalytics": "Sem analytics",
+        "export": "Exporte seus dados quando quiser"
+      }
+    }
+  },
+  "getStarted": {
+    "badge": "Começar",
+    "title": "Funcionando em minutos",
+    "steps": {
+      "install": {
+        "title": "Instale a extensão",
+        "description": "Adicione ao Chrome, Firefox ou Brave"
+      },
+      "pubkey": {
+        "title": "Digite sua pubkey",
+        "description": "Ou conecte com nos2x/Alby"
+      },
+      "mode": {
+        "title": "Escolha o modo",
+        "description": "Remoto, Local ou Híbrido"
+      },
+      "scoring": {
+        "title": "Ajuste a pontuação",
+        "description": "Personalize os pesos de confiança conforme sua preferência"
+      },
+      "browse": {
+        "title": "Navegue pelo Nostr",
+        "description": "Sua WoT te segue para todos os lugares"
+      }
+    }
+  },
+  "api": {
+    "badge": "API para Desenvolvedores",
+    "title": "Construa aplicações Nostr com WoT",
+    "viewDocs": "Ver documentação completa da API"
+  },
+  "pricing": {
+    "title": "Grátis. Para sempre. Código aberto.",
+    "description": "Auto-hospede o oracle, faça fork da extensão, faça o que quiser."
+  }
+}

@@ -1,0 +1,111 @@
+{
+  "meta": {
+    "title": "WoT Oracle",
+    "description": "High-performance backend API for Nostr Web of Trust queries. Index the follow graph and query social distance at scale."
+  },
+  "hero": {
+    "badge": "Backend API",
+    "title": "WoT Oracle",
+    "subtitle": "High-performance indexer for the Nostr follow graph. Sub-millisecond queries answering \"how many hops separate these two users?\"",
+    "viewOnGitHub": "View on GitHub",
+    "apiDocs": "API Documentation"
+  },
+  "whatItDoes": {
+    "title": "What It Does",
+    "description": "WoT Oracle continuously syncs follow lists (Kind 3 events) from Nostr relays, building an in-memory graph of the entire social network. It then provides a REST API to query social distance between any two pubkeys.",
+    "example": "Example:",
+    "exampleText": "If Alice follows Bob, and Bob follows Carol, then the distance from Alice to Carol is 2 hops."
+  },
+  "performance": {
+    "title": "Performance",
+    "cachedLatency": "Cached query latency",
+    "uncachedLatency": "Uncached query latency",
+    "queriesPerSecond": "Queries per second",
+    "bidirectionalBfs": "Bidirectional BFS"
+  },
+  "apiEndpoints": {
+    "title": "API Endpoints",
+    "distance": {
+      "title": "GET /distance",
+      "description": "Query the social distance between two pubkeys.",
+      "request": "Request",
+      "response": "Response"
+    },
+    "batch": {
+      "title": "POST /distance/batch",
+      "description": "Query distances from one pubkey to multiple targets."
+    },
+    "stats": {
+      "title": "GET /stats",
+      "description": "Get statistics about the indexed graph."
+    },
+    "health": {
+      "title": "GET /health",
+      "description": "Health check endpoint for monitoring."
+    }
+  },
+  "selfHosting": {
+    "title": "Self-Hosting",
+    "subtitle": "Run your own WoT Oracle instance. Full control over your trust infrastructure.",
+    "docker": "Docker (Recommended)",
+    "dockerCompose": "Docker Compose",
+    "fromSource": "From Source (Rust 1.75+)"
+  },
+  "configuration": {
+    "title": "Configuration",
+    "subtitle": "Configure via environment variables:",
+    "table": {
+      "variable": "Variable",
+      "default": "Default",
+      "description": "Description"
+    },
+    "relays": {
+      "description": "Comma-separated relay URLs"
+    },
+    "httpPort": {
+      "description": "Server port"
+    },
+    "dbPath": {
+      "description": "SQLite database location"
+    },
+    "rateLimit": {
+      "description": "Query throttle per IP"
+    },
+    "cacheSize": {
+      "description": "LRU cache entries"
+    },
+    "cacheTtl": {
+      "description": "Cache expiration (5 min)"
+    }
+  },
+  "architecture": {
+    "title": "Architecture",
+    "graphStorage": {
+      "title": "Graph Storage",
+      "description": "In-memory graph for fast traversal, backed by SQLite for persistence. Syncs continuously from configured Nostr relays."
+    },
+    "pathfinding": {
+      "title": "Pathfinding",
+      "description": "Bidirectional breadth-first search (BFS) from both endpoints simultaneously, meeting in the middle for O(b^(d/2)) complexity."
+    },
+    "caching": {
+      "title": "Caching",
+      "description": "LRU cache with configurable size and TTL. Most queries hit cache for sub-millisecond response times."
+    },
+    "rateLimiting": {
+      "title": "Rate Limiting",
+      "description": "Per-IP rate limiting protects the service from abuse. Configurable limits for different deployment scenarios."
+    }
+  },
+  "publicInstance": {
+    "title": "Public Instance",
+    "subtitle": "A public instance is available for development and testing:",
+    "rateLimit": "Rate limited to 100 requests/minute per IP. For production use, consider self-hosting."
+  },
+  "cta": {
+    "title": "Open Source",
+    "subtitle": "Written in Rust. MIT licensed. Self-host for your community or contribute improvements.",
+    "viewSource": "View Source on GitHub",
+    "learnExtension": "Learn about WoT Extension →"
+  }
+}

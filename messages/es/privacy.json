@@ -1,0 +1,252 @@
+{
+  "meta": {
+    "title": "Política de Privacidad",
+    "description": "Política de privacidad para el sitio web y extensión de navegador de Nostr Web of Trust."
+  },
+  "hero": {
+    "title": "Política de Privacidad",
+    "lastUpdated": "Última actualización: Febrero 2026"
+  },
+  "intro": {
+    "description": "Esta Política de Privacidad describe cómo Nostr Web of Trust (\"nosotros\", \"nos\" o \"nuestro\") recopila, usa y protege tu información cuando usas nuestro sitio web (nostr-wot.com) y extensión de navegador (Extensión WoT).",
+    "commitment": "Estamos comprometidos a proteger tu privacidad. Como proyecto construido para el ecosistema Nostr, entendemos la importancia de la descentralización y la soberanía del usuario sobre los datos personales."
+  },
+  "contents": {
+    "title": "Contenido",
+    "website": "Privacidad del Sitio Web",
+    "extension": "Privacidad de la Extensión de Navegador",
+    "oracle": "API WoT Oracle",
+    "thirdParty": "Servicios de Terceros",
+    "dataRetention": "Retención de Datos",
+    "yourRights": "Tus Derechos",
+    "changes": "Cambios a Esta Política",
+    "contact": "Contáctanos"
+  },
+  "website": {
+    "title": "Privacidad del Sitio Web",
+    "infoCollected": {
+      "title": "Información que Recopilamos",
+      "description": "Cuando visitas nuestro sitio web, podemos recopilar:",
+      "analytics": {
+        "title": "Datos de Analítica:",
+        "description": "Usamos Google Analytics para entender cómo los visitantes usan nuestro sitio. Esto incluye información anonimizada como páginas visitadas, tiempo en el sitio, tipo de navegador, tipo de dispositivo y ubicación geográfica aproximada (nivel de país)."
+      },
+      "contactForm": {
+        "title": "Datos del Formulario de Contacto:",
+        "description": "Si envías nuestro formulario de contacto, recopilamos tu nombre, dirección de correo electrónico, organización (si se proporciona) y contenido del mensaje."
+      }
+    },
+    "howWeUse": {
+      "title": "Cómo Usamos los Datos del Sitio Web",
+      "items": {
+        "improve": "Para mejorar nuestro sitio web y documentación",
+        "respond": "Para responder a tus consultas y solicitudes de soporte",
+        "understand": "Para entender patrones de uso agregados"
+      }
+    },
+    "cookies": {
+      "title": "Cookies",
+      "description": "Nuestro sitio web usa cookies para propósitos de analítica. Google Analytics establece cookies para distinguir usuarios y sesiones únicos. Puedes optar por no participar en Google Analytics instalando el",
+      "optOutLink": "Complemento de Navegador para Desactivar Google Analytics"
+    }
+  },
+  "extension": {
+    "title": "Privacidad de la Extensión de Navegador",
+    "intro": "La Extensión WoT está diseñada con la privacidad como principio central. Esto es lo que necesitas saber:",
+    "dataStorage": {
+      "title": "Almacenamiento de Datos",
+      "pubkey": {
+        "title": "Tu Pubkey:",
+        "description": "Almacenada localmente en tu navegador para identificar tu posición en el grafo social. Nunca se envía a nuestros servidores."
+      },
+      "configuration": {
+        "title": "Configuración:",
+        "description": "Tus ajustes (modo de operación, preferencias de relay, URL del oracle) se almacenan localmente en tu navegador."
+      },
+      "localGraph": {
+        "title": "Índice de Grafo Local:",
+        "description": "En modo Local o Híbrido, las relaciones de seguimiento se almacenan en IndexedDB de tu navegador. Estos datos nunca salen de tu dispositivo."
+      }
+    },
+    "operatingModes": {
+      "title": "Modos de Operación",
+      "description": "La extensión ofrece tres modos de operación con diferentes implicaciones de privacidad:",
+      "local": {
+        "title": "Modo Local (Más Privado)",
+        "items": {
+          "processedLocally": "Todas las consultas se procesan localmente en tu navegador",
+          "fetchedDirectly": "Los datos de seguimiento se obtienen directamente de los relays Nostr",
+          "noDataSent": "No se envían datos al WoT Oracle ni a nuestros servidores",
+          "completelyPrivate": "Tus consultas permanecen completamente privadas"
+        }
+      },
+      "remote": {
+        "title": "Modo Remoto",
+        "items": {
+          "sentToOracle": "Las consultas se envían a la API WoT Oracle para calcular distancia social",
+          "oracleSees": "El Oracle ve qué pubkeys estás consultando (pero no tu identidad a menos que la reveles)",
+          "fasterResults": "Proporciona resultados más rápidos con menos almacenamiento local",
+          "selfHost": "Considera usar un Oracle auto-hospedado para mayor privacidad"
+        }
+      },
+      "hybrid": {
+        "title": "Modo Híbrido",
+        "items": {
+          "localFirst": "Consulta tu índice local primero",
+          "fallback": "Recurre al modo Remoto solo cuando es necesario",
+          "balances": "Equilibra privacidad con cobertura"
+        }
+      }
+    },
+    "doesNot": {
+      "title": "Lo que la Extensión NO Hace",
+      "items": {
+        "browsingHistory": "No recopilamos ni transmitimos tu historial de navegación",
+        "ads": "No inyectamos anuncios ni scripts de rastreo",
+        "sellData": "No vendemos ni compartimos tus datos con terceros",
+        "privateKeys": "No almacenamos tus claves privadas (nunca tenemos acceso a ellas)",
+        "telemetry": "No ejecutamos analítica ni telemetría en la extensión"
+      }
+    },
+    "permissions": {
+      "title": "Permisos",
+      "description": "La extensión solicita los siguientes permisos del navegador:",
+      "storage": {
+        "title": "Almacenamiento:",
+        "description": "Para guardar tu configuración e índice de grafo local"
+      },
+      "scripting": {
+        "title": "Scripting:",
+        "description": "Para inyectar la API window.nostr.wot en páginas web"
+      }
+    }
+  },
+  "oracle": {
+    "title": "API WoT Oracle",
+    "intro": "Si usas la API pública WoT Oracle (directamente o a través de la extensión en modo Remoto):",
+    "dataCollected": {
+      "title": "Datos Recopilados",
+      "queryData": {
+        "title": "Datos de Consulta:",
+        "description": "Las pubkeys que consultas para cálculos de distancia social"
+      },
+      "ipAddress": {
+        "title": "Dirección IP:",
+        "description": "Usada para limitación de tasa (100 solicitudes/minuto por IP)"
+      },
+      "timestamps": {
+        "title": "Marcas de Tiempo de Solicitud:",
+        "description": "Para limitación de tasa y prevención de abuso"
+      }
+    },
+    "dataNotCollected": {
+      "title": "Datos NO Recopilados",
+      "items": {
+        "noLog": "No registramos historial de consultas a largo plazo",
+        "noAssociate": "No asociamos consultas con identidades",
+        "noTrack": "No rastreamos qué sitios web hacen consultas"
+      }
+    },
+    "selfHosting": {
+      "title": "Auto-Hospedaje",
+      "description": "Para máxima privacidad, puedes",
+      "link": "auto-hospedar tu propio WoT Oracle",
+      "descriptionContinued": ". Esto te da control completo sobre tus datos de consulta."
+    }
+  },
+  "thirdParty": {
+    "title": "Servicios de Terceros",
+    "intro": "Nuestro sitio web usa los siguientes servicios de terceros:",
+    "googleAnalytics": {
+      "title": "Google Analytics",
+      "description": "Usamos Google Analytics para analizar el tráfico del sitio web. Google puede recopilar y procesar datos según su",
+      "privacyPolicy": "Política de Privacidad",
+      "configured": ". Hemos configurado Google Analytics para:",
+      "items": {
+        "anonymize": "Anonimizar direcciones IP",
+        "disableSharing": "Deshabilitar compartir datos con Google",
+        "disableAdvertising": "Deshabilitar funciones publicitarias"
+      }
+    },
+    "recaptcha": {
+      "title": "Google reCAPTCHA",
+      "description": "Nuestro formulario de contacto usa Google reCAPTCHA v3 para prevenir spam. Este servicio puede recopilar información de hardware y software. Consulta la",
+      "privacyPolicy": "Política de Privacidad",
+      "and": "y",
+      "termsOfService": "Términos de Servicio de Google"
+    },
+    "resend": {
+      "title": "Resend",
+      "description": "Usamos Resend para procesar envíos del formulario de contacto. Tu información de contacto se transmite a Resend para entregar correos. Consulta la",
+      "privacyPolicy": "Política de Privacidad de Resend"
+    },
+    "nostrRelays": {
+      "title": "Relays de Nostr",
+      "description": "En modo Local, la extensión se conecta directamente a relays Nostr para obtener listas de seguimiento. Estos son relays Nostr públicos; sus prácticas de manejo de datos varían. La extensión solo obtiene eventos públicos Kind 3 (lista de seguimiento)."
+    }
+  },
+  "dataRetention": {
+    "title": "Retención de Datos",
+    "items": {
+      "analytics": {
+        "title": "Datos de Analítica:",
+        "description": "Retenidos por Google Analytics durante 14 meses"
+      },
+      "contactForm": {
+        "title": "Envíos del Formulario de Contacto:",
+        "description": "Retenidos en nuestro sistema de correo hasta que se resuelva la consulta"
+      },
+      "extensionData": {
+        "title": "Datos de la Extensión:",
+        "description": "Almacenados localmente en tu navegador hasta que los elimines o desinstales la extensión"
+      },
+      "rateLimit": {
+        "title": "Datos de Límite de Tasa del Oracle:",
+        "description": "Los contadores de límite de tasa basados en IP expiran después de 1 minuto"
+      }
+    }
+  },
+  "yourRights": {
+    "title": "Tus Derechos",
+    "description": "Tienes derecho a:",
+    "items": {
+      "access": {
+        "title": "Acceso:",
+        "description": "Solicitar información sobre los datos que tenemos sobre ti"
+      },
+      "deletion": {
+        "title": "Eliminación:",
+        "description": "Solicitar eliminación de tus datos personales"
+      },
+      "optOut": {
+        "title": "Exclusión:",
+        "description": "Deshabilitar el rastreo de Google Analytics usando herramientas del navegador"
+      },
+      "control": {
+        "title": "Control:",
+        "description": "Eliminar datos de la extensión en cualquier momento a través de la configuración del navegador"
+      },
+      "portability": {
+        "title": "Portabilidad:",
+        "description": "Exportar tus datos de grafo local desde la extensión"
+      }
+    },
+    "contactLink": "contáctanos"
+  },
+  "changes": {
+    "title": "Cambios a Esta Política",
+    "description": "Podemos actualizar esta Política de Privacidad de vez en cuando. Te notificaremos de cualquier cambio publicando la nueva Política de Privacidad en esta página y actualizando la fecha de \"Última actualización\".",
+    "significant": "Para cambios significativos, podemos proporcionar aviso adicional como agregar una declaración en nuestra página principal o enviarte una notificación."
+  },
+  "contact": {
+    "title": "Contáctanos",
+    "description": "Si tienes alguna pregunta sobre esta Política de Privacidad o nuestras prácticas de datos, por favor",
+    "link": "contáctanos"
+  },
+  "openSource": {
+    "title": "Transparencia de Código Abierto",
+    "description": "Tanto la Extensión WoT como WoT Oracle son de código abierto. Puedes revisar exactamente qué código se ejecuta y verificar nuestras afirmaciones de privacidad:",
+    "extensionSource": "Código Fuente de la Extensión WoT",
+    "oracleSource": "Código Fuente de WoT Oracle"
+  }
+}

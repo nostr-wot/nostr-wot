@@ -1,0 +1,303 @@
+import type { Metadata } from "next";
+import { getTranslations } from "next-intl/server";
+import { ScrollReveal, LinkButton, ExternalLinkButton } from "@/components/ui";
+import {
+  ChromeIcon,
+  BraveIcon,
+  EdgeIcon,
+  OperaIcon,
+  WotExtensionMiniIcon,
+  LightningIcon,
+  LockOutlineIcon,
+  CodeOutlineIcon,
+} from "@/components/icons";
+
+export async function generateMetadata(): Promise<Metadata> {
+  const t = await getTranslations("download.meta");
+  return {
+    title: t("title"),
+    description: t("description"),
+  };
+}
+
+function HowItWorksAnimation({ t }: { t: (key: string) => string }) {
+  return (
+    <div className="relative w-full max-w-2xl mx-auto">
+      <div className="bg-gray-900 rounded-2xl p-6 shadow-2xl">
+        {/* Browser mockup */}
+        <div className="flex items-center gap-2 mb-4">
+          <div className="flex gap-1.5">
+            <div className="w-3 h-3 rounded-full bg-red-500" />
+            <div className="w-3 h-3 rounded-full bg-yellow-500" />
+            <div className="w-3 h-3 rounded-full bg-green-500" />
+          </div>
+          <div className="flex-1 bg-gray-800 rounded-lg px-4 py-1.5 text-sm text-gray-400 font-mono">
+            nostr-client.app
+          </div>
+          <div className="flex items-center gap-2">
+            <div className="w-8 h-8 rounded-lg bg-primary/20 flex items-center justify-center animate-pulse">
+              <WotExtensionMiniIcon className="w-5 h-5 text-primary" />
+            </div>
+          </div>
+        </div>
+
+        {/* Content area */}
+        <div className="bg-gray-800 rounded-xl p-6 space-y-4">
+          {/* Simulated posts */}
+          <div className="flex items-start gap-3">
+            <div className="w-10 h-10 rounded-full bg-trust-green/20 flex items-center justify-center flex-shrink-0">
+              <span className="text-trust-green text-xs font-bold">1</span>
+            </div>
+            <div className="flex-1">
+              <div className="flex items-center gap-2 mb-1">
+                <div className="h-4 w-24 bg-gray-700 rounded" />
+                <span className="text-xs text-trust-green font-medium px-2 py-0.5 bg-trust-green/10 rounded-full animate-fade-in">{t("howItWorks.trusted")}</span>
+              </div>
+              <div className="h-3 w-full bg-gray-700 rounded" />
+            </div>
+          </div>
+
+          <div className="flex items-start gap-3">
+            <div className="w-10 h-10 rounded-full bg-trust-yellow/20 flex items-center justify-center flex-shrink-0">
+              <span className="text-trust-yellow text-xs font-bold">2</span>
+            </div>
+            <div className="flex-1">
+              <div className="flex items-center gap-2 mb-1">
+                <div className="h-4 w-20 bg-gray-700 rounded" />
+                <span className="text-xs text-trust-yellow font-medium px-2 py-0.5 bg-trust-yellow/10 rounded-full animate-fade-in" style={{ animationDelay: "0.2s" }}>2 {t("howItWorks.hops")}</span>
+              </div>
+              <div className="h-3 w-3/4 bg-gray-700 rounded" />
+            </div>
+          </div>
+
+          <div className="flex items-start gap-3 opacity-40">
+            <div className="w-10 h-10 rounded-full bg-trust-red/20 flex items-center justify-center flex-shrink-0">
+              <span className="text-trust-red text-xs font-bold">?</span>
+            </div>
+            <div className="flex-1">
+              <div className="flex items-center gap-2 mb-1">
+                <div className="h-4 w-28 bg-gray-700 rounded" />
+                <span className="text-xs text-trust-red font-medium px-2 py-0.5 bg-trust-red/10 rounded-full animate-fade-in" style={{ animationDelay: "0.4s" }}>{t("howItWorks.hidden")}</span>
+              </div>
+              <div className="h-3 w-1/2 bg-gray-700 rounded" />
+            </div>
+          </div>
+        </div>
+
+        {/* Code snippet */}
+        <div className="mt-4 bg-gray-800 rounded-lg p-3 font-mono text-sm">
+          <span className="text-gray-500">{t("howItWorks.codeComment")}</span>
+          <br />
+          <span className="text-purple-400">const</span>{" "}
+          <span className="text-blue-300">hops</span>{" "}
+          <span className="text-white">=</span>{" "}
+          <span className="text-purple-400">await</span>{" "}
+          <span className="text-yellow-300">window.nostr.wot</span>
+          <span className="text-white">.</span>
+          <span className="text-green-300">getDistance</span>
+          <span className="text-white">(</span>
+          <span className="text-orange-300">pubkey</span>
+          <span className="text-white">)</span>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+const CHROME_STORE_URL = "https://chrome.google.com/webstore/detail/nostr-wot-extension";
+
+const browserIcons = {
+  Chrome: ChromeIcon,
+  Brave: BraveIcon,
+  Edge: EdgeIcon,
+  Opera: OperaIcon,
+};
+
+export default async function DownloadPage() {
+  const t = await getTranslations("download");
+
+  const browsers = [
+    {
+      key: "chrome",
+      icon: browserIcons.Chrome,
+      url: CHROME_STORE_URL,
+    },
+    {
+      key: "brave",
+      icon: browserIcons.Brave,
+      url: CHROME_STORE_URL,
+    },
+    {
+      key: "edge",
+      icon: browserIcons.Edge,
+      url: CHROME_STORE_URL,
+    },
+    {
+      key: "opera",
+      icon: browserIcons.Opera,
+      url: CHROME_STORE_URL,
+    },
+  ];
+
+  const faqKeys = [
+    "whatIsWot",
+    "howExtensionWorks",
+    "isDataPrivate",
+    "supportedBrowsers",
+    "nostrAccount",
+    "isFree",
+  ];
+
+  return (
+    <main>
+      {/* Hero + Downloads */}
+      <section className="py-20 bg-gradient-to-b from-gray-50 to-white dark:from-gray-900 dark:to-gray-950">
+        <div className="max-w-4xl mx-auto px-6 text-center">
+          <ScrollReveal animation="fade-down">
+            <h1 className="text-4xl md:text-5xl font-bold mb-6">{t("hero.title")}</h1>
+          </ScrollReveal>
+          <ScrollReveal animation="fade-up" delay={100}>
+            <p className="text-xl text-gray-600 dark:text-gray-400 max-w-2xl mx-auto mb-12">
+              {t("hero.subtitle")}
+            </p>
+          </ScrollReveal>
+
+          <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4 max-w-3xl mx-auto">
+            {browsers.map((browser, index) => (
+              <ScrollReveal key={browser.key} animation="fade-up" delay={150 + index * 75}>
+                <a
+                  href={browser.url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex flex-col items-center p-6 bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 hover:border-primary dark:hover:border-primary hover:shadow-lg transition-all group"
+                >
+                  <browser.icon className="w-12 h-12 mb-4 text-gray-700 dark:text-gray-300 group-hover:text-primary transition-colors" />
+                  <span className="font-semibold mb-1">{t(`browsers.${browser.key}.name`)}</span>
+                  <span className="text-sm text-gray-500 dark:text-gray-400">
+                    {t(`browsers.${browser.key}.description`)}
+                  </span>
+                </a>
+              </ScrollReveal>
+            ))}
+          </div>
+          <ScrollReveal animation="fade-up" delay={500}>
+            <p className="text-sm text-gray-500 dark:text-gray-400 mt-6">
+              {t("browsers.firefoxNotice")}{" "}
+              <a
+                href="https://github.com/mappingbitcoin/nostr-wot-extension"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-primary hover:underline"
+              >
+                {t("browsers.starRepo")}
+              </a>{" "}
+              {t("browsers.toGetNotified")}
+            </p>
+          </ScrollReveal>
+        </div>
+      </section>
+
+      {/* How It Works Animation */}
+      <section className="py-16 bg-gray-100 dark:bg-gray-900">
+        <div className="max-w-6xl mx-auto px-6">
+          <ScrollReveal animation="fade-up">
+            <h2 className="text-2xl font-bold text-center mb-4">{t("howItWorks.title")}</h2>
+            <p className="text-gray-600 dark:text-gray-400 text-center mb-12 max-w-xl mx-auto">
+              {t("howItWorks.subtitle")}
+            </p>
+          </ScrollReveal>
+          <ScrollReveal animation="zoom-in" delay={100}>
+            <HowItWorksAnimation t={(key) => t(key)} />
+          </ScrollReveal>
+        </div>
+      </section>
+
+      {/* Features */}
+      <section className="py-16">
+        <div className="max-w-4xl mx-auto px-6">
+          <ScrollReveal animation="fade-up">
+            <h2 className="text-2xl font-bold text-center mb-12">{t("features.title")}</h2>
+          </ScrollReveal>
+          <div className="grid md:grid-cols-3 gap-8">
+            <ScrollReveal animation="fade-up" delay={0}>
+              <div className="text-center">
+                <div className="w-14 h-14 rounded-full bg-primary/10 flex items-center justify-center mx-auto mb-4">
+                  <LightningIcon className="w-7 h-7 text-primary" />
+                </div>
+                <h3 className="font-semibold mb-2">{t("features.instantQueries.title")}</h3>
+                <p className="text-sm text-gray-600 dark:text-gray-400">
+                  {t("features.instantQueries.description")}
+                </p>
+              </div>
+            </ScrollReveal>
+            <ScrollReveal animation="fade-up" delay={100}>
+              <div className="text-center">
+                <div className="w-14 h-14 rounded-full bg-primary/10 flex items-center justify-center mx-auto mb-4">
+                  <LockOutlineIcon className="w-7 h-7 text-primary" />
+                </div>
+                <h3 className="font-semibold mb-2">{t("features.privacyOptions.title")}</h3>
+                <p className="text-sm text-gray-600 dark:text-gray-400">
+                  {t("features.privacyOptions.description")}
+                </p>
+              </div>
+            </ScrollReveal>
+            <ScrollReveal animation="fade-up" delay={200}>
+              <div className="text-center">
+                <div className="w-14 h-14 rounded-full bg-primary/10 flex items-center justify-center mx-auto mb-4">
+                  <CodeOutlineIcon className="w-7 h-7 text-primary" />
+                </div>
+                <h3 className="font-semibold mb-2">{t("features.simpleApi.title")}</h3>
+                <p className="text-sm text-gray-600 dark:text-gray-400">
+                  {t("features.simpleApi.description")}
+                </p>
+              </div>
+            </ScrollReveal>
+          </div>
+        </div>
+      </section>
+
+      {/* FAQ */}
+      <section className="py-16 bg-gray-100 dark:bg-gray-900">
+        <div className="max-w-3xl mx-auto px-6">
+          <ScrollReveal animation="fade-up">
+            <h2 className="text-2xl font-bold text-center mb-12">
+              {t("faq.title")}
+            </h2>
+          </ScrollReveal>
+          <div className="space-y-4">
+            {faqKeys.map((key, index) => (
+              <ScrollReveal key={key} animation="fade-up" delay={index * 50}>
+                <div className="bg-white dark:bg-gray-800 rounded-xl p-6 border border-gray-200 dark:border-gray-700">
+                  <h3 className="font-semibold mb-2">{t(`faq.items.${key}.question`)}</h3>
+                  <p className="text-gray-600 dark:text-gray-400 text-sm leading-relaxed">
+                    {t(`faq.items.${key}.answer`)}
+                  </p>
+                </div>
+              </ScrollReveal>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* CTA */}
+      <section className="py-16">
+        <div className="max-w-4xl mx-auto px-6 text-center">
+          <ScrollReveal animation="zoom-in">
+            <h2 className="text-2xl font-bold mb-4">{t("cta.title")}</h2>
+            <p className="text-gray-600 dark:text-gray-400 mb-8">
+              {t("cta.subtitle")}
+            </p>
+            <div className="flex flex-col sm:flex-row gap-4 justify-center">
+              <ExternalLinkButton href={CHROME_STORE_URL}>
+                {t("cta.installExtension")}
+              </ExternalLinkButton>
+              <LinkButton href="/docs" variant="secondary">
+                {t("cta.readDocs")}
+              </LinkButton>
+            </div>
+          </ScrollReveal>
+        </div>
+      </section>
+    </main>
+  );
+}

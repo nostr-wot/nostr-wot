@@ -1,0 +1,55 @@
+name: Deploy to Prod
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Write .env from secret
+        run: echo "${{ secrets.ENV_PRODUCTION }}" > .env
+
+      - name: Build Next.js app
+        env:
+          NEXT_DISABLE_TURBOPACK: "1"
+        run: npm run build
+
+      - name: Upload production files via SCP
+        uses: appleboy/scp-action@v0.1.4
+        with:
+          host: ${{ secrets.SSH_HOST_PROD }}
+          username: ${{ secrets.SSH_USER_PROD }}
+          key: ${{ secrets.SSH_PRIVATE_KEY_PROD }}
+          source: ".next/**,public,src/**,posts,next.config.ts,tsconfig.json,package.json,package-lock.json,.env"
+          target: /var/www/nostr-wot
+          overwrite: true
+
+      - name: Restart app via SSH
+        uses: appleboy/ssh-action@v1.0.0
+        with:
+          host: ${{ secrets.SSH_HOST_PROD }}
+          username: ${{ secrets.SSH_USER_PROD }}
+          key: ${{ secrets.SSH_PRIVATE_KEY_PROD }}
+          script: |
+            cd /var/www/nostr-wot
+            npm install
+            export PORT=3000
+            pm2 delete nostr-wot || true
+            pm2 start "npm run start" --name nostr-wot
+            pm2 save

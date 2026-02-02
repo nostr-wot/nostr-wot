@@ -1,0 +1,224 @@
+{
+  "hero": {
+    "badge": "WoT Extension Features",
+    "title": "Your Web of Trust,",
+    "titleHighlight": "Everywhere",
+    "description": "Take control of who you trust on Nostr. Build your own trust graph, carry it across every app, and define exactly what \"trusted\" means to you."
+  },
+  "universalApi": {
+    "badge": "Universal WoT API",
+    "title": "Your Web of Trust, available on every Nostr website",
+    "description": "Once installed, any Nostr app can ask: \"Is this person in my network?\" No more rebuilding trust from scratch on every client. Your trust graph follows you.",
+    "compatibleApps": "+ any app with API"
+  },
+  "chooseSource": {
+    "badge": "Choose Your Source",
+    "title": "Two ways to power your Web of Trust",
+    "description": "Pick what fits your needs",
+    "remote": {
+      "title": "Remote Oracle",
+      "description": "Connect to a trusted WoT oracle server. Fast queries, zero storage, always up to date.",
+      "features": {
+        "instant": "Instant lookups (<50ms)",
+        "noStorage": "No local storage required",
+        "default": "Default: nostr-wot.com (free)",
+        "selfHosted": "Or connect to self-hosted"
+      },
+      "bestFor": "Most users, mobile, low-storage devices"
+    },
+    "local": {
+      "title": "Local Graph",
+      "description": "Build and store your trust graph entirely in your browser. Full privacy, works offline.",
+      "features": {
+        "privacy": "Data never leaves your device",
+        "relays": "Sync from relays you choose",
+        "offline": "Works without internet",
+        "export": "Export/import your graph"
+      },
+      "bestFor": "Privacy maximalists, offline use, developers"
+    },
+    "hybrid": {
+      "title": "Hybrid Mode",
+      "description": "Best of both worlds. Check locally first, fall back to remote if needed.",
+      "features": {
+        "fast": "Fastest possible queries",
+        "privacy": "Privacy for close connections",
+        "coverage": "Full coverage via oracle",
+        "fallback": "Graceful offline fallback"
+      },
+      "recommended": "Recommended"
+    }
+  },
+  "trustScoring": {
+    "badge": "Custom Trust Scoring",
+    "title": "Not all follows are equal",
+    "description": "Define what trust means to you",
+    "distance": {
+      "title": "Distance Multipliers",
+      "description": "Assign weights based on how far someone is from you:",
+      "headers": {
+        "hops": "Hops",
+        "default": "Default",
+        "custom": "Custom"
+      },
+      "rows": {
+        "direct": "1 (direct)",
+        "fof": "2 (FoF)",
+        "adjustable": "Adjustable"
+      }
+    },
+    "bonuses": {
+      "title": "Relationship Bonuses",
+      "description": "Boost trust for stronger signals:",
+      "headers": {
+        "signal": "Signal",
+        "multiplier": "Multiplier"
+      },
+      "rows": {
+        "mutual": "Mutual follow",
+        "paths": "Multiple paths",
+        "recent": "Recent interaction",
+        "longTerm": "Long-term (>1yr)"
+      }
+    },
+    "thresholds": {
+      "title": "Trust Thresholds",
+      "description": "Define your own boundaries:",
+      "trusted": {
+        "label": "Trusted",
+        "range": "0.7 – 1.0",
+        "meaning": "Show content freely"
+      },
+      "neutral": {
+        "label": "Neutral",
+        "range": "0.3 – 0.7",
+        "meaning": "Show with caution"
+      },
+      "untrusted": {
+        "label": "Untrusted",
+        "range": "0 – 0.3",
+        "meaning": "Hide or flag"
+      }
+    }
+  },
+  "formula": {
+    "badge": "Scoring Formula",
+    "title": "Transparent. Auditable. Yours.",
+    "example": {
+      "title": "Example:",
+      "description": "Alice is 2 hops away, you have mutual friends, and 3 distinct paths connect you.",
+      "note": "You control every variable."
+    }
+  },
+  "settings": {
+    "badge": "Advanced Settings",
+    "title": "Fine-tune everything",
+    "relays": {
+      "title": "Relay Selection (Local Mode)",
+      "description": "Choose which relays to sync from:"
+    },
+    "syncDepth": {
+      "title": "Sync Depth",
+      "description": "How far to crawl from your pubkey:",
+      "headers": {
+        "depth": "Depth",
+        "nodes": "Nodes",
+        "storage": "Storage",
+        "time": "Time"
+      }
+    },
+    "cache": {
+      "title": "Cache Settings",
+      "ttl": "TTL:",
+      "ttlDesc": "How long to cache results",
+      "ttlDefault": "default: 5 min",
+      "maxEntries": "Max entries:",
+      "maxEntriesDesc": "Limit memory usage",
+      "maxEntriesDefault": "default: 10,000"
+    },
+    "lists": {
+      "title": "Blocklist & Trustlist",
+      "blocklist": {
+        "title": "Blocklist",
+        "description": "Manually exclude pubkeys. Blocked users score 0, regardless of distance.",
+        "add": "+ Add blocked pubkey"
+      },
+      "trustlist": {
+        "title": "Trustlist",
+        "description": "Override scoring for specific pubkeys.",
+        "add": "+ Add trusted pubkey → always score 1.0"
+      }
+    }
+  },
+  "dashboard": {
+    "badge": "Dashboard",
+    "title": "See your Web of Trust at a glance",
+    "nodes": "Nodes",
+    "edges": "Edges",
+    "cacheHitRate": "Cache Hit Rate",
+    "avgQueryTime": "Avg Query Time",
+    "lastSync": "Last sync: {time}",
+    "visualize": {
+      "title": "Visualize",
+      "comingSoon": "(coming soon)",
+      "description": "Interactive graph showing your trust network"
+    }
+  },
+  "privacy": {
+    "badge": "Privacy",
+    "title": "Your data, your rules",
+    "remote": {
+      "title": "Remote Mode",
+      "description": "Queries sent to oracle (pubkey pairs visible to server)",
+      "features": {
+        "noContent": "No content data shared",
+        "onlyPubkey": "Only pubkey lookups"
+      }
+    },
+    "local": {
+      "title": "Local Mode",
+      "description": "Everything stays in your browser",
+      "features": {
+        "noExternal": "No external requests",
+        "noTracking": "No tracking",
+        "noAnalytics": "No analytics",
+        "export": "Export your data anytime"
+      }
+    }
+  },
+  "getStarted": {
+    "badge": "Get Started",
+    "title": "Up and running in minutes",
+    "steps": {
+      "install": {
+        "title": "Install extension",
+        "description": "Add to Chrome, Firefox, or Brave"
+      },
+      "pubkey": {
+        "title": "Enter your pubkey",
+        "description": "Or connect with nos2x/Alby"
+      },
+      "mode": {
+        "title": "Choose mode",
+        "description": "Remote, Local, or Hybrid"
+      },
+      "scoring": {
+        "title": "Adjust scoring",
+        "description": "Customize trust weights to your preferences"
+      },
+      "browse": {
+        "title": "Browse Nostr",
+        "description": "Your WoT follows you everywhere"
+      }
+    }
+  },
+  "api": {
+    "badge": "API for Developers",
+    "title": "Build WoT-aware Nostr apps",
+    "viewDocs": "View full API docs"
+  },
+  "pricing": {
+    "title": "Free. Forever. Open source.",
+    "description": "Self-host the oracle, fork the extension, do whatever you want."
+  }
+}

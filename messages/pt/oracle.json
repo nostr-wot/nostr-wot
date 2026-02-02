@@ -1,0 +1,111 @@
+{
+  "meta": {
+    "title": "WoT Oracle",
+    "description": "API backend de alto desempenho para consultas do Nostr Web of Trust. Indexe o grafo de seguidores e consulte distância social em escala."
+  },
+  "hero": {
+    "badge": "API Backend",
+    "title": "WoT Oracle",
+    "subtitle": "Indexador de alto desempenho para o grafo de seguidores do Nostr. Consultas em sub-milissegundos respondendo \"quantos saltos separam esses dois usuários?\"",
+    "viewOnGitHub": "Ver no GitHub",
+    "apiDocs": "Documentação da API"
+  },
+  "whatItDoes": {
+    "title": "O Que Faz",
+    "description": "WoT Oracle sincroniza continuamente listas de seguidores (eventos Kind 3) de relays Nostr, construindo um grafo em memória de toda a rede social. Ele então fornece uma API REST para consultar distância social entre quaisquer duas pubkeys.",
+    "example": "Exemplo:",
+    "exampleText": "Se Alice segue Bob, e Bob segue Carol, então a distância de Alice para Carol é 2 saltos."
+  },
+  "performance": {
+    "title": "Desempenho",
+    "cachedLatency": "Latência de consulta em cache",
+    "uncachedLatency": "Latência de consulta sem cache",
+    "queriesPerSecond": "Consultas por segundo",
+    "bidirectionalBfs": "BFS Bidirecional"
+  },
+  "apiEndpoints": {
+    "title": "Endpoints da API",
+    "distance": {
+      "title": "GET /distance",
+      "description": "Consulte a distância social entre duas pubkeys.",
+      "request": "Requisição",
+      "response": "Resposta"
+    },
+    "batch": {
+      "title": "POST /distance/batch",
+      "description": "Consulte distâncias de uma pubkey para múltiplos alvos."
+    },
+    "stats": {
+      "title": "GET /stats",
+      "description": "Obtenha estatísticas sobre o grafo indexado."
+    },
+    "health": {
+      "title": "GET /health",
+      "description": "Endpoint de verificação de saúde para monitoramento."
+    }
+  },
+  "selfHosting": {
+    "title": "Auto-Hospedagem",
+    "subtitle": "Execute sua própria instância do WoT Oracle. Controle total sobre sua infraestrutura de confiança.",
+    "docker": "Docker (Recomendado)",
+    "dockerCompose": "Docker Compose",
+    "fromSource": "Do Código Fonte (Rust 1.75+)"
+  },
+  "configuration": {
+    "title": "Configuração",
+    "subtitle": "Configure via variáveis de ambiente:",
+    "table": {
+      "variable": "Variável",
+      "default": "Padrão",
+      "description": "Descrição"
+    },
+    "relays": {
+      "description": "URLs de relays separadas por vírgula"
+    },
+    "httpPort": {
+      "description": "Porta do servidor"
+    },
+    "dbPath": {
+      "description": "Localização do banco de dados SQLite"
+    },
+    "rateLimit": {
+      "description": "Limite de consultas por IP"
+    },
+    "cacheSize": {
+      "description": "Entradas de cache LRU"
+    },
+    "cacheTtl": {
+      "description": "Expiração do cache (5 min)"
+    }
+  },
+  "architecture": {
+    "title": "Arquitetura",
+    "graphStorage": {
+      "title": "Armazenamento de Grafo",
+      "description": "Grafo em memória para traversal rápido, apoiado por SQLite para persistência. Sincroniza continuamente dos relays Nostr configurados."
+    },
+    "pathfinding": {
+      "title": "Busca de Caminhos",
+      "description": "Busca em largura bidirecional (BFS) de ambos os extremos simultaneamente, encontrando-se no meio para complexidade O(b^(d/2))."
+    },
+    "caching": {
+      "title": "Cache",
+      "description": "Cache LRU com tamanho e TTL configuráveis. A maioria das consultas atinge o cache para tempos de resposta em sub-milissegundos."
+    },
+    "rateLimiting": {
+      "title": "Limitação de Taxa",
+      "description": "Limitação de taxa por IP protege o serviço de abuso. Limites configuráveis para diferentes cenários de implantação."
+    }
+  },
+  "publicInstance": {
+    "title": "Instância Pública",
+    "subtitle": "Uma instância pública está disponível para desenvolvimento e testes:",
+    "rateLimit": "Limitado a 100 requisições/minuto por IP. Para uso em produção, considere auto-hospedagem."
+  },
+  "cta": {
+    "title": "Código Aberto",
+    "subtitle": "Escrito em Rust. Licença MIT. Auto-hospede para sua comunidade ou contribua melhorias.",
+    "viewSource": "Ver Código Fonte no GitHub",
+    "learnExtension": "Conheça a Extensão WoT →"
+  }
+}
