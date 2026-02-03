@@ -28,7 +28,7 @@ The nostr-wot-sdk provides a lightweight JavaScript/TypeScript library for integ
 
 A high-performance Rust backend that maintains a real-time graph of the Nostr follow network and provides instant distance/trust queries via REST API.
 
-- **Repository:** [github.com/nostr-wot/wot-oracle](https://github.com/nostr-wot/wot-oracle)
+- **Repository:** [github.com/nostr-wot/nostr-wot-oracle](https://github.com/nostr-wot/nostr-wot-oracle)
 - **Public Instance:** `https://wot-oracle.mappingbitcoin.com`
 - **Features:** Bidirectional BFS, LRU caching, <1ms cached queries, self-hostable
 

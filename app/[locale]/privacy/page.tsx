@@ -344,7 +344,7 @@ export default async function PrivacyPage() {
                 </li>
                 <li>
                   <a
-                    href="https://github.com/nostr-wot/wot-oracle"
+                    href="https://github.com/nostr-wot/nostr-wot-oracle"
                     target="_blank"
                     rel="noopener noreferrer"
                     className="text-primary hover:underline"

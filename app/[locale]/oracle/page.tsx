@@ -30,25 +30,25 @@ const SELF_HOSTING_BLOCKS = [
   {
     key: "docker",
     code: `# Pull and run the image
-docker pull ghcr.io/nostr-wot/wot-oracle:v1.0.0
+docker pull ghcr.io/nostr-wot/nostr-wot-oracle:v1.0.0
 
 docker run -d \\
   -p 8080:8080 \\
   -v wot-data:/app/data \\
-  ghcr.io/nostr-wot/wot-oracle:v1.0.0`,
+  ghcr.io/nostr-wot/nostr-wot-oracle:v1.0.0`,
   },
   {
     key: "dockerCompose",
-    code: `git clone https://github.com/nostr-wot/wot-oracle.git
+    code: `git clone https://github.com/nostr-wot/nostr-wot-oracle.git
 cd wot-oracle
 docker-compose up -d`,
   },
   {
     key: "fromSource",
-    code: `git clone https://github.com/nostr-wot/wot-oracle.git
+    code: `git clone https://github.com/nostr-wot/nostr-wot-oracle.git
 cd wot-oracle
 cargo build --release
-./target/release/wot-oracle`,
+./target/release/nostr-wot-oracle`,
   },
 ];
 
@@ -110,7 +110,7 @@ export default async function OraclePage() {
     "operatingSystem": "Linux, Docker",
     "description": "Self-hostable REST API server for Web of Trust social graph queries. Query social distance, find paths, and analyze follow relationships on Nostr.",
     "url": "https://nostr-wot.com/oracle",
-    "codeRepository": "https://github.com/nostr-wot/wot-oracle",
+    "codeRepository": "https://github.com/nostr-wot/nostr-wot-oracle",
     "programmingLanguage": "Rust",
     "offers": {
       "@type": "Offer",
@@ -145,7 +145,7 @@ export default async function OraclePage() {
           <h1 className="text-4xl md:text-5xl font-bold mb-6">{t("hero.title")}</h1>
           <p className="text-xl text-gray-600 dark:text-gray-400 mb-8 max-w-2xl mx-auto">{t("hero.subtitle")}</p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <ExternalLinkButton href="https://github.com/nostr-wot/wot-oracle">{t("hero.viewOnGitHub")}</ExternalLinkButton>
+            <ExternalLinkButton href="https://github.com/nostr-wot/nostr-wot-oracle">{t("hero.viewOnGitHub")}</ExternalLinkButton>
             <LinkButton href="/docs" variant="secondary">{t("hero.apiDocs")}</LinkButton>
           </div>
         </div>
@@ -282,7 +282,7 @@ export default async function OraclePage() {
           <h2 className="text-3xl font-bold mb-4">{t("cta.title")}</h2>
           <p className="text-lg text-white/80 mb-8">{t("cta.subtitle")}</p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <ExternalLinkButton href="https://github.com/nostr-wot/wot-oracle" variant="white">{t("cta.viewSource")}</ExternalLinkButton>
+            <ExternalLinkButton href="https://github.com/nostr-wot/nostr-wot-oracle" variant="white">{t("cta.viewSource")}</ExternalLinkButton>
             <LinkButton href="/download" variant="white-outline">{t("cta.learnExtension")}</LinkButton>
           </div>
         </div>
