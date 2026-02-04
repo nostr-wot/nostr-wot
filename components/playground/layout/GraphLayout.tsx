@@ -6,7 +6,7 @@ import { useGraph } from "@/contexts/GraphContext";
 import { useNodeSelection } from "@/hooks/useNodeSelection";
 import { useGraphData } from "@/hooks/useGraphData";
 import { GraphNode } from "@/lib/graph/types";
-import { GraphCanvas, GraphLegend } from "../graph";
+import { GraphCanvas, GraphCanvas3D, GraphLegend } from "../graph";
 import SearchBar from "./SearchBar";
 import FilterDropdown from "./FilterDropdown";
 import RightPanel from "./RightPanel";
@@ -23,6 +23,7 @@ export default function GraphLayout() {
   const { expandNodeFollows } = useGraphData();
 
   const [dimensions, setDimensions] = useState({ width: 800, height: 600 });
+  const [graphMode, setGraphMode] = useState<"2d" | "3d">("2d");
   const [profileModal, setProfileModal] = useState<{
     isOpen: boolean;
     node: GraphNode | null;
@@ -80,6 +81,33 @@ export default function GraphLayout() {
           <SearchBar />
         </div>
         <FilterDropdown />
+
+        {/* 2D/3D toggle */}
+        {state.viewMode === "graph" && (
+          <div className="flex items-center bg-gray-100 dark:bg-gray-800 rounded-lg p-1">
+            <button
+              onClick={() => setGraphMode("2d")}
+              className={`px-3 py-1.5 text-sm font-medium rounded-md transition-colors ${
+                graphMode === "2d"
+                  ? "bg-white dark:bg-gray-700 text-gray-900 dark:text-white shadow-sm"
+                  : "text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white"
+              }`}
+            >
+              2D
+            </button>
+            <button
+              onClick={() => setGraphMode("3d")}
+              className={`px-3 py-1.5 text-sm font-medium rounded-md transition-colors ${
+                graphMode === "3d"
+                  ? "bg-white dark:bg-gray-700 text-gray-900 dark:text-white shadow-sm"
+                  : "text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white"
+              }`}
+            >
+              3D
+            </button>
+          </div>
+        )}
+
         <ViewModeToggle />
       </div>
 
@@ -87,8 +115,12 @@ export default function GraphLayout() {
       <div className="flex-1 relative overflow-hidden" ref={containerRef}>
         {state.viewMode === "graph" && (
           <>
-            {/* Graph canvas */}
-            <GraphCanvas width={canvasWidth} height={canvasHeight} />
+            {/* Graph canvas - 2D or 3D */}
+            {graphMode === "2d" ? (
+              <GraphCanvas width={canvasWidth} height={canvasHeight} />
+            ) : (
+              <GraphCanvas3D width={canvasWidth} height={canvasHeight} />
+            )}
 
             {/* Legend */}
             <GraphLegend />
