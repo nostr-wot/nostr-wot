@@ -401,7 +401,8 @@ const inNetwork = await wot.isInMyWoT(pubkey);`}
                     <p className="text-gray-500 dark:text-gray-400"># {t("playground.notice.steps.step5")}</p>
                   </div>
                 </div>
-                <p className="text-sm text-orange-700 dark:text-orange-300 mt-4 text-center">{t("playground.notice.note")}</p>
+                <p className="text-xs text-orange-600 dark:text-orange-400 mt-4 text-center font-medium">{t("playground.notice.alternativeTitle")}</p>
+                <p className="text-sm text-orange-700 dark:text-orange-300 mt-2 text-center">{t("playground.notice.note")}</p>
               </div>
             </div>
           </ScrollReveal>
@@ -416,9 +417,20 @@ const inNetwork = await wot.isInMyWoT(pubkey);`}
               </div>
               <h2 className="text-3xl md:text-4xl font-bold mb-6">{t("playground.title")}</h2>
               <p className="text-lg text-gray-600 dark:text-gray-400 mb-6">{t("playground.description")}</p>
-              <div className="bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800 rounded-xl p-4 mb-8">
-                <h3 className="font-semibold text-amber-800 dark:text-amber-200 mb-2">{t("playground.notice.title")}</h3>
-                <p className="text-sm text-amber-700 dark:text-amber-300">{t("playground.notice.description")}</p>
+              <div className="bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-xl p-4 mb-8">
+                <h3 className="font-semibold text-green-800 dark:text-green-200 mb-2">{t("playground.notice.title")}</h3>
+                <p className="text-sm text-green-700 dark:text-green-300 mb-3">{t("playground.notice.description")}</p>
+                <a
+                  href={t("playground.notice.chromeStoreUrl")}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-2 bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors"
+                >
+                  {t("playground.notice.chromeStoreButton")}
+                  <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                  </svg>
+                </a>
               </div>
               <LinkButton href="/playground" className="hover-lift">{t("playground.tryButton")}</LinkButton>
             </div>

@@ -17,7 +17,7 @@ export async function generateMetadata(): Promise<Metadata> {
   return { title: t("title"), description: t("description") };
 }
 
-const CHROME_STORE_URL = "https://chrome.google.com/webstore/detail/nostr-wot-extension";
+const CHROME_STORE_URL = "https://chromewebstore.google.com/detail/nostr-wot-extension/gfmefgdkmjpjinecjchlangpamhclhdo";
 
 const BROWSERS = [
   { key: "chrome", Icon: ChromeIcon },
@@ -46,7 +46,7 @@ export default async function DownloadPage() {
     "operatingSystem": "Chrome, Brave, Edge, Opera",
     "description": "Browser extension that provides Web of Trust API for Nostr apps. Filter spam, verify reputation, and explore your social graph.",
     "url": "https://nostr-wot.com/download",
-    "downloadUrl": "https://chrome.google.com/webstore/detail/nostr-wot-extension",
+    "downloadUrl": "https://chromewebstore.google.com/detail/nostr-wot-extension/gfmefgdkmjpjinecjchlangpamhclhdo",
     "softwareVersion": "1.0.0",
     "offers": {
       "@type": "Offer",
