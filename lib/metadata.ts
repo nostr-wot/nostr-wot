@@ -48,3 +48,42 @@ export function generateAlternates(path: string, currentLocale: Locale): Metadat
 export function getPathFromSegments(...segments: string[]): string {
   return '/' + segments.filter(Boolean).join('/');
 }
+
+/**
+ * Generates alternates metadata for blog posts with translated slugs
+ * @param basePath - The base path before the slug (e.g., '/blog')
+ * @param translations - Map of locale to slug
+ * @param currentLocale - The current page locale
+ */
+export function generateBlogAlternates(
+  basePath: string,
+  translations: Partial<Record<Locale, string>>,
+  currentLocale: Locale
+): Metadata['alternates'] {
+  const languages: Record<string, string> = {};
+
+  // Generate language alternates using translated slugs
+  for (const locale of locales) {
+    const slug = translations[locale];
+    if (slug) {
+      languages[locale] = getFullUrl(`${basePath}/${slug}`, locale);
+    }
+  }
+
+  // Add x-default pointing to default locale version
+  const defaultSlug = translations[defaultLocale];
+  if (defaultSlug) {
+    languages['x-default'] = getFullUrl(`${basePath}/${defaultSlug}`, defaultLocale);
+  }
+
+  // Current locale canonical
+  const currentSlug = translations[currentLocale];
+  const canonical = currentSlug
+    ? getFullUrl(`${basePath}/${currentSlug}`, currentLocale)
+    : getFullUrl(basePath, currentLocale);
+
+  return {
+    canonical,
+    languages,
+  };
+}

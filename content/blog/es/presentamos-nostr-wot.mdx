@@ -1,0 +1,93 @@
+---
+title: "Presentamos Nostr Web of Trust"
+description: "Aprende cómo Web of Trust trae el filtrado basado en confianza al ecosistema Nostr, ayudándote a separar la señal del ruido."
+excerpt: "El ecosistema Nostr está creciendo rápidamente, pero con el crecimiento viene el ruido. Web of Trust proporciona una solución descentralizada para el filtrado de contenido basado en confianza, impulsado por tu grafo social."
+date: "2026-02-14"
+author:
+  name: "Leon Acosta"
+  avatar: "/authors/leon-profile.jpg"
+  npub: "npub1gxdhmu9swqduwhr6zptjy4ya693zp3ql28nemy4hd97kuufyrqdqwe5zfk"
+  socials:
+    linkedin: "leonacosta"
+    instagram: "leonacosta.now"
+    twitter: "leonacosta_"
+    github: "leonacostaok"
+featuredImage: "/images/blog/introducing-wot/featured.svg"
+previewImage: "/images/blog/introducing-wot/preview.svg"
+tags:
+  - "Anuncio"
+  - "Web of Trust"
+  - "Nostr"
+published: true
+seoTitle: "Presentamos Nostr Web of Trust - Filtrado Basado en Confianza para Nostr"
+seoDescription: "Descubre cómo Nostr Web of Trust te ayuda a filtrar contenido basado en tus conexiones sociales. Open-source, enfocado en privacidad y descentralizado."
+ogImage: "/images/blog/introducing-wot/og.svg"
+translationKey: "introducing-nostr-wot"
+---
+
+El ecosistema Nostr está creciendo rápidamente. Cada día, miles de nuevos usuarios se unen a la red, creando notas, compartiendo contenido y construyendo conexiones. Pero con este crecimiento viene un desafío familiar: **¿cómo separas la señal del ruido?**
+
+## El Problema con las Redes Abiertas
+
+Las redes abiertas y sin permisos son poderosas precisamente porque cualquiera puede participar. Pero esta apertura también significa lidiar con:
+
+- **Spam y cuentas bot** inundando tu feed
+- **Impostores** pretendiendo ser alguien que no son
+- **Contenido de baja calidad** ahogando discusiones valiosas
+
+Las soluciones tradicionales dependen de la moderación centralizada—un equipo decidiendo qué es aceptable. Pero eso contradice el propósito de una red descentralizada.
+
+## Llega Web of Trust
+
+Web of Trust toma un enfoque diferente. En lugar de depender de una autoridad central, aprovecha algo que ya tienes: **tus conexiones sociales**.
+
+El concepto es simple:
+
+1. **Confías en las personas que sigues**
+2. **Ellas confían en las personas que siguen**
+3. **La confianza fluye a través de estas conexiones**
+
+Si alguien está a 1 salto (los sigues directamente), son altamente confiables. ¿A 2 saltos (amigo de un amigo)? Algo confiables. ¿3 o más saltos? Probablemente ruido.
+
+```javascript
+// Verifica si alguien está en tu Web of Trust
+const enRed = await window.nostr.wot.isInMyWoT(pubkey);
+
+// Obtén su distancia exacta
+const saltos = await window.nostr.wot.getDistance(pubkey);
+
+// Obtén un puntaje de confianza (0-1)
+const puntaje = await window.nostr.wot.getTrustScore(pubkey);
+```
+
+## Cómo Funciona
+
+Nuestra extensión de navegador construye un grafo local de tus conexiones sociales. Cuando visitas cualquier app de Nostr, puede consultar este grafo para determinar niveles de confianza para cualquier pubkey.
+
+<Callout type="tip">
+¡La extensión funciona con cualquier app de Nostr que implemente la API de WoT. No se necesitan cambios en tu cliente favorito!
+</Callout>
+
+### Privacidad Primero
+
+Diseñamos el sistema con la privacidad como principio fundamental:
+
+- **Modo Local**: Todo permanece en tu navegador. Cero solicitudes externas.
+- **Modo Remoto**: Solo consultas de pubkey—sin contenido, sin rastreo.
+- **Modo Híbrido**: Lo mejor de ambos mundos con caché.
+
+## ¿Qué Sigue?
+
+Esto es solo el comienzo. Estamos trabajando en:
+
+- **SDK para desarrolladores** para integrar WoT en sus apps
+- **Servidor Oracle** para apps que no pueden ejecutar cálculos del lado del cliente
+- **Puntuación avanzada** con seguidores mutuos y bonificaciones de puente
+
+## Comienza
+
+¿Listo para probarlo? [Descarga la extensión](/download) y comienza a filtrar tu experiencia en Nostr basándote en conexiones humanas reales.
+
+---
+
+*¿Tienes preguntas? Contáctanos en [Nostr](https://njump.me/npub1gxdhmu9swqduwhr6zptjy4ya693zp3ql28nemy4hd97kuufyrqdqwe5zfk) o consulta nuestra [documentación](/docs).*

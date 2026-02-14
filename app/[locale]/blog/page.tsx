@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
 import { getTranslations } from 'next-intl/server';
+import { Link } from '@/i18n/routing';
 import { getAllBlogPosts, getAllTags } from '@/lib/blog';
 import { generateAlternates } from '@/lib/metadata';
 import { type Locale } from '@/i18n/config';
@@ -9,6 +10,7 @@ import {NewsletterSection} from "@/components/layout/NewsletterSection";
 
 type Props = {
   params: Promise<{ locale: string }>;
+  searchParams: Promise<{ q?: string; tag?: string }>;
 };
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
@@ -32,13 +34,29 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   };
 }
 
-export default async function BlogPage() {
+export default async function BlogPage({ params, searchParams }: Props) {
+  const { locale } = await params;
+  const { q: searchQuery, tag: tagFilter } = await searchParams;
   const t = await getTranslations('blog');
-  const posts = getAllBlogPosts();
-  const allTags = getAllTags();
+  const allPosts = getAllBlogPosts(locale as Locale);
+  const allTags = getAllTags(locale as Locale);
 
-  const featuredPost = posts[0];
-  const otherPosts = posts.slice(1);
+  // Filter posts by search query and/or tag
+  const posts = allPosts.filter((post) => {
+    const matchesSearch = !searchQuery ||
+      post.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      post.excerpt.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      post.tags.some(tag => tag.toLowerCase().includes(searchQuery.toLowerCase()));
+
+    const matchesTag = !tagFilter ||
+      post.tags.some(tag => tag.toLowerCase() === tagFilter.toLowerCase());
+
+    return matchesSearch && matchesTag;
+  });
+
+  const isFiltered = !!(searchQuery || tagFilter);
+  const featuredPost = isFiltered ? null : posts[0];
+  const otherPosts = isFiltered ? posts : posts.slice(1);
 
   // JSON-LD structured data
   const jsonLd = {
@@ -102,13 +120,23 @@ export default async function BlogPage() {
                 </section>
               )}
 
-              {/* Other Posts */}
+              {/* Search/Filter Results or Other Posts */}
               {otherPosts.length > 0 && (
                 <section>
                   <ScrollReveal animation="fade-up">
-                    <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-8">
-                      {t('latestPosts')}
-                    </h2>
+                    <div className="flex items-center justify-between mb-8">
+                      <h2 className="text-2xl font-bold text-gray-900 dark:text-white">
+                        {isFiltered ? t('searchResults', { count: posts.length }) : t('latestPosts')}
+                      </h2>
+                      {isFiltered && (
+                        <Link
+                          href="/blog"
+                          className="text-sm text-primary hover:underline"
+                        >
+                          {t('clearFilters')}
+                        </Link>
+                      )}
+                    </div>
                   </ScrollReveal>
                   <div className="grid md:grid-cols-2 gap-8">
                     {otherPosts.map((post, index) => (
@@ -124,11 +152,19 @@ export default async function BlogPage() {
               {posts.length === 0 && (
                 <div className="text-center py-20">
                   <h2 className="text-2xl font-semibold text-gray-900 dark:text-white mb-4">
-                    {t('emptyState.title')}
+                    {isFiltered ? t('noResults.title') : t('emptyState.title')}
                   </h2>
-                  <p className="text-gray-600 dark:text-gray-400">
-                    {t('emptyState.description')}
+                  <p className="text-gray-600 dark:text-gray-400 mb-4">
+                    {isFiltered ? t('noResults.description') : t('emptyState.description')}
                   </p>
+                  {isFiltered && (
+                    <Link
+                      href="/blog"
+                      className="text-primary hover:underline"
+                    >
+                      {t('clearFilters')}
+                    </Link>
+                  )}
                 </div>
               )}
             </div>
@@ -136,7 +172,17 @@ export default async function BlogPage() {
             {/* Sidebar */}
             <aside className="hidden lg:block w-80 flex-shrink-0">
               <div className="sticky top-24">
-                <BlogSidebar tags={allTags} />
+                <BlogSidebar
+                  tags={allTags}
+                  currentTag={tagFilter}
+                  currentLocale={locale as Locale}
+                  allPosts={allPosts.map((p) => ({
+                    slug: p.slug,
+                    title: p.title,
+                    excerpt: p.excerpt,
+                    tags: p.tags,
+                  }))}
+                />
               </div>
             </aside>
           </div>

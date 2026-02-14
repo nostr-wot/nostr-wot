@@ -2,7 +2,7 @@
 
 import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/routing";
-import { LogoIcon, GitHubIcon, NostrIcon, XTwitterIcon } from "@/components/icons";
+import { LogoIcon, GitHubIcon, NostrIcon, XTwitterIcon, LinkedInIcon } from "@/components/icons";
 
 export default function Footer() {
   const t = useTranslations("common");
@@ -11,9 +11,9 @@ export default function Footer() {
   return (
     <footer className="bg-gray-100 dark:bg-gray-900 border-t border-gray-200 dark:border-gray-800">
       <div className="max-w-6xl mx-auto px-6 py-12">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 lg:gap-12">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-8 lg:gap-12">
           {/* Brand */}
-          <div className="lg:col-span-1">
+          <div className="lg:col-span-2">
             <Link href="/" className="flex items-center gap-2 font-semibold text-xl text-gray-900 dark:text-white hover:no-underline mb-4">
               <LogoIcon />
               <span>Nostr WoT</span>
@@ -31,6 +31,33 @@ export default function Footer() {
                 aria-label="GitHub"
               >
                 <GitHubIcon className="w-5 h-5" />
+              </a>
+              <a
+                href="https://x.com/leonacosta_"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-gray-500 dark:text-gray-500 hover:text-gray-900 dark:hover:text-white transition-colors"
+                aria-label="X (Twitter)"
+              >
+                <XTwitterIcon className="w-5 h-5" />
+              </a>
+              <a
+                href="https://www.linkedin.com/company/nostr-wot"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-gray-500 dark:text-gray-500 hover:text-[#0077B5] transition-colors"
+                aria-label="LinkedIn"
+              >
+                <LinkedInIcon className="w-5 h-5" />
+              </a>
+              <a
+                href="https://njump.me/npub1gxdhmu9swqduwhr6zptjy4ya693zp3ql28nemy4hd97kuufyrqdqwe5zfk"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-gray-500 dark:text-gray-500 hover:text-[#8B5CF6] transition-colors"
+                aria-label="Nostr"
+              >
+                <NostrIcon className="w-5 h-5" />
               </a>
             </div>
           </div>
@@ -67,6 +94,11 @@ export default function Footer() {
                 </Link>
               </li>
               <li>
+                <Link href="/blog" className="text-gray-600 dark:text-gray-400 text-sm hover:text-primary transition-colors">
+                  Blog
+                </Link>
+              </li>
+              <li>
                 <a
                   href="https://github.com/nostr-wot"
                   target="_blank"
@@ -77,6 +109,18 @@ export default function Footer() {
                 </a>
               </li>
               <li>
+                <Link href="/media-kit" className="text-gray-600 dark:text-gray-400 text-sm hover:text-primary transition-colors">
+                  {t("footer.mediaKit")}
+                </Link>
+              </li>
+            </ul>
+          </div>
+
+          {/* Company & Legal */}
+          <div>
+            <h4 className="font-semibold text-gray-900 dark:text-white mb-4">{t("footer.company")}</h4>
+            <ul className="space-y-3">
+              <li>
                 <Link href="/about" className="text-gray-600 dark:text-gray-400 text-sm hover:text-primary transition-colors">
                   {t("nav.about")}
                 </Link>
@@ -86,18 +130,6 @@ export default function Footer() {
                   {t("nav.contact")}
                 </Link>
               </li>
-              <li>
-                <Link href="/media-kit" className="text-gray-600 dark:text-gray-400 text-sm hover:text-primary transition-colors">
-                  {t("footer.mediaKit")}
-                </Link>
-              </li>
-            </ul>
-          </div>
-
-          {/* Legal */}
-          <div>
-            <h4 className="font-semibold text-gray-900 dark:text-white mb-4">{t("footer.legal")}</h4>
-            <ul className="space-y-3">
               <li>
                 <Link href="/privacy" className="text-gray-600 dark:text-gray-400 text-sm hover:text-primary transition-colors">
                   {t("footer.privacy")}

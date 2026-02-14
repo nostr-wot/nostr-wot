@@ -44,6 +44,7 @@ export {
   GitHubIcon,
   NostrIcon,
   XTwitterIcon,
+  LinkedInIcon,
   KeyIcon,
   BunkerIcon,
   QRCodeIcon,

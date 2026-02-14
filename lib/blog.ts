@@ -2,8 +2,13 @@ import fs from 'fs';
 import path from 'path';
 import matter from 'gray-matter';
 import readingTime from 'reading-time';
+import { locales, defaultLocale, type Locale } from '@/i18n/config';
 
-const BLOG_DIR = path.join(process.cwd(), 'content/blog');
+const CONTENT_DIR = path.join(process.cwd(), 'content/blog');
+
+function getBlogDir(locale: Locale = defaultLocale): string {
+  return path.join(CONTENT_DIR, locale);
+}
 
 export interface AuthorSocials {
   linkedin?: string;
@@ -29,6 +34,10 @@ export interface BlogPostMeta {
   tags: string[];
   published: boolean;
   readingTime: string;
+  locale: Locale;
+  translationKey: string;
+  availableLocales: Locale[];
+  translations: Partial<Record<Locale, string>>; // Maps locale to slug
   // SEO
   seoTitle?: string;
   seoDescription?: string;
@@ -40,25 +49,97 @@ export interface BlogPost extends BlogPostMeta {
 }
 
 /**
- * Get all blog post slugs
+ * Get all blog post slugs for a locale
  */
-export function getBlogSlugs(): string[] {
-  if (!fs.existsSync(BLOG_DIR)) {
+export function getBlogSlugs(locale: Locale = defaultLocale): string[] {
+  const blogDir = getBlogDir(locale);
+  if (!fs.existsSync(blogDir)) {
     return [];
   }
 
   return fs
-    .readdirSync(BLOG_DIR)
+    .readdirSync(blogDir)
     .filter((file) => file.endsWith('.mdx') || file.endsWith('.md'))
     .map((file) => file.replace(/\.mdx?$/, ''));
 }
 
 /**
- * Get a single blog post by slug
+ * Get the translation key from a post file
  */
-export function getBlogPost(slug: string): BlogPost | null {
-  const mdxPath = path.join(BLOG_DIR, `${slug}.mdx`);
-  const mdPath = path.join(BLOG_DIR, `${slug}.md`);
+function getTranslationKey(slug: string, locale: Locale): string | null {
+  const blogDir = getBlogDir(locale);
+  const mdxPath = path.join(blogDir, `${slug}.mdx`);
+  const mdPath = path.join(blogDir, `${slug}.md`);
+
+  let filePath: string | null = null;
+  if (fs.existsSync(mdxPath)) {
+    filePath = mdxPath;
+  } else if (fs.existsSync(mdPath)) {
+    filePath = mdPath;
+  }
+
+  if (!filePath) return null;
+
+  const fileContents = fs.readFileSync(filePath, 'utf8');
+  const { data } = matter(fileContents);
+  return data.translationKey || slug;
+}
+
+/**
+ * Build a map of all translations by translationKey
+ */
+function buildTranslationMap(): Map<string, Partial<Record<Locale, string>>> {
+  const map = new Map<string, Partial<Record<Locale, string>>>();
+
+  for (const locale of locales) {
+    const slugs = getBlogSlugs(locale);
+    for (const slug of slugs) {
+      const key = getTranslationKey(slug, locale);
+      if (!key) continue;
+
+      if (!map.has(key)) {
+        map.set(key, {});
+      }
+      map.get(key)![locale] = slug;
+    }
+  }
+
+  return map;
+}
+
+// Cache for translation map (rebuilt on each request in dev, cached in prod)
+let translationMapCache: Map<string, Partial<Record<Locale, string>>> | null = null;
+
+function getTranslationMap(): Map<string, Partial<Record<Locale, string>>> {
+  if (!translationMapCache || process.env.NODE_ENV === 'development') {
+    translationMapCache = buildTranslationMap();
+  }
+  return translationMapCache;
+}
+
+/**
+ * Get translations for a specific translationKey
+ */
+export function getTranslations(translationKey: string): Partial<Record<Locale, string>> {
+  const map = getTranslationMap();
+  return map.get(translationKey) || {};
+}
+
+/**
+ * Get available locales for a specific post by its translationKey
+ */
+export function getAvailableLocales(translationKey: string): Locale[] {
+  const translations = getTranslations(translationKey);
+  return Object.keys(translations) as Locale[];
+}
+
+/**
+ * Get a single blog post by slug and locale
+ */
+export function getBlogPost(slug: string, locale: Locale = defaultLocale): BlogPost | null {
+  const blogDir = getBlogDir(locale);
+  const mdxPath = path.join(blogDir, `${slug}.mdx`);
+  const mdPath = path.join(blogDir, `${slug}.md`);
 
   let filePath: string;
   if (fs.existsSync(mdxPath)) {
@@ -72,6 +153,9 @@ export function getBlogPost(slug: string): BlogPost | null {
   const fileContents = fs.readFileSync(filePath, 'utf8');
   const { data, content } = matter(fileContents);
   const stats = readingTime(content);
+  const translationKey = data.translationKey || slug;
+  const translations = getTranslations(translationKey);
+  const availableLocales = Object.keys(translations) as Locale[];
 
   return {
     slug,
@@ -95,6 +179,10 @@ export function getBlogPost(slug: string): BlogPost | null {
     tags: data.tags || [],
     published: data.published !== false,
     readingTime: stats.text,
+    translationKey,
+    translations,
+    locale,
+    availableLocales,
     seoTitle: data.seoTitle,
     seoDescription: data.seoDescription,
     ogImage: data.ogImage,
@@ -103,14 +191,14 @@ export function getBlogPost(slug: string): BlogPost | null {
 }
 
 /**
- * Get all published blog posts sorted by date
+ * Get all published blog posts sorted by date for a locale
  */
-export function getAllBlogPosts(): BlogPostMeta[] {
-  const slugs = getBlogSlugs();
+export function getAllBlogPosts(locale: Locale = defaultLocale): BlogPostMeta[] {
+  const slugs = getBlogSlugs(locale);
 
   const posts = slugs
     .map((slug) => {
-      const post = getBlogPost(slug);
+      const post = getBlogPost(slug, locale);
       if (!post || !post.published) return null;
 
       // Return only metadata, not content
@@ -124,19 +212,19 @@ export function getAllBlogPosts(): BlogPostMeta[] {
 }
 
 /**
- * Get posts by tag
+ * Get posts by tag for a locale
  */
-export function getPostsByTag(tag: string): BlogPostMeta[] {
-  return getAllBlogPosts().filter((post) =>
+export function getPostsByTag(tag: string, locale: Locale = defaultLocale): BlogPostMeta[] {
+  return getAllBlogPosts(locale).filter((post) =>
     post.tags.some((t) => t.toLowerCase() === tag.toLowerCase())
   );
 }
 
 /**
- * Get all unique tags
+ * Get all unique tags for a locale
  */
-export function getAllTags(): string[] {
-  const posts = getAllBlogPosts();
+export function getAllTags(locale: Locale = defaultLocale): string[] {
+  const posts = getAllBlogPosts(locale);
   const tags = new Set<string>();
 
   posts.forEach((post) => {
@@ -147,13 +235,13 @@ export function getAllTags(): string[] {
 }
 
 /**
- * Get related posts based on tags
+ * Get related posts based on tags for a locale
  */
-export function getRelatedPosts(currentSlug: string, limit: number = 3): BlogPostMeta[] {
-  const currentPost = getBlogPost(currentSlug);
+export function getRelatedPosts(currentSlug: string, limit: number = 3, locale: Locale = defaultLocale): BlogPostMeta[] {
+  const currentPost = getBlogPost(currentSlug, locale);
   if (!currentPost) return [];
 
-  const allPosts = getAllBlogPosts().filter((post) => post.slug !== currentSlug);
+  const allPosts = getAllBlogPosts(locale).filter((post) => post.slug !== currentSlug);
 
   // Score posts by number of shared tags
   const scored = allPosts.map((post) => {

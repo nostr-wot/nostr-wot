@@ -2,9 +2,9 @@ import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import Image from 'next/image';
 import { getTranslations } from 'next-intl/server';
-import { getBlogPost, getBlogSlugs, getRelatedPosts, getAllTags, formatDate } from '@/lib/blog';
-import { generateAlternates } from '@/lib/metadata';
-import { type Locale } from '@/i18n/config';
+import { getBlogPost, getBlogSlugs, getRelatedPosts, getAllTags, getAllBlogPosts, formatDate } from '@/lib/blog';
+import { generateBlogAlternates } from '@/lib/metadata';
+import { type Locale, locales } from '@/i18n/config';
 import { BlogContent, BlogCard, BlogSidebar } from '@/components/blog';
 import { ScrollReveal, Section, LinkButton } from '@/components/ui';
 import { ArrowLeftIcon } from '@/components/icons';
@@ -15,13 +15,21 @@ type Props = {
 };
 
 export async function generateStaticParams() {
-  const slugs = getBlogSlugs();
-  return slugs.map((slug) => ({ slug }));
+  const params: { locale: string; slug: string }[] = [];
+
+  for (const locale of locales) {
+    const slugs = getBlogSlugs(locale);
+    for (const slug of slugs) {
+      params.push({ locale, slug });
+    }
+  }
+
+  return params;
 }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { locale, slug } = await params;
-  const post = getBlogPost(slug);
+  const post = getBlogPost(slug, locale as Locale);
 
   if (!post) {
     return {
@@ -36,7 +44,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   return {
     title,
     description,
-    alternates: generateAlternates(`/blog/${slug}`, locale as Locale),
+    alternates: generateBlogAlternates('/blog', post.translations, locale as Locale),
     openGraph: {
       title,
       description,
@@ -65,14 +73,15 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 export default async function BlogPostPage({ params }: Props) {
   const { locale, slug } = await params;
   const t = await getTranslations('blog');
-  const post = getBlogPost(slug);
+  const post = getBlogPost(slug, locale as Locale);
 
   if (!post || !post.published) {
     notFound();
   }
 
-  const relatedPosts = getRelatedPosts(slug, 3);
-  const allTags = getAllTags();
+  const relatedPosts = getRelatedPosts(slug, 3, locale as Locale);
+  const allTags = getAllTags(locale as Locale);
+  const allPosts = getAllBlogPosts(locale as Locale);
 
   // JSON-LD structured data
   const jsonLd = {
@@ -247,6 +256,14 @@ export default async function BlogPostPage({ params }: Props) {
                     }))}
                     authorNpub={post.author.npub}
                     authorSocials={post.author.socials}
+                    currentLocale={locale as Locale}
+                    translations={post.translations}
+                    allPosts={allPosts.map((p) => ({
+                      slug: p.slug,
+                      title: p.title,
+                      excerpt: p.excerpt,
+                      tags: p.tags,
+                    }))}
                   />
                 </div>
               </aside>
