@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
-import { Resend } from "resend";
 import { checkRateLimit, getClientIdentifier, RATE_LIMITS, validateOrigin } from "@/lib/rate-limit";
+import { emailService, emailTemplates } from "@/lib/email";
 
 interface ContactFormData {
   type: "support" | "media";
@@ -20,16 +20,6 @@ const MAX_LENGTHS = {
   subject: 500,
   message: 5000,
 } as const;
-
-// Escape HTML to prevent XSS in email templates
-function escapeHtml(str: string): string {
-  return str
-    .replace(/&/g, "&amp;")
-    .replace(/</g, "&lt;")
-    .replace(/>/g, "&gt;")
-    .replace(/"/g, "&quot;")
-    .replace(/'/g, "&#039;");
-}
 
 async function verifyRecaptcha(token: string): Promise<boolean> {
   const secretKey = process.env.RECAPTCHA_SECRET_KEY;
@@ -167,72 +157,51 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Check for Resend API key
-    const resendApiKey = process.env.RESEND_API_KEY;
-    if (!resendApiKey) {
-      console.error("RESEND_API_KEY not configured");
-      return NextResponse.json(
-        { error: "Email service not configured. Please try again later." },
-        { status: 500 }
-      );
-    }
-
-    // Prepare email content with HTML escaping to prevent XSS
-    const typeLabel = type === "support" ? "Support Request" : "Media Inquiry";
     const contactEmail = process.env.CONTACT_EMAIL || "contact@nostr-wot.com";
 
-    // Escape all user inputs for HTML context
-    const safeName = escapeHtml(name);
-    const safeEmail = escapeHtml(email);
-    const safeOrganization = organization ? escapeHtml(organization) : null;
-    const safeSubject = escapeHtml(subject);
-    const safeMessage = escapeHtml(message);
-
-    const emailHtml = `
-      <h2>New ${typeLabel}</h2>
-      <p><strong>From:</strong> ${safeName} (${safeEmail})</p>
-      ${safeOrganization ? `<p><strong>Organization:</strong> ${safeOrganization}</p>` : ""}
-      <p><strong>Subject:</strong> ${safeSubject}</p>
-      <hr />
-      <h3>Message:</h3>
-      <p style="white-space: pre-wrap;">${safeMessage}</p>
-      <hr />
-      <p style="color: #666; font-size: 12px;">
-        This message was sent from the Nostr WoT contact form.
-      </p>
-    `;
-
-    const emailText = `
-New ${typeLabel}
-
-From: ${name} (${email})
-${organization ? `Organization: ${organization}\n` : ""}
-Subject: ${subject}
-
-Message:
-${message}
-
----
-This message was sent from the Nostr WoT contact form.
-    `;
-
-    // Send email using Resend
-    const resend = new Resend(resendApiKey);
-    const { error } = await resend.emails.send({
-      from: "Nostr WoT <noreply@nostr-wot.com>",
-      to: contactEmail,
-      replyTo: email,
-      subject: `[${type.toUpperCase()}] ${subject}`,
-      html: emailHtml,
-      text: emailText,
+    // Generate email templates
+    const notificationEmail = emailTemplates.contactNotification({
+      type,
+      name,
+      email,
+      organization,
+      subject,
+      message,
     });
 
-    if (error) {
-      console.error("Resend error:", error);
+    const confirmationEmail = emailTemplates.contactConfirmation({
+      name,
+      type,
+    });
+
+    // Send notification to admin and confirmation to user in parallel
+    const [notificationResult, confirmationResult] = await emailService.sendMany([
+      {
+        to: contactEmail,
+        subject: notificationEmail.subject,
+        html: notificationEmail.html,
+        text: notificationEmail.text,
+        replyTo: email,
+      },
+      {
+        to: email,
+        subject: confirmationEmail.subject,
+        html: confirmationEmail.html,
+        text: confirmationEmail.text,
+      },
+    ]);
+
+    if (!notificationResult.success) {
+      console.error("Failed to send notification email:", notificationResult.error);
       return NextResponse.json(
         { error: "Failed to send email. Please try again later." },
         { status: 500 }
       );
+    }
+
+    // Log if confirmation email failed but don't fail the request
+    if (!confirmationResult.success) {
+      console.error("Failed to send confirmation email:", confirmationResult.error);
     }
 
     return NextResponse.json({ success: true });

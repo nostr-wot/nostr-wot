@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
-import { Resend } from "resend";
 import { checkRateLimit, getClientIdentifier, RATE_LIMITS, validateOrigin } from "@/lib/rate-limit";
+import { emailService, emailTemplates } from "@/lib/email";
 
 interface NewsletterData {
   email: string;
@@ -8,16 +8,6 @@ interface NewsletterData {
 
 // Max email length per RFC 5321
 const MAX_EMAIL_LENGTH = 254;
-
-// Escape HTML to prevent XSS in email templates
-function escapeHtml(str: string): string {
-  return str
-    .replace(/&/g, "&amp;")
-    .replace(/</g, "&lt;")
-    .replace(/>/g, "&gt;")
-    .replace(/"/g, "&quot;")
-    .replace(/'/g, "&#039;");
-}
 
 export async function POST(request: NextRequest) {
   try {
@@ -76,55 +66,39 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Check for Resend API key
-    const resendApiKey = process.env.RESEND_API_KEY;
-    if (!resendApiKey) {
-      console.error("RESEND_API_KEY not configured");
-      return NextResponse.json(
-        { error: "Email service not configured. Please try again later." },
-        { status: 500 }
-      );
-    }
-
     const contactEmail = process.env.CONTACT_EMAIL || "contact@nostr-wot.com";
 
-    // Escape email for HTML context
-    const safeEmail = escapeHtml(email);
+    // Generate email templates
+    const notificationEmail = emailTemplates.newsletterNotification(email);
+    const welcomeEmail = emailTemplates.newsletterWelcome(email);
 
-    // Send notification email
-    const resend = new Resend(resendApiKey);
+    // Send notification to admin and welcome to subscriber in parallel
+    const [notificationResult, welcomeResult] = await emailService.sendMany([
+      {
+        to: contactEmail,
+        subject: notificationEmail.subject,
+        html: notificationEmail.html,
+        text: notificationEmail.text,
+      },
+      {
+        to: email,
+        subject: welcomeEmail.subject,
+        html: welcomeEmail.html,
+        text: welcomeEmail.text,
+      },
+    ]);
 
-    // Notification to admin
-    const { error: notifyError } = await resend.emails.send({
-      from: "Nostr WoT <noreply@nostr-wot.com>",
-      to: contactEmail,
-      subject: "[Newsletter] New Subscriber",
-      html: `
-        <h2>New Newsletter Subscriber</h2>
-        <p><strong>Email:</strong> ${safeEmail}</p>
-        <p><strong>Date:</strong> ${new Date().toISOString()}</p>
-        <hr />
-        <p style="color: #666; font-size: 12px;">
-          This subscriber signed up via the Nostr WoT website.
-        </p>
-      `,
-      text: `
-New Newsletter Subscriber
-
-Email: ${email}
-Date: ${new Date().toISOString()}
-
----
-This subscriber signed up via the Nostr WoT website.
-      `,
-    });
-
-    if (notifyError) {
-      console.error("Resend notification error:", notifyError);
+    if (!notificationResult.success) {
+      console.error("Failed to send notification email:", notificationResult.error);
       return NextResponse.json(
         { error: "Failed to subscribe. Please try again later." },
         { status: 500 }
       );
+    }
+
+    // Log if welcome email failed but don't fail the request
+    if (!welcomeResult.success) {
+      console.error("Failed to send welcome email:", welcomeResult.error);
     }
 
     return NextResponse.json({ success: true });
