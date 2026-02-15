@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { getTranslations } from "next-intl/server";
-import { Badge, LinkButton, ExternalLinkButton, Section, SectionHeader, StatCard } from "@/components/ui";
+import { Badge, LinkButton, ExternalLinkButton, Section, SectionHeader, CodeBlock, TerminalBlock, InlineCode } from "@/components/ui";
 import { ScrollReveal } from "@/components/ui";
 import { generateAlternates } from "@/lib/metadata";
 import { type Locale } from "@/i18n/config";
@@ -193,24 +193,14 @@ export default async function OraclePage() {
           {API_ENDPOINTS.map((endpoint) => (
             <div key={endpoint.key} className="bg-white dark:bg-gray-800 rounded-xl p-6 border border-gray-200 dark:border-gray-700">
               <h3 className="text-lg font-semibold mb-2">
-                <code className="bg-gray-100 dark:bg-gray-700 px-2 py-1 rounded">{t(`apiEndpoints.${endpoint.key}.title`)}</code>
+                <InlineCode>{t(`apiEndpoints.${endpoint.key}.title`)}</InlineCode>
               </h3>
               <p className="text-gray-600 dark:text-gray-400 mb-4">{t(`apiEndpoints.${endpoint.key}.description`)}</p>
               <div className="space-y-3">
                 {endpoint.request && (
-                  <div className="bg-gray-900 rounded-lg overflow-hidden">
-                    <div className="bg-gray-800 px-4 py-2 text-sm text-gray-400">{t("apiEndpoints.distance.request")}</div>
-                    <pre className="p-4 text-sm overflow-x-auto">
-                      <code className="text-gray-100">{endpoint.request}</code>
-                    </pre>
-                  </div>
+                  <CodeBlock code={endpoint.request} language="http" />
                 )}
-                <div className="bg-gray-900 rounded-lg overflow-hidden">
-                  {endpoint.request && <div className="bg-gray-800 px-4 py-2 text-sm text-gray-400">{t("apiEndpoints.distance.response")}</div>}
-                  <pre className="p-4 text-sm overflow-x-auto">
-                    <code className="text-gray-100">{endpoint.response}</code>
-                  </pre>
-                </div>
+                <CodeBlock code={endpoint.response} language="json" />
               </div>
             </div>
           ))}
@@ -224,11 +214,7 @@ export default async function OraclePage() {
           {SELF_HOSTING_BLOCKS.map((block) => (
             <div key={block.key} className="bg-white dark:bg-gray-800 rounded-xl p-6 border border-gray-200 dark:border-gray-700">
               <h3 className="text-lg font-semibold mb-4">{t(`selfHosting.${block.key}`)}</h3>
-              <div className="bg-gray-900 rounded-lg overflow-hidden">
-                <pre className="p-4 text-sm overflow-x-auto">
-                  <code className="text-gray-100">{block.code}</code>
-                </pre>
-              </div>
+              <TerminalBlock commands={block.code.split("\n")} />
             </div>
           ))}
         </div>
@@ -250,7 +236,7 @@ export default async function OraclePage() {
               {CONFIG_ROWS.map((row) => (
                 <tr key={row.variable}>
                   <td className="p-4">
-                    <code className="bg-gray-100 dark:bg-gray-700 px-2 py-1 rounded text-sm">{row.variable}</code>
+                    <InlineCode>{row.variable}</InlineCode>
                   </td>
                   <td className="p-4 text-gray-600 dark:text-gray-400">{row.default}</td>
                   <td className="p-4 text-gray-600 dark:text-gray-400">{t(`configuration.${row.key}.description`)}</td>
@@ -279,10 +265,8 @@ export default async function OraclePage() {
       {/* Public Instance */}
       <Section padding="md">
         <SectionHeader title={t("publicInstance.title")} description={t("publicInstance.subtitle")} />
-        <div className="bg-gray-900 rounded-lg overflow-hidden max-w-xl mx-auto">
-          <pre className="p-4 text-center overflow-x-auto">
-            <code className="text-gray-100">https://wot-oracle.mappingbitcoin.com</code>
-          </pre>
+        <div className="max-w-xl mx-auto">
+          <CodeBlock code="https://wot-oracle.mappingbitcoin.com" showCopy={true} />
         </div>
         <p className="text-center text-gray-500 dark:text-gray-400 mt-4 text-sm">{t("publicInstance.rateLimit")}</p>
       </Section>
