@@ -1,8 +1,18 @@
 import { MetadataRoute } from "next";
-import { locales } from "@/i18n/config";
+import { locales, defaultLocale } from "@/i18n/config";
 import { getAllBlogPosts } from "@/lib/blog";
 
 const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || "https://nostr-wot.com";
+
+// Helper to generate URL with locale prefix only for non-default locales
+// This matches the 'localePrefix: as-needed' routing configuration
+function getLocalizedUrl(path: string, locale: string): string {
+  const normalizedPath = path === "" ? "" : path;
+  if (locale === defaultLocale) {
+    return `${BASE_URL}${normalizedPath}`;
+  }
+  return `${BASE_URL}/${locale}${normalizedPath}`;
+}
 
 // Define all static routes with their change frequency and priority
 const routes: {
@@ -29,7 +39,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
   // Generate entries for each static route in each locale
   for (const route of routes) {
     for (const locale of locales) {
-      const url = `${BASE_URL}/${locale}${route.path}`;
+      const url = getLocalizedUrl(route.path, locale);
 
       sitemapEntries.push({
         url,
@@ -38,7 +48,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
         priority: route.priority,
         alternates: {
           languages: Object.fromEntries(
-            locales.map((l) => [l, `${BASE_URL}/${l}${route.path}`])
+            locales.map((l) => [l, getLocalizedUrl(route.path, l)])
           ),
         },
       });
@@ -49,7 +59,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
   const blogPosts = getAllBlogPosts();
   for (const post of blogPosts) {
     for (const locale of locales) {
-      const url = `${BASE_URL}/${locale}/blog/${post.slug}`;
+      const url = getLocalizedUrl(`/blog/${post.slug}`, locale);
 
       sitemapEntries.push({
         url,
@@ -58,7 +68,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
         priority: 0.7,
         alternates: {
           languages: Object.fromEntries(
-            locales.map((l) => [l, `${BASE_URL}/${l}/blog/${post.slug}`])
+            locales.map((l) => [l, getLocalizedUrl(`/blog/${post.slug}`, l)])
           ),
         },
       });
