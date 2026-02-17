@@ -247,7 +247,9 @@ export function useGraphData() {
     async (pubkey: string) => {
       console.log("[expandNodeFollows] Called for pubkey:", pubkey.slice(0, 8));
 
-      if (!wotRef.current) {
+      // Capture WoT instance to avoid race conditions
+      const wotInstance = wotRef.current;
+      if (!wotInstance) {
         console.log("[expandNodeFollows] WoT not available");
         setError("WoT extension required");
         return;
@@ -280,7 +282,7 @@ export function useGraphData() {
       try {
         // Get follows from extension
         console.log("[expandNodeFollows] Fetching follows from extension for pubkey:", pubkey.slice(0, 8));
-        const follows = await wotRef.current.getFollows(pubkey);
+        const follows = await wotInstance.getFollows(pubkey);
         console.log("[expandNodeFollows] SDK getFollows response - count:", follows?.length || 0, "first 3:", follows?.slice(0, 3).map(f => f.slice(0, 8)));
 
         if (!follows || follows.length === 0) {
@@ -312,7 +314,7 @@ export function useGraphData() {
           if (uncachedPubkeys.length > 0) {
             try {
               console.log("[expandNodeFollows] Getting WoT data for", uncachedPubkeys.length, "pubkeys...");
-              const batchResults = await wotRef.current.getDistanceBatch(uncachedPubkeys, { includePaths: true, includeScores: true });
+              const batchResults = await wotInstance.getDistanceBatch(uncachedPubkeys, { includePaths: true, includeScores: true });
               console.log("[expandNodeFollows] SDK getDistanceBatch response (first 3):",
                 JSON.stringify(Object.fromEntries(Object.entries(batchResults).slice(0, 3)), null, 2));
 

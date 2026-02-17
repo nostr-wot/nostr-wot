@@ -222,11 +222,14 @@ export function useUserProfile(): UseUserProfileResult {
    * Fetch follows - tries SDK first, falls back to relays
    */
   const fetchFollows = useCallback(async (pubkey: string): Promise<string[]> => {
+    // Capture WoT instance to avoid race conditions
+    const wotInstance = wotRef.current;
+
     // Try SDK first if available
-    if (wotRef.current) {
+    if (wotInstance) {
       try {
         console.log("[useUserProfile] Fetching follows via SDK...");
-        const follows = await wotRef.current.getFollows(pubkey);
+        const follows = await wotInstance.getFollows(pubkey);
         if (follows && follows.length > 0) {
           console.log("[useUserProfile] Got", follows.length, "follows from SDK");
           return follows;
