@@ -95,7 +95,7 @@ export default function TimelineView() {
                       {node.picture || profile?.picture ? (
                         <img
                           src={node.picture || profile?.picture}
-                          alt=""
+                          alt={`${profile?.displayName || profile?.name || node.label || "User"} avatar`}
                           className="w-10 h-10 rounded-full object-cover flex-shrink-0"
                         />
                       ) : (
@@ -122,11 +122,12 @@ export default function TimelineView() {
 
                       {/* Mutual badge */}
                       {node.isMutual && (
-                        <span className="text-xs text-trust-green">
+                        <span className="text-xs text-trust-green" aria-label="Mutual follow">
                           <svg
                             className="w-4 h-4"
                             fill="currentColor"
                             viewBox="0 0 20 20"
+                            aria-hidden="true"
                           >
                             <path
                               fillRule="evenodd"

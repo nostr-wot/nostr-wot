@@ -91,7 +91,7 @@ export default function TrustCalculator() {
                   {result.node.picture || result.profile?.picture ? (
                     <img
                       src={result.node.picture || result.profile?.picture}
-                      alt=""
+                      alt={`${result.profile?.displayName || result.profile?.name || result.node.label || "User"} avatar`}
                       className="w-10 h-10 rounded-full object-cover"
                     />
                   ) : (

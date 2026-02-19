@@ -65,7 +65,7 @@ export default function TrustPathDisplay({ node }: TrustPathDisplayProps) {
               {pathNode.picture || profile?.picture ? (
                 <img
                   src={pathNode.picture || profile?.picture}
-                  alt=""
+                  alt={`${profile?.displayName || profile?.name || pathNode.label || "User"} avatar`}
                   className="w-6 h-6 rounded-full object-cover flex-shrink-0"
                 />
               ) : (
@@ -93,6 +93,7 @@ export default function TrustPathDisplay({ node }: TrustPathDisplayProps) {
                 fill="none"
                 stroke="currentColor"
                 viewBox="0 0 24 24"
+                aria-hidden="true"
               >
                 <path
                   strokeLinecap="round"

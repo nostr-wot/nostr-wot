@@ -1,12 +1,12 @@
 "use client";
 
-import { useEffect, useState, useCallback, useRef } from "react";
+import { useEffect, useState, useCallback, useRef, useMemo } from "react";
 import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
 import { useWoTContext } from "nostr-wot-sdk/react";
 import { useUserProfile } from "@/hooks/useUserProfile";
 import { NodeProfile } from "@/lib/graph/types";
-import { formatPubkey } from "@/lib/graph/transformers";
+import { formatPubkey, npubToHex } from "@/lib/graph/transformers";
 import { Button } from "@/components/ui";
 import NoteCard from "@/components/playground/profile/NoteCard";
 import {
@@ -26,7 +26,10 @@ interface ProfilePageContentProps {
   pubkey: string;
 }
 
-export default function ProfilePageContent({ pubkey }: ProfilePageContentProps) {
+export default function ProfilePageContent({ pubkey: pubkeyParam }: ProfilePageContentProps) {
+  // Normalize pubkey: convert npub to hex if needed
+  const pubkey = useMemo(() => npubToHex(pubkeyParam), [pubkeyParam]);
+
   const t = useTranslations("profile");
   const router = useRouter();
   const { wot, isReady: isWotReady } = useWoTContext();
@@ -428,7 +431,7 @@ export default function ProfilePageContent({ pubkey }: ProfilePageContentProps) 
                       {profile?.picture ? (
                         <img
                           src={profile.picture}
-                          alt=""
+                          alt={`${displayName} avatar`}
                           className="w-32 h-32 rounded-full border-4 border-white dark:border-gray-800 object-cover bg-gray-200 dark:bg-gray-700"
                         />
                       ) : (
@@ -727,7 +730,7 @@ export default function ProfilePageContent({ pubkey }: ProfilePageContentProps) 
                             {p?.picture ? (
                               <img
                                 src={p.picture}
-                                alt=""
+                                alt={`${p?.displayName || p?.name || "User"} avatar`}
                                 className="w-10 h-10 rounded-full object-cover"
                               />
                             ) : (

@@ -54,6 +54,7 @@ export default function ListView() {
           fill="none"
           stroke="currentColor"
           viewBox="0 0 24 24"
+          aria-hidden="true"
         >
           <path
             strokeLinecap="round"
@@ -103,7 +104,7 @@ export default function ListView() {
                     {node.picture || profile?.picture ? (
                       <img
                         src={node.picture || profile?.picture}
-                        alt=""
+                        alt={`${profile?.displayName || profile?.name || node.label || "User"} avatar`}
                         className="w-10 h-10 rounded-full object-cover"
                       />
                     ) : (
@@ -167,12 +168,14 @@ export default function ListView() {
                     target="_blank"
                     onClick={(e) => e.stopPropagation()}
                     className="text-primary hover:text-primary-dark transition-colors"
+                    aria-label="Open full profile in new tab"
                   >
                     <svg
                       className="w-5 h-5"
                       fill="none"
                       stroke="currentColor"
                       viewBox="0 0 24 24"
+                      aria-hidden="true"
                     >
                       <path
                         strokeLinecap="round"

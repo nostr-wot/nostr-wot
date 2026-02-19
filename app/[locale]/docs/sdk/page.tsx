@@ -321,7 +321,7 @@ function MyComponent() {
           href="/docs/extension"
           className="flex items-center gap-2 text-gray-600 dark:text-gray-400 hover:text-primary"
         >
-          <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
           </svg>
           Extension API
@@ -331,7 +331,7 @@ function MyComponent() {
           className="flex items-center gap-2 text-gray-600 dark:text-gray-400 hover:text-primary"
         >
           Oracle API
-          <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
           </svg>
         </Link>

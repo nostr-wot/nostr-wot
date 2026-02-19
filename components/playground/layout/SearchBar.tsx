@@ -94,6 +94,7 @@ export default function SearchBar() {
           fill="none"
           stroke="currentColor"
           viewBox="0 0 24 24"
+          aria-hidden="true"
         >
           <path
             strokeLinecap="round"
@@ -108,8 +109,9 @@ export default function SearchBar() {
           <button
             onClick={handleClear}
             className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-300"
+            aria-label="Clear search"
           >
-            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
               <path
                 strokeLinecap="round"
                 strokeLinejoin="round"
@@ -133,7 +135,7 @@ export default function SearchBar() {
               {node.picture ? (
                 <img
                   src={node.picture}
-                  alt=""
+                  alt={`${node.label || "User"} avatar`}
                   className="w-8 h-8 rounded-full object-cover"
                 />
               ) : (

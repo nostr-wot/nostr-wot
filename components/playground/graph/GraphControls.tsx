@@ -69,13 +69,14 @@ export default function GraphControls({ graphRef }: GraphControlsProps) {
         <button
           onClick={handleZoomIn}
           className="p-2 hover:bg-gray-700 transition-colors text-white"
-          title="Zoom in"
+          aria-label="Zoom in"
         >
           <svg
             className="w-5 h-5"
             fill="none"
             stroke="currentColor"
             viewBox="0 0 24 24"
+            aria-hidden="true"
           >
             <path
               strokeLinecap="round"
@@ -89,13 +90,14 @@ export default function GraphControls({ graphRef }: GraphControlsProps) {
         <button
           onClick={handleZoomOut}
           className="p-2 hover:bg-gray-700 transition-colors text-white"
-          title="Zoom out"
+          aria-label="Zoom out"
         >
           <svg
             className="w-5 h-5"
             fill="none"
             stroke="currentColor"
             viewBox="0 0 24 24"
+            aria-hidden="true"
           >
             <path
               strokeLinecap="round"
@@ -112,13 +114,14 @@ export default function GraphControls({ graphRef }: GraphControlsProps) {
         <button
           onClick={handleZoomToFit}
           className="p-2 hover:bg-gray-700 transition-colors text-white"
-          title="Fit to view"
+          aria-label="Fit to view"
         >
           <svg
             className="w-5 h-5"
             fill="none"
             stroke="currentColor"
             viewBox="0 0 24 24"
+            aria-hidden="true"
           >
             <path
               strokeLinecap="round"
@@ -132,13 +135,14 @@ export default function GraphControls({ graphRef }: GraphControlsProps) {
         <button
           onClick={handleCenterOnRoot}
           className="p-2 hover:bg-gray-700 transition-colors text-white"
-          title="Center on you"
+          aria-label="Center on you"
         >
           <svg
             className="w-5 h-5"
             fill="none"
             stroke="currentColor"
             viewBox="0 0 24 24"
+            aria-hidden="true"
           >
             <path
               strokeLinecap="round"
@@ -158,7 +162,7 @@ export default function GraphControls({ graphRef }: GraphControlsProps) {
             ? "bg-primary text-white border-primary"
             : "bg-gray-800/90 text-white border-gray-700 hover:bg-gray-700"
         }`}
-        title={`Layout: ${settings.layout}`}
+        aria-label={`Switch to ${settings.layout === "force" ? "radial" : "force"} layout`}
       >
         {settings.layout === "force" ? (
           <svg
@@ -166,6 +170,7 @@ export default function GraphControls({ graphRef }: GraphControlsProps) {
             fill="none"
             stroke="currentColor"
             viewBox="0 0 24 24"
+            aria-hidden="true"
           >
             <path
               strokeLinecap="round"
@@ -180,6 +185,7 @@ export default function GraphControls({ graphRef }: GraphControlsProps) {
             fill="none"
             stroke="currentColor"
             viewBox="0 0 24 24"
+            aria-hidden="true"
           >
             <circle cx="12" cy="12" r="3" strokeWidth={2} />
             <circle cx="12" cy="12" r="8" strokeWidth={2} />
@@ -196,13 +202,15 @@ export default function GraphControls({ graphRef }: GraphControlsProps) {
               ? "bg-primary/20 text-primary"
               : "text-gray-400 hover:bg-gray-700"
           }`}
-          title={settings.showLabels ? "Hide labels" : "Show labels"}
+          aria-label={settings.showLabels ? "Hide labels" : "Show labels"}
+          aria-pressed={settings.showLabels}
         >
           <svg
             className="w-5 h-5"
             fill="none"
             stroke="currentColor"
             viewBox="0 0 24 24"
+            aria-hidden="true"
           >
             <path
               strokeLinecap="round"
@@ -220,13 +228,15 @@ export default function GraphControls({ graphRef }: GraphControlsProps) {
               ? "bg-primary/20 text-primary"
               : "text-gray-400 hover:bg-gray-700"
           }`}
-          title={settings.showArrows ? "Hide arrows" : "Show arrows"}
+          aria-label={settings.showArrows ? "Hide arrows" : "Show arrows"}
+          aria-pressed={settings.showArrows}
         >
           <svg
             className="w-5 h-5"
             fill="none"
             stroke="currentColor"
             viewBox="0 0 24 24"
+            aria-hidden="true"
           >
             <path
               strokeLinecap="round"

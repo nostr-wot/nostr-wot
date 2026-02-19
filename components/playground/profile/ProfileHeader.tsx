@@ -53,7 +53,7 @@ export default function ProfileHeader({
         {avatarUrl ? (
           <img
             src={avatarUrl}
-            alt=""
+            alt={`${displayName} avatar`}
             className="w-20 h-20 rounded-full object-cover flex-shrink-0 ring-2 ring-gray-700"
           />
         ) : (
@@ -82,6 +82,7 @@ export default function ProfileHeader({
                 className="w-4 h-4 text-primary"
                 fill="currentColor"
                 viewBox="0 0 20 20"
+                aria-hidden="true"
               >
                 <path
                   fillRule="evenodd"
@@ -99,7 +100,7 @@ export default function ProfileHeader({
           <button
             onClick={handleCopyPubkey}
             className="flex items-center gap-1.5 text-xs text-gray-500 font-mono hover:text-gray-300 transition-colors mt-2 group"
-            title={t("graph.copyPubkey")}
+            aria-label={t("graph.copyPubkey")}
           >
             <span>{formatPubkey(node.id)}</span>
             {copied ? (
@@ -108,6 +109,7 @@ export default function ProfileHeader({
                 fill="none"
                 stroke="currentColor"
                 viewBox="0 0 24 24"
+                aria-hidden="true"
               >
                 <path
                   strokeLinecap="round"
@@ -122,6 +124,7 @@ export default function ProfileHeader({
                 fill="none"
                 stroke="currentColor"
                 viewBox="0 0 24 24"
+                aria-hidden="true"
               >
                 <path
                   strokeLinecap="round"
@@ -167,6 +170,7 @@ export default function ProfileHeader({
               fill="none"
               stroke="currentColor"
               viewBox="0 0 24 24"
+              aria-hidden="true"
             >
               <path
                 strokeLinecap="round"

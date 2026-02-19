@@ -42,12 +42,14 @@ export default function RightPanel({ isOpen, onClose, onViewProfile }: RightPane
           <button
             onClick={onClose}
             className="p-1 hover:bg-gray-700 rounded transition-colors"
+            aria-label="Close details panel"
           >
             <svg
               className="w-5 h-5 text-gray-400"
               fill="none"
               stroke="currentColor"
               viewBox="0 0 24 24"
+              aria-hidden="true"
             >
               <path
                 strokeLinecap="round"
@@ -97,7 +99,7 @@ export default function RightPanel({ isOpen, onClose, onViewProfile }: RightPane
                     {neighbor.picture ? (
                       <img
                         src={neighbor.picture}
-                        alt=""
+                        alt={`${neighbor.label || "User"} avatar`}
                         className="w-6 h-6 rounded-full object-cover"
                       />
                     ) : (

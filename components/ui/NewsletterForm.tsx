@@ -48,7 +48,11 @@ export function NewsletterForm() {
   return (
     <form onSubmit={handleSubmit} className="w-full max-w-md mx-auto">
       <div className="flex flex-col sm:flex-row gap-3">
+        <label htmlFor="newsletter-email" className="sr-only">
+          {t("placeholder")}
+        </label>
         <input
+          id="newsletter-email"
           type="email"
           value={email}
           onChange={(e) => setEmail(e.target.value)}

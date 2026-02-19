@@ -38,7 +38,7 @@ export default function NodeTooltip({ node, x, y }: NodeTooltipProps) {
         {node.picture || profile?.picture ? (
           <img
             src={node.picture || profile?.picture}
-            alt=""
+            alt={`${profile?.displayName || profile?.name || node.label || "User"} avatar`}
             className="w-10 h-10 rounded-full object-cover flex-shrink-0"
           />
         ) : (

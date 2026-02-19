@@ -358,7 +358,7 @@ export default async function OracleDocsPage() {
           href="/docs/sdk"
           className="flex items-center gap-2 text-gray-600 dark:text-gray-400 hover:text-primary"
         >
-          <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
           </svg>
           SDK Reference
@@ -368,7 +368,7 @@ export default async function OracleDocsPage() {
           className="flex items-center gap-2 text-gray-600 dark:text-gray-400 hover:text-primary"
         >
           Self-Host Guide
-          <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
           </svg>
         </Link>

@@ -45,7 +45,7 @@ export default function NodeDetailCard({
         {node.picture || profile?.picture ? (
           <img
             src={node.picture || profile?.picture}
-            alt=""
+            alt={`${profile?.displayName || profile?.name || node.label || "User"} avatar`}
             className="w-16 h-16 rounded-full object-cover flex-shrink-0"
           />
         ) : (
@@ -73,7 +73,7 @@ export default function NodeDetailCard({
             className={`flex items-center gap-1.5 text-xs font-mono transition-colors mt-1 ${
               copied ? "text-emerald-400" : "text-gray-500 hover:text-gray-300"
             }`}
-            title={t("graph.copyNpub")}
+            aria-label={t("graph.copyNpub")}
           >
             {copied ? (
               <>
@@ -82,6 +82,7 @@ export default function NodeDetailCard({
                   fill="none"
                   stroke="currentColor"
                   viewBox="0 0 24 24"
+                  aria-hidden="true"
                 >
                   <path
                     strokeLinecap="round"
@@ -100,6 +101,7 @@ export default function NodeDetailCard({
                   fill="none"
                   stroke="currentColor"
                   viewBox="0 0 24 24"
+                  aria-hidden="true"
                 >
                   <path
                     strokeLinecap="round"
@@ -163,6 +165,7 @@ export default function NodeDetailCard({
               fill="none"
               stroke="currentColor"
               viewBox="0 0 24 24"
+              aria-hidden="true"
             >
               <path
                 strokeLinecap="round"
@@ -192,6 +195,7 @@ export default function NodeDetailCard({
                   fill="none"
                   stroke="currentColor"
                   viewBox="0 0 24 24"
+                  aria-hidden="true"
                 >
                   <path
                     strokeLinecap="round"
