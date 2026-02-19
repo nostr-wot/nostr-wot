@@ -6,14 +6,21 @@ const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || 'https://nostr-wot.com';
 /**
  * Generates the full URL for a given path and locale
  * Uses 'as-needed' locale prefix strategy: default locale has no prefix
+ * Ensures no trailing slashes to match Next.js default behavior and avoid 308 redirects
  */
 export function getFullUrl(path: string, locale: Locale): string {
-  const normalizedPath = path.startsWith('/') ? path : `/${path}`;
-
-  if (locale === defaultLocale) {
-    return `${BASE_URL}${normalizedPath}`;
+  // Normalize path: ensure it starts with / unless empty
+  let normalizedPath = path === '/' || path === '' ? '' : path;
+  if (normalizedPath && !normalizedPath.startsWith('/')) {
+    normalizedPath = `/${normalizedPath}`;
   }
 
+  if (locale === defaultLocale) {
+    // Default locale: https://nostr-wot.com or https://nostr-wot.com/about
+    return normalizedPath ? `${BASE_URL}${normalizedPath}` : BASE_URL;
+  }
+
+  // Non-default locale: https://nostr-wot.com/es or https://nostr-wot.com/es/about
   return `${BASE_URL}/${locale}${normalizedPath}`;
 }
 
@@ -23,20 +30,21 @@ export function getFullUrl(path: string, locale: Locale): string {
  * @param currentLocale - The current page locale
  */
 export function generateAlternates(path: string, currentLocale: Locale): Metadata['alternates'] {
+  // Normalize: treat '/' and '' as homepage
   const normalizedPath = path === '/' ? '' : path;
 
   // Generate language alternates for hreflang
   const languages: Record<string, string> = {};
 
   for (const locale of locales) {
-    languages[locale] = getFullUrl(normalizedPath || '/', locale);
+    languages[locale] = getFullUrl(normalizedPath, locale);
   }
 
   // Add x-default pointing to default locale
-  languages['x-default'] = getFullUrl(normalizedPath || '/', defaultLocale);
+  languages['x-default'] = getFullUrl(normalizedPath, defaultLocale);
 
   return {
-    canonical: getFullUrl(normalizedPath || '/', currentLocale),
+    canonical: getFullUrl(normalizedPath, currentLocale),
     languages,
   };
 }
