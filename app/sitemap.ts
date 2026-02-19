@@ -56,10 +56,25 @@ export default function sitemap(): MetadataRoute.Sitemap {
   }
 
   // Generate entries for blog posts
+  // Get posts from default locale and use their translations to generate correct URLs for each locale
   const blogPosts = getAllBlogPosts();
   for (const post of blogPosts) {
+    // Build alternates using correct translated slugs
+    const alternateLanguages: Record<string, string> = {};
     for (const locale of locales) {
-      const url = getLocalizedUrl(`/blog/${post.slug}`, locale);
+      const translatedSlug = post.translations[locale];
+      if (translatedSlug) {
+        alternateLanguages[locale] = getLocalizedUrl(`/blog/${translatedSlug}`, locale);
+      }
+    }
+
+    // Generate an entry for each available translation
+    for (const locale of locales) {
+      const translatedSlug = post.translations[locale];
+      // Only create entry if translation exists for this locale
+      if (!translatedSlug) continue;
+
+      const url = getLocalizedUrl(`/blog/${translatedSlug}`, locale);
 
       sitemapEntries.push({
         url,
@@ -67,9 +82,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
         changeFrequency: "monthly",
         priority: 0.7,
         alternates: {
-          languages: Object.fromEntries(
-            locales.map((l) => [l, getLocalizedUrl(`/blog/${post.slug}`, l)])
-          ),
+          languages: alternateLanguages,
         },
       });
     }
