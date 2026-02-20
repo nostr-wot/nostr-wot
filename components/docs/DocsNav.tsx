@@ -1,7 +1,6 @@
 "use client";
 
-import { Link } from "@/i18n/routing";
-import { usePathname } from "next/navigation";
+import { Link, usePathname } from "@/i18n/routing";
 import { useState } from "react";
 
 interface NavLink {

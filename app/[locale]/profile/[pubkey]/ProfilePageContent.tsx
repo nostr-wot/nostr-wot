@@ -1,11 +1,10 @@
 "use client";
 
 import { useEffect, useState, useCallback, useRef, useMemo } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter } from "@/i18n/routing";
 import { useTranslations } from "next-intl";
 import { useWoTContext } from "nostr-wot-sdk/react";
 import { useUserProfile } from "@/hooks/useUserProfile";
-import { NodeProfile } from "@/lib/graph/types";
 import { formatPubkey, npubToHex } from "@/lib/graph/transformers";
 import { Button } from "@/components/ui";
 import NoteCard from "@/components/playground/profile/NoteCard";
@@ -15,7 +14,6 @@ import {
   getCachedTrustBatch,
   cacheTrust,
   cacheTrustBatch,
-  getPubkeysNeedingTrust,
 } from "@/lib/cache/profileCache";
 
 interface TrustInfo extends TrustData {
