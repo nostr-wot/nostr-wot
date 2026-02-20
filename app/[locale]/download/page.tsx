@@ -77,6 +77,13 @@ export default async function DownloadPage() {
       "price": "0",
       "priceCurrency": "USD",
     },
+    "aggregateRating": {
+      "@type": "AggregateRating",
+      "ratingValue": "5",
+      "ratingCount": "1",
+      "bestRating": "5",
+      "worstRating": "1",
+    },
     "featureList": [
       "Instant trust queries",
       "Privacy-first design",

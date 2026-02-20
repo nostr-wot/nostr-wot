@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useMemo } from "react";
-import Link from "next/link";
+import { Link } from "@/i18n/routing";
 import { useTranslations } from "next-intl";
 import { GraphNode, NodeProfile } from "@/lib/graph/types";
 import { formatPubkey } from "@/lib/graph/transformers";

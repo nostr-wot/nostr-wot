@@ -93,7 +93,7 @@ export default async function DocsLayout({ children }: DocsLayoutProps) {
       {/* Hero */}
       <section className="py-12 bg-gradient-to-b from-gray-50 to-white dark:from-gray-900 dark:to-gray-950 border-b border-gray-200 dark:border-gray-800">
         <div className="max-w-4xl mx-auto px-6 text-center">
-          <h1 className="text-3xl font-bold mb-2">{t("hero.title")}</h1>
+          <h2 className="text-3xl font-bold mb-2">{t("hero.title")}</h2>
           <p className="text-lg text-gray-600 dark:text-gray-400">{t("hero.subtitle")}</p>
         </div>
       </section>

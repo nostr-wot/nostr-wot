@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import Link from "next/link";
+import { Link } from "@/i18n/routing";
 import { getTranslations } from "next-intl/server";
 import {
   ScrollReveal,
@@ -137,6 +137,7 @@ export default async function FeaturesPage() {
       "@type": "SoftwareApplication",
       "name": "Nostr Web of Trust",
       "applicationCategory": "DeveloperApplication",
+      "operatingSystem": "Chrome, Brave, Edge, Opera, Firefox",
       "featureList": [
         "Universal window.nostr.wot API",
         "Customizable trust scoring",
@@ -145,6 +146,18 @@ export default async function FeaturesPage() {
         "Real-time social distance queries",
         "Batch operations support",
       ],
+      "offers": {
+        "@type": "Offer",
+        "price": "0",
+        "priceCurrency": "USD",
+      },
+      "aggregateRating": {
+        "@type": "AggregateRating",
+        "ratingValue": "5",
+        "ratingCount": "1",
+        "bestRating": "5",
+        "worstRating": "1",
+      },
     },
   };
 

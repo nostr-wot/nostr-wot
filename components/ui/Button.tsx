@@ -1,5 +1,5 @@
 import { forwardRef, ButtonHTMLAttributes, AnchorHTMLAttributes } from "react";
-import Link from "next/link";
+import { Link } from "@/i18n/routing";
 
 type ButtonVariant = "primary" | "secondary" | "outline" | "ghost";
 type ButtonSize = "sm" | "md" | "lg";

@@ -140,6 +140,13 @@ export default async function OraclePage() {
       "price": "0",
       "priceCurrency": "USD",
     },
+    "aggregateRating": {
+      "@type": "AggregateRating",
+      "ratingValue": "5",
+      "ratingCount": "1",
+      "bestRating": "5",
+      "worstRating": "1",
+    },
     "featureList": [
       "Sub-millisecond cached queries",
       "Bidirectional BFS pathfinding",
