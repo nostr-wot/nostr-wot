@@ -8,6 +8,7 @@ import { Header, Footer, PageTransition } from "@/components/layout";
 import { ThemeProvider } from "@/components/providers";
 import { NostrAuthProvider } from "@/contexts/NostrAuthContext";
 import { WotProvider } from "@/components/providers/WotProvider";
+import { BlogTranslationsProvider } from "@/contexts/BlogTranslationsContext";
 import { locales, type Locale } from "@/i18n/config";
 import "../globals.css";
 
@@ -99,15 +100,17 @@ export default async function LocaleLayout({ children, params }: Props) {
       <body className="bg-gray-50 dark:bg-gray-950 text-gray-900 dark:text-gray-100 min-h-screen">
         <ThemeProvider>
           <NextIntlClientProvider messages={messages}>
-            <NostrAuthProvider>
-              <WotProvider>
-                <Header />
-                <div className="pt-16">
-                  <PageTransition>{children}</PageTransition>
-                </div>
-                <Footer />
-              </WotProvider>
-            </NostrAuthProvider>
+            <BlogTranslationsProvider>
+              <NostrAuthProvider>
+                <WotProvider>
+                  <Header />
+                  <div className="pt-16">
+                    <PageTransition>{children}</PageTransition>
+                  </div>
+                  <Footer />
+                </WotProvider>
+              </NostrAuthProvider>
+            </BlogTranslationsProvider>
           </NextIntlClientProvider>
         </ThemeProvider>
       </body>

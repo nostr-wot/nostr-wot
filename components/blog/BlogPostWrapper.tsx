@@ -1,7 +1,7 @@
 "use client";
 
 import { ReactNode } from "react";
-import { BlogTranslationsProvider } from "@/contexts/BlogTranslationsContext";
+import { useSetBlogTranslations } from "@/contexts/BlogTranslationsContext";
 import { type Locale } from "@/i18n/config";
 
 interface BlogPostWrapperProps {
@@ -10,9 +10,8 @@ interface BlogPostWrapperProps {
 }
 
 export function BlogPostWrapper({ children, translations }: BlogPostWrapperProps) {
-  return (
-    <BlogTranslationsProvider translations={translations}>
-      {children}
-    </BlogTranslationsProvider>
-  );
+  // Set translations in the global context so Header's LanguageSwitcher can use them
+  useSetBlogTranslations(translations);
+
+  return <>{children}</>;
 }
