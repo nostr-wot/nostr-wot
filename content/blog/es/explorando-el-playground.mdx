@@ -1,0 +1,125 @@
+---
+title: "Explorando el Playground: Visualiza Tu Red de Confianza"
+description: "Descubre cómo el Playground te permite explorar tu Web of Trust en visualizaciones interactivas 2D y 3D, con niveles de confianza codificados por color y nodos expandibles."
+excerpt: "¿Alguna vez te preguntaste cómo se ve realmente tu red de confianza? El Playground transforma tus conexiones sociales en un grafo interactivo y codificado por colores que puedes explorar en 2D y 3D."
+date: "2026-02-15"
+author:
+  name: "Leon Acosta"
+  avatar: "/authors/leon-profile.jpg"
+  npub: "npub1gxdhmu9swqduwhr6zptjy4ya693zp3ql28nemy4hd97kuufyrqdqwe5zfk"
+  socials:
+    linkedin: "leonacosta"
+    instagram: "leonacosta.now"
+    twitter: "leonacosta_"
+    github: "leonacostaok"
+featuredImage: "/images/blog/playground/featured.svg"
+previewImage: "/images/blog/playground/preview.jpg"
+tags:
+  - "Funcionalidad"
+  - "Playground"
+  - "Visualización"
+published: true
+seoTitle: "Explora Tu Red de Confianza en 2D y 3D"
+seoDescription: "Visualiza tu Nostr Web of Trust con grafos interactivos. Ve niveles de confianza por color, explora por saltos y expande nodos en 2D o 3D."
+ogImage: "/images/blog/playground/og.jpg"
+translationKey: "exploring-the-playground"
+---
+
+Tu Web of Trust es más que una simple lista de personas que sigues. Es una red viva de conexiones, relaciones de confianza y caminos sociales que definen en quién confías y por qué. Pero hasta ahora, solo podías imaginar cómo se veía.
+
+**Llega el Playground.**
+
+## Ve Tu Red de Confianza Cobrar Vida
+
+El Playground transforma tu grafo social abstracto en una experiencia visual e interactiva. Cada persona en tu red se convierte en un nodo. Cada relación de seguimiento se convierte en una conexión. ¿Y los niveles de confianza? Están pintados directamente en el lienzo.
+
+### Niveles de Confianza Codificados por Color
+
+De un vistazo, puedes ver en quién confías más:
+
+- **Azul** — Eres tú, la raíz de tu red
+- **Verde** — Alta confianza (70%+), generalmente personas que sigues directamente
+- **Amarillo** — Confianza media (30-70%), amigos de amigos
+- **Rojo** — Baja confianza (menos del 30%), conexiones distantes en el borde de tu red
+
+El sistema de colores hace instantáneamente claro dónde se ubica alguien en tu jerarquía de confianza. Sin números que analizar, sin listas que escanear—solo retroalimentación visual intuitiva.
+
+## Entendiendo Saltos y Caminos
+
+El Playground organiza tu red por **distancia**—cuántos saltos se necesitan para llegar a alguien desde ti.
+
+- **1 salto**: Personas que sigues directamente (100% de peso de distancia)
+- **2 saltos**: Amigos de amigos (50% de peso)
+- **3 saltos**: Dos grados de separación (25% de peso)
+- **4+ saltos**: Red extendida (10% de peso)
+
+Pero la distancia no lo es todo. El sistema también considera **caminos**—cuántas rutas diferentes llevan a la misma persona. Si sigues a alguien, y tres de tus amigos también lo siguen, eso son cuatro caminos. Más caminos significan más confianza.
+
+<Callout type="tip">
+Cuando seleccionas un nodo, verás detalles como "2 saltos · 4 caminos · 65% confianza"—dándote el contexto completo de cómo esa persona se relaciona con tu red.
+</Callout>
+
+## Expande y Explora
+
+El verdadero poder del Playground es la **expansión interactiva**. No ves toda la red de una vez—eso sería abrumador. En cambio:
+
+1. **Comienza contigo mismo** como el nodo raíz
+2. **Haz clic para expandir** y cargar tus seguidores directos
+3. **Haz clic en cualquier nodo** para expandir sus conexiones
+4. **Profundiza**, hasta 3 saltos en la red
+
+Esta carga bajo demanda significa que puedes explorar exactamente las partes de tu red que te interesan, sin esperar a que miles de nodos se carguen de antemano.
+
+## Elige Tu Dimensión: 2D o 3D
+
+Cada persona piensa diferente. Algunos prefieren una vista plana y rápida. Otros quieren sumergirse en un espacio inmersivo. El Playground soporta ambos:
+
+### Modo 2D
+
+La vista 2D renderiza en un lienzo con nodos organizados en círculos concéntricos por distancia de saltos. Es rápida, responsiva y puede manejar hasta 10,000 nodos. Perfecta para:
+
+- Vistas generales rápidas de la estructura de tu red
+- Encontrar personas específicas
+- Rendimiento en dispositivos de gama baja
+
+### Modo 3D
+
+La vista 3D usa WebGL para renderizar tu red en espacio tridimensional. Orbita alrededor, acércate y explora tu red como si navegaras una galaxia. Ideal para:
+
+- Exploración inmersiva
+- Entender patrones de conexión complejos
+- Descubrir clusters y comunidades
+
+<Callout type="tip">
+En modo 3D, usa arrastrar-izquierdo para rotar, arrastrar-derecho para desplazar y scroll para zoom. Los tamaños de los nodos se basan en la confianza—nodos más grandes son más confiables.
+</Callout>
+
+## Filtra y Enfoca
+
+Las redes grandes pueden ser ruidosas. El Playground te da herramientas para filtrar lo que importa:
+
+- **Umbral de Confianza**: Solo muestra nodos por encima de cierto porcentaje de confianza
+- **Límite de Distancia**: Limita los saltos máximos mostrados (1-5)
+- **Tipos de Conexión**: Alterna entre seguidores, silenciados, o muestra solo conexiones mutuas
+- **Búsqueda**: Encuentra personas específicas por nombre o pubkey
+
+Combina estos filtros para responder preguntas como "¿Quiénes son mis conexiones de alta confianza dentro de 2 saltos?" o "Muéstrame solo los seguidores mutuos."
+
+## Por Qué Importa la Visualización
+
+Ver tu red de confianza no es solo genial—es útil. Puedes:
+
+- **Detectar puentes de confianza** que conectan diferentes partes de tu red
+- **Descubrir clusters** de personas que se conocen entre sí
+- **Identificar valores atípicos** que podrían valer la pena seguir directamente
+- **Entender tu alcance** hacia diferentes comunidades
+
+Web of Trust es un concepto poderoso, pero se vuelve verdaderamente intuitivo cuando puedes verlo.
+
+## Pruébalo Ahora
+
+¿Listo para ver tu red? Ve al [Playground](/playground) y comienza a explorar. Conecta tu cuenta de Nostr y observa cómo tu red de confianza se despliega ante tus ojos.
+
+---
+
+*¿Preguntas o comentarios? Encuéntranos en [Nostr](https://njump.me/npub1gxdhmu9swqduwhr6zptjy4ya693zp3ql28nemy4hd97kuufyrqdqwe5zfk) o consulta la [documentación](/docs).*

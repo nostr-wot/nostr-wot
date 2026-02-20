@@ -95,10 +95,10 @@ export default async function BlogPage({ params, searchParams }: Props) {
         {/* Hero Section */}
         <Section padding="lg" className="pt-24">
           <ScrollReveal animation="fade-up">
-            <SectionHeader
-              title={t('title')}
-              description={t('subtitle')}
-            />
+            <div className="text-center max-w-3xl mx-auto">
+              <h1 className="text-3xl md:text-4xl font-bold mb-4">{t('title')}</h1>
+              <p className="text-lg text-gray-600 dark:text-gray-400">{t('subtitle')}</p>
+            </div>
           </ScrollReveal>
         </Section>
 

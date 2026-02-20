@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { getTranslations } from "next-intl/server";
 import { Link } from "@/i18n/routing";
-import { CodeBlock, InlineCode } from "@/components/ui";
+import { CodeBlock, InlineCode, ScrollReveal } from "@/components/ui";
 import { generateAlternates, generateOpenGraph, generateTwitter } from "@/lib/metadata";
 import { type Locale } from "@/i18n/config";
 
@@ -54,12 +54,15 @@ export default async function DocsOverviewPage() {
       />
 
       <article className="prose prose-gray dark:prose-invert max-w-none">
-        <h1>{t("overview.title")}</h1>
+        <ScrollReveal animation="fade-up">
+          <h1>{t("overview.title")}</h1>
 
-        <p className="lead text-xl text-gray-600 dark:text-gray-400">
-          {t("overview.description")}
-        </p>
+          <p className="lead text-xl text-gray-600 dark:text-gray-400">
+            {t("overview.description")}
+          </p>
+        </ScrollReveal>
 
+        <ScrollReveal animation="fade-up" delay={100}>
         <div className="grid md:grid-cols-2 gap-6 not-prose my-8">
           <Link
             href="/docs/extension"
@@ -81,13 +84,17 @@ export default async function DocsOverviewPage() {
             </p>
           </Link>
         </div>
+        </ScrollReveal>
 
+        <ScrollReveal animation="fade-up" delay={150}>
         <p>
           {t("overview.fundamentalQuestion")} <em>&quot;{t("overview.question")}&quot;</em>
         </p>
 
         <h2>Choose Your Integration</h2>
+        </ScrollReveal>
 
+        <ScrollReveal animation="fade-up" delay={200}>
         <div className="not-prose space-y-4 my-6">
           <div className="flex items-start gap-4 p-4 bg-blue-50 dark:bg-blue-950/30 rounded-lg border border-blue-200 dark:border-blue-900">
             <div className="flex-shrink-0 w-10 h-10 bg-blue-100 dark:bg-blue-900 rounded-lg flex items-center justify-center">
@@ -140,7 +147,9 @@ export default async function DocsOverviewPage() {
             </div>
           </div>
         </div>
+        </ScrollReveal>
 
+        <ScrollReveal animation="fade-up" delay={250}>
         <h2>Quick Example</h2>
 
         <p>Here&apos;s a simple example using the browser extension:</p>
@@ -161,7 +170,9 @@ if (window.nostr?.wot) {
   }
 }`}
         />
+        </ScrollReveal>
 
+        <ScrollReveal animation="fade-up" delay={300}>
         <div className="not-prose mt-8 flex gap-4">
           <Link
             href="/docs/getting-started"
@@ -173,6 +184,7 @@ if (window.nostr?.wot) {
             </svg>
           </Link>
         </div>
+        </ScrollReveal>
       </article>
     </>
   );

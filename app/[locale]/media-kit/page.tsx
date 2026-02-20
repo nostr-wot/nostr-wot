@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { getTranslations } from "next-intl/server";
 import { Link } from "@/i18n/routing";
-import { Badge, LinkButton, ExternalLinkButton } from "@/components/ui";
+import { Badge, LinkButton, ExternalLinkButton, ScrollReveal } from "@/components/ui";
 import { generateAlternates, generateOpenGraph, generateTwitter } from "@/lib/metadata";
 import { type Locale } from "@/i18n/config";
 
@@ -102,18 +102,21 @@ export default async function MediaKitPage() {
       <main>
       {/* Hero */}
       <section className="py-20 bg-gradient-to-b from-gray-50 to-white dark:from-gray-900 dark:to-gray-950">
-        <div className="max-w-4xl mx-auto px-6">
-          <div className="text-center">
-            <Badge className="mb-4">{t("hero.badge")}</Badge>
-            <h1 className="text-4xl md:text-5xl font-bold mb-6">{t("hero.title")}</h1>
-            <p className="text-xl text-gray-600 dark:text-gray-400 max-w-2xl mx-auto">
-              {t("hero.subtitle")}
-            </p>
+        <ScrollReveal animation="fade-up">
+          <div className="max-w-4xl mx-auto px-6">
+            <div className="text-center">
+              <Badge className="mb-4">{t("hero.badge")}</Badge>
+              <h1 className="text-4xl md:text-5xl font-bold mb-6">{t("hero.title")}</h1>
+              <p className="text-xl text-gray-600 dark:text-gray-400 max-w-2xl mx-auto">
+                {t("hero.subtitle")}
+              </p>
+            </div>
           </div>
-        </div>
+        </ScrollReveal>
       </section>
 
       {/* Integration Notice */}
+      <ScrollReveal animation="fade-up" delay={100}>
       <section className="py-12">
         <div className="max-w-4xl mx-auto px-6">
           <div className="flex items-start gap-4 bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-xl p-6">
@@ -128,6 +131,7 @@ export default async function MediaKitPage() {
           </div>
         </div>
       </section>
+      </ScrollReveal>
 
       {/* Logo Section */}
       <section className="py-16 bg-gray-100 dark:bg-gray-900">

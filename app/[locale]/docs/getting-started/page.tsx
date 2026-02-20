@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { getTranslations } from "next-intl/server";
 import { Link } from "@/i18n/routing";
-import { CodeBlock, TerminalBlock } from "@/components/ui";
+import { CodeBlock, TerminalBlock, ScrollReveal } from "@/components/ui";
 import { generateAlternates, generateOpenGraph, generateTwitter } from "@/lib/metadata";
 import { type Locale } from "@/i18n/config";
 
@@ -34,13 +34,16 @@ export default async function GettingStartedPage() {
 
   return (
     <article className="prose prose-gray dark:prose-invert max-w-none">
-      <h1>{t("quickStart.title")}</h1>
+      <ScrollReveal animation="fade-up">
+        <h1>{t("quickStart.title")}</h1>
 
-      <p className="lead text-xl text-gray-600 dark:text-gray-400">
-        Get up and running with Web of Trust in just a few minutes.
-      </p>
+        <p className="lead text-xl text-gray-600 dark:text-gray-400">
+          Get up and running with Web of Trust in just a few minutes.
+        </p>
+      </ScrollReveal>
 
-      <h2>{t("quickStart.browser")}</h2>
+      <ScrollReveal animation="fade-up" delay={100}>
+        <h2>{t("quickStart.browser")}</h2>
 
       <p>
         For client-side applications, use the browser extension API. Users will need the{" "}
@@ -90,8 +93,10 @@ if (distance !== null && distance <= 2) {
           <strong>Tip:</strong> Distance values: 0 = yourself, 1 = direct follow, 2 = follow of follow, null = not connected.
         </p>
       </div>
+      </ScrollReveal>
 
-      <h2>{t("quickStart.server")}</h2>
+      <ScrollReveal animation="fade-up" delay={150}>
+        <h2>{t("quickStart.server")}</h2>
 
       <p>
         For server-side applications, use the Oracle REST API. No extension required.
@@ -119,8 +124,10 @@ console.log(\`Mutual follow: \${data.mutual}\`);`}
           'curl "https://wot-oracle.mappingbitcoin.com/distance?from=82341f...&to=3bf0c6..."',
         ]}
       />
+      </ScrollReveal>
 
-      <h2>Using the SDK</h2>
+      <ScrollReveal animation="fade-up" delay={200}>
+        <h2>Using the SDK</h2>
 
       <p>
         For TypeScript projects, install our SDK for type-safe Oracle API access:
@@ -139,10 +146,12 @@ const client = new WoTClient({
 const result = await client.getDistance(fromPubkey, toPubkey);
 console.log(result.distance);`}
       />
+      </ScrollReveal>
 
-      <h2>Next Steps</h2>
+      <ScrollReveal animation="fade-up" delay={250}>
+        <h2>Next Steps</h2>
 
-      <div className="not-prose grid md:grid-cols-3 gap-4 my-6">
+        <div className="not-prose grid md:grid-cols-3 gap-4 my-6">
         <Link
           href="/docs/extension"
           className="block p-4 bg-gray-50 dark:bg-gray-900 rounded-lg border border-gray-200 dark:border-gray-800 hover:border-primary transition-colors"
@@ -172,7 +181,8 @@ console.log(result.distance);`}
             REST API endpoints reference
           </p>
         </Link>
-      </div>
+        </div>
+      </ScrollReveal>
     </article>
   );
 }

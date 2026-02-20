@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useCallback } from "react";
 import { useTranslations } from "next-intl";
-import { Input, TextArea, Button, Card, Badge } from "@/components/ui";
+import { Input, TextArea, Button, Card, Badge, ScrollReveal } from "@/components/ui";
 
 type InquiryType = "support" | "media" | null;
 
@@ -110,19 +110,21 @@ export default function ContactContent() {
     <main>
       {/* Hero */}
       <section className="py-16 bg-gradient-to-b from-gray-50 to-white dark:from-gray-900 dark:to-gray-950">
-        <div className="max-w-4xl mx-auto px-6 text-center">
-          <h1 className="text-4xl font-bold mb-4">{t("hero.title")}</h1>
-          <p className="text-xl text-gray-600 dark:text-gray-400">
-            {t("hero.subtitle")}
-          </p>
-        </div>
+        <ScrollReveal animation="fade-up">
+          <div className="max-w-4xl mx-auto px-6 text-center">
+            <h1 className="text-4xl font-bold mb-4">{t("hero.title")}</h1>
+            <p className="text-xl text-gray-600 dark:text-gray-400">
+              {t("hero.subtitle")}
+            </p>
+          </div>
+        </ScrollReveal>
       </section>
 
       {/* Contact Form Section */}
       <section className="py-16">
         <div className="max-w-4xl mx-auto px-6">
           {!selectedType ? (
-            <>
+            <ScrollReveal animation="fade-up" delay={100}>
               <h2 className="text-2xl font-bold text-center mb-4">{t("typeSelection.title")}</h2>
               <p className="text-gray-600 dark:text-gray-400 text-center mb-10">
                 {t("typeSelection.subtitle")}
@@ -168,7 +170,7 @@ export default function ContactContent() {
                   </Card>
                 </button>
               </div>
-            </>
+            </ScrollReveal>
           ) : (
             <div className="max-w-2xl mx-auto">
               <button

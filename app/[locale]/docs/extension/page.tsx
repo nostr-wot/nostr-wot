@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { getTranslations } from "next-intl/server";
 import { Link } from "@/i18n/routing";
-import { CodeBlock, InlineCode } from "@/components/ui";
+import { CodeBlock, InlineCode, ScrollReveal } from "@/components/ui";
 import { generateAlternates, generateOpenGraph, generateTwitter } from "@/lib/metadata";
 import { type Locale } from "@/i18n/config";
 
@@ -106,17 +106,19 @@ export default async function ExtensionDocsPage() {
 
   return (
     <article className="prose prose-gray dark:prose-invert max-w-none">
-      <h1>Extension API</h1>
+      <ScrollReveal animation="fade-up">
+        <h1>Extension API</h1>
 
-      <p className="lead text-xl text-gray-600 dark:text-gray-400">
-        The WoT Extension injects <InlineCode>window.nostr.wot</InlineCode> into every page for client-side trust queries.
-      </p>
+        <p className="lead text-xl text-gray-600 dark:text-gray-400">
+          The WoT Extension injects <InlineCode>window.nostr.wot</InlineCode> into every page for client-side trust queries.
+        </p>
 
-      <div className="not-prose my-6 p-4 bg-amber-50 dark:bg-amber-950/30 rounded-lg border border-amber-200 dark:border-amber-900">
+        <div className="not-prose my-6 p-4 bg-amber-50 dark:bg-amber-950/30 rounded-lg border border-amber-200 dark:border-amber-900">
         <p className="text-sm text-amber-800 dark:text-amber-200">
           <strong>Prerequisite:</strong> Users must have the <Link href="/download" className="underline">WoT Extension</Link> installed and configured.
         </p>
-      </div>
+        </div>
+      </ScrollReveal>
 
       {/* Setup */}
       <section id="setup" className="mb-12 scroll-mt-24">

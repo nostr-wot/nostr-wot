@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { getTranslations } from "next-intl/server";
 import { Link } from "@/i18n/routing";
-import { CodeBlock, InlineCode, TerminalBlock } from "@/components/ui";
+import { CodeBlock, InlineCode, TerminalBlock, ScrollReveal } from "@/components/ui";
 import { generateAlternates, generateOpenGraph, generateTwitter } from "@/lib/metadata";
 import { type Locale } from "@/i18n/config";
 
@@ -33,11 +33,13 @@ export default async function SDKDocsPage() {
 
   return (
     <article className="prose prose-gray dark:prose-invert max-w-none">
-      <h1>SDK Reference</h1>
+      <ScrollReveal animation="fade-up">
+        <h1>SDK Reference</h1>
 
-      <p className="lead text-xl text-gray-600 dark:text-gray-400">
-        TypeScript SDK for the Oracle API with full type safety, React hooks, and comprehensive error handling.
-      </p>
+        <p className="lead text-xl text-gray-600 dark:text-gray-400">
+          TypeScript SDK for the Oracle API with full type safety, React hooks, and comprehensive error handling.
+        </p>
+      </ScrollReveal>
 
       {/* Installation */}
       <section id="setup" className="scroll-mt-24">

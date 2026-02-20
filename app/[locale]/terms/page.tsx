@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { getTranslations } from "next-intl/server";
 import { Link } from "@/i18n/routing";
+import { ScrollReveal } from "@/components/ui";
 import { generateAlternates, generateOpenGraph, generateTwitter } from "@/lib/metadata";
 import { type Locale } from "@/i18n/config";
 
@@ -54,12 +55,14 @@ export default async function TermsPage() {
       <main>
       {/* Hero */}
       <section className="py-16 bg-gradient-to-b from-gray-50 to-white dark:from-gray-900 dark:to-gray-950">
-        <div className="max-w-4xl mx-auto px-6 text-center">
-          <h1 className="text-4xl font-bold mb-4">{t("hero.title")}</h1>
-          <p className="text-xl text-gray-600 dark:text-gray-400">
-            {t("hero.lastUpdated")}
-          </p>
-        </div>
+        <ScrollReveal animation="fade-up">
+          <div className="max-w-4xl mx-auto px-6 text-center">
+            <h1 className="text-4xl font-bold mb-4">{t("hero.title")}</h1>
+            <p className="text-xl text-gray-600 dark:text-gray-400">
+              {t("hero.lastUpdated")}
+            </p>
+          </div>
+        </ScrollReveal>
       </section>
 
       {/* Content */}

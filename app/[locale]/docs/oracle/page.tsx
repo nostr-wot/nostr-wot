@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { getTranslations } from "next-intl/server";
 import { Link } from "@/i18n/routing";
-import { CodeBlock, InlineCode, TerminalBlock } from "@/components/ui";
+import { CodeBlock, InlineCode, TerminalBlock, ScrollReveal } from "@/components/ui";
 import { generateAlternates, generateOpenGraph, generateTwitter } from "@/lib/metadata";
 import { type Locale } from "@/i18n/config";
 
@@ -57,11 +57,13 @@ export default async function OracleDocsPage() {
 
   return (
     <article className="prose prose-gray dark:prose-invert max-w-none">
-      <h1>Oracle API</h1>
+      <ScrollReveal animation="fade-up">
+        <h1>Oracle API</h1>
 
-      <p className="lead text-xl text-gray-600 dark:text-gray-400">
-        REST API for server-side Web of Trust queries. No extension required.
-      </p>
+        <p className="lead text-xl text-gray-600 dark:text-gray-400">
+          REST API for server-side Web of Trust queries. No extension required.
+        </p>
+      </ScrollReveal>
 
       {/* Public Servers */}
       <section id="servers" className="scroll-mt-24">
