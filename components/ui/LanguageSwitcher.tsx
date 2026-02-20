@@ -4,14 +4,22 @@ import { useLocale } from "next-intl";
 import { usePathname, useRouter } from "@/i18n/routing";
 import { locales, localeNames, localeISO, type Locale } from "@/i18n/config";
 import { ChevronDownIcon } from "@/components/icons";
+import { useBlogTranslations } from "@/contexts/BlogTranslationsContext";
 
 export function LanguageSwitcher() {
   const locale = useLocale();
   const pathname = usePathname();
   const router = useRouter();
+  const { translations } = useBlogTranslations();
 
   const handleChange = (newLocale: Locale) => {
-    router.replace(pathname, { locale: newLocale });
+    // If we have blog translations, use the translated slug
+    if (translations && translations[newLocale]) {
+      const translatedSlug = translations[newLocale];
+      router.replace(`/blog/${translatedSlug}`, { locale: newLocale });
+    } else {
+      router.replace(pathname, { locale: newLocale });
+    }
   };
 
   return (

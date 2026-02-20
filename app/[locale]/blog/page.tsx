@@ -2,7 +2,7 @@ import type { Metadata } from 'next';
 import { getTranslations } from 'next-intl/server';
 import { Link } from '@/i18n/routing';
 import { getAllBlogPosts, getAllTags } from '@/lib/blog';
-import { generateAlternates, generateOpenGraph, generateTwitter } from '@/lib/metadata';
+import { generateAlternates, generateOpenGraph, generateTwitter, getFullUrl } from '@/lib/metadata';
 import { type Locale } from '@/i18n/config';
 import { BlogCard, BlogSidebar } from '@/components/blog';
 import { ScrollReveal, Section, SectionHeader } from '@/components/ui';
@@ -63,7 +63,7 @@ export default async function BlogPage({ params, searchParams }: Props) {
     '@type': 'Blog',
     'name': 'Nostr Web of Trust Blog',
     'description': 'News, updates, and insights about Web of Trust on Nostr',
-    'url': 'https://nostr-wot.com/blog',
+    'url': getFullUrl('/blog', locale as Locale),
     'publisher': {
       '@type': 'Organization',
       'name': 'Nostr Web of Trust',
@@ -81,7 +81,7 @@ export default async function BlogPage({ params, searchParams }: Props) {
         '@type': 'Person',
         'name': post.author.name,
       },
-      'url': `https://nostr-wot.com/blog/${post.slug}`,
+      'url': getFullUrl(`/blog/${post.slug}`, locale as Locale),
     })),
   };
 

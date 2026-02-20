@@ -14,7 +14,7 @@ const ogLocaleMap: Record<Locale, string> = {
   es: 'es_ES',
   pt: 'pt_BR',
 };
-import { BlogContent, BlogCard, BlogSidebar } from '@/components/blog';
+import { BlogContent, BlogCard, BlogSidebar, BlogPostWrapper } from '@/components/blog';
 import { ScrollReveal, Section, LinkButton } from '@/components/ui';
 import { ArrowLeftIcon } from '@/components/icons';
 import {NewsletterSection} from "@/components/layout/NewsletterSection";
@@ -121,13 +121,13 @@ export default async function BlogPostPage({ params }: Props) {
     },
     'mainEntityOfPage': {
       '@type': 'WebPage',
-      '@id': `https://nostr-wot.com/blog/${slug}`,
+      '@id': getFullUrl(`/blog/${slug}`, locale as Locale),
     },
     'keywords': post.tags.join(', '),
   };
 
   return (
-    <>
+    <BlogPostWrapper translations={post.translations}>
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
@@ -308,6 +308,6 @@ export default async function BlogPostPage({ params }: Props) {
           <NewsletterSection />
         </ScrollReveal>
       </main>
-    </>
+    </BlogPostWrapper>
   );
 }

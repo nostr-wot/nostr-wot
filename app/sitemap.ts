@@ -6,15 +6,15 @@ const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || "https://nostr-wot.com";
 
 // Helper to generate URL with locale prefix only for non-default locales
 // This matches the 'localePrefix: as-needed' routing configuration
-// For locale-only URLs (homepage), add trailing slash to match canonical URLs
+// No trailing slashes - Next.js redirects them away (308)
 function getLocalizedUrl(path: string, locale: string): string {
   const normalizedPath = path === "" ? "" : path;
   if (locale === defaultLocale) {
     return `${BASE_URL}${normalizedPath}`;
   }
-  // For homepage of non-default locales, add trailing slash to match canonical
+  // No trailing slash for homepage - Next.js handles /es/ -> /es redirect
   if (normalizedPath === "") {
-    return `${BASE_URL}/${locale}/`;
+    return `${BASE_URL}/${locale}`;
   }
   return `${BASE_URL}/${locale}${normalizedPath}`;
 }
