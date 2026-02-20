@@ -35,3 +35,12 @@ export function OperaIcon({ className }: { className?: string }) {
     </svg>
   );
 }
+
+export function FirefoxIcon({ className }: { className?: string }) {
+  return (
+    <svg viewBox="0 0 24 24" fill="currentColor" className={className}>
+      <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8 0-3.31 2.02-6.15 4.89-7.35-.17.67-.26 1.37-.26 2.1 0 2.76 1.56 5.16 3.83 6.37l.54.27.54-.27c2.27-1.21 3.83-3.61 3.83-6.37 0-.73-.09-1.43-.26-2.1C17.98 5.85 20 8.69 20 12c0 4.41-3.59 8-8 8z" />
+      <circle cx="12" cy="10" r="3" />
+    </svg>
+  );
+}

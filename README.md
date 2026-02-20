@@ -14,7 +14,7 @@ The WoT Extension adds Web of Trust capabilities directly to your browser, expos
 
 - **Repository:** [github.com/nostr-wot/nostr-wot-extension](https://github.com/nostr-wot/nostr-wot-extension)
 - **Features:** Real-time trust scoring, visual indicators, client-side filtering
-- **Browsers:** Chrome, Brave, Edge, Opera (Firefox coming soon)
+- **Browsers:** Chrome, Brave, Edge, Opera, Firefox
 
 ### JavaScript SDK
 

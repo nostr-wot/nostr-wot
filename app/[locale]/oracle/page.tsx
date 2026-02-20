@@ -123,16 +123,18 @@ export default async function OraclePage() {
   const t = await getTranslations("oracle");
 
   // JSON-LD structured data
+  // Using WebApplication type for API server (subtype of SoftwareApplication)
   const jsonLd = {
     "@context": "https://schema.org",
-    "@type": "SoftwareApplication",
+    "@type": "WebApplication",
     "name": "WoT Oracle Server",
-    "applicationCategory": "WebApplication",
+    "applicationCategory": "DeveloperApplication",
+    "applicationSubCategory": "API Server",
     "operatingSystem": "Linux, Docker",
     "description": "Self-hostable REST API server for Web of Trust social graph queries. Query social distance, find paths, and analyze follow relationships on Nostr.",
     "url": "https://nostr-wot.com/oracle",
-    "codeRepository": "https://github.com/nostr-wot/nostr-wot-oracle",
-    "programmingLanguage": "Rust",
+    "downloadUrl": "https://github.com/nostr-wot/nostr-wot-oracle/releases",
+    "softwareVersion": "1.0.0",
     "offers": {
       "@type": "Offer",
       "price": "0",

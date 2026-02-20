@@ -20,7 +20,7 @@ export {
 export { LogoIcon, NostrLogo } from "./Logo";
 
 // Browser icons
-export { ChromeIcon, BraveIcon, EdgeIcon, OperaIcon } from "./BrowserIcons";
+export { ChromeIcon, BraveIcon, EdgeIcon, OperaIcon, FirefoxIcon } from "./BrowserIcons";
 
 // Feature page icons
 export {

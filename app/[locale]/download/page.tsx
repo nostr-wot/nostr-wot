@@ -7,6 +7,7 @@ import {
   BraveIcon,
   EdgeIcon,
   OperaIcon,
+  FirefoxIcon,
   LightningIcon,
   LockOutlineIcon,
   CodeOutlineIcon,
@@ -39,12 +40,14 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 }
 
 const CHROME_STORE_URL = "https://chromewebstore.google.com/detail/nostr-wot-extension/gfmefgdkmjpjinecjchlangpamhclhdo";
+const FIREFOX_STORE_URL = "https://addons.mozilla.org/addon/nostr-wot-extension/";
 
 const BROWSERS = [
-  { key: "chrome", Icon: ChromeIcon },
-  { key: "brave", Icon: BraveIcon },
-  { key: "edge", Icon: EdgeIcon },
-  { key: "opera", Icon: OperaIcon },
+  { key: "chrome", Icon: ChromeIcon, url: CHROME_STORE_URL },
+  { key: "brave", Icon: BraveIcon, url: CHROME_STORE_URL },
+  { key: "edge", Icon: EdgeIcon, url: CHROME_STORE_URL },
+  { key: "opera", Icon: OperaIcon, url: CHROME_STORE_URL },
+  { key: "firefox", Icon: FirefoxIcon, url: FIREFOX_STORE_URL },
 ];
 
 const FAQ_KEYS = ["whatIsWot", "howExtensionWorks", "isDataPrivate", "supportedBrowsers", "nostrAccount", "isFree"];
@@ -64,7 +67,7 @@ export default async function DownloadPage() {
     "@type": "SoftwareApplication",
     "name": "Nostr Web of Trust Extension",
     "applicationCategory": "BrowserApplication",
-    "operatingSystem": "Chrome, Brave, Edge, Opera",
+    "operatingSystem": "Chrome, Brave, Edge, Opera, Firefox",
     "description": "Browser extension that provides Web of Trust API for Nostr apps. Filter spam, verify reputation, and explore your social graph.",
     "url": "https://nostr-wot.com/download",
     "downloadUrl": "https://chromewebstore.google.com/detail/nostr-wot-extension/gfmefgdkmjpjinecjchlangpamhclhdo",
@@ -116,11 +119,11 @@ export default async function DownloadPage() {
             <p className="text-xl text-gray-600 dark:text-gray-400 max-w-2xl mx-auto mb-12">{t("hero.subtitle")}</p>
           </ScrollReveal>
 
-          <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4 max-w-3xl mx-auto">
+          <div className="grid sm:grid-cols-2 lg:grid-cols-5 gap-4 max-w-4xl mx-auto">
             {BROWSERS.map((browser, i) => (
               <ScrollReveal key={browser.key} animation="fade-up" delay={150 + i * 75}>
                 <a
-                  href={CHROME_STORE_URL}
+                  href={browser.url}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="flex flex-col items-center p-6 bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 hover:border-primary dark:hover:border-primary hover:shadow-lg transition-all group"
@@ -132,16 +135,6 @@ export default async function DownloadPage() {
               </ScrollReveal>
             ))}
           </div>
-
-          <ScrollReveal animation="fade-up" delay={500}>
-            <p className="text-sm text-gray-500 dark:text-gray-400 mt-6">
-              {t("browsers.firefoxNotice")}{" "}
-              <a href="https://github.com/nostr-wot/nostr-wot-extension" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">
-                {t("browsers.starRepo")}
-              </a>{" "}
-              {t("browsers.toGetNotified")}
-            </p>
-          </ScrollReveal>
         </div>
       </section>
 
