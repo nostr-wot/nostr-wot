@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { getTranslations } from "next-intl/server";
 import Link from "next/link";
 import { CodeBlock, TerminalBlock } from "@/components/ui";
-import { generateAlternates } from "@/lib/metadata";
+import { generateAlternates, generateOpenGraph, generateTwitter } from "@/lib/metadata";
 import { type Locale } from "@/i18n/config";
 
 type Props = {
@@ -12,10 +12,20 @@ type Props = {
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { locale } = await params;
   const t = await getTranslations("docs");
+  const title = `${t("quickStart.title")} | ${t("meta.title")}`;
+  const description = "Get started with Nostr Web of Trust in minutes. Quick start guide for browser extension and Oracle API.";
+
   return {
-    title: `${t("quickStart.title")} | ${t("meta.title")}`,
-    description: "Get started with Nostr Web of Trust in minutes. Quick start guide for browser extension and Oracle API.",
+    title,
+    description,
     alternates: generateAlternates("/docs/getting-started", locale as Locale),
+    openGraph: generateOpenGraph({
+      title,
+      description,
+      path: "/docs/getting-started",
+      locale: locale as Locale,
+    }),
+    twitter: generateTwitter({ title, description }),
   };
 }
 

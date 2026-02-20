@@ -2,7 +2,7 @@ import type { Metadata } from 'next';
 import { getTranslations } from 'next-intl/server';
 import { Link } from '@/i18n/routing';
 import { getAllBlogPosts, getAllTags } from '@/lib/blog';
-import { generateAlternates } from '@/lib/metadata';
+import { generateAlternates, generateOpenGraph, generateTwitter } from '@/lib/metadata';
 import { type Locale } from '@/i18n/config';
 import { BlogCard, BlogSidebar } from '@/components/blog';
 import { ScrollReveal, Section, SectionHeader } from '@/components/ui';
@@ -16,21 +16,20 @@ type Props = {
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { locale } = await params;
   const t = await getTranslations('blog.meta');
+  const title = t('title');
+  const description = t('description');
 
   return {
-    title: t('title'),
-    description: t('description'),
+    title,
+    description,
     alternates: generateAlternates('/blog', locale as Locale),
-    openGraph: {
-      title: t('title'),
-      description: t('description'),
-      type: 'website',
-    },
-    twitter: {
-      card: 'summary_large_image',
-      title: t('title'),
-      description: t('description'),
-    },
+    openGraph: generateOpenGraph({
+      title,
+      description,
+      path: '/blog',
+      locale: locale as Locale,
+    }),
+    twitter: generateTwitter({ title, description }),
   };
 }
 

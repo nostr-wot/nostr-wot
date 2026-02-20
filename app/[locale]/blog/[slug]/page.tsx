@@ -3,8 +3,17 @@ import { notFound } from 'next/navigation';
 import Image from 'next/image';
 import { getTranslations } from 'next-intl/server';
 import { getBlogPost, getBlogSlugs, getRelatedPosts, getAllTags, getAllBlogPosts, formatDate } from '@/lib/blog';
-import { generateBlogAlternates } from '@/lib/metadata';
+import { generateBlogAlternates, getFullUrl } from '@/lib/metadata';
 import { type Locale, locales } from '@/i18n/config';
+
+const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || 'https://nostr-wot.com';
+
+// Locale to OpenGraph locale format mapping
+const ogLocaleMap: Record<Locale, string> = {
+  en: 'en_US',
+  es: 'es_ES',
+  pt: 'pt_BR',
+};
 import { BlogContent, BlogCard, BlogSidebar } from '@/components/blog';
 import { ScrollReveal, Section, LinkButton } from '@/components/ui';
 import { ArrowLeftIcon } from '@/components/icons';
@@ -41,6 +50,8 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const description = post.seoDescription || post.excerpt;
   const ogImage = post.ogImage || post.featuredImage;
 
+  const ogImageUrl = ogImage.startsWith('http') ? ogImage : `${BASE_URL}${ogImage}`;
+
   return {
     title,
     description,
@@ -48,13 +59,16 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     openGraph: {
       title,
       description,
+      url: getFullUrl(`/blog/${slug}`, locale as Locale),
+      siteName: 'Nostr WoT',
+      locale: ogLocaleMap[locale as Locale],
       type: 'article',
       publishedTime: post.date,
       authors: [post.author.name],
       tags: post.tags,
       images: [
         {
-          url: ogImage,
+          url: ogImageUrl,
           width: 1200,
           height: 630,
           alt: post.title,
@@ -65,7 +79,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       card: 'summary_large_image',
       title,
       description,
-      images: [ogImage],
+      images: [ogImageUrl],
     },
   };
 }

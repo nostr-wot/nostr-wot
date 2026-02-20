@@ -11,7 +11,7 @@ import {
   LockOutlineIcon,
   CodeOutlineIcon,
 } from "@/components/icons";
-import { generateAlternates } from "@/lib/metadata";
+import { generateAlternates, generateOpenGraph, generateTwitter } from "@/lib/metadata";
 import { type Locale } from "@/i18n/config";
 
 type Props = {
@@ -21,20 +21,20 @@ type Props = {
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { locale } = await params;
   const t = await getTranslations("download.meta");
+  const title = t("title");
+  const description = t("description");
+
   return {
-    title: t("title"),
-    description: t("description"),
+    title,
+    description,
     alternates: generateAlternates("/download", locale as Locale),
-    openGraph: {
-      title: t("title"),
-      description: t("description"),
-      type: "website",
-    },
-    twitter: {
-      card: "summary_large_image",
-      title: t("title"),
-      description: t("description"),
-    },
+    openGraph: generateOpenGraph({
+      title,
+      description,
+      path: "/download",
+      locale: locale as Locale,
+    }),
+    twitter: generateTwitter({ title, description }),
   };
 }
 

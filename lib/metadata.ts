@@ -2,6 +2,14 @@ import { Metadata } from 'next';
 import { locales, defaultLocale, type Locale } from '@/i18n/config';
 
 const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || 'https://nostr-wot.com';
+const DEFAULT_OG_IMAGE = '/icon-512.png';
+
+// Locale to OpenGraph locale format mapping
+const ogLocaleMap: Record<Locale, string> = {
+  en: 'en_US',
+  es: 'es_ES',
+  pt: 'pt_BR',
+};
 
 /**
  * Generates the full URL for a given path and locale
@@ -93,5 +101,62 @@ export function generateBlogAlternates(
   return {
     canonical,
     languages,
+  };
+}
+
+/**
+ * Generates complete OpenGraph metadata with all required fields
+ * @param options - OpenGraph options
+ * @returns Complete OpenGraph metadata object
+ */
+export function generateOpenGraph(options: {
+  title: string;
+  description: string;
+  path: string;
+  locale: Locale;
+  type?: 'website' | 'article';
+  image?: string;
+  imageAlt?: string;
+}): Metadata['openGraph'] {
+  const { title, description, path, locale, type = 'website', image, imageAlt } = options;
+  const url = getFullUrl(path, locale);
+  const ogImage = image || DEFAULT_OG_IMAGE;
+
+  return {
+    title,
+    description,
+    url,
+    siteName: 'Nostr WoT',
+    locale: ogLocaleMap[locale],
+    type,
+    images: [
+      {
+        url: ogImage.startsWith('http') ? ogImage : `${BASE_URL}${ogImage}`,
+        width: 1200,
+        height: 630,
+        alt: imageAlt || title,
+      },
+    ],
+  };
+}
+
+/**
+ * Generates Twitter card metadata
+ * @param options - Twitter card options
+ * @returns Twitter metadata object
+ */
+export function generateTwitter(options: {
+  title: string;
+  description: string;
+  image?: string;
+}): Metadata['twitter'] {
+  const { title, description, image } = options;
+  const twitterImage = image || DEFAULT_OG_IMAGE;
+
+  return {
+    card: 'summary_large_image',
+    title,
+    description,
+    images: [twitterImage.startsWith('http') ? twitterImage : `${BASE_URL}${twitterImage}`],
   };
 }

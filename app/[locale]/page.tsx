@@ -29,7 +29,7 @@ import {
   ChevronDownIcon,
 } from "@/components/icons";
 import { CodeBlock } from "@/components/ui";
-import { generateAlternates } from "@/lib/metadata";
+import { generateAlternates, generateOpenGraph, generateTwitter } from "@/lib/metadata";
 import { type Locale } from "@/i18n/config";
 import {NewsletterSection} from "@/components/layout/NewsletterSection";
 
@@ -40,20 +40,20 @@ type Props = {
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { locale } = await params;
   const t = await getTranslations("home.meta");
+  const title = t("title");
+  const description = t("description");
+
   return {
-    title: t("title"),
-    description: t("description"),
+    title,
+    description,
     alternates: generateAlternates("/", locale as Locale),
-    openGraph: {
-      title: t("title"),
-      description: t("description"),
-      type: "website",
-    },
-    twitter: {
-      card: "summary_large_image",
-      title: t("title"),
-      description: t("description"),
-    },
+    openGraph: generateOpenGraph({
+      title,
+      description,
+      path: "/",
+      locale: locale as Locale,
+    }),
+    twitter: generateTwitter({ title, description }),
   };
 }
 
