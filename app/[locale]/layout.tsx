@@ -20,7 +20,7 @@ export const metadata: Metadata = {
     template: "%s | Nostr WoT",
   },
   description:
-    "Open infrastructure for trust-based filtering on Nostr. Empower your apps with reputation scoring and social distance metrics.",
+    "Filter spam and find trusted content on Nostr using your trust network. A decentralized reputation system without central moderators.",
   keywords: [
     "nostr",
     "web of trust",
@@ -41,7 +41,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: "Nostr Web of Trust",
     description:
-      "Open infrastructure for trust-based filtering on Nostr. Empower your apps with reputation scoring and social distance metrics.",
+      "Filter spam and find trusted content on Nostr using your trust network. A decentralized reputation system without central moderators.",
     url: "https://nostr-wot.com",
     siteName: "Nostr WoT",
     locale: "en_US",
@@ -51,7 +51,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: "Nostr Web of Trust",
     description:
-      "Open infrastructure for trust-based filtering on Nostr.",
+      "Filter spam and find trusted content on Nostr using your trust network.",
   },
 };
 

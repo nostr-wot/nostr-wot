@@ -293,7 +293,7 @@ Subscribed via the Nostr WoT website.
 
       <div style="background-color: #f0fdf4; border: 1px solid #bbf7d0; padding: 16px; border-radius: 8px; margin-bottom: 24px;">
         <p style="margin: 0; color: #166534; font-size: 14px;">
-          <strong>Get started:</strong> If you haven't already, <a href="https://nostr-wot.com/download" style="color: #15803d; text-decoration: underline;">download the extension</a> to experience trust-based filtering on Nostr.
+          <strong>Get started:</strong> If you haven't already, <a href="https://nostr-wot.com/download" style="color: #15803d; text-decoration: underline;">download the extension</a> to filter spam and find trusted content on Nostr.
         </p>
       </div>
 

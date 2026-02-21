@@ -68,7 +68,7 @@ export default async function Home() {
     "alternateName": "Nostr WoT",
     "url": "https://nostr-wot.com",
     "logo": "https://nostr-wot.com/icon-512.png",
-    "description": "Open infrastructure for trust-based filtering on Nostr. Empower your apps with reputation scoring and social distance metrics.",
+    "description": "Filter spam and find trusted content on Nostr using your trust network. A decentralized reputation system without central moderators.",
     "sameAs": [
       "https://github.com/nostr-wot",
       "https://twitter.com/nostr_wot",
@@ -80,7 +80,7 @@ export default async function Home() {
     "@type": "WebSite",
     "name": "Nostr Web of Trust",
     "url": "https://nostr-wot.com",
-    "description": "Open infrastructure for trust-based filtering on Nostr",
+    "description": "Filter spam and find trusted content on Nostr using your trust network",
     "potentialAction": {
       "@type": "SearchAction",
       "target": "https://nostr-wot.com/docs?search={search_term_string}",
