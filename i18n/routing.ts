@@ -10,6 +10,7 @@ export const routing = defineRouting({
   // This prevents redirects that break pages with translated slugs (like blog posts)
   // where /blog/exploring-the-playground would incorrectly redirect to /es/blog/exploring-the-playground
   localeDetection: false,
+  alternateLinks: false,
 });
 
 export const { Link, redirect, usePathname, useRouter, getPathname } =
