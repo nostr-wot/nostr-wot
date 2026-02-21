@@ -96,6 +96,11 @@ export default async function LocaleLayout({ children, params }: Props) {
             `,
           }}
         />
+        <Script
+          src="https://analytics.ahrefs.com/analytics.js"
+          data-key="vfOr4k8Sfsy9wYfOO0Nehw"
+          strategy="beforeInteractive"
+        />
       </head>
       <body className="bg-gray-50 dark:bg-gray-950 text-gray-900 dark:text-gray-100 min-h-screen">
         <ThemeProvider>
@@ -115,11 +120,6 @@ export default async function LocaleLayout({ children, params }: Props) {
         </ThemeProvider>
       </body>
       {gaId && <GoogleAnalytics gaId={gaId} />}
-      <Script
-        src="https://analytics.ahrefs.com/analytics.js"
-        data-key="vfOr4k8Sfsy9wYfOO0Nehw"
-        strategy="afterInteractive"
-      />
     </html>
   );
 }
