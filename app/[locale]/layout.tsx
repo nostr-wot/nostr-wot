@@ -1,6 +1,5 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
-import Script from "next/script";
 import { NextIntlClientProvider } from "next-intl";
 import { getMessages, setRequestLocale } from "next-intl/server";
 import { GoogleAnalytics } from "@next/third-parties/google";
@@ -96,10 +95,10 @@ export default async function LocaleLayout({ children, params }: Props) {
             `,
           }}
         />
-        <Script
+        <script
           src="https://analytics.ahrefs.com/analytics.js"
           data-key="vfOr4k8Sfsy9wYfOO0Nehw"
-          strategy="beforeInteractive"
+          async
         />
       </head>
       <body className="bg-gray-50 dark:bg-gray-950 text-gray-900 dark:text-gray-100 min-h-screen">
