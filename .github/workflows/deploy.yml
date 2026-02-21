@@ -53,3 +53,15 @@ jobs:
             pm2 delete nostr-wot || true
             pm2 start "npm run start" --name nostr-wot
             pm2 save
+
+      - name: Wait for service to start
+        run: sleep 15
+
+      - name: Cache IndexNow state
+        uses: actions/cache@v4
+        with:
+          path: scripts/.indexnow-cache.json
+          key: indexnow-cache
+
+      - name: Submit to IndexNow
+        run: npm run indexnow
