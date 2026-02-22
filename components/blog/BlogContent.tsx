@@ -2,6 +2,7 @@ import { MDXRemote } from 'next-mdx-remote/rsc';
 import Image from 'next/image';
 import { Link } from '@/i18n/routing';
 import { CodeBlock } from '@/components/ui';
+import { WikiLink } from './WikiPreview';
 
 // Custom components for MDX
 const components = {
@@ -98,6 +99,7 @@ const components = {
     <em className="italic" {...props} />
   ),
   // Custom components
+  WikiLink,
   Callout: ({ type = 'info', children }: { type?: 'info' | 'warning' | 'tip'; children: React.ReactNode }) => {
     const styles = {
       info: 'bg-blue-50 dark:bg-blue-900/20 border-blue-200 dark:border-blue-800 text-blue-800 dark:text-blue-200',

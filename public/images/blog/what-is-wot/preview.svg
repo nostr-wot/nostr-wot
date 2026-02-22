@@ -1,0 +1,82 @@
+<svg width="800" height="450" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#1e1b4b;stop-opacity:1" />
+      <stop offset="50%" style="stop-color:#312e81;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#4c1d95;stop-opacity:1" />
+    </linearGradient>
+    <radialGradient id="glow" cx="50%" cy="40%" r="40%">
+      <stop offset="0%" style="stop-color:#7c3aed;stop-opacity:0.3" />
+      <stop offset="100%" style="stop-color:#1e1b4b;stop-opacity:0" />
+    </radialGradient>
+    <filter id="shadow">
+      <feDropShadow dx="0" dy="0" stdDeviation="3" flood-color="#a78bfa" flood-opacity="0.5"/>
+    </filter>
+    <filter id="softglow" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur stdDeviation="6" result="blur"/>
+      <feMerge>
+        <feMergeNode in="blur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+  </defs>
+
+  <!-- Background -->
+  <rect width="100%" height="100%" fill="url(#bg)"/>
+  <rect width="100%" height="100%" fill="url(#glow)"/>
+
+  <!-- Trust rings -->
+  <circle cx="400" cy="180" r="150" fill="none" stroke="rgba(167,139,250,0.08)" stroke-width="1" stroke-dasharray="4,8"/>
+  <circle cx="400" cy="180" r="105" fill="none" stroke="rgba(167,139,250,0.12)" stroke-width="1" stroke-dasharray="4,8"/>
+  <circle cx="400" cy="180" r="60" fill="none" stroke="rgba(167,139,250,0.18)" stroke-width="1" stroke-dasharray="4,8"/>
+
+  <!-- Connections center to hop 1 -->
+  <line x1="400" y1="180" x2="340" y2="130" stroke="rgba(74,222,128,0.5)" stroke-width="1.5"/>
+  <line x1="400" y1="180" x2="460" y2="130" stroke="rgba(74,222,128,0.5)" stroke-width="1.5"/>
+  <line x1="400" y1="180" x2="355" y2="230" stroke="rgba(74,222,128,0.5)" stroke-width="1.5"/>
+  <line x1="400" y1="180" x2="460" y2="220" stroke="rgba(74,222,128,0.5)" stroke-width="1.5"/>
+
+  <!-- Connections hop 1 to hop 2 -->
+  <line x1="340" y1="130" x2="280" y2="90" stroke="rgba(250,204,21,0.35)" stroke-width="1"/>
+  <line x1="340" y1="130" x2="285" y2="170" stroke="rgba(250,204,21,0.35)" stroke-width="1"/>
+  <line x1="460" y1="130" x2="520" y2="90" stroke="rgba(250,204,21,0.35)" stroke-width="1"/>
+  <line x1="460" y1="130" x2="530" y2="165" stroke="rgba(250,204,21,0.35)" stroke-width="1"/>
+  <line x1="355" y1="230" x2="300" y2="275" stroke="rgba(250,204,21,0.35)" stroke-width="1"/>
+  <line x1="460" y1="220" x2="520" y2="265" stroke="rgba(250,204,21,0.35)" stroke-width="1"/>
+
+  <!-- Connections hop 2 to hop 3 -->
+  <line x1="280" y1="90" x2="230" y2="55" stroke="rgba(248,113,113,0.2)" stroke-width="1"/>
+  <line x1="520" y1="90" x2="575" y2="55" stroke="rgba(248,113,113,0.2)" stroke-width="1"/>
+  <line x1="300" y1="275" x2="250" y2="310" stroke="rgba(248,113,113,0.2)" stroke-width="1"/>
+  <line x1="520" y1="265" x2="575" y2="300" stroke="rgba(248,113,113,0.2)" stroke-width="1"/>
+
+  <!-- Hop 3 nodes -->
+  <circle cx="230" cy="55" r="4" fill="rgba(248,113,113,0.6)"/>
+  <circle cx="575" cy="55" r="4" fill="rgba(248,113,113,0.6)"/>
+  <circle cx="250" cy="310" r="4" fill="rgba(248,113,113,0.5)"/>
+  <circle cx="575" cy="300" r="3" fill="rgba(248,113,113,0.5)"/>
+
+  <!-- Hop 2 nodes -->
+  <circle cx="280" cy="90" r="6" fill="rgba(250,204,21,0.8)" filter="url(#shadow)"/>
+  <circle cx="285" cy="170" r="5" fill="rgba(250,204,21,0.7)"/>
+  <circle cx="520" cy="90" r="6" fill="rgba(250,204,21,0.8)" filter="url(#shadow)"/>
+  <circle cx="530" cy="165" r="5" fill="rgba(250,204,21,0.7)"/>
+  <circle cx="300" cy="275" r="6" fill="rgba(250,204,21,0.8)" filter="url(#shadow)"/>
+  <circle cx="520" cy="265" r="5" fill="rgba(250,204,21,0.7)"/>
+
+  <!-- Hop 1 nodes -->
+  <circle cx="340" cy="130" r="9" fill="rgba(74,222,128,0.9)" filter="url(#shadow)"/>
+  <circle cx="460" cy="130" r="9" fill="rgba(74,222,128,0.9)" filter="url(#shadow)"/>
+  <circle cx="355" cy="230" r="8" fill="rgba(74,222,128,0.85)" filter="url(#shadow)"/>
+  <circle cx="460" cy="220" r="8" fill="rgba(74,222,128,0.85)" filter="url(#shadow)"/>
+
+  <!-- Center node -->
+  <circle cx="400" cy="180" r="20" fill="rgba(139,92,246,0.3)"/>
+  <circle cx="400" cy="180" r="14" fill="#8b5cf6" filter="url(#softglow)"/>
+  <circle cx="400" cy="180" r="8" fill="white"/>
+
+  <!-- Person icon -->
+  <circle cx="400" cy="177" r="3" fill="#8b5cf6"/>
+  <path d="M395 186 C395 182, 405 182, 405 186" fill="#8b5cf6"/>
+
+</svg>

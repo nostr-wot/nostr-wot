@@ -1,0 +1,121 @@
+---
+title: "What Is Web of Trust?"
+description: "Web of Trust is a decentralized model where trust flows through your social connections instead of relying on central authorities."
+excerpt: "Web of Trust replaces centralized gatekeepers with something more natural: the trust you already place in the people you know. Here's how it works and why it matters for Nostr."
+date: "2026-02-22"
+author:
+  name: "Leon Acosta"
+  avatar: "/authors/leon-profile.jpg"
+  npub: "npub1gxdhmu9swqduwhr6zptjy4ya693zp3ql28nemy4hd97kuufyrqdqwe5zfk"
+  socials:
+    linkedin: "leonacosta"
+    instagram: "leonacosta.now"
+    twitter: "leonacosta_"
+    github: "leonacostaok"
+featuredImage: "/images/blog/what-is-wot/featured.svg"
+previewImage: "/images/blog/what-is-wot/preview.jpg"
+tags:
+  - "Education"
+  - "Web of Trust"
+  - "Nostr"
+published: true
+seoTitle: "What Is Web of Trust? Decentralized Trust Explained"
+seoDescription: "Learn how Web of Trust uses your social graph to build decentralized trust. No central authority needed — just real human connections."
+ogImage: "/images/blog/what-is-wot/og.jpg"
+translationKey: "what-is-web-of-trust"
+---
+
+Trust is the foundation of every online interaction. When you read a post, follow an account, or share content, you're making a judgment about who deserves your attention. But how do you make that judgment at scale, without a company deciding for you?
+
+That's the question **Web of Trust** answers.
+
+## Trust Without Gatekeepers
+
+In most platforms, trust is centralized. A company verifies accounts, curates feeds, and decides who gets banned. It works — until it doesn't. Censorship, bias, and opaque algorithms erode the very trust they claim to provide.
+
+Web of Trust flips this model. Instead of a central authority, **you** are the root of your own trust network. The people you follow are your first circle of trust. The people they follow form your second circle. And so on.
+
+<Callout type="tip">
+Think of it like real life. You trust your friends. You somewhat trust your friends' friends. A stranger five handshakes away? You'd probably want some proof before trusting them.
+</Callout>
+
+## How It Works
+
+Web of Trust maps your social connections into a directed graph with measurable trust levels:
+
+- **1 hop** — People you follow directly. Highest trust.
+- **2 hops** — Friends of friends. Moderate trust.
+- **3 hops** — Two degrees removed. Lower trust.
+- **Beyond 3 hops** — Essentially unknown to your network.
+
+Each hop reduces the trust score. But it's not just about distance — the number of **paths** matters too. If five of your trusted contacts all follow the same person, that person has more credibility than someone reached through a single chain.
+
+## The Origin of the Idea
+
+Web of Trust isn't new. <WikiLink href="https://en.wikipedia.org/wiki/Phil_Zimmermann" extract="Creator of PGP, the most widely used email encryption software in the world, and a key figure in the public-key cryptography movement.">Phil Zimmermann</WikiLink> introduced the concept in 1991 with <WikiLink href="https://en.wikipedia.org/wiki/Pretty_Good_Privacy" extract="An encryption program that provides cryptographic privacy and authentication for data communication, created by Phil Zimmermann in 1991.">PGP</WikiLink> (Pretty Good Privacy), a system for encrypting email. In PGP's <WikiLink href="https://en.wikipedia.org/wiki/Web_of_trust" extract="A decentralized trust model used in PGP and other systems, where trust is established through a network of mutually signed keys.">Web of Trust</WikiLink>, users signed each other's public keys to vouch for their identity. If you trusted Alice, and Alice signed Bob's key, you could reasonably trust Bob too.
+
+The idea was revolutionary: **trust doesn't need a certificate authority. It can emerge from relationships.**
+
+Nostr brings this concept into social networking. Instead of signing cryptographic keys, trust flows through **follow relationships** — a natural, low-friction signal that already exists in the protocol.
+
+## Why Nostr Needs It
+
+Nostr is an open protocol. Anyone can publish. No one can be banned at the protocol level. This is its greatest strength and its biggest challenge.
+
+Without any filtering:
+
+- Bots can flood relays with spam
+- Impersonators can copy anyone's identity
+- Low-quality content competes equally with valuable posts
+
+Centralized solutions (blocklists, admin moderation) contradict Nostr's principles. Web of Trust provides a **decentralized alternative** — each user's trust network acts as a personalized, self-sovereign filter.
+
+## Web of Trust in Practice
+
+With [Nostr Web of Trust](/), your browser extension builds a local graph of your social connections. Any Nostr app can then query this graph to answer questions like:
+
+- **Is this person in my network?** Filter out complete strangers.
+- **How far away are they?** Prioritize closer connections.
+- **What's their trust score?** Make nuanced decisions.
+
+```javascript
+// Check if a pubkey is in your Web of Trust
+const trusted = await window.nostr.wot.isInMyWoT(pubkey);
+
+// Get the distance in hops
+const distance = await window.nostr.wot.getDistance(pubkey);
+
+// Get a normalized trust score (0 to 1)
+const score = await window.nostr.wot.getTrustScore(pubkey);
+```
+
+The result: your feed reflects **your** trust judgments, not an algorithm's.
+
+## Privacy by Design
+
+A trust system that tracks your social graph could be a privacy nightmare. That's why we built three modes:
+
+- **Local Mode** — Your graph stays entirely in your browser. No server ever sees it.
+- **Remote Mode** — Queries go to our oracle server, but only pubkeys are sent. No content, no metadata.
+- **Hybrid Mode** — Cached locally with remote fallback for unknown keys.
+
+You choose your trade-off between performance and privacy.
+
+## Beyond Filtering
+
+Web of Trust isn't just about blocking spam. It opens up possibilities like:
+
+- **Reputation systems** — Weight content by the author's trust score
+- **Discovery** — Find valuable accounts through trusted paths
+- **Collaborative moderation** — Communities can define shared trust boundaries
+- **Relay selection** — Prefer relays used by trusted contacts
+
+The deeper your trust graph, the more useful it becomes.
+
+## Try It Yourself
+
+Ready to see your trust network in action? [Download the extension](/download) to start filtering with Web of Trust, or explore your connections visually in the [Playground](/playground).
+
+---
+
+*Questions? Reach out on [Nostr](https://njump.me/npub1gxdhmu9swqduwhr6zptjy4ya693zp3ql28nemy4hd97kuufyrqdqwe5zfk) or check our [documentation](/docs).*
