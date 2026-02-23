@@ -1,6 +1,6 @@
 /**
  * Local cache for user profile information and trust data
- * Stores profiles in localStorage with 1-day expiration
+ * Stores profiles in localStorage with 30-minute expiration
  */
 
 import { NodeProfile } from "@/lib/graph/types";
@@ -9,7 +9,7 @@ const CACHE_KEY = "nostr-wot-profile-cache";
 const TRUST_CACHE_KEY = "nostr-wot-trust-cache";
 const TRUST_CACHE_VERSION_KEY = "nostr-wot-trust-cache-version";
 const CURRENT_CACHE_VERSION = 2; // Bump this when cache format changes
-const CACHE_EXPIRY_MS = 24 * 60 * 60 * 1000; // 1 day in milliseconds
+const CACHE_EXPIRY_MS = 30 * 60 * 1000; // 30 minutes in milliseconds
 
 /**
  * Check and migrate trust cache if version changed
@@ -58,6 +58,7 @@ interface ProfileCache {
 
 interface TrustCache {
   trust: Record<string, CachedTrust>;
+  lastSyncedAt?: number;
 }
 
 /**
@@ -265,10 +266,28 @@ function saveTrustCache(cache: TrustCache): void {
   if (typeof window === "undefined") return;
 
   try {
+    cache.lastSyncedAt = Date.now();
     localStorage.setItem(TRUST_CACHE_KEY, JSON.stringify(cache));
   } catch {
     // Ignore storage errors (quota exceeded, etc.)
   }
+}
+
+/**
+ * Get the last time the trust cache was synced
+ */
+export function getTrustCacheLastSyncedAt(): number | null {
+  const cache = getTrustCache();
+  return cache.lastSyncedAt ?? null;
+}
+
+/**
+ * Check if the trust cache is stale (older than CACHE_EXPIRY_MS)
+ */
+export function isTrustCacheStale(): boolean {
+  const lastSynced = getTrustCacheLastSyncedAt();
+  if (!lastSynced) return true;
+  return Date.now() - lastSynced >= CACHE_EXPIRY_MS;
 }
 
 /**
