@@ -61,6 +61,30 @@ export {
 export { ExtensionIllustration, OracleIllustration } from "./Illustrations";
 export { CTAIllustration } from "./CTAIllustration";
 
+// Animated WoT Logo
+export { default as AnimatedWotLogo } from "./AnimatedWotLogo";
+
+// Pitch illustrations
+export {
+  PitchNetworkGraph,
+  PitchNetworkGraphSmall,
+  PitchCentralizeIcon,
+  PitchBrokenUXIcon,
+  PitchMapPinIcon,
+  PitchSpamIcon,
+  PitchLockIcon,
+  PitchServerIcon,
+  PitchCodeIcon,
+  PitchShieldIcon,
+  PitchPlayIcon,
+  PitchIdentityIcon,
+  PitchTrustScoreIcon,
+  PitchDocsIcon,
+  PitchNipsIcon,
+  PitchVerifyPinIcon,
+  PitchAskIcon,
+} from "./PitchIllustrations";
+
 // Animated Feature Icons (for features page badges)
 export {
   AnimatedLinkIcon,
