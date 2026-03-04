@@ -1,4 +1,5 @@
 import { MDXRemote } from 'next-mdx-remote/rsc';
+import remarkGfm from 'remark-gfm';
 import Image from 'next/image';
 import { Link } from '@/i18n/routing';
 import { CodeBlock } from '@/components/ui';
@@ -121,7 +122,7 @@ interface BlogContentProps {
 export function BlogContent({ content }: BlogContentProps) {
   return (
     <div className="prose-wrapper overflow-hidden text-lg leading-relaxed">
-      <MDXRemote source={content} components={components} />
+      <MDXRemote source={content} components={components} options={{ mdxOptions: { remarkPlugins: [remarkGfm] } }} />
     </div>
   );
 }

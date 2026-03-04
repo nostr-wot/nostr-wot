@@ -149,6 +149,19 @@ console.log(result.distance);`}
       </ScrollReveal>
 
       <ScrollReveal animation="fade-up" delay={250}>
+        <h2>{t("quickStart.buildFromSource.title")}</h2>
+
+        <p>{t("quickStart.buildFromSource.description")}</p>
+
+        <TerminalBlock commands={[
+          "git clone https://github.com/nostr-wot/nostr-wot-extension.git",
+          "cd nostr-wot-extension && npm install && npm run build",
+        ]} />
+
+        <p>{t("quickStart.buildFromSource.loadInstructions")}</p>
+      </ScrollReveal>
+
+      <ScrollReveal animation="fade-up" delay={300}>
         <h2>Next Steps</h2>
 
         <div className="not-prose grid md:grid-cols-3 gap-4 my-6">

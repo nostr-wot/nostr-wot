@@ -43,3 +43,6 @@ export { LanguageSwitcher } from "./LanguageSwitcher";
 export { NewsletterForm } from "./NewsletterForm";
 
 export { WotGraphIllustration } from "./WotGraphIllustration";
+
+export { AccordionList } from "./AccordionList";
+export type { AccordionItem } from "./AccordionList";

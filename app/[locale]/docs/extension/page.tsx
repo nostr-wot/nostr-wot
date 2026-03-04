@@ -110,7 +110,7 @@ export default async function ExtensionDocsPage() {
         <h1>Extension API</h1>
 
         <p className="lead text-xl text-gray-600 dark:text-gray-400">
-          The WoT Extension injects <InlineCode>window.nostr.wot</InlineCode> into every page for client-side trust queries.
+          The extension provides the NIP-07 signer API (<InlineCode>window.nostr</InlineCode>) for identity and signing, and the WoT API (<InlineCode>window.nostr.wot</InlineCode>) for trust queries.
         </p>
 
         <div className="not-prose my-6 p-4 bg-amber-50 dark:bg-amber-950/30 rounded-lg border border-amber-200 dark:border-amber-900">
@@ -143,8 +143,103 @@ async function waitForWoT(timeout = 3000) {
         />
       </section>
 
-      {/* Core Methods */}
-      <h2 className="text-2xl font-bold mt-12 mb-6">Core Methods</h2>
+      {/* NIP-07 Signer API */}
+      <section id="nip07" className="mb-12 scroll-mt-24">
+        <h2>NIP-07 Signer API</h2>
+        <p>
+          The extension implements the <a href="https://github.com/nostr-protocol/nips/blob/master/07.md" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">NIP-07 standard</a>,
+          making it compatible with any Nostr client that supports <InlineCode>window.nostr</InlineCode>.
+        </p>
+      </section>
+
+      <MethodSection
+        id="getpublickey"
+        title="getPublicKey()"
+        description="Returns the active account's hex-encoded public key."
+        returns="Promise<string>"
+        example={`const pubkey = await window.nostr.getPublicKey();
+console.log(pubkey); // "3bf0c63f..."`}
+      />
+
+      <MethodSection
+        id="signevent"
+        title="signEvent(event)"
+        description="Signs a Nostr event with the active key. Returns the event with id, pubkey, sig, and created_at fields populated."
+        params={[{ name: "event", type: "UnsignedEvent", description: "Event object with kind, content, tags, and created_at" }]}
+        returns="Promise<SignedEvent>"
+        example={`const signed = await window.nostr.signEvent({
+  kind: 1,
+  content: "Hello Nostr!",
+  tags: [],
+  created_at: Math.floor(Date.now() / 1000),
+});
+console.log(signed.sig); // schnorr signature`}
+      />
+
+      <MethodSection
+        id="nip04encrypt"
+        title="nip04.encrypt(pubkey, plaintext)"
+        description="Encrypts a message using NIP-04 (legacy DM encryption)."
+        params={[
+          { name: "pubkey", type: "string", description: "Recipient's hex pubkey" },
+          { name: "plaintext", type: "string", description: "Message to encrypt" },
+        ]}
+        returns="Promise<string>"
+        example={`const encrypted = await window.nostr.nip04.encrypt(
+  recipientPubkey,
+  "Secret message"
+);`}
+      />
+
+      <MethodSection
+        id="nip04decrypt"
+        title="nip04.decrypt(pubkey, ciphertext)"
+        description="Decrypts a NIP-04 encrypted message."
+        params={[
+          { name: "pubkey", type: "string", description: "Sender's hex pubkey" },
+          { name: "ciphertext", type: "string", description: "Encrypted message string" },
+        ]}
+        returns="Promise<string>"
+        example={`const plaintext = await window.nostr.nip04.decrypt(
+  senderPubkey,
+  ciphertext
+);
+console.log(plaintext); // "Secret message"`}
+      />
+
+      <MethodSection
+        id="nip44encrypt"
+        title="nip44.encrypt(pubkey, plaintext)"
+        description="Encrypts a message using NIP-44 (recommended). NIP-44 provides improved security over NIP-04."
+        params={[
+          { name: "pubkey", type: "string", description: "Recipient's hex pubkey" },
+          { name: "plaintext", type: "string", description: "Message to encrypt" },
+        ]}
+        returns="Promise<string>"
+        example={`const encrypted = await window.nostr.nip44.encrypt(
+  recipientPubkey,
+  "Secret message"
+);`}
+      />
+
+      <MethodSection
+        id="nip44decrypt"
+        title="nip44.decrypt(pubkey, ciphertext)"
+        description="Decrypts a NIP-44 encrypted message."
+        params={[
+          { name: "pubkey", type: "string", description: "Sender's hex pubkey" },
+          { name: "ciphertext", type: "string", description: "Encrypted message string" },
+        ]}
+        returns="Promise<string>"
+        example={`const plaintext = await window.nostr.nip44.decrypt(
+  senderPubkey,
+  ciphertext
+);
+console.log(plaintext); // "Secret message"`}
+      />
+
+      {/* WoT Core Methods */}
+      <h2 className="text-2xl font-bold mt-12 mb-6">WoT Core Methods</h2>
 
       <MethodSection
         id="getdistance"

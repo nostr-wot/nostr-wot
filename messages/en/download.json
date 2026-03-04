@@ -1,11 +1,11 @@
 {
   "meta": {
     "title": "Download",
-    "description": "Download the Nostr Web of Trust browser extension for Chrome, Brave, Edge, Opera, and Firefox. Filter spam and see trusted content on any Nostr client."
+    "description": "Download Nostr WoT — a NIP-07 identity provider, signer, and Web of Trust extension for Chrome, Brave, Edge, Opera, and Firefox. Multi-account, encrypted vault, and trust badges."
   },
   "hero": {
     "title": "Download",
-    "subtitle": "Filter spam and see trusted content on any Nostr client. Available for all major browsers."
+    "subtitle": "Your Nostr identity provider, NIP-07 signer, and Web of Trust — all in one extension. Available for all major browsers."
   },
   "browsers": {
     "chrome": {
@@ -31,7 +31,7 @@
   },
   "howItWorks": {
     "title": "See It In Action",
-    "subtitle": "The extension adds trust indicators to Nostr content, helping you identify who's in your network at a glance.",
+    "subtitle": "Sign in to any Nostr client, see trust badges on profiles, and manage your accounts — all from one extension.",
     "trusted": "Trusted",
     "hops": "hops",
     "hidden": "Hidden",
@@ -40,16 +40,16 @@
   "features": {
     "title": "What You Get",
     "instantQueries": {
-      "title": "Instant Trust Queries",
-      "description": "Sub-millisecond lookups for real-time content filtering."
+      "title": "NIP-07 Signer & Identity",
+      "description": "Sign events, encrypt messages (NIP-04 & NIP-44), and manage your Nostr identity across every client."
     },
     "privacyOptions": {
-      "title": "Privacy Options",
-      "description": "Local-only mode keeps all data in your browser."
+      "title": "Multi-Account & Vault",
+      "description": "Multiple accounts with HD derivation, watch-only mode, NIP-46 remote signer, and an encrypted vault with auto-lock."
     },
     "simpleApi": {
-      "title": "Simple API",
-      "description": "window.nostr.wot works with any Nostr client."
+      "title": "Trust Badges & WoT API",
+      "description": "Color-coded trust badges on Nostr sites, granular permissions, activity logging, and the window.nostr.wot API."
     }
   },
   "faq": {
@@ -61,7 +61,7 @@
       },
       "howExtensionWorks": {
         "question": "How does the extension work?",
-        "answer": "The extension exposes a window.nostr.wot API that any website can use to query trust distances. When a Nostr client wants to know if a user is trustworthy, it asks the extension for the hop count. The extension can calculate this locally or query our Oracle API for faster results."
+        "answer": "The extension provides NIP-07 signing (window.nostr) so any Nostr client can request event signing and message encryption. It also provides a Web of Trust API (window.nostr.wot) for trust distance queries. Your keys are stored in an AES-256-GCM encrypted vault with auto-lock, and you control which sites can access which features."
       },
       "isDataPrivate": {
         "question": "Is my data private?",
@@ -73,7 +73,7 @@
       },
       "nostrAccount": {
         "question": "Do I need a Nostr account?",
-        "answer": "Yes, you need a Nostr pubkey to use the extension. The extension uses your pubkey to calculate social distances from your position in the follow graph. You don't need to provide your private key—only your public key."
+        "answer": "You can create a new account directly in the extension — it generates a BIP-39 seed phrase and derives your keys. You can also import an existing private key (nsec), add a watch-only account (npub), or connect a remote signer via NIP-46 bunker URL."
       },
       "isFree": {
         "question": "Is it free?",
@@ -82,10 +82,10 @@
     }
   },
   "buildFromSource": {
-    "title": "Load from Source",
-    "description": "No build required! You can load the extension directly from the source code. Perfect for developers who want to verify or modify the code.",
-    "clone": "Clone the repository",
-    "loadInstructions": "Then go to chrome://extensions, enable 'Developer mode', click 'Load unpacked', and select the nostr-wot-extension folder.",
+    "title": "Build from Source",
+    "description": "Clone the repo, run npm install && npm run build, then load the dist/ folder. Perfect for developers who want to verify or modify the code.",
+    "clone": "Clone and build",
+    "loadInstructions": "Then go to chrome://extensions, enable 'Developer mode', click 'Load unpacked', and select the dist/ folder.",
     "viewOnGitHub": "View source on GitHub"
   },
   "cta": {

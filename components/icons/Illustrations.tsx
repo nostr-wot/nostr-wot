@@ -73,11 +73,21 @@ export function ExtensionIllustration({ className }: { className?: string }) {
         <circle cx="140" cy="190" r="12" fill="#C4B5FD" fillOpacity="0.2" stroke="#C4B5FD" strokeWidth="2"/>
         <circle cx="140" cy="190" r="4" fill="#C4B5FD"/>
       </g>
-      {/* API Call */}
+      {/* API Labels */}
       <g className="api-call">
-        <rect x="70" y="220" width="120" height="20" rx="4" fill="#8B5CF6" fillOpacity="0.1"/>
-        <text x="80" y="234" fill="#8B5CF6" fontSize="10" fontFamily="monospace">window.nostr.wot</text>
+        <rect x="70" y="200" width="100" height="20" rx="4" fill="#8B5CF6" fillOpacity="0.15"/>
+        <text x="80" y="214" fill="#8B5CF6" fontSize="10" fontFamily="monospace">window.nostr</text>
       </g>
+      <g className="api-call">
+        <rect x="70" y="226" width="120" height="20" rx="4" fill="#8B5CF6" fillOpacity="0.1"/>
+        <text x="80" y="240" fill="#8B5CF6" fontSize="10" fontFamily="monospace">window.nostr.wot</text>
+      </g>
+      {/* Key glyph on extension icon */}
+      <g>
+        <path d="M340 40 a3 3 0 1 0 0 6 l4 0 l0-2 l-1 0 l0-2 l1 0 l0-2 z" fill="white" fillOpacity="0.8"/>
+      </g>
+      {/* Trust badge dot on outer node */}
+      <circle cx="290" cy="112" r="4" fill="#10B981" className="api-call"/>
     </svg>
   );
 }

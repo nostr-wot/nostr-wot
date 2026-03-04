@@ -19,7 +19,19 @@ export default async function DocsLayout({ children }: DocsLayoutProps) {
       ],
     },
     {
-      title: t("sidebar.extensionCore"),
+      title: t("sidebar.extensionSigner"),
+      links: [
+        { href: "/docs/extension#nip07", label: "NIP-07 Overview" },
+        { href: "/docs/extension#getpublickey", label: "getPublicKey" },
+        { href: "/docs/extension#signevent", label: "signEvent" },
+        { href: "/docs/extension#nip04encrypt", label: "nip04.encrypt" },
+        { href: "/docs/extension#nip04decrypt", label: "nip04.decrypt" },
+        { href: "/docs/extension#nip44encrypt", label: "nip44.encrypt" },
+        { href: "/docs/extension#nip44decrypt", label: "nip44.decrypt" },
+      ],
+    },
+    {
+      title: t("sidebar.extensionWotCore"),
       links: [
         { href: "/docs/extension", label: t("sidebar.setup") },
         { href: "/docs/extension#getdistance", label: "getDistance" },

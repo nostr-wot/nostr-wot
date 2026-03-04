@@ -1,0 +1,119 @@
+---
+title: "Identidade e Confianca: O Panorama Completo"
+description: "Adicionamos gerenciamento de identidade a extensao Nostr WoT porque confianca e identidade pertencem juntas. Veja o que ha de novo e por que isso importa para sua experiencia."
+excerpt: "Construimos o Web of Trust para ajudar voce a navegar no Nostr. Mas confianca sem identidade parecia incompleto. Entao adicionamos assinatura, criptografia, suporte multi-conta e seis idiomas — tudo em uma experiencia integrada."
+date: "2026-03-04"
+author:
+  name: "Leon Acosta"
+  avatar: "/authors/leon-profile.jpg"
+  npub: "npub1gxdhmu9swqduwhr6zptjy4ya693zp3ql28nemy4hd97kuufyrqdqwe5zfk"
+  socials:
+    linkedin: "leonacosta"
+    instagram: "leonacosta.now"
+    twitter: "leonacosta_"
+    github: "leonacostaok"
+featuredImage: "/images/blog/introducing-wot/featured.svg"
+previewImage: "/images/blog/introducing-wot/preview.svg"
+tags:
+  - "Anuncio"
+  - "Identidade"
+  - "Web of Trust"
+  - "Nostr"
+published: true
+seoTitle: "Extensao Nostr WoT — Identidade, Confianca e Seguranca em Um So Lugar"
+seoDescription: "A extensao Nostr WoT agora inclui assinatura NIP-07, armazenamento criptografado de chaves, gerenciamento multi-conta, insignias de confianca e suporte para 6 idiomas. Saiba o que ha de novo."
+ogImage: "/images/blog/introducing-wot/og.svg"
+translationKey: "identity-meets-trust"
+---
+
+Quando comecamos a construir a extensao Nostr WoT, o objetivo era simples: ajudar voce a ver quem esta no seu circulo social e quem nao esta. Pontuacoes de confianca, distancias de saltos, insignias visuais em perfis — a camada de Web of Trust.
+
+Mas ao usa-la nos mesmos, algo nao parecia certo. Voce tinha que instalar uma extensao separada so para entrar nas apps do Nostr, e essa extensao nao sabia nada sobre sua rede de confianca. Duas ferramentas que deveriam se conhecer, vivendo em completo isolamento. A experiencia estava fragmentada.
+
+Entao nos perguntamos: **e se identidade e confianca vivessem no mesmo lugar?**
+
+## O que Adicionamos
+
+A extensao agora inclui um **provedor de identidade NIP-07** completo. Isso significa que voce pode usa-la para entrar em qualquer cliente Nostr, assinar eventos e criptografar mensagens — junto com os recursos de confianca que voce ja conhece.
+
+O que esta incluido:
+
+- **Entre em qualquer lugar** — A extensao fornece sua chave publica para qualquer app Nostr que solicitar. Um clique e voce esta conectado.
+- **Assine eventos** — Publique notas, reaja, reposte — a extensao cuida da assinatura criptografica. Voce escolhe quais sites podem assinar quais tipos de eventos.
+- **Mensagens criptografadas** — Tanto o formato anterior NIP-04 quanto o mais novo e seguro NIP-44 sao suportados para conversas privadas.
+- **Permissoes granulares** — Voce decide o que cada site pode fazer. Permita notas em um site, bloqueie mensagens diretas em outro. As permissoes sao lembradas para nao perguntar toda vez.
+
+<Callout type="tip">
+A extensao bloqueia automaticamente solicitacoes de assinatura em conexoes HTTP inseguras, para que suas chaves nunca sejam expostas em canais nao criptografados.
+</Callout>
+
+## Suas Chaves, Sempre Protegidas
+
+Levamos a seguranca das chaves a serio. Suas chaves privadas sao criptografadas com **AES-256-GCM** — o mesmo padrao usado por bancos e governos — protegidas pela sua senha.
+
+O que isso significa na pratica:
+
+- **Suas chaves estao sempre criptografadas em repouso.** Mesmo que alguem acessasse o armazenamento do seu navegador diretamente, encontraria apenas dados criptografados — inuteis sem sua senha.
+- **O bloqueio automatico** protege voce quando se afasta. Apos 15 minutos de inatividade (configuravel), a extensao se bloqueia e apaga o material de chaves da memoria.
+- **As chaves nunca sao mantidas mais tempo do que o necessario.** Quando a extensao assina algo, ela trabalha com uma copia temporaria da sua chave que e destruida imediatamente apos. Quanto menos tempo dados sensiveis existirem na memoria, melhor.
+
+## Multiplas Contas, Totalmente Isoladas
+
+As pessoas usam o Nostr de diferentes maneiras. Uma conta pessoal, uma conta de projeto, talvez uma conta somente leitura para acompanhar a atividade de alguem. A extensao suporta tudo isso:
+
+- **Gere uma conta nova** — Cria uma identidade nova com uma frase de recuperacao que voce pode fazer backup.
+- **Importe uma chave existente** — Traga seu nsec e continue usando sua identidade atual.
+- **Somente leitura** — Adicione qualquer npub para monitorar sua rede de confianca sem precisar da chave privada.
+- **Assinador remoto (NIP-46)** — Mantenha suas chaves em um dispositivo separado e assine remotamente atraves de uma conexao bunker.
+
+Cada conta e completamente isolada. Trocar de conta muda tudo — sua identidade, seu grafo de confianca, suas permissoes. Nao ha contaminacao cruzada acidental entre identidades.
+
+## Web of Trust: Veja com Quem Voce Esta Falando
+
+Esta e a parte que voce ja conhece, e continua melhorando. A extensao constroi um mapa das suas conexoes sociais e responde uma pergunta instantaneamente: **quao perto esta essa pessoa de voce?**
+
+- **1 salto** — Alguem que voce segue diretamente. Alta confianca.
+- **2 saltos** — Um amigo de um amigo. Provavelmente confiavel.
+- **3+ saltos** — Ficando distante. Prossiga com cautela.
+- **Sem conexao** — Completamente fora da sua rede.
+
+O **motor de insignias de confianca** torna isso visivel em toda parte. Quando voce navega por apps Nostr, pontos coloridos aparecem ao lado dos nomes de usuario mostrando o nivel de confianca num relance. Sem procurar em perfis, sem verificar manualmente — apenas contexto instantaneo.
+
+Tudo isso funciona localmente no seu navegador. Seu grafo de seguidos e sincronizado uma vez e depois consultado instantaneamente, sem necessidade de requisicoes externas para as buscas.
+
+## Disponivel em 6 Idiomas
+
+O Nostr e global, e a extensao tambem deveria ser. A interface completa — integracao, configuracoes, permissoes, avisos, tudo — esta disponivel em:
+
+- **Ingles**
+- **Espanhol**
+- **Portugues**
+- **Frances**
+- **Alemao**
+- **Italiano**
+
+A extensao detecta o idioma do seu navegador automaticamente. Voce tambem pode trocar manualmente a qualquer momento no menu de configuracoes.
+
+## Por Que Tudo Pertence Junto
+
+A verdadeira razao pela qual adicionamos identidade a extensao nao e tecnica — e sobre **experiencia**.
+
+Quando sua ferramenta de assinatura e sua ferramenta de confianca sao a mesma extensao, as coisas simplesmente funcionam. Voce nao precisa configurar duas extensoes. Nao precisa se preocupar com qual tem suas chaves. Voce entra, e a camada de confianca ja esta la, ja funcionando, ja mostrando quem e quem.
+
+Tambem ha um beneficio de seguranca. Como a extensao gerencia tanto suas chaves quanto seu grafo de confianca, ela pode mante-los adequadamente isolados das paginas web enquanto os faz funcionar juntos perfeitamente para voce. Suas chaves permanecem criptografadas e protegidas. Seus dados de confianca permanecem locais e privados. E ambos estao disponiveis no momento em que voce precisa.
+
+Uma extensao. Uma configuracao. Identidade, confianca e seguranca trabalhando juntas.
+
+## O que Vem a Seguir
+
+A base esta pronta. Aqui esta no que estamos trabalhando:
+
+- **Contexto de confianca em avisos de assinatura** — Quando um site pedir para assinar, voce vera informacoes de confianca sobre esse site diretamente no dialogo de aprovacao.
+- **Mais suporte de insignias** — Expandir as insignias visuais de confianca para funcionar com mais clientes Nostr nativamente.
+- **Melhorias no SDK** — O [nostr-wot-sdk](https://www.npmjs.com/package/nostr-wot-sdk) permite que desenvolvedores integrem confianca em seus apps, com a extensao detectada automaticamente quando disponivel.
+
+A extensao e open source e esta disponivel para [Chrome, Brave, Edge, Opera e Firefox](/download). Voce tambem pode [compilar a partir do codigo fonte](https://github.com/nostr-wot/nostr-wot-extension) se preferir verificar o codigo voce mesmo.
+
+---
+
+*Perguntas ou feedback? Encontre-nos no [Nostr](https://njump.me/npub1gxdhmu9swqduwhr6zptjy4ya693zp3ql28nemy4hd97kuufyrqdqwe5zfk) ou consulte a [documentacao](/docs/extension).*

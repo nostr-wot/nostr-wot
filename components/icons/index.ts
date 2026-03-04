@@ -55,10 +55,12 @@ export {
   ExternalLinkIcon,
   CloseIcon,
   ArrowLeftIcon,
+  FacebookIcon,
 } from "./UIIcons";
 
 // Illustrations
 export { ExtensionIllustration, OracleIllustration } from "./Illustrations";
+export { ExtensionPopupIllustration } from "./ExtensionPopupIllustration";
 export { CTAIllustration } from "./CTAIllustration";
 
 // Animated WoT Logo

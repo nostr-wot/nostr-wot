@@ -2,7 +2,7 @@
 
 import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/routing";
-import { LogoIcon, GitHubIcon, NostrIcon, XTwitterIcon, LinkedInIcon } from "@/components/icons";
+import { LogoIcon, GitHubIcon, NostrIcon, XTwitterIcon, LinkedInIcon, FacebookIcon } from "@/components/icons";
 
 export default function Footer() {
   const t = useTranslations("common");
@@ -58,6 +58,15 @@ export default function Footer() {
                 aria-label="Nostr"
               >
                 <NostrIcon className="w-5 h-5" />
+              </a>
+              <a
+                href="https://facebook.com/nostr.wot"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-gray-500 dark:text-gray-500 hover:text-[#1877F2] transition-colors"
+                aria-label="Facebook"
+              >
+                <FacebookIcon className="w-5 h-5" />
               </a>
             </div>
           </div>

@@ -1,8 +1,52 @@
 {
-  "generatedAt": "2026-02-22T16:37:09.559Z",
+  "generatedAt": "2026-03-04T03:53:34.426Z",
   "locales": {
     "en": {
       "posts": [
+        {
+          "slug": "identity-meets-trust",
+          "title": "Identity Meets Trust: The Full Picture",
+          "description": "We added identity management to the Nostr WoT Extension because trust and identity belong together. Here's what's new and why it matters for your experience.",
+          "excerpt": "We built Web of Trust to help you navigate Nostr. But trust without identity felt incomplete. So we added signing, encryption, multi-account support, and six languages — all in one seamless experience.",
+          "date": "2026-03-04T00:00:00.000Z",
+          "author": {
+            "name": "Leon Acosta",
+            "avatar": "/authors/leon-profile.jpg",
+            "npub": "npub1gxdhmu9swqduwhr6zptjy4ya693zp3ql28nemy4hd97kuufyrqdqwe5zfk",
+            "socials": {
+              "linkedin": "leonacosta",
+              "instagram": "leonacosta.now",
+              "twitter": "leonacosta_",
+              "github": "leonacostaok"
+            }
+          },
+          "featuredImage": "/images/blog/introducing-wot/featured.svg",
+          "previewImage": "/images/blog/introducing-wot/preview.svg",
+          "tags": [
+            "Announcement",
+            "Identity",
+            "Web of Trust",
+            "Nostr"
+          ],
+          "published": true,
+          "readingTime": "5 min read",
+          "locale": "en",
+          "translationKey": "identity-meets-trust",
+          "translations": {
+            "en": "identity-meets-trust",
+            "es": "identidad-y-confianza",
+            "pt": "identidade-e-confianca"
+          },
+          "availableLocales": [
+            "en",
+            "es",
+            "pt"
+          ],
+          "seoTitle": "Nostr WoT Extension — Identity, Trust, and Security in One Place",
+          "seoDescription": "The Nostr WoT Extension now includes NIP-07 signing, encrypted key storage, multi-account management, trust badges, and support for 6 languages. Learn what's new.",
+          "ogImage": "/images/blog/introducing-wot/og.svg",
+          "content": "\nWhen we started building the Nostr WoT Extension, the goal was simple: help you see who's in your social circle and who's not. Trust scores, hop distances, visual badges on profiles — the Web of Trust layer.\n\nBut as we used it ourselves, something felt off. You had to install a separate extension just to sign into Nostr apps, and that extension had no idea about your trust network. Two tools that should know about each other, living in complete isolation. The experience was fragmented.\n\nSo we asked: **what if identity and trust lived in the same place?**\n\n## What We Added\n\nThe extension now includes a full **NIP-07 identity provider**. That means you can use it to sign into any Nostr client, sign events, and encrypt messages — right alongside the trust features you already know.\n\nHere's what's included:\n\n- **Sign in everywhere** — The extension provides your public key to any Nostr app that asks. One click, you're logged in.\n- **Sign events** — Post notes, react, repost — the extension handles the cryptographic signing. You choose which sites can sign which types of events.\n- **Encrypted messages** — Both the older NIP-04 format and the newer, more secure NIP-44 format are supported for private conversations.\n- **Granular permissions** — You decide what each site can do. Allow notes on one site, block DMs on another. Permissions are remembered so you're not asked every time.\n\n<Callout type=\"tip\">\nThe extension automatically blocks signing requests on insecure HTTP connections, so your keys are never exposed on unencrypted channels.\n</Callout>\n\n## Your Keys, Always Protected\n\nWe take key security seriously. Your private keys are encrypted with **AES-256-GCM** — the same standard used by banks and governments — protected by your password.\n\nWhat this means in practice:\n\n- **Your keys are always encrypted at rest.** Even if someone accessed your browser's storage directly, they'd find only encrypted data — useless without your password.\n- **Auto-lock** keeps you safe when you step away. After 15 minutes of inactivity (configurable), the extension locks itself and wipes key material from memory.\n- **Keys are never held longer than needed.** When the extension signs something, it works with a temporary copy of your key that's destroyed immediately after. The less time sensitive data exists in memory, the better.\n\n## Multiple Accounts, Fully Isolated\n\nPeople use Nostr in different ways. A personal account, a project account, maybe a watch-only account to follow someone's activity. The extension supports all of these:\n\n- **Generate a new account** — Creates a fresh identity with a recovery phrase you can back up.\n- **Import an existing key** — Bring your nsec and keep using your current identity.\n- **Watch-only** — Add any npub to monitor their trust network without needing their private key.\n- **Remote signer (NIP-46)** — Keep your keys on a separate device and sign remotely through a bunker connection.\n\nEach account is completely isolated. Switching accounts changes everything — your identity, your trust graph, your permissions. There's no accidental cross-contamination between identities.\n\n## Web of Trust: See Who You're Talking To\n\nThis is the part you already know, and it keeps getting better. The extension builds a map of your social connections and answers one question instantly: **how close is this person to you?**\n\n- **1 hop** — Someone you follow directly. High trust.\n- **2 hops** — A friend of a friend. Probably trustworthy.\n- **3+ hops** — Getting distant. Proceed with caution.\n- **Not connected** — Outside your network entirely.\n\nThe **trust badge engine** makes this visible everywhere. When you browse Nostr apps, colored dots appear next to usernames showing their trust level at a glance. No clicking through profiles, no manual checking — just instant context.\n\nAll of this works locally in your browser. Your follow graph is synced once and then queried instantly, with no external requests needed for lookups.\n\n## Available in 6 Languages\n\nNostr is global, and the extension should be too. The full interface — onboarding, settings, permissions, prompts, everything — is available in:\n\n- **English**\n- **Spanish**\n- **Portuguese**\n- **French**\n- **German**\n- **Italian**\n\nThe extension detects your browser language automatically. You can also switch manually at any time from the settings menu.\n\n## Why It All Belongs Together\n\nThe real reason we added identity to the extension isn't technical — it's about **experience**.\n\nWhen your signing tool and your trust tool are the same extension, things just work. You don't need to configure two extensions. You don't need to worry about which one has your keys. You sign in, and the trust layer is already there, already running, already showing you who's who.\n\nThere's a security benefit too. Because the extension manages both your keys and your trust graph, it can keep them properly isolated from web pages while still making them work together seamlessly for you. Your keys stay encrypted and protected. Your trust data stays local and private. And both are available the moment you need them.\n\nOne extension. One setup. Identity, trust, and security working together.\n\n## What's Next\n\nThe foundation is in place. Here's what we're working on:\n\n- **Trust context in signing prompts** — When a site asks to sign, you'll see trust information about that site right in the approval dialog.\n- **More badge support** — Expanding the visual trust badges to work with more Nostr clients out of the box.\n- **SDK improvements** — The [nostr-wot-sdk](https://www.npmjs.com/package/nostr-wot-sdk) lets developers integrate trust into their apps, with the extension detected automatically when available.\n\nThe extension is open source and available for [Chrome, Brave, Edge, Opera, and Firefox](/download). You can also [build from source](https://github.com/nostr-wot/nostr-wot-extension) if you prefer to verify the code yourself.\n\n---\n\n*Questions or feedback? Find us on [Nostr](https://njump.me/npub1gxdhmu9swqduwhr6zptjy4ya693zp3ql28nemy4hd97kuufyrqdqwe5zfk) or check the [documentation](/docs/extension).*\n"
+        },
         {
           "slug": "what-is-web-of-trust",
           "title": "What Is Web of Trust?",
@@ -179,6 +223,7 @@
         "Announcement",
         "Education",
         "Feature",
+        "Identity",
         "Nostr",
         "Playground",
         "Visualization",
@@ -187,6 +232,50 @@
     },
     "es": {
       "posts": [
+        {
+          "slug": "identidad-y-confianza",
+          "title": "Identidad y Confianza: El Panorama Completo",
+          "description": "Agregamos gestión de identidad a la extensión Nostr WoT porque confianza e identidad van juntas. Esto es lo nuevo y por qué importa para tu experiencia.",
+          "excerpt": "Construimos Web of Trust para ayudarte a navegar Nostr. Pero confianza sin identidad se sentía incompleto. Así que agregamos firma, cifrado, soporte multi-cuenta y seis idiomas — todo en una experiencia integrada.",
+          "date": "2026-03-04T00:00:00.000Z",
+          "author": {
+            "name": "Leon Acosta",
+            "avatar": "/authors/leon-profile.jpg",
+            "npub": "npub1gxdhmu9swqduwhr6zptjy4ya693zp3ql28nemy4hd97kuufyrqdqwe5zfk",
+            "socials": {
+              "linkedin": "leonacosta",
+              "instagram": "leonacosta.now",
+              "twitter": "leonacosta_",
+              "github": "leonacostaok"
+            }
+          },
+          "featuredImage": "/images/blog/introducing-wot/featured.svg",
+          "previewImage": "/images/blog/introducing-wot/preview.svg",
+          "tags": [
+            "Anuncio",
+            "Identidad",
+            "Web of Trust",
+            "Nostr"
+          ],
+          "published": true,
+          "readingTime": "6 min read",
+          "locale": "es",
+          "translationKey": "identity-meets-trust",
+          "translations": {
+            "en": "identity-meets-trust",
+            "es": "identidad-y-confianza",
+            "pt": "identidade-e-confianca"
+          },
+          "availableLocales": [
+            "en",
+            "es",
+            "pt"
+          ],
+          "seoTitle": "Extensión Nostr WoT — Identidad, Confianza y Seguridad en Un Solo Lugar",
+          "seoDescription": "La extensión Nostr WoT ahora incluye firma NIP-07, almacenamiento cifrado de claves, gestión multi-cuenta, insignias de confianza y soporte para 6 idiomas. Descubre qué hay de nuevo.",
+          "ogImage": "/images/blog/introducing-wot/og.svg",
+          "content": "\nCuando empezamos a construir la extensión Nostr WoT, el objetivo era simple: ayudarte a ver quién está en tu círculo social y quién no. Puntuaciones de confianza, distancias de saltos, insignias visuales en perfiles — la capa de Web of Trust.\n\nPero al usarla nosotros mismos, algo no se sentía bien. Tenías que instalar una extensión aparte solo para iniciar sesión en las apps de Nostr, y esa extensión no sabía nada sobre tu red de confianza. Dos herramientas que deberían conocerse mutuamente, viviendo en completo aislamiento. La experiencia estaba fragmentada.\n\nAsí que nos preguntamos: **¿y si identidad y confianza vivieran en el mismo lugar?**\n\n## Lo que Agregamos\n\nLa extensión ahora incluye un **proveedor de identidad NIP-07** completo. Eso significa que puedes usarla para iniciar sesión en cualquier cliente Nostr, firmar eventos y cifrar mensajes — junto con las funciones de confianza que ya conoces.\n\nEsto es lo que incluye:\n\n- **Inicia sesión en todas partes** — La extensión proporciona tu clave pública a cualquier app Nostr que la solicite. Un clic y estás conectado.\n- **Firma eventos** — Publica notas, reacciona, reposta — la extensión se encarga de la firma criptográfica. Tú eliges qué sitios pueden firmar qué tipos de eventos.\n- **Mensajes cifrados** — Tanto el formato anterior NIP-04 como el más nuevo y seguro NIP-44 están soportados para conversaciones privadas.\n- **Permisos granulares** — Tú decides qué puede hacer cada sitio. Permite notas en un sitio, bloquea mensajes directos en otro. Los permisos se recuerdan para no preguntarte cada vez.\n\n<Callout type=\"tip\">\nLa extensión bloquea automáticamente solicitudes de firma en conexiones HTTP inseguras, para que tus claves nunca se expongan en canales sin cifrar.\n</Callout>\n\n## Tus Claves, Siempre Protegidas\n\nNos tomamos la seguridad de las claves en serio. Tus claves privadas están cifradas con **AES-256-GCM** — el mismo estándar usado por bancos y gobiernos — protegidas por tu contraseña.\n\nLo que esto significa en la práctica:\n\n- **Tus claves siempre están cifradas en reposo.** Incluso si alguien accediera al almacenamiento de tu navegador directamente, encontraría solo datos cifrados — inútiles sin tu contraseña.\n- **El bloqueo automático** te protege cuando te alejas. Después de 15 minutos de inactividad (configurable), la extensión se bloquea y borra el material de claves de la memoria.\n- **Las claves nunca se mantienen más tiempo del necesario.** Cuando la extensión firma algo, trabaja con una copia temporal de tu clave que se destruye inmediatamente después. Cuanto menos tiempo existan datos sensibles en memoria, mejor.\n\n## Múltiples Cuentas, Totalmente Aisladas\n\nLas personas usan Nostr de diferentes maneras. Una cuenta personal, una cuenta de proyecto, quizás una cuenta de solo lectura para seguir la actividad de alguien. La extensión soporta todo esto:\n\n- **Genera una cuenta nueva** — Crea una identidad nueva con una frase de recuperación que puedes respaldar.\n- **Importa una clave existente** — Trae tu nsec y sigue usando tu identidad actual.\n- **Solo lectura** — Agrega cualquier npub para monitorear su red de confianza sin necesitar su clave privada.\n- **Firmador remoto (NIP-46)** — Mantén tus claves en un dispositivo separado y firma remotamente a través de una conexión bunker.\n\nCada cuenta está completamente aislada. Cambiar de cuenta cambia todo — tu identidad, tu grafo de confianza, tus permisos. No hay contaminación cruzada accidental entre identidades.\n\n## Web of Trust: Ve con Quién Estás Hablando\n\nEsta es la parte que ya conoces, y sigue mejorando. La extensión construye un mapa de tus conexiones sociales y responde una pregunta al instante: **¿qué tan cerca está esta persona de ti?**\n\n- **1 salto** — Alguien que sigues directamente. Alta confianza.\n- **2 saltos** — Un amigo de un amigo. Probablemente confiable.\n- **3+ saltos** — Se aleja. Procede con cautela.\n- **Sin conexión** — Completamente fuera de tu red.\n\nEl **motor de insignias de confianza** hace esto visible en todas partes. Cuando navegas por apps de Nostr, puntos de colores aparecen junto a los nombres de usuario mostrando su nivel de confianza de un vistazo. Sin buscar en perfiles, sin verificar manualmente — solo contexto instantáneo.\n\nTodo esto funciona localmente en tu navegador. Tu grafo de seguidos se sincroniza una vez y luego se consulta instantáneamente, sin necesidad de solicitudes externas para las búsquedas.\n\n## Disponible en 6 Idiomas\n\nNostr es global, y la extensión también debería serlo. La interfaz completa — incorporación, configuración, permisos, avisos, todo — está disponible en:\n\n- **Inglés**\n- **Español**\n- **Portugués**\n- **Francés**\n- **Alemán**\n- **Italiano**\n\nLa extensión detecta el idioma de tu navegador automáticamente. También puedes cambiar manualmente en cualquier momento desde el menú de configuración.\n\n## Por Qué Todo Pertenece Junto\n\nLa verdadera razón por la que agregamos identidad a la extensión no es técnica — es sobre **experiencia**.\n\nCuando tu herramienta de firma y tu herramienta de confianza son la misma extensión, las cosas simplemente funcionan. No necesitas configurar dos extensiones. No necesitas preocuparte por cuál tiene tus claves. Inicias sesión, y la capa de confianza ya está ahí, ya funcionando, ya mostrándote quién es quién.\n\nTambién hay un beneficio de seguridad. Como la extensión gestiona tanto tus claves como tu grafo de confianza, puede mantenerlos adecuadamente aislados de las páginas web mientras los hace funcionar juntos sin problemas para ti. Tus claves permanecen cifradas y protegidas. Tus datos de confianza permanecen locales y privados. Y ambos están disponibles en el momento que los necesitas.\n\nUna extensión. Una configuración. Identidad, confianza y seguridad trabajando juntas.\n\n## Lo que Sigue\n\nLa base está lista. Esto es en lo que estamos trabajando:\n\n- **Contexto de confianza en avisos de firma** — Cuando un sitio pida firmar, verás información de confianza sobre ese sitio directamente en el diálogo de aprobación.\n- **Más soporte de insignias** — Expandir las insignias visuales de confianza para funcionar con más clientes Nostr de forma nativa.\n- **Mejoras en el SDK** — El [nostr-wot-sdk](https://www.npmjs.com/package/nostr-wot-sdk) permite a los desarrolladores integrar confianza en sus apps, con la extensión detectada automáticamente cuando está disponible.\n\nLa extensión es open source y está disponible para [Chrome, Brave, Edge, Opera y Firefox](/download). También puedes [compilar desde el código fuente](https://github.com/nostr-wot/nostr-wot-extension) si prefieres verificar el código tú mismo.\n\n---\n\n*¿Preguntas o comentarios? Encuéntranos en [Nostr](https://njump.me/npub1gxdhmu9swqduwhr6zptjy4ya693zp3ql28nemy4hd97kuufyrqdqwe5zfk) o consulta la [documentación](/docs/extension).*\n"
+        },
         {
           "slug": "por-que-nostr",
           "title": "¿Por Qué Nostr?",
@@ -364,6 +453,7 @@
         "Educación",
         "Education",
         "Funcionalidad",
+        "Identidad",
         "Nostr",
         "Playground",
         "Visualización",
@@ -372,6 +462,50 @@
     },
     "pt": {
       "posts": [
+        {
+          "slug": "identidade-e-confianca",
+          "title": "Identidade e Confianca: O Panorama Completo",
+          "description": "Adicionamos gerenciamento de identidade a extensao Nostr WoT porque confianca e identidade pertencem juntas. Veja o que ha de novo e por que isso importa para sua experiencia.",
+          "excerpt": "Construimos o Web of Trust para ajudar voce a navegar no Nostr. Mas confianca sem identidade parecia incompleto. Entao adicionamos assinatura, criptografia, suporte multi-conta e seis idiomas — tudo em uma experiencia integrada.",
+          "date": "2026-03-04T00:00:00.000Z",
+          "author": {
+            "name": "Leon Acosta",
+            "avatar": "/authors/leon-profile.jpg",
+            "npub": "npub1gxdhmu9swqduwhr6zptjy4ya693zp3ql28nemy4hd97kuufyrqdqwe5zfk",
+            "socials": {
+              "linkedin": "leonacosta",
+              "instagram": "leonacosta.now",
+              "twitter": "leonacosta_",
+              "github": "leonacostaok"
+            }
+          },
+          "featuredImage": "/images/blog/introducing-wot/featured.svg",
+          "previewImage": "/images/blog/introducing-wot/preview.svg",
+          "tags": [
+            "Anuncio",
+            "Identidade",
+            "Web of Trust",
+            "Nostr"
+          ],
+          "published": true,
+          "readingTime": "6 min read",
+          "locale": "pt",
+          "translationKey": "identity-meets-trust",
+          "translations": {
+            "en": "identity-meets-trust",
+            "es": "identidad-y-confianza",
+            "pt": "identidade-e-confianca"
+          },
+          "availableLocales": [
+            "en",
+            "es",
+            "pt"
+          ],
+          "seoTitle": "Extensao Nostr WoT — Identidade, Confianca e Seguranca em Um So Lugar",
+          "seoDescription": "A extensao Nostr WoT agora inclui assinatura NIP-07, armazenamento criptografado de chaves, gerenciamento multi-conta, insignias de confianca e suporte para 6 idiomas. Saiba o que ha de novo.",
+          "ogImage": "/images/blog/introducing-wot/og.svg",
+          "content": "\nQuando comecamos a construir a extensao Nostr WoT, o objetivo era simples: ajudar voce a ver quem esta no seu circulo social e quem nao esta. Pontuacoes de confianca, distancias de saltos, insignias visuais em perfis — a camada de Web of Trust.\n\nMas ao usa-la nos mesmos, algo nao parecia certo. Voce tinha que instalar uma extensao separada so para entrar nas apps do Nostr, e essa extensao nao sabia nada sobre sua rede de confianca. Duas ferramentas que deveriam se conhecer, vivendo em completo isolamento. A experiencia estava fragmentada.\n\nEntao nos perguntamos: **e se identidade e confianca vivessem no mesmo lugar?**\n\n## O que Adicionamos\n\nA extensao agora inclui um **provedor de identidade NIP-07** completo. Isso significa que voce pode usa-la para entrar em qualquer cliente Nostr, assinar eventos e criptografar mensagens — junto com os recursos de confianca que voce ja conhece.\n\nO que esta incluido:\n\n- **Entre em qualquer lugar** — A extensao fornece sua chave publica para qualquer app Nostr que solicitar. Um clique e voce esta conectado.\n- **Assine eventos** — Publique notas, reaja, reposte — a extensao cuida da assinatura criptografica. Voce escolhe quais sites podem assinar quais tipos de eventos.\n- **Mensagens criptografadas** — Tanto o formato anterior NIP-04 quanto o mais novo e seguro NIP-44 sao suportados para conversas privadas.\n- **Permissoes granulares** — Voce decide o que cada site pode fazer. Permita notas em um site, bloqueie mensagens diretas em outro. As permissoes sao lembradas para nao perguntar toda vez.\n\n<Callout type=\"tip\">\nA extensao bloqueia automaticamente solicitacoes de assinatura em conexoes HTTP inseguras, para que suas chaves nunca sejam expostas em canais nao criptografados.\n</Callout>\n\n## Suas Chaves, Sempre Protegidas\n\nLevamos a seguranca das chaves a serio. Suas chaves privadas sao criptografadas com **AES-256-GCM** — o mesmo padrao usado por bancos e governos — protegidas pela sua senha.\n\nO que isso significa na pratica:\n\n- **Suas chaves estao sempre criptografadas em repouso.** Mesmo que alguem acessasse o armazenamento do seu navegador diretamente, encontraria apenas dados criptografados — inuteis sem sua senha.\n- **O bloqueio automatico** protege voce quando se afasta. Apos 15 minutos de inatividade (configuravel), a extensao se bloqueia e apaga o material de chaves da memoria.\n- **As chaves nunca sao mantidas mais tempo do que o necessario.** Quando a extensao assina algo, ela trabalha com uma copia temporaria da sua chave que e destruida imediatamente apos. Quanto menos tempo dados sensiveis existirem na memoria, melhor.\n\n## Multiplas Contas, Totalmente Isoladas\n\nAs pessoas usam o Nostr de diferentes maneiras. Uma conta pessoal, uma conta de projeto, talvez uma conta somente leitura para acompanhar a atividade de alguem. A extensao suporta tudo isso:\n\n- **Gere uma conta nova** — Cria uma identidade nova com uma frase de recuperacao que voce pode fazer backup.\n- **Importe uma chave existente** — Traga seu nsec e continue usando sua identidade atual.\n- **Somente leitura** — Adicione qualquer npub para monitorar sua rede de confianca sem precisar da chave privada.\n- **Assinador remoto (NIP-46)** — Mantenha suas chaves em um dispositivo separado e assine remotamente atraves de uma conexao bunker.\n\nCada conta e completamente isolada. Trocar de conta muda tudo — sua identidade, seu grafo de confianca, suas permissoes. Nao ha contaminacao cruzada acidental entre identidades.\n\n## Web of Trust: Veja com Quem Voce Esta Falando\n\nEsta e a parte que voce ja conhece, e continua melhorando. A extensao constroi um mapa das suas conexoes sociais e responde uma pergunta instantaneamente: **quao perto esta essa pessoa de voce?**\n\n- **1 salto** — Alguem que voce segue diretamente. Alta confianca.\n- **2 saltos** — Um amigo de um amigo. Provavelmente confiavel.\n- **3+ saltos** — Ficando distante. Prossiga com cautela.\n- **Sem conexao** — Completamente fora da sua rede.\n\nO **motor de insignias de confianca** torna isso visivel em toda parte. Quando voce navega por apps Nostr, pontos coloridos aparecem ao lado dos nomes de usuario mostrando o nivel de confianca num relance. Sem procurar em perfis, sem verificar manualmente — apenas contexto instantaneo.\n\nTudo isso funciona localmente no seu navegador. Seu grafo de seguidos e sincronizado uma vez e depois consultado instantaneamente, sem necessidade de requisicoes externas para as buscas.\n\n## Disponivel em 6 Idiomas\n\nO Nostr e global, e a extensao tambem deveria ser. A interface completa — integracao, configuracoes, permissoes, avisos, tudo — esta disponivel em:\n\n- **Ingles**\n- **Espanhol**\n- **Portugues**\n- **Frances**\n- **Alemao**\n- **Italiano**\n\nA extensao detecta o idioma do seu navegador automaticamente. Voce tambem pode trocar manualmente a qualquer momento no menu de configuracoes.\n\n## Por Que Tudo Pertence Junto\n\nA verdadeira razao pela qual adicionamos identidade a extensao nao e tecnica — e sobre **experiencia**.\n\nQuando sua ferramenta de assinatura e sua ferramenta de confianca sao a mesma extensao, as coisas simplesmente funcionam. Voce nao precisa configurar duas extensoes. Nao precisa se preocupar com qual tem suas chaves. Voce entra, e a camada de confianca ja esta la, ja funcionando, ja mostrando quem e quem.\n\nTambem ha um beneficio de seguranca. Como a extensao gerencia tanto suas chaves quanto seu grafo de confianca, ela pode mante-los adequadamente isolados das paginas web enquanto os faz funcionar juntos perfeitamente para voce. Suas chaves permanecem criptografadas e protegidas. Seus dados de confianca permanecem locais e privados. E ambos estao disponiveis no momento em que voce precisa.\n\nUma extensao. Uma configuracao. Identidade, confianca e seguranca trabalhando juntas.\n\n## O que Vem a Seguir\n\nA base esta pronta. Aqui esta no que estamos trabalhando:\n\n- **Contexto de confianca em avisos de assinatura** — Quando um site pedir para assinar, voce vera informacoes de confianca sobre esse site diretamente no dialogo de aprovacao.\n- **Mais suporte de insignias** — Expandir as insignias visuais de confianca para funcionar com mais clientes Nostr nativamente.\n- **Melhorias no SDK** — O [nostr-wot-sdk](https://www.npmjs.com/package/nostr-wot-sdk) permite que desenvolvedores integrem confianca em seus apps, com a extensao detectada automaticamente quando disponivel.\n\nA extensao e open source e esta disponivel para [Chrome, Brave, Edge, Opera e Firefox](/download). Voce tambem pode [compilar a partir do codigo fonte](https://github.com/nostr-wot/nostr-wot-extension) se preferir verificar o codigo voce mesmo.\n\n---\n\n*Perguntas ou feedback? Encontre-nos no [Nostr](https://njump.me/npub1gxdhmu9swqduwhr6zptjy4ya693zp3ql28nemy4hd97kuufyrqdqwe5zfk) ou consulte a [documentacao](/docs/extension).*\n"
+        },
         {
           "slug": "o-que-e-web-of-trust",
           "title": "O Que É Web of Trust?",
@@ -545,10 +679,12 @@
         }
       ],
       "tags": [
+        "Anuncio",
         "Anúncio",
         "Education",
         "Educação",
         "Funcionalidade",
+        "Identidade",
         "Nostr",
         "Playground",
         "Visualização",

@@ -13,6 +13,7 @@ import {
   FeatureCard,
   FeatureList,
   StatsGrid,
+  AccordionList,
 } from "@/components/ui";
 import {
   ShieldIcon,
@@ -23,10 +24,10 @@ import {
   ArrowRightIcon,
   NostrLogo,
   ExtensionIllustration,
+  ExtensionPopupIllustration,
   OracleIllustration,
   CTAIllustration,
   CodeBracketsIcon,
-  ChevronDownIcon,
 } from "@/components/icons";
 import { CodeBlock } from "@/components/ui";
 import { generateAlternates, generateOpenGraph, generateTwitter } from "@/lib/metadata";
@@ -68,7 +69,7 @@ export default async function Home() {
     "alternateName": "Nostr WoT",
     "url": "https://nostr-wot.com",
     "logo": "https://nostr-wot.com/icon-512.png",
-    "description": "Filter spam and find trusted content on Nostr using your trust network. A decentralized reputation system without central moderators.",
+    "description": "Nostr identity provider, NIP-07 signer, and Web of Trust browser extension. Manage keys, sign events, encrypt messages, and filter spam with trust scores.",
     "sameAs": [
       "https://github.com/nostr-wot",
       "https://twitter.com/nostr_wot",
@@ -80,7 +81,7 @@ export default async function Home() {
     "@type": "WebSite",
     "name": "Nostr Web of Trust",
     "url": "https://nostr-wot.com",
-    "description": "Filter spam and find trusted content on Nostr using your trust network",
+    "description": "Nostr identity provider, NIP-07 signer, and Web of Trust browser extension",
     "potentialAction": {
       "@type": "SearchAction",
       "target": "https://nostr-wot.com/docs?search={search_term_string}",
@@ -160,6 +161,9 @@ export default async function Home() {
     { title: t("extension.features.clientSide.title"), description: t("extension.features.clientSide.description") },
     { title: t("extension.features.mode.title"), description: t("extension.features.mode.description") },
     { title: t("extension.features.privacy.title"), description: t("extension.features.privacy.description") },
+    { title: t("extension.features.badges.title"), description: t("extension.features.badges.description") },
+    { title: t("extension.features.permissions.title"), description: t("extension.features.permissions.description") },
+    { title: t("extension.features.i18n.title"), description: t("extension.features.i18n.description") },
   ];
 
   const oracleFeatures = [
@@ -288,8 +292,8 @@ export default async function Home() {
 
       {/* WoT Extension Section */}
       <Section padding="lg" className="overflow-hidden">
-        <div className="grid lg:grid-cols-2 gap-12 lg:gap-16 items-center">
-          <ScrollReveal animation="fade-right">
+        <div className="grid lg:grid-cols-3 gap-12 lg:gap-16 items-center">
+          <ScrollReveal animation="fade-right" className="lg:col-span-2">
             <div>
               <div className="inline-flex items-center gap-2 bg-purple-100 dark:bg-purple-900/30 text-purple-700 dark:text-purple-300 px-3 py-1 rounded-full text-sm font-medium mb-6">
                 <PuzzleIcon className="w-4 h-4" />
@@ -301,7 +305,10 @@ export default async function Home() {
                 <code className="bg-gray-200 dark:bg-gray-700 px-2 py-1 rounded text-sm font-mono">window.nostr.wot</code>{" "}
                 {t("extension.descriptionEnd")}
               </p>
-              <FeatureList items={extensionFeatures} iconColor="text-purple-600 dark:text-purple-400" className="mb-8" />
+              <div className="grid md:grid-cols-2 gap-x-8 mb-8">
+                <FeatureList items={extensionFeatures.slice(0, 3)} iconColor="text-purple-600 dark:text-purple-400" />
+                <FeatureList items={extensionFeatures.slice(3)} iconColor="text-purple-600 dark:text-purple-400" />
+              </div>
               <LinkButton href="/download" className="hover-lift">{t("extension.downloadButton")}</LinkButton>
             </div>
           </ScrollReveal>
@@ -393,31 +400,15 @@ const inNetwork = await wot.isInMyWoT(pubkey);`}
         <div className="grid lg:grid-cols-2 gap-12 lg:gap-16 items-center">
           <ScrollReveal animation="fade-right" className="order-2 lg:order-1">
             <div className="relative">
-              <div className="absolute inset-0 bg-gradient-to-br from-orange-500/20 to-amber-500/20 rounded-3xl blur-3xl" />
-              <div className="relative bg-gradient-to-br from-orange-50 to-amber-50 dark:from-orange-900/40 dark:to-amber-900/40 rounded-3xl p-8 border border-orange-200 dark:border-orange-800">
-                <div className="bg-white dark:bg-gray-800 rounded-xl p-6 border border-gray-200 dark:border-gray-700">
-                  <div className="flex items-center gap-2 mb-4">
-                    <div className="w-3 h-3 rounded-full bg-red-500" />
-                    <div className="w-3 h-3 rounded-full bg-yellow-500" />
-                    <div className="w-3 h-3 rounded-full bg-green-500" />
-                  </div>
-                  <div className="space-y-3 text-sm font-mono">
-                    <p className="text-gray-500 dark:text-gray-400"># {t("playground.notice.steps.step1")}</p>
-                    <p className="text-gray-900 dark:text-white">git clone https://github.com/nostr-wot/nostr-wot-extension.git</p>
-                    <p className="text-gray-500 dark:text-gray-400 mt-4"># {t("playground.notice.steps.step2")}</p>
-                    <p className="text-gray-500 dark:text-gray-400"># {t("playground.notice.steps.step3")}</p>
-                    <p className="text-gray-500 dark:text-gray-400"># {t("playground.notice.steps.step4")}</p>
-                    <p className="text-gray-500 dark:text-gray-400"># {t("playground.notice.steps.step5")}</p>
-                  </div>
-                </div>
-                <p className="text-xs text-orange-600 dark:text-orange-400 mt-4 text-center font-medium">{t("playground.notice.alternativeTitle")}</p>
-                <p className="text-sm text-orange-700 dark:text-orange-300 mt-2 text-center">{t("playground.notice.note")}</p>
+              <div className="absolute inset-0 bg-gradient-to-br from-purple-500/20 to-indigo-500/20 rounded-3xl blur-3xl" />
+              <div className="relative bg-gradient-to-br from-purple-50 to-indigo-50 dark:from-purple-900/40 dark:to-indigo-900/40 rounded-3xl p-8 border border-purple-200 dark:border-purple-800">
+                <ExtensionPopupIllustration />
               </div>
             </div>
           </ScrollReveal>
           <ScrollReveal animation="fade-left" delay={200} className="order-1 lg:order-2">
             <div>
-              <div className="inline-flex items-center gap-2 bg-orange-100 dark:bg-orange-900/30 text-orange-700 dark:text-orange-300 px-3 py-1 rounded-full text-sm font-medium mb-6">
+              <div className="inline-flex items-center gap-2 bg-purple-100 dark:bg-purple-900/30 text-purple-700 dark:text-purple-300 px-3 py-1 rounded-full text-sm font-medium mb-6">
                 <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z" />
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
@@ -425,22 +416,7 @@ const inNetwork = await wot.isInMyWoT(pubkey);`}
                 {t("playground.badge")}
               </div>
               <h2 className="text-3xl md:text-4xl font-bold mb-6">{t("playground.title")}</h2>
-              <p className="text-lg text-gray-600 dark:text-gray-400 mb-6">{t("playground.description")}</p>
-              <div className="bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-xl p-4 mb-8">
-                <h3 className="font-semibold text-green-800 dark:text-green-200 mb-2">{t("playground.notice.title")}</h3>
-                <p className="text-sm text-green-700 dark:text-green-300 mb-3">{t("playground.notice.description")}</p>
-                <a
-                  href={t("playground.notice.chromeStoreUrl")}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="inline-flex items-center gap-2 bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors"
-                >
-                  {t("playground.notice.chromeStoreButton")}
-                  <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
-                  </svg>
-                </a>
-              </div>
+              <p className="text-lg text-gray-600 dark:text-gray-400 mb-8">{t("playground.description")}</p>
               <LinkButton href="/playground" className="hover-lift">{t("playground.tryButton")}</LinkButton>
             </div>
           </ScrollReveal>
@@ -452,23 +428,7 @@ const inNetwork = await wot.isInMyWoT(pubkey);`}
         <ScrollReveal animation="fade-up">
           <SectionHeader title={t("faq.title")} description={t("faq.description")} />
         </ScrollReveal>
-        <div className="max-w-3xl mx-auto">
-          <div className="space-y-4">
-            {faqItems.map((item, i) => (
-              <ScrollReveal key={i} animation="fade-up" delay={50 + i * 50}>
-                <details className="group bg-white dark:bg-gray-800/50 rounded-xl border border-gray-200 dark:border-gray-700/50 overflow-hidden">
-                  <summary className="flex items-center justify-between p-6 cursor-pointer list-none">
-                    <h3 className="font-semibold text-gray-900 dark:text-white pr-4">{item.question}</h3>
-                    <ChevronDownIcon className="w-5 h-5 text-gray-500 transition-transform group-open:rotate-180 flex-shrink-0" />
-                  </summary>
-                  <div className="px-6 pb-6 pt-0">
-                    <p className="text-gray-600 dark:text-gray-400 leading-relaxed">{item.answer}</p>
-                  </div>
-                </details>
-              </ScrollReveal>
-            ))}
-          </div>
-        </div>
+        <AccordionList items={faqItems} />
       </Section>
 
       {/* CTA & Newsletter Section */}

@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { getTranslations } from "next-intl/server";
-import { ScrollReveal, LinkButton, ExternalLinkButton, Section, TerminalBlock } from "@/components/ui";
+import { ScrollReveal, LinkButton, ExternalLinkButton, Section, SectionHeader, TerminalBlock, AccordionList } from "@/components/ui";
 import HowItWorksAnimation from "@/components/HowItWorksAnimation";
 import {
   ChromeIcon,
@@ -8,7 +8,7 @@ import {
   EdgeIcon,
   OperaIcon,
   FirefoxIcon,
-  LightningIcon,
+  KeyIcon,
   LockOutlineIcon,
   CodeOutlineIcon,
 } from "@/components/icons";
@@ -53,7 +53,7 @@ const BROWSERS = [
 const FAQ_KEYS = ["whatIsWot", "howExtensionWorks", "isDataPrivate", "supportedBrowsers", "nostrAccount", "isFree"];
 
 const FEATURES = [
-  { key: "instantQueries", Icon: LightningIcon },
+  { key: "instantQueries", Icon: KeyIcon },
   { key: "privacyOptions", Icon: LockOutlineIcon },
   { key: "simpleApi", Icon: CodeOutlineIcon },
 ];
@@ -68,10 +68,10 @@ export default async function DownloadPage() {
     "name": "Nostr Web of Trust Extension",
     "applicationCategory": "BrowserApplication",
     "operatingSystem": "Chrome, Brave, Edge, Opera, Firefox",
-    "description": "Browser extension that provides Web of Trust API for Nostr apps. Filter spam, verify reputation, and explore your social graph.",
+    "description": "Nostr identity provider, NIP-07 signer, and Web of Trust browser extension. Manage multiple accounts, sign events, encrypt messages, and filter spam with trust scores.",
     "url": "https://nostr-wot.com/download",
     "downloadUrl": "https://chromewebstore.google.com/detail/nostr-wot-extension/gfmefgdkmjpjinecjchlangpamhclhdo",
-    "softwareVersion": "1.0.0",
+    "softwareVersion": "0.2.2",
     "offers": {
       "@type": "Offer",
       "price": "0",
@@ -85,10 +85,16 @@ export default async function DownloadPage() {
       "worstRating": "1",
     },
     "featureList": [
-      "Instant trust queries",
-      "Privacy-first design",
-      "Simple window.nostr.wot API",
-      "Local and remote modes",
+      "NIP-07 signer and identity provider",
+      "Multi-account management with HD derivation",
+      "NIP-04 and NIP-44 encryption",
+      "NIP-46 remote signer support",
+      "Encrypted vault with auto-lock",
+      "Trust badge injection on Nostr sites",
+      "Web of Trust API (window.nostr.wot)",
+      "Watch-only and read-only accounts",
+      "6 languages supported",
+      "Granular per-site permissions",
     ],
     "screenshot": "https://nostr-wot.com/og-image.png",
     "author": {
@@ -107,6 +113,7 @@ export default async function DownloadPage() {
   const buildCommands = [
     `# ${t("buildFromSource.clone")}`,
     "git clone https://github.com/nostr-wot/nostr-wot-extension.git",
+    "cd nostr-wot-extension && npm install && npm run build",
   ];
 
   return (
@@ -176,23 +183,6 @@ export default async function DownloadPage() {
         </div>
       </Section>
 
-      {/* FAQ */}
-      <Section background="gray" padding="md">
-        <ScrollReveal animation="fade-up">
-          <h2 className="text-2xl font-bold text-center mb-12">{t("faq.title")}</h2>
-        </ScrollReveal>
-        <div className="space-y-4 max-w-3xl mx-auto">
-          {FAQ_KEYS.map((key, i) => (
-            <ScrollReveal key={key} animation="fade-up" delay={i * 50}>
-              <div className="bg-white dark:bg-gray-800 rounded-xl p-6 border border-gray-200 dark:border-gray-700">
-                <h3 className="font-semibold mb-2">{t(`faq.items.${key}.question`)}</h3>
-                <p className="text-gray-600 dark:text-gray-400 text-sm leading-relaxed">{t(`faq.items.${key}.answer`)}</p>
-              </div>
-            </ScrollReveal>
-          ))}
-        </div>
-      </Section>
-
       {/* Build from Source */}
       <Section padding="md">
         <ScrollReveal animation="fade-up">
@@ -235,6 +225,17 @@ export default async function DownloadPage() {
             </div>
           </div>
         </ScrollReveal>
+      </Section>
+
+      {/* FAQ */}
+      <Section padding="md">
+        <ScrollReveal animation="fade-up">
+          <SectionHeader title={t("faq.title")} />
+        </ScrollReveal>
+        <AccordionList items={FAQ_KEYS.map(key => ({
+          question: t(`faq.items.${key}.question`),
+          answer: t(`faq.items.${key}.answer`),
+        }))} />
       </Section>
       </main>
     </>

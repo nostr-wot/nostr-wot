@@ -95,11 +95,11 @@ const MODE_CARDS = [
 ];
 
 const GET_STARTED_STEPS = [
-  { title: "Install the extension", description: "Add to Chrome, Brave, Edge, or Opera" },
-  { title: "Enter your pubkey", description: "Or connect with nos2x, Alby, or any NIP-07 signer" },
-  { title: "Choose your mode", description: "Remote for speed, Local for privacy, or Hybrid for both" },
-  { title: "Customize scoring", description: "Adjust trust weights to match your preferences" },
-  { title: "Browse Nostr", description: "Your Web of Trust now follows you everywhere" },
+  { title: "Install the extension", description: "Add to Chrome, Brave, Edge, Opera, or Firefox" },
+  { title: "Set up your account", description: "Create new keys, import nsec, add watch-only, or connect via NIP-46" },
+  { title: "Choose your WoT mode", description: "Remote for speed, Local for privacy, or Hybrid for both" },
+  { title: "Customize settings", description: "Adjust trust scoring, permissions, and auto-lock timer" },
+  { title: "Browse Nostr", description: "Your identity and Web of Trust now follow you everywhere" },
 ];
 
 const PRIVACY_MODES = [
@@ -131,7 +131,7 @@ export default async function FeaturesPage() {
     "@context": "https://schema.org",
     "@type": "WebPage",
     "name": "Nostr Web of Trust Features",
-    "description": "Explore WoT features: universal API, trust scoring, privacy modes, customizable settings, and seamless integration with any Nostr app.",
+    "description": "Explore Nostr WoT features: NIP-07 signer, multi-account vault, trust scoring, privacy modes, badge injection, and seamless integration with any Nostr app.",
     "url": "https://nostr-wot.com/features",
     "mainEntity": {
       "@type": "SoftwareApplication",
@@ -139,12 +139,16 @@ export default async function FeaturesPage() {
       "applicationCategory": "DeveloperApplication",
       "operatingSystem": "Chrome, Brave, Edge, Opera, Firefox",
       "featureList": [
+        "NIP-07 signer and identity provider",
+        "Multi-account management with HD derivation",
+        "NIP-46 remote signer support",
+        "Encrypted vault with auto-lock",
+        "Trust badge injection on Nostr sites",
         "Universal window.nostr.wot API",
         "Customizable trust scoring",
         "Remote, Local, and Hybrid modes",
-        "Privacy-first design",
-        "Real-time social distance queries",
-        "Batch operations support",
+        "Watch-only accounts",
+        "6 languages supported",
       ],
       "offers": {
         "@type": "Offer",

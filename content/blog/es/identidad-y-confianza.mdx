@@ -1,0 +1,119 @@
+---
+title: "Identidad y Confianza: El Panorama Completo"
+description: "Agregamos gestión de identidad a la extensión Nostr WoT porque confianza e identidad van juntas. Esto es lo nuevo y por qué importa para tu experiencia."
+excerpt: "Construimos Web of Trust para ayudarte a navegar Nostr. Pero confianza sin identidad se sentía incompleto. Así que agregamos firma, cifrado, soporte multi-cuenta y seis idiomas — todo en una experiencia integrada."
+date: "2026-03-04"
+author:
+  name: "Leon Acosta"
+  avatar: "/authors/leon-profile.jpg"
+  npub: "npub1gxdhmu9swqduwhr6zptjy4ya693zp3ql28nemy4hd97kuufyrqdqwe5zfk"
+  socials:
+    linkedin: "leonacosta"
+    instagram: "leonacosta.now"
+    twitter: "leonacosta_"
+    github: "leonacostaok"
+featuredImage: "/images/blog/introducing-wot/featured.svg"
+previewImage: "/images/blog/introducing-wot/preview.svg"
+tags:
+  - "Anuncio"
+  - "Identidad"
+  - "Web of Trust"
+  - "Nostr"
+published: true
+seoTitle: "Extensión Nostr WoT — Identidad, Confianza y Seguridad en Un Solo Lugar"
+seoDescription: "La extensión Nostr WoT ahora incluye firma NIP-07, almacenamiento cifrado de claves, gestión multi-cuenta, insignias de confianza y soporte para 6 idiomas. Descubre qué hay de nuevo."
+ogImage: "/images/blog/introducing-wot/og.svg"
+translationKey: "identity-meets-trust"
+---
+
+Cuando empezamos a construir la extensión Nostr WoT, el objetivo era simple: ayudarte a ver quién está en tu círculo social y quién no. Puntuaciones de confianza, distancias de saltos, insignias visuales en perfiles — la capa de Web of Trust.
+
+Pero al usarla nosotros mismos, algo no se sentía bien. Tenías que instalar una extensión aparte solo para iniciar sesión en las apps de Nostr, y esa extensión no sabía nada sobre tu red de confianza. Dos herramientas que deberían conocerse mutuamente, viviendo en completo aislamiento. La experiencia estaba fragmentada.
+
+Así que nos preguntamos: **¿y si identidad y confianza vivieran en el mismo lugar?**
+
+## Lo que Agregamos
+
+La extensión ahora incluye un **proveedor de identidad NIP-07** completo. Eso significa que puedes usarla para iniciar sesión en cualquier cliente Nostr, firmar eventos y cifrar mensajes — junto con las funciones de confianza que ya conoces.
+
+Esto es lo que incluye:
+
+- **Inicia sesión en todas partes** — La extensión proporciona tu clave pública a cualquier app Nostr que la solicite. Un clic y estás conectado.
+- **Firma eventos** — Publica notas, reacciona, reposta — la extensión se encarga de la firma criptográfica. Tú eliges qué sitios pueden firmar qué tipos de eventos.
+- **Mensajes cifrados** — Tanto el formato anterior NIP-04 como el más nuevo y seguro NIP-44 están soportados para conversaciones privadas.
+- **Permisos granulares** — Tú decides qué puede hacer cada sitio. Permite notas en un sitio, bloquea mensajes directos en otro. Los permisos se recuerdan para no preguntarte cada vez.
+
+<Callout type="tip">
+La extensión bloquea automáticamente solicitudes de firma en conexiones HTTP inseguras, para que tus claves nunca se expongan en canales sin cifrar.
+</Callout>
+
+## Tus Claves, Siempre Protegidas
+
+Nos tomamos la seguridad de las claves en serio. Tus claves privadas están cifradas con **AES-256-GCM** — el mismo estándar usado por bancos y gobiernos — protegidas por tu contraseña.
+
+Lo que esto significa en la práctica:
+
+- **Tus claves siempre están cifradas en reposo.** Incluso si alguien accediera al almacenamiento de tu navegador directamente, encontraría solo datos cifrados — inútiles sin tu contraseña.
+- **El bloqueo automático** te protege cuando te alejas. Después de 15 minutos de inactividad (configurable), la extensión se bloquea y borra el material de claves de la memoria.
+- **Las claves nunca se mantienen más tiempo del necesario.** Cuando la extensión firma algo, trabaja con una copia temporal de tu clave que se destruye inmediatamente después. Cuanto menos tiempo existan datos sensibles en memoria, mejor.
+
+## Múltiples Cuentas, Totalmente Aisladas
+
+Las personas usan Nostr de diferentes maneras. Una cuenta personal, una cuenta de proyecto, quizás una cuenta de solo lectura para seguir la actividad de alguien. La extensión soporta todo esto:
+
+- **Genera una cuenta nueva** — Crea una identidad nueva con una frase de recuperación que puedes respaldar.
+- **Importa una clave existente** — Trae tu nsec y sigue usando tu identidad actual.
+- **Solo lectura** — Agrega cualquier npub para monitorear su red de confianza sin necesitar su clave privada.
+- **Firmador remoto (NIP-46)** — Mantén tus claves en un dispositivo separado y firma remotamente a través de una conexión bunker.
+
+Cada cuenta está completamente aislada. Cambiar de cuenta cambia todo — tu identidad, tu grafo de confianza, tus permisos. No hay contaminación cruzada accidental entre identidades.
+
+## Web of Trust: Ve con Quién Estás Hablando
+
+Esta es la parte que ya conoces, y sigue mejorando. La extensión construye un mapa de tus conexiones sociales y responde una pregunta al instante: **¿qué tan cerca está esta persona de ti?**
+
+- **1 salto** — Alguien que sigues directamente. Alta confianza.
+- **2 saltos** — Un amigo de un amigo. Probablemente confiable.
+- **3+ saltos** — Se aleja. Procede con cautela.
+- **Sin conexión** — Completamente fuera de tu red.
+
+El **motor de insignias de confianza** hace esto visible en todas partes. Cuando navegas por apps de Nostr, puntos de colores aparecen junto a los nombres de usuario mostrando su nivel de confianza de un vistazo. Sin buscar en perfiles, sin verificar manualmente — solo contexto instantáneo.
+
+Todo esto funciona localmente en tu navegador. Tu grafo de seguidos se sincroniza una vez y luego se consulta instantáneamente, sin necesidad de solicitudes externas para las búsquedas.
+
+## Disponible en 6 Idiomas
+
+Nostr es global, y la extensión también debería serlo. La interfaz completa — incorporación, configuración, permisos, avisos, todo — está disponible en:
+
+- **Inglés**
+- **Español**
+- **Portugués**
+- **Francés**
+- **Alemán**
+- **Italiano**
+
+La extensión detecta el idioma de tu navegador automáticamente. También puedes cambiar manualmente en cualquier momento desde el menú de configuración.
+
+## Por Qué Todo Pertenece Junto
+
+La verdadera razón por la que agregamos identidad a la extensión no es técnica — es sobre **experiencia**.
+
+Cuando tu herramienta de firma y tu herramienta de confianza son la misma extensión, las cosas simplemente funcionan. No necesitas configurar dos extensiones. No necesitas preocuparte por cuál tiene tus claves. Inicias sesión, y la capa de confianza ya está ahí, ya funcionando, ya mostrándote quién es quién.
+
+También hay un beneficio de seguridad. Como la extensión gestiona tanto tus claves como tu grafo de confianza, puede mantenerlos adecuadamente aislados de las páginas web mientras los hace funcionar juntos sin problemas para ti. Tus claves permanecen cifradas y protegidas. Tus datos de confianza permanecen locales y privados. Y ambos están disponibles en el momento que los necesitas.
+
+Una extensión. Una configuración. Identidad, confianza y seguridad trabajando juntas.
+
+## Lo que Sigue
+
+La base está lista. Esto es en lo que estamos trabajando:
+
+- **Contexto de confianza en avisos de firma** — Cuando un sitio pida firmar, verás información de confianza sobre ese sitio directamente en el diálogo de aprobación.
+- **Más soporte de insignias** — Expandir las insignias visuales de confianza para funcionar con más clientes Nostr de forma nativa.
+- **Mejoras en el SDK** — El [nostr-wot-sdk](https://www.npmjs.com/package/nostr-wot-sdk) permite a los desarrolladores integrar confianza en sus apps, con la extensión detectada automáticamente cuando está disponible.
+
+La extensión es open source y está disponible para [Chrome, Brave, Edge, Opera y Firefox](/download). También puedes [compilar desde el código fuente](https://github.com/nostr-wot/nostr-wot-extension) si prefieres verificar el código tú mismo.
+
+---
+
+*¿Preguntas o comentarios? Encuéntranos en [Nostr](https://njump.me/npub1gxdhmu9swqduwhr6zptjy4ya693zp3ql28nemy4hd97kuufyrqdqwe5zfk) o consulta la [documentación](/docs/extension).*
