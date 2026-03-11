@@ -1,0 +1,148 @@
+<svg width="1200" height="630" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#1e1b4b;stop-opacity:1" />
+      <stop offset="50%" style="stop-color:#312e81;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#4c1d95;stop-opacity:1" />
+    </linearGradient>
+    <radialGradient id="glow" cx="50%" cy="45%" r="45%">
+      <stop offset="0%" style="stop-color:#7c3aed;stop-opacity:0.3" />
+      <stop offset="100%" style="stop-color:#1e1b4b;stop-opacity:0" />
+    </radialGradient>
+    <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="0" stdDeviation="4" flood-color="#a78bfa" flood-opacity="0.5"/>
+    </filter>
+    <filter id="icon-glow" x="-50%" y="-50%" width="200%" height="200%">
+      <feDropShadow dx="0" dy="0" stdDeviation="8" flood-color="#4ade80" flood-opacity="0.6"/>
+    </filter>
+    <filter id="puzzle-glow" x="-50%" y="-50%" width="200%" height="200%">
+      <feDropShadow dx="0" dy="0" stdDeviation="12" flood-color="#a78bfa" flood-opacity="0.7"/>
+    </filter>
+    <filter id="node-glow" x="-50%" y="-50%" width="200%" height="200%">
+      <feDropShadow dx="0" dy="0" stdDeviation="4" flood-color="#4ade80" flood-opacity="0.5"/>
+    </filter>
+    <filter id="browser-glow" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur stdDeviation="6" result="blur"/>
+      <feMerge>
+        <feMergeNode in="blur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+  </defs>
+
+  <!-- Background -->
+  <rect width="100%" height="100%" fill="url(#bg)"/>
+  <rect width="100%" height="100%" fill="url(#glow)"/>
+
+  <!-- Subtle grid pattern -->
+  <g opacity="0.05" stroke="white" stroke-width="0.5">
+    <line x1="0" y1="0" x2="1200" y2="630"/>
+    <line x1="200" y1="0" x2="1200" y2="500"/>
+    <line x1="0" y1="200" x2="1000" y2="630"/>
+    <line x1="400" y1="0" x2="1200" y2="400"/>
+    <line x1="0" y1="400" x2="800" y2="630"/>
+    <line x1="1200" y1="0" x2="0" y2="630"/>
+    <line x1="1000" y1="0" x2="0" y2="500"/>
+    <line x1="1200" y1="200" x2="200" y2="630"/>
+  </g>
+
+  <!-- Trust rings -->
+  <circle cx="600" cy="280" r="270" fill="none" stroke="rgba(167,139,250,0.06)" stroke-width="1" stroke-dasharray="4,8"/>
+  <circle cx="600" cy="280" r="210" fill="none" stroke="rgba(167,139,250,0.10)" stroke-width="1" stroke-dasharray="4,8"/>
+  <circle cx="600" cy="280" r="150" fill="none" stroke="rgba(167,139,250,0.14)" stroke-width="1" stroke-dasharray="4,8"/>
+
+  <!-- Connection nodes - small dots scattered around -->
+  <g filter="url(#node-glow)">
+    <circle cx="350" cy="160" r="4" fill="rgba(74,222,128,0.7)"/>
+    <circle cx="280" cy="300" r="3" fill="rgba(74,222,128,0.5)"/>
+    <circle cx="390" cy="430" r="3.5" fill="rgba(74,222,128,0.6)"/>
+    <circle cx="850" cy="180" r="4" fill="rgba(74,222,128,0.7)"/>
+    <circle cx="920" cy="310" r="3" fill="rgba(74,222,128,0.5)"/>
+    <circle cx="810" cy="440" r="3.5" fill="rgba(74,222,128,0.6)"/>
+    <circle cx="450" cy="100" r="3" fill="rgba(250,204,21,0.6)"/>
+    <circle cx="750" cy="90" r="3" fill="rgba(250,204,21,0.6)"/>
+    <circle cx="470" cy="510" r="3" fill="rgba(250,204,21,0.5)"/>
+    <circle cx="730" cy="520" r="3" fill="rgba(250,204,21,0.5)"/>
+  </g>
+
+  <!-- Connection lines from nodes to browser area -->
+  <line x1="350" y1="160" x2="470" y2="210" stroke="rgba(74,222,128,0.25)" stroke-width="1"/>
+  <line x1="280" y1="300" x2="430" y2="300" stroke="rgba(74,222,128,0.2)" stroke-width="1"/>
+  <line x1="390" y1="430" x2="480" y2="390" stroke="rgba(74,222,128,0.2)" stroke-width="1"/>
+  <line x1="850" y1="180" x2="730" y2="210" stroke="rgba(74,222,128,0.25)" stroke-width="1"/>
+  <line x1="920" y1="310" x2="770" y2="300" stroke="rgba(74,222,128,0.2)" stroke-width="1"/>
+  <line x1="810" y1="440" x2="720" y2="390" stroke="rgba(74,222,128,0.2)" stroke-width="1"/>
+  <line x1="450" y1="100" x2="530" y2="170" stroke="rgba(250,204,21,0.15)" stroke-width="1"/>
+  <line x1="750" y1="90" x2="670" y2="170" stroke="rgba(250,204,21,0.15)" stroke-width="1"/>
+
+  <!-- Browser window outline -->
+  <g filter="url(#shadow)">
+    <!-- Browser frame -->
+    <rect x="390" y="140" width="420" height="330" rx="12" ry="12" fill="none" stroke="rgba(167,139,250,0.4)" stroke-width="2"/>
+    <!-- Title bar -->
+    <rect x="390" y="140" width="420" height="40" rx="12" ry="12" fill="rgba(167,139,250,0.08)"/>
+    <rect x="390" y="168" width="420" height="12" fill="rgba(167,139,250,0.08)"/>
+    <!-- Title bar dots -->
+    <circle cx="415" cy="160" r="5" fill="rgba(248,113,113,0.6)"/>
+    <circle cx="435" cy="160" r="5" fill="rgba(250,204,21,0.6)"/>
+    <circle cx="455" cy="160" r="5" fill="rgba(74,222,128,0.6)"/>
+    <!-- URL bar -->
+    <rect x="480" y="150" width="200" height="20" rx="4" fill="rgba(167,139,250,0.06)" stroke="rgba(167,139,250,0.15)" stroke-width="1"/>
+    <!-- URL bar text hint -->
+    <text x="500" y="164" font-family="monospace" font-size="9" fill="rgba(167,139,250,0.4)">chrome://extensions</text>
+  </g>
+
+  <!-- Puzzle piece (extension icon) snapping into browser -->
+  <g filter="url(#puzzle-glow)">
+    <!-- Puzzle piece body -->
+    <path d="M580,250 L580,230 C580,230 570,225 570,215 C570,205 580,200 590,200 C600,200 610,205 610,215 C610,225 600,230 600,230 L600,250 L630,250 C630,250 635,240 645,240 C655,240 660,250 660,260 C660,270 655,280 645,280 C635,280 630,270 630,270 L630,290 L600,290 C600,290 600,300 610,305 C610,305 600,312 590,312 C580,312 570,305 570,305 C580,300 580,290 580,290 L550,290 L550,270 C550,270 540,270 540,260 C540,250 550,250 550,250 Z" fill="rgba(167,139,250,0.85)" stroke="rgba(167,139,250,0.4)" stroke-width="1.5"/>
+    <!-- Puzzle inner highlight -->
+    <path d="M585,255 L585,238 C585,238 578,233 578,225 C578,217 585,213 592,213 C599,213 604,217 604,225 C604,233 598,238 598,238 L598,255 L622,255 C622,255 627,248 635,248 C643,248 648,255 648,262 C648,269 643,275 635,275 C627,275 622,268 622,268 L622,283 L598,283 C598,283 598,290 605,294 C605,294 598,299 592,299 C586,299 579,294 579,294 C586,290 586,283 586,283 L560,283 L560,272 C560,272 553,272 553,264 C553,256 560,255 560,255 Z" fill="rgba(255,255,255,0.08)"/>
+  </g>
+
+  <!-- Snap/install glow effect around puzzle piece -->
+  <circle cx="595" cy="265" r="55" fill="none" stroke="rgba(74,222,128,0.3)" stroke-width="1.5" stroke-dasharray="6,4"/>
+  <circle cx="595" cy="265" r="70" fill="none" stroke="rgba(74,222,128,0.15)" stroke-width="1" stroke-dasharray="3,6"/>
+
+  <!-- Sparkle effects around the puzzle piece -->
+  <g opacity="0.8">
+    <!-- Top-right sparkle -->
+    <line x1="668" y1="215" x2="668" y2="200" stroke="rgba(74,222,128,0.7)" stroke-width="1.5"/>
+    <line x1="660" y1="207" x2="676" y2="207" stroke="rgba(74,222,128,0.7)" stroke-width="1.5"/>
+    <!-- Top-left sparkle -->
+    <line x1="530" y1="210" x2="530" y2="198" stroke="rgba(250,204,21,0.6)" stroke-width="1.5"/>
+    <line x1="524" y1="204" x2="536" y2="204" stroke="rgba(250,204,21,0.6)" stroke-width="1.5"/>
+    <!-- Bottom-right sparkle -->
+    <line x1="675" y1="305" x2="675" y2="318" stroke="rgba(167,139,250,0.7)" stroke-width="1.5"/>
+    <line x1="668" y1="311" x2="682" y2="311" stroke="rgba(167,139,250,0.7)" stroke-width="1.5"/>
+    <!-- Small dot sparkles -->
+    <circle cx="520" cy="330" r="2" fill="rgba(74,222,128,0.6)"/>
+    <circle cx="690" cy="240" r="2" fill="rgba(250,204,21,0.6)"/>
+    <circle cx="540" cy="250" r="1.5" fill="rgba(167,139,250,0.5)"/>
+  </g>
+
+  <!-- Arrow indicating snap motion -->
+  <g opacity="0.6">
+    <line x1="510" y1="365" x2="560" y2="320" stroke="rgba(74,222,128,0.5)" stroke-width="2" stroke-dasharray="4,3"/>
+    <polygon points="560,320 548,325 555,332" fill="rgba(74,222,128,0.5)"/>
+  </g>
+
+  <!-- Small extension toolbar icons in browser -->
+  <g opacity="0.3">
+    <rect x="700" y="152" width="14" height="14" rx="2" fill="rgba(167,139,250,0.3)" stroke="rgba(167,139,250,0.2)" stroke-width="0.5"/>
+    <rect x="720" y="152" width="14" height="14" rx="2" fill="rgba(167,139,250,0.3)" stroke="rgba(167,139,250,0.2)" stroke-width="0.5"/>
+    <!-- Active extension slot glowing -->
+    <rect x="740" y="152" width="14" height="14" rx="2" fill="rgba(74,222,128,0.15)" stroke="rgba(74,222,128,0.5)" stroke-width="1"/>
+  </g>
+
+  <!-- Content placeholder lines inside browser -->
+  <g opacity="0.15">
+    <rect x="420" y="345" width="160" height="6" rx="3" fill="rgba(167,139,250,0.5)"/>
+    <rect x="420" y="360" width="120" height="6" rx="3" fill="rgba(167,139,250,0.4)"/>
+    <rect x="420" y="375" width="180" height="6" rx="3" fill="rgba(167,139,250,0.3)"/>
+    <rect x="420" y="390" width="100" height="6" rx="3" fill="rgba(167,139,250,0.4)"/>
+    <rect x="420" y="420" width="350" height="25" rx="6" fill="rgba(74,222,128,0.1)" stroke="rgba(74,222,128,0.3)" stroke-width="1"/>
+    <text x="530" y="437" font-family="sans-serif" font-size="11" fill="rgba(74,222,128,0.5)">Install Extension</text>
+  </g>
+
+</svg>

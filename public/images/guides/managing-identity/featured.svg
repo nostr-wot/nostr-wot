@@ -1,0 +1,125 @@
+<svg width="1200" height="630" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#1e1b4b;stop-opacity:1" />
+      <stop offset="50%" style="stop-color:#312e81;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#4c1d95;stop-opacity:1" />
+    </linearGradient>
+    <radialGradient id="glow" cx="50%" cy="45%" r="45%">
+      <stop offset="0%" style="stop-color:#7c3aed;stop-opacity:0.3" />
+      <stop offset="100%" style="stop-color:#1e1b4b;stop-opacity:0" />
+    </radialGradient>
+    <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="0" stdDeviation="4" flood-color="#a78bfa" flood-opacity="0.5"/>
+    </filter>
+    <filter id="key-glow" x="-50%" y="-50%" width="200%" height="200%">
+      <feDropShadow dx="0" dy="0" stdDeviation="10" flood-color="#facc15" flood-opacity="0.7"/>
+    </filter>
+    <filter id="shield-glow" x="-50%" y="-50%" width="200%" height="200%">
+      <feDropShadow dx="0" dy="0" stdDeviation="8" flood-color="#4ade80" flood-opacity="0.5"/>
+    </filter>
+    <filter id="element-glow" x="-50%" y="-50%" width="200%" height="200%">
+      <feDropShadow dx="0" dy="0" stdDeviation="4" flood-color="#a78bfa" flood-opacity="0.4"/>
+    </filter>
+  </defs>
+
+  <!-- Background -->
+  <rect width="100%" height="100%" fill="url(#bg)"/>
+  <rect width="100%" height="100%" fill="url(#glow)"/>
+
+  <!-- Subtle grid pattern -->
+  <g opacity="0.05" stroke="white" stroke-width="0.5">
+    <line x1="0" y1="0" x2="1200" y2="630"/>
+    <line x1="200" y1="0" x2="1200" y2="500"/>
+    <line x1="0" y1="200" x2="1000" y2="630"/>
+    <line x1="400" y1="0" x2="1200" y2="400"/>
+    <line x1="0" y1="400" x2="800" y2="630"/>
+    <line x1="1200" y1="0" x2="0" y2="630"/>
+    <line x1="1000" y1="0" x2="0" y2="500"/>
+    <line x1="1200" y1="200" x2="200" y2="630"/>
+  </g>
+
+  <!-- Trust rings -->
+  <circle cx="600" cy="280" r="270" fill="none" stroke="rgba(167,139,250,0.06)" stroke-width="1" stroke-dasharray="4,8"/>
+  <circle cx="600" cy="280" r="210" fill="none" stroke="rgba(167,139,250,0.10)" stroke-width="1" stroke-dasharray="4,8"/>
+  <circle cx="600" cy="280" r="150" fill="none" stroke="rgba(167,139,250,0.14)" stroke-width="1" stroke-dasharray="4,8"/>
+
+  <!-- Shield outline (behind key) -->
+  <g filter="url(#shield-glow)">
+    <path d="M600,120 L700,165 L700,310 C700,380 600,430 600,430 C600,430 500,380 500,310 L500,165 Z" fill="rgba(74,222,128,0.04)" stroke="rgba(74,222,128,0.35)" stroke-width="2"/>
+    <path d="M600,140 L685,178 L685,305 C685,365 600,410 600,410 C600,410 515,365 515,305 L515,178 Z" fill="rgba(74,222,128,0.03)" stroke="rgba(74,222,128,0.15)" stroke-width="1" stroke-dasharray="6,4"/>
+  </g>
+
+  <!-- Central key icon -->
+  <g filter="url(#key-glow)">
+    <!-- Key head (circular) -->
+    <circle cx="600" cy="230" r="40" fill="rgba(250,204,21,0.12)" stroke="rgba(250,204,21,0.8)" stroke-width="2.5"/>
+    <circle cx="600" cy="230" r="28" fill="none" stroke="rgba(250,204,21,0.4)" stroke-width="1.5"/>
+    <circle cx="600" cy="230" r="15" fill="rgba(250,204,21,0.15)" stroke="rgba(250,204,21,0.6)" stroke-width="1"/>
+    <!-- Key shaft -->
+    <line x1="600" y1="270" x2="600" y2="370" stroke="rgba(250,204,21,0.8)" stroke-width="3"/>
+    <!-- Key teeth -->
+    <line x1="600" y1="330" x2="625" y2="330" stroke="rgba(250,204,21,0.8)" stroke-width="3"/>
+    <line x1="625" y1="330" x2="625" y2="345" stroke="rgba(250,204,21,0.8)" stroke-width="3"/>
+    <line x1="600" y1="355" x2="620" y2="355" stroke="rgba(250,204,21,0.8)" stroke-width="3"/>
+    <line x1="620" y1="355" x2="620" y2="370" stroke="rgba(250,204,21,0.8)" stroke-width="3"/>
+  </g>
+
+  <!-- User avatar silhouette (left side) -->
+  <g filter="url(#element-glow)" opacity="0.8">
+    <!-- Head -->
+    <circle cx="380" cy="215" r="25" fill="rgba(167,139,250,0.1)" stroke="rgba(167,139,250,0.5)" stroke-width="1.5"/>
+    <!-- Body -->
+    <path d="M345,280 C345,255 365,245 380,245 C395,245 415,255 415,280" fill="none" stroke="rgba(167,139,250,0.5)" stroke-width="1.5"/>
+    <!-- Connection to key -->
+    <line x1="415" y1="240" x2="558" y2="230" stroke="rgba(167,139,250,0.2)" stroke-width="1" stroke-dasharray="4,4"/>
+  </g>
+
+  <!-- Fingerprint pattern (right side) -->
+  <g filter="url(#element-glow)" opacity="0.7" transform="translate(810, 240)">
+    <ellipse cx="0" cy="0" rx="35" ry="45" fill="none" stroke="rgba(167,139,250,0.3)" stroke-width="1"/>
+    <ellipse cx="0" cy="0" rx="28" ry="36" fill="none" stroke="rgba(167,139,250,0.35)" stroke-width="1"/>
+    <ellipse cx="0" cy="0" rx="20" ry="27" fill="none" stroke="rgba(167,139,250,0.4)" stroke-width="1"/>
+    <ellipse cx="0" cy="0" rx="12" ry="18" fill="none" stroke="rgba(167,139,250,0.45)" stroke-width="1"/>
+    <ellipse cx="0" cy="0" rx="5" ry="9" fill="none" stroke="rgba(167,139,250,0.5)" stroke-width="1"/>
+    <!-- Fingerprint ridges (horizontal arcs) -->
+    <path d="M-30,-10 Q-15,-25 0,-25 Q15,-25 30,-10" fill="none" stroke="rgba(167,139,250,0.25)" stroke-width="0.8"/>
+    <path d="M-25,5 Q-12,-12 0,-12 Q12,-12 25,5" fill="none" stroke="rgba(167,139,250,0.25)" stroke-width="0.8"/>
+    <path d="M-28,20 Q-14,5 0,5 Q14,5 28,20" fill="none" stroke="rgba(167,139,250,0.25)" stroke-width="0.8"/>
+    <!-- Connection to key -->
+    <line x1="-35" y1="0" x2="-168" y2="-10" stroke="rgba(167,139,250,0.2)" stroke-width="1" stroke-dasharray="4,4"/>
+  </g>
+
+  <!-- NIP-07 text label (bottom) -->
+  <g filter="url(#element-glow)">
+    <rect x="540" y="450" width="120" height="36" rx="8" fill="rgba(167,139,250,0.08)" stroke="rgba(167,139,250,0.35)" stroke-width="1.5"/>
+    <text x="600" y="473" font-family="monospace" font-size="16" fill="rgba(167,139,250,0.8)" text-anchor="middle" font-weight="bold">NIP-07</text>
+    <!-- Connection to key -->
+    <line x1="600" y1="450" x2="600" y2="380" stroke="rgba(167,139,250,0.2)" stroke-width="1" stroke-dasharray="4,4"/>
+  </g>
+
+  <!-- npub label (top-left area) -->
+  <g filter="url(#element-glow)" opacity="0.6">
+    <rect x="310" y="330" width="100" height="28" rx="6" fill="rgba(250,204,21,0.06)" stroke="rgba(250,204,21,0.3)" stroke-width="1"/>
+    <text x="360" y="349" font-family="monospace" font-size="11" fill="rgba(250,204,21,0.7)" text-anchor="middle">npub1...</text>
+    <line x1="410" y1="344" x2="498" y2="310" stroke="rgba(250,204,21,0.15)" stroke-width="1" stroke-dasharray="3,4"/>
+  </g>
+
+  <!-- nsec label (top-right area) -->
+  <g filter="url(#element-glow)" opacity="0.6">
+    <rect x="790" y="330" width="100" height="28" rx="6" fill="rgba(248,113,113,0.06)" stroke="rgba(248,113,113,0.3)" stroke-width="1"/>
+    <text x="840" y="349" font-family="monospace" font-size="11" fill="rgba(248,113,113,0.7)" text-anchor="middle">nsec1...</text>
+    <line x1="790" y1="344" x2="702" y2="310" stroke="rgba(248,113,113,0.15)" stroke-width="1" stroke-dasharray="3,4"/>
+  </g>
+
+  <!-- Small lock icons scattered -->
+  <g opacity="0.4">
+    <!-- Lock 1 -->
+    <rect x="445" y="145" width="14" height="10" rx="2" fill="none" stroke="rgba(74,222,128,0.5)" stroke-width="1"/>
+    <path d="M448,145 L448,140 C448,136 450,134 452,134 C454,134 456,136 456,140 L456,145" fill="none" stroke="rgba(74,222,128,0.5)" stroke-width="1"/>
+    <!-- Lock 2 -->
+    <rect x="735" y="150" width="14" height="10" rx="2" fill="none" stroke="rgba(74,222,128,0.5)" stroke-width="1"/>
+    <path d="M738,150 L738,145 C738,141 740,139 742,139 C744,139 746,141 746,145 L746,150" fill="none" stroke="rgba(74,222,128,0.5)" stroke-width="1"/>
+  </g>
+
+</svg>

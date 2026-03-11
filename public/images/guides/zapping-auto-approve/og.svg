@@ -1,0 +1,143 @@
+<svg width="1200" height="630" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#1e1b4b;stop-opacity:1" />
+      <stop offset="50%" style="stop-color:#312e81;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#4c1d95;stop-opacity:1" />
+    </linearGradient>
+    <radialGradient id="glow" cx="50%" cy="45%" r="45%">
+      <stop offset="0%" style="stop-color:#7c3aed;stop-opacity:0.3" />
+      <stop offset="100%" style="stop-color:#1e1b4b;stop-opacity:0" />
+    </radialGradient>
+    <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="0" stdDeviation="4" flood-color="#a78bfa" flood-opacity="0.5"/>
+    </filter>
+    <filter id="bolt-glow" x="-50%" y="-50%" width="200%" height="200%">
+      <feDropShadow dx="0" dy="0" stdDeviation="6" flood-color="#facc15" flood-opacity="0.6"/>
+    </filter>
+    <filter id="green-glow" x="-50%" y="-50%" width="200%" height="200%">
+      <feDropShadow dx="0" dy="0" stdDeviation="8" flood-color="#4ade80" flood-opacity="0.6"/>
+    </filter>
+    <filter id="node-glow" x="-50%" y="-50%" width="200%" height="200%">
+      <feDropShadow dx="0" dy="0" stdDeviation="4" flood-color="#a78bfa" flood-opacity="0.5"/>
+    </filter>
+    <filter id="gauge-glow" x="-50%" y="-50%" width="200%" height="200%">
+      <feDropShadow dx="0" dy="0" stdDeviation="6" flood-color="#4ade80" flood-opacity="0.5"/>
+    </filter>
+  </defs>
+
+  <!-- Background -->
+  <rect width="100%" height="100%" fill="url(#bg)"/>
+  <rect width="100%" height="100%" fill="url(#glow)"/>
+
+  <!-- Subtle grid pattern -->
+  <g opacity="0.05" stroke="white" stroke-width="0.5">
+    <line x1="0" y1="0" x2="1200" y2="630"/>
+    <line x1="200" y1="0" x2="1200" y2="500"/>
+    <line x1="0" y1="200" x2="1000" y2="630"/>
+    <line x1="400" y1="0" x2="1200" y2="400"/>
+    <line x1="0" y1="400" x2="800" y2="630"/>
+    <line x1="1200" y1="0" x2="0" y2="630"/>
+    <line x1="1000" y1="0" x2="0" y2="500"/>
+    <line x1="1200" y1="200" x2="200" y2="630"/>
+  </g>
+
+  <!-- Trust rings -->
+  <circle cx="600" cy="290" r="280" fill="none" stroke="rgba(167,139,250,0.06)" stroke-width="1" stroke-dasharray="4,8"/>
+  <circle cx="600" cy="290" r="210" fill="none" stroke="rgba(167,139,250,0.10)" stroke-width="1" stroke-dasharray="4,8"/>
+  <circle cx="600" cy="290" r="140" fill="none" stroke="rgba(167,139,250,0.14)" stroke-width="1" stroke-dasharray="4,8"/>
+
+  <!-- Network nodes - outer -->
+  <g filter="url(#node-glow)">
+    <circle cx="180" cy="160" r="14" fill="rgba(167,139,250,0.3)" stroke="rgba(167,139,250,0.6)" stroke-width="1.5"/>
+    <circle cx="140" cy="380" r="12" fill="rgba(167,139,250,0.25)" stroke="rgba(167,139,250,0.5)" stroke-width="1.5"/>
+    <circle cx="300" cy="530" r="13" fill="rgba(167,139,250,0.3)" stroke="rgba(167,139,250,0.6)" stroke-width="1.5"/>
+    <circle cx="1020" cy="140" r="14" fill="rgba(167,139,250,0.3)" stroke="rgba(167,139,250,0.6)" stroke-width="1.5"/>
+    <circle cx="1060" cy="360" r="12" fill="rgba(167,139,250,0.25)" stroke="rgba(167,139,250,0.5)" stroke-width="1.5"/>
+    <circle cx="900" cy="540" r="13" fill="rgba(167,139,250,0.3)" stroke="rgba(167,139,250,0.6)" stroke-width="1.5"/>
+  </g>
+
+  <!-- Network nodes - inner -->
+  <g filter="url(#node-glow)">
+    <circle cx="350" cy="190" r="16" fill="rgba(74,222,128,0.2)" stroke="rgba(74,222,128,0.6)" stroke-width="1.5"/>
+    <circle cx="310" cy="390" r="15" fill="rgba(74,222,128,0.2)" stroke="rgba(74,222,128,0.6)" stroke-width="1.5"/>
+    <circle cx="850" cy="180" r="16" fill="rgba(74,222,128,0.2)" stroke="rgba(74,222,128,0.6)" stroke-width="1.5"/>
+    <circle cx="890" cy="400" r="15" fill="rgba(74,222,128,0.2)" stroke="rgba(74,222,128,0.6)" stroke-width="1.5"/>
+    <circle cx="480" cy="470" r="15" fill="rgba(74,222,128,0.2)" stroke="rgba(74,222,128,0.6)" stroke-width="1.5"/>
+    <circle cx="720" cy="480" r="15" fill="rgba(74,222,128,0.2)" stroke="rgba(74,222,128,0.6)" stroke-width="1.5"/>
+  </g>
+
+  <!-- Connections outer to inner -->
+  <g stroke="rgba(167,139,250,0.15)" stroke-width="1">
+    <line x1="180" y1="160" x2="350" y2="190"/>
+    <line x1="140" y1="380" x2="310" y2="390"/>
+    <line x1="300" y1="530" x2="480" y2="470"/>
+    <line x1="1020" y1="140" x2="850" y2="180"/>
+    <line x1="1060" y1="360" x2="890" y2="400"/>
+    <line x1="900" y1="540" x2="720" y2="480"/>
+  </g>
+  <!-- Connections inner to center -->
+  <g stroke="rgba(74,222,128,0.25)" stroke-width="1.5">
+    <line x1="350" y1="190" x2="570" y2="260"/>
+    <line x1="310" y1="390" x2="570" y2="320"/>
+    <line x1="850" y1="180" x2="630" y2="260"/>
+    <line x1="890" y1="400" x2="630" y2="320"/>
+    <line x1="480" y1="470" x2="580" y2="340"/>
+    <line x1="720" y1="480" x2="620" y2="340"/>
+  </g>
+
+  <!-- Lightning bolts flying between nodes -->
+  <g filter="url(#bolt-glow)">
+    <polygon points="440,215 430,227 436,227 426,239 450,225 444,225 454,215" fill="rgba(250,204,21,0.9)"/>
+    <polygon points="760,215 750,227 756,227 746,239 770,225 764,225 774,215" fill="rgba(250,204,21,0.9)"/>
+    <polygon points="395,385 385,397 391,397 381,409 405,395 399,395 409,385" fill="rgba(250,204,21,0.85)"/>
+    <polygon points="805,385 795,397 801,397 791,409 815,395 809,395 819,385" fill="rgba(250,204,21,0.85)"/>
+    <polygon points="510,140 500,152 506,152 496,164 520,150 514,150 524,140" fill="rgba(250,204,21,0.7)"/>
+    <polygon points="690,510 680,522 686,522 676,534 700,520 694,520 704,510" fill="rgba(250,204,21,0.7)"/>
+  </g>
+
+  <!-- Sat symbols -->
+  <text x="470" y="170" fill="rgba(250,204,21,0.5)" font-family="monospace" font-size="16" font-weight="bold">&#x20BF;</text>
+  <text x="730" y="160" fill="rgba(250,204,21,0.4)" font-family="monospace" font-size="14" font-weight="bold">&#x20BF;</text>
+  <text x="340" y="320" fill="rgba(250,204,21,0.35)" font-family="monospace" font-size="13" font-weight="bold">&#x20BF;</text>
+  <text x="860" y="310" fill="rgba(250,204,21,0.4)" font-family="monospace" font-size="15" font-weight="bold">&#x20BF;</text>
+  <text x="540" y="500" fill="rgba(250,204,21,0.35)" font-family="monospace" font-size="12" font-weight="bold">&#x20BF;</text>
+  <text x="660" y="140" fill="rgba(250,204,21,0.3)" font-family="monospace" font-size="11" font-weight="bold">&#x20BF;</text>
+  <text x="220" y="270" fill="rgba(250,204,21,0.25)" font-family="monospace" font-size="12" font-weight="bold">&#x20BF;</text>
+  <text x="980" y="260" fill="rgba(250,204,21,0.25)" font-family="monospace" font-size="12" font-weight="bold">&#x20BF;</text>
+
+  <!-- Center glow -->
+  <circle cx="600" cy="285" r="100" fill="rgba(74,222,128,0.06)"/>
+  <circle cx="600" cy="285" r="75" fill="rgba(74,222,128,0.08)"/>
+  <circle cx="600" cy="285" r="50" fill="rgba(139,92,246,0.1)"/>
+
+  <!-- Gauge arc (threshold) -->
+  <g filter="url(#gauge-glow)">
+    <path d="M 535 318 A 75 75 0 0 1 665 318" fill="none" stroke="rgba(167,139,250,0.3)" stroke-width="6" stroke-linecap="round"/>
+    <path d="M 535 318 A 75 75 0 0 1 648 250" fill="none" stroke="rgba(74,222,128,0.8)" stroke-width="6" stroke-linecap="round"/>
+    <!-- Tick marks -->
+    <line x1="533" y1="312" x2="525" y2="318" stroke="rgba(255,255,255,0.3)" stroke-width="1.5"/>
+    <line x1="545" y1="270" x2="537" y2="265" stroke="rgba(255,255,255,0.3)" stroke-width="1.5"/>
+    <line x1="577" y1="245" x2="573" y2="237" stroke="rgba(255,255,255,0.3)" stroke-width="1.5"/>
+    <line x1="623" y1="245" x2="627" y2="237" stroke="rgba(255,255,255,0.3)" stroke-width="1.5"/>
+    <line x1="655" y1="270" x2="663" y2="265" stroke="rgba(255,255,255,0.3)" stroke-width="1.5"/>
+    <line x1="667" y1="312" x2="675" y2="318" stroke="rgba(255,255,255,0.3)" stroke-width="1.5"/>
+  </g>
+
+  <!-- Shield badge -->
+  <g filter="url(#green-glow)">
+    <path d="M 600 235 L 638 254 L 638 294 C 638 316 622 330 600 338 C 578 330 562 316 562 294 L 562 254 Z" fill="rgba(74,222,128,0.15)" stroke="rgba(74,222,128,0.7)" stroke-width="2"/>
+  </g>
+
+  <!-- Checkmark -->
+  <polyline points="580,284 594,300 622,268" fill="none" stroke="rgba(74,222,128,0.95)" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+
+  <!-- AUTO label -->
+  <text x="600" y="360" fill="rgba(74,222,128,0.6)" font-family="monospace" font-size="14" font-weight="bold" text-anchor="middle" letter-spacing="3">AUTO</text>
+
+  <!-- Lightning bolt on top of badge -->
+  <g filter="url(#bolt-glow)">
+    <polygon points="603,212 591,228 600,228 589,244 614,225 605,225 616,212" fill="rgba(250,204,21,0.9)" stroke="rgba(250,204,21,0.4)" stroke-width="0.5"/>
+  </g>
+
+</svg>

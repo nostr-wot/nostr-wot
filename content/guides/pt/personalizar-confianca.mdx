@@ -1,0 +1,101 @@
+---
+title: "Personalizar Configuracoes de Confianca"
+description: "Ajuste a formula de confianca, pesos e estrategias na extensao Nostr WoT. Controle como os saltos, caminhos e intermediarios afetam sua pontuacao."
+excerpt: "Aprenda a ajustar a formula de confianca da extensao para que sua rede funcione exatamente como voce quer."
+date: "2026-03-11"
+author:
+  name: "Leon Acosta"
+  avatar: "/authors/leon-profile.jpg"
+  npub: "npub1gxdhmu9swqduwhr6zptjy4ya693zp3ql28nemy4hd97kuufyrqdqwe5zfk"
+featuredImage: "/images/guides/customizing-trust/featured.svg"
+previewImage: "/images/guides/customizing-trust/preview.svg"
+tags:
+  - "Configuracoes"
+  - "Formula"
+  - "Avancado"
+published: true
+seoTitle: "Personalizar Confianca na WoT — Formulas e Pesos"
+seoDescription: "Ajuste a formula de confianca, pesos e estrategias na extensao Nostr WoT. Controle como os saltos, caminhos e intermediarios afetam sua pontuacao."
+ogImage: "/images/guides/customizing-trust/og.svg"
+translationKey: "customizing-trust"
+difficulty: "intermediate"
+order: 4
+---
+
+A extensao Nostr WoT calcula a confianca usando uma formula configuravel. Voce pode ajustar pesos, limites e estrategias para que o grafo reflita suas preferencias. Este guia mostra como.
+
+## Acessando as Configuracoes de Confianca
+
+1. Clique no icone da extensao na barra de ferramentas.
+2. Navegue ate a aba **Configuracoes**.
+3. Selecione a secao **Confianca** ou **Web of Trust**.
+
+Aqui voce encontra os parametros que controlam o calculo da pontuacao de confianca.
+
+{/* TODO: Captura de tela da pagina de configuracoes de confianca */}
+
+## A Formula de Confianca
+
+A pontuacao de confianca de uma pessoa e determinada por uma combinacao de fatores. Cada fator tem um peso que voce pode ajustar.
+
+### Decaimento por Salto
+
+Este parametro controla quanto a confianca diminui a cada salto de distancia. Um decaimento alto significa que pessoas no salto 2 ja recebem uma pontuacao bem menor. Um decaimento baixo distribui a confianca de forma mais uniforme pela rede.
+
+- **Valor alto (ex: 0.8)** -- A confianca cai rapido. Apenas pessoas muito proximas a voce tem pontuacao significativa.
+- **Valor baixo (ex: 0.3)** -- A confianca se espalha mais. Pessoas no salto 3 ainda mantem pontuacao relevante.
+
+### Numero Maximo de Saltos
+
+Define ate onde a extensao busca conexoes a partir de voce. O padrao e 3 saltos. Aumentar esse valor expande sua rede, mas tambem aumenta o tempo de processamento e pode incluir pessoas com menos relevancia.
+
+<Callout type="tip">
+Para a maioria dos usuarios, 3 saltos oferece um bom equilibrio entre cobertura e relevancia. Aumente para 4 apenas se voce tem uma rede pequena e quer mais alcance.
+</Callout>
+
+### Peso de Caminhos Multiplos
+
+Quando varias pessoas que voce segue tambem seguem alguem, esse parametro determina quanto esse reforco conta. Um peso alto significa que confirmacao por multiplos caminhos aumenta bastante a pontuacao. Um peso baixo reduz o efeito desse reforco.
+
+{/* TODO: Captura de tela do controle deslizante de peso de caminhos multiplos */}
+
+## Estrategias de Confianca
+
+A extensao oferece estrategias predefinidas que configuram varios parametros de uma vez.
+
+### Restritiva
+
+Confia apenas em pessoas muito proximas. Ideal para quem quer ver conteudo apenas de contatos diretos e poucos amigos de amigos. Usa decaimento alto e poucos saltos.
+
+### Equilibrada
+
+O padrao recomendado. Oferece um alcance razoavel sem abrir demais o grafo. Bom para a maioria dos usuarios.
+
+### Expansiva
+
+Amplia a rede ao maximo. Usa mais saltos e decaimento menor. Util se voce quer descobrir conteudo novo de pessoas que estao na periferia da sua rede.
+
+{/* TODO: Captura de tela das tres estrategias predefinidas */}
+
+## Listas de Confianca e Bloqueio Manuais
+
+Voce pode substituir a formula para pessoas especificas:
+
+- **Lista de confianca** -- Npubs sempre considerados confiaveis, independente da posicao no grafo.
+- **Lista de bloqueio** -- Npubs sempre excluidos, mesmo que aparecam no grafo.
+
+Essas listas tem prioridade sobre qualquer calculo automatico.
+
+## Aplicando e Testando Alteracoes
+
+Apos ajustar os parametros, clique em **Salvar**. A extensao recalcula as pontuacoes de confianca em segundo plano. Voce pode usar o [Playground da Web of Trust](/guides/playground-wot) para visualizar o impacto das suas alteracoes antes de aplica-las no dia a dia.
+
+<Callout type="tip">
+Se voce nao tem certeza de qual configuracao funciona melhor, comece com a estrategia Equilibrada e ajuste gradualmente. Mudancas drasticas podem filtrar conteudo que voce quer ver.
+</Callout>
+
+{/* TODO: Video mostrando o ajuste da formula de confianca */}
+
+## O Que Vem a Seguir?
+
+Com a confianca personalizada, explore o [Playground da Web of Trust](/guides/playground-wot) para visualizar seu grafo. Ou avance para [Permissoes por Site](/guides/permissoes-por-site) para controlar quais sites podem acessar sua identidade.

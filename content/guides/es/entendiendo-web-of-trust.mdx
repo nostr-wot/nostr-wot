@@ -1,0 +1,101 @@
+---
+title: "Entendiendo la Web of Trust"
+description: "Descubre como funciona el grafo de confianza en la extension Nostr WoT. Aprende sobre saltos, puntajes de confianza y como se filtra el contenido."
+excerpt: "La Web of Trust usa tus conexiones sociales para filtrar el ruido. Aprende como funciona el grafo de confianza, los saltos y los puntajes."
+date: "2026-03-11"
+author:
+  name: "Leon Acosta"
+  avatar: "/authors/leon-profile.jpg"
+  npub: "npub1gxdhmu9swqduwhr6zptjy4ya693zp3ql28nemy4hd97kuufyrqdqwe5zfk"
+featuredImage: "/images/guides/understanding-wot/featured.svg"
+previewImage: "/images/guides/understanding-wot/preview.svg"
+tags:
+  - "Web of Trust"
+  - "Grafo de Confianza"
+  - "Conceptos"
+published: true
+seoTitle: "Entendiendo la Web of Trust — Grafo de Confianza"
+seoDescription: "Descubre como funciona el grafo de confianza en la extension Nostr WoT. Aprende sobre saltos, puntajes de confianza y como se filtra el contenido."
+ogImage: "/images/guides/understanding-wot/og.svg"
+translationKey: "understanding-wot"
+difficulty: "beginner"
+order: 3
+---
+
+La Web of Trust es el nucleo de la extension Nostr WoT. En lugar de depender de una autoridad central que decida que contenido es valido y que es spam, usa algo mucho mas poderoso: tus propias conexiones sociales.
+
+## El Problema del Spam en Redes Abiertas
+
+Nostr es una red abierta donde cualquiera puede publicar. Esa es su mayor fortaleza, pero tambien su mayor desafio. Sin filtros, tu feed se llena de cuentas bot, spam y contenido irrelevante. Las soluciones centralizadas — un equipo moderando contenido — contradicen el espiritu descentralizado del protocolo.
+
+La Web of Trust resuelve esto sin necesidad de moderadores.
+
+## Como Funciona el Grafo de Confianza
+
+El concepto es directo:
+
+1. **Tu sigues a personas en Nostr.** Esas son tus conexiones directas, a 1 salto de distancia.
+2. **Ellas siguen a otras personas.** Esas estan a 2 saltos — amigos de amigos.
+3. **La confianza disminuye con la distancia.** A mayor numero de saltos, menor la confianza asignada.
+
+La extension construye un grafo local a partir de tu lista de seguidos. Cuando visitas una app de Nostr, consulta ese grafo para asignar niveles de confianza a cada pubkey.
+
+{/* TODO: Captura de pantalla del grafo de confianza visualizado en la extension */}
+
+### Saltos y Distancia
+
+- **1 salto:** Alguien a quien sigues directamente. Maxima confianza.
+- **2 saltos:** Alguien seguido por alguien que tu sigues. Confianza alta.
+- **3 saltos:** Amigo de un amigo de un amigo. Confianza moderada.
+- **4+ saltos:** Confianza baja. Probablemente fuera de tu circulo relevante.
+
+<Callout type="tip">
+Piensa en los saltos como grados de separacion. Si solo sigues a 100 personas, tu grafo de 2 saltos puede incluir decenas de miles. El puntaje de confianza te ayuda a priorizar dentro de ese universo.
+</Callout>
+
+## Puntajes de Confianza
+
+La extension no solo mide distancia — calcula un puntaje de confianza numerico entre 0 y 1 para cada pubkey. Este puntaje combina varios factores:
+
+- **Distancia en saltos** — el factor principal.
+- **Seguidores mutuos** — si varias de tus conexiones siguen a la misma persona, su puntaje sube.
+- **Puentes** — personas que conectan diferentes comunidades reciben una bonificacion.
+
+Un puntaje de 0.9 indica alguien muy cercano en tu red. Un 0.1 es alguien al borde de tu Web of Trust. Un 0 significa que esta fuera de tu grafo.
+
+## Modos de Operacion
+
+La extension ofrece tres modos para construir y consultar tu grafo:
+
+### Modo Local
+
+Todo el calculo se realiza en tu navegador. La extension descarga los datos necesarios de los relays y construye el grafo localmente. Maximo control de privacidad, pero requiere mas recursos.
+
+### Modo Remoto
+
+La extension consulta un servidor Oracle que mantiene el grafo actualizado. Solo se envian consultas de pubkey — sin contenido, sin rastreo. Mas rapido y ligero.
+
+### Modo Hibrido
+
+Combina ambos enfoques. El grafo se construye localmente pero se complementa con consultas al Oracle cuando es necesario. Lo mejor de ambos mundos.
+
+{/* TODO: Video explicando los tres modos de operacion */}
+
+## Como las Apps Usan tu Web of Trust
+
+Las aplicaciones de Nostr que implementan la API de WoT pueden consultar la extension para:
+
+- **Filtrar feeds** mostrando solo contenido de personas en tu red.
+- **Marcar perfiles** indicando el nivel de confianza de cada usuario.
+- **Ordenar resultados** priorizando contenido de conexiones cercanas.
+- **Bloquear spam** automaticamente excluyendo pubkeys fuera del grafo.
+
+Todo esto ocurre sin que la app tenga acceso a tu clave privada ni a tu grafo completo.
+
+<Callout type="tip">
+La API de WoT funciona con cualquier cliente Nostr que la implemente. No necesitas cambiar de app — la extension trabaja en segundo plano con tu cliente favorito.
+</Callout>
+
+## Que Sigue?
+
+Ahora que entiendes como funciona la Web of Trust, aprende a [personalizar tu configuracion de confianza](/guides/personalizar-confianza) para ajustar la formula a tus necesidades.

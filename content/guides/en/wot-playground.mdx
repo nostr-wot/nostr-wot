@@ -1,0 +1,114 @@
+---
+title: "The WoT Playground"
+description: "Explore the Nostr WoT Playground to visualize your trust graph, filter connections by hop distance, and see how your Web of Trust connects you to the network."
+excerpt: "The WoT Playground lets you explore your trust graph visually. Filter by hops, search for users, and understand your network at a glance."
+date: "2026-03-11"
+author:
+  name: "Leon Acosta"
+  avatar: "/authors/leon-profile.jpg"
+  npub: "npub1gxdhmu9swqduwhr6zptjy4ya693zp3ql28nemy4hd97kuufyrqdqwe5zfk"
+featuredImage: "/images/guides/wot-playground/featured.svg"
+previewImage: "/images/guides/wot-playground/preview.svg"
+tags:
+  - "Playground"
+  - "Visualization"
+  - "Trust Graph"
+published: true
+seoTitle: "The WoT Playground — Nostr WoT Extension Guide"
+seoDescription: "Explore the Nostr WoT Playground to visualize your trust graph, filter connections by hop distance, and see how your Web of Trust connects you to the network."
+ogImage: "/images/guides/wot-playground/og.svg"
+translationKey: "wot-playground"
+difficulty: "intermediate"
+order: 9
+---
+
+The WoT Playground is an interactive visualization of your entire trust network. It takes the abstract concept of a Web of Trust and makes it tangible — you can see exactly how you connect to any user on Nostr, explore clusters of trust, and discover patterns in your social graph.
+
+## Accessing the Playground
+
+There are two ways to open the Playground:
+
+1. **From the extension** — click the extension icon and select **Playground** from the navigation menu.
+2. **From the website** — visit the [WoT Playground](/playground) page directly.
+
+The Playground loads your trust graph data from the extension. If you are not signed in or the extension is locked, you will be prompted to unlock it first.
+
+{/* TODO: Screenshot of the Playground loading screen with the trust graph beginning to render */}
+
+## The Trust Graph Visualization
+
+The main view is an interactive graph where nodes represent Nostr users and edges represent follow relationships.
+
+### Reading the Graph
+
+- **Your node** sits at the center, highlighted distinctly.
+- **1st-degree connections** (direct follows) appear closest to you, typically in a bright color.
+- **2nd-degree connections** form the next ring, in a slightly muted tone.
+- **3rd-degree connections** are at the outer edges, more faded.
+- **Edge lines** connect nodes to show follow relationships. Thicker or brighter lines may indicate stronger trust scores.
+
+{/* TODO: Screenshot of the full trust graph with color-coded hops */}
+
+<Callout type="tip">
+Click and drag to pan around the graph. Use your scroll wheel or pinch gesture to zoom in and out. Click on any node to see details about that user.
+</Callout>
+
+### Node Details
+
+Click on any node to open a detail panel showing:
+
+- Profile information (name, avatar, npub).
+- Trust score relative to you.
+- Hop distance.
+- Number of paths connecting you.
+- Mutual follows — people you both follow.
+
+This is useful for understanding why someone has a particular trust score and how they connect to your network.
+
+{/* TODO: Screenshot of the node detail panel for a 2nd-degree contact */}
+
+## Filtering and Searching
+
+The Playground includes tools to narrow your view and find specific information.
+
+### Filtering by Hops
+
+Use the hop filter to show only connections at a specific distance:
+
+- **1 hop** — shows only your direct follows. Useful for reviewing your inner circle.
+- **2 hops** — adds friends-of-friends. This is where most of your day-to-day interactions happen.
+- **3 hops** — the full graph. Shows the outer boundary of your trust network.
+
+Toggle these filters using the controls in the sidebar or toolbar.
+
+{/* TODO: Screenshot of the hop filter controls with 2-hop selected */}
+
+### Searching for Users
+
+Type a name, npub, or NIP-05 identifier into the search bar. If the user is in your trust graph, the visualization highlights their node and shows the path between you.
+
+If they are not in your graph, the search tells you so — which itself is useful information. An unknown user means they have no connection to your network within the configured hop distance.
+
+{/* TODO: Screenshot of the search bar with a result highlighting a specific node */}
+
+## Analyzing Your Network
+
+Beyond browsing, the Playground helps you understand the structure of your trust network.
+
+### Cluster Detection
+
+The visualization often reveals clusters — groups of densely connected users. These typically correspond to communities. You might see a cluster of Bitcoin developers, another of artists, and another of local friends. The visual grouping helps you understand the different social circles that make up your Web of Trust.
+
+### Bridge Users
+
+Some nodes connect otherwise separate clusters. These bridge users span different communities in your network and often have high trust scores due to multiple independent paths. If your graph is small or sparse, consider following more people to strengthen your Web of Trust.
+
+{/* TODO: Video walkthrough of navigating the Playground, filtering, and inspecting nodes */}
+
+<Callout type="tip">
+The Playground is a read-only visualization. Nothing you do here changes your trust settings or follow list. Explore freely.
+</Callout>
+
+## What's Next?
+
+Now that you have explored your trust graph, you might want to [customize your trust settings](/guides/customizing-trust) based on what you discovered. Or head back to the [getting started guide](/guides/getting-started) to review the fundamentals.

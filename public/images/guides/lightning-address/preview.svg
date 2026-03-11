@@ -1,0 +1,91 @@
+<svg width="800" height="450" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#1e1b4b;stop-opacity:1" />
+      <stop offset="50%" style="stop-color:#312e81;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#4c1d95;stop-opacity:1" />
+    </linearGradient>
+    <radialGradient id="glow" cx="50%" cy="43%" r="45%">
+      <stop offset="0%" style="stop-color:#7c3aed;stop-opacity:0.3" />
+      <stop offset="100%" style="stop-color:#1e1b4b;stop-opacity:0" />
+    </radialGradient>
+    <filter id="at-glow" x="-50%" y="-50%" width="200%" height="200%">
+      <feDropShadow dx="0" dy="0" stdDeviation="10" flood-color="#facc15" flood-opacity="0.6"/>
+    </filter>
+    <filter id="bolt-glow" x="-50%" y="-50%" width="200%" height="200%">
+      <feDropShadow dx="0" dy="0" stdDeviation="5" flood-color="#facc15" flood-opacity="0.7"/>
+    </filter>
+    <filter id="envelope-glow" x="-50%" y="-50%" width="200%" height="200%">
+      <feDropShadow dx="0" dy="0" stdDeviation="6" flood-color="#a78bfa" flood-opacity="0.5"/>
+    </filter>
+    <filter id="text-glow" x="-50%" y="-50%" width="200%" height="200%">
+      <feDropShadow dx="0" dy="0" stdDeviation="2" flood-color="#4ade80" flood-opacity="0.5"/>
+    </filter>
+  </defs>
+
+  <!-- Background -->
+  <rect width="100%" height="100%" fill="url(#bg)"/>
+  <rect width="100%" height="100%" fill="url(#glow)"/>
+
+  <!-- Trust rings -->
+  <circle cx="400" cy="195" r="195" fill="none" stroke="rgba(167,139,250,0.06)" stroke-width="1" stroke-dasharray="4,8"/>
+  <circle cx="400" cy="195" r="145" fill="none" stroke="rgba(167,139,250,0.10)" stroke-width="1" stroke-dasharray="4,8"/>
+  <circle cx="400" cy="195" r="100" fill="none" stroke="rgba(167,139,250,0.14)" stroke-width="1" stroke-dasharray="4,8"/>
+
+  <!-- Energy particles -->
+  <g opacity="0.4">
+    <circle cx="250" cy="140" r="2" fill="#facc15"/>
+    <circle cx="550" cy="150" r="2" fill="#facc15"/>
+    <circle cx="270" cy="280" r="1.5" fill="#a78bfa"/>
+    <circle cx="530" cy="270" r="2" fill="#a78bfa"/>
+    <circle cx="310" cy="340" r="1.5" fill="#4ade80"/>
+    <circle cx="490" cy="330" r="1.5" fill="#4ade80"/>
+  </g>
+
+  <!-- Envelope outline -->
+  <g filter="url(#envelope-glow)">
+    <rect x="260" y="135" width="280" height="185" rx="6" ry="6" fill="rgba(167,139,250,0.06)" stroke="rgba(167,139,250,0.35)" stroke-width="1.5"/>
+    <path d="M 260 135 L 400 240 L 540 135" fill="none" stroke="rgba(167,139,250,0.4)" stroke-width="1.5" stroke-linejoin="round"/>
+    <line x1="260" y1="320" x2="345" y2="255" stroke="rgba(167,139,250,0.2)" stroke-width="1"/>
+    <line x1="540" y1="320" x2="455" y2="255" stroke="rgba(167,139,250,0.2)" stroke-width="1"/>
+  </g>
+
+  <!-- Lightning energy on envelope edges -->
+  <g opacity="0.5">
+    <line x1="260" y1="155" x2="256" y2="170" stroke="#facc15" stroke-width="1"/>
+    <line x1="256" y1="170" x2="260" y2="185" stroke="#facc15" stroke-width="1"/>
+    <line x1="540" y1="160" x2="544" y2="175" stroke="#facc15" stroke-width="1"/>
+    <line x1="544" y1="175" x2="540" y2="190" stroke="#facc15" stroke-width="1"/>
+  </g>
+
+  <!-- Center glow -->
+  <circle cx="400" cy="195" r="72" fill="rgba(250,204,21,0.06)"/>
+  <circle cx="400" cy="195" r="54" fill="rgba(250,204,21,0.08)"/>
+  <circle cx="400" cy="195" r="36" fill="rgba(139,92,246,0.1)"/>
+
+  <!-- @ symbol -->
+  <g filter="url(#at-glow)">
+    <path d="M 435 195 C 435 217 420 237 400 237 C 374 237 355 217 355 195 C 355 170 374 152 400 152 C 426 152 445 170 445 195 L 445 210 C 445 222 451 225 458 222" fill="none" stroke="rgba(250,204,21,0.85)" stroke-width="3" stroke-linecap="round"/>
+    <circle cx="400" cy="195" r="20" fill="none" stroke="rgba(250,204,21,0.7)" stroke-width="2.5"/>
+  </g>
+
+  <!-- Lightning bolt in @ center -->
+  <g filter="url(#bolt-glow)">
+    <polygon points="404,175 392,196 401,196 390,216 416,191 406,191 416,175" fill="rgba(250,204,21,0.95)" stroke="rgba(250,204,21,0.4)" stroke-width="0.5"/>
+  </g>
+  <polygon points="403,179 394,194 402,194 393,211 413,194 405,194 413,179" fill="rgba(255,255,255,0.15)"/>
+
+  <!-- Address text -->
+  <g filter="url(#text-glow)">
+    <text x="400" y="305" fill="rgba(74,222,128,0.7)" font-family="monospace" font-size="15" font-weight="bold" text-anchor="middle" letter-spacing="1">name@zaps.nostr-wot.com</text>
+  </g>
+
+  <line x1="280" y1="314" x2="520" y2="314" stroke="rgba(74,222,128,0.2)" stroke-width="1"/>
+
+  <!-- Small lightning accents -->
+  <g filter="url(#bolt-glow)" opacity="0.6">
+    <polygon points="275,298 271,303 274,303 270,308 280,301 277,301 281,298" fill="rgba(250,204,21,0.8)"/>
+    <polygon points="525,298 521,303 524,303 520,308 530,301 527,301 531,298" fill="rgba(250,204,21,0.8)"/>
+  </g>
+
+</svg>

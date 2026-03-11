@@ -1,6 +1,7 @@
 import { MetadataRoute } from "next";
 import { locales, defaultLocale } from "@/i18n/config";
 import { getAllBlogPosts } from "@/lib/blog";
+import { getAllGuides } from "@/lib/guides";
 
 const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || "https://nostr-wot.com";
 
@@ -38,6 +39,7 @@ const routes: {
   { path: "/oracle", changeFrequency: "monthly", priority: 0.7 },
   { path: "/about", changeFrequency: "monthly", priority: 0.6 },
   { path: "/contact", changeFrequency: "monthly", priority: 0.5 },
+  { path: "/guides", changeFrequency: "weekly", priority: 0.8 },
   { path: "/pitch", changeFrequency: "monthly", priority: 0.5 },
   { path: "/media-kit", changeFrequency: "monthly", priority: 0.4 },
   { path: "/privacy", changeFrequency: "yearly", priority: 0.3 },
@@ -90,6 +92,35 @@ export default function sitemap(): MetadataRoute.Sitemap {
       sitemapEntries.push({
         url,
         lastModified: new Date(post.date),
+        changeFrequency: "monthly",
+        priority: 0.7,
+        alternates: {
+          languages: alternateLanguages,
+        },
+      });
+    }
+  }
+
+  // Generate entries for guides
+  const guides = getAllGuides();
+  for (const guide of guides) {
+    const alternateLanguages: Record<string, string> = {};
+    for (const locale of locales) {
+      const translatedSlug = guide.translations[locale];
+      if (translatedSlug) {
+        alternateLanguages[locale] = getLocalizedUrl(`/guides/${translatedSlug}`, locale);
+      }
+    }
+
+    for (const locale of locales) {
+      const translatedSlug = guide.translations[locale];
+      if (!translatedSlug) continue;
+
+      const url = getLocalizedUrl(`/guides/${translatedSlug}`, locale);
+
+      sitemapEntries.push({
+        url,
+        lastModified: new Date(guide.date),
         changeFrequency: "monthly",
         priority: 0.7,
         alternates: {

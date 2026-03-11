@@ -1,0 +1,103 @@
+---
+title: "Permissoes por Site"
+description: "Controle quais sites podem acessar sua identidade Nostr e carteira Lightning. Configure permissoes individuais e boas praticas de seguranca na extensao WoT."
+excerpt: "Controle exatamente quais sites acessam sua identidade e carteira. Configure permissoes individuais para cada dominio."
+date: "2026-03-11"
+author:
+  name: "Leon Acosta"
+  avatar: "/authors/leon-profile.jpg"
+  npub: "npub1gxdhmu9swqduwhr6zptjy4ya693zp3ql28nemy4hd97kuufyrqdqwe5zfk"
+featuredImage: "/images/guides/site-permissions/featured.svg"
+previewImage: "/images/guides/site-permissions/preview.svg"
+tags:
+  - "Permissoes"
+  - "Seguranca"
+  - "Privacidade"
+published: true
+seoTitle: "Permissoes por Site — Controle de Acesso no WoT"
+seoDescription: "Controle quais sites podem acessar sua identidade Nostr e carteira Lightning. Configure permissoes individuais e boas praticas de seguranca na extensao WoT."
+ogImage: "/images/guides/site-permissions/og.svg"
+translationKey: "site-permissions"
+difficulty: "intermediate"
+order: 8
+---
+
+A extensao Nostr WoT permite controlar individualmente o que cada site pode fazer com sua identidade e carteira. Este guia explica como o sistema de permissoes funciona e como configura-lo.
+
+## Como as Permissoes Funcionam
+
+Quando um site tenta interagir com a extensao -- seja para ler sua chave publica, solicitar uma assinatura ou fazer um pagamento -- a extensao verifica as permissoes configuradas para aquele dominio especifico.
+
+Existem tres niveis de permissao para cada tipo de acao:
+
+- **Sempre permitir** -- A acao e executada automaticamente sem perguntar.
+- **Sempre perguntar** -- A extensao mostra um popup de confirmacao toda vez.
+- **Sempre negar** -- A solicitacao e rejeitada silenciosamente.
+
+{/* TODO: Captura de tela do popup de solicitacao de permissao */}
+
+## Tipos de Permissao
+
+A extensao gerencia permissoes para varias categorias de acoes:
+
+### Identidade (NIP-07)
+
+- **Ler chave publica** -- O site pode ver sua npub. Isso e necessario para identificar voce.
+- **Assinar eventos** -- O site pode solicitar que a extensao assine eventos Nostr em seu nome.
+- **Criptografar/descriptografar** -- O site pode solicitar operacoes de criptografia para mensagens diretas (NIP-04/NIP-44).
+
+### Carteira (WebLN)
+
+- **Pagamentos** -- O site pode solicitar que voce envie sats.
+- **Consultar saldo** -- O site pode ver o saldo da sua carteira.
+- **Criar invoices** -- O site pode gerar invoices para voce receber pagamentos.
+
+{/* TODO: Captura de tela da lista de permissoes por tipo */}
+
+## Gerenciando Permissoes por Site
+
+### Visualizando Permissoes Existentes
+
+1. Abra a extensao e va para a aba **Permissoes** ou **Configuracoes**.
+2. Voce vera uma lista de todos os sites que ja solicitaram alguma permissao.
+3. Cada site mostra quais permissoes estao ativas e em qual nivel.
+
+### Editando Permissoes
+
+1. Clique no dominio que voce quer configurar.
+2. Ajuste cada tipo de permissao individualmente.
+3. Salve as alteracoes.
+
+### Removendo um Site
+
+Se voce quer revogar todas as permissoes de um site, clique no botao de remover ao lado do dominio. Na proxima vez que o site solicitar acesso, voce vera o popup de confirmacao novamente.
+
+{/* TODO: Captura de tela da tela de edicao de permissoes de um site */}
+
+<Callout type="tip">
+Revise suas permissoes periodicamente. Se voce nao visita mais um site, remova suas permissoes. Menos sites com acesso significa menos superficie de ataque.
+</Callout>
+
+## Boas Praticas de Seguranca
+
+### Seja Seletivo com Assinaturas
+
+Assinar eventos e o ato mais sensivel que a extensao faz. Quando voce aprova uma assinatura, esta publicando algo como sua identidade Nostr. Conceda permissao permanente de assinatura apenas para clientes Nostr que voce conhece e confia.
+
+### Cuidado com Pagamentos Automaticos
+
+Se voce configurou aprovacao automatica de pagamentos, preste atencao a quais sites tem essa permissao. Um site malicioso poderia drenar seus fundos se tiver permissao de pagamento automatico.
+
+### Verifique o Dominio
+
+Antes de aprovar qualquer permissao, verifique se o dominio no popup corresponde ao site que voce esta visitando. Ataques de phishing podem tentar se passar por clientes Nostr legitimos.
+
+### Use a Web of Trust
+
+A extensao pode usar sua Web of Trust para ajudar nas decisoes de permissao. Sites associados a pessoas dentro da sua rede de confianca podem receber tratamento diferenciado nas solicitacoes.
+
+{/* TODO: Video demonstrando o gerenciamento de permissoes */}
+
+## O Que Vem a Seguir?
+
+Com suas permissoes configuradas, explore o [Playground da Web of Trust](/guides/playground-wot) para visualizar e testar sua rede de confianca. Se ainda nao configurou sua carteira, volte para [Configurar Carteira Lightning](/guides/configurar-carteira).

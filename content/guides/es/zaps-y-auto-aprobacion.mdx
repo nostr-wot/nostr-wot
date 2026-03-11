@@ -1,0 +1,94 @@
+---
+title: "Zaps y Auto-Aprobacion"
+description: "Aprende a enviar zaps desde la extension Nostr WoT usando WebLN. Configura los umbrales de auto-aprobacion para realizar micropagos sin interrupciones."
+excerpt: "Enviar sats deberia ser tan facil como dar like. Aprende a usar los zaps y la auto-aprobacion para micropagos sin friccion."
+date: "2026-03-11"
+author:
+  name: "Leon Acosta"
+  avatar: "/authors/leon-profile.jpg"
+  npub: "npub1gxdhmu9swqduwhr6zptjy4ya693zp3ql28nemy4hd97kuufyrqdqwe5zfk"
+featuredImage: "/images/guides/zapping-auto-approve/featured.svg"
+previewImage: "/images/guides/zapping-auto-approve/preview.svg"
+tags:
+  - "Zaps"
+  - "Lightning"
+  - "WebLN"
+published: true
+seoTitle: "Zaps y Auto-Aprobacion en la Extension Nostr WoT"
+seoDescription: "Aprende a enviar zaps desde la extension Nostr WoT usando WebLN. Configura los umbrales de auto-aprobacion para realizar micropagos sin interrupciones."
+ogImage: "/images/guides/zapping-auto-approve/og.svg"
+translationKey: "zapping-auto-approve"
+difficulty: "beginner"
+order: 6
+---
+
+Los zaps son micropagos en Lightning que puedes enviar directamente desde cualquier cliente Nostr. Ves una nota que te gusta, le tiras unos sats y el autor los recibe al instante. La extension Nostr WoT actua como proveedor WebLN, lo que significa que los zaps funcionan automaticamente con las apps que soportan este protocolo.
+
+## Como Funciona WebLN
+
+WebLN es un estandar que permite a los sitios web solicitar pagos Lightning a traves del navegador. Cuando un sitio detecta un proveedor WebLN — en este caso, la extension — puede enviar solicitudes de pago directamente.
+
+El flujo es simple:
+
+1. Haces clic en el boton de zap en tu cliente Nostr favorito.
+2. El cliente crea un invoice Lightning y lo envia al proveedor WebLN.
+3. La extension recibe la solicitud y te muestra el monto.
+4. Apruebas el pago y los sats se envian.
+
+No hay que copiar invoices, no hay que cambiar de app, no hay que abrir otra extension. Todo ocurre en el mismo flujo.
+
+{/* TODO: Captura de pantalla del popup de aprobacion de zap */}
+
+<Callout type="tip">
+La extension funciona con clientes populares como Primal, Snort, Coracle, Nostrudel y cualquier app que implemente WebLN. Si el boton de zap aparece en la pagina, la extension puede manejarlo.
+</Callout>
+
+## Enviar tu Primer Zap
+
+Antes de enviar un zap, asegurate de tener:
+
+- La extension instalada con tu identidad activa.
+- Una billetera configurada con fondos (ver la guia de [configurar billetera](/guides/configurar-billetera)).
+
+Luego:
+
+1. Navega a tu cliente Nostr favorito.
+2. Busca una nota que te guste y haz clic en el icono de zap (normalmente un rayo).
+3. Elige el monto de sats.
+4. La extension muestra un popup de confirmacion con el destino y el monto.
+5. Haz clic en **Aprobar** y listo.
+
+El zap se registra en Nostr como un evento publico, lo que significa que el autor puede ver quien le envio sats.
+
+{/* TODO: Video del proceso completo de enviar un zap */}
+
+## Auto-Aprobacion de Zaps
+
+Aqui es donde la experiencia mejora notablemente. En lugar de confirmar cada zap individualmente, puedes configurar un umbral de auto-aprobacion. Cualquier zap igual o menor a ese monto se aprueba automaticamente, sin popup y sin interrupcion.
+
+### Configurar el Umbral
+
+1. Abre la extension y ve a la configuracion de la billetera.
+2. Busca la opcion **Auto-aprobar zaps** o **Auto-approve**.
+3. Define el monto maximo en sats — por ejemplo, 100 sats.
+4. Guarda los cambios.
+
+A partir de ahora, cualquier zap de 100 sats o menos pasa automaticamente. Scrolleas tu feed, zapeas las notas que te gusten y sigues scrolleando. Para esos zaps rapidos de 21 sats, cambia todo.
+
+{/* TODO: Captura de pantalla de la configuracion de auto-aprobacion */}
+
+<Callout type="tip">
+Si prefieres mantener el control total, deja el umbral en cero. Cada zap requerira confirmacion manual. Puedes ajustar el umbral en cualquier momento segun tu nivel de comodidad.
+</Callout>
+
+### Seguridad del Umbral
+
+El umbral solo aplica a solicitudes WebLN de sitios con permisos aprobados. Un sitio que no tenga permisos de wallet no puede activar pagos automaticos. Ademas, el umbral funciona por transaccion individual — no es un limite acumulativo.
+
+## Monitorear tus Zaps
+
+Todos los pagos aparecen en el historial de transacciones de la billetera. Puedes ver el destino, el monto, la fecha y el estado de cada transaccion. Si notas algo inusual, revisa los permisos de los sitios en la configuracion.
+
+## Que Sigue?
+
+Ahora que puedes enviar zaps, aprende a [reclamar tu Lightning Address](/guides/direccion-lightning) para que otros puedan zapearte facilmente. Tambien puedes revisar los [permisos por sitio](/guides/permisos-por-sitio) para controlar que apps tienen acceso a tu billetera.

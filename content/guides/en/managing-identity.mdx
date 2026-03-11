@@ -1,0 +1,94 @@
+---
+title: "Managing Your Identity"
+description: "Learn how the Nostr WoT Extension manages your Nostr identity with NIP-07 signer support, profile management, and essential key security practices."
+excerpt: "Your Nostr identity is the foundation of everything in the extension. Learn to manage your keys, profile, and signer settings."
+date: "2026-03-11"
+author:
+  name: "Leon Acosta"
+  avatar: "/authors/leon-profile.jpg"
+  npub: "npub1gxdhmu9swqduwhr6zptjy4ya693zp3ql28nemy4hd97kuufyrqdqwe5zfk"
+featuredImage: "/images/guides/managing-identity/featured.svg"
+previewImage: "/images/guides/managing-identity/preview.svg"
+tags:
+  - "Identity"
+  - "Keys"
+  - "NIP-07"
+published: true
+seoTitle: "Managing Your Identity — Nostr WoT Extension Guide"
+seoDescription: "Learn how the Nostr WoT Extension manages your Nostr identity with NIP-07 signer support, profile management, and essential key security practices."
+ogImage: "/images/guides/managing-identity/og.svg"
+translationKey: "managing-identity"
+difficulty: "beginner"
+order: 2
+---
+
+Your Nostr identity is the anchor for everything else in the extension — your trust network, your wallet, your permissions. This guide covers how to manage that identity, keep your keys secure, and use the NIP-07 signer that lets websites interact with your Nostr account.
+
+## NIP-07 Signer Support
+
+NIP-07 is the standard that allows Nostr web applications to request signatures from a browser extension without ever seeing your private key. When you visit a Nostr client like Primal, Snort, or Coracle, it can ask the extension to sign events on your behalf.
+
+Here is how it works in practice:
+
+1. A website calls `window.nostr.getPublicKey()` to identify you.
+2. When you post a note or update your profile, the site sends the unsigned event to the extension.
+3. You see a permission prompt. If you approve, the extension signs it with your private key and sends back the signature.
+4. Your private key never leaves the extension.
+
+{/* TODO: Screenshot of the NIP-07 signing permission prompt */}
+
+<Callout type="tip">
+If you previously used another NIP-07 extension like nos2x or Alby, disable it before using Nostr WoT. Only one NIP-07 signer should be active at a time to avoid conflicts.
+</Callout>
+
+## Managing Your Nostr Profile
+
+Your profile details — display name, bio, avatar, Lightning Address, and NIP-05 identifier — are stored on Nostr relays as a kind 0 event. The extension lets you view and edit these details directly.
+
+### Viewing Your Profile
+
+Click the extension icon and navigate to the **Identity** tab. You will see your current profile information, your npub, and the relays your profile is published to.
+
+{/* TODO: Screenshot of the Identity tab showing profile details */}
+
+### Editing Your Profile
+
+1. Click **Edit Profile** on the Identity tab.
+2. Update any fields you want to change.
+3. Click **Save**. The extension signs a new kind 0 event and publishes it to your relays.
+
+Changes propagate across Nostr clients within seconds as relays distribute the updated event.
+
+## Key Security Best Practices
+
+Your private key (nsec) is the single most important piece of data in your Nostr identity. Anyone who has it can post as you, change your profile, and access your contacts. There is no password reset, no support team to call.
+
+### Storage
+
+- The extension encrypts your private key locally using your encryption password. It is never stored in plain text.
+- Back up your nsec in a password manager or write it on paper and store it somewhere safe.
+- Never paste your nsec into a website or DM it to anyone.
+
+### Encryption Password
+
+- Choose a strong, unique password when setting up the extension.
+- The extension locks after a period of inactivity. You will need this password to unlock it.
+- If you forget this password, you can re-import your nsec to reset it — but you need that nsec backup.
+
+{/* TODO: Screenshot of the lock screen and password entry */}
+
+### Multiple Devices
+
+If you use the extension on multiple browsers or machines, import the same nsec on each one. Your identity is tied to your key pair, not to any single device.
+
+<Callout type="tip">
+Consider generating your keys with a dedicated tool and importing them into the extension. That way, your backup exists independently of any single extension.
+</Callout>
+
+## Switching Between Identities
+
+The extension supports multiple identities. If you manage more than one Nostr account, switch between them from the Identity tab by clicking your profile avatar. Each identity has its own trust graph, wallet, and permission settings.
+
+## What's Next?
+
+With your identity secured, it is time to understand how the extension uses it to build your [Web of Trust](/guides/understanding-wot). If you want to connect a wallet, jump to [Setting Up Your Wallet](/guides/setting-up-wallet).

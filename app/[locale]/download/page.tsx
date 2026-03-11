@@ -15,6 +15,14 @@ import {
 import { generateAlternates, generateOpenGraph, generateTwitter } from "@/lib/metadata";
 import { type Locale } from "@/i18n/config";
 
+function BoltIcon({ className }: { className?: string }) {
+  return (
+    <svg className={className} fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
+    </svg>
+  );
+}
+
 type Props = {
   params: Promise<{ locale: string }>;
 };
@@ -50,12 +58,13 @@ const BROWSERS = [
   { key: "firefox", Icon: FirefoxIcon, url: FIREFOX_STORE_URL },
 ];
 
-const FAQ_KEYS = ["whatIsWot", "howExtensionWorks", "isDataPrivate", "supportedBrowsers", "nostrAccount", "isFree"];
+const FAQ_KEYS = ["whatIsWot", "howExtensionWorks", "isDataPrivate", "supportedBrowsers", "nostrAccount", "hasWallet", "isFree"];
 
 const FEATURES = [
   { key: "instantQueries", Icon: KeyIcon },
   { key: "privacyOptions", Icon: LockOutlineIcon },
   { key: "simpleApi", Icon: CodeOutlineIcon },
+  { key: "wallet", Icon: BoltIcon },
 ];
 
 export default async function DownloadPage() {
@@ -68,10 +77,10 @@ export default async function DownloadPage() {
     "name": "Nostr Web of Trust Extension",
     "applicationCategory": "BrowserApplication",
     "operatingSystem": "Chrome, Brave, Edge, Opera, Firefox",
-    "description": "Nostr identity provider, NIP-07 signer, and Web of Trust browser extension. Manage multiple accounts, sign events, encrypt messages, and filter spam with trust scores.",
+    "description": "Nostr identity provider, NIP-07 signer, Lightning wallet, and Web of Trust browser extension. Manage multiple accounts, sign events, encrypt messages, send zaps, and filter spam with trust scores.",
     "url": "https://nostr-wot.com/download",
     "downloadUrl": "https://chromewebstore.google.com/detail/nostr-wot-extension/gfmefgdkmjpjinecjchlangpamhclhdo",
-    "softwareVersion": "0.2.2",
+    "softwareVersion": "0.3.0",
     "offers": {
       "@type": "Offer",
       "price": "0",
@@ -95,6 +104,8 @@ export default async function DownloadPage() {
       "Watch-only and read-only accounts",
       "6 languages supported",
       "Granular per-site permissions",
+      "Built-in Lightning wallet with NWC and LNbits support",
+      "WebLN provider for seamless zap payments",
     ],
     "screenshot": "https://nostr-wot.com/og-image.png",
     "author": {
@@ -168,7 +179,7 @@ export default async function DownloadPage() {
         <ScrollReveal animation="fade-up">
           <h2 className="text-2xl font-bold text-center mb-12">{t("features.title")}</h2>
         </ScrollReveal>
-        <div className="grid md:grid-cols-3 gap-8 max-w-4xl mx-auto">
+        <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-8 max-w-4xl mx-auto">
           {FEATURES.map((feature, i) => (
             <ScrollReveal key={feature.key} animation="fade-up" delay={i * 100}>
               <div className="text-center">

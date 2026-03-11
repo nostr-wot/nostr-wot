@@ -14,6 +14,7 @@ import profile from './profile.json';
 import blog from './blog.json';
 import notFound from './notFound.json';
 import pitch from './pitch.json';
+import guides from './guides.json';
 
 const messages = {
   common,
@@ -32,6 +33,7 @@ const messages = {
   blog,
   notFound,
   pitch,
+  guides,
 };
 
 export default messages;

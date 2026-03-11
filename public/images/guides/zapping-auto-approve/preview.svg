@@ -1,0 +1,104 @@
+<svg width="800" height="450" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#1e1b4b;stop-opacity:1" />
+      <stop offset="50%" style="stop-color:#312e81;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#4c1d95;stop-opacity:1" />
+    </linearGradient>
+    <radialGradient id="glow" cx="50%" cy="43%" r="45%">
+      <stop offset="0%" style="stop-color:#7c3aed;stop-opacity:0.3" />
+      <stop offset="100%" style="stop-color:#1e1b4b;stop-opacity:0" />
+    </radialGradient>
+    <filter id="bolt-glow" x="-50%" y="-50%" width="200%" height="200%">
+      <feDropShadow dx="0" dy="0" stdDeviation="5" flood-color="#facc15" flood-opacity="0.6"/>
+    </filter>
+    <filter id="green-glow" x="-50%" y="-50%" width="200%" height="200%">
+      <feDropShadow dx="0" dy="0" stdDeviation="6" flood-color="#4ade80" flood-opacity="0.6"/>
+    </filter>
+    <filter id="node-glow" x="-50%" y="-50%" width="200%" height="200%">
+      <feDropShadow dx="0" dy="0" stdDeviation="3" flood-color="#a78bfa" flood-opacity="0.5"/>
+    </filter>
+    <filter id="gauge-glow" x="-50%" y="-50%" width="200%" height="200%">
+      <feDropShadow dx="0" dy="0" stdDeviation="4" flood-color="#4ade80" flood-opacity="0.5"/>
+    </filter>
+  </defs>
+
+  <!-- Background -->
+  <rect width="100%" height="100%" fill="url(#bg)"/>
+  <rect width="100%" height="100%" fill="url(#glow)"/>
+
+  <!-- Trust rings -->
+  <circle cx="400" cy="200" r="195" fill="none" stroke="rgba(167,139,250,0.06)" stroke-width="1" stroke-dasharray="4,8"/>
+  <circle cx="400" cy="200" r="145" fill="none" stroke="rgba(167,139,250,0.10)" stroke-width="1" stroke-dasharray="4,8"/>
+  <circle cx="400" cy="200" r="100" fill="none" stroke="rgba(167,139,250,0.14)" stroke-width="1" stroke-dasharray="4,8"/>
+
+  <!-- Network nodes -->
+  <g filter="url(#node-glow)">
+    <circle cx="170" cy="120" r="12" fill="rgba(167,139,250,0.3)" stroke="rgba(167,139,250,0.6)" stroke-width="1.5"/>
+    <circle cx="130" cy="290" r="11" fill="rgba(167,139,250,0.25)" stroke="rgba(167,139,250,0.5)" stroke-width="1.5"/>
+    <circle cx="630" cy="110" r="12" fill="rgba(167,139,250,0.3)" stroke="rgba(167,139,250,0.6)" stroke-width="1.5"/>
+    <circle cx="670" cy="300" r="11" fill="rgba(167,139,250,0.25)" stroke="rgba(167,139,250,0.5)" stroke-width="1.5"/>
+  </g>
+  <g filter="url(#node-glow)">
+    <circle cx="260" cy="140" r="13" fill="rgba(74,222,128,0.2)" stroke="rgba(74,222,128,0.6)" stroke-width="1.5"/>
+    <circle cx="230" cy="300" r="12" fill="rgba(74,222,128,0.2)" stroke="rgba(74,222,128,0.6)" stroke-width="1.5"/>
+    <circle cx="540" cy="135" r="13" fill="rgba(74,222,128,0.2)" stroke="rgba(74,222,128,0.6)" stroke-width="1.5"/>
+    <circle cx="570" cy="310" r="12" fill="rgba(74,222,128,0.2)" stroke="rgba(74,222,128,0.6)" stroke-width="1.5"/>
+  </g>
+
+  <!-- Connection lines -->
+  <g stroke="rgba(167,139,250,0.15)" stroke-width="1">
+    <line x1="170" y1="120" x2="260" y2="140"/>
+    <line x1="130" y1="290" x2="230" y2="300"/>
+    <line x1="630" y1="110" x2="540" y2="135"/>
+    <line x1="670" y1="300" x2="570" y2="310"/>
+  </g>
+  <g stroke="rgba(74,222,128,0.25)" stroke-width="1.5">
+    <line x1="260" y1="140" x2="400" y2="175"/>
+    <line x1="230" y1="300" x2="400" y2="230"/>
+    <line x1="540" y1="135" x2="400" y2="175"/>
+    <line x1="570" y1="310" x2="400" y2="230"/>
+  </g>
+
+  <!-- Lightning bolts flying -->
+  <g filter="url(#bolt-glow)">
+    <polygon points="305,160 296,170 301,170 292,180 312,168 307,168 316,160" fill="rgba(250,204,21,0.9)"/>
+    <polygon points="500,160 491,170 496,170 487,180 507,168 502,168 511,160" fill="rgba(250,204,21,0.9)"/>
+    <polygon points="290,280 281,290 286,290 277,300 297,288 292,288 301,280" fill="rgba(250,204,21,0.8)"/>
+    <polygon points="510,290 501,300 506,300 497,310 517,298 512,298 521,290" fill="rgba(250,204,21,0.8)"/>
+  </g>
+
+  <!-- Sat symbols -->
+  <text x="320" y="120" fill="rgba(250,204,21,0.45)" font-family="monospace" font-size="13" font-weight="bold">&#x20BF;</text>
+  <text x="490" y="115" fill="rgba(250,204,21,0.4)" font-family="monospace" font-size="12" font-weight="bold">&#x20BF;</text>
+  <text x="340" y="350" fill="rgba(250,204,21,0.35)" font-family="monospace" font-size="11" font-weight="bold">&#x20BF;</text>
+  <text x="465" y="355" fill="rgba(250,204,21,0.35)" font-family="monospace" font-size="11" font-weight="bold">&#x20BF;</text>
+
+  <!-- Center: Auto-Approve Badge with Gauge -->
+  <circle cx="400" cy="200" r="68" fill="rgba(74,222,128,0.06)"/>
+  <circle cx="400" cy="200" r="50" fill="rgba(74,222,128,0.08)"/>
+  <circle cx="400" cy="200" r="34" fill="rgba(139,92,246,0.1)"/>
+
+  <!-- Gauge arc -->
+  <g filter="url(#gauge-glow)">
+    <path d="M 355 225 A 52 52 0 0 1 445 225" fill="none" stroke="rgba(167,139,250,0.3)" stroke-width="5" stroke-linecap="round"/>
+    <path d="M 355 225 A 52 52 0 0 1 430 180" fill="none" stroke="rgba(74,222,128,0.8)" stroke-width="5" stroke-linecap="round"/>
+  </g>
+
+  <!-- Shield badge -->
+  <g filter="url(#green-glow)">
+    <path d="M 400 165 L 428 180 L 428 208 C 428 223 417 233 400 238 C 383 233 372 223 372 208 L 372 180 Z" fill="rgba(74,222,128,0.15)" stroke="rgba(74,222,128,0.7)" stroke-width="1.5"/>
+  </g>
+
+  <!-- Checkmark -->
+  <polyline points="387,202 396,212 416,188" fill="none" stroke="rgba(74,222,128,0.95)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+
+  <!-- AUTO text -->
+  <text x="400" y="258" fill="rgba(74,222,128,0.6)" font-family="monospace" font-size="11" font-weight="bold" text-anchor="middle" letter-spacing="2">AUTO</text>
+
+  <!-- Lightning on badge top -->
+  <g filter="url(#bolt-glow)">
+    <polygon points="403,145 394,157 400,157 392,168 410,155 404,155 412,145" fill="rgba(250,204,21,0.9)" stroke="rgba(250,204,21,0.4)" stroke-width="0.5"/>
+  </g>
+
+</svg>

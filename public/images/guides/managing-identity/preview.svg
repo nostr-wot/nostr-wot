@@ -1,0 +1,76 @@
+<svg width="800" height="450" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#1e1b4b;stop-opacity:1" />
+      <stop offset="50%" style="stop-color:#312e81;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#4c1d95;stop-opacity:1" />
+    </linearGradient>
+    <radialGradient id="glow" cx="50%" cy="43%" r="45%">
+      <stop offset="0%" style="stop-color:#7c3aed;stop-opacity:0.3" />
+      <stop offset="100%" style="stop-color:#1e1b4b;stop-opacity:0" />
+    </radialGradient>
+    <filter id="shadow">
+      <feDropShadow dx="0" dy="0" stdDeviation="3" flood-color="#a78bfa" flood-opacity="0.5"/>
+    </filter>
+    <filter id="key-glow" x="-50%" y="-50%" width="200%" height="200%">
+      <feDropShadow dx="0" dy="0" stdDeviation="8" flood-color="#facc15" flood-opacity="0.7"/>
+    </filter>
+    <filter id="shield-glow" x="-50%" y="-50%" width="200%" height="200%">
+      <feDropShadow dx="0" dy="0" stdDeviation="6" flood-color="#4ade80" flood-opacity="0.5"/>
+    </filter>
+    <filter id="element-glow" x="-50%" y="-50%" width="200%" height="200%">
+      <feDropShadow dx="0" dy="0" stdDeviation="3" flood-color="#a78bfa" flood-opacity="0.4"/>
+    </filter>
+  </defs>
+
+  <!-- Background -->
+  <rect width="100%" height="100%" fill="url(#bg)"/>
+  <rect width="100%" height="100%" fill="url(#glow)"/>
+
+  <!-- Trust rings -->
+  <circle cx="400" cy="200" r="190" fill="none" stroke="rgba(167,139,250,0.06)" stroke-width="1" stroke-dasharray="4,8"/>
+  <circle cx="400" cy="200" r="145" fill="none" stroke="rgba(167,139,250,0.10)" stroke-width="1" stroke-dasharray="4,8"/>
+  <circle cx="400" cy="200" r="100" fill="none" stroke="rgba(167,139,250,0.14)" stroke-width="1" stroke-dasharray="4,8"/>
+
+  <!-- Shield -->
+  <g filter="url(#shield-glow)">
+    <path d="M400,80 L480,115 L480,225 C480,280 400,315 400,315 C400,315 320,280 320,225 L320,115 Z" fill="rgba(74,222,128,0.04)" stroke="rgba(74,222,128,0.35)" stroke-width="1.5"/>
+    <path d="M400,95 L468,125 L468,220 C468,268 400,300 400,300 C400,300 332,268 332,220 L332,125 Z" fill="rgba(74,222,128,0.03)" stroke="rgba(74,222,128,0.15)" stroke-width="1" stroke-dasharray="5,3"/>
+  </g>
+
+  <!-- Key icon -->
+  <g filter="url(#key-glow)">
+    <circle cx="400" cy="160" r="30" fill="rgba(250,204,21,0.12)" stroke="rgba(250,204,21,0.8)" stroke-width="2"/>
+    <circle cx="400" cy="160" r="20" fill="none" stroke="rgba(250,204,21,0.4)" stroke-width="1.5"/>
+    <circle cx="400" cy="160" r="10" fill="rgba(250,204,21,0.15)" stroke="rgba(250,204,21,0.6)" stroke-width="1"/>
+    <line x1="400" y1="190" x2="400" y2="270" stroke="rgba(250,204,21,0.8)" stroke-width="2.5"/>
+    <line x1="400" y1="235" x2="420" y2="235" stroke="rgba(250,204,21,0.8)" stroke-width="2.5"/>
+    <line x1="420" y1="235" x2="420" y2="248" stroke="rgba(250,204,21,0.8)" stroke-width="2.5"/>
+    <line x1="400" y1="258" x2="416" y2="258" stroke="rgba(250,204,21,0.8)" stroke-width="2.5"/>
+    <line x1="416" y1="258" x2="416" y2="270" stroke="rgba(250,204,21,0.8)" stroke-width="2.5"/>
+  </g>
+
+  <!-- User avatar (left) -->
+  <g filter="url(#element-glow)" opacity="0.7">
+    <circle cx="240" cy="155" r="18" fill="rgba(167,139,250,0.1)" stroke="rgba(167,139,250,0.5)" stroke-width="1.5"/>
+    <path d="M213,205 C213,185 228,177 240,177 C252,177 267,185 267,205" fill="none" stroke="rgba(167,139,250,0.5)" stroke-width="1.5"/>
+    <line x1="267" y1="170" x2="369" y2="160" stroke="rgba(167,139,250,0.2)" stroke-width="1" stroke-dasharray="3,3"/>
+  </g>
+
+  <!-- Fingerprint (right) -->
+  <g filter="url(#element-glow)" opacity="0.6" transform="translate(555, 170)">
+    <ellipse cx="0" cy="0" rx="25" ry="32" fill="none" stroke="rgba(167,139,250,0.3)" stroke-width="1"/>
+    <ellipse cx="0" cy="0" rx="18" ry="24" fill="none" stroke="rgba(167,139,250,0.35)" stroke-width="1"/>
+    <ellipse cx="0" cy="0" rx="11" ry="16" fill="none" stroke="rgba(167,139,250,0.4)" stroke-width="1"/>
+    <ellipse cx="0" cy="0" rx="5" ry="8" fill="none" stroke="rgba(167,139,250,0.5)" stroke-width="1"/>
+    <line x1="-25" y1="0" x2="-124" y2="-10" stroke="rgba(167,139,250,0.2)" stroke-width="1" stroke-dasharray="3,3"/>
+  </g>
+
+  <!-- NIP-07 label -->
+  <g filter="url(#element-glow)">
+    <rect x="350" y="335" width="100" height="30" rx="6" fill="rgba(167,139,250,0.08)" stroke="rgba(167,139,250,0.35)" stroke-width="1.5"/>
+    <text x="400" y="355" font-family="monospace" font-size="14" fill="rgba(167,139,250,0.8)" text-anchor="middle" font-weight="bold">NIP-07</text>
+    <line x1="400" y1="335" x2="400" y2="278" stroke="rgba(167,139,250,0.2)" stroke-width="1" stroke-dasharray="3,3"/>
+  </g>
+
+</svg>

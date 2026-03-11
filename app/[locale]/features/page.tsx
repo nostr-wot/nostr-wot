@@ -131,7 +131,7 @@ export default async function FeaturesPage() {
     "@context": "https://schema.org",
     "@type": "WebPage",
     "name": "Nostr Web of Trust Features",
-    "description": "Explore Nostr WoT features: NIP-07 signer, multi-account vault, trust scoring, privacy modes, badge injection, and seamless integration with any Nostr app.",
+    "description": "Explore Nostr WoT features: NIP-07 signer, multi-account vault, Lightning wallet, trust scoring, privacy modes, badge injection, and seamless integration with any Nostr app.",
     "url": "https://nostr-wot.com/features",
     "mainEntity": {
       "@type": "SoftwareApplication",
@@ -149,6 +149,8 @@ export default async function FeaturesPage() {
         "Remote, Local, and Hybrid modes",
         "Watch-only accounts",
         "6 languages supported",
+        "Built-in Lightning wallet with NWC and LNbits support",
+        "WebLN provider for seamless zap payments",
       ],
       "offers": {
         "@type": "Offer",
@@ -199,6 +201,42 @@ export default async function FeaturesPage() {
           </ScrollReveal>
         </div>
       </section>
+
+      {/* Extension Overview Section */}
+      <Section background="gradient">
+        <ScrollReveal animation="fade-up">
+          <SectionHeader
+            badgeIcon={<NetworkIcon className="w-6 h-6" />}
+            badge={t("extensionOverview.badge")}
+            title={t("extensionOverview.title")}
+            description={t("extensionOverview.description")}
+          />
+        </ScrollReveal>
+        <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
+          {[
+            { key: "signer", color: "text-purple-500", bg: "bg-purple-500/10", icon: "M15.75 5.25a3 3 0 013 3m3 0a6 6 0 01-7.029 5.912c-.563-.097-1.159.026-1.563.43L10.5 17.25H8.25v2.25H6v2.25H2.25v-2.818c0-.597.237-1.17.659-1.591l6.499-6.499c.404-.404.527-1 .43-1.563A6 6 0 1121.75 8.25z" },
+            { key: "vault", color: "text-amber-500", bg: "bg-amber-500/10", icon: "M16.5 10.5V6.75a4.5 4.5 0 10-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 002.25-2.25v-6.75a2.25 2.25 0 00-2.25-2.25H6.75a2.25 2.25 0 00-2.25 2.25v6.75a2.25 2.25 0 002.25 2.25z" },
+            { key: "multiAccount", color: "text-blue-500", bg: "bg-blue-500/10", icon: "M15 19.128a9.38 9.38 0 002.625.372 9.337 9.337 0 004.121-.952 4.125 4.125 0 00-7.533-2.493M15 19.128v-.003c0-1.113-.285-2.16-.786-3.07M15 19.128v.106A12.318 12.318 0 018.624 21c-2.331 0-4.512-.645-6.374-1.766l-.001-.109a6.375 6.375 0 0111.964-3.07M12 6.375a3.375 3.375 0 11-6.75 0 3.375 3.375 0 016.75 0zm8.25 2.25a2.625 2.625 0 11-5.25 0 2.625 2.625 0 015.25 0z" },
+            { key: "wallet", color: "text-yellow-500", bg: "bg-yellow-500/10", icon: "M13 10V3L4 14h7v7l9-11h-7z" },
+            { key: "badges", color: "text-emerald-500", bg: "bg-emerald-500/10", icon: "M9 12.75L11.25 15 15 9.75M21 12c0 1.268-.63 2.39-1.593 3.068a3.745 3.745 0 01-1.043 3.296 3.745 3.745 0 01-3.296 1.043A3.745 3.745 0 0112 21c-1.268 0-2.39-.63-3.068-1.593a3.746 3.746 0 01-3.296-1.043 3.745 3.745 0 01-1.043-3.296A3.745 3.745 0 013 12c0-1.268.63-2.39 1.593-3.068a3.745 3.745 0 011.043-3.296 3.746 3.746 0 013.296-1.043A3.746 3.746 0 0112 3c1.268 0 2.39.63 3.068 1.593a3.746 3.746 0 013.296 1.043 3.746 3.746 0 011.043 3.296A3.745 3.745 0 0121 12z" },
+            { key: "permissions", color: "text-rose-500", bg: "bg-rose-500/10", icon: "M10.5 6h9.75M10.5 6a1.5 1.5 0 11-3 0m3 0a1.5 1.5 0 10-3 0M3.75 6H7.5m3 12h9.75m-9.75 0a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m-3.75 0H7.5m9-6h3.75m-3.75 0a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m-9.75 0h9.75" },
+            { key: "webln", color: "text-orange-500", bg: "bg-orange-500/10", icon: "M8.111 16.404a5.5 5.5 0 017.778 0M12 20h.01m-7.08-7.071c3.904-3.905 10.236-3.905 14.14 0M1.394 9.393c5.857-5.858 15.355-5.858 21.213 0" },
+            { key: "i18n", color: "text-cyan-500", bg: "bg-cyan-500/10", icon: "M10.5 21l5.25-11.25L21 21m-9-3h7.5M3 5.621a48.474 48.474 0 016-.371m0 0c1.12 0 2.233.038 3.334.114M9 5.25V3m3.334 2.364C11.176 10.658 7.148 15.584 2 19.116m6.228-1.881a48.48 48.48 0 006.862-4.965" },
+          ].map((item, i) => (
+            <ScrollReveal key={item.key} animation="fade-up" delay={50 + i * 50}>
+              <div className="bg-white dark:bg-gray-800/50 rounded-2xl p-6 shadow-sm border border-gray-200 dark:border-gray-700/50 h-full">
+                <div className={`w-10 h-10 rounded-lg ${item.bg} flex items-center justify-center mb-4`}>
+                  <svg className={`w-5 h-5 ${item.color}`} fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" aria-hidden="true">
+                    <path strokeLinecap="round" strokeLinejoin="round" d={item.icon} />
+                  </svg>
+                </div>
+                <h3 className="font-bold mb-2">{t(`extensionOverview.${item.key}.title`)}</h3>
+                <p className="text-sm text-gray-600 dark:text-gray-400">{t(`extensionOverview.${item.key}.description`)}</p>
+              </div>
+            </ScrollReveal>
+          ))}
+        </div>
+      </Section>
 
       {/* Universal API Section */}
       <Section background="gradient">
@@ -316,6 +354,61 @@ export default async function FeaturesPage() {
         <ScrollReveal animation="fade-up" delay={100}>
           <DashboardPreview />
         </ScrollReveal>
+      </Section>
+
+      {/* Lightning Wallet Section */}
+      <Section background="gradient">
+        <ScrollReveal animation="fade-up">
+          <SectionHeader
+            badgeIcon={
+              <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
+              </svg>
+            }
+            badge={t("wallet.badge")}
+            title={t("wallet.title")}
+            description={t("wallet.description")}
+          />
+        </ScrollReveal>
+        <div className="grid md:grid-cols-3 gap-6 lg:gap-8 mb-8">
+          {[
+            { key: "quickSetup", color: "text-amber-500", bg: "bg-amber-500/10" },
+            { key: "nwc", color: "text-blue-500", bg: "bg-blue-500/10" },
+            { key: "lnbits", color: "text-emerald-500", bg: "bg-emerald-500/10" },
+          ].map((card, i) => (
+            <ScrollReveal key={card.key} animation="fade-up" delay={100 + i * 100}>
+              <div className="bg-white dark:bg-gray-800/50 rounded-2xl p-8 shadow-sm border border-gray-200 dark:border-gray-700/50 h-full">
+                <div className={`w-12 h-12 rounded-xl ${card.bg} flex items-center justify-center mb-6`}>
+                  <svg className={`w-6 h-6 ${card.color}`} fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
+                  </svg>
+                </div>
+                <h3 className="text-xl font-bold mb-3">{t(`wallet.${card.key}.title`)}</h3>
+                <p className="text-gray-600 dark:text-gray-400">{t(`wallet.${card.key}.description`)}</p>
+              </div>
+            </ScrollReveal>
+          ))}
+        </div>
+        <div className="grid md:grid-cols-2 gap-6 max-w-3xl mx-auto">
+          {[
+            { key: "webln", icon: "M8.111 16.404a5.5 5.5 0 017.778 0M12 20h.01m-7.08-7.071c3.904-3.905 10.236-3.905 14.14 0M1.394 9.393c5.857-5.858 15.355-5.858 21.213 0" },
+            { key: "autoApprove", icon: "M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" },
+          ].map((item, i) => (
+            <ScrollReveal key={item.key} animation="fade-up" delay={100 + i * 100}>
+              <div className="bg-white dark:bg-gray-800/50 rounded-2xl p-6 shadow-sm border border-gray-200 dark:border-gray-700/50 h-full flex gap-4">
+                <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center flex-shrink-0">
+                  <svg className="w-5 h-5 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d={item.icon} />
+                  </svg>
+                </div>
+                <div>
+                  <h3 className="font-bold mb-1">{t(`wallet.${item.key}.title`)}</h3>
+                  <p className="text-sm text-gray-600 dark:text-gray-400">{t(`wallet.${item.key}.description`)}</p>
+                </div>
+              </div>
+            </ScrollReveal>
+          ))}
+        </div>
       </Section>
 
       {/* Privacy Section */}

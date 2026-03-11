@@ -1,0 +1,1144 @@
+{
+  "generatedAt": "2026-03-11T09:40:39.028Z",
+  "locales": {
+    "en": {
+      "posts": [
+        {
+          "slug": "getting-started",
+          "title": "Getting Started with Nostr WoT",
+          "description": "Install the Nostr WoT browser extension on Chrome, Brave, Edge, Opera, or Firefox. Set up your Nostr identity and start building your Web of Trust in minutes.",
+          "excerpt": "Everything you need to install the Nostr WoT Extension and get your first trust network up and running.",
+          "date": "2026-03-11T00:00:00.000Z",
+          "author": {
+            "name": "Leon Acosta",
+            "avatar": "/authors/leon-profile.jpg",
+            "npub": "npub1gxdhmu9swqduwhr6zptjy4ya693zp3ql28nemy4hd97kuufyrqdqwe5zfk"
+          },
+          "featuredImage": "/images/guides/getting-started/featured.svg",
+          "previewImage": "/images/guides/getting-started/preview.svg",
+          "tags": [
+            "Extension",
+            "Setup",
+            "Beginner"
+          ],
+          "published": true,
+          "readingTime": "3 min read",
+          "locale": "en",
+          "translationKey": "getting-started",
+          "translations": {
+            "en": "getting-started",
+            "es": "primeros-pasos",
+            "pt": "primeiros-passos"
+          },
+          "availableLocales": [
+            "en",
+            "es",
+            "pt"
+          ],
+          "seoTitle": "Getting Started with Nostr WoT — Extension Guide",
+          "seoDescription": "Install the Nostr WoT browser extension on Chrome, Brave, Edge, Opera, or Firefox. Set up your Nostr identity and start building your Web of Trust in minutes.",
+          "ogImage": "/images/guides/getting-started/og.svg",
+          "difficulty": "beginner",
+          "order": 1,
+          "content": "\nThis guide walks you through installing the Nostr WoT Extension, setting up your identity, and getting your trust network running. The whole process takes about two minutes.\n\n## Installing the Extension\n\nThe extension supports all major Chromium-based browsers and Firefox. Pick your browser and follow the steps below.\n\n### Chrome, Brave, Edge, and Opera\n\n1. Visit the [download page](/download) and click the link for the Chrome Web Store.\n2. Click **Add to Chrome** (or the equivalent button in your browser).\n3. Confirm the installation when prompted.\n4. Pin the extension to your toolbar for easy access — click the puzzle piece icon in your browser and toggle the pin next to Nostr WoT.\n\n{/* TODO: Screenshot of the Chrome Web Store listing with the Add to Chrome button highlighted */}\n\n### Firefox\n\n1. Visit the [download page](/download) and click the link for Firefox Add-ons.\n2. Click **Add to Firefox** and confirm the permissions prompt.\n3. Pin the extension to your toolbar by right-clicking the icon and selecting **Pin to Toolbar**.\n\n{/* TODO: Screenshot of the Firefox Add-ons page for Nostr WoT */}\n\n<Callout type=\"tip\">\nAfter installation, the extension icon will appear in your browser toolbar. A gray icon means you are not yet signed in. It turns purple once your identity is active.\n</Callout>\n\n## First-Time Setup\n\nWhen you open the extension for the first time, the setup wizard walks you through the essentials. You will be asked to either create a new Nostr identity or import an existing one. No account registration with any third party is required.\n\n{/* TODO: Screenshot of the first-time setup wizard welcome screen */}\n\n## Creating a New Nostr Key\n\nIf you are new to Nostr, select **Create New Keys**. The extension generates a private key (nsec) and a public key (npub) for you.\n\n1. Click **Create New Keys** in the setup wizard.\n2. Save your private key backup. Write it down or store it in a password manager. If you lose this key, there is no way to recover your account.\n3. Set a local password to encrypt your keys inside the extension. This password is never sent anywhere.\n4. Optionally fill in your profile details — display name, bio, and avatar.\n\n{/* TODO: Screenshot of the key creation screen with the backup prompt */}\n\n<Callout type=\"tip\">\nYour private key is the master password to your Nostr identity. Never share it, paste it into a website, or store it in plain text. The extension encrypts it locally so sites never see it directly.\n</Callout>\n\n## Importing an Existing Key\n\nAlready have a Nostr identity? Select **Import Existing Key** and paste your nsec or use a NIP-07 compatible signer extension.\n\n1. Click **Import Existing Key**.\n2. Paste your nsec private key or connect a hardware signer.\n3. Set a local encryption password.\n4. The extension fetches your profile from Nostr relays automatically.\n\n{/* TODO: Screenshot of the import key screen */}\n\n## Verifying Your Setup\n\nOnce your identity is active, click the extension icon. You should see your profile details, your npub, and an initial trust graph that starts building from your follow list. The extension fetches your contacts from relays and begins mapping your Web of Trust.\n\nGive it a minute or two for the initial sync. After that, your trust network updates in the background as you browse.\n\n## What's Next?\n\nNow that the extension is installed, learn how to [manage your identity](/guides/managing-identity) and understand how the [Web of Trust works](/guides/understanding-wot).\n"
+        },
+        {
+          "slug": "managing-identity",
+          "title": "Managing Your Identity",
+          "description": "Learn how the Nostr WoT Extension manages your Nostr identity with NIP-07 signer support, profile management, and essential key security practices.",
+          "excerpt": "Your Nostr identity is the foundation of everything in the extension. Learn to manage your keys, profile, and signer settings.",
+          "date": "2026-03-11T00:00:00.000Z",
+          "author": {
+            "name": "Leon Acosta",
+            "avatar": "/authors/leon-profile.jpg",
+            "npub": "npub1gxdhmu9swqduwhr6zptjy4ya693zp3ql28nemy4hd97kuufyrqdqwe5zfk"
+          },
+          "featuredImage": "/images/guides/managing-identity/featured.svg",
+          "previewImage": "/images/guides/managing-identity/preview.svg",
+          "tags": [
+            "Identity",
+            "Keys",
+            "NIP-07"
+          ],
+          "published": true,
+          "readingTime": "4 min read",
+          "locale": "en",
+          "translationKey": "managing-identity",
+          "translations": {
+            "en": "managing-identity",
+            "es": "gestion-de-identidad",
+            "pt": "gerenciar-identidade"
+          },
+          "availableLocales": [
+            "en",
+            "es",
+            "pt"
+          ],
+          "seoTitle": "Managing Your Identity — Nostr WoT Extension Guide",
+          "seoDescription": "Learn how the Nostr WoT Extension manages your Nostr identity with NIP-07 signer support, profile management, and essential key security practices.",
+          "ogImage": "/images/guides/managing-identity/og.svg",
+          "difficulty": "beginner",
+          "order": 2,
+          "content": "\nYour Nostr identity is the anchor for everything else in the extension — your trust network, your wallet, your permissions. This guide covers how to manage that identity, keep your keys secure, and use the NIP-07 signer that lets websites interact with your Nostr account.\n\n## NIP-07 Signer Support\n\nNIP-07 is the standard that allows Nostr web applications to request signatures from a browser extension without ever seeing your private key. When you visit a Nostr client like Primal, Snort, or Coracle, it can ask the extension to sign events on your behalf.\n\nHere is how it works in practice:\n\n1. A website calls `window.nostr.getPublicKey()` to identify you.\n2. When you post a note or update your profile, the site sends the unsigned event to the extension.\n3. You see a permission prompt. If you approve, the extension signs it with your private key and sends back the signature.\n4. Your private key never leaves the extension.\n\n{/* TODO: Screenshot of the NIP-07 signing permission prompt */}\n\n<Callout type=\"tip\">\nIf you previously used another NIP-07 extension like nos2x or Alby, disable it before using Nostr WoT. Only one NIP-07 signer should be active at a time to avoid conflicts.\n</Callout>\n\n## Managing Your Nostr Profile\n\nYour profile details — display name, bio, avatar, Lightning Address, and NIP-05 identifier — are stored on Nostr relays as a kind 0 event. The extension lets you view and edit these details directly.\n\n### Viewing Your Profile\n\nClick the extension icon and navigate to the **Identity** tab. You will see your current profile information, your npub, and the relays your profile is published to.\n\n{/* TODO: Screenshot of the Identity tab showing profile details */}\n\n### Editing Your Profile\n\n1. Click **Edit Profile** on the Identity tab.\n2. Update any fields you want to change.\n3. Click **Save**. The extension signs a new kind 0 event and publishes it to your relays.\n\nChanges propagate across Nostr clients within seconds as relays distribute the updated event.\n\n## Key Security Best Practices\n\nYour private key (nsec) is the single most important piece of data in your Nostr identity. Anyone who has it can post as you, change your profile, and access your contacts. There is no password reset, no support team to call.\n\n### Storage\n\n- The extension encrypts your private key locally using your encryption password. It is never stored in plain text.\n- Back up your nsec in a password manager or write it on paper and store it somewhere safe.\n- Never paste your nsec into a website or DM it to anyone.\n\n### Encryption Password\n\n- Choose a strong, unique password when setting up the extension.\n- The extension locks after a period of inactivity. You will need this password to unlock it.\n- If you forget this password, you can re-import your nsec to reset it — but you need that nsec backup.\n\n{/* TODO: Screenshot of the lock screen and password entry */}\n\n### Multiple Devices\n\nIf you use the extension on multiple browsers or machines, import the same nsec on each one. Your identity is tied to your key pair, not to any single device.\n\n<Callout type=\"tip\">\nConsider generating your keys with a dedicated tool and importing them into the extension. That way, your backup exists independently of any single extension.\n</Callout>\n\n## Switching Between Identities\n\nThe extension supports multiple identities. If you manage more than one Nostr account, switch between them from the Identity tab by clicking your profile avatar. Each identity has its own trust graph, wallet, and permission settings.\n\n## What's Next?\n\nWith your identity secured, it is time to understand how the extension uses it to build your [Web of Trust](/guides/understanding-wot). If you want to connect a wallet, jump to [Setting Up Your Wallet](/guides/setting-up-wallet).\n"
+        },
+        {
+          "slug": "understanding-wot",
+          "title": "Understanding the Web of Trust",
+          "description": "Learn how the Nostr WoT Extension builds your trust graph, what hops and trust levels mean, and how trust scores help you decide who to trust on Nostr.",
+          "excerpt": "The trust graph is the core of the extension. Learn what hops are, how trust scores work, and what the visualization tells you.",
+          "date": "2026-03-11T00:00:00.000Z",
+          "author": {
+            "name": "Leon Acosta",
+            "avatar": "/authors/leon-profile.jpg",
+            "npub": "npub1gxdhmu9swqduwhr6zptjy4ya693zp3ql28nemy4hd97kuufyrqdqwe5zfk"
+          },
+          "featuredImage": "/images/guides/understanding-wot/featured.svg",
+          "previewImage": "/images/guides/understanding-wot/preview.svg",
+          "tags": [
+            "Web of Trust",
+            "Trust Graph",
+            "Concepts"
+          ],
+          "published": true,
+          "readingTime": "4 min read",
+          "locale": "en",
+          "translationKey": "understanding-wot",
+          "translations": {
+            "en": "understanding-wot",
+            "es": "entendiendo-web-of-trust",
+            "pt": "entendendo-web-of-trust"
+          },
+          "availableLocales": [
+            "en",
+            "es",
+            "pt"
+          ],
+          "seoTitle": "Understanding Web of Trust — Nostr WoT Extension",
+          "seoDescription": "Learn how the Nostr WoT Extension builds your trust graph, what hops and trust levels mean, and how trust scores help you decide who to trust on Nostr.",
+          "ogImage": "/images/guides/understanding-wot/og.svg",
+          "difficulty": "beginner",
+          "order": 3,
+          "content": "\nThe Web of Trust is the core concept behind the extension. Instead of relying on a central authority to tell you who is trustworthy, you build a trust network from the people you already follow. This guide explains how that network works and what the extension shows you.\n\n## What the Trust Graph Shows\n\nWhen you open the extension, your trust graph is a visual map of your social connections on Nostr. At the center is you. Radiating outward are the people you follow, the people they follow, and so on. Each node is a Nostr identity, and each connection is a follow relationship.\n\n{/* TODO: Screenshot of the trust graph visualization with labeled elements */}\n\nThe graph answers a simple question: how connected is this person to you? Someone deeply embedded in your social network is probably more trustworthy than a brand-new account with no connections to anyone you know.\n\n## Hops Explained\n\nHops measure the shortest path between you and another Nostr user through follow relationships.\n\n### 1st Degree (1 Hop)\n\nThese are the people you follow directly. They are your immediate trust circle. The extension assigns the highest trust to these connections because you explicitly chose to follow them.\n\n### 2nd Degree (2 Hops)\n\nThese are people followed by the people you follow. You may not know them personally, but someone you trust has chosen to follow them. This is a strong signal — your friends vouch for them by following them.\n\n### 3rd Degree (3 Hops)\n\nThree steps away from you. The connection is weaker but still present. These users are followed by someone who is followed by someone you follow. At this distance, trust is lower but still meaningful — especially if multiple paths connect you.\n\n{/* TODO: Diagram showing 1st, 2nd, and 3rd degree connections radiating from a central user node */}\n\n<Callout type=\"tip\">\nThe more independent paths that connect you to someone, the higher their trust score. A person reached through five different 2nd-degree connections is more trusted than someone reached through a single 2nd-degree connection.\n</Callout>\n\n## How Trust Scores Work\n\nEvery Nostr user visible in your trust graph receives a trust score. This score is not an absolute measure of a person's character — it is a measure of how connected they are to your specific network.\n\nThe score depends on several factors:\n\n- **Hop distance** — closer connections score higher.\n- **Path count** — more paths between you and the user mean a higher score.\n- **Network position** — users followed by many of your direct contacts score higher than those connected through a single chain.\n\nThe extension normalizes these factors into a score that helps you make quick decisions. When you encounter an unknown profile on a Nostr client, the extension can tell you whether that person is in your trust graph and how strong the connection is.\n\n### Score Ranges\n\nWhile the exact thresholds are configurable, a typical setup works like this:\n\n- **High trust** — 1st-degree contacts and well-connected 2nd-degree users.\n- **Medium trust** — 2nd-degree contacts with fewer paths and some 3rd-degree users with multiple connections.\n- **Low trust** — 3rd-degree contacts with thin connections.\n- **Unknown** — users with no path to you in the trust graph.\n\n{/* TODO: Screenshot of the extension popup showing trust scores for different profiles */}\n\n## Trust Is Personal\n\nYour Web of Trust is unique to you. Two people will have completely different trust graphs because they follow different people. There is no global trust score — your graph reflects your social reality on Nostr, not some centralized reputation system. Decentralized trust means no single entity decides who is trustworthy. You and your network do.\n\n## What's Next?\n\nReady to fine-tune how the extension calculates trust? Head to [Customizing Your Trust Settings](/guides/customizing-trust). Or explore the trust graph visually in the [WoT Playground](/guides/wot-playground).\n"
+        },
+        {
+          "slug": "customizing-trust",
+          "title": "Customizing Your Trust Settings",
+          "description": "Adjust the trust formula, weights, and thresholds in the Nostr WoT Extension to match how you want to evaluate and score connections in your Web of Trust.",
+          "excerpt": "Fine-tune how the extension calculates trust. Adjust weights, thresholds, and strategies to match your preferences.",
+          "date": "2026-03-11T00:00:00.000Z",
+          "author": {
+            "name": "Leon Acosta",
+            "avatar": "/authors/leon-profile.jpg",
+            "npub": "npub1gxdhmu9swqduwhr6zptjy4ya693zp3ql28nemy4hd97kuufyrqdqwe5zfk"
+          },
+          "featuredImage": "/images/guides/customizing-trust/featured.svg",
+          "previewImage": "/images/guides/customizing-trust/preview.svg",
+          "tags": [
+            "Trust Settings",
+            "Formula",
+            "Advanced"
+          ],
+          "published": true,
+          "readingTime": "4 min read",
+          "locale": "en",
+          "translationKey": "customizing-trust",
+          "translations": {
+            "en": "customizing-trust",
+            "es": "personalizar-confianza",
+            "pt": "personalizar-confianca"
+          },
+          "availableLocales": [
+            "en",
+            "es",
+            "pt"
+          ],
+          "seoTitle": "Customizing Trust Settings — Nostr WoT Extension Guide",
+          "seoDescription": "Adjust the trust formula, weights, and thresholds in the Nostr WoT Extension to match how you want to evaluate and score connections in your Web of Trust.",
+          "ogImage": "/images/guides/customizing-trust/og.svg",
+          "difficulty": "intermediate",
+          "order": 4,
+          "content": "\nThe default trust settings work well for most people, but the extension gives you full control over how trust is calculated. This guide walks you through the trust formula, how to adjust weights and thresholds, and when different strategies make sense.\n\n## The Trust Formula\n\nAt its core, the extension assigns each user a trust score based on their relationship to you in the social graph. The formula considers three primary inputs:\n\n- **Hop distance** — how many follow-connections separate you from the user.\n- **Path multiplicity** — how many independent paths connect you.\n- **Decay factor** — how much trust decreases with each additional hop.\n\nThe formula multiplies the base trust by a decay factor raised to the power of the hop count, then adjusts upward based on the number of independent paths. The result is a normalized score between 0 and 1.\n\n{/* TODO: Screenshot of the trust formula settings panel */}\n\n<Callout type=\"tip\">\nYou do not need to understand the math to use the extension effectively. The defaults are tuned for a balanced trust network. Only adjust these if you have a specific reason.\n</Callout>\n\n## Adjusting Weights\n\nOpen the extension settings and navigate to **Trust Settings** to find the adjustable parameters.\n\n### Hop Decay\n\nThis controls how quickly trust drops off with distance. A higher decay value means trust falls sharply after the first hop. A lower value extends meaningful trust further into the graph.\n\n- **High decay (0.7-0.9)** — only your direct follows and close 2nd-degree contacts receive significant trust. Good if you want a tight, conservative trust circle.\n- **Medium decay (0.4-0.6)** — balanced approach. 2nd-degree contacts are well-represented, and some 3rd-degree users score meaningfully.\n- **Low decay (0.1-0.3)** — trust extends broadly. Even distant connections carry weight. Useful if you want a wide-open, discovery-friendly network.\n\n{/* TODO: Screenshot showing the hop decay slider with different positions */}\n\n### Path Weight\n\nThis determines how much extra credit a user gets for having multiple independent paths to you. A user followed by three of your direct contacts should score higher than one followed by a single contact.\n\n- **High path weight** — heavily rewards well-connected users. Someone followed by many of your contacts is almost as trusted as a direct follow.\n- **Low path weight** — paths matter less. Trust depends primarily on distance.\n\n### Maximum Hops\n\nSet the maximum depth the extension traverses. The default is 3 hops, which balances coverage with performance. You can increase this to 4 or 5 if you want broader visibility, but expect slower calculations and a larger graph.\n\n## Different Trust Strategies\n\nDepending on how you use Nostr, different settings make sense.\n\n### Conservative Strategy\n\nYou want to trust a small circle and be skeptical of everyone else.\n\n- Set hop decay high (0.7+).\n- Set maximum hops to 2.\n- Keep path weight moderate.\n\nThis is ideal if you use Nostr primarily to interact with people you already know and want strong spam filtering.\n\n### Balanced Strategy\n\nThe default. You trust your direct follows, give reasonable trust to friends-of-friends, and maintain some visibility into 3rd-degree connections.\n\n- Hop decay around 0.5.\n- Maximum hops at 3.\n- Moderate path weight.\n\nThis works for most people and is the recommended starting point.\n\n### Discovery Strategy\n\nYou want to explore the broader Nostr network and discover new people.\n\n- Set hop decay low (0.2-0.3).\n- Increase maximum hops to 4.\n- Set path weight high to still prioritize well-connected users.\n\nThis gives you a wider view but may include more noise.\n\n{/* TODO: Video walkthrough of changing trust strategy from conservative to discovery */}\n\n<Callout type=\"tip\">\nChanges to trust settings recalculate your entire graph. Give the extension a moment to reprocess after adjusting values. If you want to start over, use the **Reset to Defaults** button at the bottom of the Trust Settings panel.\n</Callout>\n\n## What's Next?\n\nSee your customized trust settings in action by exploring the [WoT Playground](/guides/wot-playground). Or continue setting up the extension by [connecting a wallet](/guides/setting-up-wallet).\n"
+        },
+        {
+          "slug": "setting-up-wallet",
+          "title": "Setting Up Your Wallet",
+          "description": "Connect a Lightning wallet to the Nostr WoT Extension. Choose Quick Setup for instant access, NWC for your existing wallet, or LNbits for full control.",
+          "excerpt": "The extension supports three wallet options: Quick Setup, Nostr Wallet Connect, and LNbits. Pick the one that fits your needs.",
+          "date": "2026-03-11T00:00:00.000Z",
+          "author": {
+            "name": "Leon Acosta",
+            "avatar": "/authors/leon-profile.jpg",
+            "npub": "npub1gxdhmu9swqduwhr6zptjy4ya693zp3ql28nemy4hd97kuufyrqdqwe5zfk"
+          },
+          "featuredImage": "/images/guides/setting-up-wallet/featured.svg",
+          "previewImage": "/images/guides/setting-up-wallet/preview.svg",
+          "tags": [
+            "Lightning",
+            "Wallet",
+            "NWC"
+          ],
+          "published": true,
+          "readingTime": "4 min read",
+          "locale": "en",
+          "translationKey": "setting-up-wallet",
+          "translations": {
+            "en": "setting-up-wallet",
+            "es": "configurar-billetera",
+            "pt": "configurar-carteira"
+          },
+          "availableLocales": [
+            "en",
+            "es",
+            "pt"
+          ],
+          "seoTitle": "Setting Up Your Wallet — Nostr WoT Extension Guide",
+          "seoDescription": "Connect a Lightning wallet to the Nostr WoT Extension. Choose Quick Setup for instant access, NWC for your existing wallet, or LNbits for full control.",
+          "ogImage": "/images/guides/setting-up-wallet/og.svg",
+          "difficulty": "beginner",
+          "order": 5,
+          "content": "\nThe extension includes a built-in Lightning wallet so you can send and receive sats without leaving your browser. This guide covers all three connection methods: Quick Setup for getting started instantly, NWC for connecting your existing wallet, and LNbits for self-hosted setups.\n\n## Accessing Wallet Setup\n\n1. Click the extension icon in your toolbar.\n2. Navigate to the **Wallet** tab.\n3. If no wallet is connected, you will see the setup screen with three options.\n\n{/* TODO: Screenshot of the wallet setup screen showing the three connection options */}\n\n## Quick Setup\n\nThis is the fastest way to get a working wallet. One click and you are ready to zap.\n\n1. Click **Quick Setup** on the wallet configuration screen.\n2. The extension creates a custodial wallet linked to your Nostr identity. No registration, no forms, no extra accounts.\n3. Your wallet is ready. You will see your balance (starting at zero) and options to deposit and send.\n\n{/* TODO: Screenshot of the Quick Setup button and the resulting wallet view */}\n\n<Callout type=\"tip\">\nQuick Setup creates a custodial wallet, meaning the funds are held by the provider. This is convenient for small amounts and casual zapping. For larger amounts, consider NWC or LNbits for self-custodial control.\n</Callout>\n\n### Depositing Sats\n\nAfter Quick Setup, tap **Deposit** to get a Lightning invoice or QR code. Send sats from any Lightning wallet and your balance updates within seconds.\n\n## Nostr Wallet Connect (NWC)\n\nIf you already have a Lightning wallet that supports NWC — such as Alby, Mutiny, or any NWC-compatible provider — you can connect it to the extension.\n\n1. In your wallet provider, generate an NWC connection string. This is usually found in the wallet's settings under \"Nostr Wallet Connect\" or \"Connections.\"\n2. Copy the connection string. It starts with `nostr+walletconnect://`.\n3. In the extension, click **NWC** on the wallet setup screen.\n4. Paste the connection string and click **Connect**.\n5. The extension verifies the connection and displays your balance.\n\n{/* TODO: Screenshot of the NWC connection string input field */}\n\nWith NWC, your funds stay in your existing wallet. The extension simply sends payment requests to it. You keep full control over your sats.\n\nAny wallet that implements the NWC protocol works, including Alby, Mutiny, and others. The protocol is open and the list of compatible wallets keeps growing.\n\n## LNbits\n\nFor those running their own Lightning infrastructure, the extension connects directly to an LNbits instance.\n\n1. Click **LNbits** on the wallet setup screen.\n2. Enter your LNbits instance URL (e.g., `https://your-lnbits-instance.com`).\n3. Enter your wallet admin key or invoice/read key depending on the level of access you want.\n4. Click **Connect**.\n\n{/* TODO: Screenshot of the LNbits configuration fields */}\n\n<Callout type=\"tip\">\nUse an invoice/read key if you only want to receive and check balance. Use the admin key if you also want to send payments from the extension. Limit permissions to what you actually need.\n</Callout>\n\n## Checking Your Balance\n\nOnce connected, your wallet balance appears at the top of the Wallet tab. It updates automatically. You can also see:\n\n- **Recent transactions** — a scrollable history of sends and receives.\n- **Deposit** — generate an invoice to receive sats.\n- **Send** — paste a Lightning invoice to pay it.\n\n{/* TODO: Screenshot of the wallet balance view with transaction history */}\n\n## Switching Wallet Providers\n\nYou can change your wallet connection at any time. Go to the Wallet tab, open **Settings**, and click **Change Provider**. This disconnects the current wallet and returns you to the setup screen. Your identity and trust settings are not affected.\n\n## What's Next?\n\nWith your wallet connected, learn how to [zap and set up auto-approve thresholds](/guides/zapping-auto-approve). You can also [claim your Lightning Address](/guides/lightning-address) if you used Quick Setup.\n"
+        },
+        {
+          "slug": "zapping-auto-approve",
+          "title": "Zapping and Auto-Approve",
+          "description": "Learn how the Nostr WoT Extension acts as a WebLN provider for zapping, and how to configure auto-approve thresholds for frictionless micropayments.",
+          "excerpt": "Zap notes without switching apps. Learn how WebLN works in the extension and how auto-approve makes small zaps instant.",
+          "date": "2026-03-11T00:00:00.000Z",
+          "author": {
+            "name": "Leon Acosta",
+            "avatar": "/authors/leon-profile.jpg",
+            "npub": "npub1gxdhmu9swqduwhr6zptjy4ya693zp3ql28nemy4hd97kuufyrqdqwe5zfk"
+          },
+          "featuredImage": "/images/guides/zapping-auto-approve/featured.svg",
+          "previewImage": "/images/guides/zapping-auto-approve/preview.svg",
+          "tags": [
+            "Zaps",
+            "Lightning",
+            "WebLN"
+          ],
+          "published": true,
+          "readingTime": "4 min read",
+          "locale": "en",
+          "translationKey": "zapping-auto-approve",
+          "translations": {
+            "en": "zapping-auto-approve",
+            "es": "zaps-y-auto-aprobacion",
+            "pt": "zaps-e-aprovacao-automatica"
+          },
+          "availableLocales": [
+            "en",
+            "es",
+            "pt"
+          ],
+          "seoTitle": "Zapping and Auto-Approve — Nostr WoT Extension Guide",
+          "seoDescription": "Learn how the Nostr WoT Extension acts as a WebLN provider for zapping, and how to configure auto-approve thresholds for frictionless micropayments.",
+          "ogImage": "/images/guides/zapping-auto-approve/og.svg",
+          "difficulty": "beginner",
+          "order": 6,
+          "content": "\nZapping is one of the best parts of Nostr — you see a great note, you send some sats, the person gets rewarded. The extension makes this seamless by acting as a WebLN provider, and auto-approve takes it a step further by removing the confirmation step for small amounts.\n\n## What Is WebLN?\n\nWebLN is a standard that lets websites request Lightning payments through a browser extension. When a Nostr client wants to send a zap, it calls `window.webln.sendPayment()` and the extension handles the rest.\n\nYou do not need to configure anything for WebLN to work. Once your wallet is connected, the extension automatically registers itself as the WebLN provider for any site you visit.\n\n{/* TODO: Screenshot of a Nostr client's zap button with the extension popup showing the payment request */}\n\n## How Zapping Works\n\nHere is the flow when you zap a note on a Nostr client:\n\n1. You click the zap button on a note and choose an amount.\n2. The Nostr client creates a Lightning invoice and sends it to the extension via WebLN.\n3. The extension shows you a confirmation popup with the amount, recipient, and the note being zapped.\n4. You click **Approve**, the extension pays the invoice from your connected wallet.\n5. The zap event is published to Nostr, and the recipient sees it.\n\nThe entire process happens within your browser. No switching to a separate wallet app, no copying invoices.\n\n{/* TODO: Screenshot of the zap confirmation popup showing amount and recipient details */}\n\n<Callout type=\"tip\">\nIf you see \"No WebLN provider found\" on a Nostr client, make sure the extension is unlocked and a wallet is connected. Some clients may need a page refresh to detect the provider.\n</Callout>\n\n## Setting Up Auto-Approve\n\nFor frequent zappers, confirming every 21-sat zap gets tedious. Auto-approve lets you set a threshold — any zap at or below that amount goes through instantly without a popup.\n\n### Configuring the Threshold\n\n1. Click the extension icon and go to the **Wallet** tab.\n2. Open **Settings**.\n3. Find the **Auto-Approve Threshold** field.\n4. Enter your preferred amount in sats. For example, `100` means any zap of 100 sats or less is approved automatically.\n5. Save. The setting takes effect immediately.\n\n{/* TODO: Screenshot of the auto-approve threshold setting */}\n\n### How It Works\n\nWhen a site requests a payment via WebLN:\n\n- If the amount is at or below your threshold, the extension pays it silently. No popup, no interruption.\n- If the amount is above your threshold, you see the normal confirmation popup.\n- If auto-approve is set to `0`, every payment requires manual approval.\n\nThis means you can scroll through your feed, zap notes freely with small amounts, and never break your flow. Larger payments still require your explicit approval for safety.\n\n### Per-Site Behavior\n\nAuto-approve respects the extension's [site permissions](/guides/site-permissions). If a site does not have WebLN permission, auto-approve does not apply — the site cannot request payments at all.\n\n## Monitoring Your Zaps\n\nEvery zap, whether auto-approved or manually confirmed, appears in your transaction history on the Wallet tab. You can review what was sent, to whom, and when.\n\n{/* TODO: Screenshot of the transaction history showing several zap entries */}\n\nIf you notice unexpected auto-approved payments, lower your threshold or revoke the site's WebLN permission.\n\n## Recommended Thresholds\n\n- **21 sats** — the classic Nostr micro-zap. Conservative and safe.\n- **100 sats** — covers most casual zapping.\n- **500 sats** — for power users who zap frequently.\n- **0 sats** — disables auto-approve entirely.\n\n<Callout type=\"tip\">\nStart with a lower threshold and increase it once you are comfortable with the flow. You can always change it from the wallet settings.\n</Callout>\n\n## What's Next?\n\nIf you set up your wallet with Quick Setup, you can [claim your own Lightning Address](/guides/lightning-address). To control which sites can request payments, read about [site permissions](/guides/site-permissions).\n"
+        },
+        {
+          "slug": "lightning-address",
+          "title": "Claiming Your Lightning Address",
+          "description": "Claim a Lightning Address like yourname@zaps.nostr-wot.com through the Nostr WoT Extension and start receiving zaps to a memorable, human-readable address.",
+          "excerpt": "Get a Lightning Address like yourname@zaps.nostr-wot.com. Claim it in seconds and add it to your Nostr profile.",
+          "date": "2026-03-11T00:00:00.000Z",
+          "author": {
+            "name": "Leon Acosta",
+            "avatar": "/authors/leon-profile.jpg",
+            "npub": "npub1gxdhmu9swqduwhr6zptjy4ya693zp3ql28nemy4hd97kuufyrqdqwe5zfk"
+          },
+          "featuredImage": "/images/guides/lightning-address/featured.svg",
+          "previewImage": "/images/guides/lightning-address/preview.svg",
+          "tags": [
+            "Lightning Address",
+            "Zaps",
+            "Identity"
+          ],
+          "published": true,
+          "readingTime": "4 min read",
+          "locale": "en",
+          "translationKey": "lightning-address",
+          "translations": {
+            "en": "lightning-address",
+            "es": "direccion-lightning",
+            "pt": "endereco-lightning"
+          },
+          "availableLocales": [
+            "en",
+            "es",
+            "pt"
+          ],
+          "seoTitle": "Claim Your Lightning Address — Nostr WoT Extension",
+          "seoDescription": "Claim a Lightning Address like yourname@zaps.nostr-wot.com through the Nostr WoT Extension and start receiving zaps to a memorable, human-readable address.",
+          "ogImage": "/images/guides/lightning-address/og.svg",
+          "difficulty": "beginner",
+          "order": 7,
+          "content": "\nA Lightning Address is a human-readable identifier — like an email address — that anyone can use to send you sats. Instead of generating invoices manually, you give people your address and they zap you directly. The extension lets you claim one for free when you use Quick Setup.\n\n## What Is a Lightning Address?\n\nA Lightning Address looks like `yourname@zaps.nostr-wot.com`. Under the hood, it resolves to a Lightning invoice endpoint. When someone sends sats to your address, the system generates a fresh invoice and routes the payment to your wallet. The sender does not need to know anything about your wallet setup.\n\nThink of it as a permanent, memorable way for people to pay you with Bitcoin over Lightning.\n\n{/* TODO: Diagram showing how a Lightning Address resolves to a payment */}\n\n## Claiming Your Address\n\nYou need to have a wallet connected via Quick Setup to claim a Lightning Address. If you used NWC or LNbits, your address is managed by your own infrastructure.\n\n1. Open the extension and go to the **Wallet** tab.\n2. Click **Settings** or look for the **Lightning Address** section.\n3. Enter the username you want. It will become `yourname@zaps.nostr-wot.com`.\n4. Click **Claim**.\n5. If the name is available, it is yours immediately.\n\n{/* TODO: Screenshot of the Lightning Address claim form with a username being entered */}\n\n<Callout type=\"tip\">\nUsernames must be 3-30 characters long and can include lowercase letters, numbers, dots, and hyphens. They are first come, first served, so claim yours early.\n</Callout>\n\n## Adding to Your Nostr Profile\n\nAfter claiming your address, you want it visible on your Nostr profile so people know where to zap you.\n\n### Automatic Method\n\nThe extension offers to add your Lightning Address to your Nostr profile automatically right after you claim it. Click **Yes, update my profile** and the extension signs and publishes an updated kind 0 event with your new address.\n\n{/* TODO: Screenshot of the prompt to add the Lightning Address to the Nostr profile */}\n\n### Manual Method\n\nIf you prefer to do it yourself:\n\n1. Go to the **Identity** tab in the extension.\n2. Click **Edit Profile**.\n3. Find the **Lightning Address** field (sometimes labeled `lud16`).\n4. Enter your full address: `yourname@zaps.nostr-wot.com`.\n5. Click **Save**.\n\nEither way, Nostr clients will display a zap button on your profile that uses this address.\n\n## Receiving Zaps\n\nOnce your Lightning Address is set and published to your profile:\n\n- Anyone viewing your profile on Primal, Snort, Coracle, or other Nostr clients will see a zap option.\n- They click zap, choose an amount, and the payment routes to your wallet.\n- You see the incoming sats in your wallet balance and transaction history.\n\nNo invoices to generate, no QR codes to share. The address handles everything.\n\n{/* TODO: Screenshot of an incoming zap notification in the extension */}\n\n## Sharing Your Address\n\nBeyond your Nostr profile, you can share your Lightning Address in social media bios, on your website, or in email signatures. Anyone with a Lightning wallet can send sats to `yourname@zaps.nostr-wot.com` — they do not need to be on Nostr.\n\n## Changing Your Address\n\nIf you want a different username, open the Lightning Address settings in the extension and claim a new one. Your old address will stop working, so update your Nostr profile and any other places where you shared it.\n\n<Callout type=\"tip\">\nBefore changing your address, make sure no recurring services or integrations depend on the old one. The switch is instant and the old address is released.\n</Callout>\n\n## What's Next?\n\nNow that people can zap you, learn how to [control which sites can access your wallet](/guides/site-permissions). Or explore the [zapping and auto-approve features](/guides/zapping-auto-approve) to streamline your outgoing zaps.\n"
+        },
+        {
+          "slug": "site-permissions",
+          "title": "Site Permissions",
+          "description": "Control which websites can access your Nostr identity, request signatures, and make Lightning payments using the Nostr WoT Extension's permission system.",
+          "excerpt": "The extension gives you granular control over what each website can do. Learn how per-site permissions keep your keys and sats safe.",
+          "date": "2026-03-11T00:00:00.000Z",
+          "author": {
+            "name": "Leon Acosta",
+            "avatar": "/authors/leon-profile.jpg",
+            "npub": "npub1gxdhmu9swqduwhr6zptjy4ya693zp3ql28nemy4hd97kuufyrqdqwe5zfk"
+          },
+          "featuredImage": "/images/guides/site-permissions/featured.svg",
+          "previewImage": "/images/guides/site-permissions/preview.svg",
+          "tags": [
+            "Permissions",
+            "Security",
+            "Privacy"
+          ],
+          "published": true,
+          "readingTime": "4 min read",
+          "locale": "en",
+          "translationKey": "site-permissions",
+          "translations": {
+            "en": "site-permissions",
+            "es": "permisos-por-sitio",
+            "pt": "permissoes-por-site"
+          },
+          "availableLocales": [
+            "en",
+            "es",
+            "pt"
+          ],
+          "seoTitle": "Managing Site Permissions — Nostr WoT Extension",
+          "seoDescription": "Control which websites can access your Nostr identity, request signatures, and make Lightning payments using the Nostr WoT Extension's permission system.",
+          "ogImage": "/images/guides/site-permissions/og.svg",
+          "difficulty": "intermediate",
+          "order": 8,
+          "content": "\nEvery website that interacts with the extension needs your permission. The extension does not give blanket access to your keys or wallet — each site gets its own permission scope. This guide explains how to manage those permissions effectively.\n\n## How Permissions Work\n\nWhen a website tries to access the extension's NIP-07 signer or WebLN provider, the extension checks whether that site has permission. If it does not, you see a prompt asking you to approve or deny the request.\n\nEach permission decision is stored per-site. Approving signing on Primal does not automatically grant signing on Snort. You build up a whitelist of trusted sites, one at a time.\n\n{/* TODO: Screenshot of the permission request popup for a new site */}\n\n## Permission Types\n\nThe extension manages several distinct permissions for each site.\n\n### Read Public Key\n\nAllows the site to see your public key (npub). This is the most basic permission — the site can identify you but cannot do anything on your behalf.\n\n### Sign Events\n\nAllows the site to request event signatures through NIP-07. This means the site can ask you to sign notes, profile updates, reactions, and other Nostr events. You still see a confirmation prompt for each signing request unless you enable auto-approve for that site.\n\n### Encrypt and Decrypt\n\nAllows the site to request NIP-04 or NIP-44 encrypted direct messages. The site can ask the extension to encrypt a message to a specific recipient or decrypt an incoming message.\n\n### WebLN Payments\n\nAllows the site to request Lightning payments through the WebLN provider. When granted, the site can present invoices for you to pay — subject to your [auto-approve threshold](/guides/zapping-auto-approve).\n\n{/* TODO: Screenshot of the permissions panel showing all four permission types for a site */}\n\n<Callout type=\"tip\">\nYou can grant some permissions while denying others. For example, you might let a site read your public key and request signatures, but deny it WebLN access if you do not want it to prompt payments.\n</Callout>\n\n## Managing Site Permissions\n\n### Viewing Granted Permissions\n\n1. Open the extension and click **Settings**.\n2. Navigate to **Site Permissions** (or **Permissions**).\n3. You will see a list of all sites that have been granted any permission, along with what each site can do.\n\n{/* TODO: Screenshot of the site permissions list showing multiple sites with their granted permissions */}\n\n### Revoking Permissions\n\nIf you want to remove a site's access:\n\n1. Find the site in the permissions list.\n2. Click the site name to expand its details.\n3. Toggle off individual permissions or click **Revoke All** to remove all access.\n4. The change takes effect immediately. The site will need to request permission again on its next attempt.\n\n### Temporary vs. Permanent Permissions\n\nWhen you see a permission prompt, you typically have two options:\n\n- **Allow once** — grants the permission for this session only. When you close the tab or restart the browser, the site will need to ask again.\n- **Always allow** — permanently grants the permission for this site. It persists across sessions.\n\nUse \"Allow once\" for sites you do not visit regularly. Use \"Always allow\" for your daily-use Nostr clients.\n\n## Best Practices for Security\n\nOnly grant the permissions a site actually needs. A Nostr client needs signing access, but a read-only explorer only needs your public key. Review your permissions list periodically and revoke access for sites you no longer use.\n\nIf a site you have never heard of requests signing or payment permissions, deny it and investigate first. Legitimate Nostr clients are well-known.\n\n{/* TODO: Screenshot of a suspicious permission request with a \"Deny\" action highlighted */}\n\n<Callout type=\"tip\">\nIf a site behaves unexpectedly after granting permissions — like triggering payments you did not initiate — immediately revoke all its permissions and lower your auto-approve threshold.\n</Callout>\n\n### Secure Connections Only\n\nThe extension only exposes the NIP-07 and WebLN APIs on secure (HTTPS) connections. This prevents man-in-the-middle attacks from intercepting communication between the site and the extension.\n\n## What's Next?\n\nWith your permissions locked down, explore the [WoT Playground](/guides/wot-playground) to visualize your trust network. Or revisit [managing your identity](/guides/managing-identity) to review your key security practices.\n"
+        },
+        {
+          "slug": "wot-playground",
+          "title": "The WoT Playground",
+          "description": "Explore the Nostr WoT Playground to visualize your trust graph, filter connections by hop distance, and see how your Web of Trust connects you to the network.",
+          "excerpt": "The WoT Playground lets you explore your trust graph visually. Filter by hops, search for users, and understand your network at a glance.",
+          "date": "2026-03-11T00:00:00.000Z",
+          "author": {
+            "name": "Leon Acosta",
+            "avatar": "/authors/leon-profile.jpg",
+            "npub": "npub1gxdhmu9swqduwhr6zptjy4ya693zp3ql28nemy4hd97kuufyrqdqwe5zfk"
+          },
+          "featuredImage": "/images/guides/wot-playground/featured.svg",
+          "previewImage": "/images/guides/wot-playground/preview.svg",
+          "tags": [
+            "Playground",
+            "Visualization",
+            "Trust Graph"
+          ],
+          "published": true,
+          "readingTime": "4 min read",
+          "locale": "en",
+          "translationKey": "wot-playground",
+          "translations": {
+            "en": "wot-playground",
+            "es": "playground-wot",
+            "pt": "playground-wot"
+          },
+          "availableLocales": [
+            "en",
+            "es",
+            "pt"
+          ],
+          "seoTitle": "The WoT Playground — Nostr WoT Extension Guide",
+          "seoDescription": "Explore the Nostr WoT Playground to visualize your trust graph, filter connections by hop distance, and see how your Web of Trust connects you to the network.",
+          "ogImage": "/images/guides/wot-playground/og.svg",
+          "difficulty": "intermediate",
+          "order": 9,
+          "content": "\nThe WoT Playground is an interactive visualization of your entire trust network. It takes the abstract concept of a Web of Trust and makes it tangible — you can see exactly how you connect to any user on Nostr, explore clusters of trust, and discover patterns in your social graph.\n\n## Accessing the Playground\n\nThere are two ways to open the Playground:\n\n1. **From the extension** — click the extension icon and select **Playground** from the navigation menu.\n2. **From the website** — visit the [WoT Playground](/playground) page directly.\n\nThe Playground loads your trust graph data from the extension. If you are not signed in or the extension is locked, you will be prompted to unlock it first.\n\n{/* TODO: Screenshot of the Playground loading screen with the trust graph beginning to render */}\n\n## The Trust Graph Visualization\n\nThe main view is an interactive graph where nodes represent Nostr users and edges represent follow relationships.\n\n### Reading the Graph\n\n- **Your node** sits at the center, highlighted distinctly.\n- **1st-degree connections** (direct follows) appear closest to you, typically in a bright color.\n- **2nd-degree connections** form the next ring, in a slightly muted tone.\n- **3rd-degree connections** are at the outer edges, more faded.\n- **Edge lines** connect nodes to show follow relationships. Thicker or brighter lines may indicate stronger trust scores.\n\n{/* TODO: Screenshot of the full trust graph with color-coded hops */}\n\n<Callout type=\"tip\">\nClick and drag to pan around the graph. Use your scroll wheel or pinch gesture to zoom in and out. Click on any node to see details about that user.\n</Callout>\n\n### Node Details\n\nClick on any node to open a detail panel showing:\n\n- Profile information (name, avatar, npub).\n- Trust score relative to you.\n- Hop distance.\n- Number of paths connecting you.\n- Mutual follows — people you both follow.\n\nThis is useful for understanding why someone has a particular trust score and how they connect to your network.\n\n{/* TODO: Screenshot of the node detail panel for a 2nd-degree contact */}\n\n## Filtering and Searching\n\nThe Playground includes tools to narrow your view and find specific information.\n\n### Filtering by Hops\n\nUse the hop filter to show only connections at a specific distance:\n\n- **1 hop** — shows only your direct follows. Useful for reviewing your inner circle.\n- **2 hops** — adds friends-of-friends. This is where most of your day-to-day interactions happen.\n- **3 hops** — the full graph. Shows the outer boundary of your trust network.\n\nToggle these filters using the controls in the sidebar or toolbar.\n\n{/* TODO: Screenshot of the hop filter controls with 2-hop selected */}\n\n### Searching for Users\n\nType a name, npub, or NIP-05 identifier into the search bar. If the user is in your trust graph, the visualization highlights their node and shows the path between you.\n\nIf they are not in your graph, the search tells you so — which itself is useful information. An unknown user means they have no connection to your network within the configured hop distance.\n\n{/* TODO: Screenshot of the search bar with a result highlighting a specific node */}\n\n## Analyzing Your Network\n\nBeyond browsing, the Playground helps you understand the structure of your trust network.\n\n### Cluster Detection\n\nThe visualization often reveals clusters — groups of densely connected users. These typically correspond to communities. You might see a cluster of Bitcoin developers, another of artists, and another of local friends. The visual grouping helps you understand the different social circles that make up your Web of Trust.\n\n### Bridge Users\n\nSome nodes connect otherwise separate clusters. These bridge users span different communities in your network and often have high trust scores due to multiple independent paths. If your graph is small or sparse, consider following more people to strengthen your Web of Trust.\n\n{/* TODO: Video walkthrough of navigating the Playground, filtering, and inspecting nodes */}\n\n<Callout type=\"tip\">\nThe Playground is a read-only visualization. Nothing you do here changes your trust settings or follow list. Explore freely.\n</Callout>\n\n## What's Next?\n\nNow that you have explored your trust graph, you might want to [customize your trust settings](/guides/customizing-trust) based on what you discovered. Or head back to the [getting started guide](/guides/getting-started) to review the fundamentals.\n"
+        }
+      ],
+      "tags": [
+        "Advanced",
+        "Beginner",
+        "Concepts",
+        "Extension",
+        "Formula",
+        "Identity",
+        "Keys",
+        "Lightning",
+        "Lightning Address",
+        "NIP-07",
+        "NWC",
+        "Permissions",
+        "Playground",
+        "Privacy",
+        "Security",
+        "Setup",
+        "Trust Graph",
+        "Trust Settings",
+        "Visualization",
+        "Wallet",
+        "Web of Trust",
+        "WebLN",
+        "Zaps"
+      ]
+    },
+    "es": {
+      "posts": [
+        {
+          "slug": "primeros-pasos",
+          "title": "Primeros Pasos con Nostr WoT",
+          "description": "Instala la extension Nostr WoT en Chrome, Brave, Edge, Opera o Firefox. Configura tu identidad Nostr y empieza a construir tu Web of Trust en minutos.",
+          "excerpt": "Todo lo que necesitas para instalar la extension Nostr WoT y poner en marcha tu primera red de confianza.",
+          "date": "2026-03-11T00:00:00.000Z",
+          "author": {
+            "name": "Leon Acosta",
+            "avatar": "/authors/leon-profile.jpg",
+            "npub": "npub1gxdhmu9swqduwhr6zptjy4ya693zp3ql28nemy4hd97kuufyrqdqwe5zfk"
+          },
+          "featuredImage": "/images/guides/getting-started/featured.svg",
+          "previewImage": "/images/guides/getting-started/preview.svg",
+          "tags": [
+            "Extension",
+            "Configuracion",
+            "Principiante"
+          ],
+          "published": true,
+          "readingTime": "4 min read",
+          "locale": "es",
+          "translationKey": "getting-started",
+          "translations": {
+            "en": "getting-started",
+            "es": "primeros-pasos",
+            "pt": "primeiros-passos"
+          },
+          "availableLocales": [
+            "en",
+            "es",
+            "pt"
+          ],
+          "seoTitle": "Instalar y Configurar la Extension Nostr WoT — Guia",
+          "seoDescription": "Instala la extension Nostr WoT en Chrome, Brave, Edge, Opera o Firefox. Configura tu identidad Nostr y empieza a construir tu Web of Trust en minutos.",
+          "ogImage": "/images/guides/getting-started/og.svg",
+          "difficulty": "beginner",
+          "order": 1,
+          "content": "\nEsta guia te lleva paso a paso por la instalacion de la Extension Nostr WoT, la configuracion de tu identidad y la puesta en marcha de tu red de confianza. Todo el proceso toma unos dos minutos.\n\n## Instalar la Extension\n\nLa extension es compatible con todos los navegadores principales basados en Chromium y tambien con Firefox. Elige tu navegador y sigue los pasos.\n\n### Chrome, Brave, Edge y Opera\n\n1. Visita la [pagina de descarga](/download) y haz clic en el enlace de la Chrome Web Store.\n2. Haz clic en **Agregar a Chrome** (o el boton equivalente en tu navegador).\n3. Confirma la instalacion cuando se te solicite.\n4. Fija la extension a tu barra de herramientas para acceder facilmente — haz clic en el icono de puzzle de tu navegador y activa el pin junto a Nostr WoT.\n\n{/* TODO: Captura de pantalla de la Chrome Web Store con el boton Agregar a Chrome resaltado */}\n\n### Firefox\n\n1. Visita la [pagina de descarga](/download) y haz clic en el enlace de Firefox Add-ons.\n2. Haz clic en **Agregar a Firefox** y confirma el aviso de permisos.\n3. Fija la extension a tu barra de herramientas haciendo clic derecho en el icono y seleccionando **Fijar en la Barra de Herramientas**.\n\n{/* TODO: Captura de pantalla de la pagina de Firefox Add-ons para Nostr WoT */}\n\n<Callout type=\"tip\">\nDespues de la instalacion, el icono de la extension aparecera en tu barra de herramientas. Un icono gris significa que aun no has iniciado sesion. Se vuelve morado cuando tu identidad esta activa.\n</Callout>\n\n## Configuracion Inicial\n\nCuando abras la extension por primera vez, el asistente de configuracion te guia por lo esencial. Se te pedira crear una nueva identidad Nostr o importar una existente. No es necesario registrarte en ningun servicio de terceros.\n\n{/* TODO: Captura de pantalla de la pantalla de bienvenida del asistente de configuracion */}\n\n## Crear una Clave Nostr Nueva\n\nSi eres nuevo en Nostr, selecciona **Crear Claves Nuevas**. La extension genera una clave privada (nsec) y una clave publica (npub) por ti.\n\n1. Haz clic en **Crear Claves Nuevas** en el asistente de configuracion.\n2. Guarda el respaldo de tu clave privada. Anotala o guardala en un gestor de contrasenas. Si pierdes esta clave, no hay forma de recuperar tu cuenta.\n3. Establece una contrasena local para cifrar tus claves dentro de la extension. Esta contrasena nunca se envia a ningun lado.\n4. Opcionalmente completa los datos de tu perfil — nombre, biografia y avatar.\n\n{/* TODO: Captura de pantalla de la pantalla de creacion de claves con el aviso de respaldo */}\n\n<Callout type=\"tip\">\nTu clave privada es la contrasena maestra de tu identidad Nostr. Nunca la compartas, la pegues en un sitio web ni la guardes en texto plano. La extension la cifra localmente para que los sitios nunca la vean directamente.\n</Callout>\n\n## Importar una Clave Existente\n\nSi ya tienes una identidad Nostr, selecciona **Importar Clave Existente** y pega tu nsec o usa una extension firmante compatible con NIP-07.\n\n1. Haz clic en **Importar Clave Existente**.\n2. Pega tu clave privada nsec o conecta un firmante de hardware.\n3. Establece una contrasena de cifrado local.\n4. La extension obtiene tu perfil de los relays de Nostr automaticamente.\n\n{/* TODO: Captura de pantalla de la pantalla de importacion de claves */}\n\n## Verificar tu Configuracion\n\nUna vez que tu identidad este activa, haz clic en el icono de la extension. Deberias ver los datos de tu perfil, tu npub y un grafo de confianza inicial que comienza a construirse a partir de tu lista de seguidos. La extension obtiene tus contactos de los relays y empieza a mapear tu Web of Trust.\n\nDale uno o dos minutos para la sincronizacion inicial. Despues de eso, tu red de confianza se actualiza en segundo plano mientras navegas.\n\n{/* TODO: Video del proceso de instalacion */}\n\n## Que Sigue?\n\nAhora que la extension esta instalada, aprende a [gestionar tu identidad](/guides/gestion-de-identidad) y entiende como funciona la [Web of Trust](/guides/entendiendo-web-of-trust).\n"
+        },
+        {
+          "slug": "gestion-de-identidad",
+          "title": "Gestion de Identidad Nostr",
+          "description": "Aprende a gestionar tu identidad Nostr con la extension WoT. Claves, perfiles, NIP-07 y las mejores practicas de seguridad para tus claves privadas.",
+          "excerpt": "Tu identidad en Nostr es tu clave. Aprende a gestionarla, protegerla y usarla correctamente con la extension WoT.",
+          "date": "2026-03-11T00:00:00.000Z",
+          "author": {
+            "name": "Leon Acosta",
+            "avatar": "/authors/leon-profile.jpg",
+            "npub": "npub1gxdhmu9swqduwhr6zptjy4ya693zp3ql28nemy4hd97kuufyrqdqwe5zfk"
+          },
+          "featuredImage": "/images/guides/managing-identity/featured.svg",
+          "previewImage": "/images/guides/managing-identity/preview.svg",
+          "tags": [
+            "Identidad",
+            "Claves",
+            "NIP-07"
+          ],
+          "published": true,
+          "readingTime": "4 min read",
+          "locale": "es",
+          "translationKey": "managing-identity",
+          "translations": {
+            "en": "managing-identity",
+            "es": "gestion-de-identidad",
+            "pt": "gerenciar-identidade"
+          },
+          "availableLocales": [
+            "en",
+            "es",
+            "pt"
+          ],
+          "seoTitle": "Gestion de Identidad Nostr — Claves y Perfiles",
+          "seoDescription": "Aprende a gestionar tu identidad Nostr con la extension WoT. Claves, perfiles, NIP-07 y las mejores practicas de seguridad para tus claves privadas.",
+          "ogImage": "/images/guides/managing-identity/og.svg",
+          "difficulty": "beginner",
+          "order": 2,
+          "content": "\nEn Nostr, no tienes una cuenta en un servidor. Tu identidad es un par de claves criptograficas: una clave publica (npub) que te identifica y una clave privada (nsec) que te permite firmar eventos. La extension Nostr WoT se encarga de gestionar estas claves de forma segura para que no tengas que preocuparte por los detalles tecnicos.\n\n## Que es NIP-07?\n\nNIP-07 es un estandar de Nostr que define como las aplicaciones web pueden solicitar a una extension del navegador que firme eventos. En lugar de pegar tu clave privada en cada aplicacion que usas, la extension actua como intermediario seguro.\n\nCuando un cliente Nostr como Primal, Snort o Coracle necesita firmar algo — una nota, una reaccion, un zap — le pide a la extension que lo haga. Tu clave privada nunca sale de la extension.\n\n<Callout type=\"tip\">\nNIP-07 es el equivalente a usar una llave de seguridad para tu banco. Los sitios web solicitan una firma, y la extension decide si otorgarla. Tu clave privada permanece protegida en todo momento.\n</Callout>\n\n## Tu Perfil Nostr\n\nTu perfil es un evento de Nostr firmado con tu clave. Incluye datos como tu nombre, biografia, avatar y Lightning Address. Desde la extension puedes ver y editar estos campos.\n\n### Ver tu Perfil\n\n1. Haz clic en el icono de la extension.\n2. En la pestana principal veras tu nombre, avatar y npub.\n3. Haz clic en tu perfil para ver los detalles completos.\n\n{/* TODO: Captura de pantalla del popup de la extension mostrando el perfil */}\n\n### Editar tu Perfil\n\n1. Abre la extension y navega a la seccion de perfil.\n2. Modifica los campos que necesites — nombre, biografia, avatar, Lightning Address.\n3. Haz clic en **Guardar**. La extension firma el evento actualizado y lo publica en tus relays.\n\nLos cambios se propagan a los relays en segundos. Cualquier cliente Nostr que consulte tu perfil vera la version actualizada.\n\n{/* TODO: Captura de pantalla de la pantalla de edicion de perfil */}\n\n## Seguridad de tus Claves\n\nLa clave privada es el activo mas importante de tu identidad Nostr. Perderla significa perder el acceso permanente a tu cuenta. Que alguien la obtenga significa que puede hacerse pasar por ti.\n\n### Mejores Practicas\n\n- **Nunca compartas tu nsec.** Ni en mensajes directos, ni en formularios, ni en capturas de pantalla.\n- **Guarda un respaldo fisico.** Escribe tu nsec en papel y guardalo en un lugar seguro, o usa un gestor de contrasenas confiable.\n- **Usa la contrasena local de la extension.** Cifra tus claves para que, incluso si alguien accede a tu navegador, no pueda extraerlas sin la contrasena.\n- **No reutilices claves.** Si sospechas que tu clave fue comprometida, genera una nueva y publica un evento de migracion.\n\n<Callout type=\"tip\">\nLa extension cifra tu clave privada con AES-256-GCM usando tu contrasena local. Los datos cifrados se almacenan en el almacenamiento seguro del navegador, no en texto plano.\n</Callout>\n\n## Multiples Cuentas\n\nLa extension permite gestionar mas de una identidad Nostr. Esto es util si mantienes cuentas separadas para distintos propositos — una personal y una profesional, por ejemplo.\n\n1. Abre la configuracion de la extension.\n2. Ve a la seccion de cuentas.\n3. Haz clic en **Agregar Cuenta** y sigue el proceso de creacion o importacion.\n4. Cambia entre cuentas desde el menu desplegable en el popup principal.\n\nCada cuenta tiene su propio grafo de confianza, permisos y configuracion de wallet.\n\n{/* TODO: Video del proceso de cambio entre cuentas */}\n\n## Exportar tus Claves\n\nSi necesitas migrar a otra extension o hacer un respaldo, puedes exportar tu clave privada.\n\n1. Abre la configuracion de la extension.\n2. Ingresa tu contrasena local para desbloquear la clave.\n3. Copia tu nsec y guardalo en un lugar seguro.\n\nRecuerda: una vez copiada, esa clave te da control total sobre tu identidad. Tratala con el mismo cuidado que una contrasena maestra.\n\n## Que Sigue?\n\nCon tu identidad configurada, es momento de entender como funciona la [Web of Trust](/guides/entendiendo-web-of-trust) y como puede ayudarte a filtrar el ruido en Nostr.\n"
+        },
+        {
+          "slug": "entendiendo-web-of-trust",
+          "title": "Entendiendo la Web of Trust",
+          "description": "Descubre como funciona el grafo de confianza en la extension Nostr WoT. Aprende sobre saltos, puntajes de confianza y como se filtra el contenido.",
+          "excerpt": "La Web of Trust usa tus conexiones sociales para filtrar el ruido. Aprende como funciona el grafo de confianza, los saltos y los puntajes.",
+          "date": "2026-03-11T00:00:00.000Z",
+          "author": {
+            "name": "Leon Acosta",
+            "avatar": "/authors/leon-profile.jpg",
+            "npub": "npub1gxdhmu9swqduwhr6zptjy4ya693zp3ql28nemy4hd97kuufyrqdqwe5zfk"
+          },
+          "featuredImage": "/images/guides/understanding-wot/featured.svg",
+          "previewImage": "/images/guides/understanding-wot/preview.svg",
+          "tags": [
+            "Web of Trust",
+            "Grafo de Confianza",
+            "Conceptos"
+          ],
+          "published": true,
+          "readingTime": "4 min read",
+          "locale": "es",
+          "translationKey": "understanding-wot",
+          "translations": {
+            "en": "understanding-wot",
+            "es": "entendiendo-web-of-trust",
+            "pt": "entendendo-web-of-trust"
+          },
+          "availableLocales": [
+            "en",
+            "es",
+            "pt"
+          ],
+          "seoTitle": "Entendiendo la Web of Trust — Grafo de Confianza",
+          "seoDescription": "Descubre como funciona el grafo de confianza en la extension Nostr WoT. Aprende sobre saltos, puntajes de confianza y como se filtra el contenido.",
+          "ogImage": "/images/guides/understanding-wot/og.svg",
+          "difficulty": "beginner",
+          "order": 3,
+          "content": "\nLa Web of Trust es el nucleo de la extension Nostr WoT. En lugar de depender de una autoridad central que decida que contenido es valido y que es spam, usa algo mucho mas poderoso: tus propias conexiones sociales.\n\n## El Problema del Spam en Redes Abiertas\n\nNostr es una red abierta donde cualquiera puede publicar. Esa es su mayor fortaleza, pero tambien su mayor desafio. Sin filtros, tu feed se llena de cuentas bot, spam y contenido irrelevante. Las soluciones centralizadas — un equipo moderando contenido — contradicen el espiritu descentralizado del protocolo.\n\nLa Web of Trust resuelve esto sin necesidad de moderadores.\n\n## Como Funciona el Grafo de Confianza\n\nEl concepto es directo:\n\n1. **Tu sigues a personas en Nostr.** Esas son tus conexiones directas, a 1 salto de distancia.\n2. **Ellas siguen a otras personas.** Esas estan a 2 saltos — amigos de amigos.\n3. **La confianza disminuye con la distancia.** A mayor numero de saltos, menor la confianza asignada.\n\nLa extension construye un grafo local a partir de tu lista de seguidos. Cuando visitas una app de Nostr, consulta ese grafo para asignar niveles de confianza a cada pubkey.\n\n{/* TODO: Captura de pantalla del grafo de confianza visualizado en la extension */}\n\n### Saltos y Distancia\n\n- **1 salto:** Alguien a quien sigues directamente. Maxima confianza.\n- **2 saltos:** Alguien seguido por alguien que tu sigues. Confianza alta.\n- **3 saltos:** Amigo de un amigo de un amigo. Confianza moderada.\n- **4+ saltos:** Confianza baja. Probablemente fuera de tu circulo relevante.\n\n<Callout type=\"tip\">\nPiensa en los saltos como grados de separacion. Si solo sigues a 100 personas, tu grafo de 2 saltos puede incluir decenas de miles. El puntaje de confianza te ayuda a priorizar dentro de ese universo.\n</Callout>\n\n## Puntajes de Confianza\n\nLa extension no solo mide distancia — calcula un puntaje de confianza numerico entre 0 y 1 para cada pubkey. Este puntaje combina varios factores:\n\n- **Distancia en saltos** — el factor principal.\n- **Seguidores mutuos** — si varias de tus conexiones siguen a la misma persona, su puntaje sube.\n- **Puentes** — personas que conectan diferentes comunidades reciben una bonificacion.\n\nUn puntaje de 0.9 indica alguien muy cercano en tu red. Un 0.1 es alguien al borde de tu Web of Trust. Un 0 significa que esta fuera de tu grafo.\n\n## Modos de Operacion\n\nLa extension ofrece tres modos para construir y consultar tu grafo:\n\n### Modo Local\n\nTodo el calculo se realiza en tu navegador. La extension descarga los datos necesarios de los relays y construye el grafo localmente. Maximo control de privacidad, pero requiere mas recursos.\n\n### Modo Remoto\n\nLa extension consulta un servidor Oracle que mantiene el grafo actualizado. Solo se envian consultas de pubkey — sin contenido, sin rastreo. Mas rapido y ligero.\n\n### Modo Hibrido\n\nCombina ambos enfoques. El grafo se construye localmente pero se complementa con consultas al Oracle cuando es necesario. Lo mejor de ambos mundos.\n\n{/* TODO: Video explicando los tres modos de operacion */}\n\n## Como las Apps Usan tu Web of Trust\n\nLas aplicaciones de Nostr que implementan la API de WoT pueden consultar la extension para:\n\n- **Filtrar feeds** mostrando solo contenido de personas en tu red.\n- **Marcar perfiles** indicando el nivel de confianza de cada usuario.\n- **Ordenar resultados** priorizando contenido de conexiones cercanas.\n- **Bloquear spam** automaticamente excluyendo pubkeys fuera del grafo.\n\nTodo esto ocurre sin que la app tenga acceso a tu clave privada ni a tu grafo completo.\n\n<Callout type=\"tip\">\nLa API de WoT funciona con cualquier cliente Nostr que la implemente. No necesitas cambiar de app — la extension trabaja en segundo plano con tu cliente favorito.\n</Callout>\n\n## Que Sigue?\n\nAhora que entiendes como funciona la Web of Trust, aprende a [personalizar tu configuracion de confianza](/guides/personalizar-confianza) para ajustar la formula a tus necesidades.\n"
+        },
+        {
+          "slug": "personalizar-confianza",
+          "title": "Personalizar tu Configuracion de Confianza",
+          "description": "Ajusta la formula de confianza, pesos por salto y estrategias de filtrado en la extension Nostr WoT. Control total sobre como calculas la confianza.",
+          "excerpt": "La formula de confianza por defecto funciona bien, pero puedes ajustarla. Aprende a modificar pesos, limites y estrategias para tu red.",
+          "date": "2026-03-11T00:00:00.000Z",
+          "author": {
+            "name": "Leon Acosta",
+            "avatar": "/authors/leon-profile.jpg",
+            "npub": "npub1gxdhmu9swqduwhr6zptjy4ya693zp3ql28nemy4hd97kuufyrqdqwe5zfk"
+          },
+          "featuredImage": "/images/guides/customizing-trust/featured.svg",
+          "previewImage": "/images/guides/customizing-trust/preview.svg",
+          "tags": [
+            "Configuracion",
+            "Formula",
+            "Avanzado"
+          ],
+          "published": true,
+          "readingTime": "4 min read",
+          "locale": "es",
+          "translationKey": "customizing-trust",
+          "translations": {
+            "en": "customizing-trust",
+            "es": "personalizar-confianza",
+            "pt": "personalizar-confianca"
+          },
+          "availableLocales": [
+            "en",
+            "es",
+            "pt"
+          ],
+          "seoTitle": "Personalizar Confianza — Formulas y Pesos WoT",
+          "seoDescription": "Ajusta la formula de confianza, pesos por salto y estrategias de filtrado en la extension Nostr WoT. Control total sobre como calculas la confianza.",
+          "ogImage": "/images/guides/customizing-trust/og.svg",
+          "difficulty": "intermediate",
+          "order": 4,
+          "content": "\nLa extension Nostr WoT viene con una configuracion de confianza predeterminada que funciona bien para la mayoria de los usuarios. Pero si quieres un control mas preciso sobre como se calcula la confianza en tu red, puedes ajustar la formula, los pesos y las estrategias de filtrado.\n\n## Acceder a la Configuracion de Confianza\n\n1. Haz clic en el icono de la extension.\n2. Abre la pagina de configuracion (icono de engranaje).\n3. Navega a la seccion **Confianza** o **Trust Settings**.\n\nAqui encontraras todos los parametros que controlan como la extension evalua cada pubkey en tu grafo.\n\n{/* TODO: Captura de pantalla de la pagina de configuracion de confianza */}\n\n## La Formula de Confianza\n\nEl puntaje de confianza de cada pubkey se calcula combinando varios factores. Cada factor tiene un peso que puedes modificar:\n\n### Peso por Distancia (Saltos)\n\nEste es el factor principal. Define cuanto peso tiene cada nivel de salto en el puntaje final.\n\n- **Salto 1 (seguidos directos):** Peso por defecto alto. Estas son las personas que elegiste seguir.\n- **Salto 2 (amigos de amigos):** Peso medio. Confianza derivada de tus contactos directos.\n- **Salto 3:** Peso bajo. Conexiones lejanas con relevancia limitada.\n- **Salto 4+:** Peso minimo o nulo por defecto.\n\nPuedes aumentar o reducir el peso de cada salto. Si quieres una red mas cerrada, reduce el peso de los saltos 2 y 3. Si prefieres una red mas abierta, aumenta esos valores.\n\n<Callout type=\"tip\">\nUn enfoque conservador (pesos altos solo para salto 1) funciona bien si sigues a pocas personas cuidadosamente seleccionadas. Un enfoque mas abierto es mejor si sigues a cientos de cuentas y quieres descubrir contenido nuevo.\n</Callout>\n\n### Bonificacion por Seguidores Mutuos\n\nCuando varias personas que sigues tambien siguen a alguien, eso indica que esa persona es relevante en tu circulo. La bonificacion por seguidores mutuos aumenta el puntaje en proporcion al numero de conexiones compartidas.\n\nPuedes controlar la intensidad de esta bonificacion. Un valor alto prioriza a las personas populares dentro de tu red. Un valor bajo las trata casi igual que a cualquier otro contacto de segundo salto.\n\n### Bonificacion de Puente\n\nLas personas que conectan comunidades distintas — un desarrollador que tambien participa en comunidades de arte, por ejemplo — reciben una bonificacion de puente. Esto reconoce su rol como conectores en el grafo.\n\nAjusta este parametro segun tu interes en descubrir contenido fuera de tu burbuja habitual.\n\n{/* TODO: Captura de pantalla de los controles deslizantes de pesos */}\n\n## Estrategias de Filtrado\n\nAdemas de la formula, puedes definir estrategias que determinan como se aplica el puntaje:\n\n### Umbral Minimo\n\nDefine el puntaje minimo para que alguien sea considerado \"dentro\" de tu Web of Trust. Por defecto esta en un valor bajo para incluir una red amplia, pero puedes subirlo si quieres filtros mas estrictos.\n\n### Profundidad Maxima de Saltos\n\nLimita cuantos saltos explora la extension al construir el grafo. Reducir este valor hace que el calculo sea mas rapido y la red mas cerrada. Aumentarlo incluye mas personas pero requiere mas recursos.\n\n### Modo de Calculo\n\n- **Conservador:** Solo considera distancia y seguidores mutuos. Mas predecible.\n- **Equilibrado:** Incluye todas las bonificaciones con pesos moderados. Recomendado para la mayoria.\n- **Explorador:** Pesos altos en puentes y bonificaciones. Ideal para descubrir nuevas comunidades.\n\n<Callout type=\"tip\">\nNo necesitas encontrar la configuracion perfecta desde el primer dia. Empieza con los valores por defecto y ajusta conforme entiendas mejor tu red. Puedes usar el Playground para experimentar sin afectar tu configuracion real.\n</Callout>\n\n## Restablecer Valores por Defecto\n\nSi experimentas demasiado y quieres volver al punto de partida, la seccion de configuracion incluye un boton para restaurar todos los parametros a sus valores predeterminados.\n\n{/* TODO: Video mostrando el ajuste de pesos en tiempo real */}\n\n## Que Sigue?\n\nPara ver el efecto de tus cambios en tiempo real, explora el [Playground de la Web of Trust](/guides/playground-wot). Si prefieres continuar con las funciones practicas, aprende a [configurar tu billetera Lightning](/guides/configurar-billetera).\n"
+        },
+        {
+          "slug": "configurar-billetera",
+          "title": "Configurar tu Billetera Lightning",
+          "description": "Conecta tu billetera Lightning a la extension Nostr WoT. Tres opciones: Configuracion Rapida, Nostr Wallet Connect y LNbits para un control total.",
+          "excerpt": "Configura tu billetera Lightning en la extension en menos de un minuto. Elige entre Configuracion Rapida, NWC o LNbits segun tus necesidades.",
+          "date": "2026-03-11T00:00:00.000Z",
+          "author": {
+            "name": "Leon Acosta",
+            "avatar": "/authors/leon-profile.jpg",
+            "npub": "npub1gxdhmu9swqduwhr6zptjy4ya693zp3ql28nemy4hd97kuufyrqdqwe5zfk"
+          },
+          "featuredImage": "/images/guides/setting-up-wallet/featured.svg",
+          "previewImage": "/images/guides/setting-up-wallet/preview.svg",
+          "tags": [
+            "Lightning",
+            "Billetera",
+            "NWC"
+          ],
+          "published": true,
+          "readingTime": "3 min read",
+          "locale": "es",
+          "translationKey": "setting-up-wallet",
+          "translations": {
+            "en": "setting-up-wallet",
+            "es": "configurar-billetera",
+            "pt": "configurar-carteira"
+          },
+          "availableLocales": [
+            "en",
+            "es",
+            "pt"
+          ],
+          "seoTitle": "Configurar tu Billetera Lightning en Nostr WoT",
+          "seoDescription": "Conecta tu billetera Lightning a la extension Nostr WoT. Tres opciones: Configuracion Rapida, Nostr Wallet Connect y LNbits para un control total.",
+          "ogImage": "/images/guides/setting-up-wallet/og.svg",
+          "difficulty": "beginner",
+          "order": 5,
+          "content": "\nLa extension Nostr WoT incluye una billetera Lightning integrada. No necesitas otra extension ni una app aparte para enviar y recibir sats. Todo vive en el mismo lugar que tu identidad y tu red de confianza.\n\nTienes tres formas de configurar tu billetera. Elige la que mejor se adapte a tu situacion.\n\n## Configuracion Rapida\n\nEsta es la opcion mas sencilla. Un clic y estas listo.\n\n1. Abre la extension y ve a la pestana de **Wallet**.\n2. Haz clic en **Configuracion Rapida**.\n3. La extension crea una billetera automaticamente usando tu identidad Nostr.\n\nSin formularios, sin claves adicionales, sin cuentas en servicios externos. Abres la pestana, presionas el boton y puedes empezar a zapear.\n\n{/* TODO: Captura de pantalla del boton de Configuracion Rapida */}\n\n<Callout type=\"tip\">\nLa Configuracion Rapida crea una billetera custodial — el proveedor guarda los fondos. Es perfecta para empezar y probar los zaps. Siempre puedes migrar a una opcion auto-custodial despues.\n</Callout>\n\n## Nostr Wallet Connect (NWC)\n\nSi ya tienes una billetera que te gusta, no necesitas cambiar. NWC te permite conectar tu billetera existente a la extension.\n\n1. Abre tu billetera (Alby, Mutiny u otra compatible con NWC).\n2. Genera un string de conexion NWC en la configuracion de tu billetera.\n3. En la extension, ve a **Wallet** y selecciona **Nostr Wallet Connect**.\n4. Pega el string de conexion.\n5. La extension se conecta y muestra tu balance.\n\nTus fondos se quedan en tu billetera. La extension solo actua como puente entre las apps de Nostr y tu billetera existente.\n\n{/* TODO: Captura de pantalla del formulario de conexion NWC */}\n\n### Billeteras Compatibles\n\nCualquier billetera que soporte el protocolo NWC funciona. Algunas de las mas populares:\n\n- **Alby** — extension de navegador y billetera web.\n- **Mutiny** — billetera auto-custodial con soporte NWC nativo.\n- **Otras** — cualquier implementacion que genere strings de conexion NWC.\n\n## LNbits\n\nSi corres tu propia instancia de LNbits, puedes conectarla directamente. Esta opcion te da el maximo control sobre tus fondos.\n\n1. En la extension, ve a **Wallet** y selecciona **LNbits**.\n2. Ingresa la URL de tu instancia de LNbits.\n3. Ingresa tu clave de API (Admin key o Invoice key segun tus necesidades).\n4. Haz clic en **Conectar**.\n\n{/* TODO: Captura de pantalla del formulario de conexion LNbits */}\n\n<Callout type=\"tip\">\nSi usas LNbits con una Invoice key, la extension solo podra crear invoices para recibir pagos. Para enviar sats y hacer zaps, necesitas la Admin key. Decide que nivel de acceso quieres otorgar.\n</Callout>\n\n## La Interfaz de la Billetera\n\nUna vez configurada, la billetera vive dentro del popup de la extension:\n\n- **Balance** visible en la parte superior.\n- **Depositar** con codigo QR para recibir sats.\n- **Enviar** pegando un invoice Lightning — ves el monto antes de confirmar.\n- **Historial** de transacciones con busqueda y paginacion.\n- **Configuracion** para cambiar de proveedor o ajustar parametros.\n\nAbre el popup, haz lo que necesites, cierralo. No estorba.\n\n## Cambiar de Proveedor\n\nPuedes cambiar el metodo de conexion en cualquier momento. Ve a la configuracion de la billetera y selecciona un proveedor diferente. Tu historial se mantiene, pero el balance mostrara el de la nueva billetera conectada.\n\n{/* TODO: Video del proceso completo de configuracion de billetera */}\n\n## Que Sigue?\n\nCon tu billetera configurada, aprende a [enviar zaps y configurar la auto-aprobacion](/guides/zaps-y-auto-aprobacion) para hacer micropagos sin friccion. Tambien puedes [reclamar tu Lightning Address](/guides/direccion-lightning) para recibir zaps facilmente.\n"
+        },
+        {
+          "slug": "zaps-y-auto-aprobacion",
+          "title": "Zaps y Auto-Aprobacion",
+          "description": "Aprende a enviar zaps desde la extension Nostr WoT usando WebLN. Configura los umbrales de auto-aprobacion para realizar micropagos sin interrupciones.",
+          "excerpt": "Enviar sats deberia ser tan facil como dar like. Aprende a usar los zaps y la auto-aprobacion para micropagos sin friccion.",
+          "date": "2026-03-11T00:00:00.000Z",
+          "author": {
+            "name": "Leon Acosta",
+            "avatar": "/authors/leon-profile.jpg",
+            "npub": "npub1gxdhmu9swqduwhr6zptjy4ya693zp3ql28nemy4hd97kuufyrqdqwe5zfk"
+          },
+          "featuredImage": "/images/guides/zapping-auto-approve/featured.svg",
+          "previewImage": "/images/guides/zapping-auto-approve/preview.svg",
+          "tags": [
+            "Zaps",
+            "Lightning",
+            "WebLN"
+          ],
+          "published": true,
+          "readingTime": "4 min read",
+          "locale": "es",
+          "translationKey": "zapping-auto-approve",
+          "translations": {
+            "en": "zapping-auto-approve",
+            "es": "zaps-y-auto-aprobacion",
+            "pt": "zaps-e-aprovacao-automatica"
+          },
+          "availableLocales": [
+            "en",
+            "es",
+            "pt"
+          ],
+          "seoTitle": "Zaps y Auto-Aprobacion en la Extension Nostr WoT",
+          "seoDescription": "Aprende a enviar zaps desde la extension Nostr WoT usando WebLN. Configura los umbrales de auto-aprobacion para realizar micropagos sin interrupciones.",
+          "ogImage": "/images/guides/zapping-auto-approve/og.svg",
+          "difficulty": "beginner",
+          "order": 6,
+          "content": "\nLos zaps son micropagos en Lightning que puedes enviar directamente desde cualquier cliente Nostr. Ves una nota que te gusta, le tiras unos sats y el autor los recibe al instante. La extension Nostr WoT actua como proveedor WebLN, lo que significa que los zaps funcionan automaticamente con las apps que soportan este protocolo.\n\n## Como Funciona WebLN\n\nWebLN es un estandar que permite a los sitios web solicitar pagos Lightning a traves del navegador. Cuando un sitio detecta un proveedor WebLN — en este caso, la extension — puede enviar solicitudes de pago directamente.\n\nEl flujo es simple:\n\n1. Haces clic en el boton de zap en tu cliente Nostr favorito.\n2. El cliente crea un invoice Lightning y lo envia al proveedor WebLN.\n3. La extension recibe la solicitud y te muestra el monto.\n4. Apruebas el pago y los sats se envian.\n\nNo hay que copiar invoices, no hay que cambiar de app, no hay que abrir otra extension. Todo ocurre en el mismo flujo.\n\n{/* TODO: Captura de pantalla del popup de aprobacion de zap */}\n\n<Callout type=\"tip\">\nLa extension funciona con clientes populares como Primal, Snort, Coracle, Nostrudel y cualquier app que implemente WebLN. Si el boton de zap aparece en la pagina, la extension puede manejarlo.\n</Callout>\n\n## Enviar tu Primer Zap\n\nAntes de enviar un zap, asegurate de tener:\n\n- La extension instalada con tu identidad activa.\n- Una billetera configurada con fondos (ver la guia de [configurar billetera](/guides/configurar-billetera)).\n\nLuego:\n\n1. Navega a tu cliente Nostr favorito.\n2. Busca una nota que te guste y haz clic en el icono de zap (normalmente un rayo).\n3. Elige el monto de sats.\n4. La extension muestra un popup de confirmacion con el destino y el monto.\n5. Haz clic en **Aprobar** y listo.\n\nEl zap se registra en Nostr como un evento publico, lo que significa que el autor puede ver quien le envio sats.\n\n{/* TODO: Video del proceso completo de enviar un zap */}\n\n## Auto-Aprobacion de Zaps\n\nAqui es donde la experiencia mejora notablemente. En lugar de confirmar cada zap individualmente, puedes configurar un umbral de auto-aprobacion. Cualquier zap igual o menor a ese monto se aprueba automaticamente, sin popup y sin interrupcion.\n\n### Configurar el Umbral\n\n1. Abre la extension y ve a la configuracion de la billetera.\n2. Busca la opcion **Auto-aprobar zaps** o **Auto-approve**.\n3. Define el monto maximo en sats — por ejemplo, 100 sats.\n4. Guarda los cambios.\n\nA partir de ahora, cualquier zap de 100 sats o menos pasa automaticamente. Scrolleas tu feed, zapeas las notas que te gusten y sigues scrolleando. Para esos zaps rapidos de 21 sats, cambia todo.\n\n{/* TODO: Captura de pantalla de la configuracion de auto-aprobacion */}\n\n<Callout type=\"tip\">\nSi prefieres mantener el control total, deja el umbral en cero. Cada zap requerira confirmacion manual. Puedes ajustar el umbral en cualquier momento segun tu nivel de comodidad.\n</Callout>\n\n### Seguridad del Umbral\n\nEl umbral solo aplica a solicitudes WebLN de sitios con permisos aprobados. Un sitio que no tenga permisos de wallet no puede activar pagos automaticos. Ademas, el umbral funciona por transaccion individual — no es un limite acumulativo.\n\n## Monitorear tus Zaps\n\nTodos los pagos aparecen en el historial de transacciones de la billetera. Puedes ver el destino, el monto, la fecha y el estado de cada transaccion. Si notas algo inusual, revisa los permisos de los sitios en la configuracion.\n\n## Que Sigue?\n\nAhora que puedes enviar zaps, aprende a [reclamar tu Lightning Address](/guides/direccion-lightning) para que otros puedan zapearte facilmente. Tambien puedes revisar los [permisos por sitio](/guides/permisos-por-sitio) para controlar que apps tienen acceso a tu billetera.\n"
+        },
+        {
+          "slug": "direccion-lightning",
+          "title": "Reclamar tu Direccion Lightning",
+          "description": "Reclama tu propia Lightning Address con la extension Nostr WoT. Recibe zaps facilmente con tunombre@zaps.nostr-wot.com sin configuracion tecnica.",
+          "excerpt": "Reclama tu Lightning Address personalizada y agrega la a tu perfil para que cualquiera pueda zapearte con solo conocer tu nombre.",
+          "date": "2026-03-11T00:00:00.000Z",
+          "author": {
+            "name": "Leon Acosta",
+            "avatar": "/authors/leon-profile.jpg",
+            "npub": "npub1gxdhmu9swqduwhr6zptjy4ya693zp3ql28nemy4hd97kuufyrqdqwe5zfk"
+          },
+          "featuredImage": "/images/guides/lightning-address/featured.svg",
+          "previewImage": "/images/guides/lightning-address/preview.svg",
+          "tags": [
+            "Direccion Lightning",
+            "Zaps",
+            "Identidad"
+          ],
+          "published": true,
+          "readingTime": "4 min read",
+          "locale": "es",
+          "translationKey": "lightning-address",
+          "translations": {
+            "en": "lightning-address",
+            "es": "direccion-lightning",
+            "pt": "endereco-lightning"
+          },
+          "availableLocales": [
+            "en",
+            "es",
+            "pt"
+          ],
+          "seoTitle": "Reclamar tu Direccion Lightning con Nostr WoT",
+          "seoDescription": "Reclama tu propia Lightning Address con la extension Nostr WoT. Recibe zaps facilmente con tunombre@zaps.nostr-wot.com sin configuracion tecnica.",
+          "ogImage": "/images/guides/lightning-address/og.svg",
+          "difficulty": "beginner",
+          "order": 7,
+          "content": "\nUna Lightning Address es como un correo electronico para recibir pagos en Bitcoin a traves de la red Lightning. En lugar de compartir invoices largos y complicados, le das a la gente una direccion legible y ellos pueden enviarte sats al instante. Con la extension Nostr WoT, puedes reclamar tu propia direccion en el dominio `zaps.nostr-wot.com`.\n\n## Que es una Lightning Address?\n\nEs una direccion con formato de correo electronico — por ejemplo, `leon@zaps.nostr-wot.com` — que resuelve automaticamente a un invoice Lightning cuando alguien quiere enviarte sats. No necesitas estar en linea, no necesitas generar invoices manualmente y funciona con cualquier billetera o cliente que soporte Lightning Address.\n\nEn el contexto de Nostr, la Lightning Address se incluye en tu perfil. Cuando alguien quiere zapearte, su cliente lee tu Lightning Address y crea el pago automaticamente.\n\n## Reclamar tu Direccion\n\nPara obtener tu Lightning Address necesitas tener una billetera configurada con la opcion de Configuracion Rapida. Este es el proceso:\n\n1. Abre la extension y ve a la pestana de **Wallet**.\n2. Si aun no tienes billetera, usa **Configuracion Rapida** para crear una (ver la guia de [configurar billetera](/guides/configurar-billetera)).\n3. Busca la seccion **Lightning Address** en la configuracion de la billetera.\n4. Escribe el nombre de usuario que quieres — por ejemplo, `leon`.\n5. Haz clic en **Reclamar**.\n\nSi el nombre esta disponible, la direccion es tuya al instante. Tu Lightning Address sera `tunombre@zaps.nostr-wot.com`.\n\n{/* TODO: Captura de pantalla del formulario para reclamar Lightning Address */}\n\n<Callout type=\"tip\">\nLos nombres de usuario deben tener entre 3 y 30 caracteres. Solo se permiten letras minusculas, numeros, puntos y guiones. Es primero en llegar, primero en servirse, asi que elige rapido si quieres un nombre corto.\n</Callout>\n\n## Agregar la Direccion a tu Perfil\n\nUna vez reclamada, la extension te ofrece agregar la Lightning Address a tu perfil de Nostr automaticamente.\n\n1. Despues de reclamar la direccion, aparece un aviso preguntando si quieres actualizar tu perfil.\n2. Haz clic en **Agregar a Perfil**.\n3. La extension firma un evento actualizado de perfil y lo publica en tus relays.\n\nAhora cualquier persona que visite tu perfil en cualquier cliente Nostr vera tu Lightning Address y podra zapearte directamente.\n\n{/* TODO: Captura de pantalla del perfil actualizado con la Lightning Address */}\n\n### Actualizar Manualmente\n\nSi prefieres hacerlo a mano, tambien puedes:\n\n1. Ir a la seccion de perfil de la extension.\n2. Buscar el campo **Lightning Address** o **LUD-16**.\n3. Escribir tu direccion completa (por ejemplo, `leon@zaps.nostr-wot.com`).\n4. Guardar los cambios.\n\n## Recibir Zaps\n\nCon tu Lightning Address activa en tu perfil, recibir zaps es completamente automatico:\n\n- Alguien ve tu nota en su cliente Nostr.\n- Hace clic en el boton de zap.\n- Su cliente lee tu Lightning Address de tu perfil.\n- Se crea un invoice y se envia el pago.\n- Los sats llegan a tu billetera conectada en la extension.\n\nNo necesitas hacer nada. Los sats aparecen en tu balance y en el historial de transacciones.\n\n{/* TODO: Video del flujo completo de recibir un zap */}\n\n<Callout type=\"tip\">\nSi cambias de billetera despues de reclamar tu Lightning Address, la direccion sigue funcionando siempre que mantengas una billetera activa en la extension. Los pagos se redirigen al proveedor conectado en ese momento.\n</Callout>\n\n## Compartir tu Direccion\n\nAdemas de tenerla en tu perfil de Nostr, puedes compartir tu Lightning Address en cualquier lugar:\n\n- En tu bio de otras redes sociales.\n- En tu sitio web personal.\n- En tarjetas de presentacion o firmas de correo.\n\nCualquiera con una billetera Lightning puede enviarte sats usando esa direccion, sin necesidad de estar en Nostr.\n\n## Que Sigue?\n\nYa puedes enviar y recibir sats sin salir de la extension. Ahora aprende a controlar los [permisos por sitio web](/guides/permisos-por-sitio) para decidir que aplicaciones tienen acceso a tu identidad y tu billetera.\n"
+        },
+        {
+          "slug": "permisos-por-sitio",
+          "title": "Permisos por Sitio Web",
+          "description": "Controla que sitios web pueden acceder a tu identidad Nostr y a tu billetera Lightning. Permisos granulares y las mejores practicas de seguridad.",
+          "excerpt": "Cada sitio web tiene su propio nivel de acceso. Aprende a gestionar permisos de identidad y billetera para mantener el control de tu experiencia.",
+          "date": "2026-03-11T00:00:00.000Z",
+          "author": {
+            "name": "Leon Acosta",
+            "avatar": "/authors/leon-profile.jpg",
+            "npub": "npub1gxdhmu9swqduwhr6zptjy4ya693zp3ql28nemy4hd97kuufyrqdqwe5zfk"
+          },
+          "featuredImage": "/images/guides/site-permissions/featured.svg",
+          "previewImage": "/images/guides/site-permissions/preview.svg",
+          "tags": [
+            "Permisos",
+            "Seguridad",
+            "Privacidad"
+          ],
+          "published": true,
+          "readingTime": "4 min read",
+          "locale": "es",
+          "translationKey": "site-permissions",
+          "translations": {
+            "en": "site-permissions",
+            "es": "permisos-por-sitio",
+            "pt": "permissoes-por-site"
+          },
+          "availableLocales": [
+            "en",
+            "es",
+            "pt"
+          ],
+          "seoTitle": "Permisos por Sitio Web en la Extension Nostr WoT",
+          "seoDescription": "Controla que sitios web pueden acceder a tu identidad Nostr y a tu billetera Lightning. Permisos granulares y las mejores practicas de seguridad.",
+          "ogImage": "/images/guides/site-permissions/og.svg",
+          "difficulty": "intermediate",
+          "order": 8,
+          "content": "\nLa extension Nostr WoT gestiona tu identidad, tu red de confianza y tu billetera. Eso es mucho poder, y no todos los sitios web deberian tener el mismo nivel de acceso. Por eso la extension implementa un sistema de permisos por sitio que te da control granular sobre que puede hacer cada aplicacion.\n\n## Como Funcionan los Permisos\n\nCada vez que un sitio web solicita algo a la extension — leer tu clave publica, firmar un evento, enviar un pago — la extension verifica si ese sitio tiene permiso. Si no lo tiene, te muestra un popup de autorizacion para que decidas.\n\nLos permisos se guardan por dominio. Si apruebas un permiso para `primal.net`, esa aprobacion solo aplica a ese sitio. Otro sitio necesitara su propia autorizacion.\n\n{/* TODO: Captura de pantalla del popup de solicitud de permisos */}\n\n## Tipos de Permisos\n\nLa extension maneja varios tipos de permisos:\n\n### Identidad (NIP-07)\n\n- **Leer clave publica:** El sitio puede ver tu npub para identificarte.\n- **Firmar eventos:** El sitio puede solicitar que la extension firme notas, reacciones, follows y otros eventos.\n- **Cifrar/descifrar mensajes:** El sitio puede solicitar cifrado NIP-04 o NIP-44 para mensajes directos.\n\n### Billetera (WebLN)\n\n- **Enviar pagos:** El sitio puede solicitar que envies sats a traves de invoices Lightning.\n- **Crear invoices:** El sitio puede generar invoices para que recibas pagos.\n- **Leer balance:** Algunos sitios solicitan ver tu balance (opcional y raro).\n\n### Web of Trust\n\n- **Consultar confianza:** El sitio puede preguntar si una pubkey esta en tu Web of Trust y obtener su puntaje.\n\n<Callout type=\"tip\">\nEl permiso mas comun es la lectura de clave publica y la firma de eventos. La mayoria de los clientes Nostr necesitan ambos para funcionar correctamente. Los permisos de billetera son independientes y puedes otorgarlos solo a los sitios que uses para zaps.\n</Callout>\n\n## Gestionar Permisos\n\n### Ver Permisos Actuales\n\n1. Abre la extension y ve a la configuracion.\n2. Navega a la seccion **Permisos** o **Site Permissions**.\n3. Veras una lista de todos los sitios con sus permisos activos.\n\n{/* TODO: Captura de pantalla de la lista de permisos por sitio */}\n\n### Revocar Permisos\n\nSi quieres retirar el acceso a un sitio:\n\n1. Busca el sitio en la lista de permisos.\n2. Haz clic en el sitio para ver los detalles.\n3. Desactiva los permisos que quieras revocar, o haz clic en **Revocar Todos** para eliminar todo el acceso.\n\nLa proxima vez que ese sitio solicite algo, veras el popup de autorizacion de nuevo.\n\n### Aprobar Siempre vs. Aprobar Una Vez\n\nCuando un sitio solicita un permiso, tienes dos opciones:\n\n- **Aprobar Siempre:** El permiso se guarda y no vuelve a preguntarte para ese sitio.\n- **Aprobar Una Vez:** El permiso aplica solo para esta sesion. Cuando cierres la pestana, necesitaras aprobarlo de nuevo.\n\nPara sitios en los que confias y usas frecuentemente — tu cliente Nostr principal, por ejemplo — aprobar siempre es comodo. Para sitios que pruebas por primera vez, aprobar una vez es mas seguro.\n\n## Mejores Practicas de Seguridad\n\n### Principio de Minimo Privilegio\n\nOtorga solo los permisos que un sitio realmente necesita. Un lector de feeds solo necesita acceso a tu clave publica. Un cliente completo necesita firma de eventos. Solo los sitios donde haces zaps necesitan permisos de billetera.\n\n### Revisa Periodicamente\n\nDe vez en cuando, revisa la lista de sitios con permisos. Si hay dominios que ya no usas, revoca sus permisos.\n\n### Cuidado con Sitios Desconocidos\n\nSi un sitio que no reconoces solicita permisos de firma o de billetera, rechaza la solicitud. Los sitios legitimos siempre te explican por que necesitan acceso.\n\n<Callout type=\"tip\">\nLos permisos de billetera estan aislados de los permisos de identidad. Un sitio que tenga permiso para firmar eventos no tiene automaticamente permiso para enviar pagos. Cada tipo de acceso se autoriza por separado.\n</Callout>\n\n### Conexiones Seguras\n\nLa extension solo funciona en conexiones HTTPS. Si un sitio intenta solicitar permisos a traves de HTTP sin cifrar, la extension rechaza la solicitud automaticamente. Esto protege contra ataques de intermediario.\n\n{/* TODO: Video mostrando la gestion de permisos */}\n\n## Que Sigue?\n\nCon tus permisos bien configurados, tu experiencia en Nostr es segura y fluida. Para explorar tu red de confianza de forma visual, prueba el [Playground de la Web of Trust](/guides/playground-wot).\n"
+        },
+        {
+          "slug": "playground-wot",
+          "title": "Playground de la Web of Trust",
+          "description": "Explora tu grafo de confianza de forma visual con el Playground de la extension Nostr WoT. Filtra, busca y analiza las conexiones de tu red en tiempo real.",
+          "excerpt": "El Playground te permite visualizar tu Web of Trust, explorar conexiones y experimentar con filtros sin afectar tu configuracion.",
+          "date": "2026-03-11T00:00:00.000Z",
+          "author": {
+            "name": "Leon Acosta",
+            "avatar": "/authors/leon-profile.jpg",
+            "npub": "npub1gxdhmu9swqduwhr6zptjy4ya693zp3ql28nemy4hd97kuufyrqdqwe5zfk"
+          },
+          "featuredImage": "/images/guides/wot-playground/featured.svg",
+          "previewImage": "/images/guides/wot-playground/preview.svg",
+          "tags": [
+            "Playground",
+            "Visualizacion",
+            "Grafo de Confianza"
+          ],
+          "published": true,
+          "readingTime": "4 min read",
+          "locale": "es",
+          "translationKey": "wot-playground",
+          "translations": {
+            "en": "wot-playground",
+            "es": "playground-wot",
+            "pt": "playground-wot"
+          },
+          "availableLocales": [
+            "en",
+            "es",
+            "pt"
+          ],
+          "seoTitle": "Playground Web of Trust — Explora tu Grafo WoT",
+          "seoDescription": "Explora tu grafo de confianza de forma visual con el Playground de la extension Nostr WoT. Filtra, busca y analiza las conexiones de tu red en tiempo real.",
+          "ogImage": "/images/guides/wot-playground/og.svg",
+          "difficulty": "intermediate",
+          "order": 9,
+          "content": "\nEl Playground es una herramienta visual incluida en la extension Nostr WoT que te permite explorar tu grafo de confianza en tiempo real. Puedes ver como se conectan las personas en tu red, buscar pubkeys especificas, filtrar por nivel de confianza y experimentar con diferentes configuraciones sin afectar tu perfil real.\n\n## Acceder al Playground\n\n1. Haz clic en el icono de la extension en tu barra de herramientas.\n2. Busca la opcion **Playground** o **Explorar WoT** en el menu.\n3. Se abre una nueva pestana con la interfaz del Playground.\n\nEl Playground necesita que tu identidad este activa y que el grafo tenga datos. Si acabas de instalar la extension, dale unos minutos para sincronizar tu lista de seguidos antes de explorar.\n\n{/* TODO: Captura de pantalla de la vista principal del Playground */}\n\n## Visualizacion del Grafo\n\nLa vista principal del Playground muestra tu grafo de confianza como una red de nodos conectados por lineas. Cada nodo representa una pubkey y cada linea una relacion de seguimiento.\n\n### Elementos Visuales\n\n- **Tu nodo** aparece en el centro, destacado con un color diferente.\n- **Nodos de salto 1** (tus seguidos directos) estan cerca del centro con colores intensos.\n- **Nodos de salto 2 y 3** se alejan progresivamente con colores mas tenues.\n- **El tamano del nodo** refleja cuantas conexiones tiene dentro de tu red.\n- **Las lineas** indican relaciones de seguimiento entre nodos.\n\nPuedes arrastrar nodos, hacer zoom y mover el grafo completo para explorar diferentes areas de tu red.\n\n{/* TODO: Captura de pantalla del grafo con nodos de diferentes saltos */}\n\n<Callout type=\"tip\">\nLos grafos grandes pueden tener miles de nodos. Si la visualizacion se siente lenta, usa los filtros para limitar la profundidad de saltos o enfocarte en un area especifica de tu red.\n</Callout>\n\n## Buscar Personas\n\nEl Playground incluye una barra de busqueda donde puedes ingresar una npub, un nombre de perfil o un NIP-05 para localizar a alguien en tu grafo.\n\n1. Escribe el nombre o la npub en la barra de busqueda.\n2. El Playground resalta el nodo correspondiente y muestra su posicion en el grafo.\n3. Haz clic en el nodo para ver los detalles: puntaje de confianza, numero de saltos, seguidores mutuos y ruta de conexion hasta esa persona.\n\nSi la persona no esta en tu grafo, el Playground te lo indica y muestra su puntaje como cero.\n\n{/* TODO: Captura de pantalla de una busqueda con resultados resaltados */}\n\n## Filtrar por Nivel de Confianza\n\nLos filtros te permiten controlar que nodos se muestran en la visualizacion:\n\n### Filtro de Saltos\n\nElige cuantos niveles de salto quieres ver. Mostrar solo salto 1 te da una vista limpia de tus seguidos directos. Incluir saltos 2 y 3 expande la red significativamente.\n\n### Filtro de Puntaje\n\nDefine un rango de puntaje de confianza. Por ejemplo, mostrar solo nodos con puntaje superior a 0.5 te enfoca en las personas mas relevantes de tu red.\n\n### Filtro por Seguidores Mutuos\n\nFiltra para mostrar solo personas que tienen al menos N seguidores mutuos contigo. Util para encontrar nodos con alta confianza social.\n\n<Callout type=\"tip\">\nCombina filtros para obtener vistas especificas. Por ejemplo, salto 2 + puntaje mayor a 0.6 + al menos 3 seguidores mutuos te muestra las personas que probablemente deberias seguir pero aun no sigues.\n</Callout>\n\n## Experimentar con la Formula\n\nEl Playground te permite modificar temporalmente los pesos de la formula de confianza y ver el efecto en tiempo real. Mueve los controles deslizantes y observa como cambian los puntajes y los colores del grafo.\n\nEstos cambios son temporales y no afectan tu configuracion real. Si encuentras una combinacion que te gusta, puedes aplicarla desde la seccion de [personalizar confianza](/guides/personalizar-confianza).\n\n{/* TODO: Video mostrando el ajuste de filtros en tiempo real */}\n\n## Estadisticas de tu Red\n\nEn la parte inferior o lateral del Playground encontraras estadisticas de tu grafo:\n\n- **Total de nodos** en tu Web of Trust.\n- **Distribucion por saltos** — cuantas personas hay en cada nivel.\n- **Puntaje promedio** de confianza en tu red.\n- **Clusters** o comunidades detectadas dentro de tu grafo.\n\nEstas metricas te ayudan a entender la estructura de tu red y a tomar decisiones sobre como ajustar tu configuracion de confianza.\n\n## Que Sigue?\n\nYa conoces todas las funciones principales de la extension Nostr WoT. Si quieres repasar algun tema, vuelve a [primeros pasos](/guides/primeros-pasos) o profundiza en [personalizar tu configuracion de confianza](/guides/personalizar-confianza) para ajustar tu red a la medida.\n"
+        }
+      ],
+      "tags": [
+        "Avanzado",
+        "Billetera",
+        "Claves",
+        "Conceptos",
+        "Configuracion",
+        "Direccion Lightning",
+        "Extension",
+        "Formula",
+        "Grafo de Confianza",
+        "Identidad",
+        "Lightning",
+        "NIP-07",
+        "NWC",
+        "Permisos",
+        "Playground",
+        "Principiante",
+        "Privacidad",
+        "Seguridad",
+        "Visualizacion",
+        "Web of Trust",
+        "WebLN",
+        "Zaps"
+      ]
+    },
+    "pt": {
+      "posts": [
+        {
+          "slug": "primeiros-passos",
+          "title": "Primeiros Passos com o Nostr WoT",
+          "description": "Instale a extensao Nostr WoT no Chrome, Brave, Edge, Opera ou Firefox. Configure sua identidade Nostr e comece a construir sua Web of Trust em minutos.",
+          "excerpt": "Tudo o que voce precisa para instalar a extensao Nostr WoT e colocar sua rede de confianca para funcionar.",
+          "date": "2026-03-11T00:00:00.000Z",
+          "author": {
+            "name": "Leon Acosta",
+            "avatar": "/authors/leon-profile.jpg",
+            "npub": "npub1gxdhmu9swqduwhr6zptjy4ya693zp3ql28nemy4hd97kuufyrqdqwe5zfk"
+          },
+          "featuredImage": "/images/guides/getting-started/featured.svg",
+          "previewImage": "/images/guides/getting-started/preview.svg",
+          "tags": [
+            "Extensao",
+            "Configuracao",
+            "Iniciante"
+          ],
+          "published": true,
+          "readingTime": "3 min read",
+          "locale": "pt",
+          "translationKey": "getting-started",
+          "translations": {
+            "en": "getting-started",
+            "es": "primeros-pasos",
+            "pt": "primeiros-passos"
+          },
+          "availableLocales": [
+            "en",
+            "es",
+            "pt"
+          ],
+          "seoTitle": "Primeiros Passos com a Extensao Nostr WoT — Instale",
+          "seoDescription": "Instale a extensao Nostr WoT no Chrome, Brave, Edge, Opera ou Firefox. Configure sua identidade Nostr e comece a construir sua Web of Trust em minutos.",
+          "ogImage": "/images/guides/getting-started/og.svg",
+          "difficulty": "beginner",
+          "order": 1,
+          "content": "\nEste guia mostra como instalar a extensao Nostr WoT, configurar sua identidade e colocar sua rede de confianca para funcionar. O processo todo leva cerca de dois minutos.\n\n## Instalando a Extensao\n\nA extensao funciona em navegadores baseados em Chromium e no Firefox. Escolha o seu e siga os passos.\n\n### Chrome, Brave, Edge e Opera\n\n1. Acesse a [pagina de download](/download) e clique no link para a Chrome Web Store.\n2. Clique em **Usar no Chrome** (ou o botao equivalente do seu navegador).\n3. Confirme a instalacao quando solicitado.\n4. Fixe a extensao na barra de ferramentas -- clique no icone de quebra-cabeca e ative o pin ao lado de Nostr WoT.\n\n{/* TODO: Captura de tela da listagem na Chrome Web Store com o botao Usar no Chrome destacado */}\n\n### Firefox\n\n1. Acesse a [pagina de download](/download) e clique no link para os complementos do Firefox.\n2. Clique em **Adicionar ao Firefox** e confirme o aviso de permissoes.\n3. Fixe a extensao na barra de ferramentas clicando com o botao direito no icone e selecionando **Fixar na Barra de Ferramentas**.\n\n{/* TODO: Captura de tela da pagina de complementos do Firefox para o Nostr WoT */}\n\n<Callout type=\"tip\">\nApos a instalacao, o icone da extensao aparece na barra de ferramentas do navegador. Um icone cinza significa que voce ainda nao fez login. Ele fica roxo quando sua identidade esta ativa.\n</Callout>\n\n## Configuracao Inicial\n\nAo abrir a extensao pela primeira vez, o assistente guia voce pelo essencial. Voce escolhe entre criar uma identidade Nostr ou importar uma existente. Nenhum cadastro em terceiros e necessario.\n\n{/* TODO: Captura de tela da tela de boas-vindas do assistente de configuracao */}\n\n## Criando uma Nova Chave Nostr\n\nSe voce e novo no Nostr, selecione **Criar Novas Chaves**. A extensao gera uma chave privada (nsec) e uma chave publica (npub) para voce.\n\n1. Clique em **Criar Novas Chaves** no assistente de configuracao.\n2. Salve o backup da sua chave privada. Anote em papel ou guarde em um gerenciador de senhas. Se perder, nao ha como recuperar.\n3. Defina uma senha local para criptografar suas chaves dentro da extensao. Essa senha nunca e enviada para nenhum lugar.\n4. Opcionalmente, preencha os detalhes do seu perfil -- nome de exibicao, bio e avatar.\n\n{/* TODO: Captura de tela da tela de criacao de chaves com o aviso de backup */}\n\n<Callout type=\"tip\">\nSua chave privada e a senha mestra da sua identidade Nostr. Nunca compartilhe, cole em um site ou armazene em texto simples. A extensao a criptografa localmente para que os sites nunca a vejam diretamente.\n</Callout>\n\n## Importando uma Chave Existente\n\nJa tem uma identidade Nostr? Selecione **Importar Chave Existente** e cole sua nsec ou use uma extensao de assinatura compativel com NIP-07.\n\n1. Clique em **Importar Chave Existente**.\n2. Cole sua chave privada nsec ou conecte um dispositivo de assinatura.\n3. Defina uma senha de criptografia local.\n4. A extensao busca seu perfil nos relays Nostr automaticamente.\n\n{/* TODO: Captura de tela da tela de importacao de chave */}\n\n## Verificando sua Configuracao\n\nCom sua identidade ativa, clique no icone da extensao. Voce deve ver os detalhes do seu perfil, sua npub e um grafo de confianca inicial construido a partir da sua lista de contatos.\n\nDe um ou dois minutos para a sincronizacao inicial. Depois, sua rede e atualizada em segundo plano enquanto voce navega.\n\n{/* TODO: Video do processo de instalacao */}\n\n## O Que Vem a Seguir?\n\nAgora que a extensao esta instalada, aprenda a [gerenciar sua identidade](/guides/gerenciar-identidade) e entenda como a [Web of Trust funciona](/guides/entendendo-web-of-trust).\n"
+        },
+        {
+          "slug": "gerenciar-identidade",
+          "title": "Gerenciar sua Identidade",
+          "description": "Saiba como a extensao Nostr WoT gerencia sua identidade com suporte ao NIP-07, gerenciamento de perfil e as melhores praticas de seguranca de chaves.",
+          "excerpt": "Sua identidade Nostr e a base de tudo na extensao. Aprenda a gerenciar suas chaves, perfil e configuracoes de assinatura.",
+          "date": "2026-03-11T00:00:00.000Z",
+          "author": {
+            "name": "Leon Acosta",
+            "avatar": "/authors/leon-profile.jpg",
+            "npub": "npub1gxdhmu9swqduwhr6zptjy4ya693zp3ql28nemy4hd97kuufyrqdqwe5zfk"
+          },
+          "featuredImage": "/images/guides/managing-identity/featured.svg",
+          "previewImage": "/images/guides/managing-identity/preview.svg",
+          "tags": [
+            "Identidade",
+            "Chaves",
+            "NIP-07"
+          ],
+          "published": true,
+          "readingTime": "3 min read",
+          "locale": "pt",
+          "translationKey": "managing-identity",
+          "translations": {
+            "en": "managing-identity",
+            "es": "gestion-de-identidad",
+            "pt": "gerenciar-identidade"
+          },
+          "availableLocales": [
+            "en",
+            "es",
+            "pt"
+          ],
+          "seoTitle": "Gerenciar Identidade — Chaves e Perfil no WoT",
+          "seoDescription": "Saiba como a extensao Nostr WoT gerencia sua identidade com suporte ao NIP-07, gerenciamento de perfil e as melhores praticas de seguranca de chaves.",
+          "ogImage": "/images/guides/managing-identity/og.svg",
+          "difficulty": "beginner",
+          "order": 2,
+          "content": "\nSua identidade Nostr e a base de tudo na extensao. Este guia explica como gerencia-la, manter suas chaves seguras e usar o assinador NIP-07 que permite que sites interajam com sua conta.\n\n## Suporte ao Assinador NIP-07\n\nNIP-07 permite que aplicacoes web Nostr solicitem assinaturas sem ver sua chave privada. Clientes como Primal, Snort ou Coracle pedem que a extensao assine eventos em seu nome.\n\n1. Um site chama `window.nostr.getPublicKey()` para identificar voce.\n2. Ao publicar uma nota, o site envia o evento nao assinado para a extensao.\n3. Voce ve um aviso de permissao. Se aprovar, a extensao assina e devolve a assinatura.\n4. Sua chave privada nunca sai da extensao.\n\n{/* TODO: Captura de tela do aviso de permissao de assinatura NIP-07 */}\n\n<Callout type=\"tip\">\nSe voce usava outra extensao NIP-07 como nos2x ou Alby, desative-a antes de usar o Nostr WoT. Apenas um assinador NIP-07 deve estar ativo por vez para evitar conflitos.\n</Callout>\n\n## Gerenciando seu Perfil Nostr\n\nOs detalhes do seu perfil -- nome, bio, avatar, endereco Lightning e NIP-05 -- sao armazenados nos relays como um evento kind 0. A extensao permite visualizar e editar esses detalhes diretamente.\n\n### Visualizando seu Perfil\n\nClique no icone da extensao e navegue ate a aba **Identidade**. Voce vera seu perfil atual, npub e relays de publicacao.\n\n{/* TODO: Captura de tela da aba Identidade mostrando detalhes do perfil */}\n\n### Editando seu Perfil\n\n1. Clique em **Editar Perfil** na aba Identidade.\n2. Atualize os campos que desejar.\n3. Clique em **Salvar**. A extensao assina um novo evento kind 0 e o publica nos seus relays.\n\nAs alteracoes se propagam pelos clientes Nostr em segundos, conforme os relays distribuem o evento atualizado.\n\n## Boas Praticas de Seguranca de Chaves\n\nSua chave privada (nsec) e o dado mais importante da sua identidade Nostr. Qualquer pessoa que a possua pode publicar em seu nome e alterar seu perfil. Nao existe recuperacao de senha nem suporte para ligar.\n\n### Armazenamento\n\n- A extensao criptografa sua chave privada localmente. Ela nunca e armazenada em texto simples.\n- Faca backup da nsec em um gerenciador de senhas ou em papel guardado em local seguro.\n- Nunca cole sua nsec em um site ou envie por mensagem.\n\n### Senha de Criptografia\n\n- Escolha uma senha forte e unica ao configurar a extensao.\n- A extensao bloqueia apos inatividade. Voce precisa dessa senha para desbloquea-la.\n- Se esquecer a senha, reimporte sua nsec para redefini-la.\n\n{/* TODO: Captura de tela da tela de bloqueio e entrada de senha */}\n\n### Multiplos Dispositivos\n\nSe voce usa a extensao em varios navegadores, importe a mesma nsec em cada um. Sua identidade esta vinculada ao par de chaves, nao ao dispositivo.\n\n<Callout type=\"tip\">\nConsidere gerar suas chaves com uma ferramenta dedicada e importa-las na extensao, em vez de usar qualquer extensao como fonte das suas chaves. Assim, seu backup existe de forma independente.\n</Callout>\n\n## Alternando Entre Identidades\n\nA extensao suporta multiplas identidades. Se voce gerencia mais de uma conta Nostr, pode alternar entre elas pela aba Identidade. Cada identidade tem seu proprio grafo de confianca, carteira e permissoes.\n\n1. Abra a extensao e va para a aba **Identidade**.\n2. Clique no avatar do seu perfil para ver o alternador de contas.\n3. Selecione uma identidade diferente ou adicione uma nova.\n\n{/* TODO: Video do processo de alternancia de identidades */}\n\n## O Que Vem a Seguir?\n\nCom sua identidade protegida, e hora de entender como a extensao a utiliza para construir sua [Web of Trust](/guides/entendendo-web-of-trust). Se quiser conectar uma carteira, va para [Configurar Carteira Lightning](/guides/configurar-carteira).\n"
+        },
+        {
+          "slug": "entendendo-web-of-trust",
+          "title": "Entendendo a Web of Trust",
+          "description": "Descubra como o grafo de confianca funciona na extensao Nostr WoT. Aprenda sobre saltos, pontuacoes de confianca e como sua rede protege voce do spam.",
+          "excerpt": "A Web of Trust e o sistema que determina em quem voce confia no Nostr. Entenda os conceitos de grafo, saltos e pontuacao de confianca.",
+          "date": "2026-03-11T00:00:00.000Z",
+          "author": {
+            "name": "Leon Acosta",
+            "avatar": "/authors/leon-profile.jpg",
+            "npub": "npub1gxdhmu9swqduwhr6zptjy4ya693zp3ql28nemy4hd97kuufyrqdqwe5zfk"
+          },
+          "featuredImage": "/images/guides/understanding-wot/featured.svg",
+          "previewImage": "/images/guides/understanding-wot/preview.svg",
+          "tags": [
+            "Web of Trust",
+            "Grafo de Confianca",
+            "Conceitos"
+          ],
+          "published": true,
+          "readingTime": "3 min read",
+          "locale": "pt",
+          "translationKey": "understanding-wot",
+          "translations": {
+            "en": "understanding-wot",
+            "es": "entendiendo-web-of-trust",
+            "pt": "entendendo-web-of-trust"
+          },
+          "availableLocales": [
+            "en",
+            "es",
+            "pt"
+          ],
+          "seoTitle": "Entendendo a Web of Trust — Grafo de Confianca",
+          "seoDescription": "Descubra como o grafo de confianca funciona na extensao Nostr WoT. Aprenda sobre saltos, pontuacoes de confianca e como sua rede protege voce do spam.",
+          "ogImage": "/images/guides/understanding-wot/og.svg",
+          "difficulty": "beginner",
+          "order": 3,
+          "content": "\nA Web of Trust e o coracao da extensao Nostr WoT. Em vez de depender de uma empresa para decidir quem e confiavel, voce constroi sua rede de confianca a partir das pessoas que segue. Este guia explica como funciona.\n\n## O Que e um Grafo de Confianca?\n\nUm grafo de confianca e uma rede de conexoes entre pessoas. No Nostr, quando voce segue alguem, esta dizendo: \"Confio nessa pessoa.\" Quando essa pessoa segue outras, ela transmite parte dessa confianca adiante. A extensao mapeia essas conexoes para criar seu grafo pessoal.\n\nVoce e o centro da sua propria rede. Duas pessoas diferentes podem ter grafos de confianca completamente diferentes.\n\n{/* TODO: Captura de tela do grafo de confianca visualizado na extensao */}\n\n## Como Funcionam os Saltos\n\nSaltos (hops) representam a distancia entre voce e outra pessoa no grafo. Veja como funciona:\n\n- **Salto 0** -- Voce mesmo.\n- **Salto 1** -- Pessoas que voce segue diretamente. Sao seus contatos de primeiro nivel.\n- **Salto 2** -- Pessoas que seus contatos de salto 1 seguem, mas que voce nao segue diretamente.\n- **Salto 3** -- Mais um nivel adiante. Sao contatos de contatos de contatos.\n\nQuanto mais perto alguem esta de voce em saltos, maior a confianca atribuida. Uma pessoa no salto 1 tem pontuacao muito maior do que alguem no salto 3.\n\n<Callout type=\"tip\">\nPor padrao, a extensao considera ate 3 saltos. Voce pode ajustar esse limite nas configuracoes de confianca para ampliar ou restringir sua rede.\n</Callout>\n\n## Pontuacao de Confianca\n\nCada pessoa no seu grafo recebe uma pontuacao de confianca (trust score). Essa pontuacao e calculada com base em varios fatores:\n\n### Distancia em Saltos\n\nO fator principal e a distancia. Pessoas no salto 1 recebem a pontuacao mais alta. A cada salto adicional, a pontuacao diminui significativamente.\n\n### Numero de Caminhos\n\nSe multiplas pessoas que voce segue tambem seguem uma mesma pessoa, isso reforga a confianca nela. Quanto mais caminhos independentes levam a alguem, maior a pontuacao.\n\n### Peso dos Intermediarios\n\nNem todos os caminhos tem o mesmo peso. Se um intermediario tem alta confianca no seu grafo, as conexoes dele carregam mais peso do que as de alguem com pontuacao mais baixa.\n\n{/* TODO: Captura de tela mostrando a pontuacao de confianca de um perfil */}\n\n## Como a Extensao Usa a Confianca\n\nA extensao aplica as pontuacoes de confianca de varias formas praticas:\n\n- **Filtragem de conteudo** -- Sites Nostr compatIveis podem usar sua WoT para filtrar spam e mostrar apenas conteudo de pessoas dentro da sua rede de confianca.\n- **Aprovacao de permissoes** -- Voce pode configurar aprovacao automatica para solicitacoes de sites com alta confianca.\n- **Indicadores visuais** -- A extensao pode mostrar indicadores de confianca ao lado dos perfis que voce visualiza.\n\n## Construindo uma Rede Forte\n\nPara ter uma Web of Trust eficaz, siga estas praticas:\n\n- Siga pessoas que voce realmente conhece ou cujo conteudo voce valoriza.\n- Evite seguir contas em massa so para aumentar numeros. Isso dilui a qualidade do seu grafo.\n- Revise periodicamente sua lista de contatos e remova contas inativas ou que nao fazem mais sentido.\n- Uma rede menor e bem curada e mais util do que uma rede enorme e generica.\n\n{/* TODO: Video explicando o conceito de Web of Trust */}\n\n## O Que Vem a Seguir?\n\nAgora que voce entende os fundamentos, aprenda a [personalizar suas configuracoes de confianca](/guides/personalizar-confianca) para ajustar a formula ao seu estilo. Se quiser explorar seu grafo visualmente, confira o [Playground da Web of Trust](/guides/playground-wot).\n"
+        },
+        {
+          "slug": "personalizar-confianca",
+          "title": "Personalizar Configuracoes de Confianca",
+          "description": "Ajuste a formula de confianca, pesos e estrategias na extensao Nostr WoT. Controle como os saltos, caminhos e intermediarios afetam sua pontuacao.",
+          "excerpt": "Aprenda a ajustar a formula de confianca da extensao para que sua rede funcione exatamente como voce quer.",
+          "date": "2026-03-11T00:00:00.000Z",
+          "author": {
+            "name": "Leon Acosta",
+            "avatar": "/authors/leon-profile.jpg",
+            "npub": "npub1gxdhmu9swqduwhr6zptjy4ya693zp3ql28nemy4hd97kuufyrqdqwe5zfk"
+          },
+          "featuredImage": "/images/guides/customizing-trust/featured.svg",
+          "previewImage": "/images/guides/customizing-trust/preview.svg",
+          "tags": [
+            "Configuracoes",
+            "Formula",
+            "Avancado"
+          ],
+          "published": true,
+          "readingTime": "3 min read",
+          "locale": "pt",
+          "translationKey": "customizing-trust",
+          "translations": {
+            "en": "customizing-trust",
+            "es": "personalizar-confianza",
+            "pt": "personalizar-confianca"
+          },
+          "availableLocales": [
+            "en",
+            "es",
+            "pt"
+          ],
+          "seoTitle": "Personalizar Confianca na WoT — Formulas e Pesos",
+          "seoDescription": "Ajuste a formula de confianca, pesos e estrategias na extensao Nostr WoT. Controle como os saltos, caminhos e intermediarios afetam sua pontuacao.",
+          "ogImage": "/images/guides/customizing-trust/og.svg",
+          "difficulty": "intermediate",
+          "order": 4,
+          "content": "\nA extensao Nostr WoT calcula a confianca usando uma formula configuravel. Voce pode ajustar pesos, limites e estrategias para que o grafo reflita suas preferencias. Este guia mostra como.\n\n## Acessando as Configuracoes de Confianca\n\n1. Clique no icone da extensao na barra de ferramentas.\n2. Navegue ate a aba **Configuracoes**.\n3. Selecione a secao **Confianca** ou **Web of Trust**.\n\nAqui voce encontra os parametros que controlam o calculo da pontuacao de confianca.\n\n{/* TODO: Captura de tela da pagina de configuracoes de confianca */}\n\n## A Formula de Confianca\n\nA pontuacao de confianca de uma pessoa e determinada por uma combinacao de fatores. Cada fator tem um peso que voce pode ajustar.\n\n### Decaimento por Salto\n\nEste parametro controla quanto a confianca diminui a cada salto de distancia. Um decaimento alto significa que pessoas no salto 2 ja recebem uma pontuacao bem menor. Um decaimento baixo distribui a confianca de forma mais uniforme pela rede.\n\n- **Valor alto (ex: 0.8)** -- A confianca cai rapido. Apenas pessoas muito proximas a voce tem pontuacao significativa.\n- **Valor baixo (ex: 0.3)** -- A confianca se espalha mais. Pessoas no salto 3 ainda mantem pontuacao relevante.\n\n### Numero Maximo de Saltos\n\nDefine ate onde a extensao busca conexoes a partir de voce. O padrao e 3 saltos. Aumentar esse valor expande sua rede, mas tambem aumenta o tempo de processamento e pode incluir pessoas com menos relevancia.\n\n<Callout type=\"tip\">\nPara a maioria dos usuarios, 3 saltos oferece um bom equilibrio entre cobertura e relevancia. Aumente para 4 apenas se voce tem uma rede pequena e quer mais alcance.\n</Callout>\n\n### Peso de Caminhos Multiplos\n\nQuando varias pessoas que voce segue tambem seguem alguem, esse parametro determina quanto esse reforco conta. Um peso alto significa que confirmacao por multiplos caminhos aumenta bastante a pontuacao. Um peso baixo reduz o efeito desse reforco.\n\n{/* TODO: Captura de tela do controle deslizante de peso de caminhos multiplos */}\n\n## Estrategias de Confianca\n\nA extensao oferece estrategias predefinidas que configuram varios parametros de uma vez.\n\n### Restritiva\n\nConfia apenas em pessoas muito proximas. Ideal para quem quer ver conteudo apenas de contatos diretos e poucos amigos de amigos. Usa decaimento alto e poucos saltos.\n\n### Equilibrada\n\nO padrao recomendado. Oferece um alcance razoavel sem abrir demais o grafo. Bom para a maioria dos usuarios.\n\n### Expansiva\n\nAmplia a rede ao maximo. Usa mais saltos e decaimento menor. Util se voce quer descobrir conteudo novo de pessoas que estao na periferia da sua rede.\n\n{/* TODO: Captura de tela das tres estrategias predefinidas */}\n\n## Listas de Confianca e Bloqueio Manuais\n\nVoce pode substituir a formula para pessoas especificas:\n\n- **Lista de confianca** -- Npubs sempre considerados confiaveis, independente da posicao no grafo.\n- **Lista de bloqueio** -- Npubs sempre excluidos, mesmo que aparecam no grafo.\n\nEssas listas tem prioridade sobre qualquer calculo automatico.\n\n## Aplicando e Testando Alteracoes\n\nApos ajustar os parametros, clique em **Salvar**. A extensao recalcula as pontuacoes de confianca em segundo plano. Voce pode usar o [Playground da Web of Trust](/guides/playground-wot) para visualizar o impacto das suas alteracoes antes de aplica-las no dia a dia.\n\n<Callout type=\"tip\">\nSe voce nao tem certeza de qual configuracao funciona melhor, comece com a estrategia Equilibrada e ajuste gradualmente. Mudancas drasticas podem filtrar conteudo que voce quer ver.\n</Callout>\n\n{/* TODO: Video mostrando o ajuste da formula de confianca */}\n\n## O Que Vem a Seguir?\n\nCom a confianca personalizada, explore o [Playground da Web of Trust](/guides/playground-wot) para visualizar seu grafo. Ou avance para [Permissoes por Site](/guides/permissoes-por-site) para controlar quais sites podem acessar sua identidade.\n"
+        },
+        {
+          "slug": "configurar-carteira",
+          "title": "Configurar Carteira Lightning",
+          "description": "Conecte uma carteira Lightning a extensao Nostr WoT usando Quick Setup, NWC ou LNbits. Envie e receba sats diretamente pelo navegador em poucos minutos.",
+          "excerpt": "Conecte sua carteira Lightning a extensao e comece a enviar e receber sats sem sair do navegador.",
+          "date": "2026-03-11T00:00:00.000Z",
+          "author": {
+            "name": "Leon Acosta",
+            "avatar": "/authors/leon-profile.jpg",
+            "npub": "npub1gxdhmu9swqduwhr6zptjy4ya693zp3ql28nemy4hd97kuufyrqdqwe5zfk"
+          },
+          "featuredImage": "/images/guides/setting-up-wallet/featured.svg",
+          "previewImage": "/images/guides/setting-up-wallet/preview.svg",
+          "tags": [
+            "Lightning",
+            "Carteira",
+            "NWC"
+          ],
+          "published": true,
+          "readingTime": "3 min read",
+          "locale": "pt",
+          "translationKey": "setting-up-wallet",
+          "translations": {
+            "en": "setting-up-wallet",
+            "es": "configurar-billetera",
+            "pt": "configurar-carteira"
+          },
+          "availableLocales": [
+            "en",
+            "es",
+            "pt"
+          ],
+          "seoTitle": "Configurar Carteira Lightning na Extensao Nostr WoT",
+          "seoDescription": "Conecte uma carteira Lightning a extensao Nostr WoT usando Quick Setup, NWC ou LNbits. Envie e receba sats diretamente pelo navegador em poucos minutos.",
+          "ogImage": "/images/guides/setting-up-wallet/og.svg",
+          "difficulty": "beginner",
+          "order": 5,
+          "content": "\nA extensao Nostr WoT inclui suporte integrado a carteira Lightning, permitindo que voce envie e receba sats diretamente do navegador. Este guia mostra as tres formas de conectar uma carteira: Quick Setup, Nostr Wallet Connect (NWC) e LNbits.\n\n## Quick Setup\n\nA maneira mais rapida de comecar. O Quick Setup cria uma carteira custodial conectada a extensao em poucos cliques.\n\n1. Abra a extensao e va para a aba **Carteira**.\n2. Selecione **Quick Setup**.\n3. A extensao configura uma carteira automaticamente e conecta via NWC nos bastidores.\n4. Pronto. Voce ja pode enviar e receber sats.\n\n{/* TODO: Captura de tela do fluxo Quick Setup */}\n\n<Callout type=\"tip\">\nO Quick Setup e ideal para comecar rapidamente. Quando voce se sentir confortavel, pode migrar para uma carteira auto-custodiada como LNbits para ter controle total dos seus fundos.\n</Callout>\n\n## Nostr Wallet Connect (NWC)\n\nNWC e um protocolo aberto que conecta sua carteira Lightning a aplicacoes Nostr de forma segura. Se voce ja tem uma carteira compativel com NWC, essa e a opcao recomendada.\n\n### Como Conectar via NWC\n\n1. Na sua carteira Lightning (como Alby, Mutiny ou outra compativel), gere uma string de conexao NWC.\n2. Abra a extensao e va para a aba **Carteira**.\n3. Selecione **Nostr Wallet Connect**.\n4. Cole a string de conexao NWC.\n5. A extensao testa a conexao e confirma que esta funcionando.\n\n{/* TODO: Captura de tela da tela de conexao NWC */}\n\n### Vantagens do NWC\n\n- Voce mantem o controle da sua carteira. A extensao nunca tem acesso direto aos seus fundos.\n- A comunicacao entre a extensao e a carteira acontece via relays Nostr, criptografada de ponta a ponta.\n- Voce pode revogar a conexao a qualquer momento pela sua carteira.\n\n## LNbits\n\nLNbits e uma plataforma de carteira Lightning de codigo aberto que voce pode hospedar por conta propria. Se voce quer soberania total, esta e a melhor opcao.\n\n### Conectando o LNbits\n\n1. Acesse sua instancia LNbits e crie uma carteira (ou use uma existente).\n2. Va para as extensoes do LNbits e ative a extensao **Nostr Wallet Connect**.\n3. Gere uma string de conexao NWC no LNbits.\n4. Abra a extensao Nostr WoT, va para a aba **Carteira** e selecione **Nostr Wallet Connect**.\n5. Cole a string de conexao do LNbits.\n\n{/* TODO: Captura de tela da extensao NWC no LNbits */}\n\n<Callout type=\"tip\">\nSe voce nao quer hospedar seu proprio LNbits, existem instancias publicas disponiveis. Mas lembre-se: ao usar uma instancia de terceiros, voce esta confiando nesse operador com seus fundos.\n</Callout>\n\n## Verificando a Conexao\n\nApos conectar sua carteira por qualquer metodo, verifique se tudo esta funcionando:\n\n1. Clique no icone da extensao e va para a aba **Carteira**.\n2. Voce deve ver seu saldo atual.\n3. Tente enviar um pequeno valor para si mesmo ou para um contato para confirmar que pagamentos estao funcionando.\n\n## Gerenciando sua Carteira\n\nNa aba Carteira, voce pode:\n\n- Verificar seu saldo atualizado.\n- Ver o historico de transacoes.\n- Desconectar a carteira e conectar outra.\n- Configurar limites de gasto para aprovacao automatica.\n\n{/* TODO: Video do processo completo de configuracao da carteira */}\n\n## O Que Vem a Seguir?\n\nCom a carteira conectada, aprenda a usar [Zaps e Aprovacao Automatica](/guides/zaps-e-aprovacao-automatica) para enviar sats com facilidade. Voce tambem pode [reivindicar seu Endereco Lightning](/guides/endereco-lightning) para receber pagamentos de forma simples.\n"
+        },
+        {
+          "slug": "zaps-e-aprovacao-automatica",
+          "title": "Zaps e Aprovacao Automatica",
+          "description": "Aprenda a enviar zaps pelo navegador com a extensao Nostr WoT. Configure limites de aprovacao automatica e use WebLN para pagamentos rapidos em sats.",
+          "excerpt": "Envie sats para quem voce confia com um clique. Configure aprovacao automatica e use WebLN para zaps relampago.",
+          "date": "2026-03-11T00:00:00.000Z",
+          "author": {
+            "name": "Leon Acosta",
+            "avatar": "/authors/leon-profile.jpg",
+            "npub": "npub1gxdhmu9swqduwhr6zptjy4ya693zp3ql28nemy4hd97kuufyrqdqwe5zfk"
+          },
+          "featuredImage": "/images/guides/zapping-auto-approve/featured.svg",
+          "previewImage": "/images/guides/zapping-auto-approve/preview.svg",
+          "tags": [
+            "Zaps",
+            "Lightning",
+            "WebLN"
+          ],
+          "published": true,
+          "readingTime": "3 min read",
+          "locale": "pt",
+          "translationKey": "zapping-auto-approve",
+          "translations": {
+            "en": "zapping-auto-approve",
+            "es": "zaps-y-auto-aprobacion",
+            "pt": "zaps-e-aprovacao-automatica"
+          },
+          "availableLocales": [
+            "en",
+            "es",
+            "pt"
+          ],
+          "seoTitle": "Zaps e Aprovacao Automatica na Extensao Nostr WoT",
+          "seoDescription": "Aprenda a enviar zaps pelo navegador com a extensao Nostr WoT. Configure limites de aprovacao automatica e use WebLN para pagamentos rapidos em sats.",
+          "ogImage": "/images/guides/zapping-auto-approve/og.svg",
+          "difficulty": "beginner",
+          "order": 6,
+          "content": "\nZaps sao pagamentos Lightning dentro do ecossistema Nostr. Com a extensao Nostr WoT, voce envia zaps diretamente pelo navegador. Este guia explica como funcionam, como usar WebLN e como configurar aprovacao automatica.\n\n## O Que Sao Zaps?\n\nZaps sao micropagamentos em Bitcoin via Lightning Network vinculados a eventos Nostr. Quando voce faz um zap em uma nota, voce esta enviando sats diretamente para o autor daquela publicacao. O pagamento e registrado no Nostr como um evento, ficando visivel para outros usuarios.\n\nNa pratica:\n\n1. Voce ve uma nota que gosta em um cliente Nostr.\n2. Clica no botao de zap.\n3. O cliente solicita o pagamento via a extensao.\n4. A extensao usa sua carteira conectada para completar o pagamento.\n\n{/* TODO: Captura de tela do popup de zap em um cliente Nostr */}\n\n## WebLN: Pagamentos pelo Navegador\n\nWebLN e um padrao que permite que sites solicitem pagamentos Lightning diretamente do navegador. A extensao Nostr WoT funciona como um provedor WebLN, o que significa que qualquer site compativel pode solicitar pagamentos sem que voce precise copiar e colar invoices.\n\nQuando um site faz uma solicitacao WebLN:\n\n1. A extensao intercepta a solicitacao.\n2. Voce ve um popup com os detalhes do pagamento -- valor, descricao e destino.\n3. Voce aprova ou rejeita o pagamento.\n\n{/* TODO: Captura de tela do popup WebLN de aprovacao de pagamento */}\n\n<Callout type=\"tip\">\nWebLN funciona alem do Nostr. Qualquer site que suporte WebLN -- como lojas, servicos de streaming ou plataformas de conteudo -- pode solicitar pagamentos pela extensao.\n</Callout>\n\n## Configurando Aprovacao Automatica\n\nAprovar cada pagamento manualmente pode ser cansativo, especialmente se voce faz zaps frequentes. A aprovacao automatica resolve isso definindo limites abaixo dos quais os pagamentos sao aprovados sem intervencao.\n\n### Como Configurar\n\n1. Abra a extensao e va para a aba **Carteira**.\n2. Procure a secao **Aprovacao Automatica** ou **Auto-approve**.\n3. Defina o valor maximo por transacao (ex: 100 sats).\n4. Opcionalmente, defina um limite diario total (ex: 1.000 sats por dia).\n5. Salve as configuracoes.\n\n### Como Funciona\n\n- Se um pagamento esta abaixo do limite por transacao e o total diario nao foi atingido, a extensao aprova automaticamente.\n- Se o pagamento excede qualquer limite, voce ve o popup de confirmacao normalmente.\n- Voce pode desativar a aprovacao automatica a qualquer momento.\n\n{/* TODO: Captura de tela da configuracao de limites de aprovacao automatica */}\n\n## Aprovacao Automatica e Web of Trust\n\nA extensao pode combinar aprovacao automatica com sua Web of Trust. Voce pode configurar para que pagamentos sejam aprovados automaticamente apenas quando o destino e uma pessoa dentro da sua rede de confianca.\n\nPor exemplo:\n\n- Pagamentos para pessoas no salto 1 -- aprovacao automatica ate 500 sats.\n- Pagamentos para pessoas no salto 2 -- aprovacao automatica ate 100 sats.\n- Pagamentos para pessoas fora da sua WoT -- sempre exigem confirmacao manual.\n\nIsso combina conveniencia com seguranca, garantindo que seus sats vao apenas para pessoas que voce confia.\n\n<Callout type=\"tip\">\nComece com limites baixos e aumente conforme voce se sentir confortavel. E mais facil aumentar limites do que recuperar sats enviados por engano.\n</Callout>\n\n## Historico de Zaps\n\nTodos os zaps enviados ficam registrados na aba Carteira com data, valor, destino e status.\n\n{/* TODO: Video demonstrando o envio de um zap com aprovacao automatica */}\n\n## O Que Vem a Seguir?\n\nAgora que voce sabe como enviar zaps, [reivindique seu Endereco Lightning](/guides/endereco-lightning) para receber pagamentos de forma simples. Tambem vale conferir como configurar [Permissoes por Site](/guides/permissoes-por-site) para controlar quais sites podem solicitar pagamentos.\n"
+        },
+        {
+          "slug": "endereco-lightning",
+          "title": "Reivindicar seu Endereco Lightning",
+          "description": "Reivindique seu endereco Lightning personalizado seunome@zaps.nostr-wot.com pela extensao Nostr WoT. Adicione ao perfil e comece a receber zaps facilmente.",
+          "excerpt": "Ganhe um endereco Lightning personalizado e adicione-o ao seu perfil Nostr para receber zaps de qualquer pessoa.",
+          "date": "2026-03-11T00:00:00.000Z",
+          "author": {
+            "name": "Leon Acosta",
+            "avatar": "/authors/leon-profile.jpg",
+            "npub": "npub1gxdhmu9swqduwhr6zptjy4ya693zp3ql28nemy4hd97kuufyrqdqwe5zfk"
+          },
+          "featuredImage": "/images/guides/lightning-address/featured.svg",
+          "previewImage": "/images/guides/lightning-address/preview.svg",
+          "tags": [
+            "Endereco Lightning",
+            "Zaps",
+            "Identidade"
+          ],
+          "published": true,
+          "readingTime": "3 min read",
+          "locale": "pt",
+          "translationKey": "lightning-address",
+          "translations": {
+            "en": "lightning-address",
+            "es": "direccion-lightning",
+            "pt": "endereco-lightning"
+          },
+          "availableLocales": [
+            "en",
+            "es",
+            "pt"
+          ],
+          "seoTitle": "Reivindicar Endereco Lightning na Extensao WoT",
+          "seoDescription": "Reivindique seu endereco Lightning personalizado seunome@zaps.nostr-wot.com pela extensao Nostr WoT. Adicione ao perfil e comece a receber zaps facilmente.",
+          "ogImage": "/images/guides/lightning-address/og.svg",
+          "difficulty": "beginner",
+          "order": 7,
+          "content": "\nUm endereco Lightning funciona como um e-mail para pagamentos em Bitcoin via Lightning Network. Em vez de compartilhar invoices, voce da as pessoas um endereco simples como **seunome@zaps.nostr-wot.com**. Este guia mostra como reivindicar o seu.\n\n## O Que e um Endereco Lightning?\n\nUm endereco Lightning e um identificador legivel que redireciona pagamentos para sua carteira. Ele segue o formato usuario@dominio.com e funciona em qualquer carteira ou cliente Nostr que suporte o padrao LNURL.\n\nQuando alguem envia sats para seu endereco Lightning:\n\n1. O remetente digita seu endereco na carteira ou clica no botao de zap.\n2. O dominio do endereco responde com as informacoes de pagamento da sua carteira.\n3. O pagamento e enviado via Lightning Network diretamente para sua carteira conectada.\n\n{/* TODO: Captura de tela mostrando um endereco Lightning em um perfil Nostr */}\n\n## Reivindicando seu Endereco\n\nA extensao Nostr WoT oferece enderecos Lightning gratuitos no dominio **zaps.nostr-wot.com**. Veja como reivindicar o seu:\n\n1. Abra a extensao e va para a aba **Carteira**.\n2. Procure a secao **Endereco Lightning** ou **Lightning Address**.\n3. Escolha seu nome de usuario. Ele sera combinado com o dominio para formar seu endereco (ex: maria@zaps.nostr-wot.com).\n4. Clique em **Reivindicar** ou **Claim**.\n5. A extensao verifica a disponibilidade e registra o endereco.\n\n{/* TODO: Captura de tela da tela de reivindicacao do endereco Lightning */}\n\n<Callout type=\"tip\">\nEscolha um nome de usuario que seja facil de lembrar e compartilhar. Nomes curtos e simples funcionam melhor. Se o nome que voce quer ja esta em uso, tente variacoes.\n</Callout>\n\n## Adicionando ao seu Perfil Nostr\n\nPara que outros usuarios do Nostr possam fazer zaps para voce, seu endereco Lightning precisa estar no seu perfil. A extensao pode fazer isso automaticamente:\n\n1. Apos reivindicar o endereco, a extensao pergunta se voce quer atualizar seu perfil.\n2. Confirme a atualizacao. A extensao assina um novo evento kind 0 com o campo de endereco Lightning preenchido.\n3. O endereco agora aparece no seu perfil em todos os clientes Nostr.\n\n{/* TODO: Captura de tela do campo de endereco Lightning na edicao de perfil */}\n\n## Recebendo Zaps\n\nCom o endereco configurado e adicionado ao perfil, voce ja pode receber zaps. Veja o que acontece quando alguem faz um zap para voce:\n\n1. O remetente clica no botao de zap em uma nota sua em qualquer cliente Nostr.\n2. O cliente busca seu endereco Lightning no seu perfil.\n3. O pagamento e encaminhado para sua carteira conectada.\n4. Os sats aparecem no seu saldo.\n\nOs zaps recebidos ficam visiveis como eventos Nostr, visiveis para outros usuarios.\n\n## Usando com Diferentes Carteiras\n\nSeu endereco Lightning no dominio zaps.nostr-wot.com roteia pagamentos para a carteira que voce conectou a extensao. Se voce trocar de carteira, os pagamentos serao automaticamente direcionados para a nova carteira.\n\n- **Quick Setup** -- O endereco funciona imediatamente.\n- **NWC** -- Os pagamentos sao encaminhados para sua carteira conectada via NWC.\n- **LNbits** -- Os pagamentos vao para sua instancia LNbits.\n\n<Callout type=\"tip\">\nVoce pode testar seu endereco enviando um pequeno valor para si mesmo usando outra carteira. Isso confirma que o encaminhamento esta funcionando corretamente.\n</Callout>\n\n{/* TODO: Video mostrando o processo completo de reivindicacao e teste do endereco */}\n\n## O Que Vem a Seguir?\n\nCom seu endereco Lightning ativo, voce esta pronto para receber pagamentos de qualquer pessoa no ecossistema Nostr. Aprenda a controlar [Permissoes por Site](/guides/permissoes-por-site) para gerenciar quais sites podem acessar sua carteira. Ou explore o [Playground da Web of Trust](/guides/playground-wot) para visualizar sua rede.\n"
+        },
+        {
+          "slug": "permissoes-por-site",
+          "title": "Permissoes por Site",
+          "description": "Controle quais sites podem acessar sua identidade Nostr e carteira Lightning. Configure permissoes individuais e boas praticas de seguranca na extensao WoT.",
+          "excerpt": "Controle exatamente quais sites acessam sua identidade e carteira. Configure permissoes individuais para cada dominio.",
+          "date": "2026-03-11T00:00:00.000Z",
+          "author": {
+            "name": "Leon Acosta",
+            "avatar": "/authors/leon-profile.jpg",
+            "npub": "npub1gxdhmu9swqduwhr6zptjy4ya693zp3ql28nemy4hd97kuufyrqdqwe5zfk"
+          },
+          "featuredImage": "/images/guides/site-permissions/featured.svg",
+          "previewImage": "/images/guides/site-permissions/preview.svg",
+          "tags": [
+            "Permissoes",
+            "Seguranca",
+            "Privacidade"
+          ],
+          "published": true,
+          "readingTime": "3 min read",
+          "locale": "pt",
+          "translationKey": "site-permissions",
+          "translations": {
+            "en": "site-permissions",
+            "es": "permisos-por-sitio",
+            "pt": "permissoes-por-site"
+          },
+          "availableLocales": [
+            "en",
+            "es",
+            "pt"
+          ],
+          "seoTitle": "Permissoes por Site — Controle de Acesso no WoT",
+          "seoDescription": "Controle quais sites podem acessar sua identidade Nostr e carteira Lightning. Configure permissoes individuais e boas praticas de seguranca na extensao WoT.",
+          "ogImage": "/images/guides/site-permissions/og.svg",
+          "difficulty": "intermediate",
+          "order": 8,
+          "content": "\nA extensao Nostr WoT permite controlar individualmente o que cada site pode fazer com sua identidade e carteira. Este guia explica como o sistema de permissoes funciona e como configura-lo.\n\n## Como as Permissoes Funcionam\n\nQuando um site tenta interagir com a extensao -- seja para ler sua chave publica, solicitar uma assinatura ou fazer um pagamento -- a extensao verifica as permissoes configuradas para aquele dominio especifico.\n\nExistem tres niveis de permissao para cada tipo de acao:\n\n- **Sempre permitir** -- A acao e executada automaticamente sem perguntar.\n- **Sempre perguntar** -- A extensao mostra um popup de confirmacao toda vez.\n- **Sempre negar** -- A solicitacao e rejeitada silenciosamente.\n\n{/* TODO: Captura de tela do popup de solicitacao de permissao */}\n\n## Tipos de Permissao\n\nA extensao gerencia permissoes para varias categorias de acoes:\n\n### Identidade (NIP-07)\n\n- **Ler chave publica** -- O site pode ver sua npub. Isso e necessario para identificar voce.\n- **Assinar eventos** -- O site pode solicitar que a extensao assine eventos Nostr em seu nome.\n- **Criptografar/descriptografar** -- O site pode solicitar operacoes de criptografia para mensagens diretas (NIP-04/NIP-44).\n\n### Carteira (WebLN)\n\n- **Pagamentos** -- O site pode solicitar que voce envie sats.\n- **Consultar saldo** -- O site pode ver o saldo da sua carteira.\n- **Criar invoices** -- O site pode gerar invoices para voce receber pagamentos.\n\n{/* TODO: Captura de tela da lista de permissoes por tipo */}\n\n## Gerenciando Permissoes por Site\n\n### Visualizando Permissoes Existentes\n\n1. Abra a extensao e va para a aba **Permissoes** ou **Configuracoes**.\n2. Voce vera uma lista de todos os sites que ja solicitaram alguma permissao.\n3. Cada site mostra quais permissoes estao ativas e em qual nivel.\n\n### Editando Permissoes\n\n1. Clique no dominio que voce quer configurar.\n2. Ajuste cada tipo de permissao individualmente.\n3. Salve as alteracoes.\n\n### Removendo um Site\n\nSe voce quer revogar todas as permissoes de um site, clique no botao de remover ao lado do dominio. Na proxima vez que o site solicitar acesso, voce vera o popup de confirmacao novamente.\n\n{/* TODO: Captura de tela da tela de edicao de permissoes de um site */}\n\n<Callout type=\"tip\">\nRevise suas permissoes periodicamente. Se voce nao visita mais um site, remova suas permissoes. Menos sites com acesso significa menos superficie de ataque.\n</Callout>\n\n## Boas Praticas de Seguranca\n\n### Seja Seletivo com Assinaturas\n\nAssinar eventos e o ato mais sensivel que a extensao faz. Quando voce aprova uma assinatura, esta publicando algo como sua identidade Nostr. Conceda permissao permanente de assinatura apenas para clientes Nostr que voce conhece e confia.\n\n### Cuidado com Pagamentos Automaticos\n\nSe voce configurou aprovacao automatica de pagamentos, preste atencao a quais sites tem essa permissao. Um site malicioso poderia drenar seus fundos se tiver permissao de pagamento automatico.\n\n### Verifique o Dominio\n\nAntes de aprovar qualquer permissao, verifique se o dominio no popup corresponde ao site que voce esta visitando. Ataques de phishing podem tentar se passar por clientes Nostr legitimos.\n\n### Use a Web of Trust\n\nA extensao pode usar sua Web of Trust para ajudar nas decisoes de permissao. Sites associados a pessoas dentro da sua rede de confianca podem receber tratamento diferenciado nas solicitacoes.\n\n{/* TODO: Video demonstrando o gerenciamento de permissoes */}\n\n## O Que Vem a Seguir?\n\nCom suas permissoes configuradas, explore o [Playground da Web of Trust](/guides/playground-wot) para visualizar e testar sua rede de confianca. Se ainda nao configurou sua carteira, volte para [Configurar Carteira Lightning](/guides/configurar-carteira).\n"
+        },
+        {
+          "slug": "playground-wot",
+          "title": "Playground da Web of Trust",
+          "description": "Explore seu grafo de confianca visualmente no Playground da extensao Nostr WoT. Filtre conexoes, teste configuracoes e entenda sua rede de confianca.",
+          "excerpt": "Use o Playground para explorar, visualizar e testar seu grafo de confianca de forma interativa.",
+          "date": "2026-03-11T00:00:00.000Z",
+          "author": {
+            "name": "Leon Acosta",
+            "avatar": "/authors/leon-profile.jpg",
+            "npub": "npub1gxdhmu9swqduwhr6zptjy4ya693zp3ql28nemy4hd97kuufyrqdqwe5zfk"
+          },
+          "featuredImage": "/images/guides/wot-playground/featured.svg",
+          "previewImage": "/images/guides/wot-playground/preview.svg",
+          "tags": [
+            "Playground",
+            "Visualizacao",
+            "Grafo de Confianca"
+          ],
+          "published": true,
+          "readingTime": "3 min read",
+          "locale": "pt",
+          "translationKey": "wot-playground",
+          "translations": {
+            "en": "wot-playground",
+            "es": "playground-wot",
+            "pt": "playground-wot"
+          },
+          "availableLocales": [
+            "en",
+            "es",
+            "pt"
+          ],
+          "seoTitle": "Playground da Web of Trust — Explore seu Grafo",
+          "seoDescription": "Explore seu grafo de confianca visualmente no Playground da extensao Nostr WoT. Filtre conexoes, teste configuracoes e entenda sua rede de confianca.",
+          "ogImage": "/images/guides/wot-playground/og.svg",
+          "difficulty": "intermediate",
+          "order": 9,
+          "content": "\nO Playground da Web of Trust e uma ferramenta interativa para visualizar e testar seu grafo de confianca. Voce pode ver as conexoes da sua rede de forma grafica e entender como mudancas nas configuracoes afetam quem e considerado confiavel.\n\n## Acessando o Playground\n\n1. Abra a extensao e clique no icone da extensao na barra de ferramentas.\n2. Navegue ate a aba **Playground** ou **WoT Playground**.\n3. O grafo comeca a carregar a partir dos seus contatos e se expande conforme as conexoes sao mapeadas.\n\n{/* TODO: Captura de tela da tela inicial do Playground */}\n\n## A Visualizacao do Grafo\n\nO Playground mostra seu grafo de confianca como uma rede de nos conectados por linhas.\n\n### Lendo o Grafo\n\n- **Voce** aparece no centro do grafo.\n- **Nos proximos** (salto 1) sao exibidos mais perto de voce com cores mais intensas.\n- **Nos distantes** (salto 2, 3) ficam mais afastados com cores mais suaves.\n- **O tamanho do no** reflete a pontuacao de confianca.\n- **Linhas** mostram as relacoes de seguir.\n\n{/* TODO: Captura de tela do grafo com anotacoes explicativas */}\n\n<Callout type=\"tip\">\nVoce pode clicar em qualquer no para ver os detalhes daquela pessoa -- nome, npub, pontuacao de confianca, numero de saltos e quantos caminhos conectam voce a ela.\n</Callout>\n\n## Interagindo com o Grafo\n\nO Playground oferece varias formas de interacao:\n\n### Navegacao\n\n- **Arrastar** -- Mova o grafo para explorar diferentes areas.\n- **Zoom** -- Use a roda do mouse ou gestos de pinca para aproximar ou afastar.\n- **Clicar em um no** -- Seleciona a pessoa e mostra seus detalhes no painel lateral.\n\n### Busca\n\nDigite o nome ou npub de uma pessoa na barra de busca para encontra-la no grafo. O grafo centraliza nela e destaca o caminho ate voce.\n\n{/* TODO: Captura de tela da funcao de busca no Playground */}\n\n## Filtrando o Grafo\n\nOs filtros permitem que voce foque em partes especificas da sua rede:\n\n### Por Salto\n\nMostre apenas pessoas ate um determinado numero de saltos. Util para ver apenas contatos diretos ou expandir gradualmente.\n\n### Por Pontuacao de Confianca\n\nDefina uma pontuacao minima para exibir apenas pessoas com confianca acima de um limite.\n\n### Por Conexoes Mutuas\n\nMostre apenas pessoas com um numero minimo de conexoes mutuas. Isso destaca quem e referendado por varios dos seus contatos.\n\n{/* TODO: Captura de tela dos controles de filtro */}\n\n## Testando Configuracoes de Confianca\n\nVoce pode testar alteracoes nas configuracoes de confianca sem aplica-las permanentemente.\n\n1. No painel lateral, ajuste os parametros -- decaimento por salto, numero maximo de saltos, peso de caminhos multiplos.\n2. O grafo se atualiza em tempo real.\n3. Compare como diferentes configuracoes afetam sua rede.\n4. Quando encontrar uma boa configuracao, aplique-a nas configuracoes reais da extensao.\n\n<Callout type=\"tip\">\nUse o Playground antes de mudar suas configuracoes de confianca. Ver o impacto visual das alteracoes ajuda a tomar decisoes mais informadas do que ajustar numeros as cegas.\n</Callout>\n\n## Exportando Dados\n\nO Playground pode permitir que voce exporte dados do seu grafo para analise externa. Dependendo das opcoes disponiveis, voce pode exportar a lista de pessoas na sua rede com suas respectivas pontuacoes de confianca.\n\n{/* TODO: Video demonstrando a exploracao do Playground */}\n\n## O Que Vem a Seguir?\n\nCom o Playground, voce tem visibilidade total da sua rede de confianca. Se quiser ajustar sua formula, volte para [Personalizar Configuracoes de Confianca](/guides/personalizar-confianca). Para rever os fundamentos, consulte [Entendendo a Web of Trust](/guides/entendendo-web-of-trust).\n"
+        }
+      ],
+      "tags": [
+        "Avancado",
+        "Carteira",
+        "Chaves",
+        "Conceitos",
+        "Configuracao",
+        "Configuracoes",
+        "Endereco Lightning",
+        "Extensao",
+        "Formula",
+        "Grafo de Confianca",
+        "Identidade",
+        "Iniciante",
+        "Lightning",
+        "NIP-07",
+        "NWC",
+        "Permissoes",
+        "Playground",
+        "Privacidade",
+        "Seguranca",
+        "Visualizacao",
+        "Web of Trust",
+        "WebLN",
+        "Zaps"
+      ]
+    }
+  }
+}

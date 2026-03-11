@@ -1,0 +1,144 @@
+<svg width="1200" height="630" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#1e1b4b;stop-opacity:1" />
+      <stop offset="50%" style="stop-color:#312e81;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#4c1d95;stop-opacity:1" />
+    </linearGradient>
+    <radialGradient id="glow" cx="50%" cy="45%" r="45%">
+      <stop offset="0%" style="stop-color:#7c3aed;stop-opacity:0.3" />
+      <stop offset="100%" style="stop-color:#1e1b4b;stop-opacity:0" />
+    </radialGradient>
+    <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="0" stdDeviation="4" flood-color="#a78bfa" flood-opacity="0.5"/>
+    </filter>
+    <filter id="wallet-glow" x="-50%" y="-50%" width="200%" height="200%">
+      <feDropShadow dx="0" dy="0" stdDeviation="10" flood-color="#facc15" flood-opacity="0.7"/>
+    </filter>
+    <filter id="path-glow-green" x="-50%" y="-50%" width="200%" height="200%">
+      <feDropShadow dx="0" dy="0" stdDeviation="5" flood-color="#4ade80" flood-opacity="0.5"/>
+    </filter>
+    <filter id="path-glow-yellow" x="-50%" y="-50%" width="200%" height="200%">
+      <feDropShadow dx="0" dy="0" stdDeviation="5" flood-color="#facc15" flood-opacity="0.5"/>
+    </filter>
+    <filter id="path-glow-purple" x="-50%" y="-50%" width="200%" height="200%">
+      <feDropShadow dx="0" dy="0" stdDeviation="5" flood-color="#a78bfa" flood-opacity="0.5"/>
+    </filter>
+    <filter id="bolt-glow" x="-50%" y="-50%" width="200%" height="200%">
+      <feDropShadow dx="0" dy="0" stdDeviation="8" flood-color="#facc15" flood-opacity="0.6"/>
+    </filter>
+  </defs>
+
+  <!-- Background -->
+  <rect width="100%" height="100%" fill="url(#bg)"/>
+  <rect width="100%" height="100%" fill="url(#glow)"/>
+
+  <!-- Subtle grid pattern -->
+  <g opacity="0.05" stroke="white" stroke-width="0.5">
+    <line x1="0" y1="0" x2="1200" y2="630"/>
+    <line x1="200" y1="0" x2="1200" y2="500"/>
+    <line x1="0" y1="200" x2="1000" y2="630"/>
+    <line x1="400" y1="0" x2="1200" y2="400"/>
+    <line x1="0" y1="400" x2="800" y2="630"/>
+    <line x1="1200" y1="0" x2="0" y2="630"/>
+    <line x1="1000" y1="0" x2="0" y2="500"/>
+    <line x1="1200" y1="200" x2="200" y2="630"/>
+  </g>
+
+  <!-- Trust rings -->
+  <circle cx="600" cy="280" r="270" fill="none" stroke="rgba(167,139,250,0.06)" stroke-width="1" stroke-dasharray="4,8"/>
+  <circle cx="600" cy="280" r="210" fill="none" stroke="rgba(167,139,250,0.10)" stroke-width="1" stroke-dasharray="4,8"/>
+  <circle cx="600" cy="280" r="150" fill="none" stroke="rgba(167,139,250,0.14)" stroke-width="1" stroke-dasharray="4,8"/>
+
+  <!-- ============================================ -->
+  <!-- CENTRAL WALLET ICON                          -->
+  <!-- ============================================ -->
+  <g filter="url(#wallet-glow)">
+    <!-- Wallet body -->
+    <rect x="520" y="200" width="160" height="120" rx="14" fill="rgba(250,204,21,0.1)" stroke="rgba(250,204,21,0.7)" stroke-width="2.5"/>
+    <!-- Wallet flap -->
+    <path d="M520,230 L520,210 C520,202 528,194 536,194 L664,194 C672,194 680,202 680,210 L680,230" fill="none" stroke="rgba(250,204,21,0.5)" stroke-width="2"/>
+    <!-- Wallet clasp -->
+    <rect x="640" y="250" width="40" height="30" rx="8" fill="rgba(250,204,21,0.15)" stroke="rgba(250,204,21,0.5)" stroke-width="1.5"/>
+    <circle cx="660" cy="265" r="6" fill="rgba(250,204,21,0.3)" stroke="rgba(250,204,21,0.6)" stroke-width="1"/>
+  </g>
+
+  <!-- Lightning bolt inside wallet -->
+  <g filter="url(#bolt-glow)">
+    <polygon points="605,220 580,265 598,265 575,305 625,255 605,255 628,220" fill="rgba(250,204,21,0.85)" stroke="rgba(250,204,21,0.4)" stroke-width="1"/>
+  </g>
+  <!-- Bolt inner highlight -->
+  <polygon points="603,228 584,262 599,262 582,295 618,258 605,258 623,228" fill="rgba(255,255,255,0.12)"/>
+
+  <!-- ============================================ -->
+  <!-- THREE CONNECTION PATHS                       -->
+  <!-- ============================================ -->
+
+  <!-- Path 1: NWC (top-right, green) -->
+  <g filter="url(#path-glow-green)">
+    <path d="M680,240 C740,210 790,180 860,170" fill="none" stroke="rgba(74,222,128,0.5)" stroke-width="2.5" stroke-dasharray="8,4"/>
+    <circle cx="862" cy="170" r="4" fill="rgba(74,222,128,0.8)"/>
+  </g>
+  <!-- NWC box -->
+  <g>
+    <rect x="835" y="130" width="140" height="80" rx="10" fill="rgba(74,222,128,0.06)" stroke="rgba(74,222,128,0.35)" stroke-width="1.5"/>
+    <!-- NWC icon (connection symbol) -->
+    <circle cx="880" cy="155" r="8" fill="none" stroke="rgba(74,222,128,0.6)" stroke-width="1.5"/>
+    <circle cx="900" cy="155" r="8" fill="none" stroke="rgba(74,222,128,0.6)" stroke-width="1.5"/>
+    <line x1="888" y1="155" x2="892" y2="155" stroke="rgba(74,222,128,0.5)" stroke-width="1.5"/>
+    <text x="905" y="185" font-family="monospace" font-size="16" fill="rgba(74,222,128,0.8)" text-anchor="middle" font-weight="bold">NWC</text>
+    <text x="905" y="200" font-family="monospace" font-size="9" fill="rgba(74,222,128,0.5)" text-anchor="middle">Nostr Wallet Connect</text>
+  </g>
+
+  <!-- Path 2: LNbits (bottom-right, yellow) -->
+  <g filter="url(#path-glow-yellow)">
+    <path d="M680,290 C740,320 790,360 860,380" fill="none" stroke="rgba(250,204,21,0.5)" stroke-width="2.5" stroke-dasharray="8,4"/>
+    <circle cx="862" cy="380" r="4" fill="rgba(250,204,21,0.8)"/>
+  </g>
+  <!-- LNbits box -->
+  <g>
+    <rect x="835" y="345" width="140" height="80" rx="10" fill="rgba(250,204,21,0.06)" stroke="rgba(250,204,21,0.35)" stroke-width="1.5"/>
+    <!-- LNbits icon (small bolt) -->
+    <polygon points="875,362 868,372 874,372 867,382 883,370 877,370 884,362" fill="rgba(250,204,21,0.7)"/>
+    <text x="905" y="397" font-family="monospace" font-size="16" fill="rgba(250,204,21,0.8)" text-anchor="middle" font-weight="bold">LNbits</text>
+    <text x="905" y="415" font-family="monospace" font-size="9" fill="rgba(250,204,21,0.5)" text-anchor="middle">Self-hosted wallet</text>
+  </g>
+
+  <!-- Path 3: Quick Setup (left, purple) -->
+  <g filter="url(#path-glow-purple)">
+    <path d="M520,270 C460,260 400,250 340,260" fill="none" stroke="rgba(167,139,250,0.5)" stroke-width="2.5" stroke-dasharray="8,4"/>
+    <circle cx="338" cy="260" r="4" fill="rgba(167,139,250,0.8)"/>
+  </g>
+  <!-- Quick Setup box -->
+  <g>
+    <rect x="225" y="225" width="140" height="80" rx="10" fill="rgba(167,139,250,0.06)" stroke="rgba(167,139,250,0.35)" stroke-width="1.5"/>
+    <!-- Quick setup icon (play/start triangle) -->
+    <polygon points="260,250 260,270 278,260" fill="rgba(167,139,250,0.6)" stroke="rgba(167,139,250,0.3)" stroke-width="1"/>
+    <text x="295" y="280" font-family="monospace" font-size="14" fill="rgba(167,139,250,0.8)" text-anchor="middle" font-weight="bold">Quick</text>
+    <text x="295" y="296" font-family="monospace" font-size="9" fill="rgba(167,139,250,0.5)" text-anchor="middle">One-click setup</text>
+  </g>
+
+  <!-- Scattered small lightning bolts (ambient) -->
+  <g opacity="0.3">
+    <polygon points="380,140 375,148 378,148 373,156 385,147 382,147 387,140" fill="rgba(250,204,21,0.5)"/>
+    <polygon points="820,470 815,478 818,478 813,486 825,477 822,477 827,470" fill="rgba(250,204,21,0.4)"/>
+    <polygon points="450,450 445,458 448,458 443,466 455,457 452,457 457,450" fill="rgba(167,139,250,0.4)"/>
+    <polygon points="750,130 745,138 748,138 743,146 755,137 752,137 757,130" fill="rgba(74,222,128,0.4)"/>
+  </g>
+
+  <!-- Energy particles along paths -->
+  <g opacity="0.5">
+    <circle cx="720" cy="220" r="2" fill="rgba(74,222,128,0.7)"/>
+    <circle cx="780" cy="195" r="2.5" fill="rgba(74,222,128,0.6)"/>
+    <circle cx="830" cy="175" r="2" fill="rgba(74,222,128,0.5)"/>
+
+    <circle cx="720" cy="310" r="2" fill="rgba(250,204,21,0.7)"/>
+    <circle cx="780" cy="345" r="2.5" fill="rgba(250,204,21,0.6)"/>
+    <circle cx="830" cy="370" r="2" fill="rgba(250,204,21,0.5)"/>
+
+    <circle cx="480" cy="262" r="2" fill="rgba(167,139,250,0.7)"/>
+    <circle cx="420" cy="255" r="2.5" fill="rgba(167,139,250,0.6)"/>
+    <circle cx="370" cy="258" r="2" fill="rgba(167,139,250,0.5)"/>
+  </g>
+
+</svg>

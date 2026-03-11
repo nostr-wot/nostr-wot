@@ -1,0 +1,100 @@
+---
+title: "Zaps e Aprovacao Automatica"
+description: "Aprenda a enviar zaps pelo navegador com a extensao Nostr WoT. Configure limites de aprovacao automatica e use WebLN para pagamentos rapidos em sats."
+excerpt: "Envie sats para quem voce confia com um clique. Configure aprovacao automatica e use WebLN para zaps relampago."
+date: "2026-03-11"
+author:
+  name: "Leon Acosta"
+  avatar: "/authors/leon-profile.jpg"
+  npub: "npub1gxdhmu9swqduwhr6zptjy4ya693zp3ql28nemy4hd97kuufyrqdqwe5zfk"
+featuredImage: "/images/guides/zapping-auto-approve/featured.svg"
+previewImage: "/images/guides/zapping-auto-approve/preview.svg"
+tags:
+  - "Zaps"
+  - "Lightning"
+  - "WebLN"
+published: true
+seoTitle: "Zaps e Aprovacao Automatica na Extensao Nostr WoT"
+seoDescription: "Aprenda a enviar zaps pelo navegador com a extensao Nostr WoT. Configure limites de aprovacao automatica e use WebLN para pagamentos rapidos em sats."
+ogImage: "/images/guides/zapping-auto-approve/og.svg"
+translationKey: "zapping-auto-approve"
+difficulty: "beginner"
+order: 6
+---
+
+Zaps sao pagamentos Lightning dentro do ecossistema Nostr. Com a extensao Nostr WoT, voce envia zaps diretamente pelo navegador. Este guia explica como funcionam, como usar WebLN e como configurar aprovacao automatica.
+
+## O Que Sao Zaps?
+
+Zaps sao micropagamentos em Bitcoin via Lightning Network vinculados a eventos Nostr. Quando voce faz um zap em uma nota, voce esta enviando sats diretamente para o autor daquela publicacao. O pagamento e registrado no Nostr como um evento, ficando visivel para outros usuarios.
+
+Na pratica:
+
+1. Voce ve uma nota que gosta em um cliente Nostr.
+2. Clica no botao de zap.
+3. O cliente solicita o pagamento via a extensao.
+4. A extensao usa sua carteira conectada para completar o pagamento.
+
+{/* TODO: Captura de tela do popup de zap em um cliente Nostr */}
+
+## WebLN: Pagamentos pelo Navegador
+
+WebLN e um padrao que permite que sites solicitem pagamentos Lightning diretamente do navegador. A extensao Nostr WoT funciona como um provedor WebLN, o que significa que qualquer site compativel pode solicitar pagamentos sem que voce precise copiar e colar invoices.
+
+Quando um site faz uma solicitacao WebLN:
+
+1. A extensao intercepta a solicitacao.
+2. Voce ve um popup com os detalhes do pagamento -- valor, descricao e destino.
+3. Voce aprova ou rejeita o pagamento.
+
+{/* TODO: Captura de tela do popup WebLN de aprovacao de pagamento */}
+
+<Callout type="tip">
+WebLN funciona alem do Nostr. Qualquer site que suporte WebLN -- como lojas, servicos de streaming ou plataformas de conteudo -- pode solicitar pagamentos pela extensao.
+</Callout>
+
+## Configurando Aprovacao Automatica
+
+Aprovar cada pagamento manualmente pode ser cansativo, especialmente se voce faz zaps frequentes. A aprovacao automatica resolve isso definindo limites abaixo dos quais os pagamentos sao aprovados sem intervencao.
+
+### Como Configurar
+
+1. Abra a extensao e va para a aba **Carteira**.
+2. Procure a secao **Aprovacao Automatica** ou **Auto-approve**.
+3. Defina o valor maximo por transacao (ex: 100 sats).
+4. Opcionalmente, defina um limite diario total (ex: 1.000 sats por dia).
+5. Salve as configuracoes.
+
+### Como Funciona
+
+- Se um pagamento esta abaixo do limite por transacao e o total diario nao foi atingido, a extensao aprova automaticamente.
+- Se o pagamento excede qualquer limite, voce ve o popup de confirmacao normalmente.
+- Voce pode desativar a aprovacao automatica a qualquer momento.
+
+{/* TODO: Captura de tela da configuracao de limites de aprovacao automatica */}
+
+## Aprovacao Automatica e Web of Trust
+
+A extensao pode combinar aprovacao automatica com sua Web of Trust. Voce pode configurar para que pagamentos sejam aprovados automaticamente apenas quando o destino e uma pessoa dentro da sua rede de confianca.
+
+Por exemplo:
+
+- Pagamentos para pessoas no salto 1 -- aprovacao automatica ate 500 sats.
+- Pagamentos para pessoas no salto 2 -- aprovacao automatica ate 100 sats.
+- Pagamentos para pessoas fora da sua WoT -- sempre exigem confirmacao manual.
+
+Isso combina conveniencia com seguranca, garantindo que seus sats vao apenas para pessoas que voce confia.
+
+<Callout type="tip">
+Comece com limites baixos e aumente conforme voce se sentir confortavel. E mais facil aumentar limites do que recuperar sats enviados por engano.
+</Callout>
+
+## Historico de Zaps
+
+Todos os zaps enviados ficam registrados na aba Carteira com data, valor, destino e status.
+
+{/* TODO: Video demonstrando o envio de um zap com aprovacao automatica */}
+
+## O Que Vem a Seguir?
+
+Agora que voce sabe como enviar zaps, [reivindique seu Endereco Lightning](/guides/endereco-lightning) para receber pagamentos de forma simples. Tambem vale conferir como configurar [Permissoes por Site](/guides/permissoes-por-site) para controlar quais sites podem solicitar pagamentos.

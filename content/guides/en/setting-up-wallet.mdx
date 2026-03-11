@@ -1,0 +1,100 @@
+---
+title: "Setting Up Your Wallet"
+description: "Connect a Lightning wallet to the Nostr WoT Extension. Choose Quick Setup for instant access, NWC for your existing wallet, or LNbits for full control."
+excerpt: "The extension supports three wallet options: Quick Setup, Nostr Wallet Connect, and LNbits. Pick the one that fits your needs."
+date: "2026-03-11"
+author:
+  name: "Leon Acosta"
+  avatar: "/authors/leon-profile.jpg"
+  npub: "npub1gxdhmu9swqduwhr6zptjy4ya693zp3ql28nemy4hd97kuufyrqdqwe5zfk"
+featuredImage: "/images/guides/setting-up-wallet/featured.svg"
+previewImage: "/images/guides/setting-up-wallet/preview.svg"
+tags:
+  - "Lightning"
+  - "Wallet"
+  - "NWC"
+published: true
+seoTitle: "Setting Up Your Wallet — Nostr WoT Extension Guide"
+seoDescription: "Connect a Lightning wallet to the Nostr WoT Extension. Choose Quick Setup for instant access, NWC for your existing wallet, or LNbits for full control."
+ogImage: "/images/guides/setting-up-wallet/og.svg"
+translationKey: "setting-up-wallet"
+difficulty: "beginner"
+order: 5
+---
+
+The extension includes a built-in Lightning wallet so you can send and receive sats without leaving your browser. This guide covers all three connection methods: Quick Setup for getting started instantly, NWC for connecting your existing wallet, and LNbits for self-hosted setups.
+
+## Accessing Wallet Setup
+
+1. Click the extension icon in your toolbar.
+2. Navigate to the **Wallet** tab.
+3. If no wallet is connected, you will see the setup screen with three options.
+
+{/* TODO: Screenshot of the wallet setup screen showing the three connection options */}
+
+## Quick Setup
+
+This is the fastest way to get a working wallet. One click and you are ready to zap.
+
+1. Click **Quick Setup** on the wallet configuration screen.
+2. The extension creates a custodial wallet linked to your Nostr identity. No registration, no forms, no extra accounts.
+3. Your wallet is ready. You will see your balance (starting at zero) and options to deposit and send.
+
+{/* TODO: Screenshot of the Quick Setup button and the resulting wallet view */}
+
+<Callout type="tip">
+Quick Setup creates a custodial wallet, meaning the funds are held by the provider. This is convenient for small amounts and casual zapping. For larger amounts, consider NWC or LNbits for self-custodial control.
+</Callout>
+
+### Depositing Sats
+
+After Quick Setup, tap **Deposit** to get a Lightning invoice or QR code. Send sats from any Lightning wallet and your balance updates within seconds.
+
+## Nostr Wallet Connect (NWC)
+
+If you already have a Lightning wallet that supports NWC — such as Alby, Mutiny, or any NWC-compatible provider — you can connect it to the extension.
+
+1. In your wallet provider, generate an NWC connection string. This is usually found in the wallet's settings under "Nostr Wallet Connect" or "Connections."
+2. Copy the connection string. It starts with `nostr+walletconnect://`.
+3. In the extension, click **NWC** on the wallet setup screen.
+4. Paste the connection string and click **Connect**.
+5. The extension verifies the connection and displays your balance.
+
+{/* TODO: Screenshot of the NWC connection string input field */}
+
+With NWC, your funds stay in your existing wallet. The extension simply sends payment requests to it. You keep full control over your sats.
+
+Any wallet that implements the NWC protocol works, including Alby, Mutiny, and others. The protocol is open and the list of compatible wallets keeps growing.
+
+## LNbits
+
+For those running their own Lightning infrastructure, the extension connects directly to an LNbits instance.
+
+1. Click **LNbits** on the wallet setup screen.
+2. Enter your LNbits instance URL (e.g., `https://your-lnbits-instance.com`).
+3. Enter your wallet admin key or invoice/read key depending on the level of access you want.
+4. Click **Connect**.
+
+{/* TODO: Screenshot of the LNbits configuration fields */}
+
+<Callout type="tip">
+Use an invoice/read key if you only want to receive and check balance. Use the admin key if you also want to send payments from the extension. Limit permissions to what you actually need.
+</Callout>
+
+## Checking Your Balance
+
+Once connected, your wallet balance appears at the top of the Wallet tab. It updates automatically. You can also see:
+
+- **Recent transactions** — a scrollable history of sends and receives.
+- **Deposit** — generate an invoice to receive sats.
+- **Send** — paste a Lightning invoice to pay it.
+
+{/* TODO: Screenshot of the wallet balance view with transaction history */}
+
+## Switching Wallet Providers
+
+You can change your wallet connection at any time. Go to the Wallet tab, open **Settings**, and click **Change Provider**. This disconnects the current wallet and returns you to the setup screen. Your identity and trust settings are not affected.
+
+## What's Next?
+
+With your wallet connected, learn how to [zap and set up auto-approve thresholds](/guides/zapping-auto-approve). You can also [claim your Lightning Address](/guides/lightning-address) if you used Quick Setup.

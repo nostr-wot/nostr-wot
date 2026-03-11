@@ -1,0 +1,110 @@
+---
+title: "Customizing Your Trust Settings"
+description: "Adjust the trust formula, weights, and thresholds in the Nostr WoT Extension to match how you want to evaluate and score connections in your Web of Trust."
+excerpt: "Fine-tune how the extension calculates trust. Adjust weights, thresholds, and strategies to match your preferences."
+date: "2026-03-11"
+author:
+  name: "Leon Acosta"
+  avatar: "/authors/leon-profile.jpg"
+  npub: "npub1gxdhmu9swqduwhr6zptjy4ya693zp3ql28nemy4hd97kuufyrqdqwe5zfk"
+featuredImage: "/images/guides/customizing-trust/featured.svg"
+previewImage: "/images/guides/customizing-trust/preview.svg"
+tags:
+  - "Trust Settings"
+  - "Formula"
+  - "Advanced"
+published: true
+seoTitle: "Customizing Trust Settings — Nostr WoT Extension Guide"
+seoDescription: "Adjust the trust formula, weights, and thresholds in the Nostr WoT Extension to match how you want to evaluate and score connections in your Web of Trust."
+ogImage: "/images/guides/customizing-trust/og.svg"
+translationKey: "customizing-trust"
+difficulty: "intermediate"
+order: 4
+---
+
+The default trust settings work well for most people, but the extension gives you full control over how trust is calculated. This guide walks you through the trust formula, how to adjust weights and thresholds, and when different strategies make sense.
+
+## The Trust Formula
+
+At its core, the extension assigns each user a trust score based on their relationship to you in the social graph. The formula considers three primary inputs:
+
+- **Hop distance** — how many follow-connections separate you from the user.
+- **Path multiplicity** — how many independent paths connect you.
+- **Decay factor** — how much trust decreases with each additional hop.
+
+The formula multiplies the base trust by a decay factor raised to the power of the hop count, then adjusts upward based on the number of independent paths. The result is a normalized score between 0 and 1.
+
+{/* TODO: Screenshot of the trust formula settings panel */}
+
+<Callout type="tip">
+You do not need to understand the math to use the extension effectively. The defaults are tuned for a balanced trust network. Only adjust these if you have a specific reason.
+</Callout>
+
+## Adjusting Weights
+
+Open the extension settings and navigate to **Trust Settings** to find the adjustable parameters.
+
+### Hop Decay
+
+This controls how quickly trust drops off with distance. A higher decay value means trust falls sharply after the first hop. A lower value extends meaningful trust further into the graph.
+
+- **High decay (0.7-0.9)** — only your direct follows and close 2nd-degree contacts receive significant trust. Good if you want a tight, conservative trust circle.
+- **Medium decay (0.4-0.6)** — balanced approach. 2nd-degree contacts are well-represented, and some 3rd-degree users score meaningfully.
+- **Low decay (0.1-0.3)** — trust extends broadly. Even distant connections carry weight. Useful if you want a wide-open, discovery-friendly network.
+
+{/* TODO: Screenshot showing the hop decay slider with different positions */}
+
+### Path Weight
+
+This determines how much extra credit a user gets for having multiple independent paths to you. A user followed by three of your direct contacts should score higher than one followed by a single contact.
+
+- **High path weight** — heavily rewards well-connected users. Someone followed by many of your contacts is almost as trusted as a direct follow.
+- **Low path weight** — paths matter less. Trust depends primarily on distance.
+
+### Maximum Hops
+
+Set the maximum depth the extension traverses. The default is 3 hops, which balances coverage with performance. You can increase this to 4 or 5 if you want broader visibility, but expect slower calculations and a larger graph.
+
+## Different Trust Strategies
+
+Depending on how you use Nostr, different settings make sense.
+
+### Conservative Strategy
+
+You want to trust a small circle and be skeptical of everyone else.
+
+- Set hop decay high (0.7+).
+- Set maximum hops to 2.
+- Keep path weight moderate.
+
+This is ideal if you use Nostr primarily to interact with people you already know and want strong spam filtering.
+
+### Balanced Strategy
+
+The default. You trust your direct follows, give reasonable trust to friends-of-friends, and maintain some visibility into 3rd-degree connections.
+
+- Hop decay around 0.5.
+- Maximum hops at 3.
+- Moderate path weight.
+
+This works for most people and is the recommended starting point.
+
+### Discovery Strategy
+
+You want to explore the broader Nostr network and discover new people.
+
+- Set hop decay low (0.2-0.3).
+- Increase maximum hops to 4.
+- Set path weight high to still prioritize well-connected users.
+
+This gives you a wider view but may include more noise.
+
+{/* TODO: Video walkthrough of changing trust strategy from conservative to discovery */}
+
+<Callout type="tip">
+Changes to trust settings recalculate your entire graph. Give the extension a moment to reprocess after adjusting values. If you want to start over, use the **Reset to Defaults** button at the bottom of the Trust Settings panel.
+</Callout>
+
+## What's Next?
+
+See your customized trust settings in action by exploring the [WoT Playground](/guides/wot-playground). Or continue setting up the extension by [connecting a wallet](/guides/setting-up-wallet).

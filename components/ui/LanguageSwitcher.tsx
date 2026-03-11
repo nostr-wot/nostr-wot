@@ -13,10 +13,12 @@ export function LanguageSwitcher() {
   const { translations } = useBlogTranslations();
 
   const handleChange = (newLocale: Locale) => {
-    // If we have blog translations, use the translated slug
+    // If we have translations (blog or guide), use the translated slug
     if (translations && translations[newLocale]) {
       const translatedSlug = translations[newLocale];
-      router.replace(`/blog/${translatedSlug}`, { locale: newLocale });
+      // Detect whether we're on /blog/ or /guides/ to use the correct prefix
+      const prefix = pathname.startsWith('/guides/') ? '/guides' : '/blog';
+      router.replace(`${prefix}/${translatedSlug}`, { locale: newLocale });
     } else {
       router.replace(pathname, { locale: newLocale });
     }

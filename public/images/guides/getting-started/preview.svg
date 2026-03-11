@@ -1,0 +1,84 @@
+<svg width="800" height="450" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#1e1b4b;stop-opacity:1" />
+      <stop offset="50%" style="stop-color:#312e81;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#4c1d95;stop-opacity:1" />
+    </linearGradient>
+    <radialGradient id="glow" cx="50%" cy="43%" r="45%">
+      <stop offset="0%" style="stop-color:#7c3aed;stop-opacity:0.3" />
+      <stop offset="100%" style="stop-color:#1e1b4b;stop-opacity:0" />
+    </radialGradient>
+    <filter id="shadow">
+      <feDropShadow dx="0" dy="0" stdDeviation="3" flood-color="#a78bfa" flood-opacity="0.5"/>
+    </filter>
+    <filter id="puzzle-glow" x="-50%" y="-50%" width="200%" height="200%">
+      <feDropShadow dx="0" dy="0" stdDeviation="10" flood-color="#a78bfa" flood-opacity="0.7"/>
+    </filter>
+    <filter id="node-glow" x="-50%" y="-50%" width="200%" height="200%">
+      <feDropShadow dx="0" dy="0" stdDeviation="3" flood-color="#4ade80" flood-opacity="0.5"/>
+    </filter>
+  </defs>
+
+  <!-- Background -->
+  <rect width="100%" height="100%" fill="url(#bg)"/>
+  <rect width="100%" height="100%" fill="url(#glow)"/>
+
+  <!-- Trust rings -->
+  <circle cx="400" cy="200" r="190" fill="none" stroke="rgba(167,139,250,0.06)" stroke-width="1" stroke-dasharray="4,8"/>
+  <circle cx="400" cy="200" r="145" fill="none" stroke="rgba(167,139,250,0.10)" stroke-width="1" stroke-dasharray="4,8"/>
+  <circle cx="400" cy="200" r="100" fill="none" stroke="rgba(167,139,250,0.14)" stroke-width="1" stroke-dasharray="4,8"/>
+
+  <!-- Connection nodes -->
+  <g filter="url(#node-glow)">
+    <circle cx="220" cy="120" r="3" fill="rgba(74,222,128,0.7)"/>
+    <circle cx="170" cy="230" r="2.5" fill="rgba(74,222,128,0.5)"/>
+    <circle cx="250" cy="340" r="3" fill="rgba(74,222,128,0.6)"/>
+    <circle cx="580" cy="130" r="3" fill="rgba(74,222,128,0.7)"/>
+    <circle cx="630" cy="250" r="2.5" fill="rgba(74,222,128,0.5)"/>
+    <circle cx="560" cy="360" r="3" fill="rgba(74,222,128,0.6)"/>
+  </g>
+
+  <!-- Connection lines -->
+  <line x1="220" y1="120" x2="310" y2="155" stroke="rgba(74,222,128,0.2)" stroke-width="1"/>
+  <line x1="170" y1="230" x2="280" y2="220" stroke="rgba(74,222,128,0.2)" stroke-width="1"/>
+  <line x1="580" y1="130" x2="500" y2="155" stroke="rgba(74,222,128,0.2)" stroke-width="1"/>
+  <line x1="630" y1="250" x2="530" y2="230" stroke="rgba(74,222,128,0.2)" stroke-width="1"/>
+
+  <!-- Browser window outline -->
+  <g filter="url(#shadow)">
+    <rect x="250" y="90" width="300" height="240" rx="10" ry="10" fill="none" stroke="rgba(167,139,250,0.4)" stroke-width="1.5"/>
+    <rect x="250" y="90" width="300" height="30" rx="10" ry="10" fill="rgba(167,139,250,0.08)"/>
+    <rect x="250" y="112" width="300" height="8" fill="rgba(167,139,250,0.08)"/>
+    <!-- Dots -->
+    <circle cx="270" cy="105" r="4" fill="rgba(248,113,113,0.6)"/>
+    <circle cx="286" cy="105" r="4" fill="rgba(250,204,21,0.6)"/>
+    <circle cx="302" cy="105" r="4" fill="rgba(74,222,128,0.6)"/>
+    <!-- URL bar -->
+    <rect x="325" y="97" width="140" height="16" rx="3" fill="rgba(167,139,250,0.06)" stroke="rgba(167,139,250,0.15)" stroke-width="0.8"/>
+  </g>
+
+  <!-- Puzzle piece -->
+  <g filter="url(#puzzle-glow)">
+    <path d="M385,170 L385,155 C385,155 377,151 377,143 C377,135 385,131 393,131 C401,131 409,135 409,143 C409,151 401,155 401,155 L401,170 L425,170 C425,170 429,162 437,162 C445,162 449,170 449,178 C449,186 445,193 437,193 C429,193 425,186 425,186 L425,202 L401,202 C401,202 401,210 409,214 C409,214 401,219 393,219 C385,219 377,214 377,214 C385,210 385,202 385,202 L360,202 L360,186 C360,186 352,186 352,178 C352,170 360,170 360,170 Z" fill="rgba(167,139,250,0.85)" stroke="rgba(167,139,250,0.4)" stroke-width="1.5"/>
+  </g>
+
+  <!-- Snap glow -->
+  <circle cx="398" cy="182" r="40" fill="none" stroke="rgba(74,222,128,0.3)" stroke-width="1.5" stroke-dasharray="5,4"/>
+  <circle cx="398" cy="182" r="52" fill="none" stroke="rgba(74,222,128,0.15)" stroke-width="1" stroke-dasharray="3,5"/>
+
+  <!-- Sparkles -->
+  <line x1="460" y1="145" x2="460" y2="133" stroke="rgba(74,222,128,0.7)" stroke-width="1.5"/>
+  <line x1="454" y1="139" x2="466" y2="139" stroke="rgba(74,222,128,0.7)" stroke-width="1.5"/>
+  <line x1="340" y1="148" x2="340" y2="138" stroke="rgba(250,204,21,0.6)" stroke-width="1.5"/>
+  <line x1="335" y1="143" x2="345" y2="143" stroke="rgba(250,204,21,0.6)" stroke-width="1.5"/>
+  <circle cx="340" cy="240" r="1.5" fill="rgba(74,222,128,0.6)"/>
+  <circle cx="470" cy="165" r="1.5" fill="rgba(250,204,21,0.6)"/>
+
+  <!-- Install button -->
+  <g opacity="0.15">
+    <rect x="310" y="290" width="180" height="20" rx="5" fill="rgba(74,222,128,0.1)" stroke="rgba(74,222,128,0.3)" stroke-width="1"/>
+    <text x="360" y="304" font-family="sans-serif" font-size="10" fill="rgba(74,222,128,0.5)">Install Extension</text>
+  </g>
+
+</svg>

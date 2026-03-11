@@ -1,0 +1,86 @@
+---
+title: "Understanding the Web of Trust"
+description: "Learn how the Nostr WoT Extension builds your trust graph, what hops and trust levels mean, and how trust scores help you decide who to trust on Nostr."
+excerpt: "The trust graph is the core of the extension. Learn what hops are, how trust scores work, and what the visualization tells you."
+date: "2026-03-11"
+author:
+  name: "Leon Acosta"
+  avatar: "/authors/leon-profile.jpg"
+  npub: "npub1gxdhmu9swqduwhr6zptjy4ya693zp3ql28nemy4hd97kuufyrqdqwe5zfk"
+featuredImage: "/images/guides/understanding-wot/featured.svg"
+previewImage: "/images/guides/understanding-wot/preview.svg"
+tags:
+  - "Web of Trust"
+  - "Trust Graph"
+  - "Concepts"
+published: true
+seoTitle: "Understanding Web of Trust — Nostr WoT Extension"
+seoDescription: "Learn how the Nostr WoT Extension builds your trust graph, what hops and trust levels mean, and how trust scores help you decide who to trust on Nostr."
+ogImage: "/images/guides/understanding-wot/og.svg"
+translationKey: "understanding-wot"
+difficulty: "beginner"
+order: 3
+---
+
+The Web of Trust is the core concept behind the extension. Instead of relying on a central authority to tell you who is trustworthy, you build a trust network from the people you already follow. This guide explains how that network works and what the extension shows you.
+
+## What the Trust Graph Shows
+
+When you open the extension, your trust graph is a visual map of your social connections on Nostr. At the center is you. Radiating outward are the people you follow, the people they follow, and so on. Each node is a Nostr identity, and each connection is a follow relationship.
+
+{/* TODO: Screenshot of the trust graph visualization with labeled elements */}
+
+The graph answers a simple question: how connected is this person to you? Someone deeply embedded in your social network is probably more trustworthy than a brand-new account with no connections to anyone you know.
+
+## Hops Explained
+
+Hops measure the shortest path between you and another Nostr user through follow relationships.
+
+### 1st Degree (1 Hop)
+
+These are the people you follow directly. They are your immediate trust circle. The extension assigns the highest trust to these connections because you explicitly chose to follow them.
+
+### 2nd Degree (2 Hops)
+
+These are people followed by the people you follow. You may not know them personally, but someone you trust has chosen to follow them. This is a strong signal — your friends vouch for them by following them.
+
+### 3rd Degree (3 Hops)
+
+Three steps away from you. The connection is weaker but still present. These users are followed by someone who is followed by someone you follow. At this distance, trust is lower but still meaningful — especially if multiple paths connect you.
+
+{/* TODO: Diagram showing 1st, 2nd, and 3rd degree connections radiating from a central user node */}
+
+<Callout type="tip">
+The more independent paths that connect you to someone, the higher their trust score. A person reached through five different 2nd-degree connections is more trusted than someone reached through a single 2nd-degree connection.
+</Callout>
+
+## How Trust Scores Work
+
+Every Nostr user visible in your trust graph receives a trust score. This score is not an absolute measure of a person's character — it is a measure of how connected they are to your specific network.
+
+The score depends on several factors:
+
+- **Hop distance** — closer connections score higher.
+- **Path count** — more paths between you and the user mean a higher score.
+- **Network position** — users followed by many of your direct contacts score higher than those connected through a single chain.
+
+The extension normalizes these factors into a score that helps you make quick decisions. When you encounter an unknown profile on a Nostr client, the extension can tell you whether that person is in your trust graph and how strong the connection is.
+
+### Score Ranges
+
+While the exact thresholds are configurable, a typical setup works like this:
+
+- **High trust** — 1st-degree contacts and well-connected 2nd-degree users.
+- **Medium trust** — 2nd-degree contacts with fewer paths and some 3rd-degree users with multiple connections.
+- **Low trust** — 3rd-degree contacts with thin connections.
+- **Unknown** — users with no path to you in the trust graph.
+
+{/* TODO: Screenshot of the extension popup showing trust scores for different profiles */}
+
+## Trust Is Personal
+
+Your Web of Trust is unique to you. Two people will have completely different trust graphs because they follow different people. There is no global trust score — your graph reflects your social reality on Nostr, not some centralized reputation system. Decentralized trust means no single entity decides who is trustworthy. You and your network do.
+
+## What's Next?
+
+Ready to fine-tune how the extension calculates trust? Head to [Customizing Your Trust Settings](/guides/customizing-trust). Or explore the trust graph visually in the [WoT Playground](/guides/wot-playground).

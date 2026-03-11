@@ -1,0 +1,99 @@
+---
+title: "Gestion de Identidad Nostr"
+description: "Aprende a gestionar tu identidad Nostr con la extension WoT. Claves, perfiles, NIP-07 y las mejores practicas de seguridad para tus claves privadas."
+excerpt: "Tu identidad en Nostr es tu clave. Aprende a gestionarla, protegerla y usarla correctamente con la extension WoT."
+date: "2026-03-11"
+author:
+  name: "Leon Acosta"
+  avatar: "/authors/leon-profile.jpg"
+  npub: "npub1gxdhmu9swqduwhr6zptjy4ya693zp3ql28nemy4hd97kuufyrqdqwe5zfk"
+featuredImage: "/images/guides/managing-identity/featured.svg"
+previewImage: "/images/guides/managing-identity/preview.svg"
+tags:
+  - "Identidad"
+  - "Claves"
+  - "NIP-07"
+published: true
+seoTitle: "Gestion de Identidad Nostr — Claves y Perfiles"
+seoDescription: "Aprende a gestionar tu identidad Nostr con la extension WoT. Claves, perfiles, NIP-07 y las mejores practicas de seguridad para tus claves privadas."
+ogImage: "/images/guides/managing-identity/og.svg"
+translationKey: "managing-identity"
+difficulty: "beginner"
+order: 2
+---
+
+En Nostr, no tienes una cuenta en un servidor. Tu identidad es un par de claves criptograficas: una clave publica (npub) que te identifica y una clave privada (nsec) que te permite firmar eventos. La extension Nostr WoT se encarga de gestionar estas claves de forma segura para que no tengas que preocuparte por los detalles tecnicos.
+
+## Que es NIP-07?
+
+NIP-07 es un estandar de Nostr que define como las aplicaciones web pueden solicitar a una extension del navegador que firme eventos. En lugar de pegar tu clave privada en cada aplicacion que usas, la extension actua como intermediario seguro.
+
+Cuando un cliente Nostr como Primal, Snort o Coracle necesita firmar algo — una nota, una reaccion, un zap — le pide a la extension que lo haga. Tu clave privada nunca sale de la extension.
+
+<Callout type="tip">
+NIP-07 es el equivalente a usar una llave de seguridad para tu banco. Los sitios web solicitan una firma, y la extension decide si otorgarla. Tu clave privada permanece protegida en todo momento.
+</Callout>
+
+## Tu Perfil Nostr
+
+Tu perfil es un evento de Nostr firmado con tu clave. Incluye datos como tu nombre, biografia, avatar y Lightning Address. Desde la extension puedes ver y editar estos campos.
+
+### Ver tu Perfil
+
+1. Haz clic en el icono de la extension.
+2. En la pestana principal veras tu nombre, avatar y npub.
+3. Haz clic en tu perfil para ver los detalles completos.
+
+{/* TODO: Captura de pantalla del popup de la extension mostrando el perfil */}
+
+### Editar tu Perfil
+
+1. Abre la extension y navega a la seccion de perfil.
+2. Modifica los campos que necesites — nombre, biografia, avatar, Lightning Address.
+3. Haz clic en **Guardar**. La extension firma el evento actualizado y lo publica en tus relays.
+
+Los cambios se propagan a los relays en segundos. Cualquier cliente Nostr que consulte tu perfil vera la version actualizada.
+
+{/* TODO: Captura de pantalla de la pantalla de edicion de perfil */}
+
+## Seguridad de tus Claves
+
+La clave privada es el activo mas importante de tu identidad Nostr. Perderla significa perder el acceso permanente a tu cuenta. Que alguien la obtenga significa que puede hacerse pasar por ti.
+
+### Mejores Practicas
+
+- **Nunca compartas tu nsec.** Ni en mensajes directos, ni en formularios, ni en capturas de pantalla.
+- **Guarda un respaldo fisico.** Escribe tu nsec en papel y guardalo en un lugar seguro, o usa un gestor de contrasenas confiable.
+- **Usa la contrasena local de la extension.** Cifra tus claves para que, incluso si alguien accede a tu navegador, no pueda extraerlas sin la contrasena.
+- **No reutilices claves.** Si sospechas que tu clave fue comprometida, genera una nueva y publica un evento de migracion.
+
+<Callout type="tip">
+La extension cifra tu clave privada con AES-256-GCM usando tu contrasena local. Los datos cifrados se almacenan en el almacenamiento seguro del navegador, no en texto plano.
+</Callout>
+
+## Multiples Cuentas
+
+La extension permite gestionar mas de una identidad Nostr. Esto es util si mantienes cuentas separadas para distintos propositos — una personal y una profesional, por ejemplo.
+
+1. Abre la configuracion de la extension.
+2. Ve a la seccion de cuentas.
+3. Haz clic en **Agregar Cuenta** y sigue el proceso de creacion o importacion.
+4. Cambia entre cuentas desde el menu desplegable en el popup principal.
+
+Cada cuenta tiene su propio grafo de confianza, permisos y configuracion de wallet.
+
+{/* TODO: Video del proceso de cambio entre cuentas */}
+
+## Exportar tus Claves
+
+Si necesitas migrar a otra extension o hacer un respaldo, puedes exportar tu clave privada.
+
+1. Abre la configuracion de la extension.
+2. Ingresa tu contrasena local para desbloquear la clave.
+3. Copia tu nsec y guardalo en un lugar seguro.
+
+Recuerda: una vez copiada, esa clave te da control total sobre tu identidad. Tratala con el mismo cuidado que una contrasena maestra.
+
+## Que Sigue?
+
+Con tu identidad configurada, es momento de entender como funciona la [Web of Trust](/guides/entendiendo-web-of-trust) y como puede ayudarte a filtrar el ruido en Nostr.

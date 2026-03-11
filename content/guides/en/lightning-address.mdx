@@ -1,0 +1,99 @@
+---
+title: "Claiming Your Lightning Address"
+description: "Claim a Lightning Address like yourname@zaps.nostr-wot.com through the Nostr WoT Extension and start receiving zaps to a memorable, human-readable address."
+excerpt: "Get a Lightning Address like yourname@zaps.nostr-wot.com. Claim it in seconds and add it to your Nostr profile."
+date: "2026-03-11"
+author:
+  name: "Leon Acosta"
+  avatar: "/authors/leon-profile.jpg"
+  npub: "npub1gxdhmu9swqduwhr6zptjy4ya693zp3ql28nemy4hd97kuufyrqdqwe5zfk"
+featuredImage: "/images/guides/lightning-address/featured.svg"
+previewImage: "/images/guides/lightning-address/preview.svg"
+tags:
+  - "Lightning Address"
+  - "Zaps"
+  - "Identity"
+published: true
+seoTitle: "Claim Your Lightning Address — Nostr WoT Extension"
+seoDescription: "Claim a Lightning Address like yourname@zaps.nostr-wot.com through the Nostr WoT Extension and start receiving zaps to a memorable, human-readable address."
+ogImage: "/images/guides/lightning-address/og.svg"
+translationKey: "lightning-address"
+difficulty: "beginner"
+order: 7
+---
+
+A Lightning Address is a human-readable identifier — like an email address — that anyone can use to send you sats. Instead of generating invoices manually, you give people your address and they zap you directly. The extension lets you claim one for free when you use Quick Setup.
+
+## What Is a Lightning Address?
+
+A Lightning Address looks like `yourname@zaps.nostr-wot.com`. Under the hood, it resolves to a Lightning invoice endpoint. When someone sends sats to your address, the system generates a fresh invoice and routes the payment to your wallet. The sender does not need to know anything about your wallet setup.
+
+Think of it as a permanent, memorable way for people to pay you with Bitcoin over Lightning.
+
+{/* TODO: Diagram showing how a Lightning Address resolves to a payment */}
+
+## Claiming Your Address
+
+You need to have a wallet connected via Quick Setup to claim a Lightning Address. If you used NWC or LNbits, your address is managed by your own infrastructure.
+
+1. Open the extension and go to the **Wallet** tab.
+2. Click **Settings** or look for the **Lightning Address** section.
+3. Enter the username you want. It will become `yourname@zaps.nostr-wot.com`.
+4. Click **Claim**.
+5. If the name is available, it is yours immediately.
+
+{/* TODO: Screenshot of the Lightning Address claim form with a username being entered */}
+
+<Callout type="tip">
+Usernames must be 3-30 characters long and can include lowercase letters, numbers, dots, and hyphens. They are first come, first served, so claim yours early.
+</Callout>
+
+## Adding to Your Nostr Profile
+
+After claiming your address, you want it visible on your Nostr profile so people know where to zap you.
+
+### Automatic Method
+
+The extension offers to add your Lightning Address to your Nostr profile automatically right after you claim it. Click **Yes, update my profile** and the extension signs and publishes an updated kind 0 event with your new address.
+
+{/* TODO: Screenshot of the prompt to add the Lightning Address to the Nostr profile */}
+
+### Manual Method
+
+If you prefer to do it yourself:
+
+1. Go to the **Identity** tab in the extension.
+2. Click **Edit Profile**.
+3. Find the **Lightning Address** field (sometimes labeled `lud16`).
+4. Enter your full address: `yourname@zaps.nostr-wot.com`.
+5. Click **Save**.
+
+Either way, Nostr clients will display a zap button on your profile that uses this address.
+
+## Receiving Zaps
+
+Once your Lightning Address is set and published to your profile:
+
+- Anyone viewing your profile on Primal, Snort, Coracle, or other Nostr clients will see a zap option.
+- They click zap, choose an amount, and the payment routes to your wallet.
+- You see the incoming sats in your wallet balance and transaction history.
+
+No invoices to generate, no QR codes to share. The address handles everything.
+
+{/* TODO: Screenshot of an incoming zap notification in the extension */}
+
+## Sharing Your Address
+
+Beyond your Nostr profile, you can share your Lightning Address in social media bios, on your website, or in email signatures. Anyone with a Lightning wallet can send sats to `yourname@zaps.nostr-wot.com` — they do not need to be on Nostr.
+
+## Changing Your Address
+
+If you want a different username, open the Lightning Address settings in the extension and claim a new one. Your old address will stop working, so update your Nostr profile and any other places where you shared it.
+
+<Callout type="tip">
+Before changing your address, make sure no recurring services or integrations depend on the old one. The switch is instant and the old address is released.
+</Callout>
+
+## What's Next?
+
+Now that people can zap you, learn how to [control which sites can access your wallet](/guides/site-permissions). Or explore the [zapping and auto-approve features](/guides/zapping-auto-approve) to streamline your outgoing zaps.

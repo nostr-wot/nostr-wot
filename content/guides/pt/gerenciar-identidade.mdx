@@ -1,0 +1,98 @@
+---
+title: "Gerenciar sua Identidade"
+description: "Saiba como a extensao Nostr WoT gerencia sua identidade com suporte ao NIP-07, gerenciamento de perfil e as melhores praticas de seguranca de chaves."
+excerpt: "Sua identidade Nostr e a base de tudo na extensao. Aprenda a gerenciar suas chaves, perfil e configuracoes de assinatura."
+date: "2026-03-11"
+author:
+  name: "Leon Acosta"
+  avatar: "/authors/leon-profile.jpg"
+  npub: "npub1gxdhmu9swqduwhr6zptjy4ya693zp3ql28nemy4hd97kuufyrqdqwe5zfk"
+featuredImage: "/images/guides/managing-identity/featured.svg"
+previewImage: "/images/guides/managing-identity/preview.svg"
+tags:
+  - "Identidade"
+  - "Chaves"
+  - "NIP-07"
+published: true
+seoTitle: "Gerenciar Identidade — Chaves e Perfil no WoT"
+seoDescription: "Saiba como a extensao Nostr WoT gerencia sua identidade com suporte ao NIP-07, gerenciamento de perfil e as melhores praticas de seguranca de chaves."
+ogImage: "/images/guides/managing-identity/og.svg"
+translationKey: "managing-identity"
+difficulty: "beginner"
+order: 2
+---
+
+Sua identidade Nostr e a base de tudo na extensao. Este guia explica como gerencia-la, manter suas chaves seguras e usar o assinador NIP-07 que permite que sites interajam com sua conta.
+
+## Suporte ao Assinador NIP-07
+
+NIP-07 permite que aplicacoes web Nostr solicitem assinaturas sem ver sua chave privada. Clientes como Primal, Snort ou Coracle pedem que a extensao assine eventos em seu nome.
+
+1. Um site chama `window.nostr.getPublicKey()` para identificar voce.
+2. Ao publicar uma nota, o site envia o evento nao assinado para a extensao.
+3. Voce ve um aviso de permissao. Se aprovar, a extensao assina e devolve a assinatura.
+4. Sua chave privada nunca sai da extensao.
+
+{/* TODO: Captura de tela do aviso de permissao de assinatura NIP-07 */}
+
+<Callout type="tip">
+Se voce usava outra extensao NIP-07 como nos2x ou Alby, desative-a antes de usar o Nostr WoT. Apenas um assinador NIP-07 deve estar ativo por vez para evitar conflitos.
+</Callout>
+
+## Gerenciando seu Perfil Nostr
+
+Os detalhes do seu perfil -- nome, bio, avatar, endereco Lightning e NIP-05 -- sao armazenados nos relays como um evento kind 0. A extensao permite visualizar e editar esses detalhes diretamente.
+
+### Visualizando seu Perfil
+
+Clique no icone da extensao e navegue ate a aba **Identidade**. Voce vera seu perfil atual, npub e relays de publicacao.
+
+{/* TODO: Captura de tela da aba Identidade mostrando detalhes do perfil */}
+
+### Editando seu Perfil
+
+1. Clique em **Editar Perfil** na aba Identidade.
+2. Atualize os campos que desejar.
+3. Clique em **Salvar**. A extensao assina um novo evento kind 0 e o publica nos seus relays.
+
+As alteracoes se propagam pelos clientes Nostr em segundos, conforme os relays distribuem o evento atualizado.
+
+## Boas Praticas de Seguranca de Chaves
+
+Sua chave privada (nsec) e o dado mais importante da sua identidade Nostr. Qualquer pessoa que a possua pode publicar em seu nome e alterar seu perfil. Nao existe recuperacao de senha nem suporte para ligar.
+
+### Armazenamento
+
+- A extensao criptografa sua chave privada localmente. Ela nunca e armazenada em texto simples.
+- Faca backup da nsec em um gerenciador de senhas ou em papel guardado em local seguro.
+- Nunca cole sua nsec em um site ou envie por mensagem.
+
+### Senha de Criptografia
+
+- Escolha uma senha forte e unica ao configurar a extensao.
+- A extensao bloqueia apos inatividade. Voce precisa dessa senha para desbloquea-la.
+- Se esquecer a senha, reimporte sua nsec para redefini-la.
+
+{/* TODO: Captura de tela da tela de bloqueio e entrada de senha */}
+
+### Multiplos Dispositivos
+
+Se voce usa a extensao em varios navegadores, importe a mesma nsec em cada um. Sua identidade esta vinculada ao par de chaves, nao ao dispositivo.
+
+<Callout type="tip">
+Considere gerar suas chaves com uma ferramenta dedicada e importa-las na extensao, em vez de usar qualquer extensao como fonte das suas chaves. Assim, seu backup existe de forma independente.
+</Callout>
+
+## Alternando Entre Identidades
+
+A extensao suporta multiplas identidades. Se voce gerencia mais de uma conta Nostr, pode alternar entre elas pela aba Identidade. Cada identidade tem seu proprio grafo de confianca, carteira e permissoes.
+
+1. Abra a extensao e va para a aba **Identidade**.
+2. Clique no avatar do seu perfil para ver o alternador de contas.
+3. Selecione uma identidade diferente ou adicione uma nova.
+
+{/* TODO: Video do processo de alternancia de identidades */}
+
+## O Que Vem a Seguir?
+
+Com sua identidade protegida, e hora de entender como a extensao a utiliza para construir sua [Web of Trust](/guides/entendendo-web-of-trust). Se quiser conectar uma carteira, va para [Configurar Carteira Lightning](/guides/configurar-carteira).

@@ -1,0 +1,107 @@
+---
+title: "Site Permissions"
+description: "Control which websites can access your Nostr identity, request signatures, and make Lightning payments using the Nostr WoT Extension's permission system."
+excerpt: "The extension gives you granular control over what each website can do. Learn how per-site permissions keep your keys and sats safe."
+date: "2026-03-11"
+author:
+  name: "Leon Acosta"
+  avatar: "/authors/leon-profile.jpg"
+  npub: "npub1gxdhmu9swqduwhr6zptjy4ya693zp3ql28nemy4hd97kuufyrqdqwe5zfk"
+featuredImage: "/images/guides/site-permissions/featured.svg"
+previewImage: "/images/guides/site-permissions/preview.svg"
+tags:
+  - "Permissions"
+  - "Security"
+  - "Privacy"
+published: true
+seoTitle: "Managing Site Permissions — Nostr WoT Extension"
+seoDescription: "Control which websites can access your Nostr identity, request signatures, and make Lightning payments using the Nostr WoT Extension's permission system."
+ogImage: "/images/guides/site-permissions/og.svg"
+translationKey: "site-permissions"
+difficulty: "intermediate"
+order: 8
+---
+
+Every website that interacts with the extension needs your permission. The extension does not give blanket access to your keys or wallet — each site gets its own permission scope. This guide explains how to manage those permissions effectively.
+
+## How Permissions Work
+
+When a website tries to access the extension's NIP-07 signer or WebLN provider, the extension checks whether that site has permission. If it does not, you see a prompt asking you to approve or deny the request.
+
+Each permission decision is stored per-site. Approving signing on Primal does not automatically grant signing on Snort. You build up a whitelist of trusted sites, one at a time.
+
+{/* TODO: Screenshot of the permission request popup for a new site */}
+
+## Permission Types
+
+The extension manages several distinct permissions for each site.
+
+### Read Public Key
+
+Allows the site to see your public key (npub). This is the most basic permission — the site can identify you but cannot do anything on your behalf.
+
+### Sign Events
+
+Allows the site to request event signatures through NIP-07. This means the site can ask you to sign notes, profile updates, reactions, and other Nostr events. You still see a confirmation prompt for each signing request unless you enable auto-approve for that site.
+
+### Encrypt and Decrypt
+
+Allows the site to request NIP-04 or NIP-44 encrypted direct messages. The site can ask the extension to encrypt a message to a specific recipient or decrypt an incoming message.
+
+### WebLN Payments
+
+Allows the site to request Lightning payments through the WebLN provider. When granted, the site can present invoices for you to pay — subject to your [auto-approve threshold](/guides/zapping-auto-approve).
+
+{/* TODO: Screenshot of the permissions panel showing all four permission types for a site */}
+
+<Callout type="tip">
+You can grant some permissions while denying others. For example, you might let a site read your public key and request signatures, but deny it WebLN access if you do not want it to prompt payments.
+</Callout>
+
+## Managing Site Permissions
+
+### Viewing Granted Permissions
+
+1. Open the extension and click **Settings**.
+2. Navigate to **Site Permissions** (or **Permissions**).
+3. You will see a list of all sites that have been granted any permission, along with what each site can do.
+
+{/* TODO: Screenshot of the site permissions list showing multiple sites with their granted permissions */}
+
+### Revoking Permissions
+
+If you want to remove a site's access:
+
+1. Find the site in the permissions list.
+2. Click the site name to expand its details.
+3. Toggle off individual permissions or click **Revoke All** to remove all access.
+4. The change takes effect immediately. The site will need to request permission again on its next attempt.
+
+### Temporary vs. Permanent Permissions
+
+When you see a permission prompt, you typically have two options:
+
+- **Allow once** — grants the permission for this session only. When you close the tab or restart the browser, the site will need to ask again.
+- **Always allow** — permanently grants the permission for this site. It persists across sessions.
+
+Use "Allow once" for sites you do not visit regularly. Use "Always allow" for your daily-use Nostr clients.
+
+## Best Practices for Security
+
+Only grant the permissions a site actually needs. A Nostr client needs signing access, but a read-only explorer only needs your public key. Review your permissions list periodically and revoke access for sites you no longer use.
+
+If a site you have never heard of requests signing or payment permissions, deny it and investigate first. Legitimate Nostr clients are well-known.
+
+{/* TODO: Screenshot of a suspicious permission request with a "Deny" action highlighted */}
+
+<Callout type="tip">
+If a site behaves unexpectedly after granting permissions — like triggering payments you did not initiate — immediately revoke all its permissions and lower your auto-approve threshold.
+</Callout>
+
+### Secure Connections Only
+
+The extension only exposes the NIP-07 and WebLN APIs on secure (HTTPS) connections. This prevents man-in-the-middle attacks from intercepting communication between the site and the extension.
+
+## What's Next?
+
+With your permissions locked down, explore the [WoT Playground](/guides/wot-playground) to visualize your trust network. Or revisit [managing your identity](/guides/managing-identity) to review your key security practices.

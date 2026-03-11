@@ -1,0 +1,213 @@
+<svg width="1200" height="630" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#1e1b4b;stop-opacity:1" />
+      <stop offset="50%" style="stop-color:#312e81;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#4c1d95;stop-opacity:1" />
+    </linearGradient>
+    <radialGradient id="glow" cx="48%" cy="45%" r="45%">
+      <stop offset="0%" style="stop-color:#7c3aed;stop-opacity:0.3" />
+      <stop offset="100%" style="stop-color:#1e1b4b;stop-opacity:0" />
+    </radialGradient>
+    <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="0" stdDeviation="4" flood-color="#a78bfa" flood-opacity="0.5"/>
+    </filter>
+    <filter id="node-glow-green" x="-50%" y="-50%" width="200%" height="200%">
+      <feDropShadow dx="0" dy="0" stdDeviation="5" flood-color="#4ade80" flood-opacity="0.5"/>
+    </filter>
+    <filter id="node-glow-yellow" x="-50%" y="-50%" width="200%" height="200%">
+      <feDropShadow dx="0" dy="0" stdDeviation="4" flood-color="#facc15" flood-opacity="0.5"/>
+    </filter>
+    <filter id="node-glow-purple" x="-50%" y="-50%" width="200%" height="200%">
+      <feDropShadow dx="0" dy="0" stdDeviation="4" flood-color="#a78bfa" flood-opacity="0.5"/>
+    </filter>
+    <filter id="node-glow-red" x="-50%" y="-50%" width="200%" height="200%">
+      <feDropShadow dx="0" dy="0" stdDeviation="3" flood-color="#f87171" flood-opacity="0.4"/>
+    </filter>
+    <filter id="magnify-glow" x="-50%" y="-50%" width="200%" height="200%">
+      <feDropShadow dx="0" dy="0" stdDeviation="10" flood-color="#a78bfa" flood-opacity="0.55"/>
+    </filter>
+    <filter id="ui-glow" x="-50%" y="-50%" width="200%" height="200%">
+      <feDropShadow dx="0" dy="0" stdDeviation="3" flood-color="#a78bfa" flood-opacity="0.3"/>
+    </filter>
+  </defs>
+
+  <!-- Background -->
+  <rect width="100%" height="100%" fill="url(#bg)"/>
+  <rect width="100%" height="100%" fill="url(#glow)"/>
+
+  <!-- Subtle grid pattern -->
+  <g opacity="0.05" stroke="white" stroke-width="0.5">
+    <line x1="0" y1="0" x2="1200" y2="630"/>
+    <line x1="200" y1="0" x2="1200" y2="500"/>
+    <line x1="0" y1="200" x2="1000" y2="630"/>
+    <line x1="400" y1="0" x2="1200" y2="400"/>
+    <line x1="0" y1="400" x2="800" y2="630"/>
+    <line x1="1200" y1="0" x2="0" y2="630"/>
+    <line x1="1000" y1="0" x2="0" y2="500"/>
+    <line x1="1200" y1="200" x2="200" y2="630"/>
+  </g>
+
+  <!-- Trust rings centered slightly left to leave room for UI -->
+  <circle cx="550" cy="295" r="280" fill="none" stroke="rgba(167,139,250,0.06)" stroke-width="1" stroke-dasharray="4,8"/>
+  <circle cx="550" cy="295" r="210" fill="none" stroke="rgba(167,139,250,0.10)" stroke-width="1" stroke-dasharray="4,8"/>
+  <circle cx="550" cy="295" r="140" fill="none" stroke="rgba(167,139,250,0.14)" stroke-width="1" stroke-dasharray="4,8"/>
+
+  <!-- Edge connections -->
+  <!-- Core (green) -->
+  <g stroke="rgba(74,222,128,0.4)" stroke-width="2">
+    <line x1="550" y1="280" x2="465" y2="195"/>
+    <line x1="550" y1="280" x2="655" y2="205"/>
+    <line x1="550" y1="280" x2="430" y2="335"/>
+    <line x1="550" y1="280" x2="675" y2="345"/>
+    <line x1="550" y1="280" x2="505" y2="395"/>
+    <line x1="550" y1="280" x2="610" y2="405"/>
+    <line x1="550" y1="280" x2="550" y2="165"/>
+  </g>
+
+  <!-- Second hop (yellow) -->
+  <g stroke="rgba(250,204,21,0.25)" stroke-width="1.5">
+    <line x1="465" y1="195" x2="355" y2="130"/>
+    <line x1="465" y1="195" x2="365" y2="248"/>
+    <line x1="655" y1="205" x2="765" y2="140"/>
+    <line x1="655" y1="205" x2="755" y2="265"/>
+    <line x1="430" y1="335" x2="315" y2="345"/>
+    <line x1="430" y1="335" x2="345" y2="425"/>
+    <line x1="675" y1="345" x2="790" y2="365"/>
+    <line x1="675" y1="345" x2="755" y2="435"/>
+    <line x1="505" y1="395" x2="425" y2="475"/>
+    <line x1="610" y1="405" x2="690" y2="485"/>
+    <line x1="550" y1="165" x2="480" y2="95"/>
+    <line x1="550" y1="165" x2="630" y2="88"/>
+  </g>
+
+  <!-- Third hop (red) -->
+  <g stroke="rgba(248,113,113,0.15)" stroke-width="1">
+    <line x1="355" y1="130" x2="265" y2="80"/>
+    <line x1="355" y1="130" x2="275" y2="172"/>
+    <line x1="765" y1="140" x2="855" y2="90"/>
+    <line x1="755" y1="265" x2="855" y2="275"/>
+    <line x1="315" y1="345" x2="215" y2="325"/>
+    <line x1="345" y1="425" x2="255" y2="475"/>
+    <line x1="790" y1="365" x2="878" y2="375"/>
+    <line x1="755" y1="435" x2="840" y2="488"/>
+    <line x1="425" y1="475" x2="355" y2="540"/>
+    <line x1="690" y1="485" x2="765" y2="548"/>
+    <line x1="480" y1="95" x2="405" y2="40"/>
+    <line x1="630" y1="88" x2="712" y2="35"/>
+  </g>
+
+  <!-- Cross-connections -->
+  <g stroke="rgba(74,222,128,0.15)" stroke-width="1">
+    <line x1="465" y1="195" x2="655" y2="205"/>
+    <line x1="430" y1="335" x2="505" y2="395"/>
+    <line x1="675" y1="345" x2="610" y2="405"/>
+    <line x1="465" y1="195" x2="550" y2="165"/>
+    <line x1="655" y1="205" x2="550" y2="165"/>
+  </g>
+  <g stroke="rgba(250,204,21,0.1)" stroke-width="1">
+    <line x1="355" y1="130" x2="365" y2="248"/>
+    <line x1="765" y1="140" x2="755" y2="265"/>
+    <line x1="315" y1="345" x2="345" y2="425"/>
+    <line x1="790" y1="365" x2="755" y2="435"/>
+    <line x1="480" y1="95" x2="630" y2="88"/>
+  </g>
+
+  <!-- Red nodes -->
+  <g filter="url(#node-glow-red)">
+    <circle cx="265" cy="80" r="7" fill="rgba(248,113,113,0.25)" stroke="rgba(248,113,113,0.5)" stroke-width="1"/>
+    <circle cx="275" cy="172" r="6" fill="rgba(248,113,113,0.2)" stroke="rgba(248,113,113,0.45)" stroke-width="1"/>
+    <circle cx="855" cy="90" r="7" fill="rgba(248,113,113,0.25)" stroke="rgba(248,113,113,0.5)" stroke-width="1"/>
+    <circle cx="855" cy="275" r="6" fill="rgba(248,113,113,0.2)" stroke="rgba(248,113,113,0.45)" stroke-width="1"/>
+    <circle cx="215" cy="325" r="6" fill="rgba(248,113,113,0.2)" stroke="rgba(248,113,113,0.45)" stroke-width="1"/>
+    <circle cx="255" cy="475" r="7" fill="rgba(248,113,113,0.25)" stroke="rgba(248,113,113,0.5)" stroke-width="1"/>
+    <circle cx="878" cy="375" r="6" fill="rgba(248,113,113,0.2)" stroke="rgba(248,113,113,0.45)" stroke-width="1"/>
+    <circle cx="840" cy="488" r="7" fill="rgba(248,113,113,0.25)" stroke="rgba(248,113,113,0.5)" stroke-width="1"/>
+    <circle cx="355" cy="540" r="6" fill="rgba(248,113,113,0.2)" stroke="rgba(248,113,113,0.45)" stroke-width="1"/>
+    <circle cx="765" cy="548" r="6" fill="rgba(248,113,113,0.2)" stroke="rgba(248,113,113,0.45)" stroke-width="1"/>
+    <circle cx="405" cy="40" r="6" fill="rgba(248,113,113,0.2)" stroke="rgba(248,113,113,0.45)" stroke-width="1"/>
+    <circle cx="712" cy="35" r="6" fill="rgba(248,113,113,0.2)" stroke="rgba(248,113,113,0.45)" stroke-width="1"/>
+  </g>
+
+  <!-- Yellow nodes -->
+  <g filter="url(#node-glow-yellow)">
+    <circle cx="355" cy="130" r="10" fill="rgba(250,204,21,0.2)" stroke="rgba(250,204,21,0.6)" stroke-width="1.5"/>
+    <circle cx="365" cy="248" r="9" fill="rgba(250,204,21,0.18)" stroke="rgba(250,204,21,0.55)" stroke-width="1.5"/>
+    <circle cx="765" cy="140" r="10" fill="rgba(250,204,21,0.2)" stroke="rgba(250,204,21,0.6)" stroke-width="1.5"/>
+    <circle cx="755" cy="265" r="9" fill="rgba(250,204,21,0.18)" stroke="rgba(250,204,21,0.55)" stroke-width="1.5"/>
+    <circle cx="315" cy="345" r="9" fill="rgba(250,204,21,0.18)" stroke="rgba(250,204,21,0.55)" stroke-width="1.5"/>
+    <circle cx="345" cy="425" r="10" fill="rgba(250,204,21,0.2)" stroke="rgba(250,204,21,0.6)" stroke-width="1.5"/>
+    <circle cx="790" cy="365" r="9" fill="rgba(250,204,21,0.18)" stroke="rgba(250,204,21,0.55)" stroke-width="1.5"/>
+    <circle cx="755" cy="435" r="10" fill="rgba(250,204,21,0.2)" stroke="rgba(250,204,21,0.6)" stroke-width="1.5"/>
+    <circle cx="425" cy="475" r="9" fill="rgba(250,204,21,0.18)" stroke="rgba(250,204,21,0.55)" stroke-width="1.5"/>
+    <circle cx="690" cy="485" r="9" fill="rgba(250,204,21,0.18)" stroke="rgba(250,204,21,0.55)" stroke-width="1.5"/>
+    <circle cx="480" cy="95" r="10" fill="rgba(250,204,21,0.2)" stroke="rgba(250,204,21,0.6)" stroke-width="1.5"/>
+    <circle cx="630" cy="88" r="10" fill="rgba(250,204,21,0.2)" stroke="rgba(250,204,21,0.6)" stroke-width="1.5"/>
+  </g>
+
+  <!-- Green nodes -->
+  <g filter="url(#node-glow-green)">
+    <circle cx="465" cy="195" r="14" fill="rgba(74,222,128,0.2)" stroke="rgba(74,222,128,0.7)" stroke-width="2"/>
+    <circle cx="655" cy="205" r="14" fill="rgba(74,222,128,0.2)" stroke="rgba(74,222,128,0.7)" stroke-width="2"/>
+    <circle cx="430" cy="335" r="13" fill="rgba(74,222,128,0.2)" stroke="rgba(74,222,128,0.7)" stroke-width="2"/>
+    <circle cx="675" cy="345" r="13" fill="rgba(74,222,128,0.2)" stroke="rgba(74,222,128,0.7)" stroke-width="2"/>
+    <circle cx="505" cy="395" r="13" fill="rgba(74,222,128,0.2)" stroke="rgba(74,222,128,0.7)" stroke-width="2"/>
+    <circle cx="610" cy="405" r="13" fill="rgba(74,222,128,0.2)" stroke="rgba(74,222,128,0.7)" stroke-width="2"/>
+    <circle cx="550" cy="165" r="14" fill="rgba(74,222,128,0.2)" stroke="rgba(74,222,128,0.7)" stroke-width="2"/>
+  </g>
+
+  <!-- Center node -->
+  <circle cx="550" cy="280" r="24" fill="rgba(167,139,250,0.15)" stroke="rgba(167,139,250,0.6)" stroke-width="2"/>
+  <circle cx="550" cy="280" r="18" fill="rgba(167,139,250,0.1)" stroke="rgba(167,139,250,0.4)" stroke-width="1.5"/>
+  <circle cx="550" cy="280" r="8" fill="rgba(167,139,250,0.5)"/>
+
+  <!-- Magnifying glass (slightly different position for og emphasis) -->
+  <g filter="url(#magnify-glow)" transform="translate(680, 170)">
+    <circle cx="0" cy="0" r="60" fill="rgba(167,139,250,0.04)" stroke="rgba(167,139,250,0.5)" stroke-width="2.5"/>
+    <line x1="42" y1="42" x2="78" y2="78" stroke="rgba(167,139,250,0.6)" stroke-width="5.5" stroke-linecap="round"/>
+    <!-- Magnified detail -->
+    <circle cx="-12" cy="-6" r="5.5" fill="rgba(74,222,128,0.4)" stroke="rgba(74,222,128,0.7)" stroke-width="1"/>
+    <circle cx="16" cy="-14" r="4.5" fill="rgba(250,204,21,0.4)" stroke="rgba(250,204,21,0.6)" stroke-width="1"/>
+    <circle cx="10" cy="16" r="5" fill="rgba(167,139,250,0.4)" stroke="rgba(167,139,250,0.6)" stroke-width="1"/>
+    <circle cx="-20" cy="20" r="4" fill="rgba(250,204,21,0.35)" stroke="rgba(250,204,21,0.5)" stroke-width="1"/>
+    <circle cx="28" cy="12" r="3.5" fill="rgba(248,113,113,0.3)" stroke="rgba(248,113,113,0.5)" stroke-width="1"/>
+    <circle cx="-25" cy="-18" r="3" fill="rgba(248,113,113,0.25)" stroke="rgba(248,113,113,0.45)" stroke-width="1"/>
+    <line x1="-12" y1="-6" x2="16" y2="-14" stroke="rgba(74,222,128,0.5)" stroke-width="1"/>
+    <line x1="-12" y1="-6" x2="10" y2="16" stroke="rgba(167,139,250,0.4)" stroke-width="1"/>
+    <line x1="16" y1="-14" x2="28" y2="12" stroke="rgba(250,204,21,0.4)" stroke-width="1"/>
+    <line x1="10" y1="16" x2="-20" y2="20" stroke="rgba(250,204,21,0.3)" stroke-width="1"/>
+    <line x1="10" y1="16" x2="28" y2="12" stroke="rgba(248,113,113,0.3)" stroke-width="1"/>
+    <line x1="-25" y1="-18" x2="-12" y2="-6" stroke="rgba(248,113,113,0.2)" stroke-width="1"/>
+    <!-- Lens shine -->
+    <path d="M -33 -22 Q -22 -40 -5 -45" fill="none" stroke="rgba(255,255,255,0.15)" stroke-width="2" stroke-linecap="round"/>
+  </g>
+
+  <!-- UI Controls -->
+  <!-- Zoom -->
+  <g filter="url(#ui-glow)" transform="translate(1030, 95)">
+    <rect x="0" y="0" width="38" height="38" rx="6" ry="6" fill="rgba(167,139,250,0.1)" stroke="rgba(167,139,250,0.4)" stroke-width="1.5"/>
+    <line x1="11" y1="19" x2="27" y2="19" stroke="rgba(167,139,250,0.7)" stroke-width="2" stroke-linecap="round"/>
+    <line x1="19" y1="11" x2="19" y2="27" stroke="rgba(167,139,250,0.7)" stroke-width="2" stroke-linecap="round"/>
+    <rect x="0" y="46" width="38" height="38" rx="6" ry="6" fill="rgba(167,139,250,0.1)" stroke="rgba(167,139,250,0.4)" stroke-width="1.5"/>
+    <line x1="11" y1="65" x2="27" y2="65" stroke="rgba(167,139,250,0.7)" stroke-width="2" stroke-linecap="round"/>
+  </g>
+
+  <!-- Filter buttons -->
+  <g filter="url(#ui-glow)" transform="translate(1010, 210)">
+    <rect x="0" y="0" width="78" height="30" rx="5" ry="5" fill="rgba(74,222,128,0.12)" stroke="rgba(74,222,128,0.4)" stroke-width="1"/>
+    <text x="39" y="20" fill="rgba(74,222,128,0.7)" font-family="monospace" font-size="11" text-anchor="middle">Hop 1</text>
+    <rect x="0" y="38" width="78" height="30" rx="5" ry="5" fill="rgba(250,204,21,0.12)" stroke="rgba(250,204,21,0.4)" stroke-width="1"/>
+    <text x="39" y="58" fill="rgba(250,204,21,0.7)" font-family="monospace" font-size="11" text-anchor="middle">Hop 2</text>
+    <rect x="0" y="76" width="78" height="30" rx="5" ry="5" fill="rgba(248,113,113,0.12)" stroke="rgba(248,113,113,0.4)" stroke-width="1"/>
+    <text x="39" y="96" fill="rgba(248,113,113,0.7)" font-family="monospace" font-size="11" text-anchor="middle">Hop 3</text>
+  </g>
+
+  <!-- Search bar -->
+  <g filter="url(#ui-glow)" transform="translate(380, 565)">
+    <rect x="0" y="0" width="340" height="36" rx="18" ry="18" fill="rgba(167,139,250,0.06)" stroke="rgba(167,139,250,0.3)" stroke-width="1.5"/>
+    <circle cx="24" cy="18" r="7.5" fill="none" stroke="rgba(167,139,250,0.5)" stroke-width="1.5"/>
+    <line x1="29" y1="23" x2="35" y2="29" stroke="rgba(167,139,250,0.5)" stroke-width="1.5" stroke-linecap="round"/>
+    <text x="46" y="23" fill="rgba(167,139,250,0.35)" font-family="monospace" font-size="13">Search npub or profile...</text>
+  </g>
+
+</svg>

@@ -69,7 +69,7 @@ export default async function Home() {
     "alternateName": "Nostr WoT",
     "url": "https://nostr-wot.com",
     "logo": "https://nostr-wot.com/icon-512.png",
-    "description": "Nostr identity provider, NIP-07 signer, and Web of Trust browser extension. Manage keys, sign events, encrypt messages, and filter spam with trust scores.",
+    "description": "Nostr identity provider, NIP-07 signer, Lightning wallet, and Web of Trust browser extension. Manage keys, sign events, encrypt messages, send zaps, and filter spam with trust scores.",
     "sameAs": [
       "https://github.com/nostr-wot",
       "https://twitter.com/nostr_wot",
@@ -81,7 +81,7 @@ export default async function Home() {
     "@type": "WebSite",
     "name": "Nostr Web of Trust",
     "url": "https://nostr-wot.com",
-    "description": "Nostr identity provider, NIP-07 signer, and Web of Trust browser extension",
+    "description": "Nostr identity provider, NIP-07 signer, Lightning wallet, and Web of Trust browser extension",
     "potentialAction": {
       "@type": "SearchAction",
       "target": "https://nostr-wot.com/docs?search={search_term_string}",
@@ -111,7 +111,7 @@ export default async function Home() {
         "@type": "SiteNavigationElement",
         "position": 3,
         "name": "Features",
-        "description": "Explore Web of Trust features: trust scoring, privacy modes, and universal API",
+        "description": "Explore extension features: NIP-07 signer, Lightning wallet, trust scoring, privacy modes, and universal API",
         "url": "https://nostr-wot.com/features",
       },
       {
@@ -185,6 +185,7 @@ export default async function Home() {
     { question: t("faq.items.whichBrowsers.question"), answer: t("faq.items.whichBrowsers.answer") },
     { question: t("faq.items.isFree.question"), answer: t("faq.items.isFree.answer") },
     { question: t("faq.items.howToIntegrate.question"), answer: t("faq.items.howToIntegrate.answer") },
+    { question: t("faq.items.wallet.question"), answer: t("faq.items.wallet.answer") },
   ];
 
   return (

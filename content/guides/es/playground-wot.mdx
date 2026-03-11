@@ -1,0 +1,110 @@
+---
+title: "Playground de la Web of Trust"
+description: "Explora tu grafo de confianza de forma visual con el Playground de la extension Nostr WoT. Filtra, busca y analiza las conexiones de tu red en tiempo real."
+excerpt: "El Playground te permite visualizar tu Web of Trust, explorar conexiones y experimentar con filtros sin afectar tu configuracion."
+date: "2026-03-11"
+author:
+  name: "Leon Acosta"
+  avatar: "/authors/leon-profile.jpg"
+  npub: "npub1gxdhmu9swqduwhr6zptjy4ya693zp3ql28nemy4hd97kuufyrqdqwe5zfk"
+featuredImage: "/images/guides/wot-playground/featured.svg"
+previewImage: "/images/guides/wot-playground/preview.svg"
+tags:
+  - "Playground"
+  - "Visualizacion"
+  - "Grafo de Confianza"
+published: true
+seoTitle: "Playground Web of Trust — Explora tu Grafo WoT"
+seoDescription: "Explora tu grafo de confianza de forma visual con el Playground de la extension Nostr WoT. Filtra, busca y analiza las conexiones de tu red en tiempo real."
+ogImage: "/images/guides/wot-playground/og.svg"
+translationKey: "wot-playground"
+difficulty: "intermediate"
+order: 9
+---
+
+El Playground es una herramienta visual incluida en la extension Nostr WoT que te permite explorar tu grafo de confianza en tiempo real. Puedes ver como se conectan las personas en tu red, buscar pubkeys especificas, filtrar por nivel de confianza y experimentar con diferentes configuraciones sin afectar tu perfil real.
+
+## Acceder al Playground
+
+1. Haz clic en el icono de la extension en tu barra de herramientas.
+2. Busca la opcion **Playground** o **Explorar WoT** en el menu.
+3. Se abre una nueva pestana con la interfaz del Playground.
+
+El Playground necesita que tu identidad este activa y que el grafo tenga datos. Si acabas de instalar la extension, dale unos minutos para sincronizar tu lista de seguidos antes de explorar.
+
+{/* TODO: Captura de pantalla de la vista principal del Playground */}
+
+## Visualizacion del Grafo
+
+La vista principal del Playground muestra tu grafo de confianza como una red de nodos conectados por lineas. Cada nodo representa una pubkey y cada linea una relacion de seguimiento.
+
+### Elementos Visuales
+
+- **Tu nodo** aparece en el centro, destacado con un color diferente.
+- **Nodos de salto 1** (tus seguidos directos) estan cerca del centro con colores intensos.
+- **Nodos de salto 2 y 3** se alejan progresivamente con colores mas tenues.
+- **El tamano del nodo** refleja cuantas conexiones tiene dentro de tu red.
+- **Las lineas** indican relaciones de seguimiento entre nodos.
+
+Puedes arrastrar nodos, hacer zoom y mover el grafo completo para explorar diferentes areas de tu red.
+
+{/* TODO: Captura de pantalla del grafo con nodos de diferentes saltos */}
+
+<Callout type="tip">
+Los grafos grandes pueden tener miles de nodos. Si la visualizacion se siente lenta, usa los filtros para limitar la profundidad de saltos o enfocarte en un area especifica de tu red.
+</Callout>
+
+## Buscar Personas
+
+El Playground incluye una barra de busqueda donde puedes ingresar una npub, un nombre de perfil o un NIP-05 para localizar a alguien en tu grafo.
+
+1. Escribe el nombre o la npub en la barra de busqueda.
+2. El Playground resalta el nodo correspondiente y muestra su posicion en el grafo.
+3. Haz clic en el nodo para ver los detalles: puntaje de confianza, numero de saltos, seguidores mutuos y ruta de conexion hasta esa persona.
+
+Si la persona no esta en tu grafo, el Playground te lo indica y muestra su puntaje como cero.
+
+{/* TODO: Captura de pantalla de una busqueda con resultados resaltados */}
+
+## Filtrar por Nivel de Confianza
+
+Los filtros te permiten controlar que nodos se muestran en la visualizacion:
+
+### Filtro de Saltos
+
+Elige cuantos niveles de salto quieres ver. Mostrar solo salto 1 te da una vista limpia de tus seguidos directos. Incluir saltos 2 y 3 expande la red significativamente.
+
+### Filtro de Puntaje
+
+Define un rango de puntaje de confianza. Por ejemplo, mostrar solo nodos con puntaje superior a 0.5 te enfoca en las personas mas relevantes de tu red.
+
+### Filtro por Seguidores Mutuos
+
+Filtra para mostrar solo personas que tienen al menos N seguidores mutuos contigo. Util para encontrar nodos con alta confianza social.
+
+<Callout type="tip">
+Combina filtros para obtener vistas especificas. Por ejemplo, salto 2 + puntaje mayor a 0.6 + al menos 3 seguidores mutuos te muestra las personas que probablemente deberias seguir pero aun no sigues.
+</Callout>
+
+## Experimentar con la Formula
+
+El Playground te permite modificar temporalmente los pesos de la formula de confianza y ver el efecto en tiempo real. Mueve los controles deslizantes y observa como cambian los puntajes y los colores del grafo.
+
+Estos cambios son temporales y no afectan tu configuracion real. Si encuentras una combinacion que te gusta, puedes aplicarla desde la seccion de [personalizar confianza](/guides/personalizar-confianza).
+
+{/* TODO: Video mostrando el ajuste de filtros en tiempo real */}
+
+## Estadisticas de tu Red
+
+En la parte inferior o lateral del Playground encontraras estadisticas de tu grafo:
+
+- **Total de nodos** en tu Web of Trust.
+- **Distribucion por saltos** — cuantas personas hay en cada nivel.
+- **Puntaje promedio** de confianza en tu red.
+- **Clusters** o comunidades detectadas dentro de tu grafo.
+
+Estas metricas te ayudan a entender la estructura de tu red y a tomar decisiones sobre como ajustar tu configuracion de confianza.
+
+## Que Sigue?
+
+Ya conoces todas las funciones principales de la extension Nostr WoT. Si quieres repasar algun tema, vuelve a [primeros pasos](/guides/primeros-pasos) o profundiza en [personalizar tu configuracion de confianza](/guides/personalizar-confianza) para ajustar tu red a la medida.

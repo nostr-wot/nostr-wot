@@ -1,0 +1,94 @@
+<svg width="800" height="450" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#1e1b4b;stop-opacity:1" />
+      <stop offset="50%" style="stop-color:#312e81;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#4c1d95;stop-opacity:1" />
+    </linearGradient>
+    <radialGradient id="glow" cx="50%" cy="43%" r="45%">
+      <stop offset="0%" style="stop-color:#7c3aed;stop-opacity:0.3" />
+      <stop offset="100%" style="stop-color:#1e1b4b;stop-opacity:0" />
+    </radialGradient>
+    <filter id="shadow">
+      <feDropShadow dx="0" dy="0" stdDeviation="3" flood-color="#a78bfa" flood-opacity="0.5"/>
+    </filter>
+    <filter id="wallet-glow" x="-50%" y="-50%" width="200%" height="200%">
+      <feDropShadow dx="0" dy="0" stdDeviation="8" flood-color="#facc15" flood-opacity="0.7"/>
+    </filter>
+    <filter id="path-glow-green" x="-50%" y="-50%" width="200%" height="200%">
+      <feDropShadow dx="0" dy="0" stdDeviation="4" flood-color="#4ade80" flood-opacity="0.5"/>
+    </filter>
+    <filter id="path-glow-yellow" x="-50%" y="-50%" width="200%" height="200%">
+      <feDropShadow dx="0" dy="0" stdDeviation="4" flood-color="#facc15" flood-opacity="0.5"/>
+    </filter>
+    <filter id="path-glow-purple" x="-50%" y="-50%" width="200%" height="200%">
+      <feDropShadow dx="0" dy="0" stdDeviation="4" flood-color="#a78bfa" flood-opacity="0.5"/>
+    </filter>
+    <filter id="bolt-glow" x="-50%" y="-50%" width="200%" height="200%">
+      <feDropShadow dx="0" dy="0" stdDeviation="6" flood-color="#facc15" flood-opacity="0.6"/>
+    </filter>
+  </defs>
+
+  <!-- Background -->
+  <rect width="100%" height="100%" fill="url(#bg)"/>
+  <rect width="100%" height="100%" fill="url(#glow)"/>
+
+  <!-- Trust rings -->
+  <circle cx="400" cy="200" r="190" fill="none" stroke="rgba(167,139,250,0.06)" stroke-width="1" stroke-dasharray="4,8"/>
+  <circle cx="400" cy="200" r="145" fill="none" stroke="rgba(167,139,250,0.10)" stroke-width="1" stroke-dasharray="4,8"/>
+  <circle cx="400" cy="200" r="100" fill="none" stroke="rgba(167,139,250,0.14)" stroke-width="1" stroke-dasharray="4,8"/>
+
+  <!-- Wallet icon -->
+  <g filter="url(#wallet-glow)">
+    <rect x="340" y="140" width="120" height="90" rx="10" fill="rgba(250,204,21,0.1)" stroke="rgba(250,204,21,0.7)" stroke-width="2"/>
+    <path d="M340,162 L340,148 C340,142 346,136 352,136 L448,136 C454,136 460,142 460,148 L460,162" fill="none" stroke="rgba(250,204,21,0.5)" stroke-width="1.5"/>
+    <rect x="430" y="175" width="30" height="22" rx="6" fill="rgba(250,204,21,0.15)" stroke="rgba(250,204,21,0.5)" stroke-width="1"/>
+    <circle cx="445" cy="186" r="4" fill="rgba(250,204,21,0.3)" stroke="rgba(250,204,21,0.6)" stroke-width="1"/>
+  </g>
+
+  <!-- Lightning bolt inside wallet -->
+  <g filter="url(#bolt-glow)">
+    <polygon points="403,152 385,185 398,185 380,215 418,180 404,180 420,152" fill="rgba(250,204,21,0.85)" stroke="rgba(250,204,21,0.4)" stroke-width="1"/>
+  </g>
+  <polygon points="402,158 388,183 399,183 385,208 413,182 404,182 416,158" fill="rgba(255,255,255,0.12)"/>
+
+  <!-- Path 1: NWC (top-right) -->
+  <g filter="url(#path-glow-green)">
+    <path d="M460,170 C510,150 545,130 590,120" fill="none" stroke="rgba(74,222,128,0.5)" stroke-width="2" stroke-dasharray="6,3"/>
+    <circle cx="592" cy="120" r="3" fill="rgba(74,222,128,0.8)"/>
+  </g>
+  <rect x="570" y="85" width="110" height="60" rx="8" fill="rgba(74,222,128,0.06)" stroke="rgba(74,222,128,0.35)" stroke-width="1"/>
+  <text x="625" y="115" font-family="monospace" font-size="14" fill="rgba(74,222,128,0.8)" text-anchor="middle" font-weight="bold">NWC</text>
+  <text x="625" y="132" font-family="monospace" font-size="8" fill="rgba(74,222,128,0.5)" text-anchor="middle">Nostr Wallet Connect</text>
+
+  <!-- Path 2: LNbits (bottom-right) -->
+  <g filter="url(#path-glow-yellow)">
+    <path d="M460,210 C510,240 545,270 590,290" fill="none" stroke="rgba(250,204,21,0.5)" stroke-width="2" stroke-dasharray="6,3"/>
+    <circle cx="592" cy="290" r="3" fill="rgba(250,204,21,0.8)"/>
+  </g>
+  <rect x="570" y="260" width="110" height="60" rx="8" fill="rgba(250,204,21,0.06)" stroke="rgba(250,204,21,0.35)" stroke-width="1"/>
+  <polygon points="590,272 585,280 589,280 584,288 596,279 592,279 597,272" fill="rgba(250,204,21,0.7)"/>
+  <text x="625" y="296" font-family="monospace" font-size="14" fill="rgba(250,204,21,0.8)" text-anchor="middle" font-weight="bold">LNbits</text>
+  <text x="625" y="312" font-family="monospace" font-size="8" fill="rgba(250,204,21,0.5)" text-anchor="middle">Self-hosted</text>
+
+  <!-- Path 3: Quick Setup (left) -->
+  <g filter="url(#path-glow-purple)">
+    <path d="M340,195 C290,195 250,200 220,210" fill="none" stroke="rgba(167,139,250,0.5)" stroke-width="2" stroke-dasharray="6,3"/>
+    <circle cx="218" cy="210" r="3" fill="rgba(167,139,250,0.8)"/>
+  </g>
+  <rect x="120" y="180" width="110" height="60" rx="8" fill="rgba(167,139,250,0.06)" stroke="rgba(167,139,250,0.35)" stroke-width="1"/>
+  <polygon points="142,197 142,213 156,205" fill="rgba(167,139,250,0.6)" stroke="rgba(167,139,250,0.3)" stroke-width="1"/>
+  <text x="175" y="220" font-family="monospace" font-size="12" fill="rgba(167,139,250,0.8)" text-anchor="middle" font-weight="bold">Quick</text>
+  <text x="175" y="233" font-family="monospace" font-size="8" fill="rgba(167,139,250,0.5)" text-anchor="middle">One-click</text>
+
+  <!-- Energy particles -->
+  <g opacity="0.5">
+    <circle cx="490" cy="155" r="1.5" fill="rgba(74,222,128,0.7)"/>
+    <circle cx="540" cy="135" r="2" fill="rgba(74,222,128,0.6)"/>
+    <circle cx="490" cy="225" r="1.5" fill="rgba(250,204,21,0.7)"/>
+    <circle cx="540" cy="260" r="2" fill="rgba(250,204,21,0.6)"/>
+    <circle cx="310" cy="198" r="1.5" fill="rgba(167,139,250,0.7)"/>
+    <circle cx="265" cy="205" r="2" fill="rgba(167,139,250,0.6)"/>
+  </g>
+
+</svg>

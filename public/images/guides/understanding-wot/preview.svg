@@ -1,0 +1,122 @@
+<svg width="800" height="450" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#1e1b4b;stop-opacity:1" />
+      <stop offset="50%" style="stop-color:#312e81;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#4c1d95;stop-opacity:1" />
+    </linearGradient>
+    <radialGradient id="glow" cx="50%" cy="43%" r="45%">
+      <stop offset="0%" style="stop-color:#7c3aed;stop-opacity:0.3" />
+      <stop offset="100%" style="stop-color:#1e1b4b;stop-opacity:0" />
+    </radialGradient>
+    <filter id="shadow">
+      <feDropShadow dx="0" dy="0" stdDeviation="3" flood-color="#a78bfa" flood-opacity="0.5"/>
+    </filter>
+    <filter id="center-glow" x="-50%" y="-50%" width="200%" height="200%">
+      <feDropShadow dx="0" dy="0" stdDeviation="10" flood-color="#a78bfa" flood-opacity="0.8"/>
+    </filter>
+    <filter id="node-glow-green" x="-50%" y="-50%" width="200%" height="200%">
+      <feDropShadow dx="0" dy="0" stdDeviation="5" flood-color="#4ade80" flood-opacity="0.6"/>
+    </filter>
+    <filter id="node-glow-yellow" x="-50%" y="-50%" width="200%" height="200%">
+      <feDropShadow dx="0" dy="0" stdDeviation="3" flood-color="#facc15" flood-opacity="0.5"/>
+    </filter>
+    <filter id="node-glow-red" x="-50%" y="-50%" width="200%" height="200%">
+      <feDropShadow dx="0" dy="0" stdDeviation="2" flood-color="#f87171" flood-opacity="0.4"/>
+    </filter>
+  </defs>
+
+  <!-- Background -->
+  <rect width="100%" height="100%" fill="url(#bg)"/>
+  <rect width="100%" height="100%" fill="url(#glow)"/>
+
+  <!-- Concentric trust rings -->
+  <circle cx="400" cy="200" r="190" fill="none" stroke="rgba(248,113,113,0.12)" stroke-width="1" stroke-dasharray="4,8"/>
+  <circle cx="400" cy="200" r="140" fill="none" stroke="rgba(250,204,21,0.15)" stroke-width="1" stroke-dasharray="4,8"/>
+  <circle cx="400" cy="200" r="90" fill="none" stroke="rgba(74,222,128,0.18)" stroke-width="1" stroke-dasharray="4,8"/>
+  <circle cx="400" cy="200" r="42" fill="none" stroke="rgba(167,139,250,0.25)" stroke-width="1" stroke-dasharray="4,8"/>
+
+  <!-- Center to hop-1 connections -->
+  <line x1="400" y1="200" x2="320" y2="140" stroke="rgba(74,222,128,0.5)" stroke-width="1.5"/>
+  <line x1="400" y1="200" x2="480" y2="140" stroke="rgba(74,222,128,0.5)" stroke-width="1.5"/>
+  <line x1="400" y1="200" x2="315" y2="240" stroke="rgba(74,222,128,0.5)" stroke-width="1.5"/>
+  <line x1="400" y1="200" x2="485" y2="240" stroke="rgba(74,222,128,0.5)" stroke-width="1.5"/>
+  <line x1="400" y1="200" x2="400" y2="115" stroke="rgba(74,222,128,0.5)" stroke-width="1.5"/>
+  <line x1="400" y1="200" x2="400" y2="285" stroke="rgba(74,222,128,0.5)" stroke-width="1.5"/>
+
+  <!-- Hop-1 to hop-2 connections -->
+  <line x1="320" y1="140" x2="250" y2="90" stroke="rgba(250,204,21,0.35)" stroke-width="1"/>
+  <line x1="480" y1="140" x2="550" y2="90" stroke="rgba(250,204,21,0.35)" stroke-width="1"/>
+  <line x1="315" y1="240" x2="260" y2="310" stroke="rgba(250,204,21,0.35)" stroke-width="1"/>
+  <line x1="485" y1="240" x2="540" y2="310" stroke="rgba(250,204,21,0.35)" stroke-width="1"/>
+  <line x1="400" y1="115" x2="340" y2="65" stroke="rgba(250,204,21,0.35)" stroke-width="1"/>
+  <line x1="400" y1="115" x2="460" y2="65" stroke="rgba(250,204,21,0.35)" stroke-width="1"/>
+  <line x1="400" y1="285" x2="340" y2="340" stroke="rgba(250,204,21,0.35)" stroke-width="1"/>
+  <line x1="400" y1="285" x2="460" y2="340" stroke="rgba(250,204,21,0.35)" stroke-width="1"/>
+
+  <!-- Hop-2 to hop-3 connections -->
+  <line x1="250" y1="90" x2="185" y2="40" stroke="rgba(248,113,113,0.2)" stroke-width="1"/>
+  <line x1="550" y1="90" x2="615" y2="40" stroke="rgba(248,113,113,0.2)" stroke-width="1"/>
+  <line x1="260" y1="310" x2="195" y2="370" stroke="rgba(248,113,113,0.2)" stroke-width="1"/>
+  <line x1="540" y1="310" x2="605" y2="370" stroke="rgba(248,113,113,0.2)" stroke-width="1"/>
+  <line x1="340" y1="65" x2="280" y2="20" stroke="rgba(248,113,113,0.2)" stroke-width="1"/>
+  <line x1="460" y1="65" x2="520" y2="20" stroke="rgba(248,113,113,0.2)" stroke-width="1"/>
+  <line x1="340" y1="340" x2="280" y2="395" stroke="rgba(248,113,113,0.2)" stroke-width="1"/>
+  <line x1="460" y1="340" x2="520" y2="395" stroke="rgba(248,113,113,0.2)" stroke-width="1"/>
+
+  <!-- Cross-connections -->
+  <line x1="320" y1="140" x2="400" y2="115" stroke="rgba(74,222,128,0.15)" stroke-width="1"/>
+  <line x1="480" y1="140" x2="400" y2="115" stroke="rgba(74,222,128,0.15)" stroke-width="1"/>
+
+  <!-- Red hop-3 nodes -->
+  <g filter="url(#node-glow-red)">
+    <circle cx="185" cy="40" r="4.5" fill="rgba(248,113,113,0.5)" stroke="rgba(248,113,113,0.3)" stroke-width="1"/>
+    <circle cx="615" cy="40" r="4.5" fill="rgba(248,113,113,0.5)" stroke="rgba(248,113,113,0.3)" stroke-width="1"/>
+    <circle cx="195" cy="370" r="4.5" fill="rgba(248,113,113,0.45)" stroke="rgba(248,113,113,0.25)" stroke-width="1"/>
+    <circle cx="605" cy="370" r="4.5" fill="rgba(248,113,113,0.45)" stroke="rgba(248,113,113,0.25)" stroke-width="1"/>
+    <circle cx="280" cy="20" r="4" fill="rgba(248,113,113,0.4)" stroke="rgba(248,113,113,0.25)" stroke-width="1"/>
+    <circle cx="520" cy="20" r="4" fill="rgba(248,113,113,0.4)" stroke="rgba(248,113,113,0.25)" stroke-width="1"/>
+    <circle cx="280" cy="395" r="4" fill="rgba(248,113,113,0.4)" stroke="rgba(248,113,113,0.25)" stroke-width="1"/>
+    <circle cx="520" cy="395" r="4" fill="rgba(248,113,113,0.4)" stroke="rgba(248,113,113,0.25)" stroke-width="1"/>
+  </g>
+
+  <!-- Yellow hop-2 nodes -->
+  <g filter="url(#node-glow-yellow)">
+    <circle cx="250" cy="90" r="7" fill="rgba(250,204,21,0.6)" stroke="rgba(250,204,21,0.35)" stroke-width="1.5"/>
+    <circle cx="550" cy="90" r="7" fill="rgba(250,204,21,0.6)" stroke="rgba(250,204,21,0.35)" stroke-width="1.5"/>
+    <circle cx="260" cy="310" r="6.5" fill="rgba(250,204,21,0.55)" stroke="rgba(250,204,21,0.3)" stroke-width="1.5"/>
+    <circle cx="540" cy="310" r="6.5" fill="rgba(250,204,21,0.55)" stroke="rgba(250,204,21,0.3)" stroke-width="1.5"/>
+    <circle cx="340" cy="65" r="6.5" fill="rgba(250,204,21,0.55)" stroke="rgba(250,204,21,0.3)" stroke-width="1.5"/>
+    <circle cx="460" cy="65" r="6.5" fill="rgba(250,204,21,0.55)" stroke="rgba(250,204,21,0.3)" stroke-width="1.5"/>
+    <circle cx="340" cy="340" r="6.5" fill="rgba(250,204,21,0.55)" stroke="rgba(250,204,21,0.3)" stroke-width="1.5"/>
+    <circle cx="460" cy="340" r="6.5" fill="rgba(250,204,21,0.55)" stroke="rgba(250,204,21,0.3)" stroke-width="1.5"/>
+  </g>
+
+  <!-- Green hop-1 nodes -->
+  <g filter="url(#node-glow-green)">
+    <circle cx="320" cy="140" r="10" fill="rgba(74,222,128,0.7)" stroke="rgba(74,222,128,0.4)" stroke-width="1.5"/>
+    <circle cx="480" cy="140" r="10" fill="rgba(74,222,128,0.7)" stroke="rgba(74,222,128,0.4)" stroke-width="1.5"/>
+    <circle cx="315" cy="240" r="9.5" fill="rgba(74,222,128,0.65)" stroke="rgba(74,222,128,0.35)" stroke-width="1.5"/>
+    <circle cx="485" cy="240" r="9.5" fill="rgba(74,222,128,0.65)" stroke="rgba(74,222,128,0.35)" stroke-width="1.5"/>
+    <circle cx="400" cy="115" r="10" fill="rgba(74,222,128,0.7)" stroke="rgba(74,222,128,0.4)" stroke-width="1.5"/>
+    <circle cx="400" cy="285" r="10" fill="rgba(74,222,128,0.7)" stroke="rgba(74,222,128,0.4)" stroke-width="1.5"/>
+  </g>
+
+  <!-- Center node -->
+  <circle cx="400" cy="200" r="32" fill="rgba(167,139,250,0.08)"/>
+  <circle cx="400" cy="200" r="22" fill="rgba(167,139,250,0.06)"/>
+  <g filter="url(#center-glow)">
+    <circle cx="400" cy="200" r="16" fill="rgba(167,139,250,0.85)" stroke="rgba(167,139,250,0.5)" stroke-width="2"/>
+  </g>
+  <circle cx="400" cy="200" r="10" fill="rgba(255,255,255,0.15)"/>
+  <circle cx="400" cy="195" r="4" fill="rgba(255,255,255,0.3)"/>
+  <path d="M393,208 C393,203 396,200 400,200 C404,200 407,203 407,208" fill="rgba(255,255,255,0.25)"/>
+
+  <!-- Hop labels -->
+  <g opacity="0.5">
+    <text x="500" y="120" font-family="monospace" font-size="9" fill="rgba(74,222,128,0.8)">Hop 1</text>
+    <text x="565" y="78" font-family="monospace" font-size="8" fill="rgba(250,204,21,0.7)">Hop 2</text>
+    <text x="625" y="33" font-family="monospace" font-size="7" fill="rgba(248,113,113,0.6)">Hop 3</text>
+  </g>
+
+</svg>

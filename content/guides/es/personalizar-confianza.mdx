@@ -1,0 +1,100 @@
+---
+title: "Personalizar tu Configuracion de Confianza"
+description: "Ajusta la formula de confianza, pesos por salto y estrategias de filtrado en la extension Nostr WoT. Control total sobre como calculas la confianza."
+excerpt: "La formula de confianza por defecto funciona bien, pero puedes ajustarla. Aprende a modificar pesos, limites y estrategias para tu red."
+date: "2026-03-11"
+author:
+  name: "Leon Acosta"
+  avatar: "/authors/leon-profile.jpg"
+  npub: "npub1gxdhmu9swqduwhr6zptjy4ya693zp3ql28nemy4hd97kuufyrqdqwe5zfk"
+featuredImage: "/images/guides/customizing-trust/featured.svg"
+previewImage: "/images/guides/customizing-trust/preview.svg"
+tags:
+  - "Configuracion"
+  - "Formula"
+  - "Avanzado"
+published: true
+seoTitle: "Personalizar Confianza — Formulas y Pesos WoT"
+seoDescription: "Ajusta la formula de confianza, pesos por salto y estrategias de filtrado en la extension Nostr WoT. Control total sobre como calculas la confianza."
+ogImage: "/images/guides/customizing-trust/og.svg"
+translationKey: "customizing-trust"
+difficulty: "intermediate"
+order: 4
+---
+
+La extension Nostr WoT viene con una configuracion de confianza predeterminada que funciona bien para la mayoria de los usuarios. Pero si quieres un control mas preciso sobre como se calcula la confianza en tu red, puedes ajustar la formula, los pesos y las estrategias de filtrado.
+
+## Acceder a la Configuracion de Confianza
+
+1. Haz clic en el icono de la extension.
+2. Abre la pagina de configuracion (icono de engranaje).
+3. Navega a la seccion **Confianza** o **Trust Settings**.
+
+Aqui encontraras todos los parametros que controlan como la extension evalua cada pubkey en tu grafo.
+
+{/* TODO: Captura de pantalla de la pagina de configuracion de confianza */}
+
+## La Formula de Confianza
+
+El puntaje de confianza de cada pubkey se calcula combinando varios factores. Cada factor tiene un peso que puedes modificar:
+
+### Peso por Distancia (Saltos)
+
+Este es el factor principal. Define cuanto peso tiene cada nivel de salto en el puntaje final.
+
+- **Salto 1 (seguidos directos):** Peso por defecto alto. Estas son las personas que elegiste seguir.
+- **Salto 2 (amigos de amigos):** Peso medio. Confianza derivada de tus contactos directos.
+- **Salto 3:** Peso bajo. Conexiones lejanas con relevancia limitada.
+- **Salto 4+:** Peso minimo o nulo por defecto.
+
+Puedes aumentar o reducir el peso de cada salto. Si quieres una red mas cerrada, reduce el peso de los saltos 2 y 3. Si prefieres una red mas abierta, aumenta esos valores.
+
+<Callout type="tip">
+Un enfoque conservador (pesos altos solo para salto 1) funciona bien si sigues a pocas personas cuidadosamente seleccionadas. Un enfoque mas abierto es mejor si sigues a cientos de cuentas y quieres descubrir contenido nuevo.
+</Callout>
+
+### Bonificacion por Seguidores Mutuos
+
+Cuando varias personas que sigues tambien siguen a alguien, eso indica que esa persona es relevante en tu circulo. La bonificacion por seguidores mutuos aumenta el puntaje en proporcion al numero de conexiones compartidas.
+
+Puedes controlar la intensidad de esta bonificacion. Un valor alto prioriza a las personas populares dentro de tu red. Un valor bajo las trata casi igual que a cualquier otro contacto de segundo salto.
+
+### Bonificacion de Puente
+
+Las personas que conectan comunidades distintas — un desarrollador que tambien participa en comunidades de arte, por ejemplo — reciben una bonificacion de puente. Esto reconoce su rol como conectores en el grafo.
+
+Ajusta este parametro segun tu interes en descubrir contenido fuera de tu burbuja habitual.
+
+{/* TODO: Captura de pantalla de los controles deslizantes de pesos */}
+
+## Estrategias de Filtrado
+
+Ademas de la formula, puedes definir estrategias que determinan como se aplica el puntaje:
+
+### Umbral Minimo
+
+Define el puntaje minimo para que alguien sea considerado "dentro" de tu Web of Trust. Por defecto esta en un valor bajo para incluir una red amplia, pero puedes subirlo si quieres filtros mas estrictos.
+
+### Profundidad Maxima de Saltos
+
+Limita cuantos saltos explora la extension al construir el grafo. Reducir este valor hace que el calculo sea mas rapido y la red mas cerrada. Aumentarlo incluye mas personas pero requiere mas recursos.
+
+### Modo de Calculo
+
+- **Conservador:** Solo considera distancia y seguidores mutuos. Mas predecible.
+- **Equilibrado:** Incluye todas las bonificaciones con pesos moderados. Recomendado para la mayoria.
+- **Explorador:** Pesos altos en puentes y bonificaciones. Ideal para descubrir nuevas comunidades.
+
+<Callout type="tip">
+No necesitas encontrar la configuracion perfecta desde el primer dia. Empieza con los valores por defecto y ajusta conforme entiendas mejor tu red. Puedes usar el Playground para experimentar sin afectar tu configuracion real.
+</Callout>
+
+## Restablecer Valores por Defecto
+
+Si experimentas demasiado y quieres volver al punto de partida, la seccion de configuracion incluye un boton para restaurar todos los parametros a sus valores predeterminados.
+
+{/* TODO: Video mostrando el ajuste de pesos en tiempo real */}
+
+## Que Sigue?
+
+Para ver el efecto de tus cambios en tiempo real, explora el [Playground de la Web of Trust](/guides/playground-wot). Si prefieres continuar con las funciones practicas, aprende a [configurar tu billetera Lightning](/guides/configurar-billetera).

@@ -108,6 +108,11 @@ export default function Footer() {
                 </Link>
               </li>
               <li>
+                <Link href="/guides" className="text-gray-600 dark:text-gray-400 text-sm hover:text-primary transition-colors">
+                  {t("nav.guides")}
+                </Link>
+              </li>
+              <li>
                 <a
                   href="https://github.com/nostr-wot"
                   target="_blank"

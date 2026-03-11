@@ -1,0 +1,89 @@
+---
+title: "Entendendo a Web of Trust"
+description: "Descubra como o grafo de confianca funciona na extensao Nostr WoT. Aprenda sobre saltos, pontuacoes de confianca e como sua rede protege voce do spam."
+excerpt: "A Web of Trust e o sistema que determina em quem voce confia no Nostr. Entenda os conceitos de grafo, saltos e pontuacao de confianca."
+date: "2026-03-11"
+author:
+  name: "Leon Acosta"
+  avatar: "/authors/leon-profile.jpg"
+  npub: "npub1gxdhmu9swqduwhr6zptjy4ya693zp3ql28nemy4hd97kuufyrqdqwe5zfk"
+featuredImage: "/images/guides/understanding-wot/featured.svg"
+previewImage: "/images/guides/understanding-wot/preview.svg"
+tags:
+  - "Web of Trust"
+  - "Grafo de Confianca"
+  - "Conceitos"
+published: true
+seoTitle: "Entendendo a Web of Trust — Grafo de Confianca"
+seoDescription: "Descubra como o grafo de confianca funciona na extensao Nostr WoT. Aprenda sobre saltos, pontuacoes de confianca e como sua rede protege voce do spam."
+ogImage: "/images/guides/understanding-wot/og.svg"
+translationKey: "understanding-wot"
+difficulty: "beginner"
+order: 3
+---
+
+A Web of Trust e o coracao da extensao Nostr WoT. Em vez de depender de uma empresa para decidir quem e confiavel, voce constroi sua rede de confianca a partir das pessoas que segue. Este guia explica como funciona.
+
+## O Que e um Grafo de Confianca?
+
+Um grafo de confianca e uma rede de conexoes entre pessoas. No Nostr, quando voce segue alguem, esta dizendo: "Confio nessa pessoa." Quando essa pessoa segue outras, ela transmite parte dessa confianca adiante. A extensao mapeia essas conexoes para criar seu grafo pessoal.
+
+Voce e o centro da sua propria rede. Duas pessoas diferentes podem ter grafos de confianca completamente diferentes.
+
+{/* TODO: Captura de tela do grafo de confianca visualizado na extensao */}
+
+## Como Funcionam os Saltos
+
+Saltos (hops) representam a distancia entre voce e outra pessoa no grafo. Veja como funciona:
+
+- **Salto 0** -- Voce mesmo.
+- **Salto 1** -- Pessoas que voce segue diretamente. Sao seus contatos de primeiro nivel.
+- **Salto 2** -- Pessoas que seus contatos de salto 1 seguem, mas que voce nao segue diretamente.
+- **Salto 3** -- Mais um nivel adiante. Sao contatos de contatos de contatos.
+
+Quanto mais perto alguem esta de voce em saltos, maior a confianca atribuida. Uma pessoa no salto 1 tem pontuacao muito maior do que alguem no salto 3.
+
+<Callout type="tip">
+Por padrao, a extensao considera ate 3 saltos. Voce pode ajustar esse limite nas configuracoes de confianca para ampliar ou restringir sua rede.
+</Callout>
+
+## Pontuacao de Confianca
+
+Cada pessoa no seu grafo recebe uma pontuacao de confianca (trust score). Essa pontuacao e calculada com base em varios fatores:
+
+### Distancia em Saltos
+
+O fator principal e a distancia. Pessoas no salto 1 recebem a pontuacao mais alta. A cada salto adicional, a pontuacao diminui significativamente.
+
+### Numero de Caminhos
+
+Se multiplas pessoas que voce segue tambem seguem uma mesma pessoa, isso reforga a confianca nela. Quanto mais caminhos independentes levam a alguem, maior a pontuacao.
+
+### Peso dos Intermediarios
+
+Nem todos os caminhos tem o mesmo peso. Se um intermediario tem alta confianca no seu grafo, as conexoes dele carregam mais peso do que as de alguem com pontuacao mais baixa.
+
+{/* TODO: Captura de tela mostrando a pontuacao de confianca de um perfil */}
+
+## Como a Extensao Usa a Confianca
+
+A extensao aplica as pontuacoes de confianca de varias formas praticas:
+
+- **Filtragem de conteudo** -- Sites Nostr compatIveis podem usar sua WoT para filtrar spam e mostrar apenas conteudo de pessoas dentro da sua rede de confianca.
+- **Aprovacao de permissoes** -- Voce pode configurar aprovacao automatica para solicitacoes de sites com alta confianca.
+- **Indicadores visuais** -- A extensao pode mostrar indicadores de confianca ao lado dos perfis que voce visualiza.
+
+## Construindo uma Rede Forte
+
+Para ter uma Web of Trust eficaz, siga estas praticas:
+
+- Siga pessoas que voce realmente conhece ou cujo conteudo voce valoriza.
+- Evite seguir contas em massa so para aumentar numeros. Isso dilui a qualidade do seu grafo.
+- Revise periodicamente sua lista de contatos e remova contas inativas ou que nao fazem mais sentido.
+- Uma rede menor e bem curada e mais util do que uma rede enorme e generica.
+
+{/* TODO: Video explicando o conceito de Web of Trust */}
+
+## O Que Vem a Seguir?
+
+Agora que voce entende os fundamentos, aprenda a [personalizar suas configuracoes de confianca](/guides/personalizar-confianca) para ajustar a formula ao seu estilo. Se quiser explorar seu grafo visualmente, confira o [Playground da Web of Trust](/guides/playground-wot).
