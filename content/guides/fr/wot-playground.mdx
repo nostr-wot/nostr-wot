@@ -1,0 +1,114 @@
+---
+title: "Le WoT Playground"
+description: "Explorez le WoT Playground de Nostr pour visualiser votre graphe de confiance, filtrer les connexions par distance en sauts et voir comment votre Web of Trust vous connecte au reseau."
+excerpt: "Le WoT Playground vous permet d'explorer visuellement votre graphe de confiance. Filtrez par sauts, recherchez des utilisateurs et comprenez votre reseau en un coup d'oeil."
+date: "2026-03-11"
+author:
+  name: "Leon Acosta"
+  avatar: "/authors/leon-profile.jpg"
+  npub: "npub1gxdhmu9swqduwhr6zptjy4ya693zp3ql28nemy4hd97kuufyrqdqwe5zfk"
+featuredImage: "/images/guides/wot-playground/featured.svg"
+previewImage: "/images/guides/wot-playground/preview.svg"
+tags:
+  - "Playground"
+  - "Visualisation"
+  - "Graphe de confiance"
+published: true
+seoTitle: "Le WoT Playground — Guide de l'extension Nostr WoT"
+seoDescription: "Explorez le WoT Playground de Nostr pour visualiser votre graphe de confiance, filtrer les connexions par distance en sauts et voir comment votre Web of Trust vous connecte au reseau."
+ogImage: "/images/guides/wot-playground/og.svg"
+translationKey: "wot-playground"
+difficulty: "intermediate"
+order: 9
+---
+
+Le WoT Playground est une visualisation interactive de l'ensemble de votre reseau de confiance. Il prend le concept abstrait du Web of Trust et le rend tangible — vous pouvez voir exactement comment vous etes connecte a n'importe quel utilisateur sur Nostr, explorer les clusters de confiance et decouvrir des schemas dans votre graphe social.
+
+## Acceder au Playground
+
+Il y a deux facons d'ouvrir le Playground :
+
+1. **Depuis l'extension** — cliquez sur l'icone de l'extension et selectionnez **Playground** dans le menu de navigation.
+2. **Depuis le site web** — visitez directement la page [WoT Playground](/playground).
+
+Le Playground charge les donnees de votre graphe de confiance depuis l'extension. Si vous n'etes pas connecte ou si l'extension est verrouillee, vous serez invite a la deverrouiller d'abord.
+
+{/* TODO: Screenshot of the Playground loading screen with the trust graph beginning to render */}
+
+## La visualisation du graphe de confiance
+
+La vue principale est un graphe interactif ou les noeuds representent les utilisateurs Nostr et les aretes representent les relations de suivi.
+
+### Lire le graphe
+
+- **Votre noeud** se trouve au centre, mis en evidence distinctement.
+- **Les connexions de 1er degre** (abonnements directs) apparaissent au plus pres de vous, generalement dans une couleur vive.
+- **Les connexions de 2e degre** forment l'anneau suivant, dans un ton legerement plus attenué.
+- **Les connexions de 3e degre** sont aux bords exterieurs, plus estompees.
+- **Les lignes d'aretes** connectent les noeuds pour montrer les relations de suivi. Des lignes plus epaisses ou plus lumineuses peuvent indiquer des scores de confiance plus eleves.
+
+{/* TODO: Screenshot of the full trust graph with color-coded hops */}
+
+<Callout type="tip">
+Cliquez et faites glisser pour vous deplacer dans le graphe. Utilisez la molette de la souris ou le geste de pincement pour zoomer. Cliquez sur n'importe quel noeud pour voir les details de cet utilisateur.
+</Callout>
+
+### Details des noeuds
+
+Cliquez sur n'importe quel noeud pour ouvrir un panneau de details affichant :
+
+- Les informations de profil (nom, avatar, npub).
+- Le score de confiance par rapport a vous.
+- La distance en sauts.
+- Le nombre de chemins vous connectant.
+- Les suivis mutuels — les personnes que vous suivez tous les deux.
+
+C'est utile pour comprendre pourquoi quelqu'un a un score de confiance particulier et comment il se connecte a votre reseau.
+
+{/* TODO: Screenshot of the node detail panel for a 2nd-degree contact */}
+
+## Filtrage et recherche
+
+Le Playground inclut des outils pour affiner votre vue et trouver des informations specifiques.
+
+### Filtrer par sauts
+
+Utilisez le filtre de sauts pour afficher uniquement les connexions a une distance specifique :
+
+- **1 saut** — affiche uniquement vos abonnements directs. Utile pour examiner votre cercle rapproche.
+- **2 sauts** — ajoute les amis d'amis. C'est la ou se deroulent la plupart de vos interactions quotidiennes.
+- **3 sauts** — le graphe complet. Montre la frontiere exterieure de votre reseau de confiance.
+
+Activez ces filtres a l'aide des controles dans la barre laterale ou la barre d'outils.
+
+{/* TODO: Screenshot of the hop filter controls with 2-hop selected */}
+
+### Rechercher des utilisateurs
+
+Tapez un nom, un npub ou un identifiant NIP-05 dans la barre de recherche. Si l'utilisateur fait partie de votre graphe de confiance, la visualisation met en evidence son noeud et affiche le chemin entre vous.
+
+S'il ne fait pas partie de votre graphe, la recherche vous l'indique — ce qui est en soi une information utile. Un utilisateur inconnu signifie qu'il n'a aucune connexion avec votre reseau dans la distance en sauts configuree.
+
+{/* TODO: Screenshot of the search bar with a result highlighting a specific node */}
+
+## Analyser votre reseau
+
+Au-dela de la navigation, le Playground vous aide a comprendre la structure de votre reseau de confiance.
+
+### Detection de clusters
+
+La visualisation revele souvent des clusters — des groupes d'utilisateurs densement connectes. Ceux-ci correspondent generalement a des communautes. Vous pourriez voir un cluster de developpeurs Bitcoin, un autre d'artistes et un autre d'amis locaux. Le regroupement visuel vous aide a comprendre les differents cercles sociaux qui composent votre Web of Trust.
+
+### Utilisateurs ponts
+
+Certains noeuds connectent des clusters autrement separes. Ces utilisateurs ponts relient differentes communautes de votre reseau et ont souvent des scores de confiance eleves en raison de multiples chemins independants. Si votre graphe est petit ou clairseme, envisagez de suivre plus de personnes pour renforcer votre Web of Trust.
+
+{/* TODO: Video walkthrough of navigating the Playground, filtering, and inspecting nodes */}
+
+<Callout type="tip">
+Le Playground est une visualisation en lecture seule. Rien de ce que vous faites ici ne modifie vos parametres de confiance ou votre liste de suivis. Explorez librement.
+</Callout>
+
+## Et ensuite ?
+
+Maintenant que vous avez explore votre graphe de confiance, vous pourriez vouloir [personnaliser vos parametres de confiance](/guides/customizing-trust) en fonction de ce que vous avez decouvert. Ou retournez au [guide de demarrage](/guides/getting-started) pour revoir les fondamentaux.

@@ -1,0 +1,119 @@
+---
+title: "Identität trifft Vertrauen: Das Gesamtbild"
+description: "Wir haben Identitätsverwaltung zur Nostr WoT Extension hinzugefügt, weil Vertrauen und Identität zusammengehören. Hier erfahren Sie, was neu ist und warum es für Ihr Erlebnis wichtig ist."
+excerpt: "Wir haben Web of Trust gebaut, um Ihnen bei der Navigation durch Nostr zu helfen. Aber Vertrauen ohne Identität fühlte sich unvollständig an. Also haben wir Signierung, Verschlüsselung, Multi-Account-Unterstützung und sechs Sprachen hinzugefügt — alles in einem nahtlosen Erlebnis."
+date: "2026-03-04"
+author:
+  name: "Leon Acosta"
+  avatar: "/authors/leon-profile.jpg"
+  npub: "npub1gxdhmu9swqduwhr6zptjy4ya693zp3ql28nemy4hd97kuufyrqdqwe5zfk"
+  socials:
+    linkedin: "leonacosta"
+    instagram: "leonacosta.now"
+    twitter: "leonacosta_"
+    github: "leonacostaok"
+featuredImage: "/images/blog/introducing-wot/featured.svg"
+previewImage: "/images/blog/introducing-wot/preview.svg"
+tags:
+  - "Ankündigung"
+  - "Identität"
+  - "Web of Trust"
+  - "Nostr"
+published: true
+seoTitle: "Nostr WoT Extension — Identität, Vertrauen und Sicherheit an einem Ort"
+seoDescription: "Die Nostr WoT Extension enthält jetzt NIP-07-Signierung, verschlüsselte Schlüsselspeicherung, Multi-Account-Verwaltung, Vertrauens-Badges und Unterstützung für 6 Sprachen. Erfahren Sie, was neu ist."
+ogImage: "/images/blog/introducing-wot/og.svg"
+translationKey: "identity-meets-trust"
+---
+
+Als wir mit dem Bau der Nostr WoT Extension begannen, war das Ziel einfach: Ihnen zu zeigen, wer in Ihrem sozialen Umfeld ist und wer nicht. Trust-Scores, Hop-Distanzen, visuelle Badges auf Profilen — die Web of Trust-Schicht.
+
+Doch als wir sie selbst nutzten, fühlte sich etwas nicht richtig an. Man musste eine separate Erweiterung installieren, nur um sich bei Nostr-Apps anzumelden, und diese Erweiterung wusste nichts über Ihr Vertrauensnetzwerk. Zwei Werkzeuge, die voneinander wissen sollten, lebten in völliger Isolation. Das Erlebnis war fragmentiert.
+
+Also fragten wir uns: **Was wäre, wenn Identität und Vertrauen am selben Ort leben würden?**
+
+## Was wir hinzugefügt haben
+
+Die Erweiterung enthält jetzt einen vollständigen **NIP-07-Identitätsanbieter**. Das bedeutet, Sie können sie verwenden, um sich bei jedem Nostr-Client anzumelden, Events zu signieren und Nachrichten zu verschlüsseln — direkt neben den Vertrauensfunktionen, die Sie bereits kennen.
+
+Folgendes ist enthalten:
+
+- **Überall anmelden** — Die Erweiterung stellt Ihren öffentlichen Schlüssel jeder Nostr-App zur Verfügung, die danach fragt. Ein Klick und Sie sind eingeloggt.
+- **Events signieren** — Beiträge verfassen, reagieren, reposten — die Erweiterung übernimmt die kryptografische Signierung. Sie wählen, welche Websites welche Arten von Events signieren dürfen.
+- **Verschlüsselte Nachrichten** — Sowohl das ältere NIP-04-Format als auch das neuere, sicherere NIP-44-Format werden für private Unterhaltungen unterstützt.
+- **Granulare Berechtigungen** — Sie entscheiden, was jede Website darf. Erlauben Sie Beiträge auf einer Website, blockieren Sie DMs auf einer anderen. Berechtigungen werden gespeichert, sodass Sie nicht jedes Mal gefragt werden.
+
+<Callout type="tip">
+Die Erweiterung blockiert automatisch Signieranfragen über unsichere HTTP-Verbindungen, sodass Ihre Schlüssel niemals auf unverschlüsselten Kanälen offengelegt werden.
+</Callout>
+
+## Ihre Schlüssel, stets geschützt
+
+Wir nehmen Schlüsselsicherheit ernst. Ihre privaten Schlüssel werden mit **AES-256-GCM** verschlüsselt — demselben Standard, den Banken und Regierungen verwenden — geschützt durch Ihr Passwort.
+
+Was das in der Praxis bedeutet:
+
+- **Ihre Schlüssel sind immer im Ruhezustand verschlüsselt.** Selbst wenn jemand direkt auf den Speicher Ihres Browsers zugreifen würde, fände er nur verschlüsselte Daten — ohne Ihr Passwort nutzlos.
+- **Automatische Sperre** schützt Sie, wenn Sie den Platz verlassen. Nach 15 Minuten Inaktivität (konfigurierbar) sperrt sich die Erweiterung selbst und löscht Schlüsselmaterial aus dem Speicher.
+- **Schlüssel werden nie länger als nötig gehalten.** Wenn die Erweiterung etwas signiert, arbeitet sie mit einer temporären Kopie Ihres Schlüssels, die sofort danach vernichtet wird. Je weniger Zeit sensible Daten im Speicher existieren, desto besser.
+
+## Mehrere Konten, vollständig isoliert
+
+Menschen nutzen Nostr auf unterschiedliche Weise. Ein persönliches Konto, ein Projektkonto, vielleicht ein Nur-Lese-Konto, um die Aktivitäten einer Person zu verfolgen. Die Erweiterung unterstützt all das:
+
+- **Neues Konto erstellen** — Erstellt eine neue Identität mit einer Wiederherstellungsphrase, die Sie sichern können.
+- **Bestehenden Schlüssel importieren** — Bringen Sie Ihren nsec mit und nutzen Sie Ihre aktuelle Identität weiter.
+- **Nur-Lese** — Fügen Sie einen beliebigen npub hinzu, um dessen Vertrauensnetzwerk zu beobachten, ohne seinen privaten Schlüssel zu benötigen.
+- **Remote Signer (NIP-46)** — Bewahren Sie Ihre Schlüssel auf einem separaten Gerät auf und signieren Sie remote über eine Bunker-Verbindung.
+
+Jedes Konto ist vollständig isoliert. Ein Kontowechsel ändert alles — Ihre Identität, Ihren Trust-Graphen, Ihre Berechtigungen. Es gibt keine versehentliche Kreuzkontamination zwischen Identitäten.
+
+## Web of Trust: Sehen Sie, mit wem Sie sprechen
+
+Das ist der Teil, den Sie bereits kennen, und er wird immer besser. Die Erweiterung erstellt eine Karte Ihrer sozialen Verbindungen und beantwortet sofort eine Frage: **Wie nah steht diese Person Ihnen?**
+
+- **1 Hop** — Jemand, dem Sie direkt folgen. Hohes Vertrauen.
+- **2 Hops** — Ein Freund eines Freundes. Wahrscheinlich vertrauenswürdig.
+- **3+ Hops** — Wird entfernter. Vorsicht ist geboten.
+- **Nicht verbunden** — Vollständig außerhalb Ihres Netzwerks.
+
+Die **Trust-Badge-Engine** macht das überall sichtbar. Wenn Sie Nostr-Apps durchsuchen, erscheinen farbige Punkte neben Benutzernamen, die deren Vertrauensstufe auf einen Blick zeigen. Kein Durchklicken von Profilen, keine manuelle Prüfung — einfach sofortiger Kontext.
+
+All das funktioniert lokal in Ihrem Browser. Ihr Follow-Graph wird einmal synchronisiert und danach sofort abgefragt, ohne dass externe Anfragen für Abfragen nötig sind.
+
+## Verfügbar in 6 Sprachen
+
+Nostr ist global, und die Erweiterung sollte es auch sein. Die gesamte Oberfläche — Onboarding, Einstellungen, Berechtigungen, Eingabeaufforderungen, alles — ist verfügbar in:
+
+- **Englisch**
+- **Spanisch**
+- **Portugiesisch**
+- **Französisch**
+- **Deutsch**
+- **Italienisch**
+
+Die Erweiterung erkennt automatisch Ihre Browsersprache. Sie können auch jederzeit im Einstellungsmenü manuell wechseln.
+
+## Warum das alles zusammengehört
+
+Der wahre Grund, warum wir Identität zur Erweiterung hinzugefügt haben, ist nicht technischer Natur — es geht um das **Erlebnis**.
+
+Wenn Ihr Signierungswerkzeug und Ihr Vertrauenswerkzeug dieselbe Erweiterung sind, funktioniert alles einfach. Sie müssen keine zwei Erweiterungen konfigurieren. Sie müssen sich keine Sorgen machen, welche Ihre Schlüssel hat. Sie melden sich an, und die Vertrauensschicht ist bereits da, läuft bereits und zeigt Ihnen bereits, wer wer ist.
+
+Es gibt auch einen Sicherheitsvorteil. Da die Erweiterung sowohl Ihre Schlüssel als auch Ihren Trust-Graphen verwaltet, kann sie beide ordnungsgemäß von Webseiten isolieren und gleichzeitig nahtlos für Sie zusammenarbeiten lassen. Ihre Schlüssel bleiben verschlüsselt und geschützt. Ihre Vertrauensdaten bleiben lokal und privat. Und beides ist in dem Moment verfügbar, in dem Sie es brauchen.
+
+Eine Erweiterung. Ein Setup. Identität, Vertrauen und Sicherheit arbeiten zusammen.
+
+## Was kommt als Nächstes
+
+Das Fundament steht. Hier ist, woran wir arbeiten:
+
+- **Vertrauenskontext in Signieraufforderungen** — Wenn eine Website um Signierung bittet, sehen Sie Vertrauensinformationen über diese Website direkt im Genehmigungsdialog.
+- **Mehr Badge-Unterstützung** — Erweiterung der visuellen Vertrauens-Badges, damit sie mit mehr Nostr-Clients sofort funktionieren.
+- **SDK-Verbesserungen** — Das [nostr-wot-sdk](https://www.npmjs.com/package/nostr-wot-sdk) ermöglicht Entwicklern, Vertrauen in ihre Apps zu integrieren, wobei die Erweiterung automatisch erkannt wird, wenn sie verfügbar ist.
+
+Die Erweiterung ist Open Source und verfügbar für [Chrome, Brave, Edge, Opera und Firefox](/download). Sie können auch [aus dem Quellcode bauen](https://github.com/nostr-wot/nostr-wot-extension), wenn Sie den Code lieber selbst überprüfen möchten.
+
+---
+
+*Fragen oder Feedback? Finden Sie uns auf [Nostr](https://njump.me/npub1gxdhmu9swqduwhr6zptjy4ya693zp3ql28nemy4hd97kuufyrqdqwe5zfk) oder schauen Sie in die [Dokumentation](/docs/extension).*

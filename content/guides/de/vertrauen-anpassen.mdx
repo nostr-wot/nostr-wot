@@ -1,0 +1,110 @@
+---
+title: "Ihre Vertrauenseinstellungen anpassen"
+description: "Passen Sie die Vertrauensformel, Gewichtungen und Schwellenwerte in der Nostr WoT Extension an, um festzulegen, wie Sie Verbindungen in Ihrem Web of Trust bewerten und einstufen möchten."
+excerpt: "Stimmen Sie fein ab, wie die Erweiterung Vertrauen berechnet. Passen Sie Gewichtungen, Schwellenwerte und Strategien an Ihre Vorlieben an."
+date: "2026-03-11"
+author:
+  name: "Leon Acosta"
+  avatar: "/authors/leon-profile.jpg"
+  npub: "npub1gxdhmu9swqduwhr6zptjy4ya693zp3ql28nemy4hd97kuufyrqdqwe5zfk"
+featuredImage: "/images/guides/customizing-trust/featured.svg"
+previewImage: "/images/guides/customizing-trust/preview.svg"
+tags:
+  - "Vertrauenseinstellungen"
+  - "Formel"
+  - "Fortgeschritten"
+published: true
+seoTitle: "Vertrauenseinstellungen anpassen — Nostr WoT Extension Anleitung"
+seoDescription: "Passen Sie die Vertrauensformel, Gewichtungen und Schwellenwerte in der Nostr WoT Extension an, um festzulegen, wie Sie Verbindungen in Ihrem Web of Trust bewerten und einstufen möchten."
+ogImage: "/images/guides/customizing-trust/og.svg"
+translationKey: "customizing-trust"
+difficulty: "intermediate"
+order: 4
+---
+
+Die Standard-Vertrauenseinstellungen funktionieren für die meisten Nutzer gut, aber die Erweiterung gibt Ihnen die volle Kontrolle darüber, wie Vertrauen berechnet wird. Diese Anleitung führt Sie durch die Vertrauensformel, die Anpassung von Gewichtungen und Schwellenwerten und wann verschiedene Strategien sinnvoll sind.
+
+## Die Vertrauensformel
+
+Im Kern weist die Erweiterung jedem Nutzer einen Trust-Score zu, basierend auf dessen Beziehung zu Ihnen im sozialen Graphen. Die Formel berücksichtigt drei primäre Eingaben:
+
+- **Hop-Distanz** — wie viele Follow-Verbindungen Sie vom Nutzer trennen.
+- **Pfad-Multiplizität** — wie viele unabhängige Pfade Sie verbinden.
+- **Abklingfaktor** — wie stark das Vertrauen mit jedem zusätzlichen Hop abnimmt.
+
+Die Formel multipliziert das Basisvertrauen mit einem Abklingfaktor, der mit der Hop-Anzahl potenziert wird, und passt dann basierend auf der Anzahl unabhängiger Pfade nach oben an. Das Ergebnis ist ein normalisierter Score zwischen 0 und 1.
+
+{/* TODO: Screenshot of the trust formula settings panel */}
+
+<Callout type="tip">
+Sie müssen die Mathematik nicht verstehen, um die Erweiterung effektiv zu nutzen. Die Standardwerte sind für ein ausgewogenes Vertrauensnetzwerk optimiert. Passen Sie diese nur an, wenn Sie einen bestimmten Grund haben.
+</Callout>
+
+## Gewichtungen anpassen
+
+Öffnen Sie die Erweiterungseinstellungen und navigieren Sie zu **Vertrauenseinstellungen**, um die anpassbaren Parameter zu finden.
+
+### Hop-Abklingrate
+
+Diese steuert, wie schnell das Vertrauen mit der Distanz abnimmt. Ein höherer Abklingwert bedeutet, dass das Vertrauen nach dem ersten Hop stark abfällt. Ein niedrigerer Wert dehnt bedeutsames Vertrauen weiter in den Graphen aus.
+
+- **Hohe Abklingrate (0,7-0,9)** — nur Ihre direkten Follows und nahe 2.-Grad-Kontakte erhalten signifikantes Vertrauen. Gut, wenn Sie einen engen, konservativen Vertrauenskreis wünschen.
+- **Mittlere Abklingrate (0,4-0,6)** — ausgewogener Ansatz. 2.-Grad-Kontakte sind gut repräsentiert, und einige 3.-Grad-Nutzer erhalten bedeutsame Werte.
+- **Niedrige Abklingrate (0,1-0,3)** — Vertrauen erstreckt sich weit. Selbst entfernte Verbindungen haben Gewicht. Nützlich, wenn Sie ein weit offenes, entdeckungsfreudiges Netzwerk wünschen.
+
+{/* TODO: Screenshot showing the hop decay slider with different positions */}
+
+### Pfadgewichtung
+
+Diese bestimmt, wie viel Extrakredit ein Nutzer für mehrere unabhängige Pfade zu Ihnen erhält. Ein Nutzer, dem drei Ihrer direkten Kontakte folgen, sollte höher bewertet werden als einer, dem nur ein einzelner Kontakt folgt.
+
+- **Hohe Pfadgewichtung** — belohnt gut vernetzte Nutzer stark. Jemand, dem viele Ihrer Kontakte folgen, genießt fast so viel Vertrauen wie ein direkter Follow.
+- **Niedrige Pfadgewichtung** — Pfade spielen eine geringere Rolle. Vertrauen hängt hauptsächlich von der Distanz ab.
+
+### Maximale Hops
+
+Legen Sie die maximale Tiefe fest, die die Erweiterung durchläuft. Der Standard sind 3 Hops, was Abdeckung und Leistung ausbalanciert. Sie können dies auf 4 oder 5 erhöhen, wenn Sie eine breitere Sichtbarkeit wünschen, müssen aber langsamere Berechnungen und einen größeren Graphen erwarten.
+
+## Verschiedene Vertrauensstrategien
+
+Je nachdem, wie Sie Nostr nutzen, sind unterschiedliche Einstellungen sinnvoll.
+
+### Konservative Strategie
+
+Sie möchten einem kleinen Kreis vertrauen und gegenüber allen anderen skeptisch sein.
+
+- Setzen Sie die Hop-Abklingrate hoch (0,7+).
+- Setzen Sie die maximalen Hops auf 2.
+- Halten Sie die Pfadgewichtung moderat.
+
+Dies ist ideal, wenn Sie Nostr hauptsächlich nutzen, um mit Personen zu interagieren, die Sie bereits kennen, und eine starke Spam-Filterung wünschen.
+
+### Ausgewogene Strategie
+
+Der Standard. Sie vertrauen Ihren direkten Follows, geben Freunden von Freunden angemessenes Vertrauen und behalten eine gewisse Sichtbarkeit in 3.-Grad-Verbindungen.
+
+- Hop-Abklingrate um 0,5.
+- Maximale Hops bei 3.
+- Moderate Pfadgewichtung.
+
+Dies funktioniert für die meisten Nutzer und ist der empfohlene Ausgangspunkt.
+
+### Entdeckungsstrategie
+
+Sie möchten das breitere Nostr-Netzwerk erkunden und neue Personen entdecken.
+
+- Setzen Sie die Hop-Abklingrate niedrig (0,2-0,3).
+- Erhöhen Sie die maximalen Hops auf 4.
+- Setzen Sie die Pfadgewichtung hoch, um gut vernetzte Nutzer weiterhin zu priorisieren.
+
+Dies gibt Ihnen eine breitere Sicht, kann aber mehr Rauschen enthalten.
+
+{/* TODO: Video walkthrough of changing trust strategy from conservative to discovery */}
+
+<Callout type="tip">
+Änderungen an den Vertrauenseinstellungen berechnen Ihren gesamten Graphen neu. Geben Sie der Erweiterung einen Moment zum Neuberechnen nach der Anpassung. Wenn Sie von vorn beginnen möchten, verwenden Sie die Schaltfläche **Auf Standardwerte zurücksetzen** am unteren Rand des Vertrauenseinstellungen-Panels.
+</Callout>
+
+## Wie geht es weiter?
+
+Sehen Sie Ihre angepassten Vertrauenseinstellungen in Aktion, indem Sie den [WoT Playground](/guides/wot-playground) erkunden. Oder fahren Sie mit der Einrichtung der Erweiterung fort, indem Sie [ein Wallet verbinden](/guides/wallet-einrichten).

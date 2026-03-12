@@ -1,0 +1,102 @@
+---
+title: "Zap e Approvazione Automatica"
+description: "Scopri come l'Estensione Nostr WoT agisce come provider WebLN per gli zap e come configurare le soglie di approvazione automatica per micropagamenti senza attrito."
+excerpt: "Fai zap alle note senza cambiare app. Scopri come funziona WebLN nell'estensione e come l'approvazione automatica rende istantanei i piccoli zap."
+date: "2026-03-11"
+author:
+  name: "Leon Acosta"
+  avatar: "/authors/leon-profile.jpg"
+  npub: "npub1gxdhmu9swqduwhr6zptjy4ya693zp3ql28nemy4hd97kuufyrqdqwe5zfk"
+featuredImage: "/images/guides/zapping-auto-approve/featured.svg"
+previewImage: "/images/guides/zapping-auto-approve/preview.svg"
+tags:
+  - "Zap"
+  - "Lightning"
+  - "WebLN"
+published: true
+seoTitle: "Zap e Approvazione Automatica — Guida Estensione Nostr WoT"
+seoDescription: "Scopri come l'Estensione Nostr WoT agisce come provider WebLN per gli zap e come configurare le soglie di approvazione automatica per micropagamenti senza attrito."
+ogImage: "/images/guides/zapping-auto-approve/og.svg"
+translationKey: "zapping-auto-approve"
+difficulty: "beginner"
+order: 6
+---
+
+Lo zapping è una delle parti migliori di Nostr — vedi una nota fantastica, invii qualche sat, la persona viene ricompensata. L'estensione rende tutto questo fluido agendo come provider WebLN, e l'approvazione automatica fa un passo avanti eliminando il passaggio di conferma per piccoli importi.
+
+## Cos'è WebLN?
+
+WebLN è uno standard che permette ai siti web di richiedere pagamenti Lightning tramite un'estensione browser. Quando un client Nostr vuole inviare uno zap, chiama `window.webln.sendPayment()` e l'estensione gestisce il resto.
+
+Non è necessario configurare nulla per il funzionamento di WebLN. Una volta collegato il portafoglio, l'estensione si registra automaticamente come provider WebLN per qualsiasi sito visiti.
+
+{/* TODO: Screenshot del pulsante zap di un client Nostr con il popup dell'estensione che mostra la richiesta di pagamento */}
+
+## Come Funziona lo Zapping
+
+Ecco il flusso quando fai zap a una nota su un client Nostr:
+
+1. Clicchi il pulsante zap su una nota e scegli un importo.
+2. Il client Nostr crea una fattura Lightning e la invia all'estensione tramite WebLN.
+3. L'estensione ti mostra un popup di conferma con l'importo, il destinatario e la nota a cui stai facendo zap.
+4. Clicchi **Approva**, l'estensione paga la fattura dal tuo portafoglio collegato.
+5. L'evento zap viene pubblicato su Nostr e il destinatario lo vede.
+
+L'intero processo avviene nel tuo browser. Niente cambio a un'app wallet separata, niente copia di fatture.
+
+{/* TODO: Screenshot del popup di conferma zap che mostra importo e dettagli del destinatario */}
+
+<Callout type="tip">
+Se vedi "Nessun provider WebLN trovato" su un client Nostr, assicurati che l'estensione sia sbloccata e che un portafoglio sia collegato. Alcuni client potrebbero necessitare di un aggiornamento della pagina per rilevare il provider.
+</Callout>
+
+## Configurare l'Approvazione Automatica
+
+Per chi fa zap frequentemente, confermare ogni zap da 21 sat diventa noioso. L'approvazione automatica ti permette di impostare una soglia — qualsiasi zap pari o inferiore a quell'importo viene effettuato istantaneamente senza popup.
+
+### Configurare la Soglia
+
+1. Clicca l'icona dell'estensione e vai alla scheda **Wallet**.
+2. Apri le **Impostazioni**.
+3. Trova il campo **Soglia di Approvazione Automatica**.
+4. Inserisci l'importo preferito in sat. Ad esempio, `100` significa che qualsiasi zap di 100 sat o meno viene approvato automaticamente.
+5. Salva. L'impostazione ha effetto immediato.
+
+{/* TODO: Screenshot dell'impostazione della soglia di approvazione automatica */}
+
+### Come Funziona
+
+Quando un sito richiede un pagamento tramite WebLN:
+
+- Se l'importo è pari o inferiore alla tua soglia, l'estensione lo paga silenziosamente. Nessun popup, nessuna interruzione.
+- Se l'importo è superiore alla tua soglia, vedi il normale popup di conferma.
+- Se l'approvazione automatica è impostata a `0`, ogni pagamento richiede approvazione manuale.
+
+Ciò significa che puoi scorrere il tuo feed, fare zap liberamente con piccoli importi e non interrompere mai il flusso. I pagamenti più grandi richiedono comunque la tua approvazione esplicita per sicurezza.
+
+### Comportamento per Sito
+
+L'approvazione automatica rispetta i [permessi del sito](/guides/permessi-sito) dell'estensione. Se un sito non ha il permesso WebLN, l'approvazione automatica non si applica — il sito non può richiedere pagamenti affatto.
+
+## Monitorare i Tuoi Zap
+
+Ogni zap, sia approvato automaticamente che confermato manualmente, appare nella cronologia delle transazioni nella scheda Wallet. Puoi verificare cosa è stato inviato, a chi e quando.
+
+{/* TODO: Screenshot della cronologia transazioni che mostra diverse voci di zap */}
+
+Se noti pagamenti auto-approvati inaspettati, abbassa la soglia o revoca il permesso WebLN del sito.
+
+## Soglie Consigliate
+
+- **21 sat** — il classico micro-zap di Nostr. Conservativo e sicuro.
+- **100 sat** — copre la maggior parte dello zapping casuale.
+- **500 sat** — per power user che fanno zap frequentemente.
+- **0 sat** — disabilita completamente l'approvazione automatica.
+
+<Callout type="tip">
+Inizia con una soglia più bassa e aumentala una volta che ti senti a tuo agio con il flusso. Puoi sempre cambiarla dalle impostazioni del portafoglio.
+</Callout>
+
+## Cosa Fare Dopo?
+
+Se hai configurato il portafoglio con la Configurazione Rapida, puoi [reclamare il tuo Lightning Address personale](/guides/indirizzo-lightning). Per controllare quali siti possono richiedere pagamenti, leggi i [permessi del sito](/guides/permessi-sito).

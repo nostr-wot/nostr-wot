@@ -1,0 +1,110 @@
+---
+title: "Personnaliser vos parametres de confiance"
+description: "Ajustez la formule de confiance, les poids et les seuils dans l'extension Nostr WoT pour correspondre a la facon dont vous souhaitez evaluer et noter les connexions dans votre Web of Trust."
+excerpt: "Affinez la facon dont l'extension calcule la confiance. Ajustez les poids, les seuils et les strategies selon vos preferences."
+date: "2026-03-11"
+author:
+  name: "Leon Acosta"
+  avatar: "/authors/leon-profile.jpg"
+  npub: "npub1gxdhmu9swqduwhr6zptjy4ya693zp3ql28nemy4hd97kuufyrqdqwe5zfk"
+featuredImage: "/images/guides/customizing-trust/featured.svg"
+previewImage: "/images/guides/customizing-trust/preview.svg"
+tags:
+  - "Parametres de confiance"
+  - "Formule"
+  - "Avance"
+published: true
+seoTitle: "Personnaliser les parametres de confiance — Guide de l'extension Nostr WoT"
+seoDescription: "Ajustez la formule de confiance, les poids et les seuils dans l'extension Nostr WoT pour correspondre a la facon dont vous souhaitez evaluer et noter les connexions dans votre Web of Trust."
+ogImage: "/images/guides/customizing-trust/og.svg"
+translationKey: "customizing-trust"
+difficulty: "intermediate"
+order: 4
+---
+
+Les parametres de confiance par defaut fonctionnent bien pour la plupart des utilisateurs, mais l'extension vous donne un controle total sur la facon dont la confiance est calculee. Ce guide vous accompagne a travers la formule de confiance, comment ajuster les poids et les seuils, et quand differentes strategies sont pertinentes.
+
+## La formule de confiance
+
+A la base, l'extension attribue a chaque utilisateur un score de confiance en fonction de sa relation avec vous dans le graphe social. La formule prend en compte trois donnees principales :
+
+- **Distance en sauts** — combien de connexions de suivi vous separent de l'utilisateur.
+- **Multiplicite des chemins** — combien de chemins independants vous connectent.
+- **Facteur de decroissance** — combien la confiance diminue a chaque saut supplementaire.
+
+La formule multiplie la confiance de base par un facteur de decroissance eleve a la puissance du nombre de sauts, puis ajuste a la hausse en fonction du nombre de chemins independants. Le resultat est un score normalise entre 0 et 1.
+
+{/* TODO: Screenshot of the trust formula settings panel */}
+
+<Callout type="tip">
+Vous n'avez pas besoin de comprendre les mathematiques pour utiliser efficacement l'extension. Les valeurs par defaut sont reglees pour un reseau de confiance equilibre. Ajustez-les uniquement si vous avez une raison specifique.
+</Callout>
+
+## Ajuster les poids
+
+Ouvrez les parametres de l'extension et naviguez vers **Parametres de confiance** pour trouver les parametres ajustables.
+
+### Decroissance par saut
+
+Cela controle la vitesse a laquelle la confiance diminue avec la distance. Une valeur de decroissance elevee signifie que la confiance chute fortement apres le premier saut. Une valeur plus faible etend la confiance significative plus loin dans le graphe.
+
+- **Decroissance elevee (0,7-0,9)** — seuls vos abonnements directs et les contacts proches de 2e degre recoivent une confiance significative. Bon si vous voulez un cercle de confiance serre et conservateur.
+- **Decroissance moyenne (0,4-0,6)** — approche equilibree. Les contacts de 2e degre sont bien representes, et certains utilisateurs de 3e degre obtiennent un score significatif.
+- **Decroissance faible (0,1-0,3)** — la confiance s'etend largement. Meme les connexions distantes ont du poids. Utile si vous voulez un reseau ouvert, favorable a la decouverte.
+
+{/* TODO: Screenshot showing the hop decay slider with different positions */}
+
+### Poids des chemins
+
+Cela determine le credit supplementaire qu'un utilisateur recoit pour avoir plusieurs chemins independants vers vous. Un utilisateur suivi par trois de vos contacts directs devrait avoir un score plus eleve qu'un utilisateur suivi par un seul contact.
+
+- **Poids de chemin eleve** — recompense fortement les utilisateurs bien connectes. Quelqu'un suivi par beaucoup de vos contacts est presque aussi fiable qu'un suivi direct.
+- **Poids de chemin faible** — les chemins comptent moins. La confiance depend principalement de la distance.
+
+### Sauts maximum
+
+Definissez la profondeur maximale que l'extension parcourt. La valeur par defaut est de 3 sauts, ce qui equilibre la couverture et les performances. Vous pouvez augmenter a 4 ou 5 si vous voulez une visibilite plus large, mais attendez-vous a des calculs plus lents et un graphe plus important.
+
+## Differentes strategies de confiance
+
+Selon votre utilisation de Nostr, differents parametres sont pertinents.
+
+### Strategie conservatrice
+
+Vous souhaitez faire confiance a un petit cercle et etre sceptique envers tous les autres.
+
+- Definissez une decroissance elevee (0,7+).
+- Definissez les sauts maximum a 2.
+- Gardez un poids de chemin modere.
+
+C'est ideal si vous utilisez Nostr principalement pour interagir avec des personnes que vous connaissez deja et si vous voulez un filtrage anti-spam efficace.
+
+### Strategie equilibree
+
+La valeur par defaut. Vous faites confiance a vos abonnements directs, accordez une confiance raisonnable aux amis d'amis et maintenez une certaine visibilite sur les connexions de 3e degre.
+
+- Decroissance autour de 0,5.
+- Sauts maximum a 3.
+- Poids de chemin modere.
+
+Cela fonctionne pour la plupart des utilisateurs et constitue le point de depart recommande.
+
+### Strategie de decouverte
+
+Vous souhaitez explorer le reseau Nostr plus large et decouvrir de nouvelles personnes.
+
+- Definissez une decroissance faible (0,2-0,3).
+- Augmentez les sauts maximum a 4.
+- Definissez un poids de chemin eleve pour toujours privilegier les utilisateurs bien connectes.
+
+Cela vous donne une vue plus large mais peut inclure plus de bruit.
+
+{/* TODO: Video walkthrough of changing trust strategy from conservative to discovery */}
+
+<Callout type="tip">
+Les modifications des parametres de confiance recalculent l'ensemble de votre graphe. Laissez a l'extension un moment pour retraiter apres avoir ajuste les valeurs. Si vous voulez recommencer, utilisez le bouton **Reinitialiser les valeurs par defaut** en bas du panneau Parametres de confiance.
+</Callout>
+
+## Et ensuite ?
+
+Voyez vos parametres de confiance personnalises en action en explorant le [WoT Playground](/guides/wot-playground). Ou continuez la configuration de l'extension en [connectant un portefeuille](/guides/setting-up-wallet).

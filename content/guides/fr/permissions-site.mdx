@@ -1,0 +1,107 @@
+---
+title: "Permissions par site"
+description: "Controlez quels sites web peuvent acceder a votre identite Nostr, demander des signatures et effectuer des paiements Lightning grace au systeme de permissions de l'extension Nostr WoT."
+excerpt: "L'extension vous donne un controle granulaire sur ce que chaque site web peut faire. Apprenez comment les permissions par site protegent vos cles et vos sats."
+date: "2026-03-11"
+author:
+  name: "Leon Acosta"
+  avatar: "/authors/leon-profile.jpg"
+  npub: "npub1gxdhmu9swqduwhr6zptjy4ya693zp3ql28nemy4hd97kuufyrqdqwe5zfk"
+featuredImage: "/images/guides/site-permissions/featured.svg"
+previewImage: "/images/guides/site-permissions/preview.svg"
+tags:
+  - "Permissions"
+  - "Securite"
+  - "Vie privee"
+published: true
+seoTitle: "Gerer les permissions par site — Extension Nostr WoT"
+seoDescription: "Controlez quels sites web peuvent acceder a votre identite Nostr, demander des signatures et effectuer des paiements Lightning grace au systeme de permissions de l'extension Nostr WoT."
+ogImage: "/images/guides/site-permissions/og.svg"
+translationKey: "site-permissions"
+difficulty: "intermediate"
+order: 8
+---
+
+Chaque site web qui interagit avec l'extension a besoin de votre permission. L'extension ne donne pas un acces global a vos cles ou a votre portefeuille — chaque site a son propre perimetre de permissions. Ce guide explique comment gerer ces permissions efficacement.
+
+## Comment fonctionnent les permissions
+
+Quand un site web tente d'acceder au signataire NIP-07 ou au fournisseur WebLN de l'extension, l'extension verifie si ce site a la permission. S'il ne l'a pas, vous voyez une invite vous demandant d'approuver ou de refuser la demande.
+
+Chaque decision de permission est stockee par site. Approuver la signature sur Primal ne donne pas automatiquement la signature sur Snort. Vous construisez une liste blanche de sites de confiance, un a la fois.
+
+{/* TODO: Screenshot of the permission request popup for a new site */}
+
+## Types de permissions
+
+L'extension gere plusieurs permissions distinctes pour chaque site.
+
+### Lire la cle publique
+
+Autorise le site a voir votre cle publique (npub). C'est la permission la plus basique — le site peut vous identifier mais ne peut rien faire en votre nom.
+
+### Signer des evenements
+
+Autorise le site a demander des signatures d'evenements via NIP-07. Cela signifie que le site peut vous demander de signer des notes, des mises a jour de profil, des reactions et d'autres evenements Nostr. Vous voyez toujours une invite de confirmation pour chaque demande de signature, sauf si vous activez l'approbation automatique pour ce site.
+
+### Chiffrer et dechiffrer
+
+Autorise le site a demander des messages directs chiffres NIP-04 ou NIP-44. Le site peut demander a l'extension de chiffrer un message pour un destinataire specifique ou de dechiffrer un message entrant.
+
+### Paiements WebLN
+
+Autorise le site a demander des paiements Lightning via le fournisseur WebLN. Quand c'est accorde, le site peut presenter des factures pour que vous les payiez — sous reserve de votre [seuil d'approbation automatique](/guides/zapping-auto-approve).
+
+{/* TODO: Screenshot of the permissions panel showing all four permission types for a site */}
+
+<Callout type="tip">
+Vous pouvez accorder certaines permissions tout en en refusant d'autres. Par exemple, vous pourriez laisser un site lire votre cle publique et demander des signatures, mais lui refuser l'acces WebLN si vous ne voulez pas qu'il propose des paiements.
+</Callout>
+
+## Gerer les permissions des sites
+
+### Voir les permissions accordees
+
+1. Ouvrez l'extension et cliquez sur **Parametres**.
+2. Naviguez vers **Permissions des sites** (ou **Permissions**).
+3. Vous verrez une liste de tous les sites qui ont recu une permission, ainsi que ce que chaque site peut faire.
+
+{/* TODO: Screenshot of the site permissions list showing multiple sites with their granted permissions */}
+
+### Revoquer des permissions
+
+Si vous souhaitez supprimer l'acces d'un site :
+
+1. Trouvez le site dans la liste des permissions.
+2. Cliquez sur le nom du site pour developper ses details.
+3. Desactivez les permissions individuelles ou cliquez sur **Tout revoquer** pour supprimer tous les acces.
+4. Le changement prend effet immediatement. Le site devra demander a nouveau la permission lors de sa prochaine tentative.
+
+### Permissions temporaires vs. permanentes
+
+Quand vous voyez une invite de permission, vous avez generalement deux options :
+
+- **Autoriser une fois** — accorde la permission pour cette session uniquement. Quand vous fermez l'onglet ou redemarrez le navigateur, le site devra redemander.
+- **Toujours autoriser** — accorde la permission de facon permanente pour ce site. Elle persiste entre les sessions.
+
+Utilisez « Autoriser une fois » pour les sites que vous ne visitez pas regulierement. Utilisez « Toujours autoriser » pour vos clients Nostr quotidiens.
+
+## Bonnes pratiques de securite
+
+N'accordez que les permissions dont un site a reellement besoin. Un client Nostr a besoin d'un acces de signature, mais un explorateur en lecture seule n'a besoin que de votre cle publique. Passez en revue votre liste de permissions periodiquement et revoquez l'acces des sites que vous n'utilisez plus.
+
+Si un site que vous ne connaissez pas demande des permissions de signature ou de paiement, refusez et enquetez d'abord. Les clients Nostr legitimes sont bien connus.
+
+{/* TODO: Screenshot of a suspicious permission request with a "Deny" action highlighted */}
+
+<Callout type="tip">
+Si un site se comporte de maniere inattendue apres avoir accorde des permissions — comme declenchant des paiements que vous n'avez pas inities — revoquez immediatement toutes ses permissions et baissez votre seuil d'approbation automatique.
+</Callout>
+
+### Connexions securisees uniquement
+
+L'extension n'expose les API NIP-07 et WebLN que sur les connexions securisees (HTTPS). Cela empeche les attaques de l'homme du milieu d'intercepter la communication entre le site et l'extension.
+
+## Et ensuite ?
+
+Maintenant que vos permissions sont verrouillees, explorez le [WoT Playground](/guides/wot-playground) pour visualiser votre reseau de confiance. Ou revisitez [la gestion de votre identite](/guides/managing-identity) pour revoir vos pratiques de securite des cles.

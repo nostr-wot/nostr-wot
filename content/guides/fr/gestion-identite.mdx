@@ -1,0 +1,94 @@
+---
+title: "Gerer votre identite"
+description: "Apprenez comment l'extension Nostr WoT gere votre identite Nostr avec le support du signataire NIP-07, la gestion de profil et les pratiques essentielles de securite des cles."
+excerpt: "Votre identite Nostr est le fondement de tout dans l'extension. Apprenez a gerer vos cles, votre profil et vos parametres de signataire."
+date: "2026-03-11"
+author:
+  name: "Leon Acosta"
+  avatar: "/authors/leon-profile.jpg"
+  npub: "npub1gxdhmu9swqduwhr6zptjy4ya693zp3ql28nemy4hd97kuufyrqdqwe5zfk"
+featuredImage: "/images/guides/managing-identity/featured.svg"
+previewImage: "/images/guides/managing-identity/preview.svg"
+tags:
+  - "Identite"
+  - "Cles"
+  - "NIP-07"
+published: true
+seoTitle: "Gerer votre identite — Guide de l'extension Nostr WoT"
+seoDescription: "Apprenez comment l'extension Nostr WoT gere votre identite Nostr avec le support du signataire NIP-07, la gestion de profil et les pratiques essentielles de securite des cles."
+ogImage: "/images/guides/managing-identity/og.svg"
+translationKey: "managing-identity"
+difficulty: "beginner"
+order: 2
+---
+
+Votre identite Nostr est l'ancre de tout le reste dans l'extension — votre reseau de confiance, votre portefeuille, vos permissions. Ce guide couvre comment gerer cette identite, securiser vos cles et utiliser le signataire NIP-07 qui permet aux sites web d'interagir avec votre compte Nostr.
+
+## Support du signataire NIP-07
+
+NIP-07 est le standard qui permet aux applications web Nostr de demander des signatures a une extension de navigateur sans jamais voir votre cle privee. Lorsque vous visitez un client Nostr comme Primal, Snort ou Coracle, il peut demander a l'extension de signer des evenements en votre nom.
+
+Voici comment cela fonctionne en pratique :
+
+1. Un site web appelle `window.nostr.getPublicKey()` pour vous identifier.
+2. Lorsque vous publiez une note ou mettez a jour votre profil, le site envoie l'evenement non signe a l'extension.
+3. Vous voyez une invite de permission. Si vous approuvez, l'extension le signe avec votre cle privee et renvoie la signature.
+4. Votre cle privee ne quitte jamais l'extension.
+
+{/* TODO: Screenshot of the NIP-07 signing permission prompt */}
+
+<Callout type="tip">
+Si vous utilisiez auparavant une autre extension NIP-07 comme nos2x ou Alby, desactivez-la avant d'utiliser Nostr WoT. Un seul signataire NIP-07 doit etre actif a la fois pour eviter les conflits.
+</Callout>
+
+## Gerer votre profil Nostr
+
+Les details de votre profil — nom d'affichage, bio, avatar, adresse Lightning et identifiant NIP-05 — sont stockes sur les relais Nostr comme un evenement de type 0. L'extension vous permet de consulter et modifier ces details directement.
+
+### Consulter votre profil
+
+Cliquez sur l'icone de l'extension et naviguez vers l'onglet **Identite**. Vous verrez vos informations de profil actuelles, votre npub et les relais sur lesquels votre profil est publie.
+
+{/* TODO: Screenshot of the Identity tab showing profile details */}
+
+### Modifier votre profil
+
+1. Cliquez sur **Modifier le profil** dans l'onglet Identite.
+2. Mettez a jour les champs que vous souhaitez modifier.
+3. Cliquez sur **Enregistrer**. L'extension signe un nouvel evenement de type 0 et le publie sur vos relais.
+
+Les modifications se propagent a travers les clients Nostr en quelques secondes a mesure que les relais distribuent l'evenement mis a jour.
+
+## Bonnes pratiques de securite des cles
+
+Votre cle privee (nsec) est la donnee la plus importante de votre identite Nostr. Quiconque la possede peut publier en votre nom, modifier votre profil et acceder a vos contacts. Il n'y a pas de reinitialisation de mot de passe, pas d'equipe de support a appeler.
+
+### Stockage
+
+- L'extension chiffre votre cle privee localement avec votre mot de passe de chiffrement. Elle n'est jamais stockee en texte clair.
+- Sauvegardez votre nsec dans un gestionnaire de mots de passe ou notez-la sur papier et conservez-la en lieu sur.
+- Ne collez jamais votre nsec dans un site web et ne l'envoyez jamais par message prive.
+
+### Mot de passe de chiffrement
+
+- Choisissez un mot de passe fort et unique lors de la configuration de l'extension.
+- L'extension se verrouille apres une periode d'inactivite. Vous aurez besoin de ce mot de passe pour la deverrouiller.
+- Si vous oubliez ce mot de passe, vous pouvez reimporter votre nsec pour le reinitialiser — mais vous avez besoin de cette sauvegarde nsec.
+
+{/* TODO: Screenshot of the lock screen and password entry */}
+
+### Plusieurs appareils
+
+Si vous utilisez l'extension sur plusieurs navigateurs ou machines, importez la meme nsec sur chacun. Votre identite est liee a votre paire de cles, pas a un appareil particulier.
+
+<Callout type="tip">
+Envisagez de generer vos cles avec un outil dedie et de les importer dans l'extension. Ainsi, votre sauvegarde existe independamment de toute extension.
+</Callout>
+
+## Basculer entre les identites
+
+L'extension prend en charge plusieurs identites. Si vous gerez plus d'un compte Nostr, basculez entre eux depuis l'onglet Identite en cliquant sur votre avatar de profil. Chaque identite a son propre graphe de confiance, portefeuille et parametres de permissions.
+
+## Et ensuite ?
+
+Maintenant que votre identite est securisee, il est temps de comprendre comment l'extension l'utilise pour construire votre [Web of Trust](/guides/understanding-wot). Si vous souhaitez connecter un portefeuille, passez a [Configurer votre portefeuille](/guides/setting-up-wallet).

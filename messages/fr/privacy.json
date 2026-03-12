@@ -1,0 +1,252 @@
+{
+  "meta": {
+    "title": "Politique de confidentialité",
+    "description": "Découvrez comment Nostr Web of Trust protège votre vie privée. Notre politique couvre la collecte de données, les modes de confidentialité de l'extension de navigateur, l'utilisation de l'API Oracle et vos droits."
+  },
+  "hero": {
+    "title": "Politique de confidentialité",
+    "lastUpdated": "Dernière mise à jour : février 2026"
+  },
+  "intro": {
+    "description": "Cette politique de confidentialité décrit comment Nostr Web of Trust (« nous », « notre ») collecte, utilise et protège vos informations lorsque vous utilisez notre site web (nostr-wot.com) et notre extension de navigateur (extension WoT).",
+    "commitment": "Nous nous engageons à protéger votre vie privée. En tant que projet conçu pour l'écosystème Nostr, nous comprenons l'importance de la décentralisation et de la souveraineté des utilisateurs sur leurs données personnelles."
+  },
+  "contents": {
+    "title": "Sommaire",
+    "website": "Confidentialité du site web",
+    "extension": "Confidentialité de l'extension de navigateur",
+    "oracle": "API WoT Oracle",
+    "thirdParty": "Services tiers",
+    "dataRetention": "Conservation des données",
+    "yourRights": "Vos droits",
+    "changes": "Modifications de cette politique",
+    "contact": "Nous contacter"
+  },
+  "website": {
+    "title": "Confidentialité du site web",
+    "infoCollected": {
+      "title": "Informations que nous collectons",
+      "description": "Lorsque vous visitez notre site web, nous pouvons collecter :",
+      "analytics": {
+        "title": "Données analytiques :",
+        "description": "Nous utilisons Google Analytics pour comprendre comment les visiteurs utilisent notre site. Cela inclut des informations anonymisées telles que les pages visitées, le temps passé sur le site, le type de navigateur, le type d'appareil et la localisation géographique approximative (au niveau du pays)."
+      },
+      "contactForm": {
+        "title": "Données du formulaire de contact :",
+        "description": "Si vous soumettez notre formulaire de contact, nous collectons votre nom, adresse e-mail, organisation (si fournie) et le contenu du message."
+      }
+    },
+    "howWeUse": {
+      "title": "Comment nous utilisons les données du site web",
+      "items": {
+        "improve": "Pour améliorer notre site web et notre documentation",
+        "respond": "Pour répondre à vos demandes et requêtes de support",
+        "understand": "Pour comprendre les tendances d'utilisation globales"
+      }
+    },
+    "cookies": {
+      "title": "Cookies",
+      "description": "Notre site web utilise des cookies à des fins analytiques. Google Analytics utilise des cookies pour distinguer les utilisateurs et les sessions uniques. Vous pouvez désactiver Google Analytics en installant le",
+      "optOutLink": "module complémentaire de désactivation Google Analytics"
+    }
+  },
+  "extension": {
+    "title": "Confidentialité de l'extension de navigateur",
+    "intro": "L'extension WoT est conçue avec la confidentialité comme principe fondamental. Voici ce que vous devez savoir :",
+    "dataStorage": {
+      "title": "Stockage des données",
+      "pubkey": {
+        "title": "Votre pubkey :",
+        "description": "Stockée localement dans votre navigateur pour identifier votre position dans le graphe social. Jamais envoyée à nos serveurs."
+      },
+      "configuration": {
+        "title": "Configuration :",
+        "description": "Vos paramètres (mode de fonctionnement, préférences de relais, URL Oracle) sont stockés localement dans votre navigateur."
+      },
+      "localGraph": {
+        "title": "Index du graphe local :",
+        "description": "En mode local ou hybride, les relations d'abonnement sont stockées dans l'IndexedDB de votre navigateur. Ces données ne quittent jamais votre appareil."
+      }
+    },
+    "operatingModes": {
+      "title": "Modes de fonctionnement",
+      "description": "L'extension propose trois modes de fonctionnement avec des implications différentes en matière de confidentialité :",
+      "local": {
+        "title": "Mode local (le plus privé)",
+        "items": {
+          "processedLocally": "Toutes les requêtes sont traitées localement dans votre navigateur",
+          "fetchedDirectly": "Les données d'abonnement sont récupérées directement depuis les relais Nostr",
+          "noDataSent": "Aucune donnée n'est envoyée au WoT Oracle ou à nos serveurs",
+          "completelyPrivate": "Vos requêtes restent entièrement privées"
+        }
+      },
+      "remote": {
+        "title": "Mode distant",
+        "items": {
+          "sentToOracle": "Les requêtes sont envoyées à l'API WoT Oracle pour calculer la distance sociale",
+          "oracleSees": "L'Oracle voit quelles pubkeys vous interrogez (mais pas votre identité sauf si vous la révélez)",
+          "fasterResults": "Fournit des résultats plus rapides avec moins de stockage local",
+          "selfHost": "Envisagez d'utiliser un Oracle auto-hébergé pour une confidentialité renforcée"
+        }
+      },
+      "hybrid": {
+        "title": "Mode hybride",
+        "items": {
+          "localFirst": "Interroge d'abord votre index local",
+          "fallback": "Se replie sur le mode distant uniquement si nécessaire",
+          "balances": "Équilibre entre confidentialité et couverture"
+        }
+      }
+    },
+    "doesNot": {
+      "title": "Ce que l'extension NE fait PAS",
+      "items": {
+        "browsingHistory": "Nous ne collectons ni ne transmettons votre historique de navigation",
+        "ads": "Nous n'injectons pas de publicités ni de scripts de suivi",
+        "sellData": "Nous ne vendons ni ne partageons vos données avec des tiers",
+        "privateKeys": "Nous ne stockons pas vos clés privées (nous n'y avons jamais accès)",
+        "telemetry": "Nous n'exécutons pas d'analyses ni de télémétrie dans l'extension"
+      }
+    },
+    "permissions": {
+      "title": "Permissions",
+      "description": "L'extension demande les permissions de navigateur suivantes :",
+      "storage": {
+        "title": "Stockage :",
+        "description": "Pour sauvegarder votre configuration et l'index du graphe local"
+      },
+      "scripting": {
+        "title": "Scripts :",
+        "description": "Pour injecter l'API window.nostr.wot dans les pages web"
+      }
+    }
+  },
+  "oracle": {
+    "title": "API WoT Oracle",
+    "intro": "Si vous utilisez l'API publique WoT Oracle (directement ou via l'extension en mode distant) :",
+    "dataCollected": {
+      "title": "Données collectées",
+      "queryData": {
+        "title": "Données de requête :",
+        "description": "Les pubkeys que vous interrogez pour les calculs de distance sociale"
+      },
+      "ipAddress": {
+        "title": "Adresse IP :",
+        "description": "Utilisée pour la limitation du débit (100 requêtes/minute par IP)"
+      },
+      "timestamps": {
+        "title": "Horodatages des requêtes :",
+        "description": "Pour la limitation du débit et la prévention des abus"
+      }
+    },
+    "dataNotCollected": {
+      "title": "Données NON collectées",
+      "items": {
+        "noLog": "Nous ne conservons pas l'historique des requêtes à long terme",
+        "noAssociate": "Nous n'associons pas les requêtes à des identités",
+        "noTrack": "Nous ne suivons pas quels sites web effectuent des requêtes"
+      }
+    },
+    "selfHosting": {
+      "title": "Auto-hébergement",
+      "description": "Pour une confidentialité maximale, vous pouvez",
+      "link": "auto-héberger votre propre WoT Oracle",
+      "descriptionContinued": ". Cela vous donne un contrôle total sur vos données de requête."
+    }
+  },
+  "thirdParty": {
+    "title": "Services tiers",
+    "intro": "Notre site web utilise les services tiers suivants :",
+    "googleAnalytics": {
+      "title": "Google Analytics",
+      "description": "Nous utilisons Google Analytics pour analyser le trafic du site web. Google peut collecter et traiter des données conformément à sa",
+      "privacyPolicy": "Politique de confidentialité",
+      "configured": ". Nous avons configuré Google Analytics pour :",
+      "items": {
+        "anonymize": "Anonymiser les adresses IP",
+        "disableSharing": "Désactiver le partage de données avec Google",
+        "disableAdvertising": "Désactiver les fonctionnalités publicitaires"
+      }
+    },
+    "recaptcha": {
+      "title": "Google reCAPTCHA",
+      "description": "Notre formulaire de contact utilise Google reCAPTCHA v3 pour prévenir le spam. Ce service peut collecter des informations sur le matériel et les logiciels. Consultez la",
+      "privacyPolicy": "Politique de confidentialité",
+      "and": "et les",
+      "termsOfService": "Conditions d'utilisation"
+    },
+    "resend": {
+      "title": "Resend",
+      "description": "Nous utilisons Resend pour traiter les soumissions du formulaire de contact. Vos coordonnées sont transmises à Resend pour l'envoi des e-mails. Consultez la",
+      "privacyPolicy": "Politique de confidentialité"
+    },
+    "nostrRelays": {
+      "title": "Relais Nostr",
+      "description": "En mode local, l'extension se connecte directement aux relais Nostr pour récupérer les listes d'abonnements. Ce sont des relais Nostr publics ; leurs pratiques de traitement des données varient. L'extension ne récupère que les événements publics Kind 3 (listes d'abonnements)."
+    }
+  },
+  "dataRetention": {
+    "title": "Conservation des données",
+    "items": {
+      "analytics": {
+        "title": "Données analytiques :",
+        "description": "Conservées par Google Analytics pendant 14 mois"
+      },
+      "contactForm": {
+        "title": "Soumissions du formulaire de contact :",
+        "description": "Conservées dans notre système de messagerie jusqu'à la résolution de la demande"
+      },
+      "extensionData": {
+        "title": "Données de l'extension :",
+        "description": "Stockées localement dans votre navigateur jusqu'à ce que vous les effaciez ou désinstalliez l'extension"
+      },
+      "rateLimit": {
+        "title": "Données de limitation du débit Oracle :",
+        "description": "Les compteurs de limitation par IP expirent après 1 minute"
+      }
+    }
+  },
+  "yourRights": {
+    "title": "Vos droits",
+    "description": "Vous avez le droit de :",
+    "items": {
+      "access": {
+        "title": "Accès :",
+        "description": "Demander des informations sur les données que nous détenons à votre sujet"
+      },
+      "deletion": {
+        "title": "Suppression :",
+        "description": "Demander la suppression de vos données personnelles"
+      },
+      "optOut": {
+        "title": "Désinscription :",
+        "description": "Désactiver le suivi Google Analytics en utilisant les outils du navigateur"
+      },
+      "control": {
+        "title": "Contrôle :",
+        "description": "Effacer les données de l'extension à tout moment via les paramètres du navigateur"
+      },
+      "portability": {
+        "title": "Portabilité :",
+        "description": "Exporter les données de votre graphe local depuis l'extension"
+      }
+    },
+    "contactLink": "nous contacter"
+  },
+  "changes": {
+    "title": "Modifications de cette politique",
+    "description": "Nous pouvons mettre à jour cette politique de confidentialité de temps en temps. Nous vous informerons de tout changement en publiant la nouvelle politique de confidentialité sur cette page et en mettant à jour la date de « Dernière mise à jour ».",
+    "significant": "Pour les modifications importantes, nous pouvons fournir un avis supplémentaire, comme l'ajout d'une déclaration sur notre page d'accueil ou l'envoi d'une notification."
+  },
+  "contact": {
+    "title": "Nous contacter",
+    "description": "Si vous avez des questions concernant cette politique de confidentialité ou nos pratiques en matière de données, veuillez",
+    "link": "nous contacter"
+  },
+  "openSource": {
+    "title": "Transparence open source",
+    "description": "L'extension WoT et le WoT Oracle sont tous deux open source. Vous pouvez examiner exactement quel code est exécuté et vérifier nos engagements en matière de confidentialité :",
+    "extensionSource": "Code source de l'extension WoT",
+    "oracleSource": "Code source du WoT Oracle"
+  }
+}

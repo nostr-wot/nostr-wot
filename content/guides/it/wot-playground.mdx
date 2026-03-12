@@ -1,0 +1,114 @@
+---
+title: "Il WoT Playground"
+description: "Esplora il WoT Playground di Nostr per visualizzare il tuo grafo di fiducia, filtrare le connessioni per distanza in hop e vedere come il tuo Web of Trust ti connette alla rete."
+excerpt: "Il WoT Playground ti permette di esplorare il tuo grafo di fiducia visivamente. Filtra per hop, cerca utenti e comprendi la tua rete a colpo d'occhio."
+date: "2026-03-11"
+author:
+  name: "Leon Acosta"
+  avatar: "/authors/leon-profile.jpg"
+  npub: "npub1gxdhmu9swqduwhr6zptjy4ya693zp3ql28nemy4hd97kuufyrqdqwe5zfk"
+featuredImage: "/images/guides/wot-playground/featured.svg"
+previewImage: "/images/guides/wot-playground/preview.svg"
+tags:
+  - "Playground"
+  - "Visualizzazione"
+  - "Grafo di Fiducia"
+published: true
+seoTitle: "Il WoT Playground — Guida Estensione Nostr WoT"
+seoDescription: "Esplora il WoT Playground di Nostr per visualizzare il tuo grafo di fiducia, filtrare le connessioni per distanza in hop e vedere come il tuo Web of Trust ti connette alla rete."
+ogImage: "/images/guides/wot-playground/og.svg"
+translationKey: "wot-playground"
+difficulty: "intermediate"
+order: 9
+---
+
+Il WoT Playground è una visualizzazione interattiva dell'intera tua rete di fiducia. Prende il concetto astratto di Web of Trust e lo rende tangibile — puoi vedere esattamente come ti connetti a qualsiasi utente su Nostr, esplorare cluster di fiducia e scoprire pattern nel tuo grafo sociale.
+
+## Accedere al Playground
+
+Ci sono due modi per aprire il Playground:
+
+1. **Dall'estensione** — clicca l'icona dell'estensione e seleziona **Playground** dal menu di navigazione.
+2. **Dal sito web** — visita direttamente la pagina del [WoT Playground](/playground).
+
+Il Playground carica i dati del tuo grafo di fiducia dall'estensione. Se non sei connesso o l'estensione è bloccata, ti verrà chiesto di sbloccarla prima.
+
+{/* TODO: Screenshot della schermata di caricamento del Playground con il grafo di fiducia che inizia a renderizzarsi */}
+
+## La Visualizzazione del Grafo di Fiducia
+
+La vista principale è un grafo interattivo dove i nodi rappresentano utenti Nostr e gli archi rappresentano relazioni di follow.
+
+### Leggere il Grafo
+
+- **Il tuo nodo** si trova al centro, evidenziato in modo distinto.
+- **Connessioni di 1o grado** (follow diretti) appaiono più vicine a te, tipicamente in un colore vivace.
+- **Connessioni di 2o grado** formano l'anello successivo, in una tonalità leggermente più attenuata.
+- **Connessioni di 3o grado** sono ai bordi esterni, più sfumate.
+- **Le linee degli archi** collegano i nodi per mostrare le relazioni di follow. Linee più spesse o più luminose possono indicare punteggi di fiducia più forti.
+
+{/* TODO: Screenshot del grafo di fiducia completo con hop codificati per colore */}
+
+<Callout type="tip">
+Clicca e trascina per spostarti nel grafo. Usa la rotella del mouse o il gesto di pinch per zoomare avanti e indietro. Clicca su qualsiasi nodo per vedere i dettagli di quell'utente.
+</Callout>
+
+### Dettagli del Nodo
+
+Clicca su qualsiasi nodo per aprire un pannello dettagli che mostra:
+
+- Informazioni del profilo (nome, avatar, npub).
+- Punteggio di fiducia relativo a te.
+- Distanza in hop.
+- Numero di percorsi che vi connettono.
+- Follow reciproci — persone che seguite entrambi.
+
+Questo è utile per capire perché qualcuno ha un particolare punteggio di fiducia e come si connette alla tua rete.
+
+{/* TODO: Screenshot del pannello dettagli del nodo per un contatto di 2o grado */}
+
+## Filtraggio e Ricerca
+
+Il Playground include strumenti per restringere la tua vista e trovare informazioni specifiche.
+
+### Filtrare per Hop
+
+Usa il filtro hop per mostrare solo le connessioni a una distanza specifica:
+
+- **1 hop** — mostra solo i tuoi follow diretti. Utile per rivedere la tua cerchia ristretta.
+- **2 hop** — aggiunge amici degli amici. È qui che avviene la maggior parte delle tue interazioni quotidiane.
+- **3 hop** — il grafo completo. Mostra il confine esterno della tua rete di fiducia.
+
+Alterna questi filtri usando i controlli nella barra laterale o nella barra degli strumenti.
+
+{/* TODO: Screenshot dei controlli del filtro hop con 2 hop selezionati */}
+
+### Cercare Utenti
+
+Digita un nome, npub o identificatore NIP-05 nella barra di ricerca. Se l'utente è nel tuo grafo di fiducia, la visualizzazione evidenzia il suo nodo e mostra il percorso tra voi.
+
+Se non è nel tuo grafo, la ricerca te lo comunica — il che è di per sé un'informazione utile. Un utente sconosciuto significa che non ha connessioni con la tua rete entro la distanza hop configurata.
+
+{/* TODO: Screenshot della barra di ricerca con un risultato che evidenzia un nodo specifico */}
+
+## Analizzare la Tua Rete
+
+Oltre alla navigazione, il Playground ti aiuta a comprendere la struttura della tua rete di fiducia.
+
+### Rilevamento dei Cluster
+
+La visualizzazione spesso rivela cluster — gruppi di utenti densamente connessi. Questi tipicamente corrispondono a comunità. Potresti vedere un cluster di sviluppatori Bitcoin, un altro di artisti e un altro di amici locali. Il raggruppamento visivo ti aiuta a comprendere le diverse cerchie sociali che compongono il tuo Web of Trust.
+
+### Utenti Ponte
+
+Alcuni nodi collegano cluster altrimenti separati. Questi utenti ponte abbracciano diverse comunità nella tua rete e spesso hanno punteggi di fiducia elevati grazie a percorsi indipendenti multipli. Se il tuo grafo è piccolo o sparse, considera di seguire più persone per rafforzare il tuo Web of Trust.
+
+{/* TODO: Video walkthrough della navigazione nel Playground, filtraggio e ispezione dei nodi */}
+
+<Callout type="tip">
+Il Playground è una visualizzazione in sola lettura. Nulla di ciò che fai qui modifica le tue impostazioni di fiducia o la tua lista di follow. Esplora liberamente.
+</Callout>
+
+## Cosa Fare Dopo?
+
+Ora che hai esplorato il tuo grafo di fiducia, potresti voler [personalizzare le tue impostazioni di fiducia](/guides/personalizzare-fiducia) in base a ciò che hai scoperto. Oppure torna alla [guida introduttiva](/guides/guida-introduttiva) per rivedere i fondamentali.

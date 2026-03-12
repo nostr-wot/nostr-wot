@@ -1,0 +1,93 @@
+---
+title: "Presentation de Nostr Web of Trust"
+description: "Decouvrez comment le Web of Trust apporte un filtrage base sur la confiance a l'ecosysteme Nostr, vous aidant a separer le signal du bruit."
+excerpt: "L'ecosysteme Nostr se developpe rapidement, mais la croissance s'accompagne de bruit. Le Web of Trust offre une solution decentralisee pour le filtrage de contenu base sur la confiance, alimente par votre graphe social."
+date: "2026-02-14"
+author:
+  name: "Leon Acosta"
+  avatar: "/authors/leon-profile.jpg"
+  npub: "npub1gxdhmu9swqduwhr6zptjy4ya693zp3ql28nemy4hd97kuufyrqdqwe5zfk"
+  socials:
+    linkedin: "leonacosta"
+    instagram: "leonacosta.now"
+    twitter: "leonacosta_"
+    github: "leonacostaok"
+featuredImage: "/images/blog/introducing-wot/featured.svg"
+previewImage: "/images/blog/introducing-wot/preview.svg"
+tags:
+  - "Annonce"
+  - "Web of Trust"
+  - "Nostr"
+published: true
+seoTitle: "Nostr Web of Trust - Filtrage base sur la confiance pour Nostr"
+seoDescription: "Decouvrez comment Nostr Web of Trust vous aide a filtrer le contenu en fonction de vos connexions sociales. Open source, axe sur la vie privee et decentralise."
+ogImage: "/images/blog/introducing-wot/og.svg"
+translationKey: "introducing-nostr-wot"
+---
+
+L'ecosysteme Nostr se developpe rapidement. Chaque jour, des milliers de nouveaux utilisateurs rejoignent le reseau, creent des notes, partagent du contenu et tissent des liens. Mais cette croissance s'accompagne d'un defi bien connu : **comment separer le signal du bruit ?**
+
+## Le probleme des reseaux ouverts
+
+Les reseaux ouverts et sans permission sont puissants precisement parce que n'importe qui peut y participer. Mais cette ouverture signifie aussi devoir faire face a :
+
+- **Du spam et des comptes de bots** qui inondent votre fil
+- **Des imposteurs** qui se font passer pour quelqu'un d'autre
+- **Du contenu de faible qualite** qui noie les discussions interessantes
+
+Les solutions traditionnelles reposent sur une moderation centralisee — une equipe decidant de ce qui est acceptable. Mais cela va a l'encontre de l'objectif d'un reseau decentralise.
+
+## Decouvrez le Web of Trust
+
+Le Web of Trust adopte une approche differente. Au lieu de s'appuyer sur une autorite centrale, il exploite quelque chose que vous possedez deja : **vos connexions sociales**.
+
+Le concept est simple :
+
+1. **Vous faites confiance aux personnes que vous suivez**
+2. **Elles font confiance aux personnes qu'elles suivent**
+3. **La confiance circule a travers ces connexions**
+
+Si quelqu'un est a 1 saut (vous le suivez directement), il beneficie d'une confiance elevee. A 2 sauts (l'ami d'un ami), confiance moderee. 3 sauts ou plus ? Probablement du bruit.
+
+```javascript
+// Verifier si quelqu'un fait partie de votre Web of Trust
+const inNetwork = await window.nostr.wot.isInMyWoT(pubkey);
+
+// Obtenir sa distance exacte
+const hops = await window.nostr.wot.getDistance(pubkey);
+
+// Obtenir un score de confiance (0-1)
+const score = await window.nostr.wot.getTrustScore(pubkey);
+```
+
+## Comment ca fonctionne
+
+Notre extension de navigateur construit un graphe local de vos connexions sociales. Lorsque vous visitez une application Nostr, elle peut interroger ce graphe pour determiner les niveaux de confiance de n'importe quelle cle publique.
+
+<Callout type="tip">
+L'extension fonctionne avec toute application Nostr qui implemente l'API WoT. Aucune modification necessaire sur votre client prefere !
+</Callout>
+
+### La vie privee avant tout
+
+Nous avons concu le systeme avec la vie privee comme principe fondamental :
+
+- **Mode local** : tout reste dans votre navigateur. Zero requete externe.
+- **Mode distant** : uniquement des recherches de cles publiques — pas de contenu, pas de suivi.
+- **Mode hybride** : le meilleur des deux mondes avec mise en cache.
+
+## Et ensuite
+
+Ce n'est que le debut. Nous travaillons sur :
+
+- **Un SDK pour les developpeurs** afin d'integrer le WoT dans leurs applications
+- **Un serveur oracle** pour les applications qui ne peuvent pas effectuer de calculs cote client
+- **Un scoring avance** avec suivi mutuel et bonus de pontage
+
+## Commencez
+
+Pret a essayer ? [Telechargez l'extension](/download) et commencez a filtrer votre experience Nostr en vous basant sur de vraies connexions humaines.
+
+---
+
+*Vous avez des questions ? Contactez-nous sur [Nostr](https://njump.me/npub1gxdhmu9swqduwhr6zptjy4ya693zp3ql28nemy4hd97kuufyrqdqwe5zfk) ou consultez notre [documentation](/docs).*

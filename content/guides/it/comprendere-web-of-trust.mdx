@@ -1,0 +1,86 @@
+---
+title: "Comprendere il Web of Trust"
+description: "Scopri come l'Estensione Nostr WoT costruisce il tuo grafo di fiducia, cosa significano hop e livelli di fiducia, e come i punteggi di fiducia ti aiutano a decidere di chi fidarti su Nostr."
+excerpt: "Il grafo di fiducia è il cuore dell'estensione. Impara cosa sono gli hop, come funzionano i punteggi di fiducia e cosa ti mostra la visualizzazione."
+date: "2026-03-11"
+author:
+  name: "Leon Acosta"
+  avatar: "/authors/leon-profile.jpg"
+  npub: "npub1gxdhmu9swqduwhr6zptjy4ya693zp3ql28nemy4hd97kuufyrqdqwe5zfk"
+featuredImage: "/images/guides/understanding-wot/featured.svg"
+previewImage: "/images/guides/understanding-wot/preview.svg"
+tags:
+  - "Web of Trust"
+  - "Grafo di Fiducia"
+  - "Concetti"
+published: true
+seoTitle: "Comprendere il Web of Trust — Estensione Nostr WoT"
+seoDescription: "Scopri come l'Estensione Nostr WoT costruisce il tuo grafo di fiducia, cosa significano hop e livelli di fiducia, e come i punteggi di fiducia ti aiutano a decidere di chi fidarti su Nostr."
+ogImage: "/images/guides/understanding-wot/og.svg"
+translationKey: "understanding-wot"
+difficulty: "beginner"
+order: 3
+---
+
+Il Web of Trust è il concetto centrale dell'estensione. Invece di affidarsi a un'autorità centrale per dirti chi è affidabile, costruisci una rete di fiducia partendo dalle persone che già segui. Questa guida spiega come funziona quella rete e cosa ti mostra l'estensione.
+
+## Cosa Mostra il Grafo di Fiducia
+
+Quando apri l'estensione, il tuo grafo di fiducia è una mappa visiva delle tue connessioni sociali su Nostr. Al centro ci sei tu. Irradiandosi verso l'esterno ci sono le persone che segui, le persone che loro seguono, e così via. Ogni nodo è un'identità Nostr e ogni connessione è una relazione di follow.
+
+{/* TODO: Screenshot della visualizzazione del grafo di fiducia con elementi etichettati */}
+
+Il grafo risponde a una domanda semplice: quanto è connessa questa persona a te? Qualcuno profondamente integrato nella tua rete sociale è probabilmente più affidabile di un account nuovo senza connessioni con nessuno che conosci.
+
+## Gli Hop Spiegati
+
+Gli hop misurano il percorso più breve tra te e un altro utente Nostr attraverso le relazioni di follow.
+
+### 1o Grado (1 Hop)
+
+Queste sono le persone che segui direttamente. Sono la tua cerchia di fiducia immediata. L'estensione assegna la massima fiducia a queste connessioni perché hai scelto esplicitamente di seguirle.
+
+### 2o Grado (2 Hop)
+
+Queste sono persone seguite dalle persone che segui. Potresti non conoscerle personalmente, ma qualcuno di cui ti fidi ha scelto di seguirle. Questo è un segnale forte — i tuoi amici garantiscono per loro seguendole.
+
+### 3o Grado (3 Hop)
+
+A tre passi da te. La connessione è più debole ma ancora presente. Questi utenti sono seguiti da qualcuno che è seguito da qualcuno che segui. A questa distanza, la fiducia è inferiore ma ancora significativa — specialmente se percorsi multipli ti connettono.
+
+{/* TODO: Diagramma che mostra connessioni di 1o, 2o e 3o grado che si irradiano da un nodo utente centrale */}
+
+<Callout type="tip">
+Più percorsi indipendenti ti connettono a qualcuno, più alto è il suo punteggio di fiducia. Una persona raggiunta attraverso cinque diverse connessioni di 2o grado è più fidata di qualcuno raggiunto attraverso una singola connessione di 2o grado.
+</Callout>
+
+## Come Funzionano i Punteggi di Fiducia
+
+Ogni utente Nostr visibile nel tuo grafo di fiducia riceve un punteggio di fiducia. Questo punteggio non è una misura assoluta del carattere di una persona — è una misura di quanto è connessa alla tua rete specifica.
+
+Il punteggio dipende da diversi fattori:
+
+- **Distanza in hop** — connessioni più vicine ottengono punteggi più alti.
+- **Conteggio dei percorsi** — più percorsi tra te e l'utente significano un punteggio più alto.
+- **Posizione nella rete** — utenti seguiti da molti dei tuoi contatti diretti ottengono punteggi più alti rispetto a quelli connessi attraverso una singola catena.
+
+L'estensione normalizza questi fattori in un punteggio che ti aiuta a prendere decisioni rapide. Quando incontri un profilo sconosciuto su un client Nostr, l'estensione può dirti se quella persona è nel tuo grafo di fiducia e quanto è forte la connessione.
+
+### Fasce di Punteggio
+
+Anche se le soglie esatte sono configurabili, una configurazione tipica funziona così:
+
+- **Alta fiducia** — contatti di 1o grado e utenti di 2o grado ben connessi.
+- **Media fiducia** — contatti di 2o grado con meno percorsi e alcuni utenti di 3o grado con connessioni multiple.
+- **Bassa fiducia** — contatti di 3o grado con connessioni deboli.
+- **Sconosciuto** — utenti senza percorso verso di te nel grafo di fiducia.
+
+{/* TODO: Screenshot del popup dell'estensione che mostra punteggi di fiducia per diversi profili */}
+
+## La Fiducia È Personale
+
+Il tuo Web of Trust è unico per te. Due persone avranno grafi di fiducia completamente diversi perché seguono persone diverse. Non esiste un punteggio di fiducia globale — il tuo grafo riflette la tua realtà sociale su Nostr, non un sistema di reputazione centralizzato. Fiducia decentralizzata significa che nessuna singola entità decide chi è affidabile. Lo decidete tu e la tua rete.
+
+## Cosa Fare Dopo?
+
+Pronto a personalizzare il modo in cui l'estensione calcola la fiducia? Vai a [Personalizzare le Impostazioni di Fiducia](/guides/personalizzare-fiducia). Oppure esplora il grafo di fiducia visivamente nel [WoT Playground](/guides/wot-playground).

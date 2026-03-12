@@ -1,0 +1,86 @@
+---
+title: "Comprendre le Web of Trust"
+description: "Apprenez comment l'extension Nostr WoT construit votre graphe de confiance, ce que signifient les sauts et les niveaux de confiance, et comment les scores de confiance vous aident a decider en qui avoir confiance sur Nostr."
+excerpt: "Le graphe de confiance est au coeur de l'extension. Apprenez ce que sont les sauts, comment fonctionnent les scores de confiance et ce que la visualisation vous revele."
+date: "2026-03-11"
+author:
+  name: "Leon Acosta"
+  avatar: "/authors/leon-profile.jpg"
+  npub: "npub1gxdhmu9swqduwhr6zptjy4ya693zp3ql28nemy4hd97kuufyrqdqwe5zfk"
+featuredImage: "/images/guides/understanding-wot/featured.svg"
+previewImage: "/images/guides/understanding-wot/preview.svg"
+tags:
+  - "Web of Trust"
+  - "Graphe de confiance"
+  - "Concepts"
+published: true
+seoTitle: "Comprendre le Web of Trust — Extension Nostr WoT"
+seoDescription: "Apprenez comment l'extension Nostr WoT construit votre graphe de confiance, ce que signifient les sauts et les niveaux de confiance, et comment les scores de confiance vous aident a decider en qui avoir confiance sur Nostr."
+ogImage: "/images/guides/understanding-wot/og.svg"
+translationKey: "understanding-wot"
+difficulty: "beginner"
+order: 3
+---
+
+Le Web of Trust est le concept central de l'extension. Au lieu de s'appuyer sur une autorite centrale pour vous dire qui est digne de confiance, vous construisez un reseau de confiance a partir des personnes que vous suivez deja. Ce guide explique comment ce reseau fonctionne et ce que l'extension vous montre.
+
+## Ce que le graphe de confiance affiche
+
+Lorsque vous ouvrez l'extension, votre graphe de confiance est une carte visuelle de vos connexions sociales sur Nostr. Au centre, c'est vous. En rayonnant vers l'exterieur se trouvent les personnes que vous suivez, les personnes qu'elles suivent, et ainsi de suite. Chaque noeud est une identite Nostr, et chaque connexion est une relation de suivi.
+
+{/* TODO: Screenshot of the trust graph visualization with labeled elements */}
+
+Le graphe repond a une question simple : a quel point cette personne est-elle connectee a vous ? Quelqu'un profondement integre dans votre reseau social est probablement plus digne de confiance qu'un compte tout neuf sans aucune connexion avec les gens que vous connaissez.
+
+## Les sauts expliques
+
+Les sauts mesurent le chemin le plus court entre vous et un autre utilisateur Nostr a travers les relations de suivi.
+
+### 1er degre (1 saut)
+
+Ce sont les personnes que vous suivez directement. Elles constituent votre cercle de confiance immediat. L'extension attribue la confiance la plus elevee a ces connexions car vous avez explicitement choisi de les suivre.
+
+### 2e degre (2 sauts)
+
+Ce sont les personnes suivies par les personnes que vous suivez. Vous ne les connaissez peut-etre pas personnellement, mais quelqu'un en qui vous avez confiance a choisi de les suivre. C'est un signal fort — vos amis se portent garants d'eux en les suivant.
+
+### 3e degre (3 sauts)
+
+Trois etapes de distance par rapport a vous. La connexion est plus faible mais toujours presente. Ces utilisateurs sont suivis par quelqu'un qui est suivi par quelqu'un que vous suivez. A cette distance, la confiance est plus faible mais reste significative — surtout si plusieurs chemins vous connectent.
+
+{/* TODO: Diagram showing 1st, 2nd, and 3rd degree connections radiating from a central user node */}
+
+<Callout type="tip">
+Plus il y a de chemins independants qui vous connectent a quelqu'un, plus son score de confiance est eleve. Une personne atteinte par cinq connexions de 2e degre differentes est plus fiable qu'une personne atteinte par une seule connexion de 2e degre.
+</Callout>
+
+## Comment fonctionnent les scores de confiance
+
+Chaque utilisateur Nostr visible dans votre graphe de confiance recoit un score de confiance. Ce score n'est pas une mesure absolue du caractere d'une personne — c'est une mesure de sa connexion a votre reseau specifique.
+
+Le score depend de plusieurs facteurs :
+
+- **Distance en sauts** — les connexions plus proches obtiennent un score plus eleve.
+- **Nombre de chemins** — plus il y a de chemins entre vous et l'utilisateur, plus le score est eleve.
+- **Position dans le reseau** — les utilisateurs suivis par beaucoup de vos contacts directs obtiennent un score plus eleve que ceux connectes par une seule chaine.
+
+L'extension normalise ces facteurs en un score qui vous aide a prendre des decisions rapides. Lorsque vous rencontrez un profil inconnu sur un client Nostr, l'extension peut vous dire si cette personne est dans votre graphe de confiance et quelle est la force de la connexion.
+
+### Plages de scores
+
+Bien que les seuils exacts soient configurables, une configuration typique fonctionne ainsi :
+
+- **Confiance elevee** — contacts de 1er degre et utilisateurs de 2e degre bien connectes.
+- **Confiance moyenne** — contacts de 2e degre avec moins de chemins et certains utilisateurs de 3e degre avec des connexions multiples.
+- **Confiance faible** — contacts de 3e degre avec des connexions tenues.
+- **Inconnu** — utilisateurs sans aucun chemin vers vous dans le graphe de confiance.
+
+{/* TODO: Screenshot of the extension popup showing trust scores for different profiles */}
+
+## La confiance est personnelle
+
+Votre Web of Trust est unique. Deux personnes auront des graphes de confiance completement differents parce qu'elles suivent des personnes differentes. Il n'y a pas de score de confiance global — votre graphe reflete votre realite sociale sur Nostr, pas un systeme de reputation centralise. La confiance decentralisee signifie qu'aucune entite ne decide qui est digne de confiance. C'est vous et votre reseau qui decidez.
+
+## Et ensuite ?
+
+Pret a ajuster la facon dont l'extension calcule la confiance ? Rendez-vous sur [Personnaliser vos parametres de confiance](/guides/customizing-trust). Ou explorez le graphe de confiance visuellement dans le [WoT Playground](/guides/wot-playground).

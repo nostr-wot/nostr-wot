@@ -1,0 +1,99 @@
+---
+title: "Reclamer votre adresse Lightning"
+description: "Reclamez une adresse Lightning comme votrenom@zaps.nostr-wot.com via l'extension Nostr WoT et commencez a recevoir des zaps sur une adresse memorable et lisible."
+excerpt: "Obtenez une adresse Lightning comme votrenom@zaps.nostr-wot.com. Reclamez-la en quelques secondes et ajoutez-la a votre profil Nostr."
+date: "2026-03-11"
+author:
+  name: "Leon Acosta"
+  avatar: "/authors/leon-profile.jpg"
+  npub: "npub1gxdhmu9swqduwhr6zptjy4ya693zp3ql28nemy4hd97kuufyrqdqwe5zfk"
+featuredImage: "/images/guides/lightning-address/featured.svg"
+previewImage: "/images/guides/lightning-address/preview.svg"
+tags:
+  - "Adresse Lightning"
+  - "Zaps"
+  - "Identite"
+published: true
+seoTitle: "Reclamez votre adresse Lightning — Extension Nostr WoT"
+seoDescription: "Reclamez une adresse Lightning comme votrenom@zaps.nostr-wot.com via l'extension Nostr WoT et commencez a recevoir des zaps sur une adresse memorable et lisible."
+ogImage: "/images/guides/lightning-address/og.svg"
+translationKey: "lightning-address"
+difficulty: "beginner"
+order: 7
+---
+
+Une adresse Lightning est un identifiant lisible — comme une adresse email — que n'importe qui peut utiliser pour vous envoyer des sats. Au lieu de generer des factures manuellement, vous donnez votre adresse aux gens et ils vous zappent directement. L'extension vous permet d'en reclamer une gratuitement lorsque vous utilisez la Configuration rapide.
+
+## Qu'est-ce qu'une adresse Lightning ?
+
+Une adresse Lightning ressemble a `votrenom@zaps.nostr-wot.com`. Sous le capot, elle pointe vers un point de terminaison de facture Lightning. Quand quelqu'un envoie des sats a votre adresse, le systeme genere une facture fraiche et achemine le paiement vers votre portefeuille. L'expediteur n'a pas besoin de connaitre les details de votre configuration de portefeuille.
+
+Pensez-y comme un moyen permanent et memorable pour les gens de vous payer en Bitcoin via Lightning.
+
+{/* TODO: Diagram showing how a Lightning Address resolves to a payment */}
+
+## Reclamer votre adresse
+
+Vous devez avoir un portefeuille connecte via la Configuration rapide pour reclamer une adresse Lightning. Si vous avez utilise NWC ou LNbits, votre adresse est geree par votre propre infrastructure.
+
+1. Ouvrez l'extension et allez dans l'onglet **Portefeuille**.
+2. Cliquez sur **Parametres** ou cherchez la section **Adresse Lightning**.
+3. Entrez le nom d'utilisateur que vous souhaitez. Il deviendra `votrenom@zaps.nostr-wot.com`.
+4. Cliquez sur **Reclamer**.
+5. Si le nom est disponible, il est immediatement le votre.
+
+{/* TODO: Screenshot of the Lightning Address claim form with a username being entered */}
+
+<Callout type="tip">
+Les noms d'utilisateur doivent comporter entre 3 et 30 caracteres et peuvent inclure des lettres minuscules, des chiffres, des points et des tirets. Premier arrive, premier servi, alors reclamez le votre rapidement.
+</Callout>
+
+## Ajouter a votre profil Nostr
+
+Apres avoir reclame votre adresse, vous voulez qu'elle soit visible sur votre profil Nostr pour que les gens sachent ou vous zapper.
+
+### Methode automatique
+
+L'extension propose d'ajouter votre adresse Lightning a votre profil Nostr automatiquement juste apres l'avoir reclamee. Cliquez sur **Oui, mettre a jour mon profil** et l'extension signe et publie un evenement de type 0 mis a jour avec votre nouvelle adresse.
+
+{/* TODO: Screenshot of the prompt to add the Lightning Address to the Nostr profile */}
+
+### Methode manuelle
+
+Si vous preferez le faire vous-meme :
+
+1. Allez dans l'onglet **Identite** de l'extension.
+2. Cliquez sur **Modifier le profil**.
+3. Trouvez le champ **Adresse Lightning** (parfois etiquete `lud16`).
+4. Entrez votre adresse complete : `votrenom@zaps.nostr-wot.com`.
+5. Cliquez sur **Enregistrer**.
+
+Dans les deux cas, les clients Nostr afficheront un bouton zap sur votre profil qui utilise cette adresse.
+
+## Recevoir des zaps
+
+Une fois votre adresse Lightning definie et publiee sur votre profil :
+
+- Toute personne consultant votre profil sur Primal, Snort, Coracle ou d'autres clients Nostr verra une option de zap.
+- Elle clique sur zap, choisit un montant et le paiement est achemine vers votre portefeuille.
+- Vous voyez les sats entrants dans le solde de votre portefeuille et l'historique des transactions.
+
+Pas de factures a generer, pas de codes QR a partager. L'adresse gere tout.
+
+{/* TODO: Screenshot of an incoming zap notification in the extension */}
+
+## Partager votre adresse
+
+Au-dela de votre profil Nostr, vous pouvez partager votre adresse Lightning dans les bios de reseaux sociaux, sur votre site web ou dans les signatures d'emails. N'importe qui avec un portefeuille Lightning peut envoyer des sats a `votrenom@zaps.nostr-wot.com` — il n'a pas besoin d'etre sur Nostr.
+
+## Changer votre adresse
+
+Si vous voulez un nom d'utilisateur different, ouvrez les parametres d'adresse Lightning dans l'extension et reclamez-en une nouvelle. Votre ancienne adresse cessera de fonctionner, alors mettez a jour votre profil Nostr et tous les autres endroits ou vous l'avez partagee.
+
+<Callout type="tip">
+Avant de changer votre adresse, assurez-vous qu'aucun service recurrent ou integration ne depend de l'ancienne. Le changement est instantane et l'ancienne adresse est liberee.
+</Callout>
+
+## Et ensuite ?
+
+Maintenant que les gens peuvent vous zapper, apprenez a [controler quels sites peuvent acceder a votre portefeuille](/guides/site-permissions). Ou explorez les [fonctionnalites de zapping et d'approbation automatique](/guides/zapping-auto-approve) pour fluidifier vos zaps sortants.

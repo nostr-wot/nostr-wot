@@ -1,0 +1,86 @@
+---
+title: "Das Web of Trust verstehen"
+description: "Erfahren Sie, wie die Nostr WoT Extension Ihren Trust-Graphen aufbaut, was Hops und Vertrauensstufen bedeuten und wie Trust-Scores Ihnen helfen zu entscheiden, wem Sie auf Nostr vertrauen."
+excerpt: "Der Trust-Graph ist das Herzstück der Erweiterung. Erfahren Sie, was Hops sind, wie Trust-Scores funktionieren und was die Visualisierung Ihnen zeigt."
+date: "2026-03-11"
+author:
+  name: "Leon Acosta"
+  avatar: "/authors/leon-profile.jpg"
+  npub: "npub1gxdhmu9swqduwhr6zptjy4ya693zp3ql28nemy4hd97kuufyrqdqwe5zfk"
+featuredImage: "/images/guides/understanding-wot/featured.svg"
+previewImage: "/images/guides/understanding-wot/preview.svg"
+tags:
+  - "Web of Trust"
+  - "Trust-Graph"
+  - "Konzepte"
+published: true
+seoTitle: "Das Web of Trust verstehen — Nostr WoT Extension"
+seoDescription: "Erfahren Sie, wie die Nostr WoT Extension Ihren Trust-Graphen aufbaut, was Hops und Vertrauensstufen bedeuten und wie Trust-Scores Ihnen helfen zu entscheiden, wem Sie auf Nostr vertrauen."
+ogImage: "/images/guides/understanding-wot/og.svg"
+translationKey: "understanding-wot"
+difficulty: "beginner"
+order: 3
+---
+
+Das Web of Trust ist das zentrale Konzept hinter der Erweiterung. Anstatt sich auf eine zentrale Autorität zu verlassen, die Ihnen sagt, wer vertrauenswürdig ist, bauen Sie ein Vertrauensnetzwerk aus den Personen auf, denen Sie bereits folgen. Diese Anleitung erklärt, wie dieses Netzwerk funktioniert und was die Erweiterung Ihnen zeigt.
+
+## Was der Trust-Graph zeigt
+
+Wenn Sie die Erweiterung öffnen, ist Ihr Trust-Graph eine visuelle Karte Ihrer sozialen Verbindungen auf Nostr. Im Zentrum stehen Sie. Von Ihnen ausgehend sind die Personen, denen Sie folgen, die Personen, denen diese folgen, und so weiter. Jeder Knoten ist eine Nostr-Identität, und jede Verbindung ist eine Follow-Beziehung.
+
+{/* TODO: Screenshot of the trust graph visualization with labeled elements */}
+
+Der Graph beantwortet eine einfache Frage: Wie vernetzt ist diese Person mit Ihnen? Jemand, der tief in Ihrem sozialen Netzwerk verankert ist, ist wahrscheinlich vertrauenswürdiger als ein brandneues Konto ohne Verbindungen zu jemandem, den Sie kennen.
+
+## Hops erklärt
+
+Hops messen den kürzesten Pfad zwischen Ihnen und einem anderen Nostr-Nutzer über Follow-Beziehungen.
+
+### 1. Grad (1 Hop)
+
+Das sind die Personen, denen Sie direkt folgen. Sie bilden Ihren unmittelbaren Vertrauenskreis. Die Erweiterung weist diesen Verbindungen das höchste Vertrauen zu, weil Sie sich explizit entschieden haben, ihnen zu folgen.
+
+### 2. Grad (2 Hops)
+
+Das sind Personen, denen die Personen folgen, denen Sie folgen. Sie kennen sie vielleicht nicht persönlich, aber jemand, dem Sie vertrauen, hat sich entschieden, ihnen zu folgen. Das ist ein starkes Signal — Ihre Freunde bürgen für sie, indem sie ihnen folgen.
+
+### 3. Grad (3 Hops)
+
+Drei Schritte von Ihnen entfernt. Die Verbindung ist schwächer, aber immer noch vorhanden. Diese Nutzer werden von jemandem verfolgt, der von jemandem verfolgt wird, dem Sie folgen. In dieser Distanz ist das Vertrauen geringer, aber dennoch bedeutsam — besonders wenn mehrere Pfade Sie verbinden.
+
+{/* TODO: Diagram showing 1st, 2nd, and 3rd degree connections radiating from a central user node */}
+
+<Callout type="tip">
+Je mehr unabhängige Pfade Sie mit jemandem verbinden, desto höher ist dessen Trust-Score. Eine Person, die über fünf verschiedene 2.-Grad-Verbindungen erreichbar ist, genießt mehr Vertrauen als jemand, der über eine einzige 2.-Grad-Verbindung erreichbar ist.
+</Callout>
+
+## Wie Trust-Scores funktionieren
+
+Jeder Nostr-Nutzer, der in Ihrem Trust-Graphen sichtbar ist, erhält einen Trust-Score. Dieser Score ist kein absolutes Maß für den Charakter einer Person — er misst, wie vernetzt sie mit Ihrem spezifischen Netzwerk ist.
+
+Der Score hängt von mehreren Faktoren ab:
+
+- **Hop-Distanz** — nähere Verbindungen erhalten höhere Werte.
+- **Pfadanzahl** — mehr Pfade zwischen Ihnen und dem Nutzer bedeuten einen höheren Score.
+- **Netzwerkposition** — Nutzer, denen viele Ihrer direkten Kontakte folgen, erhalten höhere Werte als solche, die über eine einzige Kette verbunden sind.
+
+Die Erweiterung normalisiert diese Faktoren zu einem Score, der Ihnen hilft, schnelle Entscheidungen zu treffen. Wenn Sie auf einem Nostr-Client ein unbekanntes Profil antreffen, kann die Erweiterung Ihnen sagen, ob diese Person in Ihrem Trust-Graphen ist und wie stark die Verbindung ist.
+
+### Score-Bereiche
+
+Während die genauen Schwellenwerte konfigurierbar sind, funktioniert ein typisches Setup so:
+
+- **Hohes Vertrauen** — 1.-Grad-Kontakte und gut vernetzte 2.-Grad-Nutzer.
+- **Mittleres Vertrauen** — 2.-Grad-Kontakte mit weniger Pfaden und einige 3.-Grad-Nutzer mit mehreren Verbindungen.
+- **Geringes Vertrauen** — 3.-Grad-Kontakte mit dünnen Verbindungen.
+- **Unbekannt** — Nutzer ohne Pfad zu Ihnen im Trust-Graphen.
+
+{/* TODO: Screenshot of the extension popup showing trust scores for different profiles */}
+
+## Vertrauen ist persönlich
+
+Ihr Web of Trust ist einzigartig für Sie. Zwei Personen werden völlig unterschiedliche Trust-Graphen haben, weil sie unterschiedlichen Personen folgen. Es gibt keinen globalen Trust-Score — Ihr Graph spiegelt Ihre soziale Realität auf Nostr wider, kein zentralisiertes Reputationssystem. Dezentrales Vertrauen bedeutet, dass keine einzelne Instanz entscheidet, wer vertrauenswürdig ist. Das entscheiden Sie und Ihr Netzwerk.
+
+## Wie geht es weiter?
+
+Bereit, die Berechnung des Vertrauens durch die Erweiterung feinzustimmen? Gehen Sie zu [Vertrauen anpassen](/guides/vertrauen-anpassen). Oder erkunden Sie den Trust-Graphen visuell im [WoT Playground](/guides/wot-playground).

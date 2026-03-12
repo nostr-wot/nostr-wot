@@ -15,7 +15,7 @@ const __dirname = path.dirname(__filename);
 
 const CONTENT_DIR = path.join(__dirname, '..', 'content', 'guides');
 const OUTPUT_DIR = path.join(__dirname, '..', 'lib', 'generated');
-const locales = ['en', 'es', 'pt'];
+const locales = ['en', 'es', 'pt', 'ru', 'it', 'fr', 'de'];
 
 function getGuidesDir(locale) {
   return path.join(CONTENT_DIR, locale);

@@ -1,0 +1,93 @@
+---
+title: "Vorstellung von Nostr Web of Trust"
+description: "Erfahren Sie, wie Web of Trust vertrauensbasierte Filterung in das Nostr-Ökosystem bringt und Ihnen hilft, Signal von Rauschen zu trennen."
+excerpt: "Das Nostr-Ökosystem wächst rasant, doch mit dem Wachstum kommt auch Rauschen. Web of Trust bietet eine dezentrale Lösung für vertrauensbasierte Inhaltsfilterung, angetrieben durch Ihr soziales Netzwerk."
+date: "2026-02-14"
+author:
+  name: "Leon Acosta"
+  avatar: "/authors/leon-profile.jpg"
+  npub: "npub1gxdhmu9swqduwhr6zptjy4ya693zp3ql28nemy4hd97kuufyrqdqwe5zfk"
+  socials:
+    linkedin: "leonacosta"
+    instagram: "leonacosta.now"
+    twitter: "leonacosta_"
+    github: "leonacostaok"
+featuredImage: "/images/blog/introducing-wot/featured.svg"
+previewImage: "/images/blog/introducing-wot/preview.svg"
+tags:
+  - "Ankündigung"
+  - "Web of Trust"
+  - "Nostr"
+published: true
+seoTitle: "Nostr Web of Trust – Vertrauensbasierte Filterung für Nostr"
+seoDescription: "Entdecken Sie, wie Nostr Web of Trust Ihnen hilft, Inhalte basierend auf Ihren sozialen Verbindungen zu filtern. Open Source, datenschutzorientiert und dezentral."
+ogImage: "/images/blog/introducing-wot/og.svg"
+translationKey: "introducing-nostr-wot"
+---
+
+Das Nostr-Ökosystem wächst rasant. Jeden Tag treten Tausende neuer Nutzer dem Netzwerk bei, erstellen Beiträge, teilen Inhalte und knüpfen Verbindungen. Doch mit diesem Wachstum kommt eine bekannte Herausforderung: **Wie trennt man Signal von Rauschen?**
+
+## Das Problem offener Netzwerke
+
+Offene, erlaubnisfreie Netzwerke sind gerade deshalb so mächtig, weil jeder teilnehmen kann. Aber diese Offenheit bedeutet auch den Umgang mit:
+
+- **Spam und Bot-Konten**, die Ihren Feed überfluten
+- **Identitätsdieben**, die sich als jemand anderes ausgeben
+- **Minderwertigen Inhalten**, die wertvolle Diskussionen untergehen lassen
+
+Traditionelle Lösungen setzen auf zentralisierte Moderation — ein Team entscheidet, was akzeptabel ist. Doch das widerspricht dem Zweck eines dezentralen Netzwerks.
+
+## Web of Trust: Ein neuer Ansatz
+
+Web of Trust verfolgt einen anderen Weg. Anstatt sich auf eine zentrale Instanz zu verlassen, nutzt es etwas, das Sie bereits besitzen: **Ihre sozialen Verbindungen**.
+
+Das Konzept ist einfach:
+
+1. **Sie vertrauen den Personen, denen Sie folgen**
+2. **Diese vertrauen den Personen, denen sie folgen**
+3. **Vertrauen fließt durch diese Verbindungen**
+
+Wenn jemand 1 Hop entfernt ist (Sie folgen der Person direkt), genießt sie hohes Vertrauen. 2 Hops entfernt (ein Freund eines Freundes), mittleres Vertrauen. 3 oder mehr Hops? Wahrscheinlich Rauschen.
+
+```javascript
+// Prüfen, ob jemand in Ihrem Web of Trust ist
+const inNetwork = await window.nostr.wot.isInMyWoT(pubkey);
+
+// Die genaue Distanz ermitteln
+const hops = await window.nostr.wot.getDistance(pubkey);
+
+// Einen Trust-Score abrufen (0-1)
+const score = await window.nostr.wot.getTrustScore(pubkey);
+```
+
+## So funktioniert es
+
+Unsere Browser-Erweiterung erstellt einen lokalen Graphen Ihrer sozialen Verbindungen. Wenn Sie eine beliebige Nostr-App besuchen, kann diese den Graphen abfragen, um die Vertrauensstufe für jeden öffentlichen Schlüssel zu bestimmen.
+
+<Callout type="tip">
+Die Erweiterung funktioniert mit jeder Nostr-App, die die WoT-API implementiert. Keine Änderungen an Ihrem bevorzugten Client erforderlich!
+</Callout>
+
+### Datenschutz an erster Stelle
+
+Wir haben das System mit Datenschutz als Kernprinzip entwickelt:
+
+- **Lokaler Modus**: Alles bleibt in Ihrem Browser. Null externe Anfragen.
+- **Remote-Modus**: Nur Abfragen öffentlicher Schlüssel — keine Inhalte, kein Tracking.
+- **Hybrid-Modus**: Das Beste aus beiden Welten mit Caching.
+
+## Was kommt als Nächstes
+
+Dies ist erst der Anfang. Wir arbeiten an:
+
+- **SDK für Entwickler**, um WoT in ihre Apps zu integrieren
+- **Oracle-Server** für Apps, die keine clientseitigen Berechnungen durchführen können
+- **Erweiterte Bewertung** mit gegenseitigen Follows und Brücken-Boni
+
+## Jetzt loslegen
+
+Bereit, es auszuprobieren? [Laden Sie die Erweiterung herunter](/download) und beginnen Sie, Ihr Nostr-Erlebnis auf Basis echter menschlicher Verbindungen zu filtern.
+
+---
+
+*Haben Sie Fragen? Kontaktieren Sie uns auf [Nostr](https://njump.me/npub1gxdhmu9swqduwhr6zptjy4ya693zp3ql28nemy4hd97kuufyrqdqwe5zfk) oder schauen Sie in unsere [Dokumentation](/docs).*

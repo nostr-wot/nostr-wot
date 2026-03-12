@@ -1,0 +1,303 @@
+{
+  "meta": {
+    "title": "Fonctionnalités",
+    "description": "Explorez l'ensemble des fonctionnalités de Nostr WoT : signataire NIP-07, coffre-fort multi-comptes, signataire distant NIP-46, portefeuille Lightning, badges de confiance, scoring personnalisé et conception axée sur la confidentialité."
+  },
+  "hero": {
+    "badge": "Fonctionnalités de l'extension",
+    "title": "Identité et confiance,",
+    "titleHighlight": "partout",
+    "description": "Un fournisseur d'identité Nostr complet, un portefeuille Lightning et un moteur Web of Trust. Gérez plusieurs comptes, signez des événements, chiffrez des messages, envoyez des zaps, injectez des badges de confiance et définissez exactement ce que « fiable » signifie pour vous."
+  },
+  "extensionOverview": {
+    "badge": "Ce que vous obtenez",
+    "title": "Identité, portefeuille et confiance — une seule extension",
+    "description": "Tout ce dont vous avez besoin pour Nostr en une seule installation. Plus besoin de jongler entre plusieurs extensions.",
+    "signer": {
+      "title": "Signataire NIP-07",
+      "description": "Signez des événements et chiffrez des messages (NIP-04 & NIP-44) sur n'importe quel client Nostr"
+    },
+    "vault": {
+      "title": "Coffre-fort chiffré",
+      "description": "Stockage de clés chiffré AES-256-GCM avec verrouillage automatique et sauvegarde sécurisée"
+    },
+    "multiAccount": {
+      "title": "Multi-comptes",
+      "description": "Dérivation HD, lecture seule, signataire distant NIP-46 — changez d'identité instantanément"
+    },
+    "wallet": {
+      "title": "Portefeuille Lightning",
+      "description": "Portefeuille intégré pour les zaps avec NWC, LNbits ou configuration rapide en un clic"
+    },
+    "badges": {
+      "title": "Badges de confiance",
+      "description": "Indicateurs de confiance colorés injectés automatiquement dans les sites Nostr"
+    },
+    "permissions": {
+      "title": "Permissions granulaires",
+      "description": "Contrôles par compte, par domaine et par méthode avec journalisation d'activité"
+    },
+    "webln": {
+      "title": "Fournisseur WebLN",
+      "description": "Les sites peuvent demander des paiements via window.webln avec votre approbation"
+    },
+    "i18n": {
+      "title": "6 langues",
+      "description": "Anglais, espagnol, portugais, allemand, français et italien"
+    }
+  },
+  "universalApi": {
+    "badge": "API WoT universelle",
+    "title": "Votre Web of Trust, disponible sur chaque site Nostr",
+    "description": "Une fois installé, toute application Nostr peut demander : « Cette personne est-elle dans mon réseau ? » Plus besoin de reconstruire la confiance depuis zéro sur chaque client. Votre graphe de confiance vous suit.",
+    "compatibleApps": "+ toute application avec API"
+  },
+  "chooseSource": {
+    "badge": "Choisissez votre source",
+    "title": "Deux façons d'alimenter votre Web of Trust",
+    "description": "Choisissez ce qui correspond à vos besoins",
+    "remote": {
+      "title": "Oracle distant",
+      "description": "Connectez-vous à un serveur Oracle WoT de confiance. Requêtes rapides, zéro stockage, toujours à jour.",
+      "features": {
+        "instant": "Recherches instantanées (<50ms)",
+        "noStorage": "Aucun stockage local requis",
+        "default": "Par défaut : nostr-wot.com (gratuit)",
+        "selfHosted": "Ou connectez-vous à un auto-hébergé"
+      },
+      "bestFor": "La plupart des utilisateurs, mobile, appareils à faible stockage"
+    },
+    "local": {
+      "title": "Graphe local",
+      "description": "Construisez et stockez votre graphe de confiance entièrement dans votre navigateur. Confidentialité totale, fonctionne hors ligne.",
+      "features": {
+        "privacy": "Les données ne quittent jamais votre appareil",
+        "relays": "Synchronisez depuis les relais de votre choix",
+        "offline": "Fonctionne sans internet",
+        "export": "Exportez/importez votre graphe"
+      },
+      "bestFor": "Maximalistes de la confidentialité, utilisation hors ligne, développeurs"
+    },
+    "hybrid": {
+      "title": "Mode hybride",
+      "description": "Le meilleur des deux mondes. Vérification locale d'abord, repli sur le distant si nécessaire.",
+      "features": {
+        "fast": "Requêtes les plus rapides possibles",
+        "privacy": "Confidentialité pour les connexions proches",
+        "coverage": "Couverture complète via l'Oracle",
+        "fallback": "Repli hors ligne gracieux"
+      },
+      "recommended": "Recommandé"
+    }
+  },
+  "trustScoring": {
+    "badge": "Scoring de confiance personnalisé",
+    "title": "Tous les abonnements ne se valent pas",
+    "description": "Définissez ce que la confiance signifie pour vous",
+    "formula": "score = baseScore × distanceWeight × (1 + pathBonus)",
+    "distance": {
+      "title": "Poids de la distance",
+      "description": "La confiance diminue avec la distance sociale :",
+      "headers": {
+        "hops": "Sauts",
+        "default": "Poids",
+        "custom": "Signification"
+      },
+      "rows": {
+        "hop1": "1 saut",
+        "hop1Weight": "1.0",
+        "hop1Meaning": "Abonnement direct",
+        "hop2": "2 sauts",
+        "hop2Weight": "0.5",
+        "hop2Meaning": "Ami d'ami",
+        "hop3": "3 sauts",
+        "hop3Weight": "0.25",
+        "hop3Meaning": "Réseau étendu",
+        "hop4": "4+ sauts",
+        "hop4Weight": "0.1",
+        "hop4Meaning": "Connexion distante"
+      }
+    },
+    "bonuses": {
+      "title": "Bonus de chemins",
+      "description": "Plusieurs chemins de connexion augmentent la confiance :",
+      "headers": {
+        "signal": "Distance",
+        "multiplier": "Bonus par chemin"
+      },
+      "rows": {
+        "hop2Paths": "2 sauts",
+        "hop2Bonus": "+15%",
+        "hop3Paths": "3 sauts",
+        "hop3Bonus": "+10%",
+        "hop4Paths": "4+ sauts",
+        "hop4Bonus": "+5%",
+        "maxBonus": "Bonus maximum : 50%"
+      }
+    },
+    "thresholds": {
+      "title": "Seuils de confiance",
+      "description": "Définissez vos propres limites :",
+      "trusted": {
+        "label": "Fiable",
+        "range": "0.7 – 1.0",
+        "meaning": "Afficher le contenu librement"
+      },
+      "neutral": {
+        "label": "Neutre",
+        "range": "0.3 – 0.7",
+        "meaning": "Afficher avec prudence"
+      },
+      "untrusted": {
+        "label": "Non fiable",
+        "range": "0 – 0.3",
+        "meaning": "Masquer ou signaler"
+      }
+    }
+  },
+  "formula": {
+    "badge": "Formule de scoring",
+    "title": "Transparente. Vérifiable. La vôtre.",
+    "example": {
+      "title": "Exemple :",
+      "description": "Alice est à 2 sauts, vous avez des amis en commun, et 3 chemins distincts vous connectent.",
+      "note": "Vous contrôlez chaque variable."
+    }
+  },
+  "settings": {
+    "badge": "Paramètres avancés",
+    "title": "Ajustez tout en détail",
+    "relays": {
+      "title": "Sélection des relais (mode local)",
+      "description": "Choisissez les relais depuis lesquels synchroniser :"
+    },
+    "syncDepth": {
+      "title": "Profondeur de synchronisation",
+      "description": "Jusqu'où explorer depuis votre pubkey :",
+      "headers": {
+        "depth": "Profondeur",
+        "nodes": "Nœuds",
+        "storage": "Stockage",
+        "time": "Temps"
+      }
+    },
+    "cache": {
+      "title": "Paramètres du cache",
+      "ttl": "TTL :",
+      "ttlDesc": "Durée de mise en cache des résultats",
+      "ttlDefault": "par défaut : 5 min",
+      "maxEntries": "Entrées max :",
+      "maxEntriesDesc": "Limiter l'utilisation mémoire",
+      "maxEntriesDefault": "par défaut : 10 000"
+    },
+    "lists": {
+      "title": "Liste de blocage et liste de confiance",
+      "blocklist": {
+        "title": "Liste de blocage",
+        "description": "Excluez manuellement des pubkeys. Les utilisateurs bloqués obtiennent un score de 0, quelle que soit la distance.",
+        "add": "+ Ajouter une pubkey bloquée"
+      },
+      "trustlist": {
+        "title": "Liste de confiance",
+        "description": "Remplacez le scoring pour des pubkeys spécifiques.",
+        "add": "+ Ajouter une pubkey de confiance → score toujours 1.0"
+      }
+    }
+  },
+  "dashboard": {
+    "badge": "Tableau de bord",
+    "title": "Voyez votre Web of Trust en un coup d'œil",
+    "nodes": "Nœuds",
+    "edges": "Arêtes",
+    "cacheHitRate": "Taux de cache",
+    "avgQueryTime": "Temps de requête moy.",
+    "lastSync": "Dernière synchro : {time}",
+    "visualize": {
+      "title": "Visualiser",
+      "comingSoon": "(bientôt disponible)",
+      "description": "Graphe interactif montrant votre réseau de confiance"
+    }
+  },
+  "wallet": {
+    "badge": "Portefeuille Lightning",
+    "title": "Zaps intégrés. Aucune application supplémentaire nécessaire.",
+    "description": "Envoyez des sats, recevez des zaps et gérez votre solde sans quitter l'extension. Trois façons de se connecter :",
+    "quickSetup": {
+      "title": "Configuration rapide",
+      "description": "Obtenez un portefeuille en un clic — aucune configuration manuelle. Idéal pour commencer rapidement avec les zaps."
+    },
+    "nwc": {
+      "title": "Nostr Wallet Connect",
+      "description": "Collez votre URI NWC pour connecter tout portefeuille Lightning externe que vous utilisez déjà."
+    },
+    "lnbits": {
+      "title": "LNbits",
+      "description": "Connectez votre instance LNbits avec une clé admin pour un accès API direct."
+    },
+    "webln": {
+      "title": "Fournisseur WebLN",
+      "description": "L'extension injecte window.webln pour que les applications Nostr puissent demander des paiements automatiquement — avec votre permission."
+    },
+    "autoApprove": {
+      "title": "Approbation automatique des petits paiements",
+      "description": "Définissez un seuil en sats. Les paiements en dessous sont approuvés automatiquement — pas de popup pour chaque zap."
+    }
+  },
+  "privacy": {
+    "badge": "Confidentialité",
+    "title": "Vos données, vos règles",
+    "remote": {
+      "title": "Mode distant",
+      "description": "Requêtes envoyées à l'Oracle (paires de pubkeys visibles par le serveur)",
+      "features": {
+        "noContent": "Aucune donnée de contenu partagée",
+        "onlyPubkey": "Uniquement des recherches de pubkey"
+      }
+    },
+    "local": {
+      "title": "Mode local",
+      "description": "Tout reste dans votre navigateur",
+      "features": {
+        "noExternal": "Aucune requête externe",
+        "noTracking": "Aucun suivi",
+        "noAnalytics": "Aucune analyse",
+        "export": "Exportez vos données à tout moment"
+      }
+    }
+  },
+  "getStarted": {
+    "badge": "Commencer",
+    "title": "Opérationnel en quelques minutes",
+    "steps": {
+      "install": {
+        "title": "Installer l'extension",
+        "description": "Ajoutez à Chrome, Firefox ou Brave"
+      },
+      "pubkey": {
+        "title": "Configurez votre compte",
+        "description": "Créez de nouvelles clés, importez nsec, ajoutez un mode lecture seule ou connectez-vous via NIP-46"
+      },
+      "mode": {
+        "title": "Choisissez le mode WoT",
+        "description": "Distant, local ou hybride"
+      },
+      "scoring": {
+        "title": "Personnalisez les paramètres",
+        "description": "Ajustez le scoring de confiance, les permissions et le minuteur de verrouillage auto"
+      },
+      "browse": {
+        "title": "Naviguez sur Nostr",
+        "description": "Votre identité et Web of Trust vous suivent partout"
+      }
+    }
+  },
+  "api": {
+    "badge": "API pour les développeurs",
+    "title": "Créez des applications Nostr compatibles WoT",
+    "viewDocs": "Voir la documentation complète de l'API"
+  },
+  "pricing": {
+    "title": "Gratuit. Pour toujours. Open source.",
+    "description": "Auto-hébergez l'Oracle, forkez l'extension, faites ce que vous voulez."
+  }
+}

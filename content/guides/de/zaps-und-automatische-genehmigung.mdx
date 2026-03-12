@@ -1,0 +1,102 @@
+---
+title: "Zappen und automatische Genehmigung"
+description: "Erfahren Sie, wie die Nostr WoT Extension als WebLN-Anbieter für Zapping fungiert und wie Sie Auto-Genehmigungs-Schwellenwerte für reibungslose Mikrozahlungen konfigurieren."
+excerpt: "Zappen Sie Beiträge, ohne die App zu wechseln. Erfahren Sie, wie WebLN in der Erweiterung funktioniert und wie die automatische Genehmigung kleine Zaps sofort macht."
+date: "2026-03-11"
+author:
+  name: "Leon Acosta"
+  avatar: "/authors/leon-profile.jpg"
+  npub: "npub1gxdhmu9swqduwhr6zptjy4ya693zp3ql28nemy4hd97kuufyrqdqwe5zfk"
+featuredImage: "/images/guides/zapping-auto-approve/featured.svg"
+previewImage: "/images/guides/zapping-auto-approve/preview.svg"
+tags:
+  - "Zaps"
+  - "Lightning"
+  - "WebLN"
+published: true
+seoTitle: "Zappen und automatische Genehmigung — Nostr WoT Extension Anleitung"
+seoDescription: "Erfahren Sie, wie die Nostr WoT Extension als WebLN-Anbieter für Zapping fungiert und wie Sie Auto-Genehmigungs-Schwellenwerte für reibungslose Mikrozahlungen konfigurieren."
+ogImage: "/images/guides/zapping-auto-approve/og.svg"
+translationKey: "zapping-auto-approve"
+difficulty: "beginner"
+order: 6
+---
+
+Zapping ist einer der besten Aspekte von Nostr — Sie sehen einen großartigen Beitrag, senden ein paar Sats, und die Person wird belohnt. Die Erweiterung macht dies nahtlos, indem sie als WebLN-Anbieter fungiert, und die automatische Genehmigung geht noch einen Schritt weiter, indem sie den Bestätigungsschritt für kleine Beträge entfernt.
+
+## Was ist WebLN?
+
+WebLN ist ein Standard, der es Websites ermöglicht, Lightning-Zahlungen über eine Browser-Erweiterung anzufordern. Wenn ein Nostr-Client einen Zap senden möchte, ruft er `window.webln.sendPayment()` auf und die Erweiterung erledigt den Rest.
+
+Sie müssen nichts konfigurieren, damit WebLN funktioniert. Sobald Ihr Wallet verbunden ist, registriert sich die Erweiterung automatisch als WebLN-Anbieter für jede Website, die Sie besuchen.
+
+{/* TODO: Screenshot of a Nostr client's zap button with the extension popup showing the payment request */}
+
+## Wie Zapping funktioniert
+
+Hier ist der Ablauf, wenn Sie einen Beitrag auf einem Nostr-Client zappen:
+
+1. Sie klicken auf den Zap-Button bei einem Beitrag und wählen einen Betrag.
+2. Der Nostr-Client erstellt eine Lightning-Rechnung und sendet sie über WebLN an die Erweiterung.
+3. Die Erweiterung zeigt Ihnen ein Bestätigungs-Popup mit dem Betrag, dem Empfänger und dem gezappten Beitrag.
+4. Sie klicken auf **Genehmigen**, die Erweiterung bezahlt die Rechnung aus Ihrem verbundenen Wallet.
+5. Das Zap-Event wird auf Nostr veröffentlicht und der Empfänger sieht es.
+
+Der gesamte Vorgang findet in Ihrem Browser statt. Kein Wechsel zu einer separaten Wallet-App, kein Kopieren von Rechnungen.
+
+{/* TODO: Screenshot of the zap confirmation popup showing amount and recipient details */}
+
+<Callout type="tip">
+Wenn Sie auf einem Nostr-Client „Kein WebLN-Anbieter gefunden" sehen, stellen Sie sicher, dass die Erweiterung entsperrt und ein Wallet verbunden ist. Einige Clients benötigen möglicherweise eine Seitenaktualisierung, um den Anbieter zu erkennen.
+</Callout>
+
+## Automatische Genehmigung einrichten
+
+Für Viel-Zapper wird die Bestätigung jedes 21-Sat-Zaps mühsam. Die automatische Genehmigung ermöglicht es Ihnen, einen Schwellenwert festzulegen — jeder Zap bis zu diesem Betrag wird sofort ohne Popup durchgeführt.
+
+### Den Schwellenwert konfigurieren
+
+1. Klicken Sie auf das Erweiterungssymbol und gehen Sie zum **Wallet**-Tab.
+2. Öffnen Sie **Einstellungen**.
+3. Finden Sie das Feld **Auto-Genehmigungs-Schwellenwert**.
+4. Geben Sie Ihren bevorzugten Betrag in Sats ein. Zum Beispiel bedeutet `100`, dass jeder Zap von 100 Sats oder weniger automatisch genehmigt wird.
+5. Speichern. Die Einstellung gilt sofort.
+
+{/* TODO: Screenshot of the auto-approve threshold setting */}
+
+### So funktioniert es
+
+Wenn eine Website eine Zahlung über WebLN anfordert:
+
+- Wenn der Betrag gleich oder unter Ihrem Schwellenwert liegt, bezahlt die Erweiterung stillschweigend. Kein Popup, keine Unterbrechung.
+- Wenn der Betrag über Ihrem Schwellenwert liegt, sehen Sie das normale Bestätigungs-Popup.
+- Wenn die automatische Genehmigung auf `0` gesetzt ist, erfordert jede Zahlung eine manuelle Genehmigung.
+
+Das bedeutet, Sie können durch Ihren Feed scrollen, Beiträge frei mit kleinen Beträgen zappen und nie Ihren Flow unterbrechen. Größere Zahlungen erfordern weiterhin Ihre ausdrückliche Genehmigung zur Sicherheit.
+
+### Verhalten pro Website
+
+Die automatische Genehmigung respektiert die [Website-Berechtigungen](/guides/website-berechtigungen) der Erweiterung. Wenn eine Website keine WebLN-Berechtigung hat, gilt die automatische Genehmigung nicht — die Website kann überhaupt keine Zahlungen anfordern.
+
+## Ihre Zaps überwachen
+
+Jeder Zap, ob automatisch genehmigt oder manuell bestätigt, erscheint in Ihrem Transaktionsverlauf im Wallet-Tab. Sie können überprüfen, was gesendet wurde, an wen und wann.
+
+{/* TODO: Screenshot of the transaction history showing several zap entries */}
+
+Wenn Sie unerwartete automatisch genehmigte Zahlungen bemerken, senken Sie Ihren Schwellenwert oder entziehen Sie der Website die WebLN-Berechtigung.
+
+## Empfohlene Schwellenwerte
+
+- **21 Sats** — der klassische Nostr-Mikro-Zap. Konservativ und sicher.
+- **100 Sats** — deckt das meiste gelegentliche Zapping ab.
+- **500 Sats** — für Power-User, die häufig zappen.
+- **0 Sats** — deaktiviert die automatische Genehmigung vollständig.
+
+<Callout type="tip">
+Beginnen Sie mit einem niedrigeren Schwellenwert und erhöhen Sie ihn, sobald Sie mit dem Ablauf vertraut sind. Sie können ihn jederzeit in den Wallet-Einstellungen ändern.
+</Callout>
+
+## Wie geht es weiter?
+
+Wenn Sie Ihr Wallet mit der Schnelleinrichtung eingerichtet haben, können Sie [Ihre eigene Lightning-Adresse beanspruchen](/guides/lightning-adresse). Um zu kontrollieren, welche Websites Zahlungen anfordern können, lesen Sie über [Website-Berechtigungen](/guides/website-berechtigungen).

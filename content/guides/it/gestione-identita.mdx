@@ -1,0 +1,94 @@
+---
+title: "Gestire la Tua Identità"
+description: "Scopri come l'Estensione Nostr WoT gestisce la tua identità Nostr con il supporto signer NIP-07, la gestione del profilo e le pratiche essenziali di sicurezza delle chiavi."
+excerpt: "La tua identità Nostr è il fondamento di tutto nell'estensione. Impara a gestire le tue chiavi, il profilo e le impostazioni del signer."
+date: "2026-03-11"
+author:
+  name: "Leon Acosta"
+  avatar: "/authors/leon-profile.jpg"
+  npub: "npub1gxdhmu9swqduwhr6zptjy4ya693zp3ql28nemy4hd97kuufyrqdqwe5zfk"
+featuredImage: "/images/guides/managing-identity/featured.svg"
+previewImage: "/images/guides/managing-identity/preview.svg"
+tags:
+  - "Identità"
+  - "Chiavi"
+  - "NIP-07"
+published: true
+seoTitle: "Gestire la Tua Identità — Guida Estensione Nostr WoT"
+seoDescription: "Scopri come l'Estensione Nostr WoT gestisce la tua identità Nostr con il supporto signer NIP-07, la gestione del profilo e le pratiche essenziali di sicurezza delle chiavi."
+ogImage: "/images/guides/managing-identity/og.svg"
+translationKey: "managing-identity"
+difficulty: "beginner"
+order: 2
+---
+
+La tua identità Nostr è l'ancora per tutto il resto nell'estensione — la tua rete di fiducia, il tuo portafoglio, i tuoi permessi. Questa guida spiega come gestire quella identità, mantenere le tue chiavi al sicuro e usare il signer NIP-07 che permette ai siti web di interagire con il tuo account Nostr.
+
+## Supporto Signer NIP-07
+
+NIP-07 è lo standard che permette alle applicazioni web Nostr di richiedere firme da un'estensione browser senza mai vedere la tua chiave privata. Quando visiti un client Nostr come Primal, Snort o Coracle, può chiedere all'estensione di firmare eventi per tuo conto.
+
+Ecco come funziona in pratica:
+
+1. Un sito web chiama `window.nostr.getPublicKey()` per identificarti.
+2. Quando pubblichi una nota o aggiorni il tuo profilo, il sito invia l'evento non firmato all'estensione.
+3. Vedi un prompt di permesso. Se approvi, l'estensione lo firma con la tua chiave privata e restituisce la firma.
+4. La tua chiave privata non lascia mai l'estensione.
+
+{/* TODO: Screenshot del prompt di permesso di firma NIP-07 */}
+
+<Callout type="tip">
+Se in precedenza usavi un'altra estensione NIP-07 come nos2x o Alby, disabilitala prima di usare Nostr WoT. Solo un signer NIP-07 alla volta dovrebbe essere attivo per evitare conflitti.
+</Callout>
+
+## Gestire il Tuo Profilo Nostr
+
+I dettagli del tuo profilo — nome visualizzato, bio, avatar, Lightning Address e identificatore NIP-05 — sono memorizzati sui relay Nostr come evento kind 0. L'estensione ti permette di visualizzare e modificare questi dettagli direttamente.
+
+### Visualizzare il Tuo Profilo
+
+Clicca l'icona dell'estensione e naviga alla scheda **Identità**. Vedrai le informazioni attuali del tuo profilo, il tuo npub e i relay su cui è pubblicato il tuo profilo.
+
+{/* TODO: Screenshot della scheda Identità che mostra i dettagli del profilo */}
+
+### Modificare il Tuo Profilo
+
+1. Clicca **Modifica Profilo** nella scheda Identità.
+2. Aggiorna i campi che desideri modificare.
+3. Clicca **Salva**. L'estensione firma un nuovo evento kind 0 e lo pubblica sui tuoi relay.
+
+Le modifiche si propagano attraverso i client Nostr in pochi secondi man mano che i relay distribuiscono l'evento aggiornato.
+
+## Best Practice per la Sicurezza delle Chiavi
+
+La tua chiave privata (nsec) è il dato più importante della tua identità Nostr. Chiunque la possieda può pubblicare a tuo nome, cambiare il tuo profilo e accedere ai tuoi contatti. Non esiste un reset della password, nessun team di supporto da chiamare.
+
+### Archiviazione
+
+- L'estensione crittografa la tua chiave privata localmente usando la tua password di crittografia. Non viene mai memorizzata in testo non crittografato.
+- Fai il backup della tua nsec in un gestore di password o scrivila su carta e conservala in un luogo sicuro.
+- Non incollare mai la tua nsec in un sito web o inviarla via DM a nessuno.
+
+### Password di Crittografia
+
+- Scegli una password forte e unica durante la configurazione dell'estensione.
+- L'estensione si blocca dopo un periodo di inattività. Avrai bisogno di questa password per sbloccarla.
+- Se dimentichi questa password, puoi reimportare la tua nsec per reimpostarla — ma ti serve quel backup della nsec.
+
+{/* TODO: Screenshot della schermata di blocco e inserimento password */}
+
+### Dispositivi Multipli
+
+Se usi l'estensione su più browser o macchine, importa la stessa nsec su ognuno. La tua identità è legata alla tua coppia di chiavi, non a un singolo dispositivo.
+
+<Callout type="tip">
+Considera di generare le tue chiavi con uno strumento dedicato e di importarle nell'estensione. In questo modo, il tuo backup esiste indipendentemente da qualsiasi singola estensione.
+</Callout>
+
+## Passare tra le Identità
+
+L'estensione supporta identità multiple. Se gestisci più di un account Nostr, passa dall'uno all'altro dalla scheda Identità cliccando sull'avatar del tuo profilo. Ogni identità ha il proprio grafo di fiducia, portafoglio e impostazioni dei permessi.
+
+## Cosa Fare Dopo?
+
+Con la tua identità al sicuro, è il momento di capire come l'estensione la usa per costruire il tuo [Web of Trust](/guides/comprendere-web-of-trust). Se vuoi collegare un portafoglio, vai a [Configurare il Tuo Portafoglio](/guides/configurare-portafoglio).

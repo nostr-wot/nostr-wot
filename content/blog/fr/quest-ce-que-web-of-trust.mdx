@@ -1,0 +1,121 @@
+---
+title: "Qu'est-ce que le Web of Trust ?"
+description: "Le Web of Trust est un modele decentralise ou la confiance circule a travers vos connexions sociales au lieu de reposer sur des autorites centrales."
+excerpt: "Le Web of Trust remplace les gardiens centralises par quelque chose de plus naturel : la confiance que vous accordez deja aux personnes que vous connaissez. Voici comment cela fonctionne et pourquoi c'est important pour Nostr."
+date: "2026-02-22"
+author:
+  name: "Leon Acosta"
+  avatar: "/authors/leon-profile.jpg"
+  npub: "npub1gxdhmu9swqduwhr6zptjy4ya693zp3ql28nemy4hd97kuufyrqdqwe5zfk"
+  socials:
+    linkedin: "leonacosta"
+    instagram: "leonacosta.now"
+    twitter: "leonacosta_"
+    github: "leonacostaok"
+featuredImage: "/images/blog/what-is-wot/featured.svg"
+previewImage: "/images/blog/what-is-wot/preview.jpg"
+tags:
+  - "Education"
+  - "Web of Trust"
+  - "Nostr"
+published: true
+seoTitle: "Qu'est-ce que le Web of Trust ? La confiance decentralisee expliquee"
+seoDescription: "Decouvrez comment le Web of Trust utilise votre graphe social pour construire une confiance decentralisee. Aucune autorite centrale necessaire — juste de vraies connexions humaines."
+ogImage: "/images/blog/what-is-wot/og.jpg"
+translationKey: "what-is-web-of-trust"
+---
+
+La confiance est le fondement de chaque interaction en ligne. Lorsque vous lisez un post, suivez un compte ou partagez du contenu, vous portez un jugement sur qui merite votre attention. Mais comment porter ce jugement a grande echelle, sans qu'une entreprise decide a votre place ?
+
+C'est la question a laquelle le **Web of Trust** repond.
+
+## La confiance sans gardiens
+
+Sur la plupart des plateformes, la confiance est centralisee. Une entreprise verifie les comptes, organise les fils d'actualite et decide qui est banni. Ca fonctionne — jusqu'au jour ou ca ne fonctionne plus. La censure, les biais et les algorithmes opaques erodent la confiance meme qu'ils pretendent fournir.
+
+Le Web of Trust inverse ce modele. Au lieu d'une autorite centrale, **vous** etes la racine de votre propre reseau de confiance. Les personnes que vous suivez forment votre premier cercle de confiance. Les personnes qu'elles suivent forment votre deuxieme cercle. Et ainsi de suite.
+
+<Callout type="tip">
+Pensez-y comme dans la vie reelle. Vous faites confiance a vos amis. Vous faites un peu confiance aux amis de vos amis. Un inconnu a cinq poignees de main de distance ? Vous voudriez probablement des preuves avant de lui faire confiance.
+</Callout>
+
+## Comment ca fonctionne
+
+Le Web of Trust cartographie vos connexions sociales en un graphe oriente avec des niveaux de confiance mesurables :
+
+- **1 saut** — Les personnes que vous suivez directement. Confiance maximale.
+- **2 sauts** — Les amis de vos amis. Confiance moderee.
+- **3 sauts** — Deux degres de separation. Confiance plus faible.
+- **Au-dela de 3 sauts** — Essentiellement inconnus de votre reseau.
+
+Chaque saut reduit le score de confiance. Mais il ne s'agit pas seulement de distance — le nombre de **chemins** compte aussi. Si cinq de vos contacts de confiance suivent tous la meme personne, cette personne a plus de credibilite que quelqu'un atteint par une seule chaine.
+
+## L'origine de l'idee
+
+Le Web of Trust n'est pas nouveau. <WikiLink href="https://en.wikipedia.org/wiki/Phil_Zimmermann" extract="Creator of PGP, the most widely used email encryption software in the world, and a key figure in the public-key cryptography movement.">Phil Zimmermann</WikiLink> a introduit le concept en 1991 avec <WikiLink href="https://en.wikipedia.org/wiki/Pretty_Good_Privacy" extract="An encryption program that provides cryptographic privacy and authentication for data communication, created by Phil Zimmermann in 1991.">PGP</WikiLink> (Pretty Good Privacy), un systeme de chiffrement des emails. Dans le <WikiLink href="https://en.wikipedia.org/wiki/Web_of_trust" extract="A decentralized trust model used in PGP and other systems, where trust is established through a network of mutually signed keys.">Web of Trust</WikiLink> de PGP, les utilisateurs signaient les cles publiques des autres pour attester de leur identite. Si vous faisiez confiance a Alice, et qu'Alice avait signe la cle de Bob, vous pouviez raisonnablement faire confiance a Bob aussi.
+
+L'idee etait revolutionnaire : **la confiance n'a pas besoin d'une autorite de certification. Elle peut emerger des relations.**
+
+Nostr transpose ce concept dans les reseaux sociaux. Au lieu de signer des cles cryptographiques, la confiance circule a travers les **relations de suivi** — un signal naturel et sans friction qui existe deja dans le protocole.
+
+## Pourquoi Nostr en a besoin
+
+Nostr est un protocole ouvert. N'importe qui peut publier. Personne ne peut etre banni au niveau du protocole. C'est sa plus grande force et son plus grand defi.
+
+Sans aucun filtrage :
+
+- Les bots peuvent inonder les relais de spam
+- Les imposteurs peuvent copier l'identite de n'importe qui
+- Le contenu de faible qualite rivalise a egalite avec les publications de valeur
+
+Les solutions centralisees (listes de blocage, moderation par des administrateurs) contredisent les principes de Nostr. Le Web of Trust offre une **alternative decentralisee** — le reseau de confiance de chaque utilisateur agit comme un filtre personnalise et souverain.
+
+## Le Web of Trust en pratique
+
+Avec [Nostr Web of Trust](/), votre extension de navigateur construit un graphe local de vos connexions sociales. N'importe quelle application Nostr peut ensuite interroger ce graphe pour repondre a des questions comme :
+
+- **Cette personne fait-elle partie de mon reseau ?** Filtrez les parfaits inconnus.
+- **A quelle distance est-elle ?** Priorisez les connexions proches.
+- **Quel est son score de confiance ?** Prenez des decisions nuancees.
+
+```javascript
+// Verifier si une cle publique fait partie de votre Web of Trust
+const trusted = await window.nostr.wot.isInMyWoT(pubkey);
+
+// Obtenir la distance en sauts
+const distance = await window.nostr.wot.getDistance(pubkey);
+
+// Obtenir un score de confiance normalise (0 a 1)
+const score = await window.nostr.wot.getTrustScore(pubkey);
+```
+
+Le resultat : votre fil reflete **vos** jugements de confiance, pas ceux d'un algorithme.
+
+## La vie privee des la conception
+
+Un systeme de confiance qui traque votre graphe social pourrait etre un cauchemar pour la vie privee. C'est pourquoi nous avons concu trois modes :
+
+- **Mode local** — Votre graphe reste entierement dans votre navigateur. Aucun serveur ne le voit jamais.
+- **Mode distant** — Les requetes vont a notre serveur oracle, mais seules les cles publiques sont envoyees. Pas de contenu, pas de metadonnees.
+- **Mode hybride** — Mise en cache locale avec repli distant pour les cles inconnues.
+
+Vous choisissez votre compromis entre performance et vie privee.
+
+## Au-dela du filtrage
+
+Le Web of Trust ne se limite pas au blocage du spam. Il ouvre des possibilites comme :
+
+- **Les systemes de reputation** — Ponderer le contenu par le score de confiance de l'auteur
+- **La decouverte** — Trouver des comptes interessants via des chemins de confiance
+- **La moderation collaborative** — Les communautes peuvent definir des limites de confiance partagees
+- **La selection de relais** — Privilegier les relais utilises par les contacts de confiance
+
+Plus votre graphe de confiance est profond, plus il devient utile.
+
+## Essayez par vous-meme
+
+Pret a voir votre reseau de confiance en action ? [Telechargez l'extension](/download) pour commencer a filtrer avec le Web of Trust, ou explorez vos connexions visuellement dans le [Playground](/playground).
+
+---
+
+*Des questions ? Contactez-nous sur [Nostr](https://njump.me/npub1gxdhmu9swqduwhr6zptjy4ya693zp3ql28nemy4hd97kuufyrqdqwe5zfk) ou consultez notre [documentation](/docs).*

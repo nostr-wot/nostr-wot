@@ -1,0 +1,305 @@
+{
+  "meta": {
+    "title": "Документация",
+    "description": "Полная документация по Nostr Web of Trust. Узнайте, как интегрировать фильтрацию спама и оценку доверия в ваше приложение."
+  },
+  "hero": {
+    "title": "Документация",
+    "subtitle": "Всё, что нужно для интеграции Web of Trust в ваше приложение."
+  },
+  "sidebar": {
+    "gettingStarted": "Начало работы",
+    "overview": "Обзор",
+    "quickStart": "Быстрый старт",
+    "extensionSigner": "Расширение - Подписчик",
+    "extensionWotCore": "Расширение - WoT",
+    "extensionCore": "Расширение - Ядро",
+    "extensionBatch": "Расширение - Пакетные операции",
+    "extensionUser": "Расширение - Информация о пользователе",
+    "extensionGraph": "Расширение - Граф",
+    "setup": "Настройка",
+    "sdkIntegration": "Интеграция SDK",
+    "sdkSetup": "Настройка и параметры",
+    "sdkCore": "Основные методы",
+    "sdkBatch": "Пакетные операции",
+    "sdkGraph": "Запросы графа",
+    "sdkConfig": "Конфигурация",
+    "sdkErrors": "Обработка ошибок",
+    "sdkReact": "Интеграция с React",
+    "publicServers": "Публичные серверы",
+    "publicServersOverview": "Обзор",
+    "oracleApi": "Oracle API",
+    "oracleErrors": "Обработка ошибок",
+    "resources": "Ресурсы",
+    "extensionGuide": "Руководство по расширению",
+    "oracleGuide": "Руководство по Oracle",
+    "getTrustScore": "getTrustScore",
+    "getDetails": "getDetails",
+    "getConfig": "getConfig",
+    "onThisPage": "На этой странице"
+  },
+  "overview": {
+    "title": "Обзор",
+    "description": "Nostr Web of Trust предоставляет два взаимодополняющих инструмента для фильтрации спама и оценки доверия:",
+    "extension": {
+      "title": "Расширение WoT",
+      "description": "Расширение для браузера, предоставляющее",
+      "api": "window.nostr.wot",
+      "forClientSide": "для клиентских запросов"
+    },
+    "oracle": {
+      "title": "WoT Oracle",
+      "description": "REST API для серверных запросов в масштабе"
+    },
+    "fundamentalQuestion": "Оба отвечают на один и тот же фундаментальный вопрос:",
+    "question": "«Какова социальная дистанция между двумя pubkey?»"
+  },
+  "quickStart": {
+    "title": "Быстрый старт",
+    "browser": "Браузер (с расширением)",
+    "server": "Сервер (с Oracle API)",
+    "buildFromSource": {
+      "title": "Сборка из исходного кода",
+      "description": "Клонируйте репозиторий и соберите локально для разработки или проверки кода.",
+      "loadInstructions": "Перейдите на chrome://extensions, включите Режим разработчика, нажмите «Загрузить распакованное» и выберите папку dist/."
+    },
+    "comments": {
+      "checkExtension": "// Проверить, доступно ли расширение",
+      "getDistance": "// Получить дистанцию до pubkey",
+      "withinWot": "// В пределах сети доверия",
+      "outsideWot": "// За пределами сети доверия или не подключён",
+      "usingFetch": "// Используя fetch"
+    }
+  },
+  "extensionSetup": {
+    "title": "Настройка расширения",
+    "description": "Расширение WoT внедряет объект",
+    "api": "window.nostr.wot",
+    "objectInto": "на каждую страницу. Проверяйте его наличие перед использованием:",
+    "comments": {
+      "featureDetection": "// Обнаружение функции",
+      "waitForExtension": "// Ожидание загрузки расширения"
+    }
+  },
+  "getDistance": {
+    "title": "getDistance(targetPubkey)",
+    "description": "Возвращает количество переходов от pubkey пользователя до цели.",
+    "parameters": "Параметры",
+    "paramName": "Имя",
+    "paramType": "Тип",
+    "paramDescription": "Описание",
+    "targetPubkey": "Pubkey в формате hex или npub",
+    "returns": "Возвращает",
+    "returnsDescription": "Количество переходов или",
+    "null": "null",
+    "ifNotConnected": "если не подключён.",
+    "example": "Пример",
+    "cases": {
+      "notConnected": "Не подключён",
+      "thisIsYou": "Это вы",
+      "directFollow": "Прямая подписка",
+      "hopsAway": "переходов"
+    }
+  },
+  "isInMyWot": {
+    "title": "isInMyWoT(targetPubkey, maxHops?)",
+    "description": "Логическая проверка, находится ли pubkey в пределах вашего порога сети доверия.",
+    "parameters": "Параметры",
+    "paramName": "Имя",
+    "paramType": "Тип",
+    "paramDefault": "По умолчанию",
+    "paramDescription": "Описание",
+    "targetPubkey": "Pubkey в формате hex или npub",
+    "maxHops": "Максимальное количество переходов для статуса «доверенный»",
+    "returns": "Возвращает",
+    "example": "Пример",
+    "comments": {
+      "defaultThreshold": "// Проверка с порогом по умолчанию (3 перехода)",
+      "stricterCheck": "// Более строгая проверка (2 перехода)",
+      "filterList": "// Фильтрация списка pubkey"
+    }
+  },
+  "getDistanceBetween": {
+    "title": "getDistanceBetween(fromPubkey, toPubkey)",
+    "description": "Запрос дистанции между любыми двумя pubkey, не только от вашего собственного.",
+    "parameters": "Параметры",
+    "paramName": "Имя",
+    "paramType": "Тип",
+    "paramDescription": "Описание",
+    "fromPubkey": "Исходный pubkey",
+    "toPubkey": "Целевой pubkey",
+    "returns": "Возвращает",
+    "example": "Пример",
+    "comments": {
+      "checkConnection": "// Проверить связь между двумя другими пользователями"
+    }
+  },
+  "oracleDistance": {
+    "title": "GET /distance",
+    "description": "Запрос социальной дистанции между двумя pubkey.",
+    "queryParameters": "Параметры запроса",
+    "paramName": "Имя",
+    "paramType": "Тип",
+    "paramRequired": "Обязательный",
+    "paramDescription": "Описание",
+    "from": "Исходный pubkey (hex)",
+    "to": "Целевой pubkey (hex)",
+    "response": "Ответ",
+    "example": "Пример"
+  },
+  "oracleBatch": {
+    "title": "POST /distance/batch",
+    "description": "Запрос дистанций от одного pubkey до нескольких целей.",
+    "requestBody": "Тело запроса",
+    "response": "Ответ",
+    "example": "Пример"
+  },
+  "oracleStats": {
+    "title": "GET /stats",
+    "description": "Получение статистики об индексированном графе.",
+    "response": "Ответ"
+  },
+  "oracleHealth": {
+    "title": "GET /health",
+    "description": "Эндпоинт проверки работоспособности для мониторинга и балансировщиков нагрузки.",
+    "response": "Ответ"
+  },
+  "getTrustScore": {
+    "title": "getTrustScore(targetPubkey)",
+    "description": "Возвращает нормализованную оценку доверия (0-1) на основе дистанции и бонусов за связи.",
+    "parameters": "Параметры",
+    "paramName": "Имя",
+    "paramType": "Тип",
+    "paramDescription": "Описание",
+    "targetPubkey": "Pubkey в формате hex или npub",
+    "returns": "Возвращает",
+    "returnsDescription": "Оценка доверия от 0 до 1 или",
+    "null": "null",
+    "ifNotConnected": "если не подключён.",
+    "example": "Пример",
+    "formula": "Формула: score = baseScore × distanceWeight × (1 + pathBonus)",
+    "distanceWeights": {
+      "title": "Весовые коэффициенты дистанции",
+      "hop1": "1 переход = 1.0",
+      "hop2": "2 перехода = 0.5",
+      "hop3": "3 перехода = 0.25",
+      "hop4plus": "4+ перехода = 0.1"
+    },
+    "pathBonuses": {
+      "title": "Бонусы за пути (за каждый дополнительный путь)",
+      "hop2": "2 перехода = +15%",
+      "hop3": "3 перехода = +10%",
+      "hop4plus": "4+ перехода = +5%",
+      "max": "Максимальный бонус: 50%"
+    }
+  },
+  "getDetails": {
+    "title": "getDetails(targetPubkey)",
+    "description": "Возвращает подробную информацию о доверии, включая дистанцию, оценку, пути и данные о связях.",
+    "parameters": "Параметры",
+    "paramName": "Имя",
+    "paramType": "Тип",
+    "paramDescription": "Описание",
+    "targetPubkey": "Pubkey в формате hex или npub",
+    "returns": "Возвращает",
+    "returnsDescription": "Объект с дистанцией, оценкой, количеством путей, статусом взаимной подписки и промежуточными узлами.",
+    "example": "Пример"
+  },
+  "getConfig": {
+    "title": "getConfig()",
+    "description": "Возвращает текущую конфигурацию расширения, включая режим, реле и весовые коэффициенты оценки.",
+    "returns": "Возвращает",
+    "returnsDescription": "Объект конфигурации с режимом, реле, весовыми коэффициентами оценки и настройками кэша.",
+    "example": "Пример"
+  },
+  "sdk": {
+    "title": "Интеграция SDK",
+    "description": "nostr-wot-sdk предоставляет JavaScript/TypeScript SDK для запросов к Nostr Web of Trust непосредственно в вашем приложении.",
+    "install": {
+      "title": "Установка",
+      "npm": "npm install nostr-wot-sdk",
+      "yarn": "yarn add nostr-wot-sdk",
+      "pnpm": "pnpm add nostr-wot-sdk"
+    },
+    "setup": {
+      "title": "Настройка",
+      "extensionFirst": "Приоритет расширения (рекомендуется)",
+      "extensionFirstDesc": "Автоматически использует расширение браузера при наличии, с откатом к Oracle:",
+      "oracleOnly": "Только Oracle",
+      "oracleOnlyDesc": "Используйте Oracle напрямую без обнаружения расширения:",
+      "localMode": "Локальный режим (серверная сторона)",
+      "localModeDesc": "Постройте и синхронизируйте собственный граф подписок для окружений Node.js:"
+    },
+    "options": {
+      "title": "Параметры конструктора",
+      "useExtension": "Использовать расширение браузера при наличии",
+      "oracle": "Резервный эндпоинт API",
+      "myPubkey": "Ваш публичный ключ Nostr",
+      "maxHops": "Глубина поиска по умолчанию",
+      "timeout": "Таймаут запроса в миллисекундах",
+      "scoring": "Пользовательские параметры весовых коэффициентов доверия"
+    },
+    "methods": {
+      "title": "Методы SDK",
+      "getDistance": "Возвращает длину кратчайшего пути до цели (число или null)",
+      "isInMyWoT": "Логическая проверка, находится ли pubkey в пределах указанных переходов",
+      "getTrustScore": "Вычисляет нормализованную метрику доверия (диапазон 0-1)",
+      "getDistanceBetween": "Измеряет длину пути между любыми двумя pubkey",
+      "batchCheck": "Эффективно оценивает несколько целей одновременно",
+      "getDetails": "Получает полную метрику, включая пути и взаимные связи",
+      "getMyPubkey": "Получает активный pubkey из расширения или конфигурации",
+      "isUsingExtension": "Подтверждает, активно ли используется расширение",
+      "getExtensionConfig": "Получает конфигурацию от расширения"
+    },
+    "scoring": {
+      "title": "Пользовательская оценка",
+      "description": "Настройте расчёт метрик доверия:",
+      "distanceWeights": "Весовые коэффициенты дистанции (1-4+ перехода)",
+      "mutualBonus": "+50% за взаимные подписки",
+      "pathBonus": "+10% за каждый дополнительный маршрут",
+      "maxPathBonus": "Ограничение общего бонуса за пути — 50%"
+    },
+    "react": {
+      "title": "Интеграция с React",
+      "description": "Используйте SDK с хуками и контекстом React:",
+      "provider": "Оберните ваше приложение в WoTProvider",
+      "hook": "Используйте хук useWoT в компонентах"
+    },
+    "errors": {
+      "title": "Обработка ошибок",
+      "networkError": "NetworkError — сервис Oracle недоступен",
+      "notFoundError": "NotFoundError — pubkey отсутствует в графе",
+      "wotError": "WoTError — общие ошибки фреймворка"
+    },
+    "links": {
+      "npm": "Смотреть на npm",
+      "github": "Смотреть на GitHub"
+    }
+  },
+  "rateLimits": {
+    "title": "Ограничения частоты",
+    "description": "Публичный экземпляр Oracle по адресу",
+    "url": "wot-oracle.mappingbitcoin.com",
+    "hasLimits": "имеет следующие ограничения:",
+    "limits": {
+      "requestsPerMinute": "100 запросов в минуту на IP",
+      "batchCount": "Пакетные запросы считаются за 1 запрос",
+      "headers": "Заголовки ограничения частоты:"
+    },
+    "selfHost": "Для более высоких лимитов",
+    "selfHostLink": "разверните собственный экземпляр"
+  },
+  "errorHandling": {
+    "title": "Обработка ошибок",
+    "comments": {
+      "extensionApi": "// API расширения",
+      "timeout": "// Запрос выполнялся слишком долго",
+      "offline": "// Локальный режим и нет кэшированных данных",
+      "oracleApi": "// Oracle API — HTTP-коды состояния",
+      "success": "// 200 — Успех",
+      "invalidPubkey": "// 400 — Неверный формат pubkey",
+      "rateLimited": "// 429 — Превышен лимит запросов",
+      "serverError": "// 500 — Ошибка сервера"
+    }
+  }
+}

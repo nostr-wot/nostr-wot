@@ -1,0 +1,94 @@
+---
+title: "Ihre Identität verwalten"
+description: "Erfahren Sie, wie die Nostr WoT Extension Ihre Nostr-Identität mit NIP-07-Signer-Unterstützung, Profilverwaltung und wichtigen Schlüsselsicherheitspraktiken verwaltet."
+excerpt: "Ihre Nostr-Identität ist die Grundlage von allem in der Erweiterung. Lernen Sie, Ihre Schlüssel, Ihr Profil und Ihre Signer-Einstellungen zu verwalten."
+date: "2026-03-11"
+author:
+  name: "Leon Acosta"
+  avatar: "/authors/leon-profile.jpg"
+  npub: "npub1gxdhmu9swqduwhr6zptjy4ya693zp3ql28nemy4hd97kuufyrqdqwe5zfk"
+featuredImage: "/images/guides/managing-identity/featured.svg"
+previewImage: "/images/guides/managing-identity/preview.svg"
+tags:
+  - "Identität"
+  - "Schlüssel"
+  - "NIP-07"
+published: true
+seoTitle: "Ihre Identität verwalten — Nostr WoT Extension Anleitung"
+seoDescription: "Erfahren Sie, wie die Nostr WoT Extension Ihre Nostr-Identität mit NIP-07-Signer-Unterstützung, Profilverwaltung und wichtigen Schlüsselsicherheitspraktiken verwaltet."
+ogImage: "/images/guides/managing-identity/og.svg"
+translationKey: "managing-identity"
+difficulty: "beginner"
+order: 2
+---
+
+Ihre Nostr-Identität ist der Ankerpunkt für alles andere in der Erweiterung — Ihr Vertrauensnetzwerk, Ihr Wallet, Ihre Berechtigungen. Diese Anleitung behandelt, wie Sie diese Identität verwalten, Ihre Schlüssel sicher aufbewahren und den NIP-07-Signer nutzen, der Websites die Interaktion mit Ihrem Nostr-Konto ermöglicht.
+
+## NIP-07-Signer-Unterstützung
+
+NIP-07 ist der Standard, der es Nostr-Webanwendungen ermöglicht, Signaturen von einer Browser-Erweiterung anzufordern, ohne jemals Ihren privaten Schlüssel zu sehen. Wenn Sie einen Nostr-Client wie Primal, Snort oder Coracle besuchen, kann dieser die Erweiterung bitten, Events in Ihrem Namen zu signieren.
+
+So funktioniert es in der Praxis:
+
+1. Eine Website ruft `window.nostr.getPublicKey()` auf, um Sie zu identifizieren.
+2. Wenn Sie einen Beitrag erstellen oder Ihr Profil aktualisieren, sendet die Website das unsignierte Event an die Erweiterung.
+3. Sie sehen eine Berechtigungsanfrage. Wenn Sie zustimmen, signiert die Erweiterung es mit Ihrem privaten Schlüssel und sendet die Signatur zurück.
+4. Ihr privater Schlüssel verlässt niemals die Erweiterung.
+
+{/* TODO: Screenshot of the NIP-07 signing permission prompt */}
+
+<Callout type="tip">
+Wenn Sie zuvor eine andere NIP-07-Erweiterung wie nos2x oder Alby verwendet haben, deaktivieren Sie diese, bevor Sie Nostr WoT verwenden. Es sollte immer nur ein NIP-07-Signer gleichzeitig aktiv sein, um Konflikte zu vermeiden.
+</Callout>
+
+## Ihr Nostr-Profil verwalten
+
+Ihre Profildetails — Anzeigename, Bio, Avatar, Lightning-Adresse und NIP-05-Identifikator — werden auf Nostr-Relays als Kind-0-Event gespeichert. Die Erweiterung ermöglicht es Ihnen, diese Details direkt anzuzeigen und zu bearbeiten.
+
+### Ihr Profil anzeigen
+
+Klicken Sie auf das Erweiterungssymbol und navigieren Sie zum **Identität**-Tab. Sie sehen Ihre aktuellen Profilinformationen, Ihren npub und die Relays, auf denen Ihr Profil veröffentlicht ist.
+
+{/* TODO: Screenshot of the Identity tab showing profile details */}
+
+### Ihr Profil bearbeiten
+
+1. Klicken Sie auf **Profil bearbeiten** im Identität-Tab.
+2. Aktualisieren Sie die gewünschten Felder.
+3. Klicken Sie auf **Speichern**. Die Erweiterung signiert ein neues Kind-0-Event und veröffentlicht es auf Ihren Relays.
+
+Änderungen verbreiten sich innerhalb von Sekunden über Nostr-Clients, da Relays das aktualisierte Event verteilen.
+
+## Best Practices für Schlüsselsicherheit
+
+Ihr privater Schlüssel (nsec) ist das wichtigste Datenstück Ihrer Nostr-Identität. Jeder, der ihn besitzt, kann als Sie posten, Ihr Profil ändern und auf Ihre Kontakte zugreifen. Es gibt kein Passwort-Zurücksetzen, kein Support-Team, das Sie anrufen können.
+
+### Speicherung
+
+- Die Erweiterung verschlüsselt Ihren privaten Schlüssel lokal mit Ihrem Verschlüsselungspasswort. Er wird niemals im Klartext gespeichert.
+- Sichern Sie Ihren nsec in einem Passwort-Manager oder schreiben Sie ihn auf Papier und bewahren Sie ihn an einem sicheren Ort auf.
+- Fügen Sie Ihren nsec niemals auf einer Website ein und senden Sie ihn niemals per DM an jemanden.
+
+### Verschlüsselungspasswort
+
+- Wählen Sie ein starkes, einzigartiges Passwort bei der Einrichtung der Erweiterung.
+- Die Erweiterung sperrt sich nach einer Phase der Inaktivität. Sie benötigen dieses Passwort zum Entsperren.
+- Wenn Sie dieses Passwort vergessen, können Sie Ihren nsec erneut importieren, um es zurückzusetzen — aber Sie brauchen dafür Ihr nsec-Backup.
+
+{/* TODO: Screenshot of the lock screen and password entry */}
+
+### Mehrere Geräte
+
+Wenn Sie die Erweiterung auf mehreren Browsern oder Geräten verwenden, importieren Sie denselben nsec auf jedem. Ihre Identität ist an Ihr Schlüsselpaar gebunden, nicht an ein einzelnes Gerät.
+
+<Callout type="tip">
+Erwägen Sie, Ihre Schlüssel mit einem dedizierten Werkzeug zu generieren und sie in die Erweiterung zu importieren. So existiert Ihr Backup unabhängig von einer einzelnen Erweiterung.
+</Callout>
+
+## Zwischen Identitäten wechseln
+
+Die Erweiterung unterstützt mehrere Identitäten. Wenn Sie mehr als ein Nostr-Konto verwalten, wechseln Sie zwischen ihnen im Identität-Tab, indem Sie auf Ihren Profil-Avatar klicken. Jede Identität hat ihren eigenen Trust-Graphen, ihr eigenes Wallet und eigene Berechtigungseinstellungen.
+
+## Wie geht es weiter?
+
+Nachdem Ihre Identität gesichert ist, ist es Zeit zu verstehen, wie die Erweiterung sie nutzt, um Ihr [Web of Trust](/guides/web-of-trust-verstehen) aufzubauen. Wenn Sie ein Wallet verbinden möchten, springen Sie zu [Wallet einrichten](/guides/wallet-einrichten).

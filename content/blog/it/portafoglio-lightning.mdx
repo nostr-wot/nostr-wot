@@ -1,0 +1,103 @@
+---
+title: "Zap, Ecco il Tuo Portafoglio"
+description: "L'Estensione Nostr WoT ora ha un portafoglio Lightning integrato. Collega il tuo tramite NWC, aggiungi LNbits o ottienine uno con un clic. Ecco le novità della v0.3.0."
+excerpt: "Abbiamo aggiunto un portafoglio Lightning all'estensione perché fare zap dovrebbe essere facile come mettere un like. Ottieni un portafoglio, reclama il tuo Lightning Address e inizia a fare zap."
+date: "2026-03-09"
+author:
+  name: "Leon Acosta"
+  avatar: "/authors/leon-profile.jpg"
+  npub: "npub1gxdhmu9swqduwhr6zptjy4ya693zp3ql28nemy4hd97kuufyrqdqwe5zfk"
+  socials:
+    linkedin: "leonacosta"
+    instagram: "leonacosta.now"
+    twitter: "leonacosta_"
+    github: "leonacostaok"
+featuredImage: "/images/blog/lightning-wallet/featured.svg"
+previewImage: "/images/blog/lightning-wallet/preview.svg"
+tags:
+  - "Annuncio"
+  - "Lightning"
+  - "Wallet"
+  - "Nostr"
+published: true
+seoTitle: "Estensione Nostr WoT v0.3.0 — Portafoglio Lightning Integrato, NWC, WebLN"
+seoDescription: "L'Estensione Nostr WoT ora include un portafoglio Lightning con NWC, LNbits e configurazione rapida custodial. Reclama il tuo Lightning Address, approva automaticamente gli zap e invia sat senza uscire dall'estensione."
+ogImage: "/images/blog/lightning-wallet/og.svg"
+translationKey: "lightning-wallet"
+---
+
+Fare zap su Nostr dovrebbe essere naturale. Vedi una nota fantastica, vuoi lanciare qualche sat, fatto. Ma nella realtà? Serve un'app wallet separata, magari un'estensione browser separata, a volte ti trovi a copiare e incollare fatture tra le schede. È attrito dove non dovrebbe essercene.
+
+L'estensione gestiva già identità e fiducia — le tue chiavi, il tuo grafo di follow, i tuoi permessi. Ma ogni volta che volevamo fare uno zap a qualcuno, dovevamo ricorrere a uno strumento completamente diverso. Era come avere un'auto senza pedale dell'acceleratore.
+
+Così ne abbiamo costruito uno. **L'Estensione Nostr WoT v0.3.0 ora include un portafoglio Lightning.** La tua identità, la tua rete di fiducia e i tuoi pagamenti vivono tutti nello stesso posto. Niente più destreggiamento tra estensioni. Niente più cambi di contesto solo per inviare 21 sat.
+
+## Tre Modi per Connettersi
+
+Non tutti vogliono la stessa configurazione del portafoglio, quindi abbiamo creato tre opzioni.
+
+### Configurazione Rapida
+
+Un clic. L'estensione crea un portafoglio automaticamente usando la tua identità Nostr. Nessun modulo di registrazione, nessuna chiave extra, nessun account su siti di terze parti. Apri la scheda wallet, premi il pulsante e sei pronto per fare zap.
+
+Questa è un'opzione custodial — i fondi sono conservati dal provider — ma è perfetta per iniziare. Puoi sempre passare a qualcosa di self-custodial in seguito.
+
+### Nostr Wallet Connect
+
+Hai già un portafoglio che ti piace? Continua a usarlo. Incolla la tua stringa di connessione NWC e l'estensione si collega. Funziona con Alby, Mutiny e qualsiasi portafoglio compatibile NWC.
+
+I tuoi fondi restano con te. L'estensione fa solo da ponte tra le app Nostr e il tuo portafoglio esistente.
+
+### LNbits
+
+Se gestisci la tua istanza LNbits, collegala direttamente. Inserisci l'URL e la tua chiave, e sei a posto. Massimo controllo per chi lo desidera.
+
+## Il Tuo Lightning Address Personale
+
+Ecco qualcosa di cui siamo entusiasti. Quando configuri un portafoglio con la Configurazione Rapida, puoi **reclamare il tuo Lightning Address** — come `tuonome@zaps.nostr-wot.com`.
+
+Digita il nome utente che desideri, premi reclama, ed è tuo. L'estensione offre anche di aggiungerlo automaticamente al tuo profilo Nostr, così chiunque può farti uno zap semplicemente conoscendo il tuo indirizzo. Nessuna configurazione, nessun record DNS, nessun server da gestire. Scegli un nome e vai.
+
+<Callout type="tip">
+I nomi utente sono di 3-30 caratteri, lettere minuscole, numeri, punti e trattini. Chi prima arriva, meglio alloggia.
+</Callout>
+
+## Gli Zap Funzionano e Basta
+
+L'estensione funziona come provider WebLN, il che significa che siti come Primal, Snort, Coracle e altri client Nostr possono richiedere pagamenti direttamente. Vedi un prompt, approvi, fatto. Niente copia-incolla di fatture, niente cambio di app.
+
+## Approvazione Automatica per Piccoli Zap
+
+Questa è una funzionalità di qualità della vita che fa una grande differenza. Imposta una soglia di approvazione automatica in sat — diciamo 100 — e qualsiasi zap pari o inferiore a quell'importo passa automaticamente. Nessun popup, nessuna interruzione.
+
+Scorri il tuo feed, fai zap alle note che ti piacciono, continua a scorrere. Per quegli zap da 21 sat a raffica, è una svolta. Puoi cambiare la soglia in qualsiasi momento o impostarla a zero se vuoi l'approvazione manuale per tutto.
+
+## Come Si Presenta il Portafoglio
+
+Il portafoglio vive dentro il popup dell'estensione, proprio accanto alle tue funzionalità di identità e fiducia.
+
+- **Saldo** in alto — sempre visibile
+- **Deposita** con un codice QR per ricevere sat
+- **Invia** incollando una fattura — vedi l'importo prima di confermare
+- **Cronologia transazioni** con ricerca e paginazione
+- **Impostazioni** per cambiare provider, reclamare il tuo Lightning Address o regolare la soglia di approvazione automatica
+
+Apri il popup, fai ciò che devi, chiudilo. Resta fuori dai piedi.
+
+## Stessa Sicurezza delle Tue Chiavi
+
+Le credenziali del tuo portafoglio sono crittografate nello stesso vault delle tue chiavi Nostr. Ogni sito web ha il proprio ambito di permessi, quindi un sito di cui ti fidi per gli zap non può fare silenziosamente nient'altro. Le funzionalità del portafoglio funzionano solo su connessioni sicure.
+
+Le tue chiavi e i tuoi sat ricevono la stessa protezione. Questo era non negoziabile.
+
+## Identità, Fiducia e Ora Pagamenti
+
+Tre release, e l'estensione gestisce la tua intera esperienza Nostr. Le tue chiavi sono sicure. La tua rete di fiducia ti dice chi è chi. Il tuo portafoglio ti permette di mettere i tuoi sat dove sono i tuoi follow. E il tuo Lightning Address offre alle persone un modo semplice per farti zap.
+
+Un'estensione. Niente destreggiamento.
+
+L'estensione è open source e disponibile per [Chrome, Brave, Edge, Opera e Firefox](/download). Consulta la [documentazione](/docs/extension) per le guide di configurazione.
+
+---
+
+*Domande o feedback? Trovaci su [Nostr](https://njump.me/npub1gxdhmu9swqduwhr6zptjy4ya693zp3ql28nemy4hd97kuufyrqdqwe5zfk) o consulta la [documentazione](/docs/extension).*

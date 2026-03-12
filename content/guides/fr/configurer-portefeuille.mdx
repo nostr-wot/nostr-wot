@@ -1,0 +1,100 @@
+---
+title: "Configurer votre portefeuille"
+description: "Connectez un portefeuille Lightning a l'extension Nostr WoT. Choisissez la Configuration rapide pour un acces instantane, NWC pour votre portefeuille existant, ou LNbits pour un controle total."
+excerpt: "L'extension prend en charge trois options de portefeuille : Configuration rapide, Nostr Wallet Connect et LNbits. Choisissez celle qui correspond a vos besoins."
+date: "2026-03-11"
+author:
+  name: "Leon Acosta"
+  avatar: "/authors/leon-profile.jpg"
+  npub: "npub1gxdhmu9swqduwhr6zptjy4ya693zp3ql28nemy4hd97kuufyrqdqwe5zfk"
+featuredImage: "/images/guides/setting-up-wallet/featured.svg"
+previewImage: "/images/guides/setting-up-wallet/preview.svg"
+tags:
+  - "Lightning"
+  - "Portefeuille"
+  - "NWC"
+published: true
+seoTitle: "Configurer votre portefeuille — Guide de l'extension Nostr WoT"
+seoDescription: "Connectez un portefeuille Lightning a l'extension Nostr WoT. Choisissez la Configuration rapide pour un acces instantane, NWC pour votre portefeuille existant, ou LNbits pour un controle total."
+ogImage: "/images/guides/setting-up-wallet/og.svg"
+translationKey: "setting-up-wallet"
+difficulty: "beginner"
+order: 5
+---
+
+L'extension inclut un portefeuille Lightning integre pour que vous puissiez envoyer et recevoir des sats sans quitter votre navigateur. Ce guide couvre les trois methodes de connexion : Configuration rapide pour demarrer instantanement, NWC pour connecter votre portefeuille existant, et LNbits pour les configurations auto-hebergees.
+
+## Acceder a la configuration du portefeuille
+
+1. Cliquez sur l'icone de l'extension dans votre barre d'outils.
+2. Naviguez vers l'onglet **Portefeuille**.
+3. Si aucun portefeuille n'est connecte, vous verrez l'ecran de configuration avec trois options.
+
+{/* TODO: Screenshot of the wallet setup screen showing the three connection options */}
+
+## Configuration rapide
+
+C'est le moyen le plus rapide d'obtenir un portefeuille fonctionnel. Un clic et vous etes pret a zapper.
+
+1. Cliquez sur **Configuration rapide** sur l'ecran de configuration du portefeuille.
+2. L'extension cree un portefeuille custodial lie a votre identite Nostr. Pas d'inscription, pas de formulaires, pas de comptes supplementaires.
+3. Votre portefeuille est pret. Vous verrez votre solde (qui commence a zero) et les options pour deposer et envoyer.
+
+{/* TODO: Screenshot of the Quick Setup button and the resulting wallet view */}
+
+<Callout type="tip">
+La Configuration rapide cree un portefeuille custodial, ce qui signifie que les fonds sont detenus par le fournisseur. C'est pratique pour les petits montants et le zapping occasionnel. Pour des montants plus importants, envisagez NWC ou LNbits pour un controle auto-custodial.
+</Callout>
+
+### Deposer des sats
+
+Apres la Configuration rapide, appuyez sur **Deposer** pour obtenir une facture Lightning ou un code QR. Envoyez des sats depuis n'importe quel portefeuille Lightning et votre solde se met a jour en quelques secondes.
+
+## Nostr Wallet Connect (NWC)
+
+Si vous avez deja un portefeuille Lightning compatible NWC — comme Alby, Mutiny ou tout fournisseur compatible NWC — vous pouvez le connecter a l'extension.
+
+1. Dans votre fournisseur de portefeuille, generez une chaine de connexion NWC. Elle se trouve generalement dans les parametres du portefeuille sous « Nostr Wallet Connect » ou « Connexions ».
+2. Copiez la chaine de connexion. Elle commence par `nostr+walletconnect://`.
+3. Dans l'extension, cliquez sur **NWC** sur l'ecran de configuration du portefeuille.
+4. Collez la chaine de connexion et cliquez sur **Connecter**.
+5. L'extension verifie la connexion et affiche votre solde.
+
+{/* TODO: Screenshot of the NWC connection string input field */}
+
+Avec NWC, vos fonds restent dans votre portefeuille existant. L'extension envoie simplement des demandes de paiement. Vous gardez le controle total de vos sats.
+
+Tout portefeuille implementant le protocole NWC fonctionne, y compris Alby, Mutiny et d'autres. Le protocole est ouvert et la liste des portefeuilles compatibles ne cesse de s'allonger.
+
+## LNbits
+
+Pour ceux qui gerent leur propre infrastructure Lightning, l'extension se connecte directement a une instance LNbits.
+
+1. Cliquez sur **LNbits** sur l'ecran de configuration du portefeuille.
+2. Entrez l'URL de votre instance LNbits (par exemple, `https://votre-instance-lnbits.com`).
+3. Entrez votre cle admin de portefeuille ou votre cle facture/lecture selon le niveau d'acces que vous souhaitez.
+4. Cliquez sur **Connecter**.
+
+{/* TODO: Screenshot of the LNbits configuration fields */}
+
+<Callout type="tip">
+Utilisez une cle facture/lecture si vous souhaitez uniquement recevoir et verifier le solde. Utilisez la cle admin si vous voulez aussi envoyer des paiements depuis l'extension. Limitez les permissions a ce dont vous avez reellement besoin.
+</Callout>
+
+## Verifier votre solde
+
+Une fois connecte, le solde de votre portefeuille apparait en haut de l'onglet Portefeuille. Il se met a jour automatiquement. Vous pouvez aussi voir :
+
+- **Transactions recentes** — un historique defilable des envois et receptions.
+- **Deposer** — generer une facture pour recevoir des sats.
+- **Envoyer** — coller une facture Lightning pour la payer.
+
+{/* TODO: Screenshot of the wallet balance view with transaction history */}
+
+## Changer de fournisseur de portefeuille
+
+Vous pouvez modifier votre connexion de portefeuille a tout moment. Allez dans l'onglet Portefeuille, ouvrez les **Parametres** et cliquez sur **Changer de fournisseur**. Cela deconnecte le portefeuille actuel et vous ramene a l'ecran de configuration. Votre identite et vos parametres de confiance ne sont pas affectes.
+
+## Et ensuite ?
+
+Maintenant que votre portefeuille est connecte, apprenez a [zapper et configurer les seuils d'approbation automatique](/guides/zapping-auto-approve). Vous pouvez aussi [reclamer votre adresse Lightning](/guides/lightning-address) si vous avez utilise la Configuration rapide.

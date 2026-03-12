@@ -1,0 +1,93 @@
+---
+title: "Presentazione di Nostr Web of Trust"
+description: "Scopri come il Web of Trust porta il filtraggio basato sulla fiducia nell'ecosistema Nostr, aiutandoti a separare il segnale dal rumore."
+excerpt: "L'ecosistema Nostr sta crescendo rapidamente, ma con la crescita arriva il rumore. Il Web of Trust offre una soluzione decentralizzata per il filtraggio dei contenuti basato sulla fiducia, alimentato dal tuo grafo sociale."
+date: "2026-02-14"
+author:
+  name: "Leon Acosta"
+  avatar: "/authors/leon-profile.jpg"
+  npub: "npub1gxdhmu9swqduwhr6zptjy4ya693zp3ql28nemy4hd97kuufyrqdqwe5zfk"
+  socials:
+    linkedin: "leonacosta"
+    instagram: "leonacosta.now"
+    twitter: "leonacosta_"
+    github: "leonacostaok"
+featuredImage: "/images/blog/introducing-wot/featured.svg"
+previewImage: "/images/blog/introducing-wot/preview.svg"
+tags:
+  - "Annuncio"
+  - "Web of Trust"
+  - "Nostr"
+published: true
+seoTitle: "Nostr Web of Trust - Filtraggio Basato sulla Fiducia per Nostr"
+seoDescription: "Scopri come Nostr Web of Trust ti aiuta a filtrare i contenuti in base alle tue connessioni sociali. Open-source, incentrato sulla privacy e decentralizzato."
+ogImage: "/images/blog/introducing-wot/og.svg"
+translationKey: "introducing-nostr-wot"
+---
+
+L'ecosistema Nostr sta crescendo rapidamente. Ogni giorno migliaia di nuovi utenti si uniscono alla rete, creando note, condividendo contenuti e costruendo connessioni. Ma con questa crescita arriva una sfida ben nota: **come si separa il segnale dal rumore?**
+
+## Il Problema delle Reti Aperte
+
+Le reti aperte e senza permessi sono potenti proprio perché chiunque può partecipare. Ma questa apertura significa anche dover affrontare:
+
+- **Spam e account bot** che inondano il tuo feed
+- **Impostori** che fingono di essere qualcun altro
+- **Contenuti di bassa qualità** che sommergono le discussioni di valore
+
+Le soluzioni tradizionali si basano sulla moderazione centralizzata — un team che decide cosa è accettabile. Ma questo vanifica lo scopo di una rete decentralizzata.
+
+## Ecco il Web of Trust
+
+Il Web of Trust adotta un approccio diverso. Invece di affidarsi a un'autorità centrale, sfrutta qualcosa che già possiedi: **le tue connessioni sociali**.
+
+Il concetto è semplice:
+
+1. **Ti fidi delle persone che segui**
+2. **Loro si fidano delle persone che seguono**
+3. **La fiducia fluisce attraverso queste connessioni**
+
+Se qualcuno è a 1 hop di distanza (lo segui direttamente), è altamente fidato. A 2 hop (un amico di un amico), abbastanza fidato. 3 o più hop? Probabilmente rumore.
+
+```javascript
+// Verifica se qualcuno è nel tuo Web of Trust
+const inNetwork = await window.nostr.wot.isInMyWoT(pubkey);
+
+// Ottieni la distanza esatta
+const hops = await window.nostr.wot.getDistance(pubkey);
+
+// Ottieni un punteggio di fiducia (0-1)
+const score = await window.nostr.wot.getTrustScore(pubkey);
+```
+
+## Come Funziona
+
+La nostra estensione per browser costruisce un grafo locale delle tue connessioni sociali. Quando visiti qualsiasi app Nostr, essa può interrogare questo grafo per determinare i livelli di fiducia per qualsiasi chiave pubblica.
+
+<Callout type="tip">
+L'estensione funziona con qualsiasi app Nostr che implementi l'API WoT. Non servono modifiche al tuo client preferito!
+</Callout>
+
+### Privacy al Primo Posto
+
+Abbiamo progettato il sistema con la privacy come principio fondamentale:
+
+- **Modalità Locale**: Tutto resta nel tuo browser. Zero richieste esterne.
+- **Modalità Remota**: Solo ricerche di chiavi pubbliche — nessun contenuto, nessun tracciamento.
+- **Modalità Ibrida**: Il meglio di entrambi i mondi con la cache.
+
+## Cosa Ci Aspetta
+
+Questo è solo l'inizio. Stiamo lavorando su:
+
+- **SDK per sviluppatori** per integrare il WoT nelle loro app
+- **Server Oracle** per le app che non possono eseguire calcoli lato client
+- **Punteggio avanzato** con follow reciproci e bonus di collegamento
+
+## Inizia Subito
+
+Pronto a provarlo? [Scarica l'estensione](/download) e inizia a filtrare la tua esperienza Nostr basandoti su connessioni umane reali.
+
+---
+
+*Hai domande? Contattaci su [Nostr](https://njump.me/npub1gxdhmu9swqduwhr6zptjy4ya693zp3ql28nemy4hd97kuufyrqdqwe5zfk) o consulta la nostra [documentazione](/docs).*

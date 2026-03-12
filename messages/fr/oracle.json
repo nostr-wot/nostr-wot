@@ -1,0 +1,111 @@
+{
+  "meta": {
+    "title": "WoT Oracle",
+    "description": "API backend haute performance pour les requêtes Nostr Web of Trust. Indexez le graphe social et interrogez la distance sociale à grande échelle."
+  },
+  "hero": {
+    "badge": "API Backend",
+    "title": "WoT Oracle",
+    "subtitle": "Indexeur haute performance pour le graphe social Nostr. Requêtes en sous-milliseconde répondant à « combien de sauts séparent ces deux utilisateurs ? »",
+    "viewOnGitHub": "Voir sur GitHub",
+    "apiDocs": "Documentation API"
+  },
+  "whatItDoes": {
+    "title": "Ce qu'il fait",
+    "description": "WoT Oracle synchronise en continu les listes d'abonnements (événements Kind 3) depuis les relais Nostr, construisant un graphe en mémoire de l'ensemble du réseau social. Il fournit ensuite une API REST pour interroger la distance sociale entre deux pubkeys.",
+    "example": "Exemple :",
+    "exampleText": "Si Alice suit Bob, et Bob suit Carol, alors la distance entre Alice et Carol est de 2 sauts."
+  },
+  "performance": {
+    "title": "Performance",
+    "cachedLatency": "Latence en cache",
+    "uncachedLatency": "Latence hors cache",
+    "queriesPerSecond": "Requêtes par seconde",
+    "bidirectionalBfs": "BFS bidirectionnel"
+  },
+  "apiEndpoints": {
+    "title": "Points d'accès API",
+    "distance": {
+      "title": "GET /distance",
+      "description": "Interroger la distance sociale entre deux pubkeys.",
+      "request": "Requête",
+      "response": "Réponse"
+    },
+    "batch": {
+      "title": "POST /distance/batch",
+      "description": "Interroger les distances d'une pubkey vers plusieurs cibles."
+    },
+    "stats": {
+      "title": "GET /stats",
+      "description": "Obtenir les statistiques du graphe indexé."
+    },
+    "health": {
+      "title": "GET /health",
+      "description": "Point d'accès de vérification de l'état pour la surveillance."
+    }
+  },
+  "selfHosting": {
+    "title": "Auto-hébergement",
+    "subtitle": "Exécutez votre propre instance de WoT Oracle. Contrôle total sur votre infrastructure de confiance.",
+    "docker": "Docker (recommandé)",
+    "dockerCompose": "Docker Compose",
+    "fromSource": "Depuis les sources (Rust 1.75+)"
+  },
+  "configuration": {
+    "title": "Configuration",
+    "subtitle": "Configurer via les variables d'environnement :",
+    "table": {
+      "variable": "Variable",
+      "default": "Par défaut",
+      "description": "Description"
+    },
+    "relays": {
+      "description": "URLs des relais séparées par des virgules"
+    },
+    "httpPort": {
+      "description": "Port du serveur"
+    },
+    "dbPath": {
+      "description": "Emplacement de la base de données SQLite"
+    },
+    "rateLimit": {
+      "description": "Limitation des requêtes par IP"
+    },
+    "cacheSize": {
+      "description": "Entrées du cache LRU"
+    },
+    "cacheTtl": {
+      "description": "Expiration du cache (5 min)"
+    }
+  },
+  "architecture": {
+    "title": "Architecture",
+    "graphStorage": {
+      "title": "Stockage du graphe",
+      "description": "Graphe en mémoire pour un parcours rapide, sauvegardé par SQLite pour la persistance. Synchronisation continue depuis les relais Nostr configurés."
+    },
+    "pathfinding": {
+      "title": "Recherche de chemin",
+      "description": "Recherche en largeur bidirectionnelle (BFS) depuis les deux extrémités simultanément, se rejoignant au milieu pour une complexité O(b^(d/2))."
+    },
+    "caching": {
+      "title": "Mise en cache",
+      "description": "Cache LRU avec taille et TTL configurables. La plupart des requêtes atteignent le cache pour des temps de réponse en sous-milliseconde."
+    },
+    "rateLimiting": {
+      "title": "Limitation du débit",
+      "description": "La limitation du débit par IP protège le service contre les abus. Limites configurables pour différents scénarios de déploiement."
+    }
+  },
+  "publicInstance": {
+    "title": "Instance publique",
+    "subtitle": "Une instance publique est disponible pour le développement et les tests :",
+    "rateLimit": "Limité à 100 requêtes/minute par IP. Pour une utilisation en production, envisagez l'auto-hébergement."
+  },
+  "cta": {
+    "title": "Open Source",
+    "subtitle": "Écrit en Rust. Sous licence MIT. Auto-hébergez pour votre communauté ou contribuez des améliorations.",
+    "viewSource": "Voir le code source sur GitHub",
+    "learnExtension": "En savoir plus sur l'extension WoT →"
+  }
+}

@@ -15,7 +15,7 @@ const __dirname = path.dirname(__filename);
 
 const CONTENT_DIR = path.join(__dirname, '..', 'content', 'blog');
 const OUTPUT_DIR = path.join(__dirname, '..', 'lib', 'generated');
-const locales = ['en', 'es', 'pt'];
+const locales = ['en', 'es', 'pt', 'ru', 'it', 'fr', 'de'];
 const defaultLocale = 'en';
 
 function getBlogDir(locale) {

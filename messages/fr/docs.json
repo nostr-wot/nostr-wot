@@ -1,0 +1,305 @@
+{
+  "meta": {
+    "title": "Documentation",
+    "description": "Documentation complète pour Nostr Web of Trust. Apprenez à intégrer le filtrage du spam et le scoring de confiance dans votre application."
+  },
+  "hero": {
+    "title": "Documentation",
+    "subtitle": "Tout ce dont vous avez besoin pour intégrer le Web of Trust dans votre application."
+  },
+  "sidebar": {
+    "gettingStarted": "Premiers pas",
+    "overview": "Vue d'ensemble",
+    "quickStart": "Démarrage rapide",
+    "extensionSigner": "Extension - Signataire",
+    "extensionWotCore": "Extension - WoT",
+    "extensionCore": "Extension - Core",
+    "extensionBatch": "Extension - Lot",
+    "extensionUser": "Extension - Infos utilisateur",
+    "extensionGraph": "Extension - Graphe",
+    "setup": "Configuration",
+    "sdkIntegration": "Intégration SDK",
+    "sdkSetup": "Configuration et options",
+    "sdkCore": "Méthodes principales",
+    "sdkBatch": "Opérations par lot",
+    "sdkGraph": "Requêtes de graphe",
+    "sdkConfig": "Configuration",
+    "sdkErrors": "Gestion des erreurs",
+    "sdkReact": "Intégration React",
+    "publicServers": "Serveurs publics",
+    "publicServersOverview": "Vue d'ensemble",
+    "oracleApi": "API Oracle",
+    "oracleErrors": "Gestion des erreurs",
+    "resources": "Ressources",
+    "extensionGuide": "Guide de l'extension",
+    "oracleGuide": "Guide de l'Oracle",
+    "getTrustScore": "getTrustScore",
+    "getDetails": "getDetails",
+    "getConfig": "getConfig",
+    "onThisPage": "Sur cette page"
+  },
+  "overview": {
+    "title": "Vue d'ensemble",
+    "description": "Nostr Web of Trust fournit deux outils complémentaires pour le filtrage du spam et le scoring de confiance :",
+    "extension": {
+      "title": "Extension WoT",
+      "description": "Extension de navigateur exposant",
+      "api": "window.nostr.wot",
+      "forClientSide": "pour les requêtes côté client"
+    },
+    "oracle": {
+      "title": "WoT Oracle",
+      "description": "API REST pour les requêtes côté serveur à grande échelle"
+    },
+    "fundamentalQuestion": "Les deux répondent à la même question fondamentale :",
+    "question": "« Quelle est la distance sociale entre deux pubkeys ? »"
+  },
+  "quickStart": {
+    "title": "Démarrage rapide",
+    "browser": "Navigateur (avec extension)",
+    "server": "Serveur (avec API Oracle)",
+    "buildFromSource": {
+      "title": "Compiler depuis les sources",
+      "description": "Clonez le dépôt et compilez localement pour le développement ou pour vérifier le code.",
+      "loadInstructions": "Allez à chrome://extensions, activez le mode développeur, cliquez sur Charger l'extension non empaquetée et sélectionnez le dossier dist/."
+    },
+    "comments": {
+      "checkExtension": "// Vérifier si l'extension est disponible",
+      "getDistance": "// Obtenir la distance vers une pubkey",
+      "withinWot": "// Dans le Web of Trust",
+      "outsideWot": "// En dehors du Web of Trust ou non connecté",
+      "usingFetch": "// Avec fetch"
+    }
+  },
+  "extensionSetup": {
+    "title": "Configuration de l'extension",
+    "description": "L'extension WoT injecte l'objet",
+    "api": "window.nostr.wot",
+    "objectInto": "dans chaque page. Vérifiez son existence avant utilisation :",
+    "comments": {
+      "featureDetection": "// Détection de fonctionnalité",
+      "waitForExtension": "// Attendre le chargement de l'extension"
+    }
+  },
+  "getDistance": {
+    "title": "getDistance(targetPubkey)",
+    "description": "Retourne le nombre de sauts entre la pubkey de l'utilisateur et la cible.",
+    "parameters": "Paramètres",
+    "paramName": "Nom",
+    "paramType": "Type",
+    "paramDescription": "Description",
+    "targetPubkey": "Pubkey au format hexadécimal ou npub",
+    "returns": "Retour",
+    "returnsDescription": "Nombre de sauts, ou",
+    "null": "null",
+    "ifNotConnected": "si non connecté.",
+    "example": "Exemple",
+    "cases": {
+      "notConnected": "Non connecté",
+      "thisIsYou": "C'est vous",
+      "directFollow": "Abonnement direct",
+      "hopsAway": "sauts de distance"
+    }
+  },
+  "isInMyWot": {
+    "title": "isInMyWoT(targetPubkey, maxHops?)",
+    "description": "Vérification booléenne si une pubkey est dans votre seuil de Web of Trust.",
+    "parameters": "Paramètres",
+    "paramName": "Nom",
+    "paramType": "Type",
+    "paramDefault": "Par défaut",
+    "paramDescription": "Description",
+    "targetPubkey": "Pubkey au format hexadécimal ou npub",
+    "maxHops": "Nombre maximum de sauts considérés comme « fiables »",
+    "returns": "Retour",
+    "example": "Exemple",
+    "comments": {
+      "defaultThreshold": "// Vérifier avec le seuil par défaut (3 sauts)",
+      "stricterCheck": "// Vérification plus stricte (2 sauts)",
+      "filterList": "// Filtrer une liste de pubkeys"
+    }
+  },
+  "getDistanceBetween": {
+    "title": "getDistanceBetween(fromPubkey, toPubkey)",
+    "description": "Interroge la distance entre deux pubkeys quelconques, pas seulement depuis la vôtre.",
+    "parameters": "Paramètres",
+    "paramName": "Nom",
+    "paramType": "Type",
+    "paramDescription": "Description",
+    "fromPubkey": "Pubkey source",
+    "toPubkey": "Pubkey cible",
+    "returns": "Retour",
+    "example": "Exemple",
+    "comments": {
+      "checkConnection": "// Vérifier le niveau de connexion entre deux autres utilisateurs"
+    }
+  },
+  "oracleDistance": {
+    "title": "GET /distance",
+    "description": "Interroger la distance sociale entre deux pubkeys.",
+    "queryParameters": "Paramètres de requête",
+    "paramName": "Nom",
+    "paramType": "Type",
+    "paramRequired": "Requis",
+    "paramDescription": "Description",
+    "from": "Pubkey source (hexadécimal)",
+    "to": "Pubkey cible (hexadécimal)",
+    "response": "Réponse",
+    "example": "Exemple"
+  },
+  "oracleBatch": {
+    "title": "POST /distance/batch",
+    "description": "Interroger les distances d'une pubkey vers plusieurs cibles.",
+    "requestBody": "Corps de la requête",
+    "response": "Réponse",
+    "example": "Exemple"
+  },
+  "oracleStats": {
+    "title": "GET /stats",
+    "description": "Obtenir les statistiques du graphe indexé.",
+    "response": "Réponse"
+  },
+  "oracleHealth": {
+    "title": "GET /health",
+    "description": "Point d'accès de vérification de l'état pour la surveillance et les répartiteurs de charge.",
+    "response": "Réponse"
+  },
+  "getTrustScore": {
+    "title": "getTrustScore(targetPubkey)",
+    "description": "Retourne un score de confiance normalisé (0-1) basé sur la distance et les bonus de relation.",
+    "parameters": "Paramètres",
+    "paramName": "Nom",
+    "paramType": "Type",
+    "paramDescription": "Description",
+    "targetPubkey": "Pubkey au format hexadécimal ou npub",
+    "returns": "Retour",
+    "returnsDescription": "Score de confiance entre 0 et 1, ou",
+    "null": "null",
+    "ifNotConnected": "si non connecté.",
+    "example": "Exemple",
+    "formula": "Formule : score = baseScore × distanceWeight × (1 + pathBonus)",
+    "distanceWeights": {
+      "title": "Poids de la distance",
+      "hop1": "1 saut = 1.0",
+      "hop2": "2 sauts = 0.5",
+      "hop3": "3 sauts = 0.25",
+      "hop4plus": "4+ sauts = 0.1"
+    },
+    "pathBonuses": {
+      "title": "Bonus de chemins (par chemin supplémentaire)",
+      "hop2": "2 sauts = +15%",
+      "hop3": "3 sauts = +10%",
+      "hop4plus": "4+ sauts = +5%",
+      "max": "Bonus maximum : 50%"
+    }
+  },
+  "getDetails": {
+    "title": "getDetails(targetPubkey)",
+    "description": "Retourne des informations de confiance détaillées incluant la distance, le score, les chemins et les données de relation.",
+    "parameters": "Paramètres",
+    "paramName": "Nom",
+    "paramType": "Type",
+    "paramDescription": "Description",
+    "targetPubkey": "Pubkey au format hexadécimal ou npub",
+    "returns": "Retour",
+    "returnsDescription": "Objet avec la distance, le score, le nombre de chemins, le statut d'abonnement mutuel et les nœuds de pontage.",
+    "example": "Exemple"
+  },
+  "getConfig": {
+    "title": "getConfig()",
+    "description": "Retourne la configuration actuelle de l'extension incluant le mode, les relais et les poids de scoring.",
+    "returns": "Retour",
+    "returnsDescription": "Objet de configuration avec le mode, les relais, les poids de scoring et les paramètres de cache.",
+    "example": "Exemple"
+  },
+  "sdk": {
+    "title": "Intégration SDK",
+    "description": "Le nostr-wot-sdk fournit un SDK JavaScript/TypeScript pour interroger Nostr Web of Trust directement dans votre application.",
+    "install": {
+      "title": "Installation",
+      "npm": "npm install nostr-wot-sdk",
+      "yarn": "yarn add nostr-wot-sdk",
+      "pnpm": "pnpm add nostr-wot-sdk"
+    },
+    "setup": {
+      "title": "Configuration",
+      "extensionFirst": "Extension-First (recommandé)",
+      "extensionFirstDesc": "Utilise automatiquement l'extension de navigateur lorsqu'elle est disponible, avec repli sur l'Oracle :",
+      "oracleOnly": "Oracle uniquement",
+      "oracleOnlyDesc": "Utilisez l'Oracle directement sans détection d'extension :",
+      "localMode": "Mode local (côté serveur)",
+      "localModeDesc": "Construisez et synchronisez votre propre graphe social pour les environnements Node.js :"
+    },
+    "options": {
+      "title": "Options du constructeur",
+      "useExtension": "Utiliser l'extension de navigateur lorsqu'elle est présente",
+      "oracle": "Point d'accès API de repli",
+      "myPubkey": "Votre clé publique Nostr",
+      "maxHops": "Profondeur de recherche par défaut",
+      "timeout": "Délai d'attente des requêtes en millisecondes",
+      "scoring": "Paramètres de pondération de confiance personnalisés"
+    },
+    "methods": {
+      "title": "Méthodes du SDK",
+      "getDistance": "Retourne la longueur du chemin le plus court vers la cible (nombre ou null)",
+      "isInMyWoT": "Vérification booléenne si la pubkey est dans le nombre de sauts spécifié",
+      "getTrustScore": "Calcule une métrique de confiance normalisée (plage 0-1)",
+      "getDistanceBetween": "Mesure la longueur du chemin entre deux pubkeys quelconques",
+      "batchCheck": "Évalue efficacement plusieurs cibles simultanément",
+      "getDetails": "Récupère des métriques complètes incluant les chemins et les connexions mutuelles",
+      "getMyPubkey": "Récupère la pubkey active depuis l'extension ou la configuration",
+      "isUsingExtension": "Confirme si l'extension est activement utilisée",
+      "getExtensionConfig": "Accède à la configuration fournie par l'extension"
+    },
+    "scoring": {
+      "title": "Scoring personnalisé",
+      "description": "Personnalisez le calcul des métriques de confiance :",
+      "distanceWeights": "Poids de la distance (1 à 4+ sauts)",
+      "mutualBonus": "+50% pour les abonnements réciproques",
+      "pathBonus": "+10% par chemin supplémentaire",
+      "maxPathBonus": "Plafonner le bonus total de chemin à 50%"
+    },
+    "react": {
+      "title": "Intégration React",
+      "description": "Utilisez le SDK avec les hooks et le contexte React :",
+      "provider": "Enveloppez votre application avec WoTProvider",
+      "hook": "Utilisez le hook useWoT dans les composants"
+    },
+    "errors": {
+      "title": "Gestion des erreurs",
+      "networkError": "NetworkError - Service Oracle inaccessible",
+      "notFoundError": "NotFoundError - Pubkey absente du graphe",
+      "wotError": "WoTError - Erreurs générales du framework"
+    },
+    "links": {
+      "npm": "Voir sur npm",
+      "github": "Voir sur GitHub"
+    }
+  },
+  "rateLimits": {
+    "title": "Limites de débit",
+    "description": "L'instance publique de l'Oracle sur",
+    "url": "wot-oracle.mappingbitcoin.com",
+    "hasLimits": "a les limites suivantes :",
+    "limits": {
+      "requestsPerMinute": "100 requêtes par minute par IP",
+      "batchCount": "Les requêtes par lot comptent comme 1 requête",
+      "headers": "En-têtes de limitation du débit :"
+    },
+    "selfHost": "Pour des limites plus élevées,",
+    "selfHostLink": "auto-hébergez votre propre instance"
+  },
+  "errorHandling": {
+    "title": "Gestion des erreurs",
+    "comments": {
+      "extensionApi": "// API de l'extension",
+      "timeout": "// La requête a pris trop de temps",
+      "offline": "// Mode local et pas de données en cache",
+      "oracleApi": "// API Oracle - Codes de statut HTTP",
+      "success": "// 200 - Succès",
+      "invalidPubkey": "// 400 - Format de pubkey invalide",
+      "rateLimited": "// 429 - Débit limité",
+      "serverError": "// 500 - Erreur serveur"
+    }
+  }
+}

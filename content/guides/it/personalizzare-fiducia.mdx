@@ -1,0 +1,110 @@
+---
+title: "Personalizzare le Impostazioni di Fiducia"
+description: "Regola la formula di fiducia, i pesi e le soglie nell'Estensione Nostr WoT per adattarli al modo in cui vuoi valutare e classificare le connessioni nel tuo Web of Trust."
+excerpt: "Personalizza il modo in cui l'estensione calcola la fiducia. Regola pesi, soglie e strategie in base alle tue preferenze."
+date: "2026-03-11"
+author:
+  name: "Leon Acosta"
+  avatar: "/authors/leon-profile.jpg"
+  npub: "npub1gxdhmu9swqduwhr6zptjy4ya693zp3ql28nemy4hd97kuufyrqdqwe5zfk"
+featuredImage: "/images/guides/customizing-trust/featured.svg"
+previewImage: "/images/guides/customizing-trust/preview.svg"
+tags:
+  - "Impostazioni di Fiducia"
+  - "Formula"
+  - "Avanzato"
+published: true
+seoTitle: "Personalizzare le Impostazioni di Fiducia — Guida Estensione Nostr WoT"
+seoDescription: "Regola la formula di fiducia, i pesi e le soglie nell'Estensione Nostr WoT per adattarli al modo in cui vuoi valutare e classificare le connessioni nel tuo Web of Trust."
+ogImage: "/images/guides/customizing-trust/og.svg"
+translationKey: "customizing-trust"
+difficulty: "intermediate"
+order: 4
+---
+
+Le impostazioni di fiducia predefinite funzionano bene per la maggior parte delle persone, ma l'estensione ti dà il pieno controllo su come viene calcolata la fiducia. Questa guida ti accompagna attraverso la formula di fiducia, come regolare pesi e soglie, e quando diverse strategie hanno senso.
+
+## La Formula di Fiducia
+
+Al suo nucleo, l'estensione assegna a ogni utente un punteggio di fiducia basato sulla sua relazione con te nel grafo sociale. La formula considera tre input principali:
+
+- **Distanza in hop** — quante connessioni di follow ti separano dall'utente.
+- **Molteplicità dei percorsi** — quanti percorsi indipendenti ti connettono.
+- **Fattore di decadimento** — quanto diminuisce la fiducia con ogni hop aggiuntivo.
+
+La formula moltiplica la fiducia base per un fattore di decadimento elevato alla potenza del conteggio degli hop, poi aggiusta verso l'alto in base al numero di percorsi indipendenti. Il risultato è un punteggio normalizzato tra 0 e 1.
+
+{/* TODO: Screenshot del pannello impostazioni della formula di fiducia */}
+
+<Callout type="tip">
+Non è necessario capire la matematica per usare l'estensione efficacemente. I valori predefiniti sono calibrati per una rete di fiducia bilanciata. Regola solo se hai un motivo specifico.
+</Callout>
+
+## Regolare i Pesi
+
+Apri le impostazioni dell'estensione e naviga a **Impostazioni di Fiducia** per trovare i parametri regolabili.
+
+### Decadimento per Hop
+
+Questo controlla quanto velocemente la fiducia diminuisce con la distanza. Un valore di decadimento più alto significa che la fiducia cala bruscamente dopo il primo hop. Un valore più basso estende la fiducia significativa più in profondità nel grafo.
+
+- **Alto decadimento (0.7-0.9)** — solo i tuoi follow diretti e i contatti di 2o grado più vicini ricevono fiducia significativa. Buono se vuoi una cerchia di fiducia stretta e conservativa.
+- **Medio decadimento (0.4-0.6)** — approccio bilanciato. I contatti di 2o grado sono ben rappresentati e alcuni utenti di 3o grado ottengono punteggi significativi.
+- **Basso decadimento (0.1-0.3)** — la fiducia si estende ampiamente. Anche le connessioni distanti hanno peso. Utile se vuoi una rete ampia e orientata alla scoperta.
+
+{/* TODO: Screenshot che mostra il cursore del decadimento per hop con diverse posizioni */}
+
+### Peso dei Percorsi
+
+Questo determina quanto credito extra un utente riceve per avere percorsi indipendenti multipli verso di te. Un utente seguito da tre dei tuoi contatti diretti dovrebbe ottenere un punteggio più alto di uno seguito da un singolo contatto.
+
+- **Alto peso dei percorsi** — premia fortemente gli utenti ben connessi. Qualcuno seguito da molti dei tuoi contatti è quasi fidato quanto un follow diretto.
+- **Basso peso dei percorsi** — i percorsi contano meno. La fiducia dipende principalmente dalla distanza.
+
+### Hop Massimi
+
+Imposta la profondità massima che l'estensione attraversa. Il valore predefinito è 3 hop, che bilancia copertura e prestazioni. Puoi aumentarlo a 4 o 5 se vuoi una visibilità più ampia, ma aspettati calcoli più lenti e un grafo più grande.
+
+## Diverse Strategie di Fiducia
+
+A seconda di come usi Nostr, diverse impostazioni hanno senso.
+
+### Strategia Conservativa
+
+Vuoi fidarti di una cerchia ristretta e essere scettico verso tutti gli altri.
+
+- Imposta il decadimento per hop alto (0.7+).
+- Imposta gli hop massimi a 2.
+- Mantieni il peso dei percorsi moderato.
+
+Ideale se usi Nostr principalmente per interagire con persone che già conosci e vuoi un forte filtraggio dello spam.
+
+### Strategia Bilanciata
+
+La predefinita. Ti fidi dei tuoi follow diretti, dai fiducia ragionevole agli amici degli amici e mantieni una certa visibilità nelle connessioni di 3o grado.
+
+- Decadimento per hop intorno a 0.5.
+- Hop massimi a 3.
+- Peso dei percorsi moderato.
+
+Funziona per la maggior parte delle persone ed è il punto di partenza consigliato.
+
+### Strategia di Scoperta
+
+Vuoi esplorare la rete Nostr più ampia e scoprire nuove persone.
+
+- Imposta il decadimento per hop basso (0.2-0.3).
+- Aumenta gli hop massimi a 4.
+- Imposta il peso dei percorsi alto per dare comunque priorità agli utenti ben connessi.
+
+Questo ti offre una visione più ampia ma potrebbe includere più rumore.
+
+{/* TODO: Video walkthrough del cambio di strategia di fiducia da conservativa a scoperta */}
+
+<Callout type="tip">
+Le modifiche alle impostazioni di fiducia ricalcolano l'intero grafo. Concedi all'estensione un momento per rielaborare dopo aver regolato i valori. Se vuoi ricominciare, usa il pulsante **Ripristina Predefiniti** in fondo al pannello Impostazioni di Fiducia.
+</Callout>
+
+## Cosa Fare Dopo?
+
+Guarda le tue impostazioni di fiducia personalizzate in azione esplorando il [WoT Playground](/guides/wot-playground). Oppure continua a configurare l'estensione [collegando un portafoglio](/guides/configurare-portafoglio).

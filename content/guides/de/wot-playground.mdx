@@ -1,0 +1,114 @@
+---
+title: "Der WoT Playground"
+description: "Erkunden Sie den Nostr WoT Playground, um Ihren Trust-Graphen zu visualisieren, Verbindungen nach Hop-Distanz zu filtern und zu sehen, wie Ihr Web of Trust Sie mit dem Netzwerk verbindet."
+excerpt: "Der WoT Playground ermöglicht es Ihnen, Ihren Trust-Graphen visuell zu erkunden. Filtern Sie nach Hops, suchen Sie nach Nutzern und verstehen Sie Ihr Netzwerk auf einen Blick."
+date: "2026-03-11"
+author:
+  name: "Leon Acosta"
+  avatar: "/authors/leon-profile.jpg"
+  npub: "npub1gxdhmu9swqduwhr6zptjy4ya693zp3ql28nemy4hd97kuufyrqdqwe5zfk"
+featuredImage: "/images/guides/wot-playground/featured.svg"
+previewImage: "/images/guides/wot-playground/preview.svg"
+tags:
+  - "Playground"
+  - "Visualisierung"
+  - "Trust-Graph"
+published: true
+seoTitle: "Der WoT Playground — Nostr WoT Extension Anleitung"
+seoDescription: "Erkunden Sie den Nostr WoT Playground, um Ihren Trust-Graphen zu visualisieren, Verbindungen nach Hop-Distanz zu filtern und zu sehen, wie Ihr Web of Trust Sie mit dem Netzwerk verbindet."
+ogImage: "/images/guides/wot-playground/og.svg"
+translationKey: "wot-playground"
+difficulty: "intermediate"
+order: 9
+---
+
+Der WoT Playground ist eine interaktive Visualisierung Ihres gesamten Vertrauensnetzwerks. Er nimmt das abstrakte Konzept eines Web of Trust und macht es greifbar — Sie können genau sehen, wie Sie mit jedem Nutzer auf Nostr verbunden sind, Vertrauens-Cluster erkunden und Muster in Ihrem sozialen Graphen entdecken.
+
+## Zugang zum Playground
+
+Es gibt zwei Wege, den Playground zu öffnen:
+
+1. **Aus der Erweiterung** — klicken Sie auf das Erweiterungssymbol und wählen Sie **Playground** aus dem Navigationsmenü.
+2. **Über die Website** — besuchen Sie die [WoT Playground](/playground)-Seite direkt.
+
+Der Playground lädt Ihre Trust-Graph-Daten aus der Erweiterung. Wenn Sie nicht angemeldet sind oder die Erweiterung gesperrt ist, werden Sie aufgefordert, sie zuerst zu entsperren.
+
+{/* TODO: Screenshot of the Playground loading screen with the trust graph beginning to render */}
+
+## Die Trust-Graph-Visualisierung
+
+Die Hauptansicht ist ein interaktiver Graph, in dem Knoten Nostr-Nutzer und Kanten Follow-Beziehungen darstellen.
+
+### Den Graphen lesen
+
+- **Ihr Knoten** befindet sich im Zentrum, deutlich hervorgehoben.
+- **1.-Grad-Verbindungen** (direkte Follows) erscheinen am nächsten bei Ihnen, typischerweise in einer hellen Farbe.
+- **2.-Grad-Verbindungen** bilden den nächsten Ring in einem leicht gedämpften Ton.
+- **3.-Grad-Verbindungen** befinden sich an den äußeren Rändern, stärker verblasst.
+- **Kantenlinien** verbinden Knoten, um Follow-Beziehungen zu zeigen. Dickere oder hellere Linien können auf stärkere Trust-Scores hinweisen.
+
+{/* TODO: Screenshot of the full trust graph with color-coded hops */}
+
+<Callout type="tip">
+Klicken und ziehen Sie, um den Graphen zu verschieben. Verwenden Sie Ihr Scrollrad oder eine Pinch-Geste zum Zoomen. Klicken Sie auf einen beliebigen Knoten, um Details zu diesem Nutzer zu sehen.
+</Callout>
+
+### Knotendetails
+
+Klicken Sie auf einen beliebigen Knoten, um ein Detailpanel zu öffnen, das zeigt:
+
+- Profilinformationen (Name, Avatar, npub).
+- Trust-Score relativ zu Ihnen.
+- Hop-Distanz.
+- Anzahl der verbindenden Pfade.
+- Gegenseitige Follows — Personen, denen Sie beide folgen.
+
+Dies ist nützlich, um zu verstehen, warum jemand einen bestimmten Trust-Score hat und wie er sich mit Ihrem Netzwerk verbindet.
+
+{/* TODO: Screenshot of the node detail panel for a 2nd-degree contact */}
+
+## Filtern und Suchen
+
+Der Playground bietet Werkzeuge, um Ihre Ansicht einzugrenzen und bestimmte Informationen zu finden.
+
+### Nach Hops filtern
+
+Verwenden Sie den Hop-Filter, um nur Verbindungen in einer bestimmten Distanz anzuzeigen:
+
+- **1 Hop** — zeigt nur Ihre direkten Follows. Nützlich zur Überprüfung Ihres engsten Kreises.
+- **2 Hops** — fügt Freunde von Freunden hinzu. Hier finden die meisten Ihrer täglichen Interaktionen statt.
+- **3 Hops** — der vollständige Graph. Zeigt die äußere Grenze Ihres Vertrauensnetzwerks.
+
+Schalten Sie diese Filter über die Steuerelemente in der Seitenleiste oder Symbolleiste um.
+
+{/* TODO: Screenshot of the hop filter controls with 2-hop selected */}
+
+### Nach Nutzern suchen
+
+Geben Sie einen Namen, npub oder NIP-05-Identifikator in die Suchleiste ein. Wenn der Nutzer in Ihrem Trust-Graphen ist, hebt die Visualisierung seinen Knoten hervor und zeigt den Pfad zwischen Ihnen.
+
+Wenn er nicht in Ihrem Graphen ist, teilt die Suche Ihnen das mit — was an sich eine nützliche Information ist. Ein unbekannter Nutzer bedeutet, dass er keine Verbindung zu Ihrem Netzwerk innerhalb der konfigurierten Hop-Distanz hat.
+
+{/* TODO: Screenshot of the search bar with a result highlighting a specific node */}
+
+## Ihr Netzwerk analysieren
+
+Über das Durchstöbern hinaus hilft Ihnen der Playground, die Struktur Ihres Vertrauensnetzwerks zu verstehen.
+
+### Cluster-Erkennung
+
+Die Visualisierung offenbart häufig Cluster — Gruppen dicht verbundener Nutzer. Diese entsprechen typischerweise Gemeinschaften. Sie könnten einen Cluster von Bitcoin-Entwicklern sehen, einen weiteren von Künstlern und einen weiteren von lokalen Freunden. Die visuelle Gruppierung hilft Ihnen, die verschiedenen sozialen Kreise zu verstehen, die Ihr Web of Trust ausmachen.
+
+### Brücken-Nutzer
+
+Einige Knoten verbinden ansonsten getrennte Cluster. Diese Brücken-Nutzer spannen verschiedene Gemeinschaften in Ihrem Netzwerk und haben oft hohe Trust-Scores aufgrund mehrerer unabhängiger Pfade. Wenn Ihr Graph klein oder dünn besetzt ist, erwägen Sie, mehr Personen zu folgen, um Ihr Web of Trust zu stärken.
+
+{/* TODO: Video walkthrough of navigating the Playground, filtering, and inspecting nodes */}
+
+<Callout type="tip">
+Der Playground ist eine Nur-Lese-Visualisierung. Nichts, was Sie hier tun, ändert Ihre Vertrauenseinstellungen oder Ihre Follow-Liste. Erkunden Sie frei.
+</Callout>
+
+## Wie geht es weiter?
+
+Nachdem Sie Ihren Trust-Graphen erkundet haben, möchten Sie vielleicht [Ihre Vertrauenseinstellungen anpassen](/guides/vertrauen-anpassen) basierend auf dem, was Sie entdeckt haben. Oder kehren Sie zur [Erste-Schritte-Anleitung](/guides/erste-schritte) zurück, um die Grundlagen zu wiederholen.

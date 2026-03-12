@@ -1,0 +1,107 @@
+---
+title: "Website-Berechtigungen"
+description: "Kontrollieren Sie, welche Websites auf Ihre Nostr-Identität zugreifen, Signaturen anfordern und Lightning-Zahlungen über das Berechtigungssystem der Nostr WoT Extension vornehmen können."
+excerpt: "Die Erweiterung gibt Ihnen granulare Kontrolle darüber, was jede Website tun darf. Erfahren Sie, wie Website-spezifische Berechtigungen Ihre Schlüssel und Sats schützen."
+date: "2026-03-11"
+author:
+  name: "Leon Acosta"
+  avatar: "/authors/leon-profile.jpg"
+  npub: "npub1gxdhmu9swqduwhr6zptjy4ya693zp3ql28nemy4hd97kuufyrqdqwe5zfk"
+featuredImage: "/images/guides/site-permissions/featured.svg"
+previewImage: "/images/guides/site-permissions/preview.svg"
+tags:
+  - "Berechtigungen"
+  - "Sicherheit"
+  - "Datenschutz"
+published: true
+seoTitle: "Website-Berechtigungen verwalten — Nostr WoT Extension"
+seoDescription: "Kontrollieren Sie, welche Websites auf Ihre Nostr-Identität zugreifen, Signaturen anfordern und Lightning-Zahlungen über das Berechtigungssystem der Nostr WoT Extension vornehmen können."
+ogImage: "/images/guides/site-permissions/og.svg"
+translationKey: "site-permissions"
+difficulty: "intermediate"
+order: 8
+---
+
+Jede Website, die mit der Erweiterung interagiert, benötigt Ihre Erlaubnis. Die Erweiterung gewährt keinen pauschalen Zugriff auf Ihre Schlüssel oder Ihr Wallet — jede Website erhält ihren eigenen Berechtigungsbereich. Diese Anleitung erklärt, wie Sie diese Berechtigungen effektiv verwalten.
+
+## Wie Berechtigungen funktionieren
+
+Wenn eine Website versucht, auf den NIP-07-Signer oder WebLN-Anbieter der Erweiterung zuzugreifen, prüft die Erweiterung, ob diese Website eine Berechtigung hat. Wenn nicht, sehen Sie eine Aufforderung, die Anfrage zu genehmigen oder abzulehnen.
+
+Jede Berechtigungsentscheidung wird pro Website gespeichert. Die Genehmigung von Signierung auf Primal gewährt nicht automatisch Signierung auf Snort. Sie bauen eine Whitelist vertrauenswürdiger Websites auf, eine nach der anderen.
+
+{/* TODO: Screenshot of the permission request popup for a new site */}
+
+## Berechtigungstypen
+
+Die Erweiterung verwaltet mehrere verschiedene Berechtigungen für jede Website.
+
+### Öffentlichen Schlüssel lesen
+
+Erlaubt der Website, Ihren öffentlichen Schlüssel (npub) zu sehen. Dies ist die grundlegendste Berechtigung — die Website kann Sie identifizieren, aber nichts in Ihrem Namen tun.
+
+### Events signieren
+
+Erlaubt der Website, Event-Signaturen über NIP-07 anzufordern. Das bedeutet, die Website kann Sie bitten, Beiträge, Profilaktualisierungen, Reaktionen und andere Nostr-Events zu signieren. Sie sehen weiterhin eine Bestätigungsaufforderung für jede Signieranfrage, es sei denn, Sie aktivieren die automatische Genehmigung für diese Website.
+
+### Verschlüsseln und Entschlüsseln
+
+Erlaubt der Website, NIP-04- oder NIP-44-verschlüsselte Direktnachrichten anzufordern. Die Website kann die Erweiterung bitten, eine Nachricht an einen bestimmten Empfänger zu verschlüsseln oder eine eingehende Nachricht zu entschlüsseln.
+
+### WebLN-Zahlungen
+
+Erlaubt der Website, Lightning-Zahlungen über den WebLN-Anbieter anzufordern. Wenn gewährt, kann die Website Rechnungen zur Zahlung präsentieren — unter Berücksichtigung Ihres [Auto-Genehmigungs-Schwellenwerts](/guides/zaps-und-automatische-genehmigung).
+
+{/* TODO: Screenshot of the permissions panel showing all four permission types for a site */}
+
+<Callout type="tip">
+Sie können einige Berechtigungen gewähren und andere verweigern. Zum Beispiel könnten Sie einer Website erlauben, Ihren öffentlichen Schlüssel zu lesen und Signaturen anzufordern, ihr aber den WebLN-Zugriff verweigern, wenn Sie nicht möchten, dass sie Zahlungen anfordert.
+</Callout>
+
+## Website-Berechtigungen verwalten
+
+### Gewährte Berechtigungen anzeigen
+
+1. Öffnen Sie die Erweiterung und klicken Sie auf **Einstellungen**.
+2. Navigieren Sie zu **Website-Berechtigungen** (oder **Berechtigungen**).
+3. Sie sehen eine Liste aller Websites, denen eine Berechtigung gewährt wurde, zusammen mit dem, was jede Website tun darf.
+
+{/* TODO: Screenshot of the site permissions list showing multiple sites with their granted permissions */}
+
+### Berechtigungen widerrufen
+
+Wenn Sie den Zugriff einer Website entfernen möchten:
+
+1. Finden Sie die Website in der Berechtigungsliste.
+2. Klicken Sie auf den Website-Namen, um die Details aufzuklappen.
+3. Deaktivieren Sie einzelne Berechtigungen oder klicken Sie auf **Alle widerrufen**, um den gesamten Zugriff zu entfernen.
+4. Die Änderung tritt sofort in Kraft. Die Website muss beim nächsten Versuch erneut eine Berechtigung anfordern.
+
+### Temporäre vs. permanente Berechtigungen
+
+Wenn Sie eine Berechtigungsanfrage sehen, haben Sie typischerweise zwei Optionen:
+
+- **Einmal erlauben** — gewährt die Berechtigung nur für diese Sitzung. Wenn Sie den Tab schließen oder den Browser neu starten, muss die Website erneut fragen.
+- **Immer erlauben** — gewährt die Berechtigung dauerhaft für diese Website. Sie bleibt über Sitzungen hinweg bestehen.
+
+Verwenden Sie „Einmal erlauben" für Websites, die Sie nicht regelmäßig besuchen. Verwenden Sie „Immer erlauben" für Ihre täglich genutzten Nostr-Clients.
+
+## Best Practices für Sicherheit
+
+Gewähren Sie nur die Berechtigungen, die eine Website tatsächlich benötigt. Ein Nostr-Client braucht Signier-Zugriff, aber ein Nur-Lese-Explorer braucht nur Ihren öffentlichen Schlüssel. Überprüfen Sie Ihre Berechtigungsliste regelmäßig und entziehen Sie den Zugriff für Websites, die Sie nicht mehr nutzen.
+
+Wenn eine Website, von der Sie noch nie gehört haben, Signier- oder Zahlungsberechtigungen anfordert, lehnen Sie ab und untersuchen Sie zuerst. Legitime Nostr-Clients sind allgemein bekannt.
+
+{/* TODO: Screenshot of a suspicious permission request with a "Deny" action highlighted */}
+
+<Callout type="tip">
+Wenn sich eine Website nach der Berechtigungserteilung unerwartet verhält — etwa Zahlungen auslöst, die Sie nicht initiiert haben — widerrufen Sie sofort alle ihre Berechtigungen und senken Sie Ihren Auto-Genehmigungs-Schwellenwert.
+</Callout>
+
+### Nur sichere Verbindungen
+
+Die Erweiterung stellt die NIP-07- und WebLN-APIs nur über sichere (HTTPS-) Verbindungen bereit. Dies verhindert Man-in-the-Middle-Angriffe, die die Kommunikation zwischen Website und Erweiterung abfangen könnten.
+
+## Wie geht es weiter?
+
+Nachdem Ihre Berechtigungen gesichert sind, erkunden Sie den [WoT Playground](/guides/wot-playground), um Ihr Vertrauensnetzwerk zu visualisieren. Oder besuchen Sie erneut [Ihre Identität verwalten](/guides/identitaet-verwalten), um Ihre Schlüsselsicherheitspraktiken zu überprüfen.

@@ -1,0 +1,119 @@
+---
+title: "Identite et confiance : la vision complete"
+description: "Nous avons ajoute la gestion d'identite a l'extension Nostr WoT car confiance et identite vont de pair. Voici les nouveautes et pourquoi elles comptent pour votre experience."
+excerpt: "Nous avons construit le Web of Trust pour vous aider a naviguer sur Nostr. Mais la confiance sans identite semblait incomplete. Alors nous avons ajoute la signature, le chiffrement, la gestion multi-comptes et six langues — le tout dans une experience fluide."
+date: "2026-03-04"
+author:
+  name: "Leon Acosta"
+  avatar: "/authors/leon-profile.jpg"
+  npub: "npub1gxdhmu9swqduwhr6zptjy4ya693zp3ql28nemy4hd97kuufyrqdqwe5zfk"
+  socials:
+    linkedin: "leonacosta"
+    instagram: "leonacosta.now"
+    twitter: "leonacosta_"
+    github: "leonacostaok"
+featuredImage: "/images/blog/introducing-wot/featured.svg"
+previewImage: "/images/blog/introducing-wot/preview.svg"
+tags:
+  - "Annonce"
+  - "Identite"
+  - "Web of Trust"
+  - "Nostr"
+published: true
+seoTitle: "Extension Nostr WoT — Identite, confiance et securite en un seul endroit"
+seoDescription: "L'extension Nostr WoT inclut desormais la signature NIP-07, le stockage chiffre des cles, la gestion multi-comptes, les badges de confiance et le support de 6 langues. Decouvrez les nouveautes."
+ogImage: "/images/blog/introducing-wot/og.svg"
+translationKey: "identity-meets-trust"
+---
+
+Quand nous avons commence a construire l'extension Nostr WoT, l'objectif etait simple : vous aider a voir qui fait partie de votre cercle social et qui n'en fait pas partie. Scores de confiance, distances en sauts, badges visuels sur les profils — la couche Web of Trust.
+
+Mais en l'utilisant nous-memes, quelque chose semblait incomplet. Il fallait installer une extension separee juste pour se connecter aux applications Nostr, et cette extension ne savait rien de votre reseau de confiance. Deux outils qui auraient du se connaitre, vivant dans un isolement complet. L'experience etait fragmentee.
+
+Alors nous nous sommes demande : **et si l'identite et la confiance vivaient au meme endroit ?**
+
+## Ce que nous avons ajoute
+
+L'extension inclut desormais un **fournisseur d'identite NIP-07** complet. Cela signifie que vous pouvez l'utiliser pour vous connecter a n'importe quel client Nostr, signer des evenements et chiffrer des messages — directement a cote des fonctionnalites de confiance que vous connaissez deja.
+
+Voici ce qui est inclus :
+
+- **Connectez-vous partout** — L'extension fournit votre cle publique a toute application Nostr qui la demande. Un clic et vous etes connecte.
+- **Signez des evenements** — Publiez des notes, reagissez, repostez — l'extension gere la signature cryptographique. Vous choisissez quels sites peuvent signer quels types d'evenements.
+- **Messages chiffres** — Le format plus ancien NIP-04 et le format plus recent et plus securise NIP-44 sont pris en charge pour les conversations privees.
+- **Permissions granulaires** — Vous decidez ce que chaque site peut faire. Autorisez les notes sur un site, bloquez les DMs sur un autre. Les permissions sont memorisees pour que vous ne soyez pas sollicite a chaque fois.
+
+<Callout type="tip">
+L'extension bloque automatiquement les demandes de signature sur les connexions HTTP non securisees, afin que vos cles ne soient jamais exposees sur des canaux non chiffres.
+</Callout>
+
+## Vos cles, toujours protegees
+
+Nous prenons la securite des cles au serieux. Vos cles privees sont chiffrees avec **AES-256-GCM** — le meme standard utilise par les banques et les gouvernements — protegees par votre mot de passe.
+
+Ce que cela signifie en pratique :
+
+- **Vos cles sont toujours chiffrees au repos.** Meme si quelqu'un accedait directement au stockage de votre navigateur, il ne trouverait que des donnees chiffrees — inutiles sans votre mot de passe.
+- **Le verrouillage automatique** vous protege quand vous vous absentez. Apres 15 minutes d'inactivite (configurable), l'extension se verrouille et efface les cles de la memoire.
+- **Les cles ne sont jamais conservees plus longtemps que necessaire.** Quand l'extension signe quelque chose, elle travaille avec une copie temporaire de votre cle qui est detruite immediatement apres. Moins les donnees sensibles existent en memoire, mieux c'est.
+
+## Comptes multiples, completement isoles
+
+Les gens utilisent Nostr de differentes facons. Un compte personnel, un compte de projet, peut-etre un compte en lecture seule pour suivre l'activite de quelqu'un. L'extension les prend tous en charge :
+
+- **Generer un nouveau compte** — Cree une identite fraiche avec une phrase de recuperation que vous pouvez sauvegarder.
+- **Importer une cle existante** — Apportez votre nsec et continuez a utiliser votre identite actuelle.
+- **Lecture seule** — Ajoutez n'importe quelle npub pour surveiller son reseau de confiance sans avoir besoin de sa cle privee.
+- **Signataire distant (NIP-46)** — Gardez vos cles sur un appareil separe et signez a distance via une connexion bunker.
+
+Chaque compte est completement isole. Changer de compte change tout — votre identite, votre graphe de confiance, vos permissions. Pas de contamination accidentelle entre les identites.
+
+## Web of Trust : voyez avec qui vous parlez
+
+C'est la partie que vous connaissez deja, et elle ne cesse de s'ameliorer. L'extension construit une carte de vos connexions sociales et repond instantanement a une question : **a quelle distance est cette personne de vous ?**
+
+- **1 saut** — Quelqu'un que vous suivez directement. Confiance elevee.
+- **2 sauts** — Un ami d'un ami. Probablement digne de confiance.
+- **3+ sauts** — La distance augmente. Procedez avec prudence.
+- **Non connecte** — En dehors de votre reseau.
+
+Le **moteur de badges de confiance** rend tout cela visible partout. Lorsque vous naviguez sur les applications Nostr, des points colores apparaissent a cote des noms d'utilisateur montrant leur niveau de confiance en un coup d'oeil. Pas besoin de cliquer sur les profils, pas de verification manuelle — juste du contexte instantane.
+
+Tout cela fonctionne localement dans votre navigateur. Votre graphe de suivi est synchronise une fois puis interroge instantanement, sans aucune requete externe necessaire pour les recherches.
+
+## Disponible en 6 langues
+
+Nostr est mondial, et l'extension doit l'etre aussi. L'interface complete — integration, parametres, permissions, invites, tout — est disponible en :
+
+- **Anglais**
+- **Espagnol**
+- **Portugais**
+- **Francais**
+- **Allemand**
+- **Italien**
+
+L'extension detecte automatiquement la langue de votre navigateur. Vous pouvez aussi changer manuellement a tout moment depuis le menu des parametres.
+
+## Pourquoi tout cela va ensemble
+
+La vraie raison pour laquelle nous avons ajoute l'identite a l'extension n'est pas technique — c'est une question d'**experience**.
+
+Quand votre outil de signature et votre outil de confiance sont la meme extension, tout fonctionne naturellement. Vous n'avez pas besoin de configurer deux extensions. Vous n'avez pas a vous soucier de laquelle a vos cles. Vous vous connectez, et la couche de confiance est deja la, deja en fonctionnement, vous montrant deja qui est qui.
+
+Il y a aussi un avantage en matiere de securite. Parce que l'extension gere a la fois vos cles et votre graphe de confiance, elle peut les isoler correctement des pages web tout en les faisant fonctionner ensemble de maniere transparente pour vous. Vos cles restent chiffrees et protegees. Vos donnees de confiance restent locales et privees. Et les deux sont disponibles au moment ou vous en avez besoin.
+
+Une extension. Une configuration. Identite, confiance et securite travaillant ensemble.
+
+## Et ensuite
+
+Les fondations sont en place. Voici ce sur quoi nous travaillons :
+
+- **Contexte de confiance dans les invites de signature** — Quand un site demande une signature, vous verrez des informations de confiance sur ce site directement dans la boite de dialogue d'approbation.
+- **Plus de support de badges** — Elargissement des badges visuels de confiance pour fonctionner avec plus de clients Nostr nativement.
+- **Ameliorations du SDK** — Le [nostr-wot-sdk](https://www.npmjs.com/package/nostr-wot-sdk) permet aux developpeurs d'integrer la confiance dans leurs applications, avec detection automatique de l'extension quand elle est disponible.
+
+L'extension est open source et disponible pour [Chrome, Brave, Edge, Opera et Firefox](/download). Vous pouvez aussi [compiler a partir du code source](https://github.com/nostr-wot/nostr-wot-extension) si vous preferez verifier le code vous-meme.
+
+---
+
+*Des questions ou des retours ? Retrouvez-nous sur [Nostr](https://njump.me/npub1gxdhmu9swqduwhr6zptjy4ya693zp3ql28nemy4hd97kuufyrqdqwe5zfk) ou consultez la [documentation](/docs/extension).*

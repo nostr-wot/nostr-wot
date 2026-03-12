@@ -12,6 +12,10 @@ const ogLocaleMap: Record<Locale, string> = {
   en: 'en_US',
   es: 'es_ES',
   pt: 'pt_BR',
+  ru: 'ru_RU',
+  it: 'it_IT',
+  fr: 'fr_FR',
+  de: 'de_DE',
 };
 
 import { BlogContent } from '@/components/blog';

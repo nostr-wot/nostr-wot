@@ -1,0 +1,99 @@
+---
+title: "Ihre Lightning-Adresse beanspruchen"
+description: "Beanspruchen Sie eine Lightning-Adresse wie ihrname@zaps.nostr-wot.com über die Nostr WoT Extension und beginnen Sie, Zaps an eine einprägsame, menschenlesbare Adresse zu empfangen."
+excerpt: "Holen Sie sich eine Lightning-Adresse wie ihrname@zaps.nostr-wot.com. Beanspruchen Sie sie in Sekunden und fügen Sie sie Ihrem Nostr-Profil hinzu."
+date: "2026-03-11"
+author:
+  name: "Leon Acosta"
+  avatar: "/authors/leon-profile.jpg"
+  npub: "npub1gxdhmu9swqduwhr6zptjy4ya693zp3ql28nemy4hd97kuufyrqdqwe5zfk"
+featuredImage: "/images/guides/lightning-address/featured.svg"
+previewImage: "/images/guides/lightning-address/preview.svg"
+tags:
+  - "Lightning-Adresse"
+  - "Zaps"
+  - "Identität"
+published: true
+seoTitle: "Ihre Lightning-Adresse beanspruchen — Nostr WoT Extension"
+seoDescription: "Beanspruchen Sie eine Lightning-Adresse wie ihrname@zaps.nostr-wot.com über die Nostr WoT Extension und beginnen Sie, Zaps an eine einprägsame, menschenlesbare Adresse zu empfangen."
+ogImage: "/images/guides/lightning-address/og.svg"
+translationKey: "lightning-address"
+difficulty: "beginner"
+order: 7
+---
+
+Eine Lightning-Adresse ist ein menschenlesbarer Identifikator — wie eine E-Mail-Adresse —, den jeder verwenden kann, um Ihnen Sats zu senden. Anstatt manuell Rechnungen zu erstellen, geben Sie Ihre Adresse weiter und die Leute zappen Sie direkt. Die Erweiterung ermöglicht es Ihnen, kostenlos eine zu beanspruchen, wenn Sie die Schnelleinrichtung verwenden.
+
+## Was ist eine Lightning-Adresse?
+
+Eine Lightning-Adresse sieht aus wie `ihrname@zaps.nostr-wot.com`. Unter der Haube wird sie zu einem Lightning-Rechnungs-Endpunkt aufgelöst. Wenn jemand Sats an Ihre Adresse sendet, generiert das System eine frische Rechnung und leitet die Zahlung an Ihr Wallet weiter. Der Sender muss nichts über Ihr Wallet-Setup wissen.
+
+Stellen Sie es sich als einen dauerhaften, einprägsamen Weg vor, über den Menschen Ihnen Bitcoin über Lightning zahlen können.
+
+{/* TODO: Diagram showing how a Lightning Address resolves to a payment */}
+
+## Ihre Adresse beanspruchen
+
+Sie müssen ein Wallet über die Schnelleinrichtung verbunden haben, um eine Lightning-Adresse zu beanspruchen. Wenn Sie NWC oder LNbits verwendet haben, wird Ihre Adresse von Ihrer eigenen Infrastruktur verwaltet.
+
+1. Öffnen Sie die Erweiterung und gehen Sie zum **Wallet**-Tab.
+2. Klicken Sie auf **Einstellungen** oder suchen Sie den Abschnitt **Lightning-Adresse**.
+3. Geben Sie den gewünschten Benutzernamen ein. Er wird zu `ihrname@zaps.nostr-wot.com`.
+4. Klicken Sie auf **Beanspruchen**.
+5. Wenn der Name verfügbar ist, gehört er sofort Ihnen.
+
+{/* TODO: Screenshot of the Lightning Address claim form with a username being entered */}
+
+<Callout type="tip">
+Benutzernamen müssen 3-30 Zeichen lang sein und können Kleinbuchstaben, Zahlen, Punkte und Bindestriche enthalten. Es gilt das Prinzip: Wer zuerst kommt, mahlt zuerst — beanspruchen Sie Ihren also früh.
+</Callout>
+
+## Zu Ihrem Nostr-Profil hinzufügen
+
+Nach dem Beanspruchen Ihrer Adresse möchten Sie sie auf Ihrem Nostr-Profil sichtbar machen, damit die Leute wissen, wohin sie Sie zappen können.
+
+### Automatische Methode
+
+Die Erweiterung bietet an, Ihre Lightning-Adresse direkt nach dem Beanspruchen automatisch zu Ihrem Nostr-Profil hinzuzufügen. Klicken Sie auf **Ja, mein Profil aktualisieren** und die Erweiterung signiert und veröffentlicht ein aktualisiertes Kind-0-Event mit Ihrer neuen Adresse.
+
+{/* TODO: Screenshot of the prompt to add the Lightning Address to the Nostr profile */}
+
+### Manuelle Methode
+
+Wenn Sie es lieber selbst machen:
+
+1. Gehen Sie zum **Identität**-Tab in der Erweiterung.
+2. Klicken Sie auf **Profil bearbeiten**.
+3. Finden Sie das Feld **Lightning-Adresse** (manchmal als `lud16` bezeichnet).
+4. Geben Sie Ihre vollständige Adresse ein: `ihrname@zaps.nostr-wot.com`.
+5. Klicken Sie auf **Speichern**.
+
+In beiden Fällen zeigen Nostr-Clients einen Zap-Button auf Ihrem Profil an, der diese Adresse verwendet.
+
+## Zaps empfangen
+
+Sobald Ihre Lightning-Adresse eingerichtet und in Ihrem Profil veröffentlicht ist:
+
+- Jeder, der Ihr Profil auf Primal, Snort, Coracle oder anderen Nostr-Clients ansieht, sieht eine Zap-Option.
+- Sie klicken auf Zap, wählen einen Betrag und die Zahlung wird an Ihr Wallet geleitet.
+- Sie sehen die eingehenden Sats in Ihrem Wallet-Kontostand und Transaktionsverlauf.
+
+Keine Rechnungen zu erstellen, keine QR-Codes zu teilen. Die Adresse erledigt alles.
+
+{/* TODO: Screenshot of an incoming zap notification in the extension */}
+
+## Ihre Adresse teilen
+
+Über Ihr Nostr-Profil hinaus können Sie Ihre Lightning-Adresse in Social-Media-Bios, auf Ihrer Website oder in E-Mail-Signaturen teilen. Jeder mit einem Lightning-Wallet kann Sats an `ihrname@zaps.nostr-wot.com` senden — sie müssen nicht auf Nostr sein.
+
+## Ihre Adresse ändern
+
+Wenn Sie einen anderen Benutzernamen möchten, öffnen Sie die Lightning-Adresse-Einstellungen in der Erweiterung und beanspruchen Sie einen neuen. Ihre alte Adresse funktioniert dann nicht mehr, also aktualisieren Sie Ihr Nostr-Profil und alle anderen Stellen, an denen Sie sie geteilt haben.
+
+<Callout type="tip">
+Bevor Sie Ihre Adresse ändern, stellen Sie sicher, dass keine wiederkehrenden Dienste oder Integrationen von der alten abhängen. Der Wechsel erfolgt sofort und die alte Adresse wird freigegeben.
+</Callout>
+
+## Wie geht es weiter?
+
+Jetzt, wo die Leute Sie zappen können, erfahren Sie, wie Sie [kontrollieren, welche Websites auf Ihr Wallet zugreifen können](/guides/website-berechtigungen). Oder erkunden Sie die [Zapping- und Auto-Genehmigungs-Funktionen](/guides/zaps-und-automatische-genehmigung), um Ihre ausgehenden Zaps zu optimieren.
