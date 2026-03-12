@@ -56,6 +56,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   return {
     title,
     description,
+    keywords: guide.tags,
     alternates: generateBlogAlternates('/guides', guide.translations, locale as Locale),
     openGraph: {
       title,

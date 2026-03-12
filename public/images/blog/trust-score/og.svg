@@ -1,0 +1,55 @@
+<svg width="1200" height="630" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#1e1b4b;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#4c1d95;stop-opacity:1" />
+    </linearGradient>
+    <radialGradient id="glow" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" style="stop-color:#8b5cf6;stop-opacity:0.2" />
+      <stop offset="100%" style="stop-color:#8b5cf6;stop-opacity:0" />
+    </radialGradient>
+    <filter id="shadow">
+      <feDropShadow dx="0" dy="2" stdDeviation="4" flood-color="#8b5cf6" flood-opacity="0.4"/>
+    </filter>
+  </defs>
+
+  <rect width="1200" height="630" fill="url(#bg)"/>
+  <rect width="1200" height="630" fill="url(#glow)"/>
+
+  <!-- Subtle grid -->
+  <pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse">
+    <path d="M 40 0 L 0 0 0 40" fill="none" stroke="rgba(139,92,246,0.05)" stroke-width="1"/>
+  </pattern>
+  <rect width="1200" height="630" fill="url(#grid)"/>
+
+  <!-- Score bar visualization -->
+  <rect x="200" y="340" width="800" height="16" rx="8" fill="rgba(255,255,255,0.1)"/>
+  <rect x="200" y="340" width="680" height="16" rx="8" fill="url(#score-grad)"/>
+  <linearGradient id="score-grad" x1="0%" y1="0%" x2="100%" y2="0%">
+    <stop offset="0%" style="stop-color:#4ade80"/>
+    <stop offset="50%" style="stop-color:#facc15"/>
+    <stop offset="100%" style="stop-color:#f87171"/>
+  </linearGradient>
+
+  <!-- Score markers -->
+  <text x="200" y="380" fill="rgba(74,222,128,0.9)" font-family="monospace" font-size="14" font-weight="bold">1.00</text>
+  <text x="460" y="380" fill="rgba(250,204,21,0.9)" font-family="monospace" font-size="14" font-weight="bold">0.50</text>
+  <text x="720" y="380" fill="rgba(248,113,113,0.9)" font-family="monospace" font-size="14" font-weight="bold">0.15</text>
+  <text x="960" y="380" fill="rgba(255,255,255,0.4)" font-family="monospace" font-size="14">0.00</text>
+
+  <text x="200" y="400" fill="rgba(255,255,255,0.5)" font-family="sans-serif" font-size="12">Hop 1</text>
+  <text x="460" y="400" fill="rgba(255,255,255,0.5)" font-family="sans-serif" font-size="12">Hop 2</text>
+  <text x="720" y="400" fill="rgba(255,255,255,0.5)" font-family="sans-serif" font-size="12">Hop 3</text>
+  <text x="960" y="400" fill="rgba(255,255,255,0.3)" font-family="sans-serif" font-size="12">Unknown</text>
+
+  <!-- Title area -->
+  <text x="600" y="180" text-anchor="middle" fill="white" font-family="sans-serif" font-size="48" font-weight="bold" filter="url(#shadow)">Nostr Trust Score</text>
+  <text x="600" y="230" text-anchor="middle" fill="white" font-family="sans-serif" font-size="48" font-weight="bold" filter="url(#shadow)">Explained</text>
+  <text x="600" y="280" text-anchor="middle" fill="rgba(255,255,255,0.6)" font-family="sans-serif" font-size="20">How Trust Is Calculated in the Web of Trust</text>
+
+  <!-- Branding -->
+  <text x="600" y="530" text-anchor="middle" fill="rgba(255,255,255,0.4)" font-family="sans-serif" font-size="16">nostr-wot.com</text>
+
+  <!-- Formula hint -->
+  <text x="600" y="470" text-anchor="middle" fill="rgba(139,92,246,0.8)" font-family="monospace" font-size="16">score = base(distance) + mutual_bonus + bridging_bonus + path_bonus</text>
+</svg>

@@ -25,6 +25,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   return {
     title,
     description,
+    keywords: ["nostr web of trust", "decentralized trust"],
     alternates: generateAlternates("/about", locale as Locale),
     openGraph: generateOpenGraph({
       title,

@@ -36,6 +36,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   return {
     title,
     description,
+    keywords: ["nostr wot extension", "nostr wot download"],
     alternates: generateAlternates("/download", locale as Locale),
     openGraph: generateOpenGraph({
       title,

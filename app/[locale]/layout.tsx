@@ -21,13 +21,7 @@ export const metadata: Metadata = {
   },
   description:
     "Filter spam and find trusted content on Nostr using your trust network. A decentralized reputation system without central moderators.",
-  keywords: [
-    "nostr",
-    "web of trust",
-    "reputation",
-    "decentralized",
-    "social graph",
-  ],
+  keywords: ["nostr wot", "nostr web of trust", "web of trust"],
   manifest: "/manifest.json",
   icons: {
     icon: [

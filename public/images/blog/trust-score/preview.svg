@@ -1,0 +1,67 @@
+<svg width="600" height="400" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#1e1b4b;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#4c1d95;stop-opacity:1" />
+    </linearGradient>
+    <radialGradient id="glow" cx="50%" cy="45%" r="40%">
+      <stop offset="0%" style="stop-color:#8b5cf6;stop-opacity:0.25" />
+      <stop offset="100%" style="stop-color:#8b5cf6;stop-opacity:0" />
+    </radialGradient>
+    <filter id="glow-filter">
+      <feGaussianBlur stdDeviation="3" result="blur"/>
+      <feMerge>
+        <feMergeNode in="blur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+  </defs>
+
+  <rect width="600" height="400" fill="url(#bg)"/>
+  <rect width="600" height="400" fill="url(#glow)"/>
+
+  <!-- Trust rings -->
+  <circle cx="300" cy="180" r="50" fill="none" stroke="rgba(74,222,128,0.15)" stroke-width="1" stroke-dasharray="4,3"/>
+  <circle cx="300" cy="180" r="100" fill="none" stroke="rgba(250,204,21,0.12)" stroke-width="1" stroke-dasharray="4,3"/>
+  <circle cx="300" cy="180" r="150" fill="none" stroke="rgba(248,113,113,0.08)" stroke-width="1" stroke-dasharray="4,3"/>
+
+  <!-- Connections -->
+  <line x1="300" y1="180" x2="350" y2="140" stroke="rgba(74,222,128,0.5)" stroke-width="1.5"/>
+  <line x1="300" y1="180" x2="250" y2="140" stroke="rgba(74,222,128,0.5)" stroke-width="1.5"/>
+  <line x1="300" y1="180" x2="270" y2="230" stroke="rgba(74,222,128,0.5)" stroke-width="1.5"/>
+  <line x1="300" y1="180" x2="350" y2="220" stroke="rgba(74,222,128,0.5)" stroke-width="1.5"/>
+
+  <line x1="350" y1="140" x2="410" y2="110" stroke="rgba(250,204,21,0.35)" stroke-width="1"/>
+  <line x1="250" y1="140" x2="190" y2="110" stroke="rgba(250,204,21,0.35)" stroke-width="1"/>
+  <line x1="270" y1="230" x2="210" y2="270" stroke="rgba(250,204,21,0.35)" stroke-width="1"/>
+  <line x1="350" y1="220" x2="410" y2="260" stroke="rgba(250,204,21,0.35)" stroke-width="1"/>
+
+  <!-- Hop 2 nodes with scores -->
+  <circle cx="410" cy="110" r="7" fill="rgba(250,204,21,0.7)" filter="url(#glow-filter)"/>
+  <text x="410" y="98" text-anchor="middle" fill="rgba(250,204,21,0.9)" font-family="monospace" font-size="10" font-weight="bold">0.50</text>
+  <circle cx="190" cy="110" r="7" fill="rgba(250,204,21,0.7)" filter="url(#glow-filter)"/>
+  <text x="190" y="98" text-anchor="middle" fill="rgba(250,204,21,0.9)" font-family="monospace" font-size="10" font-weight="bold">0.55</text>
+  <circle cx="210" cy="270" r="7" fill="rgba(250,204,21,0.7)" filter="url(#glow-filter)"/>
+  <text x="210" y="288" text-anchor="middle" fill="rgba(250,204,21,0.9)" font-family="monospace" font-size="10" font-weight="bold">0.48</text>
+  <circle cx="410" cy="260" r="7" fill="rgba(250,204,21,0.7)" filter="url(#glow-filter)"/>
+  <text x="410" y="278" text-anchor="middle" fill="rgba(250,204,21,0.9)" font-family="monospace" font-size="10" font-weight="bold">0.42</text>
+
+  <!-- Hop 1 nodes with scores -->
+  <circle cx="350" cy="140" r="10" fill="rgba(74,222,128,0.8)" filter="url(#glow-filter)"/>
+  <text x="350" y="124" text-anchor="middle" fill="rgba(74,222,128,1)" font-family="monospace" font-size="11" font-weight="bold">0.85</text>
+  <circle cx="250" cy="140" r="10" fill="rgba(74,222,128,0.8)" filter="url(#glow-filter)"/>
+  <text x="250" y="124" text-anchor="middle" fill="rgba(74,222,128,1)" font-family="monospace" font-size="11" font-weight="bold">0.90</text>
+  <circle cx="270" cy="230" r="10" fill="rgba(74,222,128,0.8)" filter="url(#glow-filter)"/>
+  <text x="270" y="250" text-anchor="middle" fill="rgba(74,222,128,1)" font-family="monospace" font-size="11" font-weight="bold">0.80</text>
+  <circle cx="350" cy="220" r="10" fill="rgba(74,222,128,0.8)" filter="url(#glow-filter)"/>
+  <text x="350" y="240" text-anchor="middle" fill="rgba(74,222,128,1)" font-family="monospace" font-size="11" font-weight="bold">0.88</text>
+
+  <!-- Center node -->
+  <circle cx="300" cy="180" r="16" fill="rgba(139,92,246,0.3)"/>
+  <circle cx="300" cy="180" r="12" fill="#8b5cf6"/>
+  <text x="300" y="184" text-anchor="middle" fill="white" font-family="sans-serif" font-size="8" font-weight="bold">YOU</text>
+
+  <!-- Title -->
+  <text x="300" y="350" text-anchor="middle" fill="white" font-family="sans-serif" font-size="22" font-weight="bold">Trust Score Explained</text>
+  <text x="300" y="375" text-anchor="middle" fill="rgba(255,255,255,0.5)" font-family="sans-serif" font-size="13">How trust is calculated</text>
+</svg>

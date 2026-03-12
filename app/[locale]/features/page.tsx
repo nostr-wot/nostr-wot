@@ -50,6 +50,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   return {
     title,
     description,
+    keywords: ["nostr wot features", "nostr trust score"],
     alternates: generateAlternates("/features", locale as Locale),
     openGraph: generateOpenGraph({
       title,
