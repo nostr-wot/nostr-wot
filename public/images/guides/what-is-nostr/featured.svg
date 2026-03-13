@@ -1,0 +1,150 @@
+<svg width="1200" height="630" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="win-bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#1e1b4b;stop-opacity:1" />
+      <stop offset="50%" style="stop-color:#312e81;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#4c1d95;stop-opacity:1" />
+    </linearGradient>
+    <radialGradient id="win-glow" cx="50%" cy="45%" r="45%">
+      <stop offset="0%" style="stop-color:#7c3aed;stop-opacity:0.3" />
+      <stop offset="100%" style="stop-color:#1e1b4b;stop-opacity:0" />
+    </radialGradient>
+    <filter id="win-shadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="0" stdDeviation="4" flood-color="#a78bfa" flood-opacity="0.5"/>
+    </filter>
+    <filter id="win-user-glow" x="-50%" y="-50%" width="200%" height="200%">
+      <feDropShadow dx="0" dy="0" stdDeviation="12" flood-color="#a78bfa" flood-opacity="0.7"/>
+    </filter>
+    <filter id="win-relay-glow" x="-50%" y="-50%" width="200%" height="200%">
+      <feDropShadow dx="0" dy="0" stdDeviation="6" flood-color="#4ade80" flood-opacity="0.5"/>
+    </filter>
+    <filter id="win-node-glow" x="-50%" y="-50%" width="200%" height="200%">
+      <feDropShadow dx="0" dy="0" stdDeviation="4" flood-color="#4ade80" flood-opacity="0.5"/>
+    </filter>
+  </defs>
+
+  <!-- Background -->
+  <rect width="100%" height="100%" fill="url(#win-bg)"/>
+  <rect width="100%" height="100%" fill="url(#win-glow)"/>
+
+  <!-- Subtle grid -->
+  <g opacity="0.05" stroke="white" stroke-width="0.5">
+    <line x1="0" y1="0" x2="1200" y2="630"/>
+    <line x1="200" y1="0" x2="1200" y2="500"/>
+    <line x1="0" y1="200" x2="1000" y2="630"/>
+    <line x1="400" y1="0" x2="1200" y2="400"/>
+    <line x1="0" y1="400" x2="800" y2="630"/>
+    <line x1="1200" y1="0" x2="0" y2="630"/>
+    <line x1="1000" y1="0" x2="0" y2="500"/>
+    <line x1="1200" y1="200" x2="200" y2="630"/>
+  </g>
+
+  <!-- Trust rings around center -->
+  <circle cx="600" cy="290" r="270" fill="none" stroke="rgba(167,139,250,0.06)" stroke-width="1" stroke-dasharray="4,8"/>
+  <circle cx="600" cy="290" r="210" fill="none" stroke="rgba(167,139,250,0.10)" stroke-width="1" stroke-dasharray="4,8"/>
+  <circle cx="600" cy="290" r="150" fill="none" stroke="rgba(167,139,250,0.14)" stroke-width="1" stroke-dasharray="4,8"/>
+
+  <!-- Outer network nodes -->
+  <g filter="url(#win-node-glow)">
+    <circle cx="180" cy="160" r="2.5" fill="rgba(248,113,113,0.5)"/>
+    <circle cx="1020" cy="180" r="2.5" fill="rgba(248,113,113,0.5)"/>
+    <circle cx="160" cy="490" r="2.5" fill="rgba(248,113,113,0.4)"/>
+    <circle cx="1040" cy="470" r="2.5" fill="rgba(248,113,113,0.4)"/>
+    <circle cx="450" cy="70" r="3" fill="rgba(250,204,21,0.6)"/>
+    <circle cx="760" cy="65" r="3" fill="rgba(250,204,21,0.6)"/>
+    <circle cx="440" cy="560" r="3" fill="rgba(250,204,21,0.5)"/>
+    <circle cx="770" cy="560" r="3" fill="rgba(250,204,21,0.5)"/>
+  </g>
+
+  <!-- Central user node -->
+  <g filter="url(#win-user-glow)">
+    <!-- Person icon: head + body -->
+    <circle cx="600" cy="260" r="22" fill="rgba(167,139,250,0.25)" stroke="rgba(167,139,250,0.85)" stroke-width="2.5"/>
+    <!-- Head -->
+    <circle cx="600" cy="252" r="9" fill="none" stroke="rgba(167,139,250,0.85)" stroke-width="2"/>
+    <!-- Shoulders/body arc -->
+    <path d="M583,272 C583,264 590,260 600,260 C610,260 617,264 617,272" fill="none" stroke="rgba(167,139,250,0.85)" stroke-width="2" stroke-linecap="round"/>
+  </g>
+
+  <!-- Broadcast signal rings from user -->
+  <circle cx="600" cy="260" r="45" fill="none" stroke="rgba(167,139,250,0.2)" stroke-width="1" stroke-dasharray="3,5"/>
+  <circle cx="600" cy="260" r="65" fill="none" stroke="rgba(167,139,250,0.12)" stroke-width="1" stroke-dasharray="3,5"/>
+
+  <!-- Relay nodes arranged around user -->
+  <!-- Relay 1: top -->
+  <g filter="url(#win-relay-glow)">
+    <circle cx="600" cy="120" r="20" fill="rgba(74,222,128,0.1)" stroke="rgba(74,222,128,0.6)" stroke-width="1.5"/>
+    <rect x="591" y="112" width="18" height="16" rx="2" fill="none" stroke="rgba(74,222,128,0.7)" stroke-width="1.2"/>
+    <line x1="595" y1="118" x2="605" y2="118" stroke="rgba(74,222,128,0.5)" stroke-width="1"/>
+    <line x1="595" y1="122" x2="603" y2="122" stroke="rgba(74,222,128,0.4)" stroke-width="1"/>
+  </g>
+  <line x1="600" y1="238" x2="600" y2="140" stroke="rgba(74,222,128,0.3)" stroke-width="1.5" stroke-dasharray="4,3"/>
+
+  <!-- Relay 2: top-right -->
+  <g filter="url(#win-relay-glow)">
+    <circle cx="780" cy="170" r="20" fill="rgba(74,222,128,0.1)" stroke="rgba(74,222,128,0.6)" stroke-width="1.5"/>
+    <rect x="771" y="162" width="18" height="16" rx="2" fill="none" stroke="rgba(74,222,128,0.7)" stroke-width="1.2"/>
+    <line x1="775" y1="168" x2="785" y2="168" stroke="rgba(74,222,128,0.5)" stroke-width="1"/>
+    <line x1="775" y1="172" x2="783" y2="172" stroke="rgba(74,222,128,0.4)" stroke-width="1"/>
+  </g>
+  <line x1="620" y1="248" x2="762" y2="182" stroke="rgba(74,222,128,0.3)" stroke-width="1.5" stroke-dasharray="4,3"/>
+
+  <!-- Relay 3: right -->
+  <g filter="url(#win-relay-glow)">
+    <circle cx="850" cy="320" r="20" fill="rgba(74,222,128,0.1)" stroke="rgba(74,222,128,0.6)" stroke-width="1.5"/>
+    <rect x="841" y="312" width="18" height="16" rx="2" fill="none" stroke="rgba(74,222,128,0.7)" stroke-width="1.2"/>
+    <line x1="845" y1="318" x2="855" y2="318" stroke="rgba(74,222,128,0.5)" stroke-width="1"/>
+    <line x1="845" y1="322" x2="853" y2="322" stroke="rgba(74,222,128,0.4)" stroke-width="1"/>
+  </g>
+  <line x1="622" y1="265" x2="830" y2="315" stroke="rgba(74,222,128,0.3)" stroke-width="1.5" stroke-dasharray="4,3"/>
+
+  <!-- Relay 4: bottom-right -->
+  <g filter="url(#win-relay-glow)">
+    <circle cx="760" cy="450" r="20" fill="rgba(74,222,128,0.1)" stroke="rgba(74,222,128,0.6)" stroke-width="1.5"/>
+    <rect x="751" y="442" width="18" height="16" rx="2" fill="none" stroke="rgba(74,222,128,0.7)" stroke-width="1.2"/>
+    <line x1="755" y1="448" x2="765" y2="448" stroke="rgba(74,222,128,0.5)" stroke-width="1"/>
+    <line x1="755" y1="452" x2="763" y2="452" stroke="rgba(74,222,128,0.4)" stroke-width="1"/>
+  </g>
+  <line x1="615" y1="278" x2="742" y2="438" stroke="rgba(74,222,128,0.3)" stroke-width="1.5" stroke-dasharray="4,3"/>
+
+  <!-- Relay 5: bottom-left -->
+  <g filter="url(#win-relay-glow)">
+    <circle cx="440" cy="450" r="20" fill="rgba(74,222,128,0.1)" stroke="rgba(74,222,128,0.6)" stroke-width="1.5"/>
+    <rect x="431" y="442" width="18" height="16" rx="2" fill="none" stroke="rgba(74,222,128,0.7)" stroke-width="1.2"/>
+    <line x1="435" y1="448" x2="445" y2="448" stroke="rgba(74,222,128,0.5)" stroke-width="1"/>
+    <line x1="435" y1="452" x2="443" y2="452" stroke="rgba(74,222,128,0.4)" stroke-width="1"/>
+  </g>
+  <line x1="585" y1="278" x2="458" y2="438" stroke="rgba(74,222,128,0.3)" stroke-width="1.5" stroke-dasharray="4,3"/>
+
+  <!-- Relay 6: left -->
+  <g filter="url(#win-relay-glow)">
+    <circle cx="350" cy="320" r="20" fill="rgba(74,222,128,0.1)" stroke="rgba(74,222,128,0.6)" stroke-width="1.5"/>
+    <rect x="341" y="312" width="18" height="16" rx="2" fill="none" stroke="rgba(74,222,128,0.7)" stroke-width="1.2"/>
+    <line x1="345" y1="318" x2="355" y2="318" stroke="rgba(74,222,128,0.5)" stroke-width="1"/>
+    <line x1="345" y1="322" x2="353" y2="322" stroke="rgba(74,222,128,0.4)" stroke-width="1"/>
+  </g>
+  <line x1="578" y1="265" x2="370" y2="315" stroke="rgba(74,222,128,0.3)" stroke-width="1.5" stroke-dasharray="4,3"/>
+
+  <!-- Relay 7: top-left -->
+  <g filter="url(#win-relay-glow)">
+    <circle cx="420" cy="170" r="20" fill="rgba(74,222,128,0.1)" stroke="rgba(74,222,128,0.6)" stroke-width="1.5"/>
+    <rect x="411" y="162" width="18" height="16" rx="2" fill="none" stroke="rgba(74,222,128,0.7)" stroke-width="1.2"/>
+    <line x1="415" y1="168" x2="425" y2="168" stroke="rgba(74,222,128,0.5)" stroke-width="1"/>
+    <line x1="415" y1="172" x2="423" y2="172" stroke="rgba(74,222,128,0.4)" stroke-width="1"/>
+  </g>
+  <line x1="580" y1="248" x2="438" y2="182" stroke="rgba(74,222,128,0.3)" stroke-width="1.5" stroke-dasharray="4,3"/>
+
+  <!-- Sparkle effects -->
+  <g opacity="0.8">
+    <line x1="640" y1="105" x2="640" y2="90" stroke="rgba(74,222,128,0.7)" stroke-width="1.5"/>
+    <line x1="632" y1="97" x2="648" y2="97" stroke="rgba(74,222,128,0.7)" stroke-width="1.5"/>
+    <line x1="380" y1="155" x2="380" y2="143" stroke="rgba(250,204,21,0.6)" stroke-width="1.5"/>
+    <line x1="374" y1="149" x2="386" y2="149" stroke="rgba(250,204,21,0.6)" stroke-width="1.5"/>
+    <line x1="890" y1="340" x2="890" y2="353" stroke="rgba(167,139,250,0.7)" stroke-width="1.5"/>
+    <line x1="883" y1="346" x2="897" y2="346" stroke="rgba(167,139,250,0.7)" stroke-width="1.5"/>
+    <circle cx="310" cy="350" r="2" fill="rgba(74,222,128,0.6)"/>
+    <circle cx="820" cy="160" r="2" fill="rgba(250,204,21,0.6)"/>
+    <circle cx="480" cy="480" r="2" fill="rgba(167,139,250,0.5)"/>
+  </g>
+
+</svg>

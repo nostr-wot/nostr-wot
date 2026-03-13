@@ -1,0 +1,115 @@
+<svg width="800" height="450" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="win-p-bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#1e1b4b;stop-opacity:1" />
+      <stop offset="50%" style="stop-color:#312e81;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#4c1d95;stop-opacity:1" />
+    </linearGradient>
+    <radialGradient id="win-p-glow" cx="50%" cy="43%" r="45%">
+      <stop offset="0%" style="stop-color:#7c3aed;stop-opacity:0.3" />
+      <stop offset="100%" style="stop-color:#1e1b4b;stop-opacity:0" />
+    </radialGradient>
+    <filter id="win-p-user-glow" x="-50%" y="-50%" width="200%" height="200%">
+      <feDropShadow dx="0" dy="0" stdDeviation="10" flood-color="#a78bfa" flood-opacity="0.7"/>
+    </filter>
+    <filter id="win-p-relay-glow" x="-50%" y="-50%" width="200%" height="200%">
+      <feDropShadow dx="0" dy="0" stdDeviation="5" flood-color="#4ade80" flood-opacity="0.5"/>
+    </filter>
+    <filter id="win-p-node-glow" x="-50%" y="-50%" width="200%" height="200%">
+      <feDropShadow dx="0" dy="0" stdDeviation="3" flood-color="#4ade80" flood-opacity="0.5"/>
+    </filter>
+  </defs>
+
+  <!-- Background -->
+  <rect width="100%" height="100%" fill="url(#win-p-bg)"/>
+  <rect width="100%" height="100%" fill="url(#win-p-glow)"/>
+
+  <!-- Trust rings -->
+  <circle cx="400" cy="200" r="190" fill="none" stroke="rgba(167,139,250,0.06)" stroke-width="1" stroke-dasharray="4,8"/>
+  <circle cx="400" cy="200" r="145" fill="none" stroke="rgba(167,139,250,0.10)" stroke-width="1" stroke-dasharray="4,8"/>
+  <circle cx="400" cy="200" r="100" fill="none" stroke="rgba(167,139,250,0.14)" stroke-width="1" stroke-dasharray="4,8"/>
+
+  <!-- Outer nodes -->
+  <g filter="url(#win-p-node-glow)">
+    <circle cx="130" cy="120" r="2.5" fill="rgba(248,113,113,0.5)"/>
+    <circle cx="670" cy="130" r="2.5" fill="rgba(248,113,113,0.5)"/>
+    <circle cx="300" cy="50" r="2.5" fill="rgba(250,204,21,0.6)"/>
+    <circle cx="510" cy="45" r="2.5" fill="rgba(250,204,21,0.6)"/>
+  </g>
+
+  <!-- Central user node -->
+  <g filter="url(#win-p-user-glow)">
+    <circle cx="400" cy="185" r="18" fill="rgba(167,139,250,0.25)" stroke="rgba(167,139,250,0.85)" stroke-width="2"/>
+    <circle cx="400" cy="178" r="7" fill="none" stroke="rgba(167,139,250,0.85)" stroke-width="1.5"/>
+    <path d="M387,195 C387,189 392,186 400,186 C408,186 413,189 413,195" fill="none" stroke="rgba(167,139,250,0.85)" stroke-width="1.5" stroke-linecap="round"/>
+  </g>
+
+  <!-- Broadcast rings -->
+  <circle cx="400" cy="185" r="35" fill="none" stroke="rgba(167,139,250,0.18)" stroke-width="1" stroke-dasharray="3,4"/>
+  <circle cx="400" cy="185" r="50" fill="none" stroke="rgba(167,139,250,0.1)" stroke-width="1" stroke-dasharray="3,4"/>
+
+  <!-- Relay 1: top -->
+  <g filter="url(#win-p-relay-glow)">
+    <circle cx="400" cy="80" r="15" fill="rgba(74,222,128,0.1)" stroke="rgba(74,222,128,0.6)" stroke-width="1.2"/>
+    <rect x="393" y="74" width="14" height="12" rx="2" fill="none" stroke="rgba(74,222,128,0.7)" stroke-width="1"/>
+    <line x1="396" y1="79" x2="404" y2="79" stroke="rgba(74,222,128,0.5)" stroke-width="0.8"/>
+  </g>
+  <line x1="400" y1="167" x2="400" y2="95" stroke="rgba(74,222,128,0.3)" stroke-width="1.2" stroke-dasharray="3,3"/>
+
+  <!-- Relay 2: top-right -->
+  <g filter="url(#win-p-relay-glow)">
+    <circle cx="540" cy="115" r="15" fill="rgba(74,222,128,0.1)" stroke="rgba(74,222,128,0.6)" stroke-width="1.2"/>
+    <rect x="533" y="109" width="14" height="12" rx="2" fill="none" stroke="rgba(74,222,128,0.7)" stroke-width="1"/>
+    <line x1="536" y1="114" x2="544" y2="114" stroke="rgba(74,222,128,0.5)" stroke-width="0.8"/>
+  </g>
+  <line x1="416" y1="175" x2="527" y2="125" stroke="rgba(74,222,128,0.3)" stroke-width="1.2" stroke-dasharray="3,3"/>
+
+  <!-- Relay 3: right -->
+  <g filter="url(#win-p-relay-glow)">
+    <circle cx="580" cy="230" r="15" fill="rgba(74,222,128,0.1)" stroke="rgba(74,222,128,0.6)" stroke-width="1.2"/>
+    <rect x="573" y="224" width="14" height="12" rx="2" fill="none" stroke="rgba(74,222,128,0.7)" stroke-width="1"/>
+    <line x1="576" y1="229" x2="584" y2="229" stroke="rgba(74,222,128,0.5)" stroke-width="0.8"/>
+  </g>
+  <line x1="418" y1="190" x2="565" y2="225" stroke="rgba(74,222,128,0.3)" stroke-width="1.2" stroke-dasharray="3,3"/>
+
+  <!-- Relay 4: bottom-right -->
+  <g filter="url(#win-p-relay-glow)">
+    <circle cx="520" cy="330" r="15" fill="rgba(74,222,128,0.1)" stroke="rgba(74,222,128,0.6)" stroke-width="1.2"/>
+    <rect x="513" y="324" width="14" height="12" rx="2" fill="none" stroke="rgba(74,222,128,0.7)" stroke-width="1"/>
+    <line x1="516" y1="329" x2="524" y2="329" stroke="rgba(74,222,128,0.5)" stroke-width="0.8"/>
+  </g>
+  <line x1="410" y1="200" x2="507" y2="322" stroke="rgba(74,222,128,0.3)" stroke-width="1.2" stroke-dasharray="3,3"/>
+
+  <!-- Relay 5: bottom-left -->
+  <g filter="url(#win-p-relay-glow)">
+    <circle cx="280" cy="330" r="15" fill="rgba(74,222,128,0.1)" stroke="rgba(74,222,128,0.6)" stroke-width="1.2"/>
+    <rect x="273" y="324" width="14" height="12" rx="2" fill="none" stroke="rgba(74,222,128,0.7)" stroke-width="1"/>
+    <line x1="276" y1="329" x2="284" y2="329" stroke="rgba(74,222,128,0.5)" stroke-width="0.8"/>
+  </g>
+  <line x1="390" y1="200" x2="293" y2="322" stroke="rgba(74,222,128,0.3)" stroke-width="1.2" stroke-dasharray="3,3"/>
+
+  <!-- Relay 6: left -->
+  <g filter="url(#win-p-relay-glow)">
+    <circle cx="220" cy="230" r="15" fill="rgba(74,222,128,0.1)" stroke="rgba(74,222,128,0.6)" stroke-width="1.2"/>
+    <rect x="213" y="224" width="14" height="12" rx="2" fill="none" stroke="rgba(74,222,128,0.7)" stroke-width="1"/>
+    <line x1="216" y1="229" x2="224" y2="229" stroke="rgba(74,222,128,0.5)" stroke-width="0.8"/>
+  </g>
+  <line x1="382" y1="190" x2="235" y2="225" stroke="rgba(74,222,128,0.3)" stroke-width="1.2" stroke-dasharray="3,3"/>
+
+  <!-- Relay 7: top-left -->
+  <g filter="url(#win-p-relay-glow)">
+    <circle cx="260" cy="115" r="15" fill="rgba(74,222,128,0.1)" stroke="rgba(74,222,128,0.6)" stroke-width="1.2"/>
+    <rect x="253" y="109" width="14" height="12" rx="2" fill="none" stroke="rgba(74,222,128,0.7)" stroke-width="1"/>
+    <line x1="256" y1="114" x2="264" y2="114" stroke="rgba(74,222,128,0.5)" stroke-width="0.8"/>
+  </g>
+  <line x1="384" y1="175" x2="273" y2="125" stroke="rgba(74,222,128,0.3)" stroke-width="1.2" stroke-dasharray="3,3"/>
+
+  <!-- Sparkles -->
+  <line x1="430" y1="68" x2="430" y2="56" stroke="rgba(74,222,128,0.7)" stroke-width="1.5"/>
+  <line x1="424" y1="62" x2="436" y2="62" stroke="rgba(74,222,128,0.7)" stroke-width="1.5"/>
+  <line x1="230" y1="100" x2="230" y2="90" stroke="rgba(250,204,21,0.6)" stroke-width="1.5"/>
+  <line x1="225" y1="95" x2="235" y2="95" stroke="rgba(250,204,21,0.6)" stroke-width="1.5"/>
+  <circle cx="610" cy="210" r="1.5" fill="rgba(74,222,128,0.6)"/>
+  <circle cx="195" cy="255" r="1.5" fill="rgba(250,204,21,0.6)"/>
+
+</svg>

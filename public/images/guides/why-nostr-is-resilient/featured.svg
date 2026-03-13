@@ -1,0 +1,143 @@
+<svg width="1200" height="630" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="wnr-bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#1e1b4b;stop-opacity:1" />
+      <stop offset="50%" style="stop-color:#312e81;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#4c1d95;stop-opacity:1" />
+    </linearGradient>
+    <radialGradient id="wnr-glow" cx="50%" cy="45%" r="45%">
+      <stop offset="0%" style="stop-color:#7c3aed;stop-opacity:0.25" />
+      <stop offset="100%" style="stop-color:#1e1b4b;stop-opacity:0" />
+    </radialGradient>
+    <filter id="wnr-node-glow" x="-50%" y="-50%" width="200%" height="200%">
+      <feDropShadow dx="0" dy="0" stdDeviation="5" flood-color="#4ade80" flood-opacity="0.6"/>
+    </filter>
+    <filter id="wnr-dead-glow" x="-50%" y="-50%" width="200%" height="200%">
+      <feDropShadow dx="0" dy="0" stdDeviation="4" flood-color="#f87171" flood-opacity="0.4"/>
+    </filter>
+    <filter id="wnr-mesh-glow" x="-50%" y="-50%" width="200%" height="200%">
+      <feDropShadow dx="0" dy="0" stdDeviation="3" flood-color="#4ade80" flood-opacity="0.3"/>
+    </filter>
+  </defs>
+
+  <!-- Background -->
+  <rect width="100%" height="100%" fill="url(#wnr-bg)"/>
+  <rect width="100%" height="100%" fill="url(#wnr-glow)"/>
+
+  <!-- Subtle grid -->
+  <g opacity="0.05" stroke="white" stroke-width="0.5">
+    <line x1="0" y1="0" x2="1200" y2="630"/>
+    <line x1="200" y1="0" x2="1200" y2="500"/>
+    <line x1="0" y1="200" x2="1000" y2="630"/>
+    <line x1="400" y1="0" x2="1200" y2="400"/>
+    <line x1="0" y1="400" x2="800" y2="630"/>
+    <line x1="1200" y1="0" x2="0" y2="630"/>
+    <line x1="1000" y1="0" x2="0" y2="500"/>
+    <line x1="1200" y1="200" x2="200" y2="630"/>
+  </g>
+
+  <!-- Trust rings (wider, more diffuse) -->
+  <circle cx="600" cy="300" r="280" fill="none" stroke="rgba(167,139,250,0.05)" stroke-width="1" stroke-dasharray="4,8"/>
+  <circle cx="600" cy="300" r="220" fill="none" stroke="rgba(167,139,250,0.08)" stroke-width="1" stroke-dasharray="4,8"/>
+  <circle cx="600" cy="300" r="160" fill="none" stroke="rgba(167,139,250,0.12)" stroke-width="1" stroke-dasharray="4,8"/>
+
+  <!-- === DISTRIBUTED MESH NETWORK === -->
+  <!-- Live nodes -->
+  <g filter="url(#wnr-node-glow)">
+    <!-- Row 1 -->
+    <circle cx="400" cy="140" r="8" fill="rgba(74,222,128,0.2)" stroke="rgba(74,222,128,0.7)" stroke-width="1.5"/>
+    <circle cx="600" cy="110" r="8" fill="rgba(74,222,128,0.2)" stroke="rgba(74,222,128,0.7)" stroke-width="1.5"/>
+    <circle cx="800" cy="140" r="8" fill="rgba(74,222,128,0.2)" stroke="rgba(74,222,128,0.7)" stroke-width="1.5"/>
+    <!-- Row 2 -->
+    <circle cx="300" cy="260" r="8" fill="rgba(74,222,128,0.2)" stroke="rgba(74,222,128,0.7)" stroke-width="1.5"/>
+    <circle cx="500" cy="240" r="8" fill="rgba(74,222,128,0.2)" stroke="rgba(74,222,128,0.7)" stroke-width="1.5"/>
+    <circle cx="900" cy="260" r="8" fill="rgba(74,222,128,0.2)" stroke="rgba(74,222,128,0.7)" stroke-width="1.5"/>
+    <!-- Row 3 -->
+    <circle cx="350" cy="400" r="8" fill="rgba(74,222,128,0.2)" stroke="rgba(74,222,128,0.7)" stroke-width="1.5"/>
+    <circle cx="600" cy="420" r="8" fill="rgba(74,222,128,0.2)" stroke="rgba(74,222,128,0.7)" stroke-width="1.5"/>
+    <circle cx="850" cy="400" r="8" fill="rgba(74,222,128,0.2)" stroke="rgba(74,222,128,0.7)" stroke-width="1.5"/>
+    <!-- Row 4 -->
+    <circle cx="450" cy="520" r="8" fill="rgba(74,222,128,0.2)" stroke="rgba(74,222,128,0.7)" stroke-width="1.5"/>
+    <circle cx="750" cy="520" r="8" fill="rgba(74,222,128,0.2)" stroke="rgba(74,222,128,0.7)" stroke-width="1.5"/>
+  </g>
+
+  <!-- Dead/failing nodes (crossed out) -->
+  <g filter="url(#wnr-dead-glow)">
+    <!-- Dead node 1 -->
+    <circle cx="700" cy="260" r="8" fill="rgba(248,113,113,0.1)" stroke="rgba(248,113,113,0.4)" stroke-width="1.5" stroke-dasharray="3,2"/>
+    <line x1="694" y1="254" x2="706" y2="266" stroke="rgba(248,113,113,0.6)" stroke-width="1.5"/>
+    <line x1="706" y1="254" x2="694" y2="266" stroke="rgba(248,113,113,0.6)" stroke-width="1.5"/>
+    <!-- Dead node 2 -->
+    <circle cx="500" cy="380" r="8" fill="rgba(248,113,113,0.1)" stroke="rgba(248,113,113,0.4)" stroke-width="1.5" stroke-dasharray="3,2"/>
+    <line x1="494" y1="374" x2="506" y2="386" stroke="rgba(248,113,113,0.6)" stroke-width="1.5"/>
+    <line x1="506" y1="374" x2="494" y2="386" stroke="rgba(248,113,113,0.6)" stroke-width="1.5"/>
+  </g>
+
+  <!-- Mesh connections between live nodes -->
+  <g filter="url(#wnr-mesh-glow)">
+    <!-- Row 1 connections -->
+    <line x1="400" y1="140" x2="600" y2="110" stroke="rgba(74,222,128,0.25)" stroke-width="1"/>
+    <line x1="600" y1="110" x2="800" y2="140" stroke="rgba(74,222,128,0.25)" stroke-width="1"/>
+    <!-- Row 1 to Row 2 -->
+    <line x1="400" y1="140" x2="300" y2="260" stroke="rgba(74,222,128,0.2)" stroke-width="1"/>
+    <line x1="400" y1="140" x2="500" y2="240" stroke="rgba(74,222,128,0.2)" stroke-width="1"/>
+    <line x1="600" y1="110" x2="500" y2="240" stroke="rgba(74,222,128,0.2)" stroke-width="1"/>
+    <line x1="800" y1="140" x2="900" y2="260" stroke="rgba(74,222,128,0.2)" stroke-width="1"/>
+    <!-- Row 2 cross connections -->
+    <line x1="300" y1="260" x2="500" y2="240" stroke="rgba(74,222,128,0.18)" stroke-width="1"/>
+    <line x1="500" y1="240" x2="900" y2="260" stroke="rgba(74,222,128,0.12)" stroke-width="1" stroke-dasharray="4,4"/>
+    <!-- Row 2 to Row 3 -->
+    <line x1="300" y1="260" x2="350" y2="400" stroke="rgba(74,222,128,0.2)" stroke-width="1"/>
+    <line x1="500" y1="240" x2="350" y2="400" stroke="rgba(74,222,128,0.18)" stroke-width="1"/>
+    <line x1="500" y1="240" x2="600" y2="420" stroke="rgba(74,222,128,0.2)" stroke-width="1"/>
+    <line x1="900" y1="260" x2="850" y2="400" stroke="rgba(74,222,128,0.2)" stroke-width="1"/>
+    <line x1="900" y1="260" x2="600" y2="420" stroke="rgba(74,222,128,0.12)" stroke-width="1" stroke-dasharray="4,4"/>
+    <!-- Row 3 connections -->
+    <line x1="350" y1="400" x2="600" y2="420" stroke="rgba(74,222,128,0.22)" stroke-width="1"/>
+    <line x1="600" y1="420" x2="850" y2="400" stroke="rgba(74,222,128,0.22)" stroke-width="1"/>
+    <!-- Row 3 to Row 4 -->
+    <line x1="350" y1="400" x2="450" y2="520" stroke="rgba(74,222,128,0.2)" stroke-width="1"/>
+    <line x1="600" y1="420" x2="450" y2="520" stroke="rgba(74,222,128,0.18)" stroke-width="1"/>
+    <line x1="600" y1="420" x2="750" y2="520" stroke="rgba(74,222,128,0.18)" stroke-width="1"/>
+    <line x1="850" y1="400" x2="750" y2="520" stroke="rgba(74,222,128,0.2)" stroke-width="1"/>
+    <!-- Row 4 connection -->
+    <line x1="450" y1="520" x2="750" y2="520" stroke="rgba(74,222,128,0.22)" stroke-width="1"/>
+  </g>
+
+  <!-- Faded connections to dead nodes (broken) -->
+  <line x1="500" y1="240" x2="700" y2="260" stroke="rgba(248,113,113,0.12)" stroke-width="1" stroke-dasharray="2,4"/>
+  <line x1="800" y1="140" x2="700" y2="260" stroke="rgba(248,113,113,0.12)" stroke-width="1" stroke-dasharray="2,4"/>
+  <line x1="900" y1="260" x2="700" y2="260" stroke="rgba(248,113,113,0.12)" stroke-width="1" stroke-dasharray="2,4"/>
+  <line x1="350" y1="400" x2="500" y2="380" stroke="rgba(248,113,113,0.12)" stroke-width="1" stroke-dasharray="2,4"/>
+  <line x1="600" y1="420" x2="500" y2="380" stroke="rgba(248,113,113,0.12)" stroke-width="1" stroke-dasharray="2,4"/>
+
+  <!-- Bypass routes around dead nodes (green, slightly brighter) -->
+  <path d="M500,240 C620,230 880,240 900,260" fill="none" stroke="rgba(74,222,128,0.3)" stroke-width="1.5" stroke-dasharray="6,3"/>
+  <path d="M350,400 C420,360 560,380 600,420" fill="none" stroke="rgba(74,222,128,0.3)" stroke-width="1.5" stroke-dasharray="6,3"/>
+
+  <!-- Outer scattered nodes -->
+  <g filter="url(#wnr-node-glow)">
+    <circle cx="170" cy="150" r="3" fill="rgba(250,204,21,0.6)"/>
+    <circle cx="1040" cy="160" r="3" fill="rgba(250,204,21,0.6)"/>
+    <circle cx="150" cy="450" r="3" fill="rgba(250,204,21,0.5)"/>
+    <circle cx="1060" cy="440" r="3" fill="rgba(250,204,21,0.5)"/>
+    <circle cx="600" cy="560" r="3" fill="rgba(250,204,21,0.5)"/>
+  </g>
+  <line x1="170" y1="150" x2="300" y2="260" stroke="rgba(250,204,21,0.12)" stroke-width="1"/>
+  <line x1="1040" y1="160" x2="900" y2="260" stroke="rgba(250,204,21,0.12)" stroke-width="1"/>
+  <line x1="150" y1="450" x2="350" y2="400" stroke="rgba(250,204,21,0.1)" stroke-width="1"/>
+  <line x1="1060" y1="440" x2="850" y2="400" stroke="rgba(250,204,21,0.1)" stroke-width="1"/>
+
+  <!-- Sparkles -->
+  <g opacity="0.8">
+    <line x1="650" y1="95" x2="650" y2="80" stroke="rgba(74,222,128,0.7)" stroke-width="1.5"/>
+    <line x1="642" y1="87" x2="658" y2="87" stroke="rgba(74,222,128,0.7)" stroke-width="1.5"/>
+    <line x1="260" y1="235" x2="260" y2="223" stroke="rgba(250,204,21,0.6)" stroke-width="1.5"/>
+    <line x1="254" y1="229" x2="266" y2="229" stroke="rgba(250,204,21,0.6)" stroke-width="1.5"/>
+    <line x1="940" y1="280" x2="940" y2="293" stroke="rgba(167,139,250,0.7)" stroke-width="1.5"/>
+    <line x1="933" y1="286" x2="947" y2="286" stroke="rgba(167,139,250,0.7)" stroke-width="1.5"/>
+    <circle cx="200" cy="350" r="2" fill="rgba(74,222,128,0.6)"/>
+    <circle cx="1000" cy="340" r="2" fill="rgba(250,204,21,0.6)"/>
+  </g>
+
+</svg>
