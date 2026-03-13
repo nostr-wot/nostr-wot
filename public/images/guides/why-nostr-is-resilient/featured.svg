@@ -5,139 +5,257 @@
       <stop offset="50%" style="stop-color:#312e81;stop-opacity:1" />
       <stop offset="100%" style="stop-color:#4c1d95;stop-opacity:1" />
     </linearGradient>
-    <radialGradient id="wnr-glow" cx="50%" cy="45%" r="45%">
-      <stop offset="0%" style="stop-color:#7c3aed;stop-opacity:0.25" />
+    <radialGradient id="wnr-glow-left" cx="28%" cy="50%" r="35%">
+      <stop offset="0%" style="stop-color:#f87171;stop-opacity:0.12" />
       <stop offset="100%" style="stop-color:#1e1b4b;stop-opacity:0" />
     </radialGradient>
-    <filter id="wnr-node-glow" x="-50%" y="-50%" width="200%" height="200%">
-      <feDropShadow dx="0" dy="0" stdDeviation="5" flood-color="#4ade80" flood-opacity="0.6"/>
+    <radialGradient id="wnr-glow-right" cx="72%" cy="50%" r="35%">
+      <stop offset="0%" style="stop-color:#4ade80;stop-opacity:0.14" />
+      <stop offset="100%" style="stop-color:#1e1b4b;stop-opacity:0" />
+    </radialGradient>
+    <filter id="wnr-dead-glow" x="-40%" y="-40%" width="180%" height="180%">
+      <feDropShadow dx="0" dy="0" stdDeviation="8" flood-color="#f87171" flood-opacity="0.5"/>
     </filter>
-    <filter id="wnr-dead-glow" x="-50%" y="-50%" width="200%" height="200%">
-      <feDropShadow dx="0" dy="0" stdDeviation="4" flood-color="#f87171" flood-opacity="0.4"/>
+    <filter id="wnr-live-glow" x="-40%" y="-40%" width="180%" height="180%">
+      <feDropShadow dx="0" dy="0" stdDeviation="8" flood-color="#4ade80" flood-opacity="0.6"/>
     </filter>
-    <filter id="wnr-mesh-glow" x="-50%" y="-50%" width="200%" height="200%">
-      <feDropShadow dx="0" dy="0" stdDeviation="3" flood-color="#4ade80" flood-opacity="0.3"/>
+    <filter id="wnr-node-glow" x="-60%" y="-60%" width="220%" height="220%">
+      <feDropShadow dx="0" dy="0" stdDeviation="5" flood-color="#4ade80" flood-opacity="0.5"/>
+    </filter>
+    <filter id="wnr-center-glow" x="-60%" y="-60%" width="220%" height="220%">
+      <feDropShadow dx="0" dy="0" stdDeviation="10" flood-color="#a78bfa" flood-opacity="0.6"/>
+    </filter>
+    <filter id="wnr-shadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="2" stdDeviation="4" flood-color="#000" flood-opacity="0.4"/>
     </filter>
   </defs>
 
   <!-- Background -->
-  <rect width="100%" height="100%" fill="url(#wnr-bg)"/>
-  <rect width="100%" height="100%" fill="url(#wnr-glow)"/>
+  <rect width="1200" height="630" fill="url(#wnr-bg)"/>
+  <rect width="1200" height="630" fill="url(#wnr-glow-left)"/>
+  <rect width="1200" height="630" fill="url(#wnr-glow-right)"/>
 
   <!-- Subtle grid -->
-  <g opacity="0.05" stroke="white" stroke-width="0.5">
+  <g opacity="0.04" stroke="white" stroke-width="0.5">
     <line x1="0" y1="0" x2="1200" y2="630"/>
-    <line x1="200" y1="0" x2="1200" y2="500"/>
-    <line x1="0" y1="200" x2="1000" y2="630"/>
-    <line x1="400" y1="0" x2="1200" y2="400"/>
-    <line x1="0" y1="400" x2="800" y2="630"/>
-    <line x1="1200" y1="0" x2="0" y2="630"/>
-    <line x1="1000" y1="0" x2="0" y2="500"/>
-    <line x1="1200" y1="200" x2="200" y2="630"/>
+    <line x1="0" y1="630" x2="1200" y2="0"/>
+    <line x1="300" y1="0" x2="300" y2="630"/>
+    <line x1="600" y1="0" x2="600" y2="630"/>
+    <line x1="900" y1="0" x2="900" y2="630"/>
+    <line x1="0" y1="210" x2="1200" y2="210"/>
+    <line x1="0" y1="420" x2="1200" y2="420"/>
   </g>
 
-  <!-- Trust rings (wider, more diffuse) -->
-  <circle cx="600" cy="300" r="280" fill="none" stroke="rgba(167,139,250,0.05)" stroke-width="1" stroke-dasharray="4,8"/>
-  <circle cx="600" cy="300" r="220" fill="none" stroke="rgba(167,139,250,0.08)" stroke-width="1" stroke-dasharray="4,8"/>
-  <circle cx="600" cy="300" r="160" fill="none" stroke="rgba(167,139,250,0.12)" stroke-width="1" stroke-dasharray="4,8"/>
+  <!-- ─── LEFT SIDE: Centralized / Collapsed ─── -->
 
-  <!-- === DISTRIBUTED MESH NETWORK === -->
-  <!-- Live nodes -->
+  <!-- LEFT label -->
+  <text x="300" y="68" font-family="'Inter', sans-serif" font-size="13" font-weight="600" fill="rgba(248,113,113,0.7)" text-anchor="middle" letter-spacing="3">CENTRALIZED</text>
+
+  <!-- Central cloud server (the single point of failure) -->
+  <g filter="url(#wnr-dead-glow)" opacity="0.85">
+    <!-- Cloud shape -->
+    <path d="M230,200 Q210,180 220,160 Q230,138 255,140 Q260,122 280,118 Q300,114 315,128 Q330,115 350,118 Q375,120 378,145 Q398,148 400,170 Q402,192 382,200 Z"
+      fill="rgba(248,113,113,0.15)" stroke="rgba(248,113,113,0.5)" stroke-width="1.5"/>
+    <!-- Server rack lines inside cloud -->
+    <rect x="270" y="155" width="90" height="8" rx="2" fill="rgba(248,113,113,0.25)" stroke="rgba(248,113,113,0.3)" stroke-width="0.5"/>
+    <rect x="270" y="167" width="90" height="8" rx="2" fill="rgba(248,113,113,0.2)" stroke="rgba(248,113,113,0.3)" stroke-width="0.5"/>
+    <rect x="270" y="179" width="90" height="8" rx="2" fill="rgba(248,113,113,0.15)" stroke="rgba(248,113,113,0.3)" stroke-width="0.5"/>
+    <!-- Small dots on server racks (status lights - all red) -->
+    <circle cx="278" cy="159" r="2" fill="rgba(248,113,113,0.8)"/>
+    <circle cx="278" cy="171" r="2" fill="rgba(248,113,113,0.6)"/>
+    <circle cx="278" cy="183" r="2" fill="rgba(248,113,113,0.4)"/>
+  </g>
+
+  <!-- Big red X over cloud -->
+  <g filter="url(#wnr-dead-glow)" opacity="0.9">
+    <line x1="255" y1="125" x2="375" y2="210" stroke="rgba(248,113,113,0.9)" stroke-width="4" stroke-linecap="round"/>
+    <line x1="375" y1="125" x2="255" y2="210" stroke="rgba(248,113,113,0.9)" stroke-width="4" stroke-linecap="round"/>
+  </g>
+
+  <!-- DOWN badge -->
+  <rect x="272" y="218" width="86" height="24" rx="12" fill="rgba(248,113,113,0.2)" stroke="rgba(248,113,113,0.6)" stroke-width="1"/>
+  <text x="315" y="234" font-family="'Inter', sans-serif" font-size="11" font-weight="700" fill="rgba(248,113,113,0.9)" text-anchor="middle" letter-spacing="2">DOWN</text>
+
+  <!-- Platform cards collapsed — hanging from the dead server -->
+  <!-- Lines from cloud down to cards -->
+  <line x1="270" y1="200" x2="185" y2="290" stroke="rgba(248,113,113,0.25)" stroke-width="1" stroke-dasharray="3,4"/>
+  <line x1="300" y1="202" x2="300" y2="290" stroke="rgba(248,113,113,0.25)" stroke-width="1" stroke-dasharray="3,4"/>
+  <line x1="335" y1="200" x2="415" y2="290" stroke="rgba(248,113,113,0.25)" stroke-width="1" stroke-dasharray="3,4"/>
+
+  <!-- Platform card 1 — Social Network X-like -->
+  <g filter="url(#wnr-shadow)" opacity="0.7">
+    <rect x="130" y="290" width="110" height="72" rx="8" fill="rgba(20,15,50,0.8)" stroke="rgba(248,113,113,0.35)" stroke-width="1"/>
+    <text x="185" y="318" font-family="'Inter', sans-serif" font-size="22" font-weight="800" fill="rgba(248,113,113,0.5)" text-anchor="middle">𝕏</text>
+    <text x="185" y="340" font-family="'Inter', sans-serif" font-size="9" fill="rgba(248,113,113,0.4)" text-anchor="middle">OFFLINE</text>
+    <!-- Small red dot -->
+    <circle cx="228" cy="300" r="4" fill="rgba(248,113,113,0.7)"/>
+    <line x1="225" y1="297" x2="231" y2="303" stroke="rgba(248,113,113,0.9)" stroke-width="1.5"/>
+    <line x1="231" y1="297" x2="225" y2="303" stroke="rgba(248,113,113,0.9)" stroke-width="1.5"/>
+  </g>
+
+  <!-- Platform card 2 — Professional Network -->
+  <g filter="url(#wnr-shadow)" opacity="0.7">
+    <rect x="245" y="290" width="110" height="72" rx="8" fill="rgba(20,15,50,0.8)" stroke="rgba(248,113,113,0.35)" stroke-width="1"/>
+    <text x="300" y="318" font-family="'Inter', sans-serif" font-size="14" font-weight="800" fill="rgba(248,113,113,0.45)" text-anchor="middle">in</text>
+    <text x="300" y="340" font-family="'Inter', sans-serif" font-size="9" fill="rgba(248,113,113,0.4)" text-anchor="middle">OFFLINE</text>
+    <circle cx="343" cy="300" r="4" fill="rgba(248,113,113,0.7)"/>
+    <line x1="340" y1="297" x2="346" y2="303" stroke="rgba(248,113,113,0.9)" stroke-width="1.5"/>
+    <line x1="346" y1="297" x2="340" y2="303" stroke="rgba(248,113,113,0.9)" stroke-width="1.5"/>
+  </g>
+
+  <!-- Platform card 3 — AI Chat -->
+  <g filter="url(#wnr-shadow)" opacity="0.7">
+    <rect x="360" y="290" width="110" height="72" rx="8" fill="rgba(20,15,50,0.8)" stroke="rgba(248,113,113,0.35)" stroke-width="1"/>
+    <text x="415" y="316" font-family="'Inter', sans-serif" font-size="11" font-weight="600" fill="rgba(248,113,113,0.45)" text-anchor="middle">AI Chat</text>
+    <text x="415" y="332" font-family="'Inter', sans-serif" font-size="9" fill="rgba(248,113,113,0.35)" text-anchor="middle">500 Error</text>
+    <text x="415" y="350" font-family="'Inter', sans-serif" font-size="9" fill="rgba(248,113,113,0.4)" text-anchor="middle">OFFLINE</text>
+    <circle cx="458" cy="300" r="4" fill="rgba(248,113,113,0.7)"/>
+    <line x1="455" y1="297" x2="461" y2="303" stroke="rgba(248,113,113,0.9)" stroke-width="1.5"/>
+    <line x1="461" y1="297" x2="455" y2="303" stroke="rgba(248,113,113,0.9)" stroke-width="1.5"/>
+  </g>
+
+  <!-- AWS/Cloud provider label at top of broken chain -->
+  <text x="300" y="400" font-family="'Inter', sans-serif" font-size="10" fill="rgba(248,113,113,0.4)" text-anchor="middle" letter-spacing="1">one provider fails → everything fails</text>
+
+  <!-- ─── DIVIDER ─── -->
+  <line x1="600" y1="60" x2="600" y2="570" stroke="rgba(167,139,250,0.15)" stroke-width="1" stroke-dasharray="6,5"/>
+
+  <!-- VS badge -->
+  <rect x="573" y="294" width="54" height="42" rx="21" fill="rgba(30,27,75,0.9)" stroke="rgba(167,139,250,0.35)" stroke-width="1.5"/>
+  <text x="600" y="321" font-family="'Inter', sans-serif" font-size="13" font-weight="800" fill="rgba(167,139,250,0.8)" text-anchor="middle">VS</text>
+
+  <!-- ─── RIGHT SIDE: Nostr Distributed ─── -->
+
+  <!-- RIGHT label -->
+  <text x="900" y="68" font-family="'Inter', sans-serif" font-size="13" font-weight="600" fill="rgba(74,222,128,0.7)" text-anchor="middle" letter-spacing="3">NOSTR</text>
+
+  <!-- Mesh of relay nodes — all alive -->
+  <!-- Node positions (center ~900, 315) -->
+  <!-- Central user node -->
+  <g filter="url(#wnr-center-glow)">
+    <circle cx="900" cy="315" r="28" fill="rgba(30,27,75,0.9)" stroke="rgba(167,139,250,0.7)" stroke-width="2"/>
+    <!-- Person silhouette -->
+    <circle cx="900" cy="304" r="8" fill="rgba(167,139,250,0.7)"/>
+    <path d="M882,328 Q882,318 900,318 Q918,318 918,328" fill="rgba(167,139,250,0.5)"/>
+  </g>
+
+  <!-- Relay nodes arranged around the user -->
+  <!-- Top -->
   <g filter="url(#wnr-node-glow)">
-    <!-- Row 1 -->
-    <circle cx="400" cy="140" r="8" fill="rgba(74,222,128,0.2)" stroke="rgba(74,222,128,0.7)" stroke-width="1.5"/>
-    <circle cx="600" cy="110" r="8" fill="rgba(74,222,128,0.2)" stroke="rgba(74,222,128,0.7)" stroke-width="1.5"/>
-    <circle cx="800" cy="140" r="8" fill="rgba(74,222,128,0.2)" stroke="rgba(74,222,128,0.7)" stroke-width="1.5"/>
-    <!-- Row 2 -->
-    <circle cx="300" cy="260" r="8" fill="rgba(74,222,128,0.2)" stroke="rgba(74,222,128,0.7)" stroke-width="1.5"/>
-    <circle cx="500" cy="240" r="8" fill="rgba(74,222,128,0.2)" stroke="rgba(74,222,128,0.7)" stroke-width="1.5"/>
-    <circle cx="900" cy="260" r="8" fill="rgba(74,222,128,0.2)" stroke="rgba(74,222,128,0.7)" stroke-width="1.5"/>
-    <!-- Row 3 -->
-    <circle cx="350" cy="400" r="8" fill="rgba(74,222,128,0.2)" stroke="rgba(74,222,128,0.7)" stroke-width="1.5"/>
-    <circle cx="600" cy="420" r="8" fill="rgba(74,222,128,0.2)" stroke="rgba(74,222,128,0.7)" stroke-width="1.5"/>
-    <circle cx="850" cy="400" r="8" fill="rgba(74,222,128,0.2)" stroke="rgba(74,222,128,0.7)" stroke-width="1.5"/>
-    <!-- Row 4 -->
-    <circle cx="450" cy="520" r="8" fill="rgba(74,222,128,0.2)" stroke="rgba(74,222,128,0.7)" stroke-width="1.5"/>
-    <circle cx="750" cy="520" r="8" fill="rgba(74,222,128,0.2)" stroke="rgba(74,222,128,0.7)" stroke-width="1.5"/>
+    <circle cx="900" cy="190" r="20" fill="rgba(30,27,75,0.9)" stroke="rgba(74,222,128,0.7)" stroke-width="1.5"/>
+    <rect x="891" y="181" width="18" height="12" rx="2" fill="rgba(74,222,128,0.25)" stroke="rgba(74,222,128,0.4)" stroke-width="0.8"/>
+    <rect x="891" y="196" width="18" height="5" rx="1" fill="rgba(74,222,128,0.2)"/>
+    <circle cx="896" cy="184" r="1.5" fill="rgba(74,222,128,0.8)"/>
   </g>
 
-  <!-- Dead/failing nodes (crossed out) -->
-  <g filter="url(#wnr-dead-glow)">
-    <!-- Dead node 1 -->
-    <circle cx="700" cy="260" r="8" fill="rgba(248,113,113,0.1)" stroke="rgba(248,113,113,0.4)" stroke-width="1.5" stroke-dasharray="3,2"/>
-    <line x1="694" y1="254" x2="706" y2="266" stroke="rgba(248,113,113,0.6)" stroke-width="1.5"/>
-    <line x1="706" y1="254" x2="694" y2="266" stroke="rgba(248,113,113,0.6)" stroke-width="1.5"/>
-    <!-- Dead node 2 -->
-    <circle cx="500" cy="380" r="8" fill="rgba(248,113,113,0.1)" stroke="rgba(248,113,113,0.4)" stroke-width="1.5" stroke-dasharray="3,2"/>
-    <line x1="494" y1="374" x2="506" y2="386" stroke="rgba(248,113,113,0.6)" stroke-width="1.5"/>
-    <line x1="506" y1="374" x2="494" y2="386" stroke="rgba(248,113,113,0.6)" stroke-width="1.5"/>
-  </g>
-
-  <!-- Mesh connections between live nodes -->
-  <g filter="url(#wnr-mesh-glow)">
-    <!-- Row 1 connections -->
-    <line x1="400" y1="140" x2="600" y2="110" stroke="rgba(74,222,128,0.25)" stroke-width="1"/>
-    <line x1="600" y1="110" x2="800" y2="140" stroke="rgba(74,222,128,0.25)" stroke-width="1"/>
-    <!-- Row 1 to Row 2 -->
-    <line x1="400" y1="140" x2="300" y2="260" stroke="rgba(74,222,128,0.2)" stroke-width="1"/>
-    <line x1="400" y1="140" x2="500" y2="240" stroke="rgba(74,222,128,0.2)" stroke-width="1"/>
-    <line x1="600" y1="110" x2="500" y2="240" stroke="rgba(74,222,128,0.2)" stroke-width="1"/>
-    <line x1="800" y1="140" x2="900" y2="260" stroke="rgba(74,222,128,0.2)" stroke-width="1"/>
-    <!-- Row 2 cross connections -->
-    <line x1="300" y1="260" x2="500" y2="240" stroke="rgba(74,222,128,0.18)" stroke-width="1"/>
-    <line x1="500" y1="240" x2="900" y2="260" stroke="rgba(74,222,128,0.12)" stroke-width="1" stroke-dasharray="4,4"/>
-    <!-- Row 2 to Row 3 -->
-    <line x1="300" y1="260" x2="350" y2="400" stroke="rgba(74,222,128,0.2)" stroke-width="1"/>
-    <line x1="500" y1="240" x2="350" y2="400" stroke="rgba(74,222,128,0.18)" stroke-width="1"/>
-    <line x1="500" y1="240" x2="600" y2="420" stroke="rgba(74,222,128,0.2)" stroke-width="1"/>
-    <line x1="900" y1="260" x2="850" y2="400" stroke="rgba(74,222,128,0.2)" stroke-width="1"/>
-    <line x1="900" y1="260" x2="600" y2="420" stroke="rgba(74,222,128,0.12)" stroke-width="1" stroke-dasharray="4,4"/>
-    <!-- Row 3 connections -->
-    <line x1="350" y1="400" x2="600" y2="420" stroke="rgba(74,222,128,0.22)" stroke-width="1"/>
-    <line x1="600" y1="420" x2="850" y2="400" stroke="rgba(74,222,128,0.22)" stroke-width="1"/>
-    <!-- Row 3 to Row 4 -->
-    <line x1="350" y1="400" x2="450" y2="520" stroke="rgba(74,222,128,0.2)" stroke-width="1"/>
-    <line x1="600" y1="420" x2="450" y2="520" stroke="rgba(74,222,128,0.18)" stroke-width="1"/>
-    <line x1="600" y1="420" x2="750" y2="520" stroke="rgba(74,222,128,0.18)" stroke-width="1"/>
-    <line x1="850" y1="400" x2="750" y2="520" stroke="rgba(74,222,128,0.2)" stroke-width="1"/>
-    <!-- Row 4 connection -->
-    <line x1="450" y1="520" x2="750" y2="520" stroke="rgba(74,222,128,0.22)" stroke-width="1"/>
-  </g>
-
-  <!-- Faded connections to dead nodes (broken) -->
-  <line x1="500" y1="240" x2="700" y2="260" stroke="rgba(248,113,113,0.12)" stroke-width="1" stroke-dasharray="2,4"/>
-  <line x1="800" y1="140" x2="700" y2="260" stroke="rgba(248,113,113,0.12)" stroke-width="1" stroke-dasharray="2,4"/>
-  <line x1="900" y1="260" x2="700" y2="260" stroke="rgba(248,113,113,0.12)" stroke-width="1" stroke-dasharray="2,4"/>
-  <line x1="350" y1="400" x2="500" y2="380" stroke="rgba(248,113,113,0.12)" stroke-width="1" stroke-dasharray="2,4"/>
-  <line x1="600" y1="420" x2="500" y2="380" stroke="rgba(248,113,113,0.12)" stroke-width="1" stroke-dasharray="2,4"/>
-
-  <!-- Bypass routes around dead nodes (green, slightly brighter) -->
-  <path d="M500,240 C620,230 880,240 900,260" fill="none" stroke="rgba(74,222,128,0.3)" stroke-width="1.5" stroke-dasharray="6,3"/>
-  <path d="M350,400 C420,360 560,380 600,420" fill="none" stroke="rgba(74,222,128,0.3)" stroke-width="1.5" stroke-dasharray="6,3"/>
-
-  <!-- Outer scattered nodes -->
+  <!-- Top-right -->
   <g filter="url(#wnr-node-glow)">
-    <circle cx="170" cy="150" r="3" fill="rgba(250,204,21,0.6)"/>
-    <circle cx="1040" cy="160" r="3" fill="rgba(250,204,21,0.6)"/>
-    <circle cx="150" cy="450" r="3" fill="rgba(250,204,21,0.5)"/>
-    <circle cx="1060" cy="440" r="3" fill="rgba(250,204,21,0.5)"/>
-    <circle cx="600" cy="560" r="3" fill="rgba(250,204,21,0.5)"/>
+    <circle cx="1020" cy="220" r="20" fill="rgba(30,27,75,0.9)" stroke="rgba(74,222,128,0.7)" stroke-width="1.5"/>
+    <rect x="1011" y="211" width="18" height="12" rx="2" fill="rgba(74,222,128,0.25)" stroke="rgba(74,222,128,0.4)" stroke-width="0.8"/>
+    <rect x="1011" y="226" width="18" height="5" rx="1" fill="rgba(74,222,128,0.2)"/>
+    <circle cx="1016" cy="214" r="1.5" fill="rgba(74,222,128,0.8)"/>
   </g>
-  <line x1="170" y1="150" x2="300" y2="260" stroke="rgba(250,204,21,0.12)" stroke-width="1"/>
-  <line x1="1040" y1="160" x2="900" y2="260" stroke="rgba(250,204,21,0.12)" stroke-width="1"/>
-  <line x1="150" y1="450" x2="350" y2="400" stroke="rgba(250,204,21,0.1)" stroke-width="1"/>
-  <line x1="1060" y1="440" x2="850" y2="400" stroke="rgba(250,204,21,0.1)" stroke-width="1"/>
 
-  <!-- Sparkles -->
-  <g opacity="0.8">
-    <line x1="650" y1="95" x2="650" y2="80" stroke="rgba(74,222,128,0.7)" stroke-width="1.5"/>
-    <line x1="642" y1="87" x2="658" y2="87" stroke="rgba(74,222,128,0.7)" stroke-width="1.5"/>
-    <line x1="260" y1="235" x2="260" y2="223" stroke="rgba(250,204,21,0.6)" stroke-width="1.5"/>
-    <line x1="254" y1="229" x2="266" y2="229" stroke="rgba(250,204,21,0.6)" stroke-width="1.5"/>
-    <line x1="940" y1="280" x2="940" y2="293" stroke="rgba(167,139,250,0.7)" stroke-width="1.5"/>
-    <line x1="933" y1="286" x2="947" y2="286" stroke="rgba(167,139,250,0.7)" stroke-width="1.5"/>
-    <circle cx="200" cy="350" r="2" fill="rgba(74,222,128,0.6)"/>
-    <circle cx="1000" cy="340" r="2" fill="rgba(250,204,21,0.6)"/>
+  <!-- Right -->
+  <g filter="url(#wnr-node-glow)">
+    <circle cx="1060" cy="315" r="20" fill="rgba(30,27,75,0.9)" stroke="rgba(74,222,128,0.7)" stroke-width="1.5"/>
+    <rect x="1051" y="306" width="18" height="12" rx="2" fill="rgba(74,222,128,0.25)" stroke="rgba(74,222,128,0.4)" stroke-width="0.8"/>
+    <rect x="1051" y="321" width="18" height="5" rx="1" fill="rgba(74,222,128,0.2)"/>
+    <circle cx="1056" cy="309" r="1.5" fill="rgba(74,222,128,0.8)"/>
   </g>
+
+  <!-- Bottom-right -->
+  <g filter="url(#wnr-node-glow)">
+    <circle cx="1020" cy="410" r="20" fill="rgba(30,27,75,0.9)" stroke="rgba(74,222,128,0.7)" stroke-width="1.5"/>
+    <rect x="1011" y="401" width="18" height="12" rx="2" fill="rgba(74,222,128,0.25)" stroke="rgba(74,222,128,0.4)" stroke-width="0.8"/>
+    <rect x="1011" y="416" width="18" height="5" rx="1" fill="rgba(74,222,128,0.2)"/>
+    <circle cx="1016" cy="404" r="1.5" fill="rgba(74,222,128,0.8)"/>
+  </g>
+
+  <!-- Bottom -->
+  <g filter="url(#wnr-node-glow)">
+    <circle cx="900" cy="440" r="20" fill="rgba(30,27,75,0.9)" stroke="rgba(74,222,128,0.7)" stroke-width="1.5"/>
+    <rect x="891" y="431" width="18" height="12" rx="2" fill="rgba(74,222,128,0.25)" stroke="rgba(74,222,128,0.4)" stroke-width="0.8"/>
+    <rect x="891" y="446" width="18" height="5" rx="1" fill="rgba(74,222,128,0.2)"/>
+    <circle cx="896" cy="434" r="1.5" fill="rgba(74,222,128,0.8)"/>
+  </g>
+
+  <!-- Bottom-left -->
+  <g filter="url(#wnr-node-glow)">
+    <circle cx="780" cy="410" r="20" fill="rgba(30,27,75,0.9)" stroke="rgba(74,222,128,0.7)" stroke-width="1.5"/>
+    <rect x="771" y="401" width="18" height="12" rx="2" fill="rgba(74,222,128,0.25)" stroke="rgba(74,222,128,0.4)" stroke-width="0.8"/>
+    <rect x="771" y="416" width="18" height="5" rx="1" fill="rgba(74,222,128,0.2)"/>
+    <circle cx="776" cy="404" r="1.5" fill="rgba(74,222,128,0.8)"/>
+  </g>
+
+  <!-- Left -->
+  <g filter="url(#wnr-node-glow)">
+    <circle cx="740" cy="315" r="20" fill="rgba(30,27,75,0.9)" stroke="rgba(74,222,128,0.7)" stroke-width="1.5"/>
+    <rect x="731" y="306" width="18" height="12" rx="2" fill="rgba(74,222,128,0.25)" stroke="rgba(74,222,128,0.4)" stroke-width="0.8"/>
+    <rect x="731" y="321" width="18" height="5" rx="1" fill="rgba(74,222,128,0.2)"/>
+    <circle cx="736" cy="309" r="1.5" fill="rgba(74,222,128,0.8)"/>
+  </g>
+
+  <!-- Top-left -->
+  <g filter="url(#wnr-node-glow)">
+    <circle cx="780" cy="220" r="20" fill="rgba(30,27,75,0.9)" stroke="rgba(74,222,128,0.7)" stroke-width="1.5"/>
+    <rect x="771" y="211" width="18" height="12" rx="2" fill="rgba(74,222,128,0.25)" stroke="rgba(74,222,128,0.4)" stroke-width="0.8"/>
+    <rect x="771" y="226" width="18" height="5" rx="1" fill="rgba(74,222,128,0.2)"/>
+    <circle cx="776" cy="214" r="1.5" fill="rgba(74,222,128,0.8)"/>
+  </g>
+
+  <!-- Connection lines: user to relays -->
+  <g stroke="rgba(74,222,128,0.35)" stroke-width="1.2">
+    <line x1="900" y1="287" x2="900" y2="210"/>
+    <line x1="919" y1="296" x2="1002" y2="234"/>
+    <line x1="928" y1="315" x2="1040" y2="315"/>
+    <line x1="919" y1="334" x2="1002" y2="396"/>
+    <line x1="900" y1="343" x2="900" y2="420"/>
+    <line x1="881" y1="334" x2="798" y2="396"/>
+    <line x1="872" y1="315" x2="760" y2="315"/>
+    <line x1="881" y1="296" x2="798" y2="234"/>
+  </g>
+
+  <!-- Cross-relay mesh connections (resilience!) -->
+  <g stroke="rgba(74,222,128,0.18)" stroke-width="1" stroke-dasharray="3,4">
+    <line x1="900" y1="210" x2="1002" y2="234"/>
+    <line x1="1002" y1="234" x2="1040" y2="315"/>
+    <line x1="1040" y1="315" x2="1002" y2="396"/>
+    <line x1="1002" y1="396" x2="900" y2="420"/>
+    <line x1="900" y1="420" x2="798" y2="396"/>
+    <line x1="798" y1="396" x2="760" y2="315"/>
+    <line x1="760" y1="315" x2="798" y2="234"/>
+    <line x1="798" y1="234" x2="900" y2="210"/>
+    <!-- Diagonal cross-links -->
+    <line x1="900" y1="210" x2="1040" y2="315"/>
+    <line x1="1002" y1="234" x2="1002" y2="396"/>
+    <line x1="900" y1="420" x2="760" y2="315"/>
+    <line x1="798" y1="234" x2="1040" y2="315"/>
+  </g>
+
+  <!-- Green pulse dots on connections (data flowing) -->
+  <g fill="rgba(74,222,128,0.7)">
+    <circle cx="900" cy="249" r="2.5"/>
+    <circle cx="961" cy="266" r="2"/>
+    <circle cx="984" cy="315" r="2"/>
+    <circle cx="961" cy="365" r="2"/>
+    <circle cx="838" cy="266" r="2"/>
+    <circle cx="900" cy="382" r="2.5"/>
+  </g>
+
+  <!-- "relay" labels under some nodes -->
+  <text x="900" y="175" font-family="'Inter', sans-serif" font-size="9" fill="rgba(74,222,128,0.5)" text-anchor="middle">relay.damus.io</text>
+  <text x="1060" y="345" font-family="'Inter', sans-serif" font-size="9" fill="rgba(74,222,128,0.5)" text-anchor="middle">nos.lol</text>
+  <text x="740" y="345" font-family="'Inter', sans-serif" font-size="9" fill="rgba(74,222,128,0.5)" text-anchor="middle">relay.primal.net</text>
+
+  <!-- Alive badge -->
+  <rect x="856" y="468" width="88" height="24" rx="12" fill="rgba(74,222,128,0.15)" stroke="rgba(74,222,128,0.5)" stroke-width="1"/>
+  <circle cx="872" cy="480" r="4" fill="rgba(74,222,128,0.8)"/>
+  <text x="906" y="484" font-family="'Inter', sans-serif" font-size="11" font-weight="700" fill="rgba(74,222,128,0.9)" text-anchor="middle" letter-spacing="1">ONLINE</text>
+
+  <text x="900" y="500" font-family="'Inter', sans-serif" font-size="10" fill="rgba(74,222,128,0.4)" text-anchor="middle" letter-spacing="1">no single point of failure</text>
+
+  <!-- ─── BOTTOM CENTER: 2025 reference ─── -->
+  <text x="600" y="562" font-family="'Inter', sans-serif" font-size="11" fill="rgba(167,139,250,0.35)" text-anchor="middle" letter-spacing="2">AWS · AZURE · CLOUDFLARE  —  2025 OUTAGES</text>
 
 </svg>
