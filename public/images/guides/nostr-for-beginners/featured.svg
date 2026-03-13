@@ -5,124 +5,157 @@
       <stop offset="50%" style="stop-color:#312e81;stop-opacity:1" />
       <stop offset="100%" style="stop-color:#4c1d95;stop-opacity:1" />
     </linearGradient>
-    <radialGradient id="nfb-glow" cx="50%" cy="45%" r="45%">
-      <stop offset="0%" style="stop-color:#7c3aed;stop-opacity:0.3" />
+    <radialGradient id="nfb-glow" cx="50%" cy="50%" r="45%">
+      <stop offset="0%" style="stop-color:#7c3aed;stop-opacity:0.22" />
       <stop offset="100%" style="stop-color:#1e1b4b;stop-opacity:0" />
     </radialGradient>
-    <filter id="nfb-shadow" x="-20%" y="-20%" width="140%" height="140%">
-      <feDropShadow dx="0" dy="0" stdDeviation="4" flood-color="#a78bfa" flood-opacity="0.5"/>
+    <filter id="nfb-step-glow" x="-40%" y="-40%" width="180%" height="180%">
+      <feDropShadow dx="0" dy="0" stdDeviation="10" flood-color="#a78bfa" flood-opacity="0.7"/>
     </filter>
     <filter id="nfb-key-glow" x="-50%" y="-50%" width="200%" height="200%">
-      <feDropShadow dx="0" dy="0" stdDeviation="12" flood-color="#a78bfa" flood-opacity="0.7"/>
+      <feDropShadow dx="0" dy="0" stdDeviation="10" flood-color="#fde047" flood-opacity="0.7"/>
     </filter>
-    <filter id="nfb-node-glow" x="-50%" y="-50%" width="200%" height="200%">
-      <feDropShadow dx="0" dy="0" stdDeviation="4" flood-color="#4ade80" flood-opacity="0.5"/>
+    <filter id="nfb-app-glow" x="-50%" y="-50%" width="200%" height="200%">
+      <feDropShadow dx="0" dy="0" stdDeviation="8" flood-color="#60a5fa" flood-opacity="0.6"/>
     </filter>
-    <filter id="nfb-step-glow" x="-50%" y="-50%" width="200%" height="200%">
-      <feDropShadow dx="0" dy="0" stdDeviation="6" flood-color="#4ade80" flood-opacity="0.4"/>
+    <filter id="nfb-relay-glow" x="-50%" y="-50%" width="200%" height="200%">
+      <feDropShadow dx="0" dy="0" stdDeviation="8" flood-color="#4ade80" flood-opacity="0.6"/>
+    </filter>
+    <filter id="nfb-post-glow" x="-50%" y="-50%" width="200%" height="200%">
+      <feDropShadow dx="0" dy="0" stdDeviation="8" flood-color="#f472b6" flood-opacity="0.5"/>
     </filter>
   </defs>
 
-  <!-- Background -->
-  <rect width="100%" height="100%" fill="url(#nfb-bg)"/>
-  <rect width="100%" height="100%" fill="url(#nfb-glow)"/>
+  <rect width="1200" height="630" fill="url(#nfb-bg)"/>
+  <rect width="1200" height="630" fill="url(#nfb-glow)"/>
 
-  <!-- Subtle grid pattern -->
-  <g opacity="0.05" stroke="white" stroke-width="0.5">
+  <!-- Subtle grid -->
+  <g opacity="0.04" stroke="white" stroke-width="0.5">
     <line x1="0" y1="0" x2="1200" y2="630"/>
-    <line x1="200" y1="0" x2="1200" y2="500"/>
-    <line x1="0" y1="200" x2="1000" y2="630"/>
-    <line x1="400" y1="0" x2="1200" y2="400"/>
-    <line x1="0" y1="400" x2="800" y2="630"/>
     <line x1="1200" y1="0" x2="0" y2="630"/>
-    <line x1="1000" y1="0" x2="0" y2="500"/>
-    <line x1="1200" y1="200" x2="200" y2="630"/>
+    <line x1="600" y1="0" x2="600" y2="630"/>
+    <line x1="0" y1="315" x2="1200" y2="315"/>
   </g>
 
-  <!-- Trust rings -->
-  <circle cx="600" cy="280" r="270" fill="none" stroke="rgba(167,139,250,0.06)" stroke-width="1" stroke-dasharray="4,8"/>
-  <circle cx="600" cy="280" r="210" fill="none" stroke="rgba(167,139,250,0.10)" stroke-width="1" stroke-dasharray="4,8"/>
-  <circle cx="600" cy="280" r="150" fill="none" stroke="rgba(167,139,250,0.14)" stroke-width="1" stroke-dasharray="4,8"/>
+  <!-- Title -->
+  <text x="600" y="52" font-family="'Inter', sans-serif" font-size="14" font-weight="700" fill="rgba(167,139,250,0.5)" text-anchor="middle" letter-spacing="2.5">YOUR FIRST STEPS ON NOSTR</text>
 
-  <!-- Connection nodes scattered -->
-  <g filter="url(#nfb-node-glow)">
-    <circle cx="340" cy="140" r="4" fill="rgba(74,222,128,0.7)"/>
-    <circle cx="260" cy="310" r="3" fill="rgba(74,222,128,0.5)"/>
-    <circle cx="370" cy="460" r="3.5" fill="rgba(74,222,128,0.6)"/>
-    <circle cx="870" cy="160" r="4" fill="rgba(74,222,128,0.7)"/>
-    <circle cx="940" cy="320" r="3" fill="rgba(74,222,128,0.5)"/>
-    <circle cx="830" cy="460" r="3.5" fill="rgba(74,222,128,0.6)"/>
-    <circle cx="450" cy="90" r="3" fill="rgba(250,204,21,0.6)"/>
-    <circle cx="760" cy="80" r="3" fill="rgba(250,204,21,0.6)"/>
-    <circle cx="470" cy="530" r="3" fill="rgba(250,204,21,0.5)"/>
-    <circle cx="740" cy="540" r="3" fill="rgba(250,204,21,0.5)"/>
-    <circle cx="180" cy="200" r="2.5" fill="rgba(248,113,113,0.5)"/>
-    <circle cx="1020" cy="210" r="2.5" fill="rgba(248,113,113,0.5)"/>
+  <!-- Journey path (subtle arc connecting the steps) -->
+  <path d="M 155,315 C 155,290 285,270 340,270 C 395,270 455,290 500,290 C 545,290 600,270 660,270 C 720,270 770,290 820,290 C 870,290 940,270 1005,270 C 1040,270 1050,285 1050,315"
+    fill="none" stroke="rgba(167,139,250,0.12)" stroke-width="1.5" stroke-dasharray="6,5"/>
+
+  <!-- ── STEP 1: UNDERSTAND (Your Identity) ── -->
+  <g filter="url(#nfb-step-glow)">
+    <circle cx="155" cy="285" r="50" fill="rgba(20,15,50,0.95)" stroke="rgba(167,139,250,0.65)" stroke-width="2"/>
+    <!-- Step number -->
+    <text x="155" y="272" font-family="'Inter', sans-serif" font-size="11" font-weight="700" fill="rgba(167,139,250,0.45)" text-anchor="middle">STEP</text>
+    <text x="155" y="296" font-family="'Inter', sans-serif" font-size="28" font-weight="800" fill="rgba(167,139,250,0.85)" text-anchor="middle">1</text>
   </g>
+  <text x="155" y="352" font-family="'Inter', sans-serif" font-size="12" font-weight="700" fill="rgba(167,139,250,0.75)" text-anchor="middle">Understand</text>
+  <text x="155" y="368" font-family="'Inter', sans-serif" font-size="10" fill="rgba(167,139,250,0.4)" text-anchor="middle">your identity</text>
 
-  <!-- Connection lines from nodes toward center -->
-  <line x1="340" y1="140" x2="500" y2="220" stroke="rgba(74,222,128,0.25)" stroke-width="1"/>
-  <line x1="260" y1="310" x2="440" y2="290" stroke="rgba(74,222,128,0.2)" stroke-width="1"/>
-  <line x1="870" y1="160" x2="710" y2="220" stroke="rgba(74,222,128,0.25)" stroke-width="1"/>
-  <line x1="940" y1="320" x2="760" y2="290" stroke="rgba(74,222,128,0.2)" stroke-width="1"/>
-  <line x1="180" y1="200" x2="340" y2="140" stroke="rgba(248,113,113,0.15)" stroke-width="1"/>
-  <line x1="1020" y1="210" x2="870" y2="160" stroke="rgba(248,113,113,0.15)" stroke-width="1"/>
+  <!-- Arrow 1→2 -->
+  <line x1="205" y1="285" x2="285" y2="285" stroke="rgba(167,139,250,0.3)" stroke-width="1.5" stroke-dasharray="4,3"/>
+  <polygon points="282,281 294,285 282,289" fill="rgba(167,139,250,0.45)"/>
 
-  <!-- Central key icon -->
+  <!-- ── STEP 2: KEY PAIR ── -->
   <g filter="url(#nfb-key-glow)">
-    <!-- Key head (circle) -->
-    <circle cx="600" cy="240" r="38" fill="none" stroke="rgba(167,139,250,0.85)" stroke-width="3"/>
-    <circle cx="600" cy="240" r="28" fill="none" stroke="rgba(167,139,250,0.4)" stroke-width="1.5"/>
-    <circle cx="600" cy="240" r="14" fill="rgba(167,139,250,0.3)"/>
-    <!-- Key shaft -->
-    <line x1="600" y1="278" x2="600" y2="370" stroke="rgba(167,139,250,0.85)" stroke-width="3" stroke-linecap="round"/>
-    <!-- Key teeth -->
-    <line x1="600" y1="340" x2="620" y2="340" stroke="rgba(167,139,250,0.85)" stroke-width="3" stroke-linecap="round"/>
-    <line x1="600" y1="358" x2="615" y2="358" stroke="rgba(167,139,250,0.85)" stroke-width="3" stroke-linecap="round"/>
-    <line x1="600" y1="370" x2="618" y2="370" stroke="rgba(167,139,250,0.7)" stroke-width="2.5" stroke-linecap="round"/>
+    <circle cx="340" cy="285" r="50" fill="rgba(20,15,50,0.95)" stroke="rgba(253,224,71,0.65)" stroke-width="2"/>
+    <!-- Key icon -->
+    <circle cx="330" cy="280" r="10" fill="none" stroke="rgba(253,224,71,0.85)" stroke-width="2.5"/>
+    <line x1="340" y1="280" x2="360" y2="280" stroke="rgba(253,224,71,0.85)" stroke-width="2.5" stroke-linecap="round"/>
+    <line x1="356" y1="280" x2="356" y2="288" stroke="rgba(253,224,71,0.85)" stroke-width="2.5" stroke-linecap="round"/>
+    <line x1="362" y1="280" x2="362" y2="288" stroke="rgba(253,224,71,0.85)" stroke-width="2.5" stroke-linecap="round"/>
   </g>
+  <text x="340" y="352" font-family="'Inter', sans-serif" font-size="12" font-weight="700" fill="rgba(253,224,71,0.75)" text-anchor="middle">Get Your Keys</text>
+  <text x="340" y="368" font-family="'Inter', sans-serif" font-size="10" fill="rgba(253,224,71,0.4)" text-anchor="middle">seed phrase · npub</text>
 
-  <!-- Glow ring around key -->
-  <circle cx="600" cy="295" r="90" fill="none" stroke="rgba(74,222,128,0.25)" stroke-width="1.5" stroke-dasharray="6,4"/>
-  <circle cx="600" cy="295" r="110" fill="none" stroke="rgba(74,222,128,0.12)" stroke-width="1" stroke-dasharray="3,6"/>
+  <!-- Arrow 2→3 -->
+  <line x1="390" y1="285" x2="450" y2="285" stroke="rgba(167,139,250,0.3)" stroke-width="1.5" stroke-dasharray="4,3"/>
+  <polygon points="447,281 459,285 447,289" fill="rgba(167,139,250,0.45)"/>
 
-  <!-- Step indicators in arc around the key -->
-  <!-- Step 1 -->
+  <!-- ── STEP 3: PICK A CLIENT ── -->
+  <g filter="url(#nfb-app-glow)">
+    <circle cx="505" cy="285" r="50" fill="rgba(20,15,50,0.95)" stroke="rgba(96,165,250,0.65)" stroke-width="2"/>
+    <!-- Phone + laptop simplified -->
+    <rect x="488" y="268" width="20" height="30" rx="4" fill="none" stroke="rgba(96,165,250,0.7)" stroke-width="2"/>
+    <rect x="492" y="292" width="12" height="2" rx="1" fill="rgba(96,165,250,0.5)"/>
+    <rect x="510" y="272" width="22" height="16" rx="3" fill="none" stroke="rgba(96,165,250,0.5)" stroke-width="1.5"/>
+    <rect x="506" y="288" width="30" height="4" rx="2" fill="rgba(96,165,250,0.35)"/>
+  </g>
+  <text x="505" y="352" font-family="'Inter', sans-serif" font-size="12" font-weight="700" fill="rgba(96,165,250,0.75)" text-anchor="middle">Pick a Client</text>
+  <text x="505" y="368" font-family="'Inter', sans-serif" font-size="10" fill="rgba(96,165,250,0.4)" text-anchor="middle">Primal · Damus · more</text>
+
+  <!-- Arrow 3→4 -->
+  <line x1="555" y1="285" x2="617" y2="285" stroke="rgba(167,139,250,0.3)" stroke-width="1.5" stroke-dasharray="4,3"/>
+  <polygon points="614,281 626,285 614,289" fill="rgba(167,139,250,0.45)"/>
+
+  <!-- ── STEP 4: CONNECT RELAYS ── -->
+  <g filter="url(#nfb-relay-glow)">
+    <circle cx="672" cy="285" r="50" fill="rgba(20,15,50,0.95)" stroke="rgba(74,222,128,0.65)" stroke-width="2"/>
+    <!-- Server stack -->
+    <rect x="651" y="265" width="42" height="10" rx="2" fill="rgba(74,222,128,0.18)" stroke="rgba(74,222,128,0.45)" stroke-width="1.2"/>
+    <rect x="651" y="278" width="42" height="10" rx="2" fill="rgba(74,222,128,0.13)" stroke="rgba(74,222,128,0.35)" stroke-width="1.2"/>
+    <rect x="651" y="291" width="42" height="10" rx="2" fill="rgba(74,222,128,0.09)" stroke="rgba(74,222,128,0.25)" stroke-width="1.2"/>
+    <circle cx="657" cy="270" r="2" fill="rgba(74,222,128,0.9)"/>
+    <circle cx="657" cy="283" r="2" fill="rgba(74,222,128,0.7)"/>
+    <circle cx="657" cy="296" r="2" fill="rgba(74,222,128,0.5)"/>
+  </g>
+  <text x="672" y="352" font-family="'Inter', sans-serif" font-size="12" font-weight="700" fill="rgba(74,222,128,0.75)" text-anchor="middle">Connect Relays</text>
+  <text x="672" y="368" font-family="'Inter', sans-serif" font-size="10" fill="rgba(74,222,128,0.4)" text-anchor="middle">3–5 relays, automatic</text>
+
+  <!-- Arrow 4→5 -->
+  <line x1="722" y1="285" x2="786" y2="285" stroke="rgba(167,139,250,0.3)" stroke-width="1.5" stroke-dasharray="4,3"/>
+  <polygon points="783,281 795,285 783,289" fill="rgba(167,139,250,0.45)"/>
+
+  <!-- ── STEP 5: FOLLOW PEOPLE ── -->
   <g filter="url(#nfb-step-glow)">
-    <circle cx="420" cy="180" r="18" fill="rgba(74,222,128,0.12)" stroke="rgba(74,222,128,0.6)" stroke-width="1.5"/>
-    <text x="420" y="186" font-family="sans-serif" font-size="14" font-weight="bold" fill="rgba(74,222,128,0.8)" text-anchor="middle">1</text>
+    <circle cx="840" cy="285" r="50" fill="rgba(20,15,50,0.95)" stroke="rgba(167,139,250,0.65)" stroke-width="2"/>
+    <!-- 3 person silhouettes -->
+    <circle cx="826" cy="273" r="7" fill="rgba(167,139,250,0.55)"/>
+    <path d="M816,286 Q816,280 826,280 Q836,280 836,286" fill="rgba(167,139,250,0.4)"/>
+    <circle cx="854" cy="273" r="7" fill="rgba(167,139,250,0.45)"/>
+    <path d="M844,286 Q844,280 854,280 Q864,280 864,286" fill="rgba(167,139,250,0.3)"/>
+    <!-- + badge -->
+    <circle cx="840" cy="298" r="9" fill="rgba(167,139,250,0.2)" stroke="rgba(167,139,250,0.5)" stroke-width="1.2"/>
+    <line x1="836" y1="298" x2="844" y2="298" stroke="rgba(167,139,250,0.75)" stroke-width="2" stroke-linecap="round"/>
+    <line x1="840" y1="294" x2="840" y2="302" stroke="rgba(167,139,250,0.75)" stroke-width="2" stroke-linecap="round"/>
   </g>
-  <!-- Step 2 -->
-  <g filter="url(#nfb-step-glow)">
-    <circle cx="480" cy="420" r="18" fill="rgba(74,222,128,0.12)" stroke="rgba(74,222,128,0.6)" stroke-width="1.5"/>
-    <text x="480" y="426" font-family="sans-serif" font-size="14" font-weight="bold" fill="rgba(74,222,128,0.8)" text-anchor="middle">2</text>
+  <text x="840" y="352" font-family="'Inter', sans-serif" font-size="12" font-weight="700" fill="rgba(167,139,250,0.75)" text-anchor="middle">Follow People</text>
+  <text x="840" y="368" font-family="'Inter', sans-serif" font-size="10" fill="rgba(167,139,250,0.4)" text-anchor="middle">build your network</text>
+
+  <!-- Arrow 5→6 -->
+  <line x1="890" y1="285" x2="955" y2="285" stroke="rgba(167,139,250,0.3)" stroke-width="1.5" stroke-dasharray="4,3"/>
+  <polygon points="952,281 964,285 952,289" fill="rgba(167,139,250,0.45)"/>
+
+  <!-- ── STEP 6: POST ── -->
+  <g filter="url(#nfb-post-glow)">
+    <circle cx="1010" cy="285" r="50" fill="rgba(20,15,50,0.95)" stroke="rgba(244,114,182,0.65)" stroke-width="2"/>
+    <!-- Speech bubble -->
+    <rect x="988" y="264" width="48" height="34" rx="7" fill="rgba(244,114,182,0.15)" stroke="rgba(244,114,182,0.6)" stroke-width="1.8"/>
+    <path d="M998,298 L994,308 L1006,298" fill="rgba(244,114,182,0.15)" stroke="rgba(244,114,182,0.6)" stroke-width="1.8" stroke-linejoin="round"/>
+    <line x1="995" y1="273" x2="1028" y2="273" stroke="rgba(244,114,182,0.5)" stroke-width="1.5" stroke-linecap="round"/>
+    <line x1="995" y1="281" x2="1022" y2="281" stroke="rgba(244,114,182,0.35)" stroke-width="1.5" stroke-linecap="round"/>
+    <!-- hashtag -->
+    <text x="1024" y="310" font-family="'Inter', sans-serif" font-size="12" fill="rgba(244,114,182,0.55)">#</text>
   </g>
-  <!-- Step 3 -->
-  <g filter="url(#nfb-step-glow)">
-    <circle cx="720" cy="420" r="18" fill="rgba(74,222,128,0.12)" stroke="rgba(74,222,128,0.6)" stroke-width="1.5"/>
-    <text x="720" y="426" font-family="sans-serif" font-size="14" font-weight="bold" fill="rgba(74,222,128,0.8)" text-anchor="middle">3</text>
-  </g>
-  <!-- Step 4 -->
-  <g filter="url(#nfb-step-glow)">
-    <circle cx="780" cy="180" r="18" fill="rgba(250,204,21,0.12)" stroke="rgba(250,204,21,0.6)" stroke-width="1.5"/>
-    <text x="780" y="186" font-family="sans-serif" font-size="14" font-weight="bold" fill="rgba(250,204,21,0.8)" text-anchor="middle">4</text>
+  <text x="1010" y="352" font-family="'Inter', sans-serif" font-size="12" font-weight="700" fill="rgba(244,114,182,0.75)" text-anchor="middle">Say Hello</text>
+  <text x="1010" y="368" font-family="'Inter', sans-serif" font-size="10" fill="rgba(244,114,182,0.4)" text-anchor="middle">#introductions</text>
+
+  <!-- Sparkles -->
+  <g opacity="0.7">
+    <line x1="1070" y1="255" x2="1070" y2="242" stroke="rgba(244,114,182,0.6)" stroke-width="1.5"/>
+    <line x1="1063" y1="248" x2="1077" y2="248" stroke="rgba(244,114,182,0.6)" stroke-width="1.5"/>
+    <line x1="100" y1="242" x2="100" y2="230" stroke="rgba(167,139,250,0.5)" stroke-width="1.5"/>
+    <line x1="94" y1="236" x2="106" y2="236" stroke="rgba(167,139,250,0.5)" stroke-width="1.5"/>
+    <circle cx="1100" cy="320" r="2.5" fill="rgba(74,222,128,0.5)"/>
+    <circle cx="90" cy="350" r="2" fill="rgba(253,224,71,0.5)"/>
   </g>
 
-  <!-- Path connecting steps (dashed arc) -->
-  <path d="M420,198 C410,310 440,410 480,402" fill="none" stroke="rgba(74,222,128,0.2)" stroke-width="1.5" stroke-dasharray="5,4"/>
-  <path d="M498,420 L702,420" fill="none" stroke="rgba(74,222,128,0.2)" stroke-width="1.5" stroke-dasharray="5,4"/>
-  <path d="M720,402 C760,410 790,310 780,198" fill="none" stroke="rgba(250,204,21,0.15)" stroke-width="1.5" stroke-dasharray="5,4"/>
+  <!-- Tagline -->
+  <text x="600" y="430" font-family="'Inter', sans-serif" font-size="13" fill="rgba(167,139,250,0.35)" text-anchor="middle">Your identity. Your posts. Your network. No company in between.</text>
 
-  <!-- Sparkle effects -->
-  <g opacity="0.8">
-    <line x1="660" y1="205" x2="660" y2="190" stroke="rgba(74,222,128,0.7)" stroke-width="1.5"/>
-    <line x1="652" y1="197" x2="668" y2="197" stroke="rgba(74,222,128,0.7)" stroke-width="1.5"/>
-    <line x1="535" y1="215" x2="535" y2="203" stroke="rgba(250,204,21,0.6)" stroke-width="1.5"/>
-    <line x1="529" y1="209" x2="541" y2="209" stroke="rgba(250,204,21,0.6)" stroke-width="1.5"/>
-    <line x1="640" y1="375" x2="640" y2="388" stroke="rgba(167,139,250,0.7)" stroke-width="1.5"/>
-    <line x1="633" y1="381" x2="647" y2="381" stroke="rgba(167,139,250,0.7)" stroke-width="1.5"/>
-    <circle cx="555" cy="365" r="2" fill="rgba(74,222,128,0.6)"/>
-    <circle cx="670" cy="260" r="2" fill="rgba(250,204,21,0.6)"/>
-  </g>
-
+  <!-- Time estimate -->
+  <rect x="510" y="455" width="180" height="30" rx="15" fill="rgba(167,139,250,0.08)" stroke="rgba(167,139,250,0.25)" stroke-width="1"/>
+  <text x="600" y="475" font-family="'Inter', sans-serif" font-size="11" fill="rgba(167,139,250,0.55)" text-anchor="middle">⏱ about 10 minutes</text>
 </svg>
