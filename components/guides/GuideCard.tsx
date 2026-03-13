@@ -33,6 +33,7 @@ function formatDate(dateString: string, locale: string = 'en'): string {
     year: 'numeric',
     month: 'long',
     day: 'numeric',
+    timeZone: 'UTC',
   });
 }
 
