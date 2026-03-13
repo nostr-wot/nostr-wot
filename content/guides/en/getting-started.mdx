@@ -35,15 +35,11 @@ The extension supports all major Chromium-based browsers and Firefox. Pick your 
 3. Confirm the installation when prompted.
 4. Pin the extension to your toolbar for easy access — click the puzzle piece icon in your browser and toggle the pin next to Nostr WoT.
 
-{/* TODO: Screenshot of the Chrome Web Store listing with the Add to Chrome button highlighted */}
-
 ### Firefox
 
 1. Visit the [download page](/download) and click the link for Firefox Add-ons.
 2. Click **Add to Firefox** and confirm the permissions prompt.
 3. Pin the extension to your toolbar by right-clicking the icon and selecting **Pin to Toolbar**.
-
-{/* TODO: Screenshot of the Firefox Add-ons page for Nostr WoT */}
 
 <Callout type="tip">
 After installation, the extension icon will appear in your browser toolbar. A gray icon means you are not yet signed in. It turns purple once your identity is active.
@@ -53,39 +49,44 @@ After installation, the extension icon will appear in your browser toolbar. A gr
 
 When you open the extension for the first time, the setup wizard walks you through the essentials. You will be asked to either create a new Nostr identity or import an existing one. No account registration with any third party is required.
 
-{/* TODO: Screenshot of the first-time setup wizard welcome screen */}
-
 ## Creating a New Nostr Key
 
-If you are new to Nostr, select **Create New Keys**. The extension generates a private key (nsec) and a public key (npub) for you.
+If you are new to Nostr, select **Create New Keys**. The extension generates a 12-word seed phrase (BIP39) and derives your Nostr keys from it. Your private key (nsec) and public key (npub) are both derived from this seed — you never need to handle the raw nsec directly.
 
 1. Click **Create New Keys** in the setup wizard.
-2. Save your private key backup. Write it down or store it in a password manager. If you lose this key, there is no way to recover your account.
-3. Set a local password to encrypt your keys inside the extension. This password is never sent anywhere.
-4. Optionally fill in your profile details — display name, bio, and avatar.
+2. The extension displays your 12-word seed phrase. Write it down on paper and store it somewhere safe — a secure physical location or a password manager. If you lose it, there is no "forgot password" option. No one can recover it for you.
+3. Confirm you have saved the seed phrase before proceeding.
+4. Set a local password to encrypt your keys inside the extension. This password is never sent anywhere.
+5. Optionally fill in your profile details — display name, bio, and avatar.
 
-{/* TODO: Screenshot of the key creation screen with the backup prompt */}
-
-<Callout type="tip">
-Your private key is the master password to your Nostr identity. Never share it, paste it into a website, or store it in plain text. The extension encrypts it locally so sites never see it directly.
+<Callout type="warning">
+Your 12-word seed phrase is the master key to your Nostr identity. Anyone with access to it controls your account. Store it offline, never paste it into a website, and never share it with anyone — including the Nostr WoT team.
 </Callout>
 
 ## Importing an Existing Key
 
-Already have a Nostr identity? Select **Import Existing Key** and paste your nsec or use a NIP-07 compatible signer extension.
+Already have a Nostr identity? Select **Import Existing Key**. You can restore using your 12-word seed phrase (if you created your key with Nostr WoT), paste your nsec directly, or connect a hardware signer.
 
 1. Click **Import Existing Key**.
-2. Paste your nsec private key or connect a hardware signer.
+2. Enter your 12-word seed phrase, paste your nsec private key, or connect a compatible signer.
 3. Set a local encryption password.
 4. The extension fetches your profile from Nostr relays automatically.
-
-{/* TODO: Screenshot of the import key screen */}
 
 ## Verifying Your Setup
 
 Once your identity is active, click the extension icon. You should see your profile details, your npub, and an initial trust graph that starts building from your follow list. The extension fetches your contacts from relays and begins mapping your Web of Trust.
 
 Give it a minute or two for the initial sync. After that, your trust network updates in the background as you browse.
+
+## Post Something
+
+You're set up. Say hello. The Nostr community actively welcomes newcomers.
+
+Open any Nostr client — [Primal](https://primal.net), [Snort](https://snort.social), or any other — and write your first post. Add the hashtag **#introductions** so others know you're new. Your post goes out to your connected relays. Anyone following you — or browsing those relays — can see it. No algorithm decides who sees your content.
+
+## Zaps
+
+Nostr supports instant Bitcoin micropayments called "zaps." You can tip posts you like directly from any Nostr client. The Nostr WoT Extension lets you set up a Lightning wallet right from the extension — no third-party app required. Check the [Lightning wallet setup guide](/guides/setting-up-wallet) whenever you're ready.
 
 ## What's Next?
 

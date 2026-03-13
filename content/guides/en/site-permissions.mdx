@@ -30,8 +30,6 @@ When a website tries to access the extension's NIP-07 signer or WebLN provider, 
 
 Each permission decision is stored per-site. Approving signing on Primal does not automatically grant signing on Snort. You build up a whitelist of trusted sites, one at a time.
 
-{/* TODO: Screenshot of the permission request popup for a new site */}
-
 ## Permission Types
 
 The extension manages several distinct permissions for each site.
@@ -52,8 +50,6 @@ Allows the site to request NIP-04 or NIP-44 encrypted direct messages. The site 
 
 Allows the site to request Lightning payments through the WebLN provider. When granted, the site can present invoices for you to pay — subject to your [auto-approve threshold](/guides/zapping-auto-approve).
 
-{/* TODO: Screenshot of the permissions panel showing all four permission types for a site */}
-
 <Callout type="tip">
 You can grant some permissions while denying others. For example, you might let a site read your public key and request signatures, but deny it WebLN access if you do not want it to prompt payments.
 </Callout>
@@ -65,8 +61,6 @@ You can grant some permissions while denying others. For example, you might let 
 1. Open the extension and click **Settings**.
 2. Navigate to **Site Permissions** (or **Permissions**).
 3. You will see a list of all sites that have been granted any permission, along with what each site can do.
-
-{/* TODO: Screenshot of the site permissions list showing multiple sites with their granted permissions */}
 
 ### Revoking Permissions
 
@@ -91,8 +85,6 @@ Use "Allow once" for sites you do not visit regularly. Use "Always allow" for yo
 Only grant the permissions a site actually needs. A Nostr client needs signing access, but a read-only explorer only needs your public key. Review your permissions list periodically and revoke access for sites you no longer use.
 
 If a site you have never heard of requests signing or payment permissions, deny it and investigate first. Legitimate Nostr clients are well-known.
-
-{/* TODO: Screenshot of a suspicious permission request with a "Deny" action highlighted */}
 
 <Callout type="tip">
 If a site behaves unexpectedly after granting permissions — like triggering payments you did not initiate — immediately revoke all its permissions and lower your auto-approve threshold.
