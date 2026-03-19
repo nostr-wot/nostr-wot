@@ -20,7 +20,7 @@ Last updated: 2026-03-19
 | 0.3 | nostr-for-beginners | beginner | ❌ Not live | 🟡 New file in PR | 2026-03-19 10:40 | 2 SVGs + 4 client logos | ✅ Ready to publish |
 | 1 | getting-started | beginner | ✅ Live (modified by PR) | 🟡 Screenshots added | 2026-03-19 10:50 | 3 screenshots | ✅ Ready to publish |
 | 2 | managing-identity | beginner | ✅ Live (modified by PR) | 🟡 Screenshots added | 2026-03-19 11:00 | 5 screenshots | ✅ Ready to publish |
-| 3 | understanding-wot | beginner | ✅ Live (unmodified) | — | 2026-03-11 | — | ❌ Pending |
+| 3 | understanding-wot | beginner | ✅ Live (modified by PR) | 🟡 Screenshots added | 2026-03-19 16:30 | 3 screenshots | ✅ Ready to publish |
 | 4 | customizing-trust | intermediate | ✅ Live (unmodified) | — | 2026-03-11 | — | ❌ Pending |
 | 5 | setting-up-wallet | beginner | ✅ Live (unmodified) | — | 2026-03-11 | — | ❌ Pending |
 | 6 | zapping-auto-approve | beginner | ✅ Live (unmodified) | — | 2026-03-11 | — | ❌ Pending |
