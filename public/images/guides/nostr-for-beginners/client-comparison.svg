@@ -19,7 +19,10 @@
     <filter id="cc-badge-glow" x="-50%" y="-50%" width="200%" height="200%">
       <feDropShadow dx="0" dy="0" stdDeviation="4" flood-color="#4ade80" flood-opacity="0.4"/>
     </filter>
-  </defs>
+    <clipPath id="primal-clip">
+    <circle cx="115" cy="110" r="40"/>
+  </clipPath>
+</defs>
 
   <rect width="800" height="320" fill="url(#cc-bg)"/>
 
@@ -29,10 +32,8 @@
   <!-- Card 1: Primal -->
   <g>
     <rect x="30" y="50" width="170" height="220" rx="12" fill="rgba(20,15,50,0.95)" stroke="rgba(245,158,11,0.45)" stroke-width="1.5"/>
-    <!-- Lightning bolt icon -->
-    <g filter="url(#cc-glow-orange)" transform="translate(115,110)">
-      <polygon points="-8,-22 4,-4 -2,-4 8,22 -4,4 2,4" fill="rgba(245,158,11,0.85)" stroke="rgba(245,158,11,0.4)" stroke-width="0.5"/>
-    </g>
+    <!-- Primal logo -->
+    <image x="75" y="70" width="80" height="80" href="data:image/jpeg;base64,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" clip-path="url(#primal-clip)" preserveAspectRatio="xMidYMid slice"/>
     <!-- App name -->
     <text x="115" y="160" font-family="'Inter', sans-serif" font-size="16" font-weight="700" fill="rgba(245,158,11,0.9)" text-anchor="middle">Primal</text>
     <!-- Platform -->
