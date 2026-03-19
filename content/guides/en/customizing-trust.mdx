@@ -82,42 +82,18 @@ Caps the total path bonus at **50%** by default. This prevents extremely well-co
 
 ![The Trust Sensitivity modal — slider from Strict to Open, with Base Score, Path Bonus, and Max Path Bonus fields](/images/guides/customizing-trust/trust-sensitivity.jpg)
 
-## Different Trust Strategies
+## Which Preset Should I Use?
 
-Depending on how you use Nostr, different settings make sense.
+The **Trust Sensitivity** slider maps directly to three usage profiles:
 
-### Conservative Strategy
+- **Strict** — you want a tight, high-signal feed. Only well-connected users score meaningfully. Good for spam filtering and focused interaction.
+- **Balanced** — the default. Works well for most people. Direct follows + friends-of-friends with reasonable path bonuses.
+- **Open** — you're exploring the network and want broader coverage. More noise, but more discovery.
 
-You want to trust a small circle and be skeptical of everyone else.
-
-- Set hop decay high (0.7+).
-- Set maximum hops to 2.
-- Keep path weight moderate.
-
-This is ideal if you use Nostr primarily to interact with people you already know and want strong spam filtering.
-
-### Balanced Strategy
-
-The default. You trust your direct follows, give reasonable trust to friends-of-friends, and maintain some visibility into 3rd-degree connections.
-
-- Hop decay around 0.5.
-- Maximum hops at 3.
-- Moderate path weight.
-
-This works for most people and is the recommended starting point.
-
-### Discovery Strategy
-
-You want to explore the broader Nostr network and discover new people.
-
-- Set hop decay low (0.2-0.3).
-- Increase maximum hops to 4.
-- Set path weight high to still prioritize well-connected users.
-
-This gives you a wider view but may include more noise.
+Start with Balanced. If your feed feels too noisy, move toward Strict. If you want to discover more people, move toward Open. You can always fine-tune the individual values manually after picking a preset.
 
 <Callout type="tip">
-Changes to trust settings recalculate your entire graph. Give the extension a moment to reprocess after adjusting values. If you want to start over, use the **Reset to Defaults** button at the bottom of the Trust Settings panel.
+Changes to trust settings recalculate your entire graph. Give the extension a moment to reprocess after adjusting values. If you want to start fresh, use the **Reset to Defaults** button at the bottom of the Trust Settings panel.
 </Callout>
 
 ## What's Next?
