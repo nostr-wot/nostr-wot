@@ -15,18 +15,18 @@ Last updated: 2026-03-19
 
 | # | Guide | Difficulty | Live on nostr-wot.com | PR #3 Status | Last Reviewed | Inline Images | Screenshot Status |
 |---|-------|-----------|----------------------|-------------|--------------|---------------|------------------|
-| 0.1 | what-is-nostr | beginner | ❌ Not live | 🟡 New file in PR | 2026-03-19 10:00 | 2 SVG diagrams | ✅ Ready to publish — ⚠️ known issue: text overlaps first 3 relays in relay-nodes.svg (fix deferred) |
-| 0.2 | why-nostr-is-resilient | beginner | ❌ Not live | 🟡 New file in PR | 2026-03-19 10:00 | 2 SVG diagrams | ✅ Ready to publish |
-| 0.3 | nostr-for-beginners | beginner | ❌ Not live | 🟡 New file in PR | 2026-03-19 10:40 | 2 SVGs + 4 client logos | ✅ Ready to publish |
-| 1 | getting-started | beginner | ✅ Live (modified by PR) | 🟡 Screenshots added | 2026-03-19 10:50 | 3 screenshots | ✅ Ready to publish |
-| 2 | managing-identity | beginner | ✅ Live (modified by PR) | 🟡 Screenshots added | 2026-03-19 11:00 | 5 screenshots | ✅ Ready to publish |
-| 3 | understanding-wot | beginner | ✅ Live (modified by PR) | 🟡 Screenshots added | 2026-03-19 16:30 | 3 screenshots | ✅ Ready to publish |
-| 4 | customizing-trust | intermediate | ✅ Live (modified by PR) | 🟡 Screenshots added | 2026-03-19 16:45 | 2 screenshots | ✅ Ready to publish |
-| 5 | setting-up-wallet | beginner | ✅ Live (unmodified) | — | — | — | ⏸ On hold — waiting for Lightning wallet feature to be production-ready |
-| 6 | zapping-auto-approve | beginner | ✅ Live (unmodified) | — | — | — | ⏸ On hold — waiting for Lightning/zaps feature to be production-ready |
-| 7 | lightning-address | beginner | ✅ Live (unmodified) | — | — | — | ⏸ On hold — waiting for Lightning address feature to be production-ready |
-| 8 | site-permissions | intermediate | ✅ Live (modified by PR) | 🟡 Screenshots added | 2026-03-19 11:40 | 5 screenshots | ✅ Ready to publish — ⚠️ TODO: add WebLN payments screenshot in future version when feature is more stable |
-| 9 | wot-playground | intermediate | ✅ Live (modified by PR) | 🟡 Screenshots added | 2026-03-19 | 2 screenshots | ⚠️ Pending review — ⚠️ NOTE: playground needs significant work, current screenshots are provisional |
+| 0.1 | [what-is-nostr](https://preview-nostr-wot.fabri.lat/guides/what-is-nostr) | beginner | ❌ Not live | 🟡 New file in PR | 2026-03-19 10:00 | 2 SVG diagrams | ✅ Ready to publish — ⚠️ known issue: text overlaps first 3 relays in relay-nodes.svg (fix deferred) |
+| 0.2 | [why-nostr-is-resilient](https://preview-nostr-wot.fabri.lat/guides/why-nostr-is-resilient) | beginner | ❌ Not live | 🟡 New file in PR | 2026-03-19 10:00 | 2 SVG diagrams | ✅ Ready to publish |
+| 0.3 | [nostr-for-beginners](https://preview-nostr-wot.fabri.lat/guides/nostr-for-beginners) | beginner | ❌ Not live | 🟡 New file in PR | 2026-03-19 10:40 | 2 SVGs + 4 client logos | ✅ Ready to publish |
+| 1 | [getting-started](https://preview-nostr-wot.fabri.lat/guides/getting-started) | beginner | ✅ Live (modified by PR) | 🟡 Screenshots added | 2026-03-19 10:50 | 3 screenshots | ✅ Ready to publish |
+| 2 | [managing-identity](https://preview-nostr-wot.fabri.lat/guides/managing-identity) | beginner | ✅ Live (modified by PR) | 🟡 Screenshots added | 2026-03-19 11:00 | 5 screenshots | ✅ Ready to publish |
+| 3 | [understanding-wot](https://preview-nostr-wot.fabri.lat/guides/understanding-wot) | beginner | ✅ Live (modified by PR) | 🟡 Screenshots added | 2026-03-19 16:30 | 3 screenshots | ✅ Ready to publish |
+| 4 | [customizing-trust](https://preview-nostr-wot.fabri.lat/guides/customizing-trust) | intermediate | ✅ Live (modified by PR) | 🟡 Screenshots added | 2026-03-19 16:45 | 2 screenshots | ✅ Ready to publish |
+| 5 | [setting-up-wallet](https://preview-nostr-wot.fabri.lat/guides/setting-up-wallet) | beginner | ✅ Live (unmodified) | — | — | — | ⏸ On hold — waiting for Lightning wallet feature to be production-ready |
+| 6 | [zapping-auto-approve](https://preview-nostr-wot.fabri.lat/guides/zapping-auto-approve) | beginner | ✅ Live (unmodified) | — | — | — | ⏸ On hold — waiting for Lightning/zaps feature to be production-ready |
+| 7 | [lightning-address](https://preview-nostr-wot.fabri.lat/guides/lightning-address) | beginner | ✅ Live (unmodified) | — | — | — | ⏸ On hold — waiting for Lightning address feature to be production-ready |
+| 8 | [site-permissions](https://preview-nostr-wot.fabri.lat/guides/site-permissions) | intermediate | ✅ Live (modified by PR) | 🟡 Screenshots added | 2026-03-19 11:40 | 5 screenshots | ✅ Ready to publish — ⚠️ TODO: add WebLN payments screenshot in future version when feature is more stable |
+| 9 | [wot-playground](https://preview-nostr-wot.fabri.lat/guides/wot-playground) | intermediate | ✅ Live (modified by PR) | 🟡 Screenshots added | 2026-03-19 | 2 screenshots | ⚠️ Pending review — ⚠️ NOTE: playground needs significant work, current screenshots are provisional |
 
 ---
 
