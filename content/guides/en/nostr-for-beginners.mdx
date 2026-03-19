@@ -1,8 +1,8 @@
 ---
 title: "Nostr for Beginners: Your First Steps"
-description: "A practical, step-by-step guide to getting started on Nostr. Generate your keys, pick a client, connect to relays, and start following people — all in about ten minutes."
-excerpt: "Ready to try Nostr? This guide walks you through everything: creating your identity, choosing an app, connecting to relays, and finding people to follow."
-date: "2026-03-13"
+description: "A practical, step-by-step guide to getting started on Nostr. Create your identity with the Nostr WoT Extension, pick a client to explore the network, and start following people — all in about ten minutes."
+excerpt: "Ready to try Nostr? Start by creating your identity with the Nostr WoT Extension, then pick a client to explore the network and find people to follow."
+date: "2026-03-19"
 author:
   name: "Leon Acosta"
   avatar: "/authors/leon-profile.jpg"
@@ -15,14 +15,14 @@ tags:
   - "Getting Started"
 published: true
 seoTitle: "Nostr for Beginners: Your First Steps"
-seoDescription: "A practical guide to getting started on Nostr. Create your identity, pick a client, connect to relays, and follow people — no technical knowledge required."
+seoDescription: "A practical guide to getting started on Nostr. Create your identity with the Nostr WoT Extension, pick a client to explore, and follow people — no technical knowledge required."
 ogImage: "/images/guides/nostr-for-beginners/og.svg"
 translationKey: "nostr-for-beginners"
 difficulty: "beginner"
 order: 0.3
 ---
 
-This guide will get you up and running on Nostr in about ten minutes. No technical background required. By the end, you'll have your own identity, a working app, and people to follow.
+This guide will get you up and running on Nostr in about ten minutes. No technical background required. By the end, you'll have your own identity, a client to explore the network, and people to follow.
 
 ## Step 1: Understand What You're Creating
 
@@ -33,15 +33,32 @@ On Nostr, your identity is a **key pair** — a public key and a private key. Th
 
 There is no email registration. No phone number. No company holding your account. You generate these keys, and they are yours permanently.
 
-<Callout type="warning">
-Most Nostr apps — including the Nostr WoT Extension — generate a 12-word seed phrase instead of showing you the raw private key. Write down those 12 words and store them somewhere safe — a password manager or a piece of paper in a secure location. If you lose it, there is no "forgot password" option. No one can recover it for you.
+## Step 2: Create Your Identity with the Nostr WoT Extension
+
+The best way to start on Nostr is by creating your identity with the **Nostr WoT Extension**. It acts as your key manager and signer — it keeps your private key safe in the browser and lets any Nostr client use it without ever exposing it.
+
+<Callout type="tip">
+Think of the extension as your Nostr wallet. Clients are just windows into the network — your identity lives in the extension, not in any single app.
 </Callout>
 
-## Step 2: Pick a Client
+1. Install the extension from the [Chrome Web Store](https://chromewebstore.google.com/detail/nostr-wot-extension/nfhdbhnnbibgkfipjbmdgcbhhjdpajjl) or [Firefox Add-ons](https://addons.mozilla.org/en-US/firefox/addon/nostr-wot/).
+2. Click the extension icon and follow the setup wizard.
+3. Choose **Create New Keys** — the extension generates a 12-word seed phrase for you.
+4. Write down your 12 words and store them somewhere safe. This is your master backup.
+5. Set a local password to encrypt your keys in the browser.
+6. Fill in your profile: display name, bio, and avatar.
 
-A "client" is just an app that lets you use Nostr. The same way you can check email with Gmail, Outlook, or Apple Mail, you can use Nostr with different clients. They all connect to the same network.
+<Callout type="warning">
+Your 12-word seed phrase is the only way to recover your account. If you lose it, there is no "forgot password" option. Store it offline — a piece of paper in a safe place or a password manager works fine.
+</Callout>
 
-Here are solid options to start with:
+For a detailed walkthrough of the extension setup, see the [Getting Started guide](/guides/getting-started).
+
+## Step 3: Pick a Client to Explore the Network
+
+With your identity created in the extension, you're ready to explore Nostr. A "client" is an app that lets you read posts, follow people, and publish content. Your identity works across all of them — switching clients never means losing your account.
+
+Here are solid options:
 
 **On desktop (web browser):**
 - [Primal](https://primal.net) — Clean interface, easy for newcomers. Works in any browser.
@@ -52,28 +69,13 @@ Here are solid options to start with:
 - [Damus](https://damus.io) — iOS only. One of the most popular Nostr apps.
 - [Amethyst](https://github.com/vitorpamplona/amethyst) — Android only. Full-featured.
 
-Pick one and sign up. Most will offer to generate your keys during the setup process.
-
-<Callout type="tip">
-Starting with Primal in a web browser is the easiest path. You can always switch to another client later — your identity and posts come with you.
-</Callout>
+When you open any of these clients, they will ask for your Nostr identity. Choose "Login with extension" (NIP-07) — the client will connect to the Nostr WoT Extension automatically.
 
 ![Primal, Coracle, Damus, and Amethyst — four solid Nostr clients to start with across web, iOS, and Android](/images/guides/nostr-for-beginners/client-comparison.svg)
 
-## Step 3: Set Up Your Profile
-
-Once you have your keys, fill in your profile. This is what people see when they find you:
-
-- **Display name** — Your real name or a pseudonym. Your choice.
-- **Bio** — A sentence or two about who you are.
-- **Avatar** — A profile picture. Optional but recommended.
-- **NIP-05 identifier** — A verified address like `you@yourdomain.com`. Optional. You can set this up later.
-
-Keep it simple. You can always update these later.
-
 ## Step 4: Connect to Relays
 
-Relays are the servers that store and deliver your posts. Most clients come pre-configured with a default set of relays, so you probably don't need to change anything right away.
+Relays are the servers that store and deliver your posts. Most clients come pre-configured with a default set, so you probably don't need to change anything right away.
 
 If you want to check or adjust your relays:
 
@@ -81,7 +83,7 @@ If you want to check or adjust your relays:
 2. Look for a "Relays" section.
 3. Make sure you're connected to at least 3–5 relays for good coverage.
 
-Popular relays include `wss://relay.damus.io`, `wss://relay.primal.net`, and `wss://nos.lol`. Your client likely connects to these or similar ones by default.
+Popular relays include `wss://relay.damus.io`, `wss://relay.primal.net`, and `wss://nos.lol`.
 
 <Callout type="tip">
 You don't need to understand relays in depth to get started. Just make sure your client is connected to a few. You can fine-tune this later as you learn more.
@@ -106,10 +108,10 @@ Your post goes out to your connected relays. Anyone following you — or browsin
 
 ## What's Next
 
-You now have a working Nostr identity and a feed to browse. From here, a few things worth exploring:
+You now have a working Nostr identity and a feed to browse. A few things worth exploring next:
 
-- **Web of Trust:** As you follow people and they follow you back, you're building a trust network. The [Nostr WoT Extension](https://nostr-wot.com) helps you visualize and manage this — it's useful once you have some connections, but no rush.
-- **Zaps:** Nostr supports instant Bitcoin micropayments called "zaps." You can tip posts you like. This requires a Lightning wallet, which you can set up whenever you're ready.
+- **Web of Trust:** As you follow people and they follow you back, you're building a trust network. The extension helps you visualize and manage it — useful once you have some connections. Learn more in [Understanding WoT](/guides/understanding-wot).
+- **Zaps:** Nostr supports instant Bitcoin micropayments called "zaps." You can tip posts you like. This requires a Lightning wallet — see the [Setting Up a Wallet](/guides/setting-up-wallet) guide.
 - **Multiple clients:** Try different apps. Your identity works across all of them. Find the one that fits how you use social media.
 
 The most important thing: Nostr is a protocol, not a platform. There's no algorithm to game, no company to please, and no single point of failure. Your presence here is yours to build — and yours to keep.
