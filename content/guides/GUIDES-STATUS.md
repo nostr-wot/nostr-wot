@@ -22,9 +22,9 @@ Last updated: 2026-03-19
 | 2 | managing-identity | beginner | ✅ Live (modified by PR) | 🟡 Screenshots added | 2026-03-19 11:00 | 5 screenshots | ✅ Ready to publish |
 | 3 | understanding-wot | beginner | ✅ Live (modified by PR) | 🟡 Screenshots added | 2026-03-19 16:30 | 3 screenshots | ✅ Ready to publish |
 | 4 | customizing-trust | intermediate | ✅ Live (modified by PR) | 🟡 Screenshots added | 2026-03-19 16:45 | 2 screenshots | ✅ Ready to publish |
-| 5 | setting-up-wallet | beginner | ✅ Live (unmodified) | — | 2026-03-11 | — | ❌ Pending |
-| 6 | zapping-auto-approve | beginner | ✅ Live (unmodified) | — | 2026-03-11 | — | ❌ Pending |
-| 7 | lightning-address | beginner | ✅ Live (unmodified) | — | 2026-03-11 | — | ❌ Pending |
+| 5 | setting-up-wallet | beginner | ✅ Live (unmodified) | — | — | — | ⏸ On hold — waiting for Lightning wallet feature to be production-ready |
+| 6 | zapping-auto-approve | beginner | ✅ Live (unmodified) | — | — | — | ⏸ On hold — waiting for Lightning/zaps feature to be production-ready |
+| 7 | lightning-address | beginner | ✅ Live (unmodified) | — | — | — | ⏸ On hold — waiting for Lightning address feature to be production-ready |
 | 8 | site-permissions | intermediate | ✅ Live (modified by PR) | 🟡 Screenshots added | 2026-03-19 11:40 | 5 screenshots | ✅ Ready to publish — ⚠️ TODO: add WebLN payments screenshot in future version when feature is more stable |
 | 9 | wot-playground | intermediate | ✅ Live (modified by PR) | 🟡 Screenshots added | 2026-03-19 | 2 screenshots | ⚠️ Pending review — ⚠️ NOTE: playground needs significant work, current screenshots are provisional |
 
