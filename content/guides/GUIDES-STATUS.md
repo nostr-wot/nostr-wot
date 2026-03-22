@@ -1,6 +1,6 @@
 # Guides Status
 
-Last updated: 2026-03-19
+Last updated: 2026-03-21
 
 ## Key
 
@@ -15,7 +15,7 @@ Last updated: 2026-03-19
 
 | # | Guide | Difficulty | Live on nostr-wot.com | PR #3 Status | Last Reviewed | Inline Images | Screenshot Status |
 |---|-------|-----------|----------------------|-------------|--------------|---------------|------------------|
-| 0.1 | [what-is-nostr](https://preview-nostr-wot.fabri.lat/guides/what-is-nostr) | beginner | ❌ Not live | 🟡 New file in PR | 2026-03-19 10:00 | 2 SVG diagrams | ✅ Ready to publish — ⚠️ known issue: text overlaps first 3 relays in relay-nodes.svg (fix deferred) |
+| 0.1 | [what-is-nostr](https://preview-nostr-wot.fabri.lat/guides/what-is-nostr) | beginner | ❌ Not live | 🟡 New file in PR | 2026-03-21 | 2 SVG diagrams | ✅ Ready to publish — ✅ relay-nodes.svg label overlap fixed (2026-03-21) |
 | 0.2 | [why-nostr-is-resilient](https://preview-nostr-wot.fabri.lat/guides/why-nostr-is-resilient) | beginner | ❌ Not live | 🟡 New file in PR | 2026-03-19 10:00 | 2 SVG diagrams | ✅ Ready to publish |
 | 0.3 | [nostr-for-beginners](https://preview-nostr-wot.fabri.lat/guides/nostr-for-beginners) | beginner | ❌ Not live | 🟡 New file in PR | 2026-03-19 10:40 | 2 SVGs + 4 client logos | ✅ Ready to publish |
 | 1 | [getting-started](https://preview-nostr-wot.fabri.lat/guides/getting-started) | beginner | ✅ Live (modified by PR) | 🟡 Screenshots added | 2026-03-19 10:50 | 3 screenshots | ✅ Ready to publish |
