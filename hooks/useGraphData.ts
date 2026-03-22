@@ -392,16 +392,15 @@ export function useGraphData() {
           if (!existingIds.has(followPubkey)) {
             const cachedProfile = profileCacheRef.current.get(followPubkey);
 
-            // Seed initial position in a sphere/circle around the parent node
-            // so new nodes don't all spawn at (0,0,0)
-            const angle = totalNew > 0
-              ? (newNodeIndex * 2 * Math.PI) / totalNew
-              : 0;
-            const radius = 100;
+            // Seed initial position scattered around the parent node
+            // Use random angle + varying radius so nodes don't all appear at once in a visible ring
+            const angle = Math.random() * 2 * Math.PI;
+            // Scale radius with node count so sparse graphs stay tight, dense ones spread out
+            const radius = Math.max(150, Math.sqrt(totalNew) * 12) * (0.6 + Math.random() * 0.8);
             const x = parentX + radius * Math.cos(angle);
             const y = parentY + radius * Math.sin(angle);
-            // For 3D: spread z with a slight wave so nodes form a sphere, not a flat ring
-            const z = parentZ + radius * 0.3 * Math.sin(angle * 2);
+            // For 3D: small random z offset
+            const z = parentZ + (Math.random() - 0.5) * radius * 0.4;
             newNodeIndex++;
 
             newNodes.push({
