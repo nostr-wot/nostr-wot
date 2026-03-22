@@ -151,8 +151,8 @@ export default function GraphCanvas({ width, height }: GraphCanvasProps) {
       setClickedNodeId(graphNode.id);
       setClickAnimationPhase(0);
 
-      // Auto-expand only for root node (first click)
-      if (graphNode.isRoot && filteredData.nodes.length === 1) {
+      // Auto-expand root node on click if not yet expanded
+      if (graphNode.isRoot && !state.expandedNodes.has(graphNode.id)) {
         expandNodeFollows(graphNode.id);
         setShowStartPrompt(false);
         return;

@@ -58,7 +58,8 @@ type GraphAction =
   | { type: "ADD_PROFILES"; payload: Map<string, NodeProfile> }
   | { type: "EXPAND_NODE"; payload: string }
   | { type: "COLLAPSE_NODE"; payload: string }
-  | { type: "MERGE_DATA"; payload: GraphData };
+  | { type: "MERGE_DATA"; payload: GraphData }
+  | { type: "RESET_GRAPH" };
 
 // Initial state
 const initialState: GraphState = {
@@ -193,6 +194,13 @@ function graphReducer(state: GraphState, action: GraphAction): GraphState {
         },
       };
     }
+
+    case "RESET_GRAPH":
+      return {
+        ...initialState,
+        // preserve settings (layout prefs etc)
+        settings: state.settings,
+      };
 
     default:
       return state;
@@ -330,10 +338,8 @@ export function GraphProvider({ children }: { children: ReactNode }) {
   }, []);
 
   const resetGraph = useCallback(() => {
-    dispatch({ type: "SET_DATA", payload: { nodes: [], links: [] } });
-    dispatch({ type: "RESET_FILTERS" });
-    dispatch({ type: "SET_ERROR", payload: null });
-    dispatch({ type: "SET_LOADING", payload: false });
+    // Single dispatch clears everything including expandedNodes
+    dispatch({ type: "RESET_GRAPH" });
   }, []);
 
   const value = useMemo(
