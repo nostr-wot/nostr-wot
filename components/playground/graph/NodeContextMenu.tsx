@@ -50,7 +50,7 @@ export default function NodeContextMenu({
 
   // Use SDK-provided trustScore directly from the node
   const trustScore = node.trustScore;
-  const canExpand = node.distance < 3 && !isExpanded;
+  const canExpand = node.distance < 4 && !isExpanded;
 
   return (
     <div
@@ -125,7 +125,7 @@ export default function NodeContextMenu({
           </div>
         )}
 
-        {node.distance >= 3 && !isExpanded && (
+        {node.distance >= 4 && !isExpanded && (
           <div className="flex items-center gap-3 px-4 py-2.5 text-sm text-gray-500">
             <svg
               className="w-4 h-4"

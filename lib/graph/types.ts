@@ -106,7 +106,7 @@ export interface GraphState {
 
 export const DEFAULT_FILTERS: GraphFilters = {
   minTrustScore: 0,
-  maxDistance: 3,
+  maxDistance: 4,
   showFollows: true,
   showMutes: false,
   showMutualsOnly: false,

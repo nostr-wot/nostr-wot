@@ -270,8 +270,8 @@ export function useGraphData() {
       const parentDistance = node?.distance ?? 0;
       console.log("[expandNodeFollows] Node distance:", parentDistance);
 
-      if (parentDistance >= 3) {
-        console.log("[expandNodeFollows] Distance >= 3, skipping");
+      if (parentDistance >= 4) {
+        console.log("[expandNodeFollows] Distance >= 4, skipping");
         return;
       }
 
