@@ -449,16 +449,38 @@ export function useGraphData() {
           }
         }
 
-        // UX/perf cap: only render the top 150 new nodes by trust score.
-        // Expanding 500-1000 nodes at once causes a visual explosion the
-        // force simulation can never settle. The highest-trust nodes are
-        // the most relevant anyway; the rest are silently dropped.
+        // Cap at 150 nodes per expansion for performance, but use a STRATIFIED
+        // sample so the visual represents the real WoT distribution — not just
+        // the top green nodes. We split into 3 trust bands and sample evenly.
         const MAX_NEW_NODES_PER_EXPANSION = 150;
         let cappedNodes = newNodes;
         if (newNodes.length > MAX_NEW_NODES_PER_EXPANSION) {
-          cappedNodes = [...newNodes]
-            .sort((a, b) => b.trustScore - a.trustScore)
-            .slice(0, MAX_NEW_NODES_PER_EXPANSION);
+          const sorted = [...newNodes].sort((a, b) => b.trustScore - a.trustScore);
+
+          // Bands: high ≥0.7, medium 0.3–0.7, low <0.3
+          const high   = sorted.filter(n => n.trustScore >= 0.7);
+          const medium = sorted.filter(n => n.trustScore >= 0.3 && n.trustScore < 0.7);
+          const low    = sorted.filter(n => n.trustScore < 0.3);
+
+          // Allocate slots proportionally to each band (min 1 if band non-empty)
+          const total = MAX_NEW_NODES_PER_EXPANSION;
+          const highCount   = Math.round(total * 0.4);  // 60 — still show best
+          const mediumCount = Math.round(total * 0.35); // ~52 — neutral
+          const lowCount    = total - highCount - mediumCount; // ~38 — untrusted
+
+          // Take top N from high, random sample from medium/low for real preview
+          const sample = (arr: typeof newNodes, n: number) => {
+            if (arr.length <= n) return arr;
+            // Shuffle and take n — gives a representative sample
+            const shuffled = [...arr].sort(() => Math.random() - 0.5);
+            return shuffled.slice(0, n);
+          };
+
+          cappedNodes = [
+            ...high.slice(0, highCount),
+            ...sample(medium, mediumCount),
+            ...sample(low, lowCount),
+          ];
         }
 
         // Only keep links whose target is in the capped set or already exists
