@@ -3,6 +3,7 @@
 import { useCallback, useRef, useEffect, useState, useMemo } from "react";
 import { forceCollide, forceRadial, forceX, forceY } from "d3-force-3d";
 import dynamic from "next/dynamic";
+import { useTranslations } from "next-intl";
 import { useGraph } from "@/contexts/GraphContext";
 import { useNodeSelection } from "@/hooks/useNodeSelection";
 import { useGraphData } from "@/hooks/useGraphData";
@@ -30,6 +31,7 @@ const MAX_VISIBLE_NODES_3D = 5000;
 const MAX_VISIBLE_LINKS_3D = 10000;
 
 export default function GraphCanvas3D({ width, height }: GraphCanvas3DProps) {
+  const t = useTranslations("playground");
   const { filteredData, state } = useGraph();
   const { select, setHovered, activeNode } = useNodeSelection();
   const { expandNodeFollows, collapseNodeFollows } = useGraphData();
@@ -37,6 +39,7 @@ export default function GraphCanvas3D({ width, height }: GraphCanvas3DProps) {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const graphRef = useRef<any>(null);
   const hasCenteredRef = useRef(false);
+  const [showStartPrompt, setShowStartPrompt] = useState(true);
 
   // Context menu state
   const [contextMenu, setContextMenu] = useState<{
@@ -103,6 +106,7 @@ export default function GraphCanvas3D({ width, height }: GraphCanvas3DProps) {
       // Auto-expand root node on click if not yet expanded (same as 2D)
       if (graphNode.isRoot && !state.expandedNodes.has(graphNode.id)) {
         expandNodeFollows(graphNode.id);
+        setShowStartPrompt(false);
         return;
       }
 
@@ -252,6 +256,16 @@ export default function GraphCanvas3D({ width, height }: GraphCanvas3DProps) {
   );
 
   // Persist simulated positions every second
+  // Show/hide start prompt based on node count
+  useEffect(() => {
+    if (filteredData.nodes.length > 1) setShowStartPrompt(false);
+    if (filteredData.nodes.length === 0) {
+      setShowStartPrompt(true);
+      prevNodePositions.current.clear();
+      hasCenteredRef.current = false;
+    }
+  }, [filteredData.nodes.length]);
+
   useEffect(() => {
     const interval = setInterval(() => {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -384,6 +398,26 @@ export default function GraphCanvas3D({ width, height }: GraphCanvas3DProps) {
         <span className="text-gray-400 ml-3">Links: </span>
         <span className="text-white font-medium">{visibleData.links.length.toLocaleString()}</span>
       </div>
+
+      {/* Initial prompt to click root node */}
+      {showStartPrompt && filteredData.nodes.length === 1 && (
+        <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+          <div className="bg-gray-800/90 backdrop-blur-sm border border-primary/50 rounded-xl px-6 py-4 shadow-2xl animate-pulse">
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 rounded-full bg-primary/20 flex items-center justify-center">
+                <svg className="w-5 h-5 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
+                    d="M15 15l-2 5L9 9l11 4-5 2zm0 0l5 5M7.188 2.239l.777 2.897M5.136 7.965l-2.898-.777M13.95 4.05l-2.122 2.122m-5.657 5.656l-2.12 2.122" />
+                </svg>
+              </div>
+              <div>
+                <p className="text-white font-medium">{t("graph.clickToExplore")}</p>
+                <p className="text-gray-400 text-sm">{t("graph.clickToExploreDesc")}</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Controls hint */}
       <div className="absolute bottom-4 right-4 bg-gray-800/80 backdrop-blur-sm rounded-lg px-3 py-2 text-xs text-gray-400">
