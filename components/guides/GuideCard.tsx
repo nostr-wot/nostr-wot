@@ -74,7 +74,7 @@ export function GuideCard({ guide, featured = false }: GuideCardProps) {
                     {t(guide.difficulty)}
                   </span>
                 )}
-                {guide.tags.slice(0, 2).map((tag) => (
+                {guide.tags.filter((tag) => tag.toLowerCase() !== guide.difficulty).slice(0, 2).map((tag) => (
                   <span
                     key={tag}
                     className="px-3 py-1 text-xs font-medium bg-primary/10 text-primary rounded-full"
@@ -120,7 +120,7 @@ export function GuideCard({ guide, featured = false }: GuideCardProps) {
                 {t(guide.difficulty)}
               </span>
             )}
-            {guide.tags.slice(0, 2).map((tag) => (
+            {guide.tags.filter((tag) => tag.toLowerCase() !== guide.difficulty).slice(0, 2).map((tag) => (
               <span
                 key={tag}
                 className="px-2 py-0.5 text-xs font-medium bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 rounded"
