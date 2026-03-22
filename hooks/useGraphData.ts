@@ -446,38 +446,12 @@ export function useGraphData() {
           return existingIds.has(targetId) || cappedNodeIds.has(targetId);
         });
 
-        // Insert nodes in small batches with a delay so they appear
-        // progressively instead of all flashing at once.
-        // Track already-sent IDs to avoid duplicates across batches.
-        const BATCH_SIZE = 15;
-        const BATCH_DELAY_MS = 80;
-        const sentNodeIds = new Set<string>();
-
-        const insertBatches = async () => {
-          for (let i = 0; i < cappedNodes.length; i += BATCH_SIZE) {
-            const batchNodes = cappedNodes
-              .slice(i, i + BATCH_SIZE)
-              .filter(n => !sentNodeIds.has(n.id));
-
-            batchNodes.forEach(n => sentNodeIds.add(n.id));
-
-            const batchNodeIds = new Set(batchNodes.map(n => n.id));
-            const batchLinks = cappedLinks.filter(l => {
-              const targetId = typeof l.target === 'string' ? l.target : (l.target as GraphNode).id;
-              return batchNodeIds.has(targetId);
-            });
-
-            if (batchNodes.length > 0 || batchLinks.length > 0) {
-              mergeData({ nodes: batchNodes, links: batchLinks });
-            }
-
-            if (i + BATCH_SIZE < cappedNodes.length) {
-              await new Promise(res => setTimeout(res, BATCH_DELAY_MS));
-            }
-          }
-        };
-
-        await insertBatches();
+        // Single mergeData call — batching caused 10 re-renders + 10 simulation
+        // reheats per expansion which was the source of lag. forceRadial handles
+        // the visual placement of nodes in their orbit rings regardless.
+        if (cappedNodes.length > 0 || cappedLinks.length > 0) {
+          mergeData({ nodes: cappedNodes, links: cappedLinks });
+        }
 
         if (newPubkeys.length > 0) {
           fetchProfiles(newPubkeys).then((profiles) => {
