@@ -445,9 +445,28 @@ export function useGraphData() {
           return existingIds.has(targetId) || cappedNodeIds.has(targetId);
         });
 
-        if (cappedNodes.length > 0 || cappedLinks.length > 0) {
-          mergeData({ nodes: cappedNodes, links: cappedLinks });
-        }
+        // Insert nodes in small batches with a delay so they appear
+        // progressively instead of all flashing at once.
+        const BATCH_SIZE = 15;
+        const BATCH_DELAY_MS = 80;
+
+        const insertBatches = async () => {
+          for (let i = 0; i < cappedNodes.length; i += BATCH_SIZE) {
+            const batchNodes = cappedNodes.slice(i, i + BATCH_SIZE);
+            const batchNodeIds = new Set(batchNodes.map(n => n.id));
+            // Only include links whose source/target is in this batch
+            const batchLinks = cappedLinks.filter(l => {
+              const targetId = typeof l.target === 'string' ? l.target : (l.target as GraphNode).id;
+              return batchNodeIds.has(targetId);
+            });
+            mergeData({ nodes: batchNodes, links: batchLinks });
+            if (i + BATCH_SIZE < cappedNodes.length) {
+              await new Promise(res => setTimeout(res, BATCH_DELAY_MS));
+            }
+          }
+        };
+
+        await insertBatches();
 
         if (newPubkeys.length > 0) {
           fetchProfiles(newPubkeys).then((profiles) => {
