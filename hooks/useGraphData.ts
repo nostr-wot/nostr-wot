@@ -381,13 +381,17 @@ export function useGraphData() {
           // Use SDK-provided score directly (defaults to 0 if not available)
           const trustScore = extData?.score ?? 0;
 
-          newLinks.push({
-            source: pubkey,
-            target: followPubkey,
-            type: "follow",
-            strength: trustScore,
-            bidirectional: false,
-          });
+          // Only add links to NEW nodes — skip edges to already-existing nodes
+          // to avoid cross-cluster "ray" lines flying across the screen
+          if (!existingIds.has(followPubkey)) {
+            newLinks.push({
+              source: pubkey,
+              target: followPubkey,
+              type: "follow",
+              strength: trustScore,
+              bidirectional: false,
+            });
+          }
 
           if (!existingIds.has(followPubkey)) {
             const cachedProfile = profileCacheRef.current.get(followPubkey);
@@ -396,7 +400,7 @@ export function useGraphData() {
             // Use random angle + varying radius so nodes don't all appear at once in a visible ring
             const angle = Math.random() * 2 * Math.PI;
             // Scale radius with node count so sparse graphs stay tight, dense ones spread out
-            const radius = Math.max(150, Math.sqrt(totalNew) * 12) * (0.6 + Math.random() * 0.8);
+            const radius = Math.max(80, Math.sqrt(totalNew) * 8) * (0.6 + Math.random() * 0.8);
             const x = parentX + radius * Math.cos(angle);
             const y = parentY + radius * Math.sin(angle);
             // For 3D: small random z offset

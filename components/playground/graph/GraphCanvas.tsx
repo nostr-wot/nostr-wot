@@ -225,6 +225,9 @@ export default function GraphCanvas({ width, height }: GraphCanvasProps) {
     setContextMenu(null);
   }, [select]);
 
+  // Snapshot expandedNodes for paintNode (avoid reading state inside hot loop)
+  const expandedNodes = state.expandedNodes;
+
   // Custom canvas node rendering - much faster than Three.js
   const paintNode = useCallback(
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -266,9 +269,25 @@ export default function GraphCanvas({ width, height }: GraphCanvasProps) {
         ctx.fill();
       }
 
-      // Draw node
+      // Draw expanded (gateway) node distinction
+      if (expandedNodes.has(graphNode.id) && !graphNode.isRoot) {
+        // Outer yellow ring
+        ctx.beginPath();
+        ctx.arc(node.x, node.y, size + 6, 0, 2 * Math.PI);
+        ctx.strokeStyle = 'rgba(255, 220, 50, 0.8)';
+        ctx.lineWidth = 2;
+        ctx.stroke();
+        // Inner glow
+        ctx.beginPath();
+        ctx.arc(node.x, node.y, size + 3, 0, 2 * Math.PI);
+        ctx.fillStyle = 'rgba(255, 220, 50, 0.15)';
+        ctx.fill();
+      }
+
+      // Draw node (slightly larger for expanded gateway nodes)
+      const drawSize = (expandedNodes.has(graphNode.id) && !graphNode.isRoot) ? size + 2 : size;
       ctx.beginPath();
-      ctx.arc(node.x, node.y, size, 0, 2 * Math.PI);
+      ctx.arc(node.x, node.y, drawSize, 0, 2 * Math.PI);
       ctx.fillStyle = color;
       ctx.fill();
 
@@ -292,7 +311,7 @@ export default function GraphCanvas({ width, height }: GraphCanvasProps) {
         ctx.fillText(displayLabel, node.x, node.y + size + 2);
       }
     },
-    [nodeColors, clickedNodeId, clickAnimationPhase, activeNode]
+    [nodeColors, clickedNodeId, clickAnimationPhase, activeNode, expandedNodes]
   );
 
   // Link color
@@ -329,11 +348,24 @@ export default function GraphCanvas({ width, height }: GraphCanvasProps) {
     return () => clearInterval(interval);
   }, [visibleData.nodes]);
 
-  // Tune d3 forces: stronger repulsion + collision avoidance
+  // Tune d3 forces: stronger repulsion + collision avoidance + cluster locality
   useEffect(() => {
     if (graphRef.current && !useStaticLayout) {
       graphRef.current.d3Force('charge')?.strength(-80);
       graphRef.current.d3Force('collision', forceCollide(8));
+      // Limit link distance so expanded clusters stay compact near their parent
+      graphRef.current.d3Force('link')
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        ?.distance((link: any) => {
+          const source = typeof link.source === 'object' ? link.source : null;
+          const target = typeof link.target === 'object' ? link.target : null;
+          if (!source || !target) return 60;
+          // Root-to-hop1: medium distance
+          if (source.isRoot || target.isRoot) return 80;
+          // hop1-to-hop2 (and deeper): short — keep sub-clusters tight
+          return 40;
+        })
+        ?.strength(0.8); // stronger than default ~0.33
     }
   }, [visibleData.nodes.length, useStaticLayout]);
 
