@@ -38,6 +38,7 @@ export function useGraphData() {
     setError,
     addProfiles,
     expandNode,
+    collapseNode,
     state,
   } = useGraph();
 
@@ -516,6 +517,7 @@ export function useGraphData() {
   return {
     buildInitialGraph,
     expandNodeFollows,
+    collapseNodeFollows: collapseNode,
     fetchProfiles,
     isLoading: state.isLoading,
     error: state.error,

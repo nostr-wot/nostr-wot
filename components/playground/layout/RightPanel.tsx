@@ -17,13 +17,19 @@ export default function RightPanel({ isOpen, onClose, onViewProfile }: RightPane
   const t = useTranslations("playground");
   const { selectedNode, selectedProfile, selectedNeighbors, clearSelection } =
     useNodeSelection();
-  const { expandNodeFollows } = useGraphData();
+  const { expandNodeFollows, collapseNodeFollows } = useGraphData();
 
   if (!isOpen || !selectedNode) return null;
 
   const handleExpand = () => {
     if (selectedNode && !selectedNode.isRoot) {
       expandNodeFollows(selectedNode.id);
+    }
+  };
+
+  const handleCollapse = () => {
+    if (selectedNode && !selectedNode.isRoot) {
+      collapseNodeFollows(selectedNode.id);
     }
   };
 
@@ -68,6 +74,7 @@ export default function RightPanel({ isOpen, onClose, onViewProfile }: RightPane
             node={selectedNode}
             profile={selectedProfile}
             onExpand={handleExpand}
+            onCollapse={handleCollapse}
             onViewProfile={handleViewProfile}
           />
 

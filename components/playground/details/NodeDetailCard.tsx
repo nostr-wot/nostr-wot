@@ -5,12 +5,14 @@ import { useTranslations } from "next-intl";
 import { GraphNode, NodeProfile } from "@/lib/graph/types";
 import { getTrustClass, getTrustLabel } from "@/lib/graph/colors";
 import { formatPubkey } from "@/lib/graph/transformers";
+import { useGraph } from "@/contexts/GraphContext";
 import { Badge, Button } from "@/components/ui";
 
 interface NodeDetailCardProps {
   node: GraphNode;
   profile?: NodeProfile;
   onExpand?: () => void;
+  onCollapse?: () => void;
   onViewProfile?: () => void;
 }
 
@@ -18,9 +20,12 @@ export default function NodeDetailCard({
   node,
   profile,
   onExpand,
+  onCollapse,
   onViewProfile,
 }: NodeDetailCardProps) {
   const t = useTranslations("playground");
+  const { state } = useGraph();
+  const isExpanded = state.expandedNodes.has(node.id);
   const [copied, setCopied] = useState(false);
 
   const trustClass = getTrustClass(node.trustScore);
@@ -166,9 +171,15 @@ export default function NodeDetailCard({
         </Button>
 
         {!node.isRoot && node.distance < 4 && (
-          <Button variant="secondary" size="sm" onClick={onExpand} className="flex-1">
-            {t("graph.expandNode")}
-          </Button>
+          isExpanded ? (
+            <Button variant="secondary" size="sm" onClick={onCollapse} className="flex-1">
+              {t("graph.collapseNode")}
+            </Button>
+          ) : (
+            <Button variant="secondary" size="sm" onClick={onExpand} className="flex-1">
+              {t("graph.expandNode")}
+            </Button>
+          )
         )}
       </div>
     </div>

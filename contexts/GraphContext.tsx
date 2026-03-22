@@ -136,9 +136,40 @@ function graphReducer(state: GraphState, action: GraphAction): GraphState {
     }
 
     case "COLLAPSE_NODE": {
+      const collapsedPubkey = action.payload;
       const newExpanded = new Set(state.expandedNodes);
-      newExpanded.delete(action.payload);
-      return { ...state, expandedNodes: newExpanded };
+      newExpanded.delete(collapsedPubkey);
+
+      // Remove all nodes that were discovered via this node (expandedFrom === collapsedPubkey)
+      // and recursively remove any nodes that were expanded from those as well.
+      const toRemove = new Set<string>();
+
+      const collectToRemove = (gatewayId: string) => {
+        for (const node of state.data.nodes) {
+          if (node.expandedFrom === gatewayId && !node.isRoot) {
+            if (!toRemove.has(node.id)) {
+              toRemove.add(node.id);
+              newExpanded.delete(node.id);
+              // Recurse — remove nodes expanded from this node too
+              collectToRemove(node.id);
+            }
+          }
+        }
+      };
+      collectToRemove(collapsedPubkey);
+
+      const filteredNodes = state.data.nodes.filter((n) => !toRemove.has(n.id));
+      const filteredLinks = state.data.links.filter((l) => {
+        const sourceId = typeof l.source === "string" ? l.source : (l.source as GraphNode).id;
+        const targetId = typeof l.target === "string" ? l.target : (l.target as GraphNode).id;
+        return !toRemove.has(sourceId) && !toRemove.has(targetId);
+      });
+
+      return {
+        ...state,
+        expandedNodes: newExpanded,
+        data: { nodes: filteredNodes, links: filteredLinks },
+      };
     }
 
     case "MERGE_DATA": {

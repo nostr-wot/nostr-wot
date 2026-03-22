@@ -37,7 +37,7 @@ export default function GraphCanvas({ width, height }: GraphCanvasProps) {
   const { filteredData, state } = useGraph();
   const { settings } = state;
   const { select, setHovered, activeNode } = useNodeSelection();
-  const { expandNodeFollows } = useGraphData();
+  const { expandNodeFollows, collapseNodeFollows } = useGraphData();
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const graphRef = useRef<any>(null);
@@ -202,6 +202,13 @@ export default function GraphCanvas({ width, height }: GraphCanvasProps) {
       setShowStartPrompt(false);
     }
   }, [contextMenu, expandNodeFollows]);
+
+  // Handle collapse from context menu
+  const handleCollapseFromMenu = useCallback(() => {
+    if (contextMenu?.node) {
+      collapseNodeFollows(contextMenu.node.id);
+    }
+  }, [contextMenu, collapseNodeFollows]);
 
   // Handle view profile from context menu
   const handleViewProfileFromMenu = useCallback(() => {
@@ -544,6 +551,7 @@ export default function GraphCanvas({ width, height }: GraphCanvasProps) {
           isExpanded={state.expandedNodes.has(contextMenu.node.id)}
           isExpanding={state.isLoading}
           onExpand={handleExpandFromMenu}
+          onCollapse={handleCollapseFromMenu}
           onViewProfile={handleViewProfileFromMenu}
           onClose={handleCloseContextMenu}
         />

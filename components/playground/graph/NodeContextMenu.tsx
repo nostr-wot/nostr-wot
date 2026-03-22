@@ -11,6 +11,7 @@ interface NodeContextMenuProps {
   isExpanded: boolean;
   isExpanding?: boolean;
   onExpand: () => void;
+  onCollapse: () => void;
   onViewProfile: () => void;
   onClose: () => void;
 }
@@ -21,6 +22,7 @@ export default function NodeContextMenu({
   isExpanded,
   isExpanding = false,
   onExpand,
+  onCollapse,
   onViewProfile,
   onClose,
 }: NodeContextMenuProps) {
@@ -119,22 +121,16 @@ export default function NodeContextMenu({
         )}
 
         {isExpanded && (
-          <div className="flex items-center gap-3 px-4 py-2.5 text-sm text-gray-500">
-            <svg
-              className="w-4 h-4"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M5 13l4 4L19 7"
-              />
+          <button
+            onClick={() => { onCollapse(); onClose(); }}
+            className="w-full flex items-center gap-3 px-4 py-2.5 text-left text-sm text-gray-200 hover:bg-gray-700/50 transition-colors"
+          >
+            <svg className="w-4 h-4 text-yellow-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
+                d="M9 9V4.5M9 9H4.5M9 9L3.75 3.75M9 15v4.5M9 15H4.5M9 15l-5.25 5.25M15 9h4.5M15 9V4.5M15 9l5.25-5.25M15 15h4.5M15 15v4.5m0-4.5l5.25 5.25" />
             </svg>
-            <span>{t("contextMenu.alreadyExpanded")}</span>
-          </div>
+            <span>{t("contextMenu.collapseFollows")}</span>
+          </button>
         )}
 
         {node.distance >= 4 && !isExpanded && (
