@@ -362,6 +362,17 @@ export function useGraphData() {
         const newNodes: GraphNode[] = [];
         const newLinks: GraphEdge[] = [];
 
+        // Get the parent node's current position from the live graph data
+        // (react-force-graph mutates node objects with x/y during simulation)
+        const parentNode = latestState.data.nodes.find((n) => n.id === pubkey);
+        const parentX = parentNode?.x ?? 0;
+        const parentY = parentNode?.y ?? 0;
+
+        // Count how many new nodes we'll create, for even angular spread
+        const newFollowPubkeys = follows.filter((pk: string) => !existingIds.has(pk));
+        const totalNew = newFollowPubkeys.length;
+        let newNodeIndex = 0;
+
         for (const followPubkey of follows) {
           const extData = wotData.get(followPubkey);
           const distance = extData?.distance ?? parentDistance + 1;
@@ -379,6 +390,17 @@ export function useGraphData() {
 
           if (!existingIds.has(followPubkey)) {
             const cachedProfile = profileCacheRef.current.get(followPubkey);
+
+            // Seed initial position in a circle around the parent node
+            // so new nodes don't all spawn at (0,0)
+            const angle = totalNew > 0
+              ? (newNodeIndex * 2 * Math.PI) / totalNew
+              : 0;
+            const radius = 100;
+            const x = parentX + radius * Math.cos(angle);
+            const y = parentY + radius * Math.sin(angle);
+            newNodeIndex++;
+
             newNodes.push({
               id: followPubkey,
               label:
@@ -391,6 +413,8 @@ export function useGraphData() {
               trustScore,
               isRoot: false,
               isMutual: false,
+              x,
+              y,
             });
           }
         }
