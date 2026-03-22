@@ -1,7 +1,6 @@
 "use client";
 
 import { useState } from "react";
-import { Link } from "@/i18n/routing";
 import { useTranslations } from "next-intl";
 import { GraphNode, NodeProfile } from "@/lib/graph/types";
 import { getTrustClass, getTrustLabel } from "@/lib/graph/colors";
@@ -150,64 +149,27 @@ export default function NodeDetailCard({
         </div>
       )}
 
-      {/* Actions */}
-      <div className="mt-4 space-y-2">
-        {/* Quick view modal button */}
+      {/* Actions — two buttons only */}
+      <div className="mt-4 flex gap-2">
         <Button
           variant="primary"
           size="sm"
           onClick={onViewProfile}
-          className="w-full"
+          className="flex-1"
         >
           <span className="flex items-center justify-center gap-2">
-            <svg
-              className="w-4 h-4"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-              aria-hidden="true"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
-              />
+            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
             </svg>
             {t("graph.viewProfile")}
           </span>
         </Button>
 
-        <div className="flex gap-2">
-          {!node.isRoot && node.distance < 3 && (
-            <Button variant="secondary" size="sm" onClick={onExpand}>
-              {t("graph.expandNode")}
-            </Button>
-          )}
-
-          {/* Full profile page link - opens in new tab */}
-          <Link href={`/profile/${node.id}`} target="_blank" className="flex-1">
-            <Button variant="outline" size="sm" className="w-full">
-              <span className="flex items-center justify-center gap-1.5">
-                {t("graph.viewFullProfile")}
-                <svg
-                  className="w-3 h-3"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                  aria-hidden="true"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"
-                  />
-                </svg>
-              </span>
-            </Button>
-          </Link>
-        </div>
+        {!node.isRoot && node.distance < 4 && (
+          <Button variant="secondary" size="sm" onClick={onExpand} className="flex-1">
+            {t("graph.expandNode")}
+          </Button>
+        )}
       </div>
     </div>
   );
