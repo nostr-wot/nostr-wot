@@ -483,13 +483,21 @@ export function useGraphData() {
           });
         }
       } catch (err) {
-        console.error("Failed to expand node:", err);
+        const msg = err instanceof Error ? err.message : String(err);
+        if (msg.toLowerCase().includes("not initialized") || msg.toLowerCase().includes("account configured")) {
+          // Extension local graph not ready — silently un-mark so user can retry
+          console.warn("[expandNodeFollows] Extension local graph not ready:", msg);
+        } else {
+          console.error("Failed to expand node:", err);
+        }
+        // Un-mark as expanded on failure so the Expand button reappears
+        collapseNode(pubkey);
       } finally {
         expandingNodesRef.current.delete(pubkey);
         setLoading(false);
       }
     },
-    [expandNode, fetchProfiles, addProfiles, mergeData, setLoading, setError]
+    [expandNode, collapseNode, fetchProfiles, addProfiles, mergeData, setLoading, setError]
   );
 
   // Reset refs when user changes or graph is cleared
