@@ -46,6 +46,25 @@ function getNoteType(tags: string[][]): { isReply: boolean; isMention: boolean }
   return { isReply, isMention };
 }
 
+const IMAGE_EXTENSIONS = /\.(jpg|jpeg|png|gif|webp|svg)(\?.*)?$/i;
+const URL_REGEX = /(https?:\/\/[^\s]+)/g;
+
+/**
+ * Split note content into text segments and image URLs
+ */
+function parseContent(content: string): { text: string; images: string[] } {
+  const images: string[] = [];
+  const text = content.replace(URL_REGEX, (url) => {
+    if (IMAGE_EXTENSIONS.test(url)) {
+      images.push(url);
+      return ""; // remove image URLs from text
+    }
+    return url;
+  }).replace(/\n{3,}/g, "\n\n").trim(); // collapse excess newlines left by removed URLs
+
+  return { text, images };
+}
+
 /**
  * Individual note card component
  */
@@ -60,43 +79,28 @@ export default function NoteCard({ note }: NoteCardProps) {
     [note.tags]
   );
 
+  const { text, images } = useMemo(
+    () => parseContent(note.content),
+    [note.content]
+  );
+
   return (
     <div className="p-4 bg-gray-700/30 hover:bg-gray-700/50 rounded-lg transition-colors">
-      {/* Note indicators */}
+      {/* Note type badge */}
       {(isReply || isMention) && (
         <div className="flex gap-2 mb-2">
           {isReply && (
             <span className="inline-flex items-center gap-1 text-xs text-gray-500">
-              <svg
-                className="w-3 h-3"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M3 10h10a8 8 0 018 8v2M3 10l6 6m-6-6l6-6"
-                />
+              <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 10h10a8 8 0 018 8v2M3 10l6 6m-6-6l6-6" />
               </svg>
               Reply
             </span>
           )}
           {isMention && !isReply && (
             <span className="inline-flex items-center gap-1 text-xs text-gray-500">
-              <svg
-                className="w-3 h-3"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
-                />
+              <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
               </svg>
               Mention
             </span>
@@ -104,33 +108,46 @@ export default function NoteCard({ note }: NoteCardProps) {
         </div>
       )}
 
-      {/* Note content */}
-      <p className="text-sm text-gray-200 whitespace-pre-wrap break-words line-clamp-6">
-        {note.content}
-      </p>
+      {/* Text content */}
+      {text && (
+        <p className="text-sm text-gray-200 whitespace-pre-wrap break-words line-clamp-6">
+          {text}
+        </p>
+      )}
+
+      {/* Inline images — max 3, consistent size */}
+      {images.length > 0 && (
+        <div className={`mt-2 grid gap-1.5 ${images.length === 1 ? "grid-cols-1" : "grid-cols-2"}`}>
+          {images.slice(0, 3).map((src, i) => (
+            <a key={i} href={src} target="_blank" rel="noopener noreferrer" className="block">
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src={src}
+                alt="note media"
+                className="w-full h-40 object-cover rounded-lg bg-gray-700"
+                loading="lazy"
+                onError={(e) => { (e.target as HTMLImageElement).style.display = "none"; }}
+              />
+            </a>
+          ))}
+          {images.length > 3 && (
+            <div className="h-40 rounded-lg bg-gray-700 flex items-center justify-center text-sm text-gray-400">
+              +{images.length - 3} more
+            </div>
+          )}
+        </div>
+      )}
 
       {/* Timestamp */}
       <div className="mt-3 flex items-center justify-between">
         <span className="text-xs text-gray-500">{relativeTime}</span>
-
-        {/* View author profile */}
         <Link
           href={`/profile/${note.pubkey}`}
           target="_blank"
           className="text-xs text-gray-500 hover:text-primary transition-colors"
         >
-          <svg
-            className="w-4 h-4"
-            fill="none"
-            stroke="currentColor"
-            viewBox="0 0 24 24"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth={2}
-              d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"
-            />
+          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
           </svg>
         </Link>
       </div>
