@@ -1,7 +1,7 @@
 "use client";
 
 import { useCallback, useRef, useEffect, useState, useMemo } from "react";
-import { forceCollide } from "d3-force-3d";
+import { forceCollide, forceRadial, forceX, forceY } from "d3-force-3d";
 import dynamic from "next/dynamic";
 import { useTranslations } from "next-intl";
 import { useGraph } from "@/contexts/GraphContext";
@@ -70,9 +70,9 @@ export default function GraphCanvas({ width, height }: GraphCanvasProps) {
       })
       .slice(0, MAX_VISIBLE_LINKS);
 
-    // Restore previously simulated positions and PIN settled nodes with fx/fy
-    // so the physics engine doesn't move them when new nodes are added.
-    // New nodes (no saved position) remain free to be placed by the simulation.
+    // Restore previously simulated positions as hints (x/y only, never fx/fy).
+    // Pinning with fx/fy causes new expanded nodes to mix into already-settled
+    // groups because there's no room to move. Let the radial force keep structure.
     nodes.forEach((node) => {
       const prev = prevNodePositions.current.get(node.id);
       if (prev) {
@@ -80,17 +80,6 @@ export default function GraphCanvas({ width, height }: GraphCanvasProps) {
         (node as any).x = prev.x;
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         (node as any).y = prev.y;
-        // Pin the node so it doesn't drift on subsequent expansions
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        (node as any).fx = prev.x;
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        (node as any).fy = prev.y;
-      } else {
-        // New node — unpin so physics can place it
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        (node as any).fx = undefined;
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        (node as any).fy = undefined;
       }
     });
 
@@ -364,24 +353,38 @@ export default function GraphCanvas({ width, height }: GraphCanvasProps) {
     return () => clearInterval(interval);
   }, [visibleData.nodes]);
 
-  // Tune d3 forces: stronger repulsion + collision avoidance + cluster locality
+  // Tune d3 forces: radial layout by distance + collision + link locality
   useEffect(() => {
     if (graphRef.current && !useStaticLayout) {
-      graphRef.current.d3Force('charge')?.strength(-80);
-      graphRef.current.d3Force('collision', forceCollide(8));
-      // Limit link distance so expanded clusters stay compact near their parent
+      // Strong charge so nodes push each other apart
+      graphRef.current.d3Force('charge')?.strength(-120);
+
+      // Collision so nodes don't overlap
+      graphRef.current.d3Force('collision', forceCollide(10));
+
+      // Radial force: each hop snaps to its own orbit ring around center
+      // hop0=0px, hop1=180px, hop2=360px, hop3=540px
+      graphRef.current.d3Force('radial', forceRadial(
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        (node: any) => (node as GraphNode).distance * 180,
+        0, 0
+      )?.strength(0.15));
+
+      // Link force: keep parent-child edges short
       graphRef.current.d3Force('link')
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         ?.distance((link: any) => {
           const source = typeof link.source === 'object' ? link.source : null;
           const target = typeof link.target === 'object' ? link.target : null;
           if (!source || !target) return 60;
-          // Root-to-hop1: medium distance
-          if (source.isRoot || target.isRoot) return 80;
-          // hop1-to-hop2 (and deeper): short — keep sub-clusters tight
-          return 40;
+          if (source.isRoot || target.isRoot) return 90;
+          return 50;
         })
-        ?.strength(0.8); // stronger than default ~0.33
+        ?.strength(0.5);
+
+      // Weak center gravity to prevent drift
+      graphRef.current.d3Force('x', forceX(0).strength(0.02));
+      graphRef.current.d3Force('y', forceY(0).strength(0.02));
     }
   }, [visibleData.nodes.length, useStaticLayout]);
 
