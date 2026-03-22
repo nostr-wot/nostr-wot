@@ -11,6 +11,7 @@ export interface GraphNode {
   isRoot: boolean;
   isMutual?: boolean;
   cluster?: string;
+  expandedFrom?: string; // pubkey of the node that was expanded to reveal this node
   x?: number;
   y?: number;
   z?: number; // For 3D

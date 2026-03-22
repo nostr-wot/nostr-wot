@@ -419,6 +419,7 @@ export function useGraphData() {
               trustScore,
               isRoot: false,
               isMutual: false,
+              expandedFrom: pubkey, // which gateway node revealed this node
               x,
               y,
               z,
