@@ -8,13 +8,13 @@ import {
   clearTrustCache,
 } from "@/lib/cache/profileCache";
 
-function formatTimeAgo(timestamp: number, t: (key: string) => string): string {
+function formatTimeAgo(timestamp: number, t: (key: string, values?: Record<string, string | number>) => string): string {
   const seconds = Math.floor((Date.now() - timestamp) / 1000);
   if (seconds < 60) return t("graph.cacheJustNow");
   const minutes = Math.floor(seconds / 60);
-  if (minutes < 60) return t("graph.cacheMinutesAgo").replace("{minutes}", String(minutes));
+  if (minutes < 60) return t("graph.cacheMinutesAgo", { minutes });
   const hours = Math.floor(minutes / 60);
-  return t("graph.cacheHoursAgo").replace("{hours}", String(hours));
+  return t("graph.cacheHoursAgo", { hours });
 }
 
 export default function BottomStatsBar() {
