@@ -270,8 +270,8 @@ export function useGraphData() {
       const parentDistance = node?.distance ?? 0;
       console.log("[expandNodeFollows] Node distance:", parentDistance);
 
-      if (parentDistance >= 3) {
-        console.log("[expandNodeFollows] Distance >= 3, skipping");
+      if (parentDistance >= 4) {
+        console.log("[expandNodeFollows] Distance >= 4, skipping");
         return;
       }
 
@@ -362,6 +362,18 @@ export function useGraphData() {
         const newNodes: GraphNode[] = [];
         const newLinks: GraphEdge[] = [];
 
+        // Get the parent node's current position from the live graph data
+        // (react-force-graph mutates node objects with x/y/z during simulation)
+        const parentNode = latestState.data.nodes.find((n) => n.id === pubkey);
+        const parentX = parentNode?.x ?? 0;
+        const parentY = parentNode?.y ?? 0;
+        const parentZ = parentNode?.z ?? 0;
+
+        // Count how many new nodes we'll create, for even angular spread
+        const newFollowPubkeys = follows.filter((pk: string) => !existingIds.has(pk));
+        const totalNew = newFollowPubkeys.length;
+        let newNodeIndex = 0;
+
         for (const followPubkey of follows) {
           const extData = wotData.get(followPubkey);
           const distance = extData?.distance ?? parentDistance + 1;
@@ -369,16 +381,32 @@ export function useGraphData() {
           // Use SDK-provided score directly (defaults to 0 if not available)
           const trustScore = extData?.score ?? 0;
 
-          newLinks.push({
-            source: pubkey,
-            target: followPubkey,
-            type: "follow",
-            strength: trustScore,
-            bidirectional: false,
-          });
+          // Only add links to NEW nodes — skip edges to already-existing nodes
+          // to avoid cross-cluster "ray" lines flying across the screen
+          if (!existingIds.has(followPubkey)) {
+            newLinks.push({
+              source: pubkey,
+              target: followPubkey,
+              type: "follow",
+              strength: trustScore,
+              bidirectional: false,
+            });
+          }
 
           if (!existingIds.has(followPubkey)) {
             const cachedProfile = profileCacheRef.current.get(followPubkey);
+
+            // Seed initial position scattered around the parent node
+            // Use random angle + varying radius so nodes don't all appear at once in a visible ring
+            const angle = Math.random() * 2 * Math.PI;
+            // Scale radius with node count so sparse graphs stay tight, dense ones spread out
+            const radius = Math.max(40, Math.sqrt(totalNew) * 4) * (0.6 + Math.random() * 0.8);
+            const x = parentX + radius * Math.cos(angle);
+            const y = parentY + radius * Math.sin(angle);
+            // For 3D: small random z offset
+            const z = parentZ + (Math.random() - 0.5) * radius * 0.4;
+            newNodeIndex++;
+
             newNodes.push({
               id: followPubkey,
               label:
@@ -391,12 +419,38 @@ export function useGraphData() {
               trustScore,
               isRoot: false,
               isMutual: false,
+              expandedFrom: pubkey, // which gateway node revealed this node
+              x,
+              y,
+              z,
             });
           }
         }
 
-        if (newNodes.length > 0 || newLinks.length > 0) {
-          mergeData({ nodes: newNodes, links: newLinks });
+        // UX/perf cap: only render the top 150 new nodes by trust score.
+        // Expanding 500-1000 nodes at once causes a visual explosion the
+        // force simulation can never settle. The highest-trust nodes are
+        // the most relevant anyway; the rest are silently dropped.
+        const MAX_NEW_NODES_PER_EXPANSION = 150;
+        let cappedNodes = newNodes;
+        if (newNodes.length > MAX_NEW_NODES_PER_EXPANSION) {
+          cappedNodes = [...newNodes]
+            .sort((a, b) => b.trustScore - a.trustScore)
+            .slice(0, MAX_NEW_NODES_PER_EXPANSION);
+        }
+
+        // Only keep links whose target is in the capped set or already exists
+        const cappedNodeIds = new Set(cappedNodes.map(n => n.id));
+        const cappedLinks = newLinks.filter(l => {
+          const targetId = typeof l.target === 'string' ? l.target : (l.target as GraphNode).id;
+          return existingIds.has(targetId) || cappedNodeIds.has(targetId);
+        });
+
+        // Single mergeData call — batching caused 10 re-renders + 10 simulation
+        // reheats per expansion which was the source of lag. forceRadial handles
+        // the visual placement of nodes in their orbit rings regardless.
+        if (cappedNodes.length > 0 || cappedLinks.length > 0) {
+          mergeData({ nodes: cappedNodes, links: cappedLinks });
         }
 
         if (newPubkeys.length > 0) {
@@ -416,11 +470,19 @@ export function useGraphData() {
     [expandNode, fetchProfiles, addProfiles, mergeData, setLoading, setError]
   );
 
-  // Reset refs when user changes
+  // Reset refs when user changes or graph is cleared
   useEffect(() => {
     initializedRef.current = false;
     expandingNodesRef.current.clear();
   }, [userPubkey]);
+
+  // Also reset initialized flag when graph data is emptied (manual reset)
+  useEffect(() => {
+    if (state.data.nodes.length === 0) {
+      initializedRef.current = false;
+      expandingNodesRef.current.clear();
+    }
+  }, [state.data.nodes.length]);
 
   // Build initial graph when ready
   useEffect(() => {

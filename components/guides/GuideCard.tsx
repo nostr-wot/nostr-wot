@@ -33,6 +33,7 @@ function formatDate(dateString: string, locale: string = 'en'): string {
     year: 'numeric',
     month: 'long',
     day: 'numeric',
+    timeZone: 'UTC',
   });
 }
 
@@ -46,6 +47,39 @@ const difficultyColors = {
   intermediate: 'bg-yellow-100 dark:bg-yellow-900/30 text-yellow-700 dark:text-yellow-300',
   advanced: 'bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-300',
 };
+
+const tagColors: Record<string, string> = {
+  'Nostr':            'bg-purple-100 dark:bg-purple-900/30 text-purple-700 dark:text-purple-300',
+  'Identity':         'bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300',
+  'Keys':             'bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300',
+  'NIP-07':           'bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300',
+  'Extension':        'bg-indigo-100 dark:bg-indigo-900/30 text-indigo-700 dark:text-indigo-300',
+  'Setup':            'bg-indigo-100 dark:bg-indigo-900/30 text-indigo-700 dark:text-indigo-300',
+  'Getting Started':  'bg-indigo-100 dark:bg-indigo-900/30 text-indigo-700 dark:text-indigo-300',
+  'Web of Trust':     'bg-violet-100 dark:bg-violet-900/30 text-violet-700 dark:text-violet-300',
+  'Trust Graph':      'bg-violet-100 dark:bg-violet-900/30 text-violet-700 dark:text-violet-300',
+  'Trust Settings':   'bg-violet-100 dark:bg-violet-900/30 text-violet-700 dark:text-violet-300',
+  'Concepts':         'bg-violet-100 dark:bg-violet-900/30 text-violet-700 dark:text-violet-300',
+  'Playground':       'bg-fuchsia-100 dark:bg-fuchsia-900/30 text-fuchsia-700 dark:text-fuchsia-300',
+  'Visualization':    'bg-fuchsia-100 dark:bg-fuchsia-900/30 text-fuchsia-700 dark:text-fuchsia-300',
+  'Lightning':        'bg-yellow-100 dark:bg-yellow-900/30 text-yellow-700 dark:text-yellow-300',
+  'Zaps':             'bg-yellow-100 dark:bg-yellow-900/30 text-yellow-700 dark:text-yellow-300',
+  'NWC':              'bg-yellow-100 dark:bg-yellow-900/30 text-yellow-700 dark:text-yellow-300',
+  'Wallet':           'bg-yellow-100 dark:bg-yellow-900/30 text-yellow-700 dark:text-yellow-300',
+  'Lightning Address':'bg-yellow-100 dark:bg-yellow-900/30 text-yellow-700 dark:text-yellow-300',
+  'WebLN':            'bg-amber-100 dark:bg-amber-900/30 text-amber-700 dark:text-amber-300',
+  'Security':         'bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-300',
+  'Privacy':          'bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-300',
+  'Permissions':      'bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-300',
+  'Decentralization': 'bg-teal-100 dark:bg-teal-900/30 text-teal-700 dark:text-teal-300',
+  'Resilience':       'bg-teal-100 dark:bg-teal-900/30 text-teal-700 dark:text-teal-300',
+  'Formula':          'bg-rose-100 dark:bg-rose-900/30 text-rose-700 dark:text-rose-300',
+  'Advanced':         'bg-rose-100 dark:bg-rose-900/30 text-rose-700 dark:text-rose-300',
+};
+
+function getTagColor(tag: string): string {
+  return tagColors[tag] ?? 'bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300';
+}
 
 export function GuideCard({ guide, featured = false }: GuideCardProps) {
   const locale = useLocale();
@@ -73,10 +107,10 @@ export function GuideCard({ guide, featured = false }: GuideCardProps) {
                     {t(guide.difficulty)}
                   </span>
                 )}
-                {guide.tags.slice(0, 2).map((tag) => (
+                {guide.tags.filter((tag) => tag.toLowerCase() !== guide.difficulty).slice(0, 2).map((tag) => (
                   <span
                     key={tag}
-                    className="px-3 py-1 text-xs font-medium bg-primary/10 text-primary rounded-full"
+                    className={`px-3 py-1 text-xs font-medium rounded-full ${getTagColor(tag)}`}
                   >
                     {tag}
                   </span>
@@ -119,10 +153,10 @@ export function GuideCard({ guide, featured = false }: GuideCardProps) {
                 {t(guide.difficulty)}
               </span>
             )}
-            {guide.tags.slice(0, 2).map((tag) => (
+            {guide.tags.filter((tag) => tag.toLowerCase() !== guide.difficulty).slice(0, 2).map((tag) => (
               <span
                 key={tag}
-                className="px-2 py-0.5 text-xs font-medium bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 rounded"
+                className={`px-2 py-0.5 text-xs font-medium rounded ${getTagColor(tag)}`}
               >
                 {tag}
               </span>

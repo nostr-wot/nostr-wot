@@ -235,6 +235,9 @@ interface GraphContextType {
   // Loading actions
   setLoading: (loading: boolean) => void;
   setError: (error: string | null) => void;
+
+  // Reset graph
+  resetGraph: () => void;
 }
 
 const GraphContext = createContext<GraphContextType | undefined>(undefined);
@@ -326,6 +329,13 @@ export function GraphProvider({ children }: { children: ReactNode }) {
     dispatch({ type: "SET_ERROR", payload: error });
   }, []);
 
+  const resetGraph = useCallback(() => {
+    dispatch({ type: "SET_DATA", payload: { nodes: [], links: [] } });
+    dispatch({ type: "RESET_FILTERS" });
+    dispatch({ type: "SET_ERROR", payload: null });
+    dispatch({ type: "SET_LOADING", payload: false });
+  }, []);
+
   const value = useMemo(
     () => ({
       state,
@@ -347,6 +357,7 @@ export function GraphProvider({ children }: { children: ReactNode }) {
       getProfile,
       setLoading,
       setError,
+      resetGraph,
     }),
     [
       state,
@@ -368,6 +379,7 @@ export function GraphProvider({ children }: { children: ReactNode }) {
       getProfile,
       setLoading,
       setError,
+      resetGraph,
     ]
   );
 

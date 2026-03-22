@@ -1,0 +1,94 @@
+<svg width="800" height="400" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="bd-bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#1e1b4b;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#312e81;stop-opacity:1" />
+    </linearGradient>
+    <radialGradient id="bd-glow" cx="50%" cy="50%" r="40%">
+      <stop offset="0%" style="stop-color:#7c3aed;stop-opacity:0.2" />
+      <stop offset="100%" style="stop-color:#1e1b4b;stop-opacity:0" />
+    </radialGradient>
+    <filter id="bd-user-glow" x="-50%" y="-50%" width="200%" height="200%">
+      <feDropShadow dx="0" dy="0" stdDeviation="12" flood-color="#a78bfa" flood-opacity="0.8"/>
+    </filter>
+    <filter id="bd-relay-glow" x="-50%" y="-50%" width="200%" height="200%">
+      <feDropShadow dx="0" dy="0" stdDeviation="7" flood-color="#4ade80" flood-opacity="0.6"/>
+    </filter>
+  </defs>
+
+  <rect width="800" height="400" fill="url(#bd-bg)"/>
+  <rect width="800" height="400" fill="url(#bd-glow)"/>
+
+  <!-- Caption -->
+  <text x="400" y="32" font-family="'Inter', sans-serif" font-size="12" font-weight="600" fill="rgba(167,139,250,0.55)" text-anchor="middle" letter-spacing="2">WHEN YOU POST ON NOSTR</text>
+
+  <!-- User (center-left) -->
+  <g filter="url(#bd-user-glow)">
+    <circle cx="180" cy="210" r="40" fill="rgba(25,20,60,0.95)" stroke="rgba(167,139,250,0.75)" stroke-width="2.5"/>
+    <circle cx="180" cy="197" r="13" fill="rgba(167,139,250,0.65)"/>
+    <path d="M157,222 Q157,210 180,210 Q203,210 203,222" fill="rgba(167,139,250,0.45)"/>
+  </g>
+  <text x="180" y="265" font-family="'Inter', sans-serif" font-size="12" font-weight="700" fill="rgba(167,139,250,0.8)" text-anchor="middle">You</text>
+  <text x="180" y="280" font-family="'Inter', sans-serif" font-size="10" fill="rgba(167,139,250,0.4)" text-anchor="middle">sign with your key</text>
+
+  <!-- Broadcast waves -->
+  <circle cx="180" cy="210" r="55" fill="none" stroke="rgba(167,139,250,0.12)" stroke-width="1.2" stroke-dasharray="3,6"/>
+  <circle cx="180" cy="210" r="75" fill="none" stroke="rgba(167,139,250,0.08)" stroke-width="1" stroke-dasharray="3,6"/>
+
+  <!-- Arrows to relays -->
+  <!-- Top-right relay -->
+  <line x1="213" y1="183" x2="440" y2="108" stroke="rgba(74,222,128,0.4)" stroke-width="1.8" stroke-dasharray="6,4"/>
+  <polygon points="436,103 450,108 440,117" fill="rgba(74,222,128,0.6)"/>
+
+  <!-- Middle relay -->
+  <line x1="220" y1="210" x2="447" y2="210" stroke="rgba(74,222,128,0.45)" stroke-width="1.8" stroke-dasharray="6,4"/>
+  <polygon points="444,206 458,210 444,214" fill="rgba(74,222,128,0.65)"/>
+
+  <!-- Bottom-right relay -->
+  <line x1="213" y1="237" x2="440" y2="312" stroke="rgba(74,222,128,0.4)" stroke-width="1.8" stroke-dasharray="6,4"/>
+  <polygon points="436,308 450,312 442,321" fill="rgba(74,222,128,0.6)"/>
+
+  <!-- Moving dots on lines (data packets) -->
+  <circle cx="330" cy="145" r="3.5" fill="rgba(74,222,128,0.7)"/>
+  <circle cx="336" cy="210" r="3.5" fill="rgba(74,222,128,0.7)"/>
+  <circle cx="330" cy="275" r="3.5" fill="rgba(74,222,128,0.7)"/>
+
+  <!-- Relay top-right -->
+  <g filter="url(#bd-relay-glow)">
+    <rect x="460" y="72" width="200" height="72" rx="10" fill="rgba(20,15,50,0.95)" stroke="rgba(74,222,128,0.55)" stroke-width="1.5"/>
+    <rect x="476" y="86" width="24" height="8" rx="2" fill="rgba(74,222,128,0.18)" stroke="rgba(74,222,128,0.4)" stroke-width="0.8"/>
+    <rect x="476" y="97" width="24" height="8" rx="2" fill="rgba(74,222,128,0.1)"/>
+    <circle cx="482" cy="90" r="2" fill="rgba(74,222,128,0.8)"/>
+    <circle cx="482" cy="101" r="2" fill="rgba(74,222,128,0.5)"/>
+    <text x="512" y="93" font-family="'Inter', monospace" font-size="10.5" fill="rgba(74,222,128,0.75)">relay.damus.io</text>
+    <text x="512" y="109" font-family="'Inter', sans-serif" font-size="8.5" fill="rgba(74,222,128,0.38)">Frankfurt · online</text>
+    <circle cx="640" cy="108" r="5" fill="rgba(74,222,128,0.75)"/>
+  </g>
+
+  <!-- Relay middle -->
+  <g filter="url(#bd-relay-glow)">
+    <rect x="460" y="174" width="200" height="72" rx="10" fill="rgba(20,15,50,0.95)" stroke="rgba(74,222,128,0.55)" stroke-width="1.5"/>
+    <rect x="476" y="188" width="24" height="8" rx="2" fill="rgba(74,222,128,0.18)" stroke="rgba(74,222,128,0.4)" stroke-width="0.8"/>
+    <rect x="476" y="199" width="24" height="8" rx="2" fill="rgba(74,222,128,0.1)"/>
+    <circle cx="482" cy="192" r="2" fill="rgba(74,222,128,0.8)"/>
+    <circle cx="482" cy="203" r="2" fill="rgba(74,222,128,0.5)"/>
+    <text x="512" y="195" font-family="'Inter', monospace" font-size="10.5" fill="rgba(74,222,128,0.75)">nos.lol</text>
+    <text x="512" y="211" font-family="'Inter', sans-serif" font-size="8.5" fill="rgba(74,222,128,0.38)">New York · online</text>
+    <circle cx="640" cy="210" r="5" fill="rgba(74,222,128,0.75)"/>
+  </g>
+
+  <!-- Relay bottom-right -->
+  <g filter="url(#bd-relay-glow)">
+    <rect x="460" y="276" width="200" height="72" rx="10" fill="rgba(20,15,50,0.95)" stroke="rgba(74,222,128,0.55)" stroke-width="1.5"/>
+    <rect x="476" y="290" width="24" height="8" rx="2" fill="rgba(74,222,128,0.18)" stroke="rgba(74,222,128,0.4)" stroke-width="0.8"/>
+    <rect x="476" y="301" width="24" height="8" rx="2" fill="rgba(74,222,128,0.1)"/>
+    <circle cx="482" cy="294" r="2" fill="rgba(74,222,128,0.8)"/>
+    <circle cx="482" cy="305" r="2" fill="rgba(74,222,128,0.5)"/>
+    <text x="512" y="297" font-family="'Inter', monospace" font-size="10.5" fill="rgba(74,222,128,0.75)">relay.primal.net</text>
+    <text x="512" y="313" font-family="'Inter', sans-serif" font-size="8.5" fill="rgba(74,222,128,0.38)">Toronto · online</text>
+    <circle cx="640" cy="312" r="5" fill="rgba(74,222,128,0.75)"/>
+  </g>
+
+  <!-- Note: no single server -->
+  <text x="400" y="375" font-family="'Inter', sans-serif" font-size="10" fill="rgba(167,139,250,0.35)" text-anchor="middle">Your note reaches all relays simultaneously — no single server owns your post</text>
+</svg>

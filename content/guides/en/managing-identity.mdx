@@ -26,6 +26,8 @@ Your Nostr identity is the anchor for everything else in the extension — your 
 
 ## NIP-07 Signer Support
 
+![The extension popup shows your identity status, trust graph sync state, and quick access to permissions and trust settings](/images/guides/managing-identity/extension-main.jpg)
+
 NIP-07 is the standard that allows Nostr web applications to request signatures from a browser extension without ever seeing your private key. When you visit a Nostr client like Primal, Snort, or Coracle, it can ask the extension to sign events on your behalf.
 
 Here is how it works in practice:
@@ -34,8 +36,6 @@ Here is how it works in practice:
 2. When you post a note or update your profile, the site sends the unsigned event to the extension.
 3. You see a permission prompt. If you approve, the extension signs it with your private key and sends back the signature.
 4. Your private key never leaves the extension.
-
-{/* TODO: Screenshot of the NIP-07 signing permission prompt */}
 
 <Callout type="tip">
 If you previously used another NIP-07 extension like nos2x or Alby, disable it before using Nostr WoT. Only one NIP-07 signer should be active at a time to avoid conflicts.
@@ -49,9 +49,13 @@ Your profile details — display name, bio, avatar, Lightning Address, and NIP-0
 
 Click the extension icon and navigate to the **Identity** tab. You will see your current profile information, your npub, and the relays your profile is published to.
 
-{/* TODO: Screenshot of the Identity tab showing profile details */}
+![The Identity tab shows your npub, profile setup status, trust graph sync state, and quick links to manage permissions and recent activity](/images/guides/managing-identity/identity-tab.jpg)
+
+![Your profile preview shows display name, bio, NIP-05 identifier, Lightning address, and website — exactly how other Nostr users will see you](/images/guides/managing-identity/view-profile.jpg)
 
 ### Editing Your Profile
+
+![Review your profile before publishing — confirm display name, bio, NIP-05, Lightning address, and website, then click Confirm & Publish to sign and broadcast your kind 0 event](/images/guides/managing-identity/edit-profile.jpg)
 
 1. Click **Edit Profile** on the Identity tab.
 2. Update any fields you want to change.
@@ -61,28 +65,28 @@ Changes propagate across Nostr clients within seconds as relays distribute the u
 
 ## Key Security Best Practices
 
-Your private key (nsec) is the single most important piece of data in your Nostr identity. Anyone who has it can post as you, change your profile, and access your contacts. There is no password reset, no support team to call.
+Your seed phrase and nsec (private key) are the single most important pieces of data in your Nostr identity. Anyone who has either one controls your account — they can post as you, change your profile, and access your contacts. There is no password reset, no support team to call.
 
 ### Storage
 
-- The extension encrypts your private key locally using your encryption password. It is never stored in plain text.
-- Back up your nsec in a password manager or write it on paper and store it somewhere safe.
-- Never paste your nsec into a website or DM it to anyone.
+- The extension encrypts your keys locally using your encryption password. They are never stored in plain text.
+- Back up your 12-word seed phrase in a password manager or write it on paper and store it somewhere safe.
+- Never share your seed phrase or nsec with anyone, paste them into a website, or send them in a DM.
 
 ### Encryption Password
 
 - Choose a strong, unique password when setting up the extension.
 - The extension locks after a period of inactivity. You will need this password to unlock it.
-- If you forget this password, you can re-import your nsec to reset it — but you need that nsec backup.
+- If you forget this password, you can restore access using your 12-word seed phrase.
 
-{/* TODO: Screenshot of the lock screen and password entry */}
+![When the vault is locked, enter your encryption password to unlock — your private keys never leave the extension](/images/guides/managing-identity/lock-screen.jpg)
 
 ### Multiple Devices
 
-If you use the extension on multiple browsers or machines, import the same nsec on each one. Your identity is tied to your key pair, not to any single device.
+If you use the extension on multiple browsers or machines, restore from your 12-word seed phrase on each one. Your identity is tied to your key pair, not to any single device.
 
 <Callout type="tip">
-Consider generating your keys with a dedicated tool and importing them into the extension. That way, your backup exists independently of any single extension.
+Your seed phrase works independently of any single browser or device. Keep it in a safe place and you can always restore your full Nostr identity.
 </Callout>
 
 ## Switching Between Identities

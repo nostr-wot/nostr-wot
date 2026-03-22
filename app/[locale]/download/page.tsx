@@ -49,7 +49,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 }
 
 const CHROME_STORE_URL = "https://chromewebstore.google.com/detail/nostr-wot-extension/gfmefgdkmjpjinecjchlangpamhclhdo";
-const FIREFOX_STORE_URL = "https://addons.mozilla.org/addon/nostr-wot-extension/";
+const FIREFOX_STORE_URL = "https://addons.mozilla.org/en-US/firefox/addon/nostr-wot/";
 
 const BROWSERS = [
   { key: "chrome", Icon: ChromeIcon, url: CHROME_STORE_URL },

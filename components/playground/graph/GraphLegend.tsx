@@ -109,6 +109,17 @@ export default function GraphLegend() {
       </div>
 
       <div className="mt-3 pt-3 border-t border-gray-700">
+        <p className="text-xs font-medium text-gray-400 mb-2">Expanded</p>
+        <div className="flex items-center gap-2">
+          <div
+            className="w-3 h-3 rounded-full flex-shrink-0 border-2"
+            style={{ borderColor: 'rgba(255, 220, 50, 0.8)', backgroundColor: 'rgba(255, 220, 50, 0.15)' }}
+          />
+          <span className="text-xs text-gray-300">Expanded node</span>
+        </div>
+      </div>
+
+      <div className="mt-3 pt-3 border-t border-gray-700">
         <p className="text-xs font-medium text-gray-400 mb-2">Connections</p>
         <div className="flex flex-col gap-1.5">
           <EdgeLegendItem color="#6b7280" label="Follow" dashed={false} />

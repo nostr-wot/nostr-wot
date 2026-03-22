@@ -65,7 +65,7 @@ export default function GraphCanvas3D({ width, height }: GraphCanvas3DProps) {
     return colors;
   }, [visibleData.nodes]);
 
-  // Node click handler
+  // Node click handler — select only, no auto-expand (use double-click to expand)
   const handleNodeClick = useCallback(
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     (node: any) => {
@@ -74,16 +74,14 @@ export default function GraphCanvas3D({ width, height }: GraphCanvas3DProps) {
       const graphNode = node as GraphNode;
       select(graphNode);
 
-      // Expand on click
-      if (graphNode.distance < 3) {
-        expandNodeFollows(graphNode.id);
-      }
-
       // Focus camera on node (with coordinate safety check)
       if (graphRef.current && typeof node.x === "number" && typeof node.y === "number" && typeof node.z === "number") {
         try {
+          const hyp = Math.hypot(node.x, node.y, node.z);
+          // Guard against division by zero when node is at origin
+          if (hyp < 0.001) return;
           const distance = 200;
-          const distRatio = 1 + distance / Math.hypot(node.x, node.y, node.z);
+          const distRatio = 1 + distance / hyp;
           graphRef.current.cameraPosition(
             {
               x: node.x * distRatio,
@@ -98,7 +96,20 @@ export default function GraphCanvas3D({ width, height }: GraphCanvas3DProps) {
         }
       }
     },
-    [select, expandNodeFollows]
+    [select]
+  );
+
+  // Double-click to expand follows (mirrors 2D context-menu behavior)
+  const handleNodeDoubleClick = useCallback(
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    (node: any) => {
+      if (!node) return;
+      const graphNode = node as GraphNode;
+      if (graphNode.distance < 3) {
+        expandNodeFollows(graphNode.id);
+      }
+    },
+    [expandNodeFollows]
   );
 
   // Node hover handlers
@@ -193,9 +204,11 @@ export default function GraphCanvas3D({ width, height }: GraphCanvas3DProps) {
         nodeVal={getNodeSize as any}
         nodeLabel={(node: any) => {
           const n = node as GraphNode;
-          return `${n.label || n.id.slice(0, 12)}... (${n.distance} hops)`;
+          const name = n.label || n.id.slice(0, 12) + '...';
+          return `${name} (${n.distance} hops)`;
         }}
         onNodeClick={handleNodeClick as any}
+        onNodeRightClick={handleNodeDoubleClick as any}
         onNodeHover={handleNodeHover as any}
         onBackgroundClick={handleBackgroundClick}
         linkColor={getLinkColor as any}
@@ -227,7 +240,7 @@ export default function GraphCanvas3D({ width, height }: GraphCanvas3DProps) {
 
       {/* Controls hint */}
       <div className="absolute bottom-4 right-4 bg-gray-800/80 backdrop-blur-sm rounded-lg px-3 py-2 text-xs text-gray-400">
-        <div>Left-drag to rotate • Right-drag to pan • Scroll to zoom • Click to expand</div>
+        <div>Left-drag to rotate • Right-drag to pan • Scroll to zoom • Right-click node to expand</div>
       </div>
 
       {/* Tooltip */}

@@ -14,35 +14,29 @@ export default function TrustPathDisplay({ node }: TrustPathDisplayProps) {
   const t = useTranslations("playground");
   const { state, getProfile } = useGraph();
 
-  // Build path from root to node (simplified - uses distance as proxy)
-  // In a full implementation, this would use BFS to find actual path
+  // Build the actual path by following expandedFrom chain back to root
   const path = useMemo(() => {
     if (node.isRoot) return [];
 
+    const nodeMap = new Map(state.data.nodes.map((n) => [n.id, n]));
     const rootNode = state.data.nodes.find((n) => n.isRoot);
     if (!rootNode) return [];
 
-    // For distance 1, direct connection
-    if (node.distance === 1) {
-      return [rootNode, node];
+    // Trace back through expandedFrom to build the path
+    const pathNodes: GraphNode[] = [];
+    let current: GraphNode | undefined = node;
+
+    // Walk up the chain (max depth guard to prevent infinite loops)
+    let guard = 0;
+    while (current && !current.isRoot && guard < 10) {
+      pathNodes.unshift(current);
+      const parentId = current.expandedFrom;
+      current = parentId ? nodeMap.get(parentId) : undefined;
+      guard++;
     }
 
-    // For distance > 1, show placeholder path
-    // A real implementation would trace the actual path through the graph
-    const pathNodes: GraphNode[] = [rootNode];
-
-    // Find intermediate nodes at each distance level
-    for (let d = 1; d < node.distance; d++) {
-      // Find a node at this distance that could be on the path
-      const intermediateNode = state.data.nodes.find(
-        (n) => n.distance === d && !n.isRoot
-      );
-      if (intermediateNode) {
-        pathNodes.push(intermediateNode);
-      }
-    }
-
-    pathNodes.push(node);
+    // Always prepend root
+    pathNodes.unshift(rootNode);
     return pathNodes;
   }, [node, state.data.nodes]);
 
@@ -107,14 +101,19 @@ export default function TrustPathDisplay({ node }: TrustPathDisplayProps) {
         );
       })}
 
-      {/* Path summary */}
-      <div className="mt-3 pt-3 border-t border-gray-700">
+      {/* Path summary + extra paths */}
+      <div className="mt-3 pt-3 border-t border-gray-700 space-y-1">
         <p className="text-xs text-gray-500">
           {t("graph.pathSummary", {
             hops: node.distance,
             trust: Math.round(node.trustScore * 100),
           })}
         </p>
+        {(node.pathCount || 1) > 1 && (
+          <p className="text-xs text-primary">
+            +{(node.pathCount || 1) - 1} {t("graph.morePaths")}
+          </p>
+        )}
       </div>
     </div>
   );

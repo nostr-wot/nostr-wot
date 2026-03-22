@@ -1,0 +1,157 @@
+<svg width="800" height="360" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="cvn-bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#1e1b4b;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#312e81;stop-opacity:1" />
+    </linearGradient>
+    <filter id="cvn-dead" x="-40%" y="-40%" width="180%" height="180%">
+      <feDropShadow dx="0" dy="0" stdDeviation="6" flood-color="#f87171" flood-opacity="0.5"/>
+    </filter>
+    <filter id="cvn-live" x="-40%" y="-40%" width="180%" height="180%">
+      <feDropShadow dx="0" dy="0" stdDeviation="5" flood-color="#4ade80" flood-opacity="0.5"/>
+    </filter>
+    <filter id="cvn-user" x="-50%" y="-50%" width="200%" height="200%">
+      <feDropShadow dx="0" dy="0" stdDeviation="8" flood-color="#a78bfa" flood-opacity="0.6"/>
+    </filter>
+  </defs>
+
+  <rect width="800" height="360" fill="url(#cvn-bg)"/>
+
+  <!-- LEFT: CENTRALIZED -->
+  <text x="200" y="30" font-family="'Inter', sans-serif" font-size="11" font-weight="600" fill="rgba(248,113,113,0.6)" text-anchor="middle" letter-spacing="2">CENTRALIZED PLATFORM</text>
+
+  <!-- Central server (single point) -->
+  <g filter="url(#cvn-dead)">
+    <rect x="148" y="55" width="104" height="70" rx="8" fill="rgba(20,10,30,0.95)" stroke="rgba(248,113,113,0.5)" stroke-width="2"/>
+    <rect x="162" y="68" width="76" height="8" rx="2" fill="rgba(248,113,113,0.18)" stroke="rgba(248,113,113,0.3)" stroke-width="0.8"/>
+    <rect x="162" y="79" width="76" height="8" rx="2" fill="rgba(248,113,113,0.12)"/>
+    <rect x="162" y="90" width="76" height="8" rx="2" fill="rgba(248,113,113,0.08)"/>
+    <circle cx="168" cy="72" r="2.5" fill="rgba(248,113,113,0.8)"/>
+    <circle cx="168" cy="83" r="2.5" fill="rgba(248,113,113,0.6)"/>
+    <text x="200" y="113" font-family="'Inter', sans-serif" font-size="9" fill="rgba(248,113,113,0.5)" text-anchor="middle">Central Server</text>
+    <!-- X cross -->
+    <line x1="155" y1="60" x2="245" y2="118" stroke="rgba(248,113,113,0.85)" stroke-width="3" stroke-linecap="round"/>
+    <line x1="245" y1="60" x2="155" y2="118" stroke="rgba(248,113,113,0.85)" stroke-width="3" stroke-linecap="round"/>
+  </g>
+
+  <!-- Users connected to dead server -->
+  <g opacity="0.5">
+    <!-- User dots -->
+    <circle cx="80" cy="210" r="12" fill="rgba(20,10,30,0.9)" stroke="rgba(248,113,113,0.35)" stroke-width="1.2"/>
+    <circle cx="80" cy="205" r="4" fill="rgba(248,113,113,0.4)"/>
+    <path d="M72,214 Q72,210 80,210 Q88,210 88,214" fill="rgba(248,113,113,0.3)"/>
+
+    <circle cx="160" cy="235" r="12" fill="rgba(20,10,30,0.9)" stroke="rgba(248,113,113,0.35)" stroke-width="1.2"/>
+    <circle cx="160" cy="230" r="4" fill="rgba(248,113,113,0.4)"/>
+    <path d="M152,239 Q152,235 160,235 Q168,235 168,239" fill="rgba(248,113,113,0.3)"/>
+
+    <circle cx="240" cy="210" r="12" fill="rgba(20,10,30,0.9)" stroke="rgba(248,113,113,0.35)" stroke-width="1.2"/>
+    <circle cx="240" cy="205" r="4" fill="rgba(248,113,113,0.4)"/>
+    <path d="M232,214 Q232,210 240,210 Q248,210 248,214" fill="rgba(248,113,113,0.3)"/>
+
+    <circle cx="320" cy="235" r="12" fill="rgba(20,10,30,0.9)" stroke="rgba(248,113,113,0.35)" stroke-width="1.2"/>
+    <circle cx="320" cy="230" r="4" fill="rgba(248,113,113,0.4)"/>
+    <path d="M312,239 Q312,235 320,235 Q328,235 328,239" fill="rgba(248,113,113,0.3)"/>
+
+    <!-- Broken lines to dead server -->
+    <line x1="88" y1="200" x2="172" y2="125" stroke="rgba(248,113,113,0.25)" stroke-width="1" stroke-dasharray="3,4"/>
+    <line x1="166" y1="224" x2="196" y2="130" stroke="rgba(248,113,113,0.25)" stroke-width="1" stroke-dasharray="3,4"/>
+    <line x1="232" y1="200" x2="216" y2="125" stroke="rgba(248,113,113,0.25)" stroke-width="1" stroke-dasharray="3,4"/>
+    <line x1="314" y1="226" x2="235" y2="128" stroke="rgba(248,113,113,0.25)" stroke-width="1" stroke-dasharray="3,4"/>
+  </g>
+
+  <!-- No connection labels -->
+  <text x="200" y="275" font-family="'Inter', sans-serif" font-size="10" font-weight="600" fill="rgba(248,113,113,0.55)" text-anchor="middle">Server goes down →</text>
+  <text x="200" y="290" font-family="'Inter', sans-serif" font-size="10" fill="rgba(248,113,113,0.45)" text-anchor="middle">everyone loses access</text>
+
+  <!-- DIVIDER -->
+  <line x1="400" y1="20" x2="400" y2="340" stroke="rgba(167,139,250,0.15)" stroke-width="1" stroke-dasharray="5,5"/>
+  <rect x="376" y="166" width="48" height="36" rx="18" fill="rgba(20,15,50,0.95)" stroke="rgba(167,139,250,0.3)" stroke-width="1.5"/>
+  <text x="400" y="189" font-family="'Inter', sans-serif" font-size="12" font-weight="800" fill="rgba(167,139,250,0.75)" text-anchor="middle">VS</text>
+
+  <!-- RIGHT: NOSTR -->
+  <text x="600" y="30" font-family="'Inter', sans-serif" font-size="11" font-weight="600" fill="rgba(74,222,128,0.6)" text-anchor="middle" letter-spacing="2">NOSTR RELAYS</text>
+
+  <!-- 5 relay nodes — one dead, others alive -->
+  <!-- Relay 1: top-left (alive) -->
+  <g filter="url(#cvn-live)">
+    <circle cx="490" cy="90" r="24" fill="rgba(20,15,50,0.95)" stroke="rgba(74,222,128,0.6)" stroke-width="1.5"/>
+    <rect x="479" y="81" width="22" height="7" rx="1.5" fill="rgba(74,222,128,0.2)" stroke="rgba(74,222,128,0.35)" stroke-width="0.7"/>
+    <rect x="479" y="91" width="22" height="7" rx="1.5" fill="rgba(74,222,128,0.1)"/>
+    <circle cx="484" cy="85" r="1.8" fill="rgba(74,222,128,0.85)"/>
+  </g>
+
+  <!-- Relay 2: top-right (DEAD — the one that fails) -->
+  <g filter="url(#cvn-dead)" opacity="0.7">
+    <circle cx="640" cy="90" r="24" fill="rgba(20,15,50,0.95)" stroke="rgba(248,113,113,0.5)" stroke-width="1.5"/>
+    <rect x="629" y="81" width="22" height="7" rx="1.5" fill="rgba(248,113,113,0.12)" stroke="rgba(248,113,113,0.3)" stroke-width="0.7"/>
+    <rect x="629" y="91" width="22" height="7" rx="1.5" fill="rgba(248,113,113,0.07)"/>
+    <circle cx="634" cy="85" r="1.8" fill="rgba(248,113,113,0.7)"/>
+    <!-- small x on this one -->
+    <line x1="625" y1="78" x2="661" y2="104" stroke="rgba(248,113,113,0.7)" stroke-width="2" stroke-linecap="round"/>
+    <line x1="661" y1="78" x2="625" y2="104" stroke="rgba(248,113,113,0.7)" stroke-width="2" stroke-linecap="round"/>
+  </g>
+  <text x="640" y="125" font-family="'Inter', sans-serif" font-size="8" fill="rgba(248,113,113,0.45)" text-anchor="middle">DOWN</text>
+
+  <!-- Relay 3: right (alive) -->
+  <g filter="url(#cvn-live)">
+    <circle cx="700" cy="190" r="24" fill="rgba(20,15,50,0.95)" stroke="rgba(74,222,128,0.6)" stroke-width="1.5"/>
+    <rect x="689" y="181" width="22" height="7" rx="1.5" fill="rgba(74,222,128,0.2)" stroke="rgba(74,222,128,0.35)" stroke-width="0.7"/>
+    <rect x="689" y="191" width="22" height="7" rx="1.5" fill="rgba(74,222,128,0.1)"/>
+    <circle cx="694" cy="185" r="1.8" fill="rgba(74,222,128,0.85)"/>
+  </g>
+
+  <!-- Relay 4: bottom (alive) -->
+  <g filter="url(#cvn-live)">
+    <circle cx="600" cy="270" r="24" fill="rgba(20,15,50,0.95)" stroke="rgba(74,222,128,0.6)" stroke-width="1.5"/>
+    <rect x="589" y="261" width="22" height="7" rx="1.5" fill="rgba(74,222,128,0.2)" stroke="rgba(74,222,128,0.35)" stroke-width="0.7"/>
+    <rect x="589" y="271" width="22" height="7" rx="1.5" fill="rgba(74,222,128,0.1)"/>
+    <circle cx="594" cy="265" r="1.8" fill="rgba(74,222,128,0.85)"/>
+  </g>
+
+  <!-- Relay 5: left (alive) -->
+  <g filter="url(#cvn-live)">
+    <circle cx="460" cy="215" r="24" fill="rgba(20,15,50,0.95)" stroke="rgba(74,222,128,0.6)" stroke-width="1.5"/>
+    <rect x="449" y="206" width="22" height="7" rx="1.5" fill="rgba(74,222,128,0.2)" stroke="rgba(74,222,128,0.35)" stroke-width="0.7"/>
+    <rect x="449" y="216" width="22" height="7" rx="1.5" fill="rgba(74,222,128,0.1)"/>
+    <circle cx="454" cy="210" r="1.8" fill="rgba(74,222,128,0.85)"/>
+  </g>
+
+  <!-- Mesh connections (alive ones) -->
+  <g stroke="rgba(74,222,128,0.28)" stroke-width="1.2">
+    <line x1="514" y1="90" x2="616" y2="90"/>
+    <line x1="664" y1="104" x2="693" y2="170"/>
+    <line x1="690" y1="210" x2="624" y2="254"/>
+    <line x1="576" y1="268" x2="484" y2="233"/>
+    <line x1="456" y1="191" x2="476" y2="112"/>
+    <!-- Cross links -->
+    <line x1="514" y1="100" x2="484" y2="195"/>
+    <line x1="514" y1="100" x2="688" y2="180"/>
+    <line x1="576" y1="260" x2="690" y2="200"/>
+  </g>
+
+  <!-- Broken lines FROM dead relay -->
+  <g stroke="rgba(248,113,113,0.2)" stroke-width="1" stroke-dasharray="3,4">
+    <line x1="621" y1="88" x2="515" y2="88"/>
+    <line x1="660" y1="104" x2="686" y2="170"/>
+  </g>
+
+  <!-- User at center of nostr side -->
+  <g filter="url(#cvn-user)">
+    <circle cx="578" cy="175" r="22" fill="rgba(20,15,50,0.95)" stroke="rgba(167,139,250,0.7)" stroke-width="2"/>
+    <circle cx="578" cy="165" r="8" fill="rgba(167,139,250,0.6)"/>
+    <path d="M563,180 Q563,174 578,174 Q593,174 593,180" fill="rgba(167,139,250,0.42)"/>
+  </g>
+  <!-- Connections user to live relays -->
+  <g stroke="rgba(167,139,250,0.35)" stroke-width="1.2" stroke-dasharray="4,3">
+    <line x1="567" y1="155" x2="502" y2="105"/>
+    <line x1="591" y1="164" x2="627" y2="107"/>
+    <line x1="598" y1="178" x2="676" y2="183"/>
+    <line x1="589" y1="194" x2="609" y2="248"/>
+    <line x1="558" y1="183" x2="484" y2="210"/>
+  </g>
+
+  <!-- Result label -->
+  <text x="580" y="312" font-family="'Inter', sans-serif" font-size="10" font-weight="600" fill="rgba(74,222,128,0.55)" text-anchor="middle">One relay down →</text>
+  <text x="580" y="327" font-family="'Inter', sans-serif" font-size="10" fill="rgba(74,222,128,0.45)" text-anchor="middle">4 others keep your posts alive</text>
+</svg>

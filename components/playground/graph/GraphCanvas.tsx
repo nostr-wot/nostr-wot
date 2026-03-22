@@ -1,6 +1,7 @@
 "use client";
 
 import { useCallback, useRef, useEffect, useState, useMemo } from "react";
+import { forceCollide, forceRadial, forceX, forceY } from "d3-force-3d";
 import dynamic from "next/dynamic";
 import { useTranslations } from "next-intl";
 import { useGraph } from "@/contexts/GraphContext";
@@ -48,6 +49,10 @@ export default function GraphCanvas({ width, height }: GraphCanvasProps) {
   const [clickedNodeId, setClickedNodeId] = useState<string | null>(null);
   const [clickAnimationPhase, setClickAnimationPhase] = useState(0);
 
+  // Preserve node positions across re-renders so the simulation doesn't
+  // reset already-settled nodes when new data arrives via mergeData.
+  const prevNodePositions = useRef<Map<string, { x: number; y: number }>>(new Map());
+
   // Check if we should use static layout (no physics) for performance
   const useStaticLayout = filteredData.nodes.length > DISABLE_SIMULATION_THRESHOLD;
 
@@ -64,6 +69,19 @@ export default function GraphCanvas({ width, height }: GraphCanvasProps) {
         return nodeIds.has(sourceId) && nodeIds.has(targetId);
       })
       .slice(0, MAX_VISIBLE_LINKS);
+
+    // Restore previously simulated positions as hints (x/y only, never fx/fy).
+    // Pinning with fx/fy causes new expanded nodes to mix into already-settled
+    // groups because there's no room to move. Let the radial force keep structure.
+    nodes.forEach((node) => {
+      const prev = prevNodePositions.current.get(node.id);
+      if (prev) {
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        (node as any).x = prev.x;
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        (node as any).y = prev.y;
+      }
+    });
 
     // Pre-compute positions for large graphs (radial layout by distance)
     if (useStaticLayout) {
@@ -112,6 +130,11 @@ export default function GraphCanvas({ width, height }: GraphCanvasProps) {
   useEffect(() => {
     if (filteredData.nodes.length > 1) {
       setShowStartPrompt(false);
+    }
+    // When graph is reset (empty), clear pinned positions and show prompt again
+    if (filteredData.nodes.length === 0) {
+      prevNodePositions.current.clear();
+      setShowStartPrompt(true);
     }
   }, [filteredData.nodes.length]);
 
@@ -208,6 +231,9 @@ export default function GraphCanvas({ width, height }: GraphCanvasProps) {
     setContextMenu(null);
   }, [select]);
 
+  // Snapshot expandedNodes for paintNode (avoid reading state inside hot loop)
+  const expandedNodes = state.expandedNodes;
+
   // Custom canvas node rendering - much faster than Three.js
   const paintNode = useCallback(
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -249,9 +275,25 @@ export default function GraphCanvas({ width, height }: GraphCanvasProps) {
         ctx.fill();
       }
 
-      // Draw node
+      // Draw expanded (gateway) node distinction
+      if (expandedNodes.has(graphNode.id) && !graphNode.isRoot) {
+        // Outer yellow ring
+        ctx.beginPath();
+        ctx.arc(node.x, node.y, size + 6, 0, 2 * Math.PI);
+        ctx.strokeStyle = 'rgba(255, 220, 50, 0.8)';
+        ctx.lineWidth = 2;
+        ctx.stroke();
+        // Inner glow
+        ctx.beginPath();
+        ctx.arc(node.x, node.y, size + 3, 0, 2 * Math.PI);
+        ctx.fillStyle = 'rgba(255, 220, 50, 0.15)';
+        ctx.fill();
+      }
+
+      // Draw node (slightly larger for expanded gateway nodes)
+      const drawSize = (expandedNodes.has(graphNode.id) && !graphNode.isRoot) ? size + 2 : size;
       ctx.beginPath();
-      ctx.arc(node.x, node.y, size, 0, 2 * Math.PI);
+      ctx.arc(node.x, node.y, drawSize, 0, 2 * Math.PI);
       ctx.fillStyle = color;
       ctx.fill();
 
@@ -275,7 +317,7 @@ export default function GraphCanvas({ width, height }: GraphCanvasProps) {
         ctx.fillText(displayLabel, node.x, node.y + size + 2);
       }
     },
-    [nodeColors, clickedNodeId, clickAnimationPhase, activeNode]
+    [nodeColors, clickedNodeId, clickAnimationPhase, activeNode, expandedNodes]
   );
 
   // Link color
@@ -297,6 +339,54 @@ export default function GraphCanvas({ width, height }: GraphCanvasProps) {
     },
     [visibleData.nodes]
   );
+
+  // Persist simulated positions every second so settled nodes get pinned on next update
+  useEffect(() => {
+    const interval = setInterval(() => {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      visibleData.nodes.forEach((n: any) => {
+        if (n.x !== undefined && n.y !== undefined) {
+          prevNodePositions.current.set(n.id, { x: n.x, y: n.y });
+        }
+      });
+    }, 1000); // snapshot every 1s (faster = nodes get pinned sooner)
+    return () => clearInterval(interval);
+  }, [visibleData.nodes]);
+
+  // Tune d3 forces: radial layout by distance + collision + link locality
+  useEffect(() => {
+    if (graphRef.current && !useStaticLayout) {
+      // Strong charge so nodes push each other apart
+      graphRef.current.d3Force('charge')?.strength(-120);
+
+      // Collision so nodes don't overlap
+      graphRef.current.d3Force('collision', forceCollide(10));
+
+      // Radial force: each hop snaps to its own orbit ring around center
+      // hop0=0px, hop1=80px, hop2=160px, hop3=240px — keep layers close
+      graphRef.current.d3Force('radial', forceRadial(
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        (node: any) => (node as GraphNode).distance * 80,
+        0, 0
+      )?.strength(0.3));
+
+      // Link force: keep parent-child edges short
+      graphRef.current.d3Force('link')
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        ?.distance((link: any) => {
+          const source = typeof link.source === 'object' ? link.source : null;
+          const target = typeof link.target === 'object' ? link.target : null;
+          if (!source || !target) return 60;
+          if (source.isRoot || target.isRoot) return 90;
+          return 50;
+        })
+        ?.strength(0.5);
+
+      // Weak center gravity to prevent drift
+      graphRef.current.d3Force('x', forceX(0).strength(0.02));
+      graphRef.current.d3Force('y', forceY(0).strength(0.02));
+    }
+  }, [visibleData.nodes.length, useStaticLayout]);
 
   // Center camera on root node after initial load
   useEffect(() => {
@@ -354,10 +444,10 @@ export default function GraphCanvas({ width, height }: GraphCanvasProps) {
         linkDirectionalArrowLength={settings.showArrows && !useStaticLayout ? 2 : 0}
         linkDirectionalArrowRelPos={1}
         // Disable simulation for large graphs (positions pre-computed)
-        d3AlphaDecay={useStaticLayout ? 1 : 0.05}
-        d3VelocityDecay={useStaticLayout ? 1 : 0.4}
-        cooldownTicks={useStaticLayout ? 0 : 100}
-        warmupTicks={useStaticLayout ? 0 : 50}
+        d3AlphaDecay={useStaticLayout ? 1 : 0.03}
+        d3VelocityDecay={useStaticLayout ? 1 : 0.3}
+        cooldownTicks={useStaticLayout ? 0 : 300}
+        warmupTicks={useStaticLayout ? 0 : 30}
         enableNodeDrag={!useStaticLayout}
         enableZoomInteraction={true}
         enablePanInteraction={true}
@@ -436,11 +526,23 @@ export default function GraphCanvas({ width, height }: GraphCanvasProps) {
       )}
 
       {/* Context menu */}
+      {/* Expanding indicator */}
+      {state.isLoading && state.data.nodes.length > 0 && (
+        <div className="absolute top-4 left-1/2 -translate-x-1/2 z-30 flex items-center gap-2 bg-gray-800/90 backdrop-blur-sm border border-primary/40 rounded-full px-4 py-1.5 text-xs text-primary shadow-lg">
+          <svg className="w-3 h-3 animate-spin" fill="none" viewBox="0 0 24 24">
+            <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+            <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
+          </svg>
+          Expanding...
+        </div>
+      )}
+
       {contextMenu && (
         <NodeContextMenu
           node={contextMenu.node}
           position={contextMenu.position}
           isExpanded={state.expandedNodes.has(contextMenu.node.id)}
+          isExpanding={state.isLoading}
           onExpand={handleExpandFromMenu}
           onViewProfile={handleViewProfileFromMenu}
           onClose={handleCloseContextMenu}
