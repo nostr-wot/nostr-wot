@@ -196,25 +196,46 @@ function graphReducer(state: GraphState, action: GraphAction): GraphState {
         return true;
       });
 
+      // Build distance correction map: nodes in payload that already exist
+      // and have a SHORTER distance than what's currently in state
+      const distanceUpdateMap = new Map<string, GraphNode>();
+      for (const node of action.payload.nodes) {
+        const existing = existingNodeMap.get(node.id);
+        if (existing && node.distance < existing.distance) {
+          distanceUpdateMap.set(node.id, node);
+        }
+      }
+
       // Get new nodes (not already existing)
       const newNodes = action.payload.nodes.filter(
         (n) => !existingNodeMap.has(n.id)
       );
 
-      // Update existing nodes with incremented path counts
+      // Update existing nodes: apply distance corrections AND path count increments
       const updatedNodes = state.data.nodes.map((node) => {
+        const distUpdate = distanceUpdateMap.get(node.id);
         const pathIncrement = nodePathIncrements.get(node.id);
-        if (pathIncrement) {
-          const newPathCount = node.pathCount + pathIncrement;
-          // Recalculate trust score with new path count using same formula as colors
-          const newTrustScore = calculateTrustScore(node.distance, newPathCount);
-          return {
-            ...node,
-            pathCount: newPathCount,
-            trustScore: newTrustScore,
+
+        let result = node;
+
+        // Apply distance correction first (shorter real distance found)
+        if (distUpdate) {
+          result = {
+            ...result,
+            distance: distUpdate.distance,
+            pathCount: distUpdate.pathCount ?? result.pathCount,
+            trustScore: distUpdate.trustScore ?? result.trustScore,
           };
         }
-        return node;
+
+        // Then apply path count increment from new incoming links
+        if (pathIncrement) {
+          const newPathCount = result.pathCount + pathIncrement;
+          const newTrustScore = calculateTrustScore(result.distance, newPathCount);
+          result = { ...result, pathCount: newPathCount, trustScore: newTrustScore };
+        }
+
+        return result;
       });
 
       return {
