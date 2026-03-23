@@ -136,7 +136,7 @@ export default function GraphLayout() {
             )}
 
             {/* Legend */}
-            <GraphLegend maxHeight={canvasHeight - 24} />
+            <GraphLegend maxHeight={dimensions.height - 80} />
 
             {/* Right panel (node details) */}
             <RightPanel
