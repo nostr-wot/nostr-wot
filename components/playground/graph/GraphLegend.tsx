@@ -20,7 +20,7 @@ export default function GraphLegend() {
 
   if (settings.colorMode === "distance") {
     return (
-      <div className="absolute top-4 left-4 bg-gray-800/90 backdrop-blur rounded-lg border border-gray-700 p-3 z-10 max-h-[calc(100%-68px)] overflow-y-auto">
+      <div className="absolute top-4 left-4 bg-gray-800/90 backdrop-blur rounded-lg border border-gray-700 p-3 z-10 overflow-y-auto" style={{maxHeight: 'calc(100% - 56px)'}}>
         <p className="text-xs font-medium text-gray-400 mb-2">Distance</p>
         <div className="flex flex-col gap-1.5">
           <LegendItem color="#6366f1" label="You (root)" />
@@ -46,7 +46,7 @@ export default function GraphLegend() {
   }
 
   return (
-    <div className="absolute top-4 left-4 bg-gray-800/90 backdrop-blur rounded-lg border border-gray-700 p-3 z-10 max-h-[calc(100%-68px)] overflow-y-auto">
+    <div className="absolute top-4 left-4 bg-gray-800/90 backdrop-blur rounded-lg border border-gray-700 p-3 z-10 overflow-y-auto" style={{maxHeight: 'calc(100% - 56px)'}}>
       <p className="text-xs font-medium text-gray-400 mb-2">Trust Score</p>
 
       {/* Trust gradient bar */}
