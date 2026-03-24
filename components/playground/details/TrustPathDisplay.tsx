@@ -30,7 +30,7 @@ export default function TrustPathDisplay({ node }: TrustPathDisplayProps) {
     let guard = 0;
     while (current && !current.isRoot && guard < 10) {
       pathNodes.unshift(current);
-      const parentId = current.expandedFrom;
+      const parentId: string | undefined = current.expandedFrom;
       current = parentId ? nodeMap.get(parentId) : undefined;
       guard++;
     }
