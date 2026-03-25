@@ -74,7 +74,7 @@ export default function GraphLayout() {
   const canvasHeight = dimensions.height - 44; // Account for stats bar
 
   return (
-    <div className="flex flex-col h-full">
+    <div className="flex flex-col h-full overflow-hidden">
       {/* Top bar with search, filters, and view toggle */}
       <div className="flex items-center gap-4 p-4 border-b border-gray-200 dark:border-gray-700">
         <div className="flex-1 max-w-md">
@@ -136,7 +136,7 @@ export default function GraphLayout() {
             )}
 
             {/* Legend */}
-            <GraphLegend maxHeight={canvasHeight - 24} />
+            <GraphLegend />
 
             {/* Right panel (node details) */}
             <RightPanel
@@ -144,9 +144,6 @@ export default function GraphLayout() {
               onClose={handleCloseRightPanel}
               onViewProfile={handleViewProfile}
             />
-
-            {/* Bottom stats bar */}
-            <BottomStatsBar />
           </>
         )}
 
@@ -207,6 +204,9 @@ export default function GraphLayout() {
           </div>
         )}
       </div>
+
+      {/* Bottom stats bar — outside the graph container so legend never overlaps it */}
+      <BottomStatsBar />
 
       {/* Profile modal */}
       <NodeProfileModal

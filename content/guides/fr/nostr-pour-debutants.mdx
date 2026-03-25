@@ -1,0 +1,117 @@
+---
+title: "Nostr pour Débutants : Vos Premiers Pas"
+description: "Un guide pratique, étape par étape, pour débuter sur Nostr. Créez votre identité avec l'Extension Nostr WoT, choisissez un client pour explorer le réseau et commencez à suivre des personnes — le tout en une dizaine de minutes."
+excerpt: "Prêt à essayer Nostr ? Commencez par créer votre identité avec l'Extension Nostr WoT, puis choisissez un client pour explorer le réseau et trouver des personnes à suivre."
+date: "2026-03-19"
+author:
+  name: "Leon Acosta"
+  avatar: "/authors/leon-profile.jpg"
+  npub: "npub1gxdhmu9swqduwhr6zptjy4ya693zp3ql28nemy4hd97kuufyrqdqwe5zfk"
+featuredImage: "/images/guides/nostr-for-beginners/featured.svg"
+previewImage: "/images/guides/nostr-for-beginners/preview.svg"
+tags:
+  - "Debutant"
+  - "Nostr"
+  - "Installation"
+published: true
+seoTitle: "Nostr pour Débutants : Vos Premiers Pas"
+seoDescription: "Un guide pratique pour débuter sur Nostr. Créez votre identité avec l'Extension Nostr WoT, choisissez un client à explorer et suivez des personnes — aucune connaissance technique requise."
+ogImage: "/images/guides/nostr-for-beginners/og.jpg"
+translationKey: "nostr-for-beginners"
+difficulty: "beginner"
+order: 0.3
+---
+
+Ce guide vous permettra d'être opérationnel sur Nostr en une dizaine de minutes. Aucune connaissance technique requise. À la fin, vous aurez votre propre identité, un client pour explorer le réseau et des personnes à suivre.
+
+## Étape 1 : Comprendre ce que vous créez
+
+Sur Nostr, votre identité est une **paire de clés** — une clé publique et une clé privée. Voyez les choses ainsi :
+
+- **Clé publique (npub) :** Votre adresse. Partagez-la librement. Les gens l'utilisent pour vous trouver et vous suivre.
+- **Clé privée (nsec) :** Votre mot de passe maître. Elle prouve que vous êtes le propriétaire de votre identité. Ne la partagez jamais avec personne.
+
+Il n'y a pas d'inscription par email. Pas de numéro de téléphone. Aucune entreprise ne détient votre compte. Vous générez ces clés, et elles sont les vôtres de manière permanente.
+
+## Étape 2 : Créer votre identité avec l'Extension Nostr WoT
+
+La meilleure façon de commencer sur Nostr est de créer votre identité avec l'**Extension Nostr WoT**. Elle agit comme votre gestionnaire de clés et signataire — elle garde votre clé privée en sécurité dans le navigateur et permet à n'importe quel client Nostr de l'utiliser sans jamais l'exposer.
+
+<Callout type="tip">
+Pensez à l'extension comme votre portefeuille Nostr. Les clients ne sont que des fenêtres sur le réseau — votre identité vit dans l'extension, pas dans une application particulière.
+</Callout>
+
+1. Installez l'extension depuis le [Chrome Web Store](https://chromewebstore.google.com/detail/nostr-wot-extension/nfhdbhnnbibgkfipjbmdgcbhhjdpajjl) ou les [Firefox Add-ons](https://addons.mozilla.org/en-US/firefox/addon/nostr-wot/).
+2. Cliquez sur l'icône de l'extension et suivez l'assistant de configuration.
+3. Choisissez **Créer de Nouvelles Clés** — l'extension génère une phrase de récupération de 12 mots pour vous.
+4. Notez vos 12 mots et conservez-les en lieu sûr. C'est votre sauvegarde maître.
+5. Définissez un mot de passe local pour chiffrer vos clés dans le navigateur.
+6. Remplissez votre profil : nom d'affichage, biographie et avatar.
+
+<Callout type="warning">
+Votre phrase de récupération de 12 mots est le seul moyen de récupérer votre compte. Si vous la perdez, il n'y a pas d'option « mot de passe oublié ». Conservez-la hors ligne — un bout de papier dans un endroit sûr ou un gestionnaire de mots de passe fait l'affaire.
+</Callout>
+
+Pour un guide détaillé de la configuration de l'extension, consultez le guide [Premiers Pas](/guides/getting-started).
+
+## Étape 3 : Choisir un client pour explorer le réseau
+
+Avec votre identité créée dans l'extension, vous êtes prêt à explorer Nostr. Un « client » est une application qui vous permet de lire des publications, suivre des personnes et publier du contenu. Votre identité fonctionne sur tous — changer de client ne signifie jamais perdre votre compte.
+
+Voici de bonnes options :
+
+**Sur ordinateur (navigateur web) :**
+- [Coracle](https://coracle.social) — Léger, axé sur la simplicité. Excellent point de départ.
+- [Primal](https://primal.net) — Interface soignée, fonctionne dans n'importe quel navigateur.
+
+**Sur mobile :**
+- [Damus](https://damus.io) — iOS uniquement. L'une des apps Nostr les plus populaires.
+- [Amethyst](https://github.com/vitorpamplona/amethyst) — Android uniquement. Très complète.
+- [Primal](https://primal.net/downloads) — Disponible pour iOS et Android.
+
+Lorsque vous ouvrez l'un de ces clients, il vous demandera votre identité Nostr. Choisissez « Se connecter avec l'extension » (NIP-07) — le client se connectera automatiquement à l'Extension Nostr WoT.
+
+![Primal, Coracle, Damus et Amethyst — quatre clients Nostr solides pour débuter sur web, iOS et Android](/images/guides/nostr-for-beginners/client-comparison.svg)
+
+## Étape 4 : Se connecter aux relays
+
+Les relays sont les serveurs qui stockent et transmettent vos publications. La plupart des clients sont préconfigurés avec un ensemble par défaut, vous n'avez donc probablement rien à modifier immédiatement.
+
+Si vous souhaitez vérifier ou ajuster vos relays :
+
+1. Ouvrez les paramètres de votre client.
+2. Cherchez la section « Relays ».
+3. Assurez-vous d'être connecté à au moins 3 à 5 relays pour une bonne couverture.
+
+Les relays populaires incluent `wss://relay.damus.io`, `wss://relay.primal.net` et `wss://nos.lol`.
+
+<Callout type="tip">
+Vous n'avez pas besoin de comprendre les relays en profondeur pour commencer. Assurez-vous simplement que votre client est connecté à quelques-uns. Vous pourrez affiner cela plus tard en apprenant davantage.
+</Callout>
+
+![Votre client se connecte à plusieurs serveurs relay indépendants — vos publications sont stockées sur tous en même temps](/images/guides/nostr-for-beginners/relays-diagram.svg)
+
+## Étape 5 : Suivre des personnes
+
+Nostr est meilleur avec un fil d'actualité. Voici comment trouver des personnes :
+
+- **Recherchez par nom** dans la barre de recherche de votre client.
+- **Collez un npub** (clé publique) directement pour trouver une personne spécifique.
+- **Parcourez les publications tendances** — la plupart des clients ont une section découverte ou tendances.
+- **Regardez qui d'autres suivent** — trouvez une personne que vous connaissez et consultez sa liste d'abonnements.
+
+## Étape 6 : Publiez quelque chose
+
+Vous êtes configuré. Dites bonjour. La communauté Nostr accueille activement les nouveaux arrivants.
+
+Votre publication est envoyée à vos relays connectés. Toute personne qui vous suit — ou qui parcourt ces relays — peut la voir. Aucun algorithme ne décide qui voit votre contenu.
+
+## Et ensuite ?
+
+Vous avez maintenant une identité Nostr fonctionnelle et un fil à parcourir. Quelques pistes à explorer ensuite :
+
+- **Web of Trust :** Au fur et à mesure que vous suivez des personnes et qu'elles vous suivent en retour, vous construisez un réseau de confiance. L'extension vous aide à le visualiser et à le gérer — utile une fois que vous avez quelques connexions. En savoir plus dans [Comprendre le WoT](/guides/understanding-wot).
+- **Zaps :** Nostr prend en charge les micropaiements instantanés en Bitcoin appelés « zaps ». Vous pouvez récompenser les publications que vous aimez. Cela nécessite un portefeuille Lightning — consultez le guide [Configurer un Portefeuille](/guides/setting-up-wallet).
+- **Plusieurs clients :** Essayez différentes applications. Votre identité fonctionne sur toutes. Trouvez celle qui correspond à votre façon d'utiliser les réseaux sociaux.
+
+Le plus important : Nostr est un protocole, pas une plateforme. Il n'y a pas d'algorithme à manipuler, aucune entreprise à satisfaire, et aucun point de défaillance unique. Votre présence ici est la vôtre à construire — et la vôtre à conserver.

@@ -8,14 +8,10 @@ import {
   TRUST_THRESHOLDS,
 } from "@/lib/graph/colors";
 
-interface GraphLegendProps {
-  maxHeight?: number;
-}
-
-export default function GraphLegend({ maxHeight }: GraphLegendProps) {
+export default function GraphLegend() {
   const { state } = useGraph();
   const { settings } = state;
-  const heightStyle = maxHeight ? { maxHeight: `${maxHeight}px` } : {};
+  const heightStyle = { maxHeight: 'calc(100% - 32px)' };
 
   // Generate distance-based colors using the extension formula
   const getDistanceColor = (distance: number) => {
