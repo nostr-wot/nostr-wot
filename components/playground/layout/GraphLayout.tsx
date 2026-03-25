@@ -18,7 +18,7 @@ import { NodeProfileModal } from "../profile";
 
 export default function GraphLayout() {
   const t = useTranslations("playground");
-  const { state, getProfile } = useGraph();
+  const { state, getProfile, resetGraph } = useGraph();
   const { selectedNode, selectedProfile, clearSelection } = useNodeSelection();
   const { expandNodeFollows } = useGraphData();
 
@@ -74,7 +74,7 @@ export default function GraphLayout() {
   const canvasHeight = dimensions.height - 44; // Account for stats bar
 
   return (
-    <div className="flex flex-col h-full">
+    <div className="flex flex-col h-full overflow-hidden">
       {/* Top bar with search, filters, and view toggle */}
       <div className="flex items-center gap-4 p-4 border-b border-gray-200 dark:border-gray-700">
         <div className="flex-1 max-w-md">
@@ -109,6 +109,19 @@ export default function GraphLayout() {
         )}
 
         <ViewModeToggle />
+
+        {/* Reset graph button */}
+        <button
+          onClick={resetGraph}
+          title="Reset graph"
+          className="flex items-center gap-1.5 px-3 py-2 rounded-lg bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-400 hover:bg-red-500/20 hover:text-red-400 transition-colors text-sm font-medium"
+        >
+          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
+              d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+          </svg>
+          Reset Graph
+        </button>
       </div>
 
       {/* Main content area */}
@@ -131,9 +144,6 @@ export default function GraphLayout() {
               onClose={handleCloseRightPanel}
               onViewProfile={handleViewProfile}
             />
-
-            {/* Bottom stats bar */}
-            <BottomStatsBar />
           </>
         )}
 
@@ -194,6 +204,9 @@ export default function GraphLayout() {
           </div>
         )}
       </div>
+
+      {/* Bottom stats bar — outside the graph container so legend never overlaps it */}
+      <BottomStatsBar />
 
       {/* Profile modal */}
       <NodeProfileModal

@@ -38,6 +38,7 @@ export function useGraphData() {
     setError,
     addProfiles,
     expandNode,
+    collapseNode,
     state,
   } = useGraph();
 
@@ -54,6 +55,9 @@ export function useGraphData() {
   const profileCacheRef = useRef<Map<string, NodeProfile>>(new Map());
   const expandingNodesRef = useRef<Set<string>>(new Set());
   const initializedRef = useRef(false);
+  // Full list of root's follows (unpaged) — used to enforce correct hop distances.
+  // A pubkey in this set is ALWAYS hop-1, regardless of where it was discovered.
+  const rootFollowsRef = useRef<Set<string>>(new Set());
   const wotRef = useRef(wot);
   wotRef.current = wot;
 
@@ -270,8 +274,8 @@ export function useGraphData() {
       const parentDistance = node?.distance ?? 0;
       console.log("[expandNodeFollows] Node distance:", parentDistance);
 
-      if (parentDistance >= 3) {
-        console.log("[expandNodeFollows] Distance >= 3, skipping");
+      if (parentDistance >= 4) {
+        console.log("[expandNodeFollows] Distance >= 4, skipping");
         return;
       }
 
@@ -288,6 +292,12 @@ export function useGraphData() {
         if (!follows || follows.length === 0) {
           console.log("[expandNodeFollows] No follows found");
           return;
+        }
+
+        // If expanding the root node, store ALL its follows for hop-distance enforcement
+        if (parentDistance === 0) {
+          rootFollowsRef.current = new Set(follows);
+          console.log("[expandNodeFollows] Stored root follows:", follows.length);
         }
 
         const latestState = stateRef.current;
@@ -319,21 +329,13 @@ export function useGraphData() {
                 JSON.stringify(Object.fromEntries(Object.entries(batchResults).slice(0, 3)), null, 2));
 
               const newTrustData = new Map<string, TrustData>();
+              const nullResultPubkeys: string[] = [];
 
               for (const [pk, result] of Object.entries(batchResults)) {
                 // Expecting { hops, paths, score } | null from SDK
                 if (result === null) {
-                  // Not in WoT - use parent distance + 1 as fallback
-                  wotData.set(pk, {
-                    distance: parentDistance + 1,
-                    paths: null,
-                    score: null,
-                  });
-                  newTrustData.set(pk, {
-                    distance: parentDistance + 1,
-                    paths: null,
-                    score: null,
-                  });
+                  // Extension doesn't have data — collect for Oracle fallback
+                  nullResultPubkeys.push(pk);
                 } else {
                   const resultData = result as { hops: number; paths: number; score: number };
                   wotData.set(pk, {
@@ -341,6 +343,7 @@ export function useGraphData() {
                     paths: resultData.paths,
                     score: resultData.score,
                   });
+                  // Only cache real data from the extension
                   newTrustData.set(pk, {
                     distance: resultData.hops,
                     paths: resultData.paths,
@@ -349,7 +352,54 @@ export function useGraphData() {
                 }
               }
 
-              // Cache the new trust data
+              // Query Oracle API for pubkeys the extension couldn't resolve
+              if (nullResultPubkeys.length > 0) {
+                const rootPk = stateRef.current.rootPubkey;
+                if (rootPk) {
+                  console.log("[expandNodeFollows] Querying Oracle for", nullResultPubkeys.length, "null-result pubkeys...");
+                  const oracleResults = await Promise.allSettled(
+                    nullResultPubkeys.slice(0, 50).map(async (pk) => {
+                      const res = await fetch(
+                        `https://wot-oracle.mappingbitcoin.com/distance?from=${rootPk}&to=${pk}`
+                      );
+                      if (!res.ok) return { pk, data: null };
+                      const data = await res.json();
+                      return { pk, data };
+                    })
+                  );
+
+                  for (const settled of oracleResults) {
+                    if (settled.status === "fulfilled" && settled.value.data && settled.value.data.hops != null) {
+                      const { pk, data } = settled.value;
+                      wotData.set(pk, {
+                        distance: data.hops,
+                        paths: data.paths ?? null,
+                        score: data.score ?? null,
+                      });
+                      // Cache Oracle results — they are real WoT data
+                      newTrustData.set(pk, {
+                        distance: data.hops,
+                        paths: data.paths ?? null,
+                        score: data.score ?? null,
+                      });
+                    }
+                  }
+                }
+
+                // For any pubkeys still unresolved after Oracle, use structural fallback
+                // but do NOT cache it
+                for (const pk of nullResultPubkeys) {
+                  if (!wotData.has(pk)) {
+                    wotData.set(pk, {
+                      distance: parentDistance + 1,
+                      paths: null,
+                      score: null,
+                    });
+                  }
+                }
+              }
+
+              // Cache the new trust data (only real data, never structural fallbacks)
               if (newTrustData.size > 0) {
                 cacheTrustBatch(newTrustData);
               }
@@ -362,23 +412,63 @@ export function useGraphData() {
         const newNodes: GraphNode[] = [];
         const newLinks: GraphEdge[] = [];
 
+        // Get the parent node's current position from the live graph data
+        // (react-force-graph mutates node objects with x/y/z during simulation)
+        const parentNode = latestState.data.nodes.find((n) => n.id === pubkey);
+        const parentX = parentNode?.x ?? 0;
+        const parentY = parentNode?.y ?? 0;
+        const parentZ = parentNode?.z ?? 0;
+
+        // Count how many new nodes we'll create, for even angular spread
+        const newFollowPubkeys = follows.filter((pk: string) => !existingIds.has(pk));
+        const totalNew = newFollowPubkeys.length;
+        let newNodeIndex = 0;
+
         for (const followPubkey of follows) {
           const extData = wotData.get(followPubkey);
-          const distance = extData?.distance ?? parentDistance + 1;
           const pathCount = extData?.paths ?? 1;
-          // Use SDK-provided score directly (defaults to 0 if not available)
           const trustScore = extData?.score ?? 0;
 
-          newLinks.push({
-            source: pubkey,
-            target: followPubkey,
-            type: "follow",
-            strength: trustScore,
-            bidirectional: false,
-          });
+          // Enforce correct hop distance:
+          // If the root directly follows this person, they are ALWAYS hop-1,
+          // regardless of where they were discovered during expansion.
+          const isRootFollow = rootFollowsRef.current.has(followPubkey);
+          const correctDistance = isRootFollow ? 1 : (extData?.distance ?? parentDistance + 1);
+
+          // Skip nodes that the root follows but are being discovered via another expansion —
+          // they should only appear when the root is expanded (or already visible as hop-1).
+          // This prevents a root follow from appearing as hop-2 under a different node.
+          if (isRootFollow && parentDistance > 0) {
+            // Don't render this node here — it belongs to hop-1 layer
+            continue;
+          }
+
+          // Only add links to NEW nodes — skip edges to already-existing nodes
+          // to avoid cross-cluster "ray" lines flying across the screen
+          if (!existingIds.has(followPubkey)) {
+            newLinks.push({
+              source: pubkey,
+              target: followPubkey,
+              type: "follow",
+              strength: trustScore,
+              bidirectional: false,
+            });
+          }
 
           if (!existingIds.has(followPubkey)) {
             const cachedProfile = profileCacheRef.current.get(followPubkey);
+
+            // Seed initial position scattered around the parent node
+            // Use random angle + varying radius so nodes don't all appear at once in a visible ring
+            const angle = Math.random() * 2 * Math.PI;
+            // Scale radius with node count so sparse graphs stay tight, dense ones spread out
+            const radius = Math.max(40, Math.sqrt(totalNew) * 4) * (0.6 + Math.random() * 0.8);
+            const x = parentX + radius * Math.cos(angle);
+            const y = parentY + radius * Math.sin(angle);
+            // For 3D: small random z offset
+            const z = parentZ + (Math.random() - 0.5) * radius * 0.4;
+            newNodeIndex++;
+
             newNodes.push({
               id: followPubkey,
               label:
@@ -386,17 +476,95 @@ export function useGraphData() {
                 cachedProfile?.name ||
                 formatPubkey(followPubkey),
               picture: cachedProfile?.picture,
-              distance,
+              distance: correctDistance,
               pathCount,
               trustScore,
               isRoot: false,
               isMutual: false,
+              expandedFrom: pubkey, // which gateway node revealed this node
+              x,
+              y,
+              z,
             });
           }
         }
 
-        if (newNodes.length > 0 || newLinks.length > 0) {
-          mergeData({ nodes: newNodes, links: newLinks });
+        // Cap at 150 nodes per expansion for performance, but use a STRATIFIED
+        // sample so the visual represents the real WoT distribution — not just
+        // the top green nodes. We split into 3 trust bands and sample evenly.
+        const MAX_NEW_NODES_PER_EXPANSION = 250;
+        let cappedNodes = newNodes;
+        if (newNodes.length > MAX_NEW_NODES_PER_EXPANSION) {
+          const sorted = [...newNodes].sort((a, b) => b.trustScore - a.trustScore);
+
+          // Bands: high ≥0.7, medium 0.3–0.7, low <0.3
+          const high   = sorted.filter(n => n.trustScore >= 0.7);
+          const medium = sorted.filter(n => n.trustScore >= 0.3 && n.trustScore < 0.7);
+          const low    = sorted.filter(n => n.trustScore < 0.3);
+
+          // Allocate slots proportionally to each band (min 1 if band non-empty)
+          const total = MAX_NEW_NODES_PER_EXPANSION;
+          const highCount   = Math.round(total * 0.4);  // 60 — still show best
+          const mediumCount = Math.round(total * 0.35); // ~52 — neutral
+          const lowCount    = total - highCount - mediumCount; // ~38 — untrusted
+
+          // Take top N from high, random sample from medium/low for real preview
+          const sample = (arr: typeof newNodes, n: number) => {
+            if (arr.length <= n) return arr;
+            // Shuffle and take n — gives a representative sample
+            const shuffled = [...arr].sort(() => Math.random() - 0.5);
+            return shuffled.slice(0, n);
+          };
+
+          cappedNodes = [
+            ...high.slice(0, highCount),
+            ...sample(medium, mediumCount),
+            ...sample(low, lowCount),
+          ];
+        }
+
+        // Only keep links whose target is in the capped set or already exists
+        const cappedNodeIds = new Set(cappedNodes.map(n => n.id));
+        const cappedLinks = newLinks.filter(l => {
+          const targetId = typeof l.target === 'string' ? l.target : (l.target as GraphNode).id;
+          return existingIds.has(targetId) || cappedNodeIds.has(targetId);
+        });
+
+        // Collect distance corrections for existing nodes found in this expansion.
+        // A node might already be in the graph at hop-3 but is actually hop-2 from root.
+        const existingFollows = follows.filter((pk: string) => existingIds.has(pk) && pk !== pubkey);
+        const distanceUpdates: GraphNode[] = [];
+
+        if (existingFollows.length > 0) {
+          try {
+            const existingBatchResults = await wotInstance.getDistanceBatch(
+              existingFollows.slice(0, 50),
+              { includePaths: true, includeScores: true }
+            );
+
+            for (const [pk, result] of Object.entries(existingBatchResults)) {
+              if (result === null) continue;
+              const resultData = result as { hops: number; paths: number; score: number };
+              const existingNode = latestState.data.nodes.find(n => n.id === pk);
+              if (existingNode && resultData.hops < existingNode.distance) {
+                distanceUpdates.push({
+                  ...existingNode,
+                  distance: resultData.hops,
+                  pathCount: resultData.paths ?? existingNode.pathCount,
+                  trustScore: resultData.score ?? existingNode.trustScore,
+                });
+              }
+            }
+          } catch {
+            // Non-critical — skip corrections if batch fails
+          }
+        }
+
+        // Single mergeData call — batching caused 10 re-renders + 10 simulation
+        // reheats per expansion which was the source of lag. forceRadial handles
+        // the visual placement of nodes in their orbit rings regardless.
+        if (cappedNodes.length > 0 || cappedLinks.length > 0 || distanceUpdates.length > 0) {
+          mergeData({ nodes: [...cappedNodes, ...distanceUpdates], links: cappedLinks });
         }
 
         if (newPubkeys.length > 0) {
@@ -407,20 +575,37 @@ export function useGraphData() {
           });
         }
       } catch (err) {
-        console.error("Failed to expand node:", err);
+        const msg = err instanceof Error ? err.message : String(err);
+        if (msg.toLowerCase().includes("not initialized") || msg.toLowerCase().includes("account configured")) {
+          // Extension local graph not ready — silently un-mark so user can retry
+          console.warn("[expandNodeFollows] Extension local graph not ready:", msg);
+        } else {
+          console.error("Failed to expand node:", err);
+        }
+        // Un-mark as expanded on failure so the Expand button reappears
+        collapseNode(pubkey);
       } finally {
         expandingNodesRef.current.delete(pubkey);
         setLoading(false);
       }
     },
-    [expandNode, fetchProfiles, addProfiles, mergeData, setLoading, setError]
+    [expandNode, collapseNode, fetchProfiles, addProfiles, mergeData, setLoading, setError]
   );
 
-  // Reset refs when user changes
+  // Reset refs when user changes or graph is cleared
   useEffect(() => {
     initializedRef.current = false;
     expandingNodesRef.current.clear();
   }, [userPubkey]);
+
+  // Also reset initialized flag when graph data is emptied (manual reset)
+  useEffect(() => {
+    if (state.data.nodes.length === 0) {
+      initializedRef.current = false;
+      expandingNodesRef.current.clear();
+      rootFollowsRef.current.clear();
+    }
+  }, [state.data.nodes.length]);
 
   // Build initial graph when ready
   useEffect(() => {
@@ -432,6 +617,7 @@ export function useGraphData() {
   return {
     buildInitialGraph,
     expandNodeFollows,
+    collapseNodeFollows: collapseNode,
     fetchProfiles,
     isLoading: state.isLoading,
     error: state.error,

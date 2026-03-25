@@ -225,32 +225,39 @@ export function useProfileNotes(): UseProfileNotesResult {
     fetchNotesStreaming(
       currentPubkeyRef.current,
       oldestTimestampRef.current - 1,
-      // onNote
+      // onNote — just collect, don't update state yet (would cause duplicates)
       (note) => {
         if (!existingIds.has(note.id)) {
           newNotesBuffer.push(note);
           existingIds.add(note.id);
-
-          // Update UI progressively
-          setNotes((prev) => {
-            const combined = [...prev, ...newNotesBuffer];
-            return combined.sort((a, b) => b.created_at - a.created_at);
-          });
-
-          // Update oldest timestamp
-          const allSorted = [...notes, ...newNotesBuffer].sort(
-            (a, b) => b.created_at - a.created_at
-          );
-          if (allSorted.length > 0) {
-            oldestTimestampRef.current =
-              allSorted[allSorted.length - 1].created_at;
-          }
         }
       },
-      // onComplete
+      // onComplete — update state once with all new notes
       () => {
         setIsLoading(false);
         setHasMore(newNotesBuffer.length >= NOTES_PER_PAGE);
+        if (newNotesBuffer.length > 0) {
+          setNotes((prev) => {
+            const combined = [...prev, ...newNotesBuffer];
+            // Deduplicate by id just in case
+            const seen = new Set<string>();
+            return combined
+              .filter((n) => {
+                if (seen.has(n.id)) return false;
+                seen.add(n.id);
+                return true;
+              })
+              .sort((a, b) => b.created_at - a.created_at);
+          });
+          // Update oldest timestamp from full buffer
+          const oldest = newNotesBuffer.reduce(
+            (min, n) => Math.min(min, n.created_at),
+            Infinity
+          );
+          if (oldest < Infinity) {
+            oldestTimestampRef.current = oldest - 1;
+          }
+        }
       }
     );
   }, [fetchNotesStreaming, notes, isLoading, hasMore]);

@@ -28,9 +28,9 @@ Every website that interacts with the extension needs your permission. The exten
 
 When a website tries to access the extension's NIP-07 signer or WebLN provider, the extension checks whether that site has permission. If it does not, you see a prompt asking you to approve or deny the request.
 
-Each permission decision is stored per-site. Approving signing on Primal does not automatically grant signing on Snort. You build up a whitelist of trusted sites, one at a time.
+![Pending permission requests appear at the bottom of the popup — here nostrudel.ninja is asking to read your profile information](/images/guides/site-permissions/pending-request.jpg)
 
-{/* TODO: Screenshot of the permission request popup for a new site */}
+Each permission decision is stored per-site. Approving signing on Primal does not automatically grant signing on Snort. You build up a whitelist of trusted sites, one at a time.
 
 ## Permission Types
 
@@ -40,9 +40,13 @@ The extension manages several distinct permissions for each site.
 
 Allows the site to see your public key (npub). This is the most basic permission — the site can identify you but cannot do anything on your behalf.
 
+![The Request Details popup for a "Read Profile Information" request — shows the site, permission type, what it does, and four response options](/images/guides/site-permissions/request-details.jpg)
+
 ### Sign Events
 
 Allows the site to request event signatures through NIP-07. This means the site can ask you to sign notes, profile updates, reactions, and other Nostr events. You still see a confirmation prompt for each signing request unless you enable auto-approve for that site.
+
+![When a site requests to sign an event, you see the full request details — event kind, content preview, and four options: Always Deny, Deny, Always Allow, or Allow once](/images/guides/site-permissions/permission-request.jpg)
 
 ### Encrypt and Decrypt
 
@@ -51,8 +55,6 @@ Allows the site to request NIP-04 or NIP-44 encrypted direct messages. The site 
 ### WebLN Payments
 
 Allows the site to request Lightning payments through the WebLN provider. When granted, the site can present invoices for you to pay — subject to your [auto-approve threshold](/guides/zapping-auto-approve).
-
-{/* TODO: Screenshot of the permissions panel showing all four permission types for a site */}
 
 <Callout type="tip">
 You can grant some permissions while denying others. For example, you might let a site read your public key and request signatures, but deny it WebLN access if you do not want it to prompt payments.
@@ -66,7 +68,7 @@ You can grant some permissions while denying others. For example, you might let 
 2. Navigate to **Site Permissions** (or **Permissions**).
 3. You will see a list of all sites that have been granted any permission, along with what each site can do.
 
-{/* TODO: Screenshot of the site permissions list showing multiple sites with their granted permissions */}
+![The Permissions panel lists every site that has been granted access, with a count of allowed permissions per site](/images/guides/site-permissions/permissions-list.jpg)
 
 ### Revoking Permissions
 
@@ -75,6 +77,8 @@ If you want to remove a site's access:
 1. Find the site in the permissions list.
 2. Click the site name to expand its details.
 3. Toggle off individual permissions or click **Revoke All** to remove all access.
+
+![Each site's permission detail shows granular controls — Allow, Deny, or Ask per action type, plus a Revoke All button](/images/guides/site-permissions/permissions-detail.jpg)
 4. The change takes effect immediately. The site will need to request permission again on its next attempt.
 
 ### Temporary vs. Permanent Permissions
@@ -91,8 +95,6 @@ Use "Allow once" for sites you do not visit regularly. Use "Always allow" for yo
 Only grant the permissions a site actually needs. A Nostr client needs signing access, but a read-only explorer only needs your public key. Review your permissions list periodically and revoke access for sites you no longer use.
 
 If a site you have never heard of requests signing or payment permissions, deny it and investigate first. Legitimate Nostr clients are well-known.
-
-{/* TODO: Screenshot of a suspicious permission request with a "Deny" action highlighted */}
 
 <Callout type="tip">
 If a site behaves unexpectedly after granting permissions — like triggering payments you did not initiate — immediately revoke all its permissions and lower your auto-approve threshold.

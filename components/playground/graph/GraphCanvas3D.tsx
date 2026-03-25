@@ -1,12 +1,15 @@
 "use client";
 
-import { useCallback, useRef, useEffect, useMemo } from "react";
+import { useCallback, useRef, useEffect, useState, useMemo } from "react";
+import { forceCollide, forceRadial, forceX, forceY } from "d3-force-3d";
 import dynamic from "next/dynamic";
+import { useTranslations } from "next-intl";
 import { useGraph } from "@/contexts/GraphContext";
 import { useNodeSelection } from "@/hooks/useNodeSelection";
 import { useGraphData } from "@/hooks/useGraphData";
 import { GraphNode, GraphEdge } from "@/lib/graph/types";
 import { getTrustColorHex } from "@/lib/graph/colors";
+import NodeContextMenu from "./NodeContextMenu";
 
 // Dynamic import for 3D graph (WebGL-based)
 const ForceGraph3D = dynamic(() => import("react-force-graph-3d"), {
@@ -28,12 +31,25 @@ const MAX_VISIBLE_NODES_3D = 5000;
 const MAX_VISIBLE_LINKS_3D = 10000;
 
 export default function GraphCanvas3D({ width, height }: GraphCanvas3DProps) {
-  const { filteredData } = useGraph();
+  const t = useTranslations("playground");
+  const { filteredData, state } = useGraph();
   const { select, setHovered, activeNode } = useNodeSelection();
-  const { expandNodeFollows } = useGraphData();
+  const { expandNodeFollows, collapseNodeFollows } = useGraphData();
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const graphRef = useRef<any>(null);
+  const hasCenteredRef = useRef(false);
+  const [showStartPrompt, setShowStartPrompt] = useState(true);
+
+  // Context menu state
+  const [contextMenu, setContextMenu] = useState<{
+    node: GraphNode;
+    position: { x: number; y: number };
+  } | null>(null);
+
+  // Preserve node positions across re-renders so the simulation doesn't
+  // reset already-settled nodes when new data arrives via mergeData.
+  const prevNodePositions = useRef<Map<string, { x: number; y: number; z: number }>>(new Map());
 
   // Limit data for performance
   const visibleData = useMemo(() => {
@@ -47,6 +63,19 @@ export default function GraphCanvas3D({ width, height }: GraphCanvas3DProps) {
         return nodeIds.has(sourceId) && nodeIds.has(targetId);
       })
       .slice(0, MAX_VISIBLE_LINKS_3D);
+
+    // Restore previously simulated positions as hints
+    nodes.forEach((node) => {
+      const prev = prevNodePositions.current.get(node.id);
+      if (prev) {
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        (node as any).x = prev.x;
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        (node as any).y = prev.y;
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        (node as any).z = prev.z;
+      }
+    });
 
     return { nodes, links };
   }, [filteredData]);
@@ -65,25 +94,29 @@ export default function GraphCanvas3D({ width, height }: GraphCanvas3DProps) {
     return colors;
   }, [visibleData.nodes]);
 
-  // Node click handler
+  // Node click handler — select + auto-expand root
   const handleNodeClick = useCallback(
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    (node: any) => {
+    (node: any, event: MouseEvent) => {
       if (!node) return;
 
       const graphNode = node as GraphNode;
       select(graphNode);
 
-      // Expand on click
-      if (graphNode.distance < 3) {
+      // Auto-expand root node on click if not yet expanded (same as 2D)
+      if (graphNode.isRoot && !state.expandedNodes.has(graphNode.id)) {
         expandNodeFollows(graphNode.id);
+        setShowStartPrompt(false);
+        return;
       }
 
       // Focus camera on node (with coordinate safety check)
       if (graphRef.current && typeof node.x === "number" && typeof node.y === "number" && typeof node.z === "number") {
         try {
+          const hyp = Math.hypot(node.x, node.y, node.z);
+          if (hyp < 0.001) return;
           const distance = 200;
-          const distRatio = 1 + distance / Math.hypot(node.x, node.y, node.z);
+          const distRatio = 1 + distance / hyp;
           graphRef.current.cameraPosition(
             {
               x: node.x * distRatio,
@@ -98,8 +131,68 @@ export default function GraphCanvas3D({ width, height }: GraphCanvas3DProps) {
         }
       }
     },
-    [select, expandNodeFollows]
+    [select, expandNodeFollows, state.expandedNodes]
   );
+
+  // Right-click handler — show context menu (same as 2D)
+  const handleNodeRightClick = useCallback(
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    (node: any, event: MouseEvent) => {
+      if (!node) return;
+      event.preventDefault();
+
+      const graphNode = node as GraphNode;
+
+      // Position context menu at cursor
+      const container = (event.target as HTMLElement)?.closest('.relative');
+      if (container) {
+        const rect = container.getBoundingClientRect();
+        const menuX = Math.min(event.clientX - rect.left, rect.width - 220);
+        const menuY = Math.min(event.clientY - rect.top, rect.height - 200);
+
+        setContextMenu({
+          node: graphNode,
+          position: {
+            x: Math.max(20, menuX),
+            y: Math.max(20, menuY),
+          },
+        });
+      } else {
+        // Fallback: position relative to viewport
+        setContextMenu({
+          node: graphNode,
+          position: {
+            x: event.clientX,
+            y: event.clientY,
+          },
+        });
+      }
+    },
+    []
+  );
+
+  // Context menu handlers
+  const handleExpandFromMenu = useCallback(() => {
+    if (contextMenu?.node && contextMenu.node.distance < 4) {
+      expandNodeFollows(contextMenu.node.id);
+    }
+  }, [contextMenu, expandNodeFollows]);
+
+  const handleCollapseFromMenu = useCallback(() => {
+    if (contextMenu?.node) {
+      collapseNodeFollows(contextMenu.node.id);
+    }
+  }, [contextMenu, collapseNodeFollows]);
+
+  const handleViewProfileFromMenu = useCallback(() => {
+    if (contextMenu?.node) {
+      window.open(`/profile/${contextMenu.node.id}`, "_blank");
+    }
+  }, [contextMenu]);
+
+  const handleCloseContextMenu = useCallback(() => {
+    setContextMenu(null);
+  }, []);
 
   // Node hover handlers
   const handleNodeHover = useCallback(
@@ -110,18 +203,25 @@ export default function GraphCanvas3D({ width, height }: GraphCanvas3DProps) {
     [setHovered]
   );
 
-  // Background click to deselect
+  // Background click to deselect and close context menu
   const handleBackgroundClick = useCallback(() => {
     select(null);
+    setContextMenu(null);
   }, [select]);
 
-  // Node color
+  // Node color — expanded gateway nodes get gold color
   const getNodeColor = useCallback(
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     (node: any) => {
-      return nodeColors.get(node.id) || "#666";
+      const graphNode = node as GraphNode;
+      if (graphNode.isRoot) return "#6366f1";
+      const base = nodeColors.get(graphNode.id) || "#666";
+      if (state.expandedNodes.has(graphNode.id)) {
+        return "#ffd700"; // gold for expanded gateway nodes
+      }
+      return base;
     },
-    [nodeColors]
+    [nodeColors, state.expandedNodes]
   );
 
   // Node size based on distance (root is larger)
@@ -147,7 +247,6 @@ export default function GraphCanvas3D({ width, height }: GraphCanvas3DProps) {
           : (graphLink.target as GraphNode);
 
       if (targetNode) {
-        // Use SDK-provided trustScore directly
         const hex = getTrustColorHex(targetNode.trustScore);
         return hex + "60"; // 37% opacity
       }
@@ -156,11 +255,73 @@ export default function GraphCanvas3D({ width, height }: GraphCanvas3DProps) {
     [visibleData.nodes]
   );
 
-  // Center camera on root node initially
+  // Persist simulated positions every second
+  // Show/hide start prompt based on node count
   useEffect(() => {
+    if (filteredData.nodes.length > 1) setShowStartPrompt(false);
+    if (filteredData.nodes.length === 0) {
+      setShowStartPrompt(true);
+      prevNodePositions.current.clear();
+      hasCenteredRef.current = false;
+    }
+  }, [filteredData.nodes.length]);
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      visibleData.nodes.forEach((n: any) => {
+        if (n.x !== undefined && n.y !== undefined && n.z !== undefined) {
+          prevNodePositions.current.set(n.id, { x: n.x, y: n.y, z: n.z });
+        }
+      });
+    }, 1000);
+    return () => clearInterval(interval);
+  }, [visibleData.nodes]);
+
+  // Tune d3 forces: radial layout by distance + collision + centering (3D version)
+  useEffect(() => {
+    if (graphRef.current) {
+      // Strong charge so nodes push each other apart
+      graphRef.current.d3Force('charge')?.strength(-120);
+
+      // Collision so nodes don't overlap
+      graphRef.current.d3Force('collision', forceCollide(10));
+
+      // Radial force: each hop snaps to its own orbit shell
+      graphRef.current.d3Force('radial', forceRadial(
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        (node: any) => (node as GraphNode).distance * 80,
+        0, 0, 0
+      )?.strength(0.3));
+
+      // Link force: keep parent-child edges short
+      graphRef.current.d3Force('link')
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        ?.distance((link: any) => {
+          const source = typeof link.source === 'object' ? link.source : null;
+          const target = typeof link.target === 'object' ? link.target : null;
+          if (!source || !target) return 60;
+          if (source.isRoot || target.isRoot) return 90;
+          return 50;
+        })
+        ?.strength(0.5);
+
+      // Weak center gravity to prevent drift (x, y, z)
+      graphRef.current.d3Force('x', forceX(0).strength(0.02));
+      graphRef.current.d3Force('y', forceY(0).strength(0.02));
+      // forceZ not available as named import, use the generic forceX pattern
+      // d3-force-3d extends forces to work in 3D automatically, so x/y forces
+      // already contribute to z centering via the radial force above
+    }
+  }, [visibleData.nodes.length]);
+
+  // Center camera on root node — once only
+  useEffect(() => {
+    if (hasCenteredRef.current) return;
     if (graphRef.current && visibleData.nodes.length > 0) {
       const rootNode = visibleData.nodes.find((n) => n.isRoot);
       if (rootNode) {
+        hasCenteredRef.current = true;
         setTimeout(() => {
           if (graphRef.current) {
             graphRef.current.cameraPosition({ x: 0, y: 0, z: 500 }, { x: 0, y: 0, z: 0 }, 1000);
@@ -193,9 +354,11 @@ export default function GraphCanvas3D({ width, height }: GraphCanvas3DProps) {
         nodeVal={getNodeSize as any}
         nodeLabel={(node: any) => {
           const n = node as GraphNode;
-          return `${n.label || n.id.slice(0, 12)}... (${n.distance} hops)`;
+          const name = n.label || n.id.slice(0, 12) + '...';
+          return `${name} (${n.distance} hops)`;
         }}
         onNodeClick={handleNodeClick as any}
+        onNodeRightClick={handleNodeRightClick as any}
         onNodeHover={handleNodeHover as any}
         onBackgroundClick={handleBackgroundClick}
         linkColor={getLinkColor as any}
@@ -211,6 +374,17 @@ export default function GraphCanvas3D({ width, height }: GraphCanvas3DProps) {
       />
       {/* eslint-enable @typescript-eslint/no-explicit-any */}
 
+      {/* Expanding indicator */}
+      {state.isLoading && state.data.nodes.length > 1 && (
+        <div className="absolute top-4 left-1/2 -translate-x-1/2 z-30 flex items-center gap-2 bg-gray-800/90 backdrop-blur-sm border border-primary/40 rounded-full px-4 py-1.5 text-xs text-primary shadow-lg">
+          <svg className="w-3 h-3 animate-spin" fill="none" viewBox="0 0 24 24">
+            <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+            <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
+          </svg>
+          Expanding...
+        </div>
+      )}
+
       {/* Node count indicator */}
       <div className="absolute top-4 right-4 bg-gray-800/80 backdrop-blur-sm rounded-lg px-3 py-2 text-xs">
         <span className="text-blue-400 mr-2">3D</span>
@@ -225,9 +399,29 @@ export default function GraphCanvas3D({ width, height }: GraphCanvas3DProps) {
         <span className="text-white font-medium">{visibleData.links.length.toLocaleString()}</span>
       </div>
 
+      {/* Initial prompt to click root node */}
+      {showStartPrompt && filteredData.nodes.length === 1 && (
+        <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+          <div className="bg-gray-800/90 backdrop-blur-sm border border-primary/50 rounded-xl px-6 py-4 shadow-2xl animate-pulse">
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 rounded-full bg-primary/20 flex items-center justify-center">
+                <svg className="w-5 h-5 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
+                    d="M15 15l-2 5L9 9l11 4-5 2zm0 0l5 5M7.188 2.239l.777 2.897M5.136 7.965l-2.898-.777M13.95 4.05l-2.122 2.122m-5.657 5.656l-2.12 2.122" />
+                </svg>
+              </div>
+              <div>
+                <p className="text-white font-medium">{t("graph.clickToExplore")}</p>
+                <p className="text-gray-400 text-sm">{t("graph.clickToExploreDesc")}</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* Controls hint */}
       <div className="absolute bottom-4 right-4 bg-gray-800/80 backdrop-blur-sm rounded-lg px-3 py-2 text-xs text-gray-400">
-        <div>Left-drag to rotate • Right-drag to pan • Scroll to zoom • Click to expand</div>
+        <div>Left-drag to rotate • Right-drag to pan • Scroll to zoom • Click node to select • Right-click for menu</div>
       </div>
 
       {/* Tooltip */}
@@ -247,6 +441,20 @@ export default function GraphCanvas3D({ width, height }: GraphCanvas3DProps) {
             {activeNode.id.slice(0, 16)}...
           </div>
         </div>
+      )}
+
+      {/* Context menu */}
+      {contextMenu && (
+        <NodeContextMenu
+          node={contextMenu.node}
+          position={contextMenu.position}
+          isExpanded={state.expandedNodes.has(contextMenu.node.id)}
+          isExpanding={state.isLoading}
+          onExpand={handleExpandFromMenu}
+          onCollapse={handleCollapseFromMenu}
+          onViewProfile={handleViewProfileFromMenu}
+          onClose={handleCloseContextMenu}
+        />
       )}
     </div>
   );

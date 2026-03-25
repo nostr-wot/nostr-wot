@@ -11,6 +11,7 @@ import {
 export default function GraphLegend() {
   const { state } = useGraph();
   const { settings } = state;
+  const heightStyle = { maxHeight: 'calc(100% - 32px)' };
 
   // Generate distance-based colors using the extension formula
   const getDistanceColor = (distance: number) => {
@@ -20,7 +21,7 @@ export default function GraphLegend() {
 
   if (settings.colorMode === "distance") {
     return (
-      <div className="absolute top-4 left-4 bg-gray-800/90 backdrop-blur rounded-lg border border-gray-700 p-3 z-10">
+      <div className="absolute top-4 left-4 bg-gray-800/90 backdrop-blur rounded-lg border border-gray-700 p-3 z-10 overflow-y-auto" style={heightStyle}>
         <p className="text-xs font-medium text-gray-400 mb-2">Distance</p>
         <div className="flex flex-col gap-1.5">
           <LegendItem color="#6366f1" label="You (root)" />
@@ -46,7 +47,7 @@ export default function GraphLegend() {
   }
 
   return (
-    <div className="absolute top-4 left-4 bg-gray-800/90 backdrop-blur rounded-lg border border-gray-700 p-3 z-10">
+    <div className="absolute top-4 left-4 bg-gray-800/90 backdrop-blur rounded-lg border border-gray-700 p-3 z-10 overflow-y-auto" style={heightStyle}>
       <p className="text-xs font-medium text-gray-400 mb-2">Trust Score</p>
 
       {/* Trust gradient bar */}
@@ -106,6 +107,17 @@ export default function GraphLegend() {
         <p className="text-[10px] text-gray-500 mt-2 italic">
           More paths = stronger trust
         </p>
+      </div>
+
+      <div className="mt-3 pt-3 border-t border-gray-700">
+        <p className="text-xs font-medium text-gray-400 mb-2">Expanded</p>
+        <div className="flex items-center gap-2">
+          <div
+            className="w-3 h-3 rounded-full flex-shrink-0 border-2"
+            style={{ borderColor: 'rgba(255, 220, 50, 0.8)', backgroundColor: 'rgba(255, 220, 50, 0.15)' }}
+          />
+          <span className="text-xs text-gray-300">Expanded node</span>
+        </div>
       </div>
 
       <div className="mt-3 pt-3 border-t border-gray-700">

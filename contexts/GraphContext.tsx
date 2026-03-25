@@ -58,7 +58,8 @@ type GraphAction =
   | { type: "ADD_PROFILES"; payload: Map<string, NodeProfile> }
   | { type: "EXPAND_NODE"; payload: string }
   | { type: "COLLAPSE_NODE"; payload: string }
-  | { type: "MERGE_DATA"; payload: GraphData };
+  | { type: "MERGE_DATA"; payload: GraphData }
+  | { type: "RESET_GRAPH" };
 
 // Initial state
 const initialState: GraphState = {
@@ -135,9 +136,40 @@ function graphReducer(state: GraphState, action: GraphAction): GraphState {
     }
 
     case "COLLAPSE_NODE": {
+      const collapsedPubkey = action.payload;
       const newExpanded = new Set(state.expandedNodes);
-      newExpanded.delete(action.payload);
-      return { ...state, expandedNodes: newExpanded };
+      newExpanded.delete(collapsedPubkey);
+
+      // Remove all nodes that were discovered via this node (expandedFrom === collapsedPubkey)
+      // and recursively remove any nodes that were expanded from those as well.
+      const toRemove = new Set<string>();
+
+      const collectToRemove = (gatewayId: string) => {
+        for (const node of state.data.nodes) {
+          if (node.expandedFrom === gatewayId && !node.isRoot) {
+            if (!toRemove.has(node.id)) {
+              toRemove.add(node.id);
+              newExpanded.delete(node.id);
+              // Recurse — remove nodes expanded from this node too
+              collectToRemove(node.id);
+            }
+          }
+        }
+      };
+      collectToRemove(collapsedPubkey);
+
+      const filteredNodes = state.data.nodes.filter((n) => !toRemove.has(n.id));
+      const filteredLinks = state.data.links.filter((l) => {
+        const sourceId = typeof l.source === "string" ? l.source : (l.source as GraphNode).id;
+        const targetId = typeof l.target === "string" ? l.target : (l.target as GraphNode).id;
+        return !toRemove.has(sourceId) && !toRemove.has(targetId);
+      });
+
+      return {
+        ...state,
+        expandedNodes: newExpanded,
+        data: { nodes: filteredNodes, links: filteredLinks },
+      };
     }
 
     case "MERGE_DATA": {
@@ -164,25 +196,46 @@ function graphReducer(state: GraphState, action: GraphAction): GraphState {
         return true;
       });
 
+      // Build distance correction map: nodes in payload that already exist
+      // and have a SHORTER distance than what's currently in state
+      const distanceUpdateMap = new Map<string, GraphNode>();
+      for (const node of action.payload.nodes) {
+        const existing = existingNodeMap.get(node.id);
+        if (existing && node.distance < existing.distance) {
+          distanceUpdateMap.set(node.id, node);
+        }
+      }
+
       // Get new nodes (not already existing)
       const newNodes = action.payload.nodes.filter(
         (n) => !existingNodeMap.has(n.id)
       );
 
-      // Update existing nodes with incremented path counts
+      // Update existing nodes: apply distance corrections AND path count increments
       const updatedNodes = state.data.nodes.map((node) => {
+        const distUpdate = distanceUpdateMap.get(node.id);
         const pathIncrement = nodePathIncrements.get(node.id);
-        if (pathIncrement) {
-          const newPathCount = node.pathCount + pathIncrement;
-          // Recalculate trust score with new path count using same formula as colors
-          const newTrustScore = calculateTrustScore(node.distance, newPathCount);
-          return {
-            ...node,
-            pathCount: newPathCount,
-            trustScore: newTrustScore,
+
+        let result = node;
+
+        // Apply distance correction first (shorter real distance found)
+        if (distUpdate) {
+          result = {
+            ...result,
+            distance: distUpdate.distance,
+            pathCount: distUpdate.pathCount ?? result.pathCount,
+            trustScore: distUpdate.trustScore ?? result.trustScore,
           };
         }
-        return node;
+
+        // Then apply path count increment from new incoming links
+        if (pathIncrement) {
+          const newPathCount = result.pathCount + pathIncrement;
+          const newTrustScore = calculateTrustScore(result.distance, newPathCount);
+          result = { ...result, pathCount: newPathCount, trustScore: newTrustScore };
+        }
+
+        return result;
       });
 
       return {
@@ -193,6 +246,13 @@ function graphReducer(state: GraphState, action: GraphAction): GraphState {
         },
       };
     }
+
+    case "RESET_GRAPH":
+      return {
+        ...initialState,
+        // preserve settings (layout prefs etc)
+        settings: state.settings,
+      };
 
     default:
       return state;
@@ -235,6 +295,9 @@ interface GraphContextType {
   // Loading actions
   setLoading: (loading: boolean) => void;
   setError: (error: string | null) => void;
+
+  // Reset graph
+  resetGraph: () => void;
 }
 
 const GraphContext = createContext<GraphContextType | undefined>(undefined);
@@ -326,6 +389,11 @@ export function GraphProvider({ children }: { children: ReactNode }) {
     dispatch({ type: "SET_ERROR", payload: error });
   }, []);
 
+  const resetGraph = useCallback(() => {
+    // Single dispatch clears everything including expandedNodes
+    dispatch({ type: "RESET_GRAPH" });
+  }, []);
+
   const value = useMemo(
     () => ({
       state,
@@ -347,6 +415,7 @@ export function GraphProvider({ children }: { children: ReactNode }) {
       getProfile,
       setLoading,
       setError,
+      resetGraph,
     }),
     [
       state,
@@ -368,6 +437,7 @@ export function GraphProvider({ children }: { children: ReactNode }) {
       getProfile,
       setLoading,
       setError,
+      resetGraph,
     ]
   );
 

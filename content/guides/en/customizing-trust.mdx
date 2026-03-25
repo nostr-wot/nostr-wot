@@ -30,79 +30,70 @@ At its core, the extension assigns each user a trust score based on their relati
 
 - **Hop distance** — how many follow-connections separate you from the user.
 - **Path multiplicity** — how many independent paths connect you.
-- **Decay factor** — how much trust decreases with each additional hop.
+- **Path bonus** — extra trust credit for each additional path connecting you.
 
-The formula multiplies the base trust by a decay factor raised to the power of the hop count, then adjusts upward based on the number of independent paths. The result is a normalized score between 0 and 1.
-
-{/* TODO: Screenshot of the trust formula settings panel */}
+The result is a normalized score between 0 and 100%.
 
 <Callout type="tip">
 You do not need to understand the math to use the extension effectively. The defaults are tuned for a balanced trust network. Only adjust these if you have a specific reason.
 </Callout>
 
-## Adjusting Weights
+## Adjusting Trust Settings
 
-Open the extension settings and navigate to **Trust Settings** to find the adjustable parameters.
+Open the extension and click the settings icon to access **Trust Settings**. You'll see two panels: a quick sensitivity slider and detailed numeric controls.
 
-### Hop Decay
+![The Trust Settings panel — Base Score per hop distance, Path Bonus per hop, and Max Path Bonus](/images/guides/customizing-trust/trust-settings.jpg)
 
-This controls how quickly trust drops off with distance. A higher decay value means trust falls sharply after the first hop. A lower value extends meaningful trust further into the graph.
+### Trust Sensitivity Slider
 
-- **High decay (0.7-0.9)** — only your direct follows and close 2nd-degree contacts receive significant trust. Good if you want a tight, conservative trust circle.
-- **Medium decay (0.4-0.6)** — balanced approach. 2nd-degree contacts are well-represented, and some 3rd-degree users score meaningfully.
-- **Low decay (0.1-0.3)** — trust extends broadly. Even distant connections carry weight. Useful if you want a wide-open, discovery-friendly network.
+The slider at the top offers a fast way to move between presets:
 
-{/* TODO: Screenshot showing the hop decay slider with different positions */}
+- **Strict** — tight trust circle, high standards. Only well-connected users score meaningfully.
+- **Balanced** — the default. Standard scoring for most users. Reasonable trust with path bonus.
+- **Open** — broad trust. Even distant connections carry weight.
 
-### Path Weight
+### Base Score (%)
 
-This determines how much extra credit a user gets for having multiple independent paths to you. A user followed by three of your direct contacts should score higher than one followed by a single contact.
+Controls how much base trust a user receives by hop distance, before any path bonus is applied:
 
-- **High path weight** — heavily rewards well-connected users. Someone followed by many of your contacts is almost as trusted as a direct follow.
-- **Low path weight** — paths matter less. Trust depends primarily on distance.
+| Distance | Default |
+|---|---|
+| 2 hops | 50% |
+| 3 hops | 25% |
+| 4+ hops | 10% |
 
-### Maximum Hops
+Lower these values to tighten your trust circle. Raise them to be more inclusive.
 
-Set the maximum depth the extension traverses. The default is 3 hops, which balances coverage with performance. You can increase this to 4 or 5 if you want broader visibility, but expect slower calculations and a larger graph.
+### Path Bonus % (per hop)
 
-## Different Trust Strategies
+Each additional independent path connecting you to a user adds extra trust. The bonus decreases with distance:
 
-Depending on how you use Nostr, different settings make sense.
+| Distance | Default bonus per path |
+|---|---|
+| 2 hops | +15% |
+| 3 hops | +10% |
+| 4+ hops | +5% |
 
-### Conservative Strategy
+A user reached through 5 different 2nd-degree contacts gets 5 × 15% = 75% path bonus on top of their base score.
 
-You want to trust a small circle and be skeptical of everyone else.
+### Max Path Bonus (%)
 
-- Set hop decay high (0.7+).
-- Set maximum hops to 2.
-- Keep path weight moderate.
+Caps the total path bonus at **50%** by default. This prevents extremely well-connected users from scoring disproportionately high regardless of how many paths connect them.
 
-This is ideal if you use Nostr primarily to interact with people you already know and want strong spam filtering.
+![The Trust Sensitivity modal — slider from Strict to Open, with Base Score, Path Bonus, and Max Path Bonus fields](/images/guides/customizing-trust/trust-sensitivity.jpg)
 
-### Balanced Strategy
+## Which Preset Should I Use?
 
-The default. You trust your direct follows, give reasonable trust to friends-of-friends, and maintain some visibility into 3rd-degree connections.
+The **Trust Sensitivity** slider maps directly to three usage profiles:
 
-- Hop decay around 0.5.
-- Maximum hops at 3.
-- Moderate path weight.
+- **Strict** — you want a tight, high-signal feed. Only well-connected users score meaningfully. Good for spam filtering and focused interaction.
+- **Balanced** — the default. Works well for most people. Direct follows + friends-of-friends with reasonable path bonuses.
+- **Open** — you're exploring the network and want broader coverage. More noise, but more discovery.
 
-This works for most people and is the recommended starting point.
-
-### Discovery Strategy
-
-You want to explore the broader Nostr network and discover new people.
-
-- Set hop decay low (0.2-0.3).
-- Increase maximum hops to 4.
-- Set path weight high to still prioritize well-connected users.
-
-This gives you a wider view but may include more noise.
-
-{/* TODO: Video walkthrough of changing trust strategy from conservative to discovery */}
+Start with Balanced. If your feed feels too noisy, move toward Strict. If you want to discover more people, move toward Open. You can always fine-tune the individual values manually after picking a preset.
 
 <Callout type="tip">
-Changes to trust settings recalculate your entire graph. Give the extension a moment to reprocess after adjusting values. If you want to start over, use the **Reset to Defaults** button at the bottom of the Trust Settings panel.
+Changes to trust settings recalculate your entire graph. Give the extension a moment to reprocess after adjusting values. If you want to start fresh, use the **Reset to Defaults** button at the bottom of the Trust Settings panel.
 </Callout>
 
 ## What's Next?

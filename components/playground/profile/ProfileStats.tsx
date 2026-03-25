@@ -3,18 +3,17 @@
 import { useTranslations } from "next-intl";
 import { GraphNode } from "@/lib/graph/types";
 import { getTrustClass, getTrustLabel } from "@/lib/graph/colors";
-import { Badge, Button } from "@/components/ui";
+import { Badge } from "@/components/ui";
 import TrustPathDisplay from "../details/TrustPathDisplay";
 
 interface ProfileStatsProps {
   node: GraphNode;
-  onExpand?: () => void;
 }
 
 /**
  * Trust stats section for profile modal
  */
-export default function ProfileStats({ node, onExpand }: ProfileStatsProps) {
+export default function ProfileStats({ node }: ProfileStatsProps) {
   const t = useTranslations("playground");
 
   const trustClass = getTrustClass(node.trustScore);
@@ -52,29 +51,7 @@ export default function ProfileStats({ node, onExpand }: ProfileStatsProps) {
           {node.isMutual && <Badge variant="success">{t("graph.mutual")}</Badge>}
         </div>
 
-        {/* Actions */}
-        {!node.isRoot && node.distance < 3 && onExpand && (
-          <div className="mt-4">
-            <Button variant="secondary" size="sm" onClick={onExpand}>
-              <span className="flex items-center gap-2">
-                <svg
-                  className="w-4 h-4"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M4 8V4m0 0h4M4 4l5 5m11-1V4m0 0h-4m4 0l-5 5M4 16v4m0 0h4m-4 0l5-5m11 5l-5-5m5 5v-4m0 4h-4"
-                  />
-                </svg>
-                {t("graph.expandNode")}
-              </span>
-            </Button>
-          </div>
-        )}
+
       </div>
 
       {/* Trust path */}

@@ -1,7 +1,6 @@
 "use client";
 
 import { useState, useMemo } from "react";
-import { Link } from "@/i18n/routing";
 import { useTranslations } from "next-intl";
 import { GraphNode, NodeProfile } from "@/lib/graph/types";
 import { formatPubkey } from "@/lib/graph/transformers";
@@ -153,34 +152,7 @@ export default function ProfileHeader({
           </div>
         ) : null}
 
-        {/* Spacer */}
         <div className="flex-1" />
-
-        {/* Links */}
-        <div className="flex items-center gap-2">
-          {/* Full profile page - opens in new tab */}
-          <Link
-            href={`/profile/${node.id}`}
-            target="_blank"
-            className="px-3 py-1.5 text-xs font-medium text-white bg-primary hover:bg-primary/80 rounded-lg transition-colors inline-flex items-center gap-1.5"
-          >
-            {t("graph.viewFullProfile")}
-            <svg
-              className="w-3.5 h-3.5"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-              aria-hidden="true"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"
-              />
-            </svg>
-          </Link>
-        </div>
       </div>
     </div>
   );

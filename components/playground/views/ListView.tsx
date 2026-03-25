@@ -82,6 +82,9 @@ export default function ListView() {
               <SortHeader field="distance">{t("graph.colDistance")}</SortHeader>
             </th>
             <th className="px-4 py-3 text-left text-gray-400">
+              {t("graph.colPaths")}
+            </th>
+            <th className="px-4 py-3 text-left text-gray-400">
               {t("graph.colStatus")}
             </th>
             <th className="px-4 py-3"></th>
@@ -148,6 +151,13 @@ export default function ListView() {
                       {node.distance} {node.distance === 1 ? "hop" : "hops"}
                     </span>
                   )}
+                </td>
+
+                {/* Paths */}
+                <td className="px-4 py-3">
+                  <span className="text-gray-600 dark:text-gray-400 text-sm">
+                    {node.isRoot ? "—" : (node.pathCount || 1)}
+                  </span>
                 </td>
 
                 {/* Status */}

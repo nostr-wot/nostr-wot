@@ -174,6 +174,7 @@ export default async function GuidePostPage({ params }: Props) {
       year: 'numeric',
       month: 'long',
       day: 'numeric',
+      timeZone: 'UTC',
     });
   };
 

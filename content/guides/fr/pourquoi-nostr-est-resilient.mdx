@@ -1,0 +1,75 @@
+---
+title: "Pourquoi Nostr Est Résilient (Et Pas l'Internet)"
+description: "Les pannes cloud de 2025 ont fait tomber X, ChatGPT, LinkedIn et les transports en commun. L'architecture de Nostr est conçue pour survivre exactement à ce type de défaillance."
+excerpt: "AWS, Azure et Cloudflare ont tous connu des pannes fin 2025 — emportant la moitié d'internet avec eux. Voici pourquoi Nostr n'a pas ce problème."
+date: "2026-03-13"
+author:
+  name: "Leon Acosta"
+  avatar: "/authors/leon-profile.jpg"
+  npub: "npub1gxdhmu9swqduwhr6zptjy4ya693zp3ql28nemy4hd97kuufyrqdqwe5zfk"
+featuredImage: "/images/guides/why-nostr-is-resilient/featured.svg"
+previewImage: "/images/guides/why-nostr-is-resilient/preview.svg"
+tags:
+  - "Debutant"
+  - "Nostr"
+  - "Concepts"
+published: true
+seoTitle: "Pourquoi Nostr Est Résilient — Et Pas l'Internet"
+seoDescription: "Les pannes cloud de 2025 ont révélé la fragilité réelle d'internet. Découvrez comment l'architecture de relays de Nostr évite les points de défaillance uniques par conception."
+ogImage: "/images/guides/why-nostr-is-resilient/og.jpg"
+translationKey: "why-nostr-is-resilient"
+difficulty: "beginner"
+order: 0.2
+---
+
+Fin 2025, trois des plus grands fournisseurs d'infrastructure cloud — AWS, Azure et Cloudflare — ont tous connu des pannes majeures. Pas en même temps. Mais suffisamment proches pour faire passer un message.
+
+Quand AWS est tombé, ce n'est pas seulement Amazon qui a été touché. Des services de streaming, des applications bancaires et des outils professionnels dont dépendent des millions de personnes au quotidien ont été emportés. Quand Azure a échoué, les propres produits de Microsoft se sont éteints — ainsi que les entreprises construites dessus. Quand Cloudflare a eu des problèmes, des sites web et des APIs dans le monde entier sont devenus inaccessibles.
+
+X est tombé. ChatGPT est tombé. LinkedIn est tombé. Les systèmes de transport en commun de certaines villes ont cessé d'afficher les informations en temps réel. Pas à cause d'une cyberattaque. Parce qu'un seul fournisseur a eu une mauvaise journée.
+
+![Quand un grand fournisseur cloud tombe en panne, chaque service construit dessus s'effondre simultanément — réseaux sociaux, outils d'IA, logiciels d'entreprise, APIs bancaires](/images/guides/why-nostr-is-resilient/outage-timeline.svg)
+
+## Le problème : Les points de défaillance uniques
+
+L'internet moderne semble décentralisé en surface. Des millions de sites web, d'applications et de services. Mais en dessous, la plupart fonctionnent sur un nombre étonnamment restreint de fournisseurs.
+
+Imaginez le réseau électrique d'une ville. Des centaines de bâtiments, chacun avec ses propres lumières et systèmes. Mais s'ils dépendent tous de la même centrale, une panne plonge toute la ville dans le noir.
+
+C'est ce qui s'est passé en 2025. Les « bâtiments » étaient différents — X, LinkedIn, ChatGPT, apps de transport — mais ils dépendaient tous de la même infrastructure. Quand cette infrastructure a lâché, tout s'est éteint en même temps.
+
+Ce n'est pas un bug. C'est l'architecture. Les plateformes centralisées dépendent d'une infrastructure centralisée. Elles n'ont pas le choix.
+
+## Comment Nostr évite cela
+
+Nostr fonctionne différemment. Il repose sur de nombreux **relays** indépendants — des serveurs simples exploités par différentes personnes, dans différents endroits, sur différentes infrastructures.
+
+Quand vous publiez un post sur Nostr, votre application l'envoie à plusieurs relays. Ces relays n'appartiennent pas à la même entreprise. Ils ne fonctionnent pas sur le même fournisseur cloud. Ils ne partagent pas un point de défaillance unique.
+
+Si un relay tombe, les autres continuent de fonctionner. Vos publications restent accessibles. Votre identité existe toujours. Le réseau continue de tourner — parce qu'il n'a jamais dépendu d'un seul nœud.
+
+<Callout type="tip">
+Vous choisissez quels relays utiliser. La plupart des applications Nostr se connectent à plusieurs par défaut, vous offrant une redondance intégrée sans configuration supplémentaire.
+</Callout>
+
+![Centralisé vs Nostr : quand un seul serveur tombe tout s'effondre — sur Nostr un relay tombe tandis que les autres gardent vos publications en vie](/images/guides/why-nostr-is-resilient/centralized-vs-nostr.svg)
+
+## Pas d'entreprise, pas de bouton d'arrêt
+
+Il y a un point plus profond ici. Chaque plateforme que vous utilisez aujourd'hui existe à la discrétion de l'entreprise qui la gère.
+
+Twitter est devenu X parce qu'une personne l'a décidé. LinkedIn peut changer son algorithme, ses règles ou ses conditions d'utilisation du jour au lendemain. Si une plateforme décide que votre compte enfreint ses règles — ou si elle commet simplement une erreur — vous perdez l'accès à votre réseau, votre contenu et votre présence professionnelle. Il n'y a pas de recours garanti.
+
+Nostr n'a aucun de ces risques car il n'y a aucune entreprise derrière. Nostr est un protocole — un standard ouvert, comme l'email ou HTTP. Personne ne le possède. Personne ne peut changer les règles pour tout le monde. Personne ne peut appuyer sur un bouton et l'éteindre.
+
+Votre identité sur Nostr est une paire de clés cryptographiques que vous contrôlez. Pas un nom d'utilisateur enregistré dans la base de données de quelqu'un d'autre. Elle ne peut être ni suspendue, ni révoquée, ni supprimée par un tiers.
+
+## Ce que cela signifie pour vous
+
+Si les plateformes dont vous dépendez pour la communication professionnelle tombaient en panne demain — plus de LinkedIn, plus d'email, plus de Slack — pourriez-vous encore joindre votre réseau ?
+
+Pour la plupart des gens, la réponse est non. Et c'est un risque qui mérite réflexion.
+
+Nostr ne vous demande pas d'abandonner les outils que vous utilisez aujourd'hui. Mais il offre quelque chose qu'aucun d'entre eux ne peut : **une couche de communication qu'aucune défaillance unique ne peut faire tomber.** Vos publications existent sur plusieurs relays. Votre identité vit sur votre appareil. Votre réseau est résilient par conception, pas par promesse.
+
+Les pannes de 2025 n'étaient pas un événement isolé. C'était un avant-goût. La question est de savoir si vous construisez sur une infrastructure capable d'encaisser la prochaine.
