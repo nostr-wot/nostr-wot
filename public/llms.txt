@@ -1,53 +1,63 @@
 # Nostr Web of Trust
 
-> Filter spam and find trusted content on Nostr using your trust network. A decentralized reputation system that helps you see better content without relying on central moderators.
+> Nostr identity provider, NIP-07 signer, Lightning wallet, and Web of Trust browser extension. Manage keys, sign events, encrypt messages, send zaps, and filter spam with trust scores.
 
-Nostr Web of Trust (WoT) helps you filter spam and find trustworthy content by measuring how close people are to you in your social network. People you follow = 1 hop (high trust), people they follow = 2 hops (medium trust), beyond 3 hops = likely noise.
+Nostr Web of Trust (WoT) is a browser extension and open-source ecosystem for Nostr. It provides a complete identity provider (NIP-07 signer), an encrypted key vault, a built-in Lightning wallet for zaps, and a Web of Trust engine that scores trust based on social distance in the follow graph.
 
-## Core Concepts
+## Products
 
-- **Trust Score**: Calculated based on social distance and number of paths connecting two users
-- **Distance**: Number of hops between two pubkeys in the follow graph
-- **Web of Trust**: The network of follows that determines trust relationships
+### Browser Extension
+- **NIP-07 Signer**: Sign events and encrypt messages (NIP-04 & NIP-44) across any Nostr client
+- **Encrypted Vault**: AES-256-GCM encrypted key storage with auto-lock and secure backup
+- **Multi-Account**: HD derivation, watch-only, NIP-46 remote signer — switch identities instantly
+- **Lightning Wallet**: Built-in wallet for zaps with NWC, LNbits, or one-click quick setup
+- **Trust Scoring**: Configurable trust badges, custom scoring formulas, and spam filtering
+- **Privacy Modes**: Local-only, oracle, or hybrid computation modes
+- **Supported Browsers**: Chrome, Brave, Edge, Opera, Firefox
+
+### WoT Oracle
+Self-hostable Rust backend for social graph queries with <1ms cached latency and 10,000+ queries/second.
+
+### JavaScript SDK
+TypeScript SDK (`nostr-wot-sdk`) for the Oracle API with React hooks, full type safety, and error handling.
 
 ## Trust Score Formula
 
 ```
-score = base × distance_weight × (1 + path_bonus)
+score = base x distance_weight x (1 + path_bonus)
 ```
 
 Distance weights: 1 hop = 100%, 2 hops = 60%, 3 hops = 30%, 4+ hops = 10%
-
-## Documentation
-
-- [Getting Started](https://nostr-wot.com/docs/getting-started): Installation and quick start guide
-- [Browser Extension Docs](https://nostr-wot.com/docs/extension): NIP-07 compatible extension with `window.nostr.wot` API
-- [JavaScript SDK Docs](https://nostr-wot.com/docs/sdk): TypeScript library with React hooks for client-side integration
-- [WoT Oracle Docs](https://nostr-wot.com/docs/oracle): High-performance Rust backend REST API
 
 ## API Reference
 
 ### Browser Extension API
 
 ```javascript
-// Get distance in hops
+// Trust scoring
 await window.nostr.wot.getDistance(targetPubkey)
-
-// Get trust score (0-1)
 await window.nostr.wot.getTrustScore(targetPubkey)
-
-// Check if user is in Web of Trust
 await window.nostr.wot.isInWoT(targetPubkey)
+
+// NIP-07 signing
+await window.nostr.getPublicKey()
+await window.nostr.signEvent(event)
+await window.nostr.nip04.encrypt(pubkey, plaintext)
+await window.nostr.nip04.decrypt(pubkey, ciphertext)
+await window.nostr.nip44.encrypt(pubkey, plaintext)
+await window.nostr.nip44.decrypt(pubkey, ciphertext)
 ```
 
 ### JavaScript SDK
 
 ```javascript
-import { NostrWoT } from 'nostr-wot-sdk'
+import { WoTClient } from "nostr-wot-sdk";
 
-const wot = new NostrWoT({ userPubkey: 'your-pubkey' })
-await wot.getTrustScore(targetPubkey)
-await wot.getDistance(targetPubkey)
+const client = new WoTClient({
+  baseUrl: "https://wot-oracle.mappingbitcoin.com",
+  timeout: 5000,
+  retries: 3,
+});
 ```
 
 ### Oracle REST API
@@ -60,31 +70,33 @@ GET /stats
 
 Public instance: `https://wot-oracle.mappingbitcoin.com`
 
-## Projects
+## Documentation
 
-- [Browser Extension](https://github.com/nostr-wot/nostr-wot-extension): Chrome, Brave, Edge, Opera support
-- [JavaScript SDK](https://github.com/nostr-wot/nostr-wot-sdk): npm package `nostr-wot-sdk`
-- [WoT Oracle](https://github.com/nostr-wot/nostr-wot-oracle): Self-hostable Rust backend
-
-## Use Cases
-
-- Spam filtering without centralized blocklists
-- Trust scores for marketplaces and reviews
-- Tiered notifications by social proximity
-- Client-side content filtering
-- Identity verification through social proof
+- [Getting Started](https://nostr-wot.com/docs/getting-started): Installation and quick start guide
+- [Extension API Reference](https://nostr-wot.com/docs/extension): Complete browser extension API docs
+- [SDK Reference](https://nostr-wot.com/docs/sdk): TypeScript SDK with React hooks
+- [Oracle API Reference](https://nostr-wot.com/docs/oracle): Rust backend REST API docs
 
 ## Pages
 
 - [Home](https://nostr-wot.com): Project overview and introduction
-- [Features](https://nostr-wot.com/features): Detailed feature descriptions
+- [Features](https://nostr-wot.com/features): Full feature breakdown — signer, wallet, trust scoring, privacy
+- [Download](https://nostr-wot.com/download): Browser extension downloads for all browsers
+- [Oracle](https://nostr-wot.com/oracle): WoT Oracle server details and self-hosting guide
 - [Playground](https://nostr-wot.com/playground): Interactive graph visualization and API testing
-- [Download](https://nostr-wot.com/download): Browser extension downloads
-- [About](https://nostr-wot.com/about): Project background and team
+- [Blog](https://nostr-wot.com/blog): News and updates
+- [Guides](https://nostr-wot.com/guides): Step-by-step tutorials
+- [About](https://nostr-wot.com/about): Project background
+- [Contact](https://nostr-wot.com/contact): Get in touch
+
+## Projects
+
+- [Browser Extension](https://github.com/nostr-wot/nostr-wot-extension): Chrome, Brave, Edge, Opera, Firefox support
+- [JavaScript SDK](https://github.com/nostr-wot/nostr-wot-sdk): npm package `nostr-wot-sdk`
+- [WoT Oracle](https://github.com/nostr-wot/nostr-wot-oracle): Self-hostable Rust backend
 
 ## Optional
 
 - [Privacy Policy](https://nostr-wot.com/privacy)
 - [Terms of Service](https://nostr-wot.com/terms)
 - [Media Kit](https://nostr-wot.com/media-kit)
-- [Contact](https://nostr-wot.com/contact)

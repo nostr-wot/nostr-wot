@@ -20,7 +20,7 @@ export const metadata: Metadata = {
     template: "%s | Nostr WoT",
   },
   description:
-    "Filter spam and find trusted content on Nostr using your trust network. A decentralized reputation system without central moderators.",
+    "Nostr identity provider, NIP-07 signer, Lightning wallet, and Web of Trust browser extension. Manage keys, sign events, send zaps, and filter spam with trust scores.",
   keywords: ["nostr wot", "nostr web of trust", "web of trust"],
   manifest: "/manifest.json",
   icons: {
@@ -35,7 +35,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: "Nostr Web of Trust",
     description:
-      "Filter spam and find trusted content on Nostr using your trust network. A decentralized reputation system without central moderators.",
+      "Nostr identity provider, NIP-07 signer, Lightning wallet, and Web of Trust browser extension. Manage keys, sign events, send zaps, and filter spam with trust scores.",
     url: "https://nostr-wot.com",
     siteName: "Nostr WoT",
     locale: "en_US",
@@ -45,7 +45,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: "Nostr Web of Trust",
     description:
-      "Filter spam and find trusted content on Nostr using your trust network.",
+      "Nostr identity provider, NIP-07 signer, Lightning wallet, and Web of Trust browser extension.",
   },
 };
 
