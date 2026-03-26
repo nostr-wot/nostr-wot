@@ -80,6 +80,7 @@ Organizations supporting the development of Nostr Web of Trust:
 |--------------|---------|
 | Dandelion Labs | [dandelionlabs.io](https://dandelionlabs.io) |
 | We Are Bitcoin | [wearebitcoin.org](https://wearebitcoin.org) |
+| Nostr WoT | [nostr-wot.com](https://nostr-wot.com) |
 
 ## Run Your Own
 
