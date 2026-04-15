@@ -71,7 +71,7 @@ const components = {
         alt={props.alt || ''}
         width={800}
         height={450}
-        className="rounded-xl w-full"
+        className="rounded-xl w-full max-h-[500px] object-contain"
       />
       {props.alt && (
         <span className="block text-center text-sm text-gray-500 dark:text-gray-400 mt-3">

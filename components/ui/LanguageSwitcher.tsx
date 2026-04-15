@@ -26,7 +26,7 @@ export function LanguageSwitcher() {
 
   return (
     <div className="relative group">
-      <button className="flex items-center gap-1 p-2 rounded-lg text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors text-sm font-medium">
+      <button className="cursor-pointer flex items-center gap-1 p-2 rounded-lg text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors text-sm font-medium">
         <span>{localeISO[locale as Locale]}</span>
         <ChevronDownIcon className="w-4 h-4" />
       </button>
@@ -35,7 +35,7 @@ export function LanguageSwitcher() {
           <button
             key={loc}
             onClick={() => handleChange(loc)}
-            className={`w-full px-4 py-2 text-left text-sm hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors ${
+            className={`cursor-pointer w-full px-4 py-2 text-left text-sm hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors ${
               locale === loc ? "text-primary font-medium" : "text-gray-700 dark:text-gray-300"
             }`}
           >

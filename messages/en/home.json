@@ -1,166 +1,198 @@
 {
   "meta": {
-    "title": "Nostr WoT - Identity Provider, Signer, Lightning Wallet & Web of Trust",
-    "description": "Nostr identity provider, NIP-07 signer, Lightning wallet & Web of Trust extension. Manage accounts, sign events, send zaps & filter spam with trust scores."
+    "title": "Nostr WoT Extension - Identity, Lightning Wallet & Web of Trust",
+    "description": "The all-in-one Nostr browser extension. NIP-07 identity provider, built-in Lightning wallet, Web of Trust scoring, and upcoming trust assertions for decentralized reputation."
   },
   "hero": {
-    "badge": "Identity + Web of Trust",
-    "title": "Your Nostr Identity &",
-    "titleHighlight": "Web of Trust, Everywhere",
-    "description": "A complete Nostr identity provider, trust system, and Lightning wallet. Manage your keys, sign events, encrypt messages, send zaps, and filter spam — all in one extension.",
+    "badge": "Browser Extension for Nostr",
+    "title": "Identity. Wallet. Trust.",
+    "titleHighlight": "One Extension.",
+    "description": "The all-in-one Nostr extension — manage your identity, send zaps with a built-in Lightning wallet, and filter spam with Web of Trust.",
     "builtFor": "Built for",
     "playgroundButton": "Try Playground",
-    "downloadButton": "Download"
+    "downloadButton": "Get the Extension"
   },
-  "stats": {
-    "license": "MIT",
-    "licenseLabel": "Open Source License",
-    "responseTime": "<1ms",
-    "responseTimeLabel": "Query Response Time",
-    "requestsPerSecond": "10K+",
-    "requestsPerSecondLabel": "Requests Per Second",
-    "selfHostable": "100%",
-    "selfHostableLabel": "Self-Hostable"
-  },
-  "howItWorks": {
-    "title": "How It Works",
-    "description": "Get started with your Nostr identity and Web of Trust in three simple steps.",
-    "step1": {
-      "title": "Install & Set Up",
-      "description": "Add the extension to your browser. Create a new account, import your keys, or connect a remote signer."
+  "capabilities": {
+    "title": "Everything You Need in One Extension",
+    "description": "Four pillars that make Nostr usable, trustworthy, and connected.",
+    "identity": {
+      "title": "Identity Provider",
+      "description": "NIP-07 signer, encrypted vault, multi-account management, and granular permissions for every Nostr client."
     },
-    "step2": {
-      "title": "Sign In Everywhere",
-      "description": "The extension provides NIP-07 signing to any Nostr client — manage permissions, sign events, and encrypt messages."
+    "wallet": {
+      "title": "Lightning Wallet",
+      "description": "Built-in wallet for zaps — connect via NWC, LNbits, or create one in a click. WebLN provider included."
     },
-    "step3": {
-      "title": "Build Trust",
-      "description": "Your Web of Trust follows you across every app. See trust badges, filter spam, and verify who's in your network."
+    "wot": {
+      "title": "Web of Trust",
+      "description": "Social distance scoring, trust badges, and spam filtering based on your actual network — no centralized blocklists."
     },
-    "learnMoreLink": "Learn more about how Web of Trust works"
-  },
-  "whyWot": {
-    "title": "Why Web of Trust?",
-    "description": "Leverage your existing social connections to determine who to trust, without relying on centralized authorities.",
-    "decentralized": {
-      "title": "Decentralized Filtering",
-      "description": "Your network, your rules. Filter spam based on social distance instead of centralized blocklists that can be censored or manipulated."
-    },
-    "fast": {
-      "title": "Lightning Fast",
-      "description": "Sub-millisecond queries even with millions of users. Our Oracle handles 10,000+ requests per second for real-time filtering."
-    },
-    "privacy": {
-      "title": "Privacy First",
-      "description": "Choose local-only mode for complete privacy, or use the Oracle for speed. Your data stays under your control."
+    "upcoming": {
+      "title": "Coming Soon",
+      "description": "Trust assertions and services integration — verifiable endorsements and trusted service discovery on Nostr."
     }
   },
-  "extension": {
-    "badge": "Browser Extension",
-    "title": "Nostr WoT Extension",
-    "descriptionStart": "A complete Nostr identity provider, Lightning wallet, and Web of Trust extension. NIP-07 signer, encrypted vault, multi-account management, built-in wallet, and the",
-    "descriptionEnd": "API for trust queries — all in one package.",
+  "identity": {
+    "badge": "Identity Provider",
+    "title": "Your Keys, Your Identity",
+    "description": "A complete Nostr identity provider that works with every client. Create accounts, sign events, encrypt messages, and control permissions — all secured in an encrypted vault.",
     "features": {
-      "clientSide": {
+      "signer": {
         "title": "NIP-07 signer & encryption",
-        "description": "Sign events (NIP-07), encrypt messages (NIP-04 & NIP-44), and manage permissions per site"
+        "description": "Sign events, encrypt and decrypt messages (NIP-04 & NIP-44) for any Nostr client via the standard window.nostr API"
       },
-      "mode": {
-        "title": "Multi-account & remote signer",
-        "description": "Multiple accounts with HD derivation, watch-only mode, and NIP-46 remote signer support"
+      "multiAccount": {
+        "title": "Multi-account management",
+        "description": "Multiple accounts with HD derivation, watch-only mode, and NIP-46 remote signer (Bunker) support"
       },
-      "privacy": {
+      "vault": {
         "title": "Encrypted vault & auto-lock",
-        "description": "AES-256-GCM encrypted key storage with PBKDF2, configurable auto-lock, and secure key backup"
-      },
-      "badges": {
-        "title": "Trust badge injection",
-        "description": "See color-coded trust badges on Nostr sites showing social distance at a glance"
+        "description": "AES-256-GCM encrypted key storage with PBKDF2, configurable auto-lock timer, and secure key backup & export"
       },
       "permissions": {
         "title": "Granular permissions",
-        "description": "Per-account, per-domain, per-method permission controls with activity logging"
+        "description": "Per-account, per-domain, per-method permission controls with activity logging — you decide what each site can do"
+      }
+    }
+  },
+  "wallet": {
+    "badge": "Lightning Wallet",
+    "title": "Zap Directly from the Extension",
+    "description": "A built-in Lightning wallet that lets you send and receive zaps without leaving your Nostr client. Connect your own wallet or get started in seconds.",
+    "features": {
+      "nwc": {
+        "title": "Nostr Wallet Connect (NWC)",
+        "description": "Connect any NWC-compatible wallet — Alby, Mutiny, or your own Lightning node"
       },
-      "i18n": {
-        "title": "Lightning wallet & WebLN",
-        "description": "Built-in wallet for zaps — connect via NWC, LNbits, or get one in a click with quick setup"
+      "lnbits": {
+        "title": "LNbits integration",
+        "description": "Use an existing LNbits instance or set one up for custodial wallet access"
+      },
+      "quickSetup": {
+        "title": "One-click wallet setup",
+        "description": "No wallet yet? Create one instantly with the quick setup option — zero configuration needed"
+      },
+      "webln": {
+        "title": "WebLN provider",
+        "description": "Nostr apps can request payments directly through the extension — seamless zap experience across all clients"
+      }
+    }
+  },
+  "wot": {
+    "badge": "Web of Trust",
+    "title": "Trust Based on Your Network",
+    "description": "Web of Trust measures social distance — how many hops separate you from another user in the follow graph. Filter spam, see trust badges, and verify reputation without centralized authorities.",
+    "features": {
+      "scoring": {
+        "title": "Trust scoring",
+        "description": "0-to-1 trust scores based on social distance with bonuses for mutual follows and shared connections"
+      },
+      "badges": {
+        "title": "Trust badge injection",
+        "description": "Color-coded trust badges injected directly into Nostr clients — see who's in your network at a glance"
+      },
+      "filtering": {
+        "title": "Spam filtering",
+        "description": "Filter content based on social distance — your network, your rules. No centralized blocklists to censor or manipulate"
+      },
+      "privacy": {
+        "title": "Privacy modes",
+        "description": "Local mode for complete privacy (all calculations in-browser) or Remote mode with the Oracle for speed at scale"
       }
     },
+    "apiLabel": "Trust queries via",
     "downloadButton": "Download Extension"
   },
-  "oracle": {
-    "badge": "Backend API",
-    "title": "WoT Oracle",
-    "description": "A high-performance backend service that indexes the entire Nostr follow graph, delivering sub-millisecond trust queries at massive scale.",
-    "features": {
-      "api": {
-        "title": "Simple REST API",
-        "description": "Easy integration with any backend or frontend"
-      },
-      "performance": {
-        "title": "10,000+ queries/second",
-        "description": "Built for real-time filtering at scale"
-      },
-      "selfHost": {
-        "title": "Self-hostable",
-        "description": "Run your own instance for complete control"
+  "upcoming": {
+    "badge": "Coming Soon",
+    "title": "The Future of Trust on Nostr",
+    "description": "We're building the next layer of decentralized trust — moving beyond follows to verifiable endorsements and trusted service discovery.",
+    "assertions": {
+      "title": "Trust Assertions",
+      "description": "Go beyond binary follow/unfollow. Make explicit, typed trust statements — \"I trust this developer\", \"I vouch for this merchant\", \"This relay operator is reliable\". Assertions create richer, contextual trust signals stored as Nostr events, enabling nuanced reputation that the follow graph alone can't capture.",
+      "features": {
+        "typed": "Typed trust — endorse people for specific skills, roles, or domains",
+        "contextual": "Contextual reputation — different trust for different situations",
+        "verifiable": "Verifiable endorsements — cryptographically signed and publicly auditable",
+        "aggregated": "Aggregated scores — combine assertions from your network for weighted trust"
       }
     },
-    "learnMoreButton": "Learn more"
+    "services": {
+      "title": "Services Integration",
+      "description": "Connect the trust graph to real-world services. Discover trusted merchants, verified service providers, and reputable marketplaces — all filtered through your Web of Trust. Services can leverage trust assertions to verify providers and filter bad actors before you ever interact.",
+      "features": {
+        "discovery": "Trusted service discovery — find merchants and providers vouched by your network",
+        "verification": "Provider verification — trust assertions as proof of reputation",
+        "marketplaces": "Marketplace integration — WoT-filtered listings and seller reputation",
+        "ecosystem": "Open ecosystem — any Nostr service can plug into the trust layer"
+      }
+    }
   },
-  "sdk": {
-    "badge": "JavaScript SDK",
-    "title": "nostr-wot-sdk",
-    "description": "Integrate Web of Trust directly into your JavaScript or TypeScript application with our official SDK. Works with or without the browser extension.",
-    "features": {
-      "extensionFirst": {
-        "title": "Extension-first design",
-        "description": "Automatically uses extension when available, falls back to oracle"
-      },
-      "typescript": {
-        "title": "Full TypeScript support",
-        "description": "Complete type definitions for a great developer experience"
-      },
-      "react": {
-        "title": "React hooks included",
-        "description": "Ready-to-use WoTProvider and useWoT hook for React apps"
-      }
+  "howItWorks": {
+    "title": "Get Started in Minutes",
+    "description": "Three steps to a complete Nostr identity with built-in trust and payments.",
+    "step1": {
+      "title": "Install the Extension",
+      "description": "Add to Chrome, Brave, Edge, Opera, or Firefox. Create a new account, import your keys, or connect a remote signer."
     },
-    "installCommand": "npm install nostr-wot-sdk",
-    "viewDocsButton": "View SDK Docs",
-    "npmButton": "View on npm"
+    "step2": {
+      "title": "Use Any Nostr Client",
+      "description": "The extension provides NIP-07 signing, Lightning wallet, and trust scoring to every Nostr app automatically."
+    },
+    "step3": {
+      "title": "Trust Follows You",
+      "description": "Your Web of Trust, wallet, and identity travel with you across every client — one extension, everywhere."
+    },
+    "learnMoreLink": "Learn more about how Web of Trust works"
+  },
+  "developers": {
+    "title": "For Developers",
+    "description": "Integrate trust into your app with our SDK, or self-host the Oracle for backend queries.",
+    "oracle": {
+      "badge": "Backend API",
+      "title": "WoT Oracle",
+      "description": "High-performance Rust backend indexing the entire Nostr follow graph. Sub-millisecond queries, 10K+ req/s, self-hostable.",
+      "learnMoreButton": "Learn more"
+    },
+    "sdk": {
+      "badge": "JavaScript SDK",
+      "title": "nostr-wot-sdk",
+      "description": "Extension-first design with Oracle fallback. Full TypeScript support and React hooks included.",
+      "viewDocsButton": "View SDK Docs",
+      "npmButton": "View on npm"
+    }
   },
   "faq": {
     "title": "Frequently Asked Questions",
-    "description": "Everything you need to know about Web of Trust",
+    "description": "Everything you need to know about the Nostr WoT Extension.",
     "items": {
+      "whatIsExtension": {
+        "question": "What does the extension do?",
+        "answer": "The Nostr WoT Extension is an all-in-one browser extension that acts as your Nostr identity provider (NIP-07 signer), Lightning wallet, and Web of Trust engine. It manages your keys in an encrypted vault, signs events for any Nostr client, handles zaps, and calculates trust scores — all from a single extension."
+      },
       "whatIsWot": {
         "question": "What is Web of Trust?",
-        "answer": "Web of Trust measures social distance—how many 'hops' separate you from another user in the Nostr follow graph. If you follow someone, they're 1 hop away. If they follow someone else, that person is 2 hops from you. This helps filter spam and verify reputation without centralized blocklists."
+        "answer": "Web of Trust measures social distance — how many 'hops' separate you from another user in the Nostr follow graph. If you follow someone, they're 1 hop away. If they follow someone else, that person is 2 hops from you. This helps filter spam and verify reputation without centralized blocklists."
       },
-      "howDoesItWork": {
-        "question": "How does it work?",
-        "answer": "The extension acts as your Nostr identity provider (NIP-07 signer) and Web of Trust engine. It manages your keys in an encrypted vault, signs events for any Nostr client, and indexes your follow list to calculate social distances. Apps query through window.nostr for signing and window.nostr.wot for trust scores."
+      "howDoesWalletWork": {
+        "question": "How does the Lightning wallet work?",
+        "answer": "The extension includes a built-in Lightning wallet for sending and receiving zaps. Connect your own wallet via Nostr Wallet Connect (NWC), use an LNbits instance, or create one instantly with the quick setup option. It also provides a WebLN provider so Nostr apps can request payments directly."
       },
       "isItPrivate": {
         "question": "Is my data private?",
-        "answer": "Yes. In Local mode, all calculations happen in your browser—nothing leaves your device. In Remote mode, only pubkey lookups are sent to the oracle (no content data). You can also self-host the oracle for complete control."
+        "answer": "Yes. Your keys are stored in an AES-256-GCM encrypted vault that only you can unlock. For Web of Trust, Local mode keeps all calculations in your browser — nothing leaves your device. Remote mode only sends pubkey lookups to the Oracle (no content data). You can also self-host the Oracle."
       },
       "whichBrowsers": {
         "question": "Which browsers are supported?",
-        "answer": "The extension works on all major browsers: Chrome, Brave, Edge, Opera, and Firefox."
+        "answer": "The extension works on Chrome, Brave, Edge, Opera, and Firefox."
+      },
+      "whatAreTrustAssertions": {
+        "question": "What are trust assertions?",
+        "answer": "Trust assertions are an upcoming feature that lets you make explicit, typed trust statements about other users — beyond just following them. For example, endorsing someone as a trusted developer or vouching for a merchant. These cryptographically signed statements create richer, contextual reputation on Nostr."
       },
       "isFree": {
         "question": "Is it free?",
-        "answer": "Yes, completely free and open source under the MIT license. The extension, SDK, Oracle API, and all source code are available on GitHub."
-      },
-      "howToIntegrate": {
-        "question": "How do I integrate WoT into my app?",
-        "answer": "You have three options: use the browser extension's window.nostr.wot API for client-side queries, use the nostr-wot-sdk npm package for a unified interface, or query the Oracle REST API directly for server-side integration."
-      },
-      "wallet": {
-        "question": "Does it have a wallet?",
-        "answer": "Yes. The extension includes a built-in Lightning wallet for sending and receiving zaps. You can connect your own wallet via Nostr Wallet Connect (NWC), use an LNbits instance, or create one instantly with the quick setup option. The extension also provides a WebLN provider so Nostr apps can request payments directly."
+        "answer": "Yes, completely free and open source under the MIT license. The extension, SDK, Oracle, and all source code are available on GitHub."
       }
     }
   },
@@ -186,14 +218,14 @@
     }
   },
   "cta": {
-    "title": "Ready to Build Trust?",
-    "description": "Join the growing ecosystem of Nostr apps using Web of Trust. Start filtering spam and building reputation today.",
+    "title": "Ready to Take Control?",
+    "description": "Your identity, your wallet, your trust network — all in one extension. Join the growing Nostr ecosystem today.",
     "getExtensionButton": "Get the Extension",
     "viewGithubButton": "View on GitHub"
   },
   "newsletter": {
     "title": "Stay Updated",
-    "description": "Get the latest updates on Nostr Web of Trust, new features, and ecosystem news.",
+    "description": "Get the latest on new features, trust assertions, and services integration as they ship.",
     "placeholder": "Enter your email",
     "subscribe": "Subscribe",
     "subscribing": "Subscribing...",

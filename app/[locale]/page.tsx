@@ -4,15 +4,12 @@ import { getTranslations } from "next-intl/server";
 import HeroAnimation from "@/components/HeroAnimation";
 import {
   ScrollReveal,
-  AnimatedCounter,
   LinkButton,
   ExternalLinkButton,
-  NewsletterForm,
   Section,
   SectionHeader,
   FeatureCard,
   FeatureList,
-  StatsGrid,
   AccordionList,
 } from "@/components/ui";
 import {
@@ -28,11 +25,13 @@ import {
   OracleIllustration,
   CTAIllustration,
   CodeBracketsIcon,
+  LightningIcon,
+  KeyIcon,
 } from "@/components/icons";
 import { CodeBlock } from "@/components/ui";
 import { generateAlternates, generateOpenGraph, generateTwitter } from "@/lib/metadata";
 import { type Locale } from "@/i18n/config";
-import {NewsletterSection} from "@/components/layout/NewsletterSection";
+import { NewsletterSection } from "@/components/layout/NewsletterSection";
 
 type Props = {
   params: Promise<{ locale: string }>;
@@ -47,7 +46,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   return {
     title,
     description,
-    keywords: ["nostr wot", "nostr web of trust"],
+    keywords: ["nostr wot", "nostr web of trust", "nostr extension", "nostr identity", "nostr lightning wallet", "nip-07 signer", "trust assertions"],
     alternates: generateAlternates("/", locale as Locale),
     openGraph: generateOpenGraph({
       title,
@@ -62,7 +61,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 export default async function Home() {
   const t = await getTranslations("home");
 
-  // JSON-LD structured data for the home page
+  // JSON-LD structured data
   const organizationJsonLd = {
     "@context": "https://schema.org",
     "@type": "Organization",
@@ -70,7 +69,7 @@ export default async function Home() {
     "alternateName": "Nostr WoT",
     "url": "https://nostr-wot.com",
     "logo": "https://nostr-wot.com/icon-512.png",
-    "description": "Nostr identity provider, NIP-07 signer, Lightning wallet, and Web of Trust browser extension. Manage keys, sign events, encrypt messages, send zaps, and filter spam with trust scores.",
+    "description": "All-in-one Nostr browser extension — identity provider, NIP-07 signer, Lightning wallet, and Web of Trust. Manage keys, sign events, send zaps, and filter spam with trust scores.",
     "sameAs": [
       "https://github.com/nostr-wot",
       "https://twitter.com/nostr_wot",
@@ -82,7 +81,7 @@ export default async function Home() {
     "@type": "WebSite",
     "name": "Nostr Web of Trust",
     "url": "https://nostr-wot.com",
-    "description": "Nostr identity provider, NIP-07 signer, Lightning wallet, and Web of Trust browser extension",
+    "description": "All-in-one Nostr browser extension — identity provider, NIP-07 signer, Lightning wallet, and Web of Trust",
     "potentialAction": {
       "@type": "SearchAction",
       "target": "https://nostr-wot.com/docs?search={search_term_string}",
@@ -98,52 +97,72 @@ export default async function Home() {
         "@type": "SiteNavigationElement",
         "position": 1,
         "name": "Download Extension",
-        "description": "Download the WoT browser extension for Chrome, Brave, Edge, and Opera",
+        "description": "Download the Nostr WoT extension for Chrome, Brave, Edge, Opera, and Firefox",
         "url": "https://nostr-wot.com/download",
       },
       {
         "@type": "SiteNavigationElement",
         "position": 2,
+        "name": "Features",
+        "description": "Identity provider, Lightning wallet, Web of Trust scoring, trust badges, and granular permissions",
+        "url": "https://nostr-wot.com/features",
+      },
+      {
+        "@type": "SiteNavigationElement",
+        "position": 3,
         "name": "Documentation",
         "description": "API documentation, integration guides, and SDK reference",
         "url": "https://nostr-wot.com/docs",
       },
       {
         "@type": "SiteNavigationElement",
-        "position": 3,
-        "name": "Features",
-        "description": "Explore extension features: NIP-07 signer, Lightning wallet, trust scoring, privacy modes, and universal API",
-        "url": "https://nostr-wot.com/features",
-      },
-      {
-        "@type": "SiteNavigationElement",
         "position": 4,
-        "name": "Oracle Server",
-        "description": "Self-hostable WoT Oracle server for social graph queries",
-        "url": "https://nostr-wot.com/oracle",
-      },
-      {
-        "@type": "SiteNavigationElement",
-        "position": 5,
         "name": "Playground",
-        "description": "Interactive API playground to test Web of Trust queries",
+        "description": "Interactive Web of Trust graph explorer",
         "url": "https://nostr-wot.com/playground",
-      },
-      {
-        "@type": "SiteNavigationElement",
-        "position": 6,
-        "name": "About",
-        "description": "Learn about Web of Trust and social distance on Nostr",
-        "url": "https://nostr-wot.com/about",
       },
     ],
   };
 
-  const stats = [
-    { value: t("stats.license"), label: t("stats.licenseLabel") },
-    { value: t("stats.responseTime"), label: t("stats.responseTimeLabel") },
-    { value: <AnimatedCounter end={10} suffix="K+" />, label: t("stats.requestsPerSecondLabel") },
-    { value: <AnimatedCounter end={100} suffix="%" />, label: t("stats.selfHostableLabel") },
+  const breadcrumbJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+      {
+        "@type": "ListItem",
+        "position": 1,
+        "name": "Home",
+        "item": "https://nostr-wot.com",
+      },
+    ],
+  };
+
+  const capabilityCards = [
+    { icon: <KeyIcon className="w-7 h-7 text-indigo-600 dark:text-indigo-400" />, title: t("capabilities.identity.title"), description: t("capabilities.identity.description"), iconBg: "bg-indigo-100 dark:bg-indigo-900/40" },
+    { icon: <LightningIcon className="w-7 h-7 text-amber-600 dark:text-amber-400" />, title: t("capabilities.wallet.title"), description: t("capabilities.wallet.description"), iconBg: "bg-amber-100 dark:bg-amber-900/40" },
+    { icon: <ShieldIcon className="w-7 h-7" />, title: t("capabilities.wot.title"), description: t("capabilities.wot.description"), iconBg: "bg-purple-100 dark:bg-purple-900/40" },
+    { icon: <SpeedIcon className="w-7 h-7 text-emerald-600 dark:text-emerald-400" />, title: t("capabilities.upcoming.title"), description: t("capabilities.upcoming.description"), iconBg: "bg-emerald-100 dark:bg-emerald-900/40" },
+  ];
+
+  const identityFeatures = [
+    { title: t("identity.features.signer.title"), description: t("identity.features.signer.description") },
+    { title: t("identity.features.multiAccount.title"), description: t("identity.features.multiAccount.description") },
+    { title: t("identity.features.vault.title"), description: t("identity.features.vault.description") },
+    { title: t("identity.features.permissions.title"), description: t("identity.features.permissions.description") },
+  ];
+
+  const walletFeatures = [
+    { title: t("wallet.features.nwc.title"), description: t("wallet.features.nwc.description") },
+    { title: t("wallet.features.lnbits.title"), description: t("wallet.features.lnbits.description") },
+    { title: t("wallet.features.quickSetup.title"), description: t("wallet.features.quickSetup.description") },
+    { title: t("wallet.features.webln.title"), description: t("wallet.features.webln.description") },
+  ];
+
+  const wotFeatures = [
+    { title: t("wot.features.scoring.title"), description: t("wot.features.scoring.description") },
+    { title: t("wot.features.badges.title"), description: t("wot.features.badges.description") },
+    { title: t("wot.features.filtering.title"), description: t("wot.features.filtering.description") },
+    { title: t("wot.features.privacy.title"), description: t("wot.features.privacy.description") },
   ];
 
   const howItWorksSteps = [
@@ -152,41 +171,14 @@ export default async function Home() {
     { title: t("howItWorks.step3.title"), description: t("howItWorks.step3.description") },
   ];
 
-  const valueProps = [
-    { icon: <ShieldIcon className="w-16 h-16" />, title: t("whyWot.decentralized.title"), description: t("whyWot.decentralized.description") },
-    { icon: <SpeedIcon className="w-16 h-16" />, title: t("whyWot.fast.title"), description: t("whyWot.fast.description") },
-    { icon: <LockIcon className="w-16 h-16" />, title: t("whyWot.privacy.title"), description: t("whyWot.privacy.description") },
-  ];
-
-  const extensionFeatures = [
-    { title: t("extension.features.clientSide.title"), description: t("extension.features.clientSide.description") },
-    { title: t("extension.features.mode.title"), description: t("extension.features.mode.description") },
-    { title: t("extension.features.privacy.title"), description: t("extension.features.privacy.description") },
-    { title: t("extension.features.badges.title"), description: t("extension.features.badges.description") },
-    { title: t("extension.features.permissions.title"), description: t("extension.features.permissions.description") },
-    { title: t("extension.features.i18n.title"), description: t("extension.features.i18n.description") },
-  ];
-
-  const oracleFeatures = [
-    { title: t("oracle.features.api.title"), description: t("oracle.features.api.description") },
-    { title: t("oracle.features.performance.title"), description: t("oracle.features.performance.description") },
-    { title: t("oracle.features.selfHost.title"), description: t("oracle.features.selfHost.description") },
-  ];
-
-  const sdkFeatures = [
-    { title: t("sdk.features.extensionFirst.title"), description: t("sdk.features.extensionFirst.description") },
-    { title: t("sdk.features.typescript.title"), description: t("sdk.features.typescript.description") },
-    { title: t("sdk.features.react.title"), description: t("sdk.features.react.description") },
-  ];
-
   const faqItems = [
+    { question: t("faq.items.whatIsExtension.question"), answer: t("faq.items.whatIsExtension.answer") },
     { question: t("faq.items.whatIsWot.question"), answer: t("faq.items.whatIsWot.answer") },
-    { question: t("faq.items.howDoesItWork.question"), answer: t("faq.items.howDoesItWork.answer") },
+    { question: t("faq.items.howDoesWalletWork.question"), answer: t("faq.items.howDoesWalletWork.answer") },
     { question: t("faq.items.isItPrivate.question"), answer: t("faq.items.isItPrivate.answer") },
     { question: t("faq.items.whichBrowsers.question"), answer: t("faq.items.whichBrowsers.answer") },
+    { question: t("faq.items.whatAreTrustAssertions.question"), answer: t("faq.items.whatAreTrustAssertions.answer") },
     { question: t("faq.items.isFree.question"), answer: t("faq.items.isFree.answer") },
-    { question: t("faq.items.howToIntegrate.question"), answer: t("faq.items.howToIntegrate.answer") },
-    { question: t("faq.items.wallet.question"), answer: t("faq.items.wallet.answer") },
   ];
 
   const faqJsonLd = {
@@ -220,265 +212,345 @@ export default async function Home() {
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(faqJsonLd) }}
       />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd) }}
+      />
       <main>
-        {/* Hero Section */}
-      <section className="relative min-h-[90vh] flex items-center justify-center overflow-hidden -mt-16 pt-16">
-        <HeroAnimation />
-        <div className="relative z-10 max-w-4xl mx-auto px-6 text-center py-20">
-          <ScrollReveal animation="fade-down" delay={100}>
-            <div className="inline-flex items-center gap-2 bg-primary/10 text-primary px-4 py-2 rounded-full text-sm font-medium mb-8">
-              <span className="relative flex h-2 w-2">
-                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary opacity-75" />
-                <span className="relative inline-flex rounded-full h-2 w-2 bg-primary" />
-              </span>
-              {t("hero.badge")}
-            </div>
-          </ScrollReveal>
-          <ScrollReveal animation="zoom-in" delay={200}>
-            <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-6 text-gray-900 dark:text-white leading-tight">
-              {t("hero.title")}
-              <br />
-              <span className="text-primary">{t("hero.titleHighlight")}</span>
-            </h1>
-          </ScrollReveal>
-          <ScrollReveal animation="fade-up" delay={300}>
-            <p className="text-xl md:text-2xl text-gray-600 dark:text-gray-300 mb-10 max-w-2xl mx-auto leading-relaxed">
-              {t("hero.description")}
-            </p>
-          </ScrollReveal>
-          <ScrollReveal animation="fade-up" delay={400}>
-            <div className="flex flex-col sm:flex-row gap-4 justify-center mb-8">
-              <LinkButton href="/playground" className="hover-lift">{t("hero.playgroundButton")}</LinkButton>
-              <LinkButton href="/download" variant="secondary" className="hover-lift">{t("hero.downloadButton")}</LinkButton>
-            </div>
-          </ScrollReveal>
-          <ScrollReveal animation="fade-up" delay={500}>
-            <a href="https://nostr.com" target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 text-gray-500 dark:text-gray-400 hover:text-nostr transition-colors text-sm">
-              <span>{t("hero.builtFor")}</span>
-              <NostrLogo className="w-6 h-6 text-nostr" />
-              <span>Nostr</span>
-            </a>
-          </ScrollReveal>
-        </div>
-      </section>
-
-      {/* Stats Section */}
-      <Section background="gray" padding="md">
-        <StatsGrid stats={stats} />
-      </Section>
-
-      {/* How It Works Section */}
-      <Section padding="md">
-        <ScrollReveal animation="fade-up">
-          <SectionHeader title={t("howItWorks.title")} description={t("howItWorks.description")} />
-        </ScrollReveal>
-        <div className="grid md:grid-cols-3 gap-8">
-          {howItWorksSteps.map((step, i) => (
-            <ScrollReveal key={i} animation="zoom-in" delay={100 + i * 100}>
-              <div className="text-center">
-                <div className="w-16 h-16 rounded-full bg-primary text-white text-2xl font-bold flex items-center justify-center mx-auto mb-6 animate-pulse-glow">
-                  {i + 1}
-                </div>
-                <h3 className="text-xl font-semibold mb-3">{step.title}</h3>
-                <p className="text-gray-600 dark:text-gray-400">{step.description}</p>
+        {/* Hero Section — Extension-focused */}
+        <section className="relative min-h-[90vh] flex items-center justify-center overflow-hidden -mt-16 pt-16">
+          <HeroAnimation />
+          <div className="relative z-10 max-w-4xl mx-auto px-6 text-center py-20">
+            <ScrollReveal animation="fade-down" delay={100}>
+              <div className="inline-flex items-center gap-2 bg-primary/10 text-primary px-4 py-2 rounded-full text-sm font-medium mb-8">
+                <span className="relative flex h-2 w-2">
+                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary opacity-75" />
+                  <span className="relative inline-flex rounded-full h-2 w-2 bg-primary" />
+                </span>
+                {t("hero.badge")}
               </div>
             </ScrollReveal>
-          ))}
-        </div>
-        <ScrollReveal animation="fade-up" delay={400}>
-          <div className="text-center mt-12">
-            <Link href="/about" className="inline-flex items-center gap-2 text-primary font-medium hover:underline link-underline">
-              {t("howItWorks.learnMoreLink")}
-              <ArrowRightIcon className="w-4 h-4" />
-            </Link>
-          </div>
-        </ScrollReveal>
-      </Section>
-
-      {/* Value Props Section */}
-      <Section background="gray" padding="md" className="overflow-hidden">
-        <ScrollReveal animation="fade-up">
-          <SectionHeader title={t("whyWot.title")} description={t("whyWot.description")} />
-        </ScrollReveal>
-        <div className="grid md:grid-cols-3 gap-8">
-          {valueProps.map((prop, i) => (
-            <ScrollReveal key={i} animation="fade-up" delay={100 + i * 100}>
-              <FeatureCard icon={prop.icon} title={prop.title} description={prop.description} className="card-interactive" />
+            <ScrollReveal animation="zoom-in" delay={200}>
+              <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-6 text-gray-900 dark:text-white leading-tight">
+                <span className="text-primary">{t("hero.titleHighlight")}</span>
+                <br />
+                {t("hero.title")}
+              </h1>
             </ScrollReveal>
-          ))}
-        </div>
-      </Section>
-
-      {/* WoT Extension Section */}
-      <Section padding="lg" className="overflow-hidden">
-        <div className="grid lg:grid-cols-3 gap-12 lg:gap-16 items-center">
-          <ScrollReveal animation="fade-right" className="lg:col-span-2">
-            <div>
-              <div className="inline-flex items-center gap-2 bg-purple-100 dark:bg-purple-900/30 text-purple-700 dark:text-purple-300 px-3 py-1 rounded-full text-sm font-medium mb-6">
-                <PuzzleIcon className="w-4 h-4" />
-                {t("extension.badge")}
-              </div>
-              <h2 className="text-3xl md:text-4xl font-bold mb-6">{t("extension.title")}</h2>
-              <p className="text-lg text-gray-600 dark:text-gray-400 mb-8">
-                {t("extension.descriptionStart")}{" "}
-                <code className="bg-gray-200 dark:bg-gray-700 px-2 py-1 rounded text-sm font-mono">window.nostr.wot</code>{" "}
-                {t("extension.descriptionEnd")}
+            <ScrollReveal animation="fade-up" delay={300}>
+              <p className="text-xl md:text-2xl text-gray-600 dark:text-gray-300 mb-10 max-w-2xl mx-auto leading-relaxed">
+                {t("hero.description")}
               </p>
-              <div className="grid md:grid-cols-2 gap-x-8 mb-8">
-                <FeatureList items={extensionFeatures.slice(0, 3)} iconColor="text-purple-600 dark:text-purple-400" />
-                <FeatureList items={extensionFeatures.slice(3)} iconColor="text-purple-600 dark:text-purple-400" />
+            </ScrollReveal>
+            <ScrollReveal animation="fade-up" delay={400}>
+              <div className="flex flex-col sm:flex-row gap-4 justify-center mb-8">
+                <LinkButton href="/download" className="hover-lift">{t("hero.downloadButton")}</LinkButton>
+                <LinkButton href="/playground" variant="secondary" className="hover-lift">{t("hero.playgroundButton")}</LinkButton>
               </div>
-              <LinkButton href="/download" className="hover-lift">{t("extension.downloadButton")}</LinkButton>
-            </div>
-          </ScrollReveal>
-          <ScrollReveal animation="fade-left" delay={200}>
-            <div className="relative">
-              <div className="absolute inset-0 bg-gradient-to-br from-purple-500/20 to-indigo-500/20 rounded-3xl blur-3xl" />
-              <div className="relative bg-gradient-to-br from-purple-50 to-indigo-50 dark:from-purple-900/40 dark:to-indigo-900/40 rounded-3xl p-8 border border-purple-200 dark:border-purple-800">
-                <ExtensionIllustration />
-              </div>
-            </div>
-          </ScrollReveal>
-        </div>
-      </Section>
+            </ScrollReveal>
+            <ScrollReveal animation="fade-up" delay={500}>
+              <a href="https://nostr.com" target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 text-gray-500 dark:text-gray-400 hover:text-nostr transition-colors text-sm">
+                <span>{t("hero.builtFor")}</span>
+                <NostrLogo className="w-6 h-6 text-nostr" />
+                <span>Nostr</span>
+              </a>
+            </ScrollReveal>
+          </div>
+        </section>
 
-      {/* WoT Oracle Section */}
-      <Section background="gray" padding="lg" className="overflow-hidden">
-        <div className="grid lg:grid-cols-2 gap-12 lg:gap-16 items-center">
-          <ScrollReveal animation="fade-right" className="order-2 lg:order-1">
-            <div className="relative">
-              <div className="absolute inset-0 bg-gradient-to-br from-violet-500/20 to-purple-500/20 rounded-3xl blur-3xl" />
-              <div className="relative bg-gradient-to-br from-violet-50 to-purple-50 dark:from-violet-900/40 dark:to-purple-900/40 rounded-3xl p-8 border border-violet-200 dark:border-violet-800">
-                <OracleIllustration />
-              </div>
-            </div>
+        {/* Capabilities Overview — 4 Pillars */}
+        <Section background="gray" padding="md">
+          <ScrollReveal animation="fade-up">
+            <SectionHeader title={t("capabilities.title")} description={t("capabilities.description")} />
           </ScrollReveal>
-          <ScrollReveal animation="fade-left" delay={200} className="order-1 lg:order-2">
-            <div>
-              <div className="inline-flex items-center gap-2 bg-violet-100 dark:bg-violet-900/30 text-violet-700 dark:text-violet-300 px-3 py-1 rounded-full text-sm font-medium mb-6">
-                <ServerIcon className="w-4 h-4" />
-                {t("oracle.badge")}
-              </div>
-              <h2 className="text-3xl md:text-4xl font-bold mb-6">{t("oracle.title")}</h2>
-              <p className="text-lg text-gray-600 dark:text-gray-400 mb-8">{t("oracle.description")}</p>
-              <FeatureList items={oracleFeatures} iconColor="text-violet-600 dark:text-violet-400" className="mb-8" />
-              <LinkButton href="/oracle" className="hover-lift">{t("oracle.learnMoreButton")}</LinkButton>
-            </div>
-          </ScrollReveal>
-        </div>
-      </Section>
-
-      {/* SDK Section */}
-      <Section padding="lg" className="overflow-hidden">
-        <div className="grid lg:grid-cols-2 gap-12 lg:gap-16 items-center">
-          <ScrollReveal animation="fade-right">
-            <div>
-              <div className="inline-flex items-center gap-2 bg-emerald-100 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-300 px-3 py-1 rounded-full text-sm font-medium mb-6">
-                <CodeBracketsIcon className="w-4 h-4" />
-                {t("sdk.badge")}
-              </div>
-              <h2 className="text-3xl md:text-4xl font-bold mb-6">{t("sdk.title")}</h2>
-              <p className="text-lg text-gray-600 dark:text-gray-400 mb-8">{t("sdk.description")}</p>
-              <FeatureList items={sdkFeatures} iconColor="text-emerald-600 dark:text-emerald-400" className="mb-8" />
-              <div className="flex flex-col sm:flex-row gap-4">
-                <LinkButton href="/docs#sdk-setup" className="hover-lift">{t("sdk.viewDocsButton")}</LinkButton>
-                <ExternalLinkButton href="https://www.npmjs.com/package/nostr-wot-sdk" variant="secondary" className="hover-lift">
-                  {t("sdk.npmButton")}
-                </ExternalLinkButton>
-              </div>
-            </div>
-          </ScrollReveal>
-          <ScrollReveal animation="fade-left" delay={200}>
-            <div className="relative">
-              <div className="absolute inset-0 bg-gradient-to-br from-emerald-500/20 to-teal-500/20 rounded-3xl blur-3xl" />
-              <div className="relative bg-gradient-to-br from-emerald-50 to-teal-50 dark:from-emerald-900/40 dark:to-teal-900/40 rounded-3xl p-6 border border-emerald-200 dark:border-emerald-800">
-                <CodeBlock
-                  language="javascript"
-                  code={`import { WoT } from 'nostr-wot-sdk';
-
-const wot = new WoT({
-  useExtension: true,
-  fallback: {
-    oracle: 'https://wot-oracle.mappingbitcoin.com',
-    myPubkey: 'your-pubkey...'
-  }
-});
-
-// Check trust
-const score = await wot.getTrustScore(pubkey);
-const inNetwork = await wot.isInMyWoT(pubkey);`}
+          <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
+            {capabilityCards.map((card, i) => (
+              <ScrollReveal key={i} animation="zoom-in" delay={100 + i * 80}>
+                <FeatureCard
+                  icon={card.icon}
+                  title={card.title}
+                  description={card.description}
+                  iconBg={card.iconBg}
+                  className="card-interactive"
                 />
-              </div>
-            </div>
-          </ScrollReveal>
-        </div>
-      </Section>
+              </ScrollReveal>
+            ))}
+          </div>
+        </Section>
 
-      {/* Playground Section */}
-      <Section background="gray" padding="lg" className="overflow-hidden">
-        <div className="grid lg:grid-cols-2 gap-12 lg:gap-16 items-center">
-          <ScrollReveal animation="fade-right" className="order-2 lg:order-1">
-            <div className="relative">
-              <div className="absolute inset-0 bg-gradient-to-br from-purple-500/20 to-indigo-500/20 rounded-3xl blur-3xl" />
-              <div className="relative bg-gradient-to-br from-purple-50 to-indigo-50 dark:from-purple-900/40 dark:to-indigo-900/40 rounded-3xl p-8 border border-purple-200 dark:border-purple-800">
-                <ExtensionPopupIllustration />
-              </div>
-            </div>
-          </ScrollReveal>
-          <ScrollReveal animation="fade-left" delay={200} className="order-1 lg:order-2">
-            <div>
-              <div className="inline-flex items-center gap-2 bg-purple-100 dark:bg-purple-900/30 text-purple-700 dark:text-purple-300 px-3 py-1 rounded-full text-sm font-medium mb-6">
-                <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z" />
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                </svg>
-                {t("playground.badge")}
-              </div>
-              <h2 className="text-3xl md:text-4xl font-bold mb-6">{t("playground.title")}</h2>
-              <p className="text-lg text-gray-600 dark:text-gray-400 mb-8">{t("playground.description")}</p>
-              <LinkButton href="/playground" className="hover-lift">{t("playground.tryButton")}</LinkButton>
-            </div>
-          </ScrollReveal>
-        </div>
-      </Section>
-
-      {/* FAQ Section */}
-      <Section padding="lg">
-        <ScrollReveal animation="fade-up">
-          <SectionHeader title={t("faq.title")} description={t("faq.description")} />
-        </ScrollReveal>
-        <AccordionList items={faqItems} />
-      </Section>
-
-      {/* CTA & Newsletter Section */}
-      <section className="py-24 bg-gradient-to-b from-white via-gray-50 to-gray-100 dark:from-gray-950 dark:via-gray-900 dark:to-gray-900 border-t border-gray-200 dark:border-gray-800">
-        <div className="max-w-6xl mx-auto px-6">
-          <div className="grid lg:grid-cols-2 gap-12 lg:gap-16 items-center">
-            <ScrollReveal animation="fade-right">
+        {/* Identity Section */}
+        <Section padding="lg" className="overflow-hidden">
+          <div className="grid lg:grid-cols-3 gap-12 lg:gap-16 items-center">
+            <ScrollReveal animation="fade-right" className="lg:col-span-2">
               <div>
-                <h2 className="text-3xl md:text-4xl font-bold mb-4 text-gray-900 dark:text-white">{t("cta.title")}</h2>
-                <p className="text-lg text-gray-600 dark:text-gray-400 mb-8">{t("cta.description")}</p>
-                <div className="flex flex-col sm:flex-row gap-4">
-                  <LinkButton href="/download" className="hover-lift">{t("cta.getExtensionButton")}</LinkButton>
-                  <ExternalLinkButton href="https://github.com/nostr-wot/nostr-wot-extension" variant="secondary" className="hover-lift">
-                    {t("cta.viewGithubButton")}
+                <div className="inline-flex items-center gap-2 bg-indigo-100 dark:bg-indigo-900/30 text-indigo-700 dark:text-indigo-300 px-3 py-1 rounded-full text-sm font-medium mb-6">
+                  <KeyIcon className="w-4 h-4" />
+                  {t("identity.badge")}
+                </div>
+                <h2 className="text-3xl md:text-4xl font-bold mb-6">{t("identity.title")}</h2>
+                <p className="text-lg text-gray-600 dark:text-gray-400 mb-8">
+                  {t("identity.description")}
+                </p>
+                <div className="grid md:grid-cols-2 gap-x-8 mb-8">
+                  <FeatureList items={identityFeatures.slice(0, 2)} iconColor="text-indigo-600 dark:text-indigo-400" />
+                  <FeatureList items={identityFeatures.slice(2)} iconColor="text-indigo-600 dark:text-indigo-400" />
+                </div>
+                <LinkButton href="/download" className="hover-lift">{t("hero.downloadButton")}</LinkButton>
+              </div>
+            </ScrollReveal>
+            <ScrollReveal animation="fade-left" delay={200}>
+              <div className="relative">
+                <div className="absolute inset-0 bg-gradient-to-br from-indigo-500/20 to-purple-500/20 rounded-3xl blur-3xl" />
+                <div className="relative bg-gradient-to-br from-indigo-50 to-purple-50 dark:from-indigo-900/40 dark:to-purple-900/40 rounded-3xl p-8 border border-indigo-200 dark:border-indigo-800">
+                  <ExtensionIllustration />
+                </div>
+              </div>
+            </ScrollReveal>
+          </div>
+        </Section>
+
+        {/* Lightning Wallet Section */}
+        <Section background="gray" padding="lg" className="overflow-hidden">
+          <div className="grid lg:grid-cols-3 gap-12 lg:gap-16 items-center">
+            <ScrollReveal animation="fade-right" className="order-2 lg:order-1">
+              <div className="relative">
+                <div className="absolute inset-0 bg-gradient-to-br from-amber-500/20 to-orange-500/20 rounded-3xl blur-3xl" />
+                <div className="relative bg-gradient-to-br from-amber-50 to-orange-50 dark:from-amber-900/40 dark:to-orange-900/40 rounded-3xl p-8 border border-amber-200 dark:border-amber-800">
+                  <ExtensionPopupIllustration />
+                </div>
+              </div>
+            </ScrollReveal>
+            <ScrollReveal animation="fade-left" delay={200} className="order-1 lg:order-2 lg:col-span-2">
+              <div>
+                <div className="inline-flex items-center gap-2 bg-amber-100 dark:bg-amber-900/30 text-amber-700 dark:text-amber-300 px-3 py-1 rounded-full text-sm font-medium mb-6">
+                  <LightningIcon className="w-4 h-4" />
+                  {t("wallet.badge")}
+                </div>
+                <h2 className="text-3xl md:text-4xl font-bold mb-6">{t("wallet.title")}</h2>
+                <p className="text-lg text-gray-600 dark:text-gray-400 mb-8">
+                  {t("wallet.description")}
+                </p>
+                <div className="grid md:grid-cols-2 gap-x-8 mb-8">
+                  <FeatureList items={walletFeatures.slice(0, 2)} iconColor="text-amber-600 dark:text-amber-400" />
+                  <FeatureList items={walletFeatures.slice(2)} iconColor="text-amber-600 dark:text-amber-400" />
+                </div>
+                <LinkButton href="/download" className="hover-lift">{t("hero.downloadButton")}</LinkButton>
+              </div>
+            </ScrollReveal>
+          </div>
+        </Section>
+
+        {/* Web of Trust Section */}
+        <Section padding="lg" className="overflow-hidden">
+          <div className="grid lg:grid-cols-3 gap-12 lg:gap-16 items-center">
+            <ScrollReveal animation="fade-right" className="lg:col-span-2">
+              <div>
+                <div className="inline-flex items-center gap-2 bg-purple-100 dark:bg-purple-900/30 text-purple-700 dark:text-purple-300 px-3 py-1 rounded-full text-sm font-medium mb-6">
+                  <ShieldIcon className="w-4 h-4" />
+                  {t("wot.badge")}
+                </div>
+                <h2 className="text-3xl md:text-4xl font-bold mb-6">{t("wot.title")}</h2>
+                <p className="text-lg text-gray-600 dark:text-gray-400 mb-8">
+                  {t("wot.description")}
+                </p>
+                <div className="grid md:grid-cols-2 gap-x-8 mb-8">
+                  <FeatureList items={wotFeatures.slice(0, 2)} iconColor="text-purple-600 dark:text-purple-400" />
+                  <FeatureList items={wotFeatures.slice(2)} iconColor="text-purple-600 dark:text-purple-400" />
+                </div>
+                <p className="text-sm text-gray-500 dark:text-gray-400 mb-6">
+                  {t("wot.apiLabel")}{" "}
+                  <code className="bg-gray-200 dark:bg-gray-700 px-2 py-1 rounded text-sm font-mono">window.nostr.wot</code>
+                </p>
+                <LinkButton href="/download" className="hover-lift">{t("wot.downloadButton")}</LinkButton>
+              </div>
+            </ScrollReveal>
+            <ScrollReveal animation="fade-left" delay={200}>
+              <div className="relative">
+                <div className="absolute inset-0 bg-gradient-to-br from-purple-500/20 to-indigo-500/20 rounded-3xl blur-3xl" />
+                <div className="relative bg-gradient-to-br from-purple-50 to-indigo-50 dark:from-purple-900/40 dark:to-indigo-900/40 rounded-3xl p-8 border border-purple-200 dark:border-purple-800">
+                  <OracleIllustration />
+                </div>
+              </div>
+            </ScrollReveal>
+          </div>
+        </Section>
+
+        {/* Coming Soon — Trust Assertions & Services Integration */}
+        <Section background="gray" padding="lg">
+          <ScrollReveal animation="fade-up">
+            <SectionHeader title={t("upcoming.title")} description={t("upcoming.description")} />
+          </ScrollReveal>
+          <div className="grid lg:grid-cols-2 gap-8">
+            {/* Trust Assertions */}
+            <ScrollReveal animation="fade-right" delay={100}>
+              <div className="relative bg-white dark:bg-gray-800 rounded-2xl p-8 shadow-sm border border-emerald-200 dark:border-emerald-800 h-full hover:shadow-lg hover:border-emerald-400/50 transition-all duration-300">
+                <div className="absolute top-4 right-4">
+                  <span className="inline-flex items-center gap-1 bg-emerald-100 dark:bg-emerald-900/40 text-emerald-700 dark:text-emerald-300 px-2.5 py-1 rounded-full text-xs font-medium">
+                    <span className="relative flex h-1.5 w-1.5">
+                      <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-500 opacity-75" />
+                      <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-emerald-500" />
+                    </span>
+                    In Development
+                  </span>
+                </div>
+                <div className="w-12 h-12 rounded-2xl bg-emerald-100 dark:bg-emerald-900/40 flex items-center justify-center mb-6">
+                  <svg className="w-6 h-6 text-emerald-600 dark:text-emerald-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75L11.25 15 15 9.75m-3-7.036A11.959 11.959 0 013.598 6 11.99 11.99 0 003 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285z" />
+                  </svg>
+                </div>
+                <h3 className="text-2xl font-bold mb-4">{t("upcoming.assertions.title")}</h3>
+                <p className="text-gray-600 dark:text-gray-400 mb-6 leading-relaxed">{t("upcoming.assertions.description")}</p>
+                <ul className="space-y-3">
+                  {["typed", "contextual", "verifiable", "aggregated"].map((key) => (
+                    <li key={key} className="flex items-start gap-3 text-sm text-gray-600 dark:text-gray-400">
+                      <svg className="w-5 h-5 text-emerald-500 shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+                      </svg>
+                      <span>{t(`upcoming.assertions.features.${key}`)}</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            </ScrollReveal>
+
+            {/* Services Integration */}
+            <ScrollReveal animation="fade-left" delay={200}>
+              <div className="relative bg-white dark:bg-gray-800 rounded-2xl p-8 shadow-sm border border-blue-200 dark:border-blue-800 h-full hover:shadow-lg hover:border-blue-400/50 transition-all duration-300">
+                <div className="absolute top-4 right-4">
+                  <span className="inline-flex items-center gap-1 bg-blue-100 dark:bg-blue-900/40 text-blue-700 dark:text-blue-300 px-2.5 py-1 rounded-full text-xs font-medium">
+                    <span className="relative flex h-1.5 w-1.5">
+                      <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-blue-500 opacity-75" />
+                      <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-blue-500" />
+                    </span>
+                    Planned
+                  </span>
+                </div>
+                <div className="w-12 h-12 rounded-2xl bg-blue-100 dark:bg-blue-900/40 flex items-center justify-center mb-6">
+                  <svg className="w-6 h-6 text-blue-600 dark:text-blue-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M13.19 8.688a4.5 4.5 0 011.242 7.244l-4.5 4.5a4.5 4.5 0 01-6.364-6.364l1.757-1.757m9.928-3.374a4.5 4.5 0 00-1.242-7.244l4.5-4.5a4.5 4.5 0 016.364 6.364l-1.757 1.757" />
+                  </svg>
+                </div>
+                <h3 className="text-2xl font-bold mb-4">{t("upcoming.services.title")}</h3>
+                <p className="text-gray-600 dark:text-gray-400 mb-6 leading-relaxed">{t("upcoming.services.description")}</p>
+                <ul className="space-y-3">
+                  {["discovery", "verification", "marketplaces", "ecosystem"].map((key) => (
+                    <li key={key} className="flex items-start gap-3 text-sm text-gray-600 dark:text-gray-400">
+                      <svg className="w-5 h-5 text-blue-500 shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+                      </svg>
+                      <span>{t(`upcoming.services.features.${key}`)}</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            </ScrollReveal>
+          </div>
+        </Section>
+
+        {/* How It Works */}
+        <Section padding="md">
+          <ScrollReveal animation="fade-up">
+            <SectionHeader title={t("howItWorks.title")} description={t("howItWorks.description")} />
+          </ScrollReveal>
+          <div className="grid md:grid-cols-3 gap-8">
+            {howItWorksSteps.map((step, i) => (
+              <ScrollReveal key={i} animation="zoom-in" delay={100 + i * 100}>
+                <div className="text-center">
+                  <div className="w-16 h-16 rounded-full bg-primary text-white text-2xl font-bold flex items-center justify-center mx-auto mb-6 animate-pulse-glow">
+                    {i + 1}
+                  </div>
+                  <h3 className="text-xl font-semibold mb-3">{step.title}</h3>
+                  <p className="text-gray-600 dark:text-gray-400">{step.description}</p>
+                </div>
+              </ScrollReveal>
+            ))}
+          </div>
+          <ScrollReveal animation="fade-up" delay={400}>
+            <div className="text-center mt-12">
+              <Link href="/about" className="inline-flex items-center gap-2 text-primary font-medium hover:underline link-underline">
+                {t("howItWorks.learnMoreLink")}
+                <ArrowRightIcon className="w-4 h-4" />
+              </Link>
+            </div>
+          </ScrollReveal>
+        </Section>
+
+        {/* For Developers — Condensed Oracle + SDK */}
+        <Section background="gray" padding="lg">
+          <ScrollReveal animation="fade-up">
+            <SectionHeader title={t("developers.title")} description={t("developers.description")} />
+          </ScrollReveal>
+          <div className="grid lg:grid-cols-2 gap-8">
+            {/* Oracle */}
+            <ScrollReveal animation="fade-right" delay={100}>
+              <div className="bg-white dark:bg-gray-800 rounded-2xl p-8 shadow-sm border border-gray-200 dark:border-gray-700 h-full hover:shadow-lg hover:border-violet-400/30 transition-all duration-300">
+                <div className="inline-flex items-center gap-2 bg-violet-100 dark:bg-violet-900/30 text-violet-700 dark:text-violet-300 px-3 py-1 rounded-full text-sm font-medium mb-4">
+                  <ServerIcon className="w-4 h-4" />
+                  {t("developers.oracle.badge")}
+                </div>
+                <h3 className="text-2xl font-bold mb-3">{t("developers.oracle.title")}</h3>
+                <p className="text-gray-600 dark:text-gray-400 mb-6">{t("developers.oracle.description")}</p>
+                <LinkButton href="/oracle" variant="secondary" className="hover-lift">{t("developers.oracle.learnMoreButton")}</LinkButton>
+              </div>
+            </ScrollReveal>
+
+            {/* SDK */}
+            <ScrollReveal animation="fade-left" delay={200}>
+              <div className="bg-white dark:bg-gray-800 rounded-2xl p-8 shadow-sm border border-gray-200 dark:border-gray-700 h-full hover:shadow-lg hover:border-emerald-400/30 transition-all duration-300">
+                <div className="inline-flex items-center gap-2 bg-emerald-100 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-300 px-3 py-1 rounded-full text-sm font-medium mb-4">
+                  <CodeBracketsIcon className="w-4 h-4" />
+                  {t("developers.sdk.badge")}
+                </div>
+                <h3 className="text-2xl font-bold mb-3">{t("developers.sdk.title")}</h3>
+                <p className="text-gray-600 dark:text-gray-400 mb-6">{t("developers.sdk.description")}</p>
+                <div className="flex flex-col sm:flex-row gap-3">
+                  <LinkButton href="/docs#sdk-setup" variant="secondary" className="hover-lift">{t("developers.sdk.viewDocsButton")}</LinkButton>
+                  <ExternalLinkButton href="https://www.npmjs.com/package/nostr-wot-sdk" variant="secondary" className="hover-lift">
+                    {t("developers.sdk.npmButton")}
                   </ExternalLinkButton>
                 </div>
               </div>
             </ScrollReveal>
-            <ScrollReveal animation="fade-left" delay={200}>
-              <div className="relative flex items-center justify-center">
-                <div className="absolute inset-0 bg-gradient-to-br from-primary/10 to-nostr/10 rounded-full blur-3xl" />
-                <CTAIllustration className="w-64 h-64 md:w-80 md:h-80 text-primary relative" />
-              </div>
+          </div>
+        </Section>
+
+        {/* FAQ Section */}
+        <Section padding="lg">
+          <ScrollReveal animation="fade-up">
+            <SectionHeader title={t("faq.title")} description={t("faq.description")} />
+          </ScrollReveal>
+          <AccordionList items={faqItems} />
+        </Section>
+
+        {/* CTA & Newsletter */}
+        <section className="py-24 bg-gradient-to-b from-white via-gray-50 to-gray-100 dark:from-gray-950 dark:via-gray-900 dark:to-gray-900 border-t border-gray-200 dark:border-gray-800">
+          <div className="max-w-6xl mx-auto px-6">
+            <div className="grid lg:grid-cols-2 gap-12 lg:gap-16 items-center">
+              <ScrollReveal animation="fade-right">
+                <div>
+                  <h2 className="text-3xl md:text-4xl font-bold mb-4 text-gray-900 dark:text-white">{t("cta.title")}</h2>
+                  <p className="text-lg text-gray-600 dark:text-gray-400 mb-8">{t("cta.description")}</p>
+                  <div className="flex flex-col sm:flex-row gap-4">
+                    <LinkButton href="/download" className="hover-lift">{t("cta.getExtensionButton")}</LinkButton>
+                    <ExternalLinkButton href="https://github.com/nostr-wot/nostr-wot-extension" variant="secondary" className="hover-lift">
+                      {t("cta.viewGithubButton")}
+                    </ExternalLinkButton>
+                  </div>
+                </div>
+              </ScrollReveal>
+              <ScrollReveal animation="fade-left" delay={200}>
+                <div className="relative flex items-center justify-center">
+                  <div className="absolute inset-0 bg-gradient-to-br from-primary/10 to-nostr/10 rounded-full blur-3xl" />
+                  <CTAIllustration className="w-64 h-64 md:w-80 md:h-80 text-primary relative" />
+                </div>
+              </ScrollReveal>
+            </div>
+
+            <ScrollReveal animation="fade-up" delay={300}>
+              <NewsletterSection />
             </ScrollReveal>
           </div>
-
-          <ScrollReveal animation="fade-up" delay={300}>
-            <NewsletterSection />
-          </ScrollReveal>
-        </div>
-      </section>
+        </section>
       </main>
     </>
   );
