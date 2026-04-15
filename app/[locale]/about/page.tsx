@@ -105,6 +105,14 @@ export default async function AboutPage() {
           <ScrollReveal animation="fade-up" delay={100}>
             <p className="text-xl text-gray-600 dark:text-gray-300 max-w-3xl mx-auto">{t("hero.subtitle")}</p>
           </ScrollReveal>
+          <ScrollReveal animation="fade-up" delay={200}>
+            <p className="text-sm text-gray-500 dark:text-gray-400 mt-4">
+              {t("hero.founder")}{" "}
+              <a href="https://leonacosta.com" target="_blank" rel="noopener noreferrer" className="text-primary hover:text-primary-dark underline">
+                Leon Acosta
+              </a>
+            </p>
+          </ScrollReveal>
         </div>
       </section>
 
