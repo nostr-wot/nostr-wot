@@ -29,13 +29,24 @@ interface CacheData {
   [url: string]: string; // url -> lastmod
 }
 
+async function fetchWithRetry(url: string, retries = 3, delayMs = 10000): Promise<Response> {
+  for (let attempt = 1; attempt <= retries; attempt++) {
+    const response = await fetch(url);
+    if (response.ok) return response;
+    if (attempt < retries && response.status >= 500) {
+      console.log(`Attempt ${attempt} failed (${response.status}), retrying in ${delayMs / 1000}s...`);
+      await new Promise(resolve => setTimeout(resolve, delayMs));
+    } else {
+      throw new Error(`Failed to fetch ${url}: ${response.status}`);
+    }
+  }
+  throw new Error(`Failed to fetch ${url} after ${retries} attempts`);
+}
+
 async function fetchSitemap(): Promise<SitemapEntry[]> {
   console.log("Fetching sitemap...");
 
-  const response = await fetch(`${SITE_URL}/sitemap.xml`);
-  if (!response.ok) {
-    throw new Error(`Failed to fetch sitemap: ${response.status}`);
-  }
+  const response = await fetchWithRetry(`${SITE_URL}/sitemap.xml`);
 
   const xml = await response.text();
   const entries: SitemapEntry[] = [];
