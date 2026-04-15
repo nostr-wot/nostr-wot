@@ -1,11 +1,11 @@
 {
   "meta": {
-    "title": "Скачать",
-    "description": "Скачайте Nostr WoT для Chrome, Brave, Edge, Opera и Firefox. Провайдер идентификации NIP-07, подписчик, Lightning-кошелёк и расширение Web of Trust."
+    "title": "Download",
+    "description": "Download Nostr WoT for Chrome, Brave, Edge, Opera & Firefox. NIP-07 identity provider, signer, Lightning wallet & Web of Trust with encrypted vault."
   },
   "hero": {
-    "title": "Скачать",
-    "subtitle": "Ваш провайдер идентификации Nostr, подписчик NIP-07, Lightning-кошелёк и Web of Trust — всё в одном расширении. Доступно для всех основных браузеров."
+    "title": "Download",
+    "subtitle": "Your Nostr identity provider, NIP-07 signer, Lightning wallet, and Web of Trust — all in one extension. Available for all major browsers."
   },
   "browsers": {
     "chrome": {
@@ -27,79 +27,84 @@
     "firefox": {
       "name": "Firefox",
       "description": "Mozilla Firefox"
+    },
+    "safari": {
+      "name": "Safari",
+      "description": "Apple Safari",
+      "badge": "Soon"
     }
   },
   "howItWorks": {
-    "title": "Как это работает",
-    "subtitle": "Входите в любой Nostr-клиент, видьте значки доверия на профилях и управляйте аккаунтами — всё из одного расширения.",
-    "trusted": "Доверенный",
-    "hops": "переходов",
-    "hidden": "Скрытый",
-    "codeComment": "// Ваше приложение запрашивает доверие"
+    "title": "See It In Action",
+    "subtitle": "Sign in to any Nostr client, see trust badges on profiles, and manage your accounts — all from one extension.",
+    "trusted": "Trusted",
+    "hops": "hops",
+    "hidden": "Hidden",
+    "codeComment": "// Your app queries trust"
   },
   "features": {
-    "title": "Что вы получаете",
+    "title": "What You Get",
     "instantQueries": {
-      "title": "NIP-07 подписчик и идентификация",
-      "description": "Подписывайте события, шифруйте сообщения (NIP-04 и NIP-44) и управляйте вашей идентификацией Nostr в любом клиенте."
+      "title": "NIP-07 Signer & Identity",
+      "description": "Sign events, encrypt messages (NIP-04 & NIP-44), and manage your Nostr identity across every client."
     },
     "privacyOptions": {
-      "title": "Мульти-аккаунт и хранилище",
-      "description": "Несколько аккаунтов с HD-деривацией, режим наблюдения, удалённый подписчик NIP-46 и зашифрованное хранилище с автоблокировкой."
+      "title": "Multi-Account & Vault",
+      "description": "Multiple accounts with HD derivation, watch-only mode, NIP-46 remote signer, and an encrypted vault with auto-lock."
     },
     "simpleApi": {
-      "title": "Значки доверия и WoT API",
-      "description": "Цветовые значки доверия на сайтах Nostr, гранулярные разрешения, журнал активности и window.nostr.wot API."
+      "title": "Trust Badges & WoT API",
+      "description": "Color-coded trust badges on Nostr sites, granular permissions, activity logging, and the window.nostr.wot API."
     },
     "wallet": {
-      "title": "Lightning-кошелёк и Zaps",
-      "description": "Отправляйте и получайте zaps со встроенным кошельком. Подключайтесь через NWC, LNbits или начните в один клик с быстрой настройкой."
+      "title": "Lightning Wallet & Zaps",
+      "description": "Send and receive zaps with a built-in wallet. Connect via NWC, LNbits, or get started in one click with quick setup."
     }
   },
   "faq": {
-    "title": "Часто задаваемые вопросы",
+    "title": "Frequently Asked Questions",
     "items": {
       "whatIsWot": {
-        "question": "Что такое Web of Trust?",
-        "answer": "Web of Trust измеряет социальную дистанцию — сколько «переходов» отделяет вас от другого пользователя в графе подписок Nostr. Если вы подписаны на кого-то, он находится на расстоянии 1 перехода. Если он подписан на кого-то ещё, тот человек находится в 2 переходах от вас. Это помогает фильтровать спам и проверять репутацию без централизованных списков блокировки."
+        "question": "What is Web of Trust?",
+        "answer": "Web of Trust measures social distance—how many 'hops' separate you from another user in the Nostr follow graph. If you follow someone, they're 1 hop away. If they follow someone else, that person is 2 hops from you. This helps filter spam and verify reputation without centralized blocklists."
       },
       "howExtensionWorks": {
-        "question": "Как работает расширение?",
-        "answer": "Расширение предоставляет подписание по NIP-07 (window.nostr), чтобы любой Nostr-клиент мог запрашивать подписание событий и шифрование сообщений. Оно также предоставляет Web of Trust API (window.nostr.wot) для запросов дистанции доверия. Ваши ключи хранятся в зашифрованном хранилище AES-256-GCM с автоблокировкой, и вы контролируете, какие сайты могут использовать какие функции."
+        "question": "How does the extension work?",
+        "answer": "The extension provides NIP-07 signing (window.nostr) so any Nostr client can request event signing and message encryption. It also provides a Web of Trust API (window.nostr.wot) for trust distance queries. Your keys are stored in an AES-256-GCM encrypted vault with auto-lock, and you control which sites can access which features."
       },
       "isDataPrivate": {
-        "question": "Мои данные конфиденциальны?",
-        "answer": "Да. В локальном режиме все вычисления происходят в вашем браузере с использованием IndexedDB — ничего не покидает ваше устройство. В удалённом режиме запросы идут к Oracle API, который видит проверяемые pubkey, но не отслеживает и не записывает их. Вы также можете развернуть Oracle самостоятельно для полного контроля."
+        "question": "Is my data private?",
+        "answer": "Yes. In Local mode, all calculations happen in your browser using IndexedDB—nothing leaves your device. In Remote mode, queries go to the Oracle API which sees the pubkeys you're checking but doesn't track or log them. You can also self-host the Oracle for complete control."
       },
       "supportedBrowsers": {
-        "question": "Какие браузеры поддерживаются?",
-        "answer": "Расширение работает во всех основных браузерах: Chrome, Brave, Edge, Opera и Firefox."
+        "question": "Which browsers are supported?",
+        "answer": "The extension works on Chrome, Brave, Edge, Opera, and Firefox. Safari support is scheduled and coming soon."
       },
       "nostrAccount": {
-        "question": "Нужен ли мне аккаунт Nostr?",
-        "answer": "Вы можете создать новый аккаунт прямо в расширении — оно сгенерирует BIP-39 сид-фразу и выведет ваши ключи. Вы также можете импортировать существующий приватный ключ (nsec), добавить аккаунт только для наблюдения (npub) или подключить удалённый подписчик через NIP-46 bunker URL."
+        "question": "Do I need a Nostr account?",
+        "answer": "You can create a new account directly in the extension — it generates a BIP-39 seed phrase and derives your keys. You can also import an existing private key (nsec), add a watch-only account (npub), or connect a remote signer via NIP-46 bunker URL."
       },
       "hasWallet": {
-        "question": "Могу ли я отправлять zaps с этим расширением?",
-        "answer": "Да. В расширении есть встроенный Lightning-кошелёк. Вы можете подключить свой кошелёк через Nostr Wallet Connect (NWC), ввести учётные данные LNbits или воспользоваться быстрой настройкой для мгновенного создания кошелька. Расширение также выступает в качестве WebLN-провайдера, чтобы Nostr-приложения могли запрашивать платежи без дополнительных действий."
+        "question": "Can I send zaps with this extension?",
+        "answer": "Yes. The extension has a built-in Lightning wallet. You can connect your own wallet via Nostr Wallet Connect (NWC), enter your LNbits credentials, or use the quick setup to create a wallet instantly. The extension also acts as a WebLN provider, so Nostr apps can request payments seamlessly."
       },
       "isFree": {
-        "question": "Это бесплатно?",
-        "answer": "Да, полностью бесплатно и с открытым исходным кодом под лицензией MIT. Расширение, Oracle API и весь исходный код доступны на GitHub."
+        "question": "Is it free?",
+        "answer": "Yes, completely free and open source under the MIT license. The extension, Oracle API, and all source code are available on GitHub."
       }
     }
   },
   "buildFromSource": {
-    "title": "Сборка из исходного кода",
-    "description": "Клонируйте репозиторий, выполните npm install && npm run build, затем загрузите папку dist/. Идеально для разработчиков, которые хотят проверить или модифицировать код.",
-    "clone": "Клонировать и собрать",
-    "loadInstructions": "Затем перейдите на chrome://extensions, включите «Режим разработчика», нажмите «Загрузить распакованное» и выберите папку dist/.",
-    "viewOnGitHub": "Исходный код на GitHub"
+    "title": "Build from Source",
+    "description": "Clone the repo, run npm install && npm run build, then load the dist/ folder. Perfect for developers who want to verify or modify the code.",
+    "clone": "Clone and build",
+    "loadInstructions": "Then go to chrome://extensions, enable 'Developer mode', click 'Load unpacked', and select the dist/ folder.",
+    "viewOnGitHub": "View source on GitHub"
   },
   "cta": {
-    "title": "Готовы начать?",
-    "subtitle": "Установите расширение и начните фильтровать спам за считанные минуты.",
-    "installExtension": "Установить расширение",
-    "readDocs": "Читать документацию"
+    "title": "Ready to Get Started?",
+    "subtitle": "Install the extension and start filtering spam in minutes.",
+    "installExtension": "Install Extension",
+    "readDocs": "Read the Docs"
   }
 }

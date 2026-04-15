@@ -8,6 +8,7 @@ import {
   EdgeIcon,
   OperaIcon,
   FirefoxIcon,
+  SafariIcon,
   KeyIcon,
   LockOutlineIcon,
   CodeOutlineIcon,
@@ -57,7 +58,8 @@ const BROWSERS = [
   { key: "edge", Icon: EdgeIcon, url: CHROME_STORE_URL },
   { key: "opera", Icon: OperaIcon, url: CHROME_STORE_URL },
   { key: "firefox", Icon: FirefoxIcon, url: FIREFOX_STORE_URL },
-];
+  { key: "safari", Icon: SafariIcon, url: null, comingSoon: true },
+] as const;
 
 const FAQ_KEYS = ["whatIsWot", "howExtensionWorks", "isDataPrivate", "supportedBrowsers", "nostrAccount", "hasWallet", "isFree"];
 
@@ -77,7 +79,7 @@ export default async function DownloadPage() {
     "@type": "SoftwareApplication",
     "name": "Nostr Web of Trust Extension",
     "applicationCategory": "BrowserApplication",
-    "operatingSystem": "Chrome, Brave, Edge, Opera, Firefox",
+    "operatingSystem": "Chrome, Brave, Edge, Opera, Firefox, Safari (coming soon)",
     "description": "Nostr identity provider, NIP-07 signer, Lightning wallet, and Web of Trust browser extension. Manage multiple accounts, sign events, encrypt messages, send zaps, and filter spam with trust scores.",
     "url": "https://nostr-wot.com/download",
     "downloadUrl": "https://chromewebstore.google.com/detail/nostr-wot-extension/gfmefgdkmjpjinecjchlangpamhclhdo",
@@ -167,19 +169,30 @@ export default async function DownloadPage() {
             <p className="text-xl text-gray-600 dark:text-gray-400 max-w-2xl mx-auto mb-12">{t("hero.subtitle")}</p>
           </ScrollReveal>
 
-          <div className="grid sm:grid-cols-2 lg:grid-cols-5 gap-4 max-w-4xl mx-auto">
+          <div className="grid sm:grid-cols-2 lg:grid-cols-6 gap-4 max-w-5xl mx-auto">
             {BROWSERS.map((browser, i) => (
               <ScrollReveal key={browser.key} animation="fade-up" delay={150 + i * 75}>
-                <a
-                  href={browser.url}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="flex flex-col items-center p-6 bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 hover:border-primary dark:hover:border-primary hover:shadow-lg transition-all group"
-                >
-                  <browser.Icon className="w-12 h-12 mb-4 text-gray-700 dark:text-gray-300 group-hover:text-primary transition-colors" />
-                  <span className="font-semibold mb-1">{t(`browsers.${browser.key}.name`)}</span>
-                  <span className="text-sm text-gray-500 dark:text-gray-400">{t(`browsers.${browser.key}.description`)}</span>
-                </a>
+                {"comingSoon" in browser && browser.comingSoon ? (
+                  <div className="flex flex-col items-center p-6 bg-white/50 dark:bg-gray-800/50 rounded-xl border border-dashed border-gray-300 dark:border-gray-600 relative">
+                    <span className="absolute top-2 right-2 text-[10px] font-semibold uppercase tracking-wider bg-amber-100 dark:bg-amber-900/40 text-amber-700 dark:text-amber-300 px-2 py-0.5 rounded-full">
+                      {t(`browsers.${browser.key}.badge`)}
+                    </span>
+                    <browser.Icon className="w-12 h-12 mb-4 text-gray-400 dark:text-gray-500" />
+                    <span className="font-semibold mb-1 text-gray-400 dark:text-gray-500">{t(`browsers.${browser.key}.name`)}</span>
+                    <span className="text-sm text-gray-400 dark:text-gray-500">{t(`browsers.${browser.key}.description`)}</span>
+                  </div>
+                ) : (
+                  <a
+                    href={browser.url!}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex flex-col items-center p-6 bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 hover:border-primary dark:hover:border-primary hover:shadow-lg transition-all group"
+                  >
+                    <browser.Icon className="w-12 h-12 mb-4 text-gray-700 dark:text-gray-300 group-hover:text-primary transition-colors" />
+                    <span className="font-semibold mb-1">{t(`browsers.${browser.key}.name`)}</span>
+                    <span className="text-sm text-gray-500 dark:text-gray-400">{t(`browsers.${browser.key}.description`)}</span>
+                  </a>
+                )}
               </ScrollReveal>
             ))}
           </div>

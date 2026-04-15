@@ -36,6 +36,21 @@ export function OperaIcon({ className }: { className?: string }) {
   );
 }
 
+export function SafariIcon({ className }: { className?: string }) {
+  return (
+    <svg viewBox="0 0 24 24" fill="none" className={className}>
+      <circle cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="1.5" />
+      <circle cx="12" cy="12" r="8" stroke="currentColor" strokeWidth="0.5" />
+      <path d="M16 8L10.5 10.5 8 16l5.5-2.5L16 8z" fill="currentColor" />
+      <circle cx="12" cy="12" r="1" fill="currentColor" opacity="0.5" />
+      <line x1="12" y1="2.5" x2="12" y2="4" stroke="currentColor" strokeWidth="1" />
+      <line x1="12" y1="20" x2="12" y2="21.5" stroke="currentColor" strokeWidth="1" />
+      <line x1="2.5" y1="12" x2="4" y2="12" stroke="currentColor" strokeWidth="1" />
+      <line x1="20" y1="12" x2="21.5" y2="12" stroke="currentColor" strokeWidth="1" />
+    </svg>
+  );
+}
+
 export function FirefoxIcon({ className }: { className?: string }) {
   return (
     <svg viewBox="0 0 24 24" fill="currentColor" className={className}>
