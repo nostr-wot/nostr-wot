@@ -139,6 +139,7 @@ export function generateOpenGraph(options: {
         width: 1200,
         height: 630,
         alt: imageAlt || title,
+        type: 'image/jpeg',
       },
     ],
   };

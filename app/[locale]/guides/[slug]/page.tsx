@@ -78,6 +78,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
           width: 1200,
           height: 630,
           alt: guide.title,
+          type: 'image/jpeg',
         },
       ],
     },
@@ -85,7 +86,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       card: 'summary_large_image',
       title,
       description,
-      images: [ogImageUrl],
+      images: [{ url: ogImageUrl, width: 1200, height: 630, alt: guide.title }],
     },
   };
 }
