@@ -90,6 +90,11 @@ export default function Footer() {
                   {t("nav.features")}
                 </Link>
               </li>
+              <li>
+                <Link href="/projects" className="text-gray-600 dark:text-gray-400 text-sm hover:text-primary transition-colors">
+                  {t("nav.projects")}
+                </Link>
+              </li>
             </ul>
           </div>
 

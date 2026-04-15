@@ -161,7 +161,7 @@ export default async function FeaturesPage() {
       "aggregateRating": {
         "@type": "AggregateRating",
         "ratingValue": "5",
-        "ratingCount": "1",
+        "ratingCount": "2",
         "bestRating": "5",
         "worstRating": "1",
       },

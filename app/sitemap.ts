@@ -40,6 +40,7 @@ const routes: {
   { path: "/about", changeFrequency: "monthly", priority: 0.6 },
   { path: "/contact", changeFrequency: "monthly", priority: 0.5 },
   { path: "/guides", changeFrequency: "weekly", priority: 0.8 },
+  { path: "/projects", changeFrequency: "monthly", priority: 0.6 },
   { path: "/pitch", changeFrequency: "monthly", priority: 0.5 },
   { path: "/media-kit", changeFrequency: "monthly", priority: 0.4 },
   { path: "/privacy", changeFrequency: "yearly", priority: 0.3 },
