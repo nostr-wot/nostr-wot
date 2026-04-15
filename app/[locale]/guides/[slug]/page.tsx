@@ -54,8 +54,6 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
   const title = guide.seoTitle || guide.title;
   const description = guide.seoDescription || guide.excerpt;
-  const ogImage = guide.ogImage || guide.featuredImage;
-  const ogImageUrl = ogImage.startsWith('http') ? ogImage : `${BASE_URL}${ogImage}`;
 
   return {
     title,
@@ -72,21 +70,11 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       publishedTime: guide.date,
       authors: [guide.author.name],
       tags: guide.tags,
-      images: [
-        {
-          url: ogImageUrl,
-          width: 1200,
-          height: 630,
-          alt: guide.title,
-          type: 'image/jpeg',
-        },
-      ],
     },
     twitter: {
       card: 'summary_large_image',
       title,
       description,
-      images: [{ url: ogImageUrl, width: 1200, height: 630, alt: guide.title }],
     },
   };
 }
