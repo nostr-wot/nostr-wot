@@ -1,0 +1,92 @@
+---
+title: "Remover uma Conta"
+description: "Aprenda a remover contas da extensão Nostr WoT — passe o cursor sobre a conta, clique no ícone de cruz e confirme. Contas com semente pedem digitar REMOVE."
+excerpt: "Remova uma conta da extensão com segurança. Veja o que é apagado, o que permanece no Nostr e por que contas com semente pedem um passo extra de confirmação."
+date: "2026-04-22"
+author:
+  name: "Leon Acosta"
+  avatar: "/authors/leon-profile.jpg"
+  npub: "npub1gxdhmu9swqduwhr6zptjy4ya693zp3ql28nemy4hd97kuufyrqdqwe5zfk"
+featuredImage: "/images/guides/removing-accounts/featured.svg"
+previewImage: "/images/guides/removing-accounts/preview.svg"
+tags:
+  - "Identidade"
+  - "Contas"
+  - "Segurança"
+published: true
+seoTitle: "Remover uma Conta — Guia da Extensão Nostr WoT"
+seoDescription: "Aprenda a remover contas da extensão Nostr WoT — passe o cursor sobre a conta, clique no ícone de cruz e confirme. Contas com semente pedem digitar REMOVE."
+ogImage: "/images/guides/removing-accounts/og.jpg"
+translationKey: "removing-accounts"
+difficulty: "beginner"
+order: 2.5
+---
+
+Mais cedo ou mais tarde você vai querer limpar a lista de contas da extensão: uma identidade antiga, uma conta de teste ou alguma que importou sem querer. A extensão permite remover contas pelo seletor de contas com um único clique, e aplica uma confirmação mais rigorosa quando a conta foi gerada a partir de uma semente dentro da própria extensão.
+
+## Antes de Remover uma Conta
+
+Remover uma conta afeta apenas a extensão neste navegador. Sua identidade no Nostr é um par de chaves, e os eventos que você publicou ficam nos relays da rede. Eles continuam lá mesmo que este navegador pare de lembrar de você.
+
+O que a remoção faz:
+
+- Apaga a cópia cifrada das chaves guardada localmente na extensão.
+- Remove a conta do seletor de contas.
+- Limpa o grafo de confiança local, as permissões e o estado da carteira ligados a essa conta.
+
+O que a remoção **não** faz:
+
+- Não apaga suas notas, seu perfil ou sua lista de contatos dos relays do Nostr.
+- Não afeta a mesma identidade em outros dispositivos ou em outros assinadores NIP-07.
+
+<Callout type="warning">
+Se você gerou a frase semente dentro da extensão e nunca fez backup, remover a conta é definitivo. Não há recuperação. Exporte ou anote suas 12 palavras antes de continuar.
+</Callout>
+
+## Como Remover uma Conta
+
+### 1. Abra o Seletor de Contas
+
+Clique no ícone da extensão e abra o seletor de contas no topo do popup. Você verá cada conta que a extensão está guardando, com a ativa destacada.
+
+![O seletor de contas lista cada identidade armazenada na extensão, com a conta ativa destacada no topo](/images/guides/removing-accounts/accounts-selector.jpg)
+
+### 2. Passe o Cursor e Clique na Cruz
+
+Coloque o cursor sobre a conta que quer remover. À direita da linha aparece um pequeno ícone de cruz (×). Clique nele.
+
+![Ao passar o cursor sobre uma conta aparece um ícone de cruz à direita — clique para iniciar a remoção](/images/guides/removing-accounts/hover-remove.jpg)
+
+### 3. Confirme a Remoção
+
+Abre-se um diálogo de confirmação. Para uma conta que você importou com uma nsec existente, basta confirmar aqui — a extensão entende que você ainda tem a chave em outro lugar e pode restaurar o acesso depois.
+
+![Um diálogo simples pede que você confirme que quer remover a conta desta extensão](/images/guides/removing-accounts/confirm-dialog.jpg)
+
+### 4. Contas com Semente: Digite REMOVE
+
+Se a conta foi gerada dentro da extensão a partir de uma frase semente, a confirmação é mais rigorosa. Você precisa digitar a palavra **REMOVE** (em maiúsculas) para que o botão fique ativo. Essa fricção extra existe porque perder a única cópia de uma semente é perder a identidade para sempre.
+
+![Contas com semente exigem digitar REMOVE em letras maiúsculas antes que o botão de remoção fique ativo](/images/guides/removing-accounts/type-remove.jpg)
+
+Ao confirmar, a conta some do seletor. Se era a ativa, a extensão muda para outra conta guardada ou mostra a tela de entrada se nenhuma restar.
+
+## Por Que Contas com Semente Exigem Mais
+
+Quando você gera uma nova identidade dentro da extensão, as 12 palavras são criadas localmente e mostradas uma única vez. A extensão não as envia a lugar nenhum. Se você não anotou, a cópia cifrada dentro da extensão é a única ligação com aquela identidade. Removê-la sem backup significa nunca mais conseguir assinar como aquele npub.
+
+Contas importadas são diferentes. Se você as adicionou usando uma nsec ou semente existente, já tem esse material de chave em outro lugar: outro assinador, um gerenciador de senhas ou no papel. Restaurar é simples.
+
+## Restaurar uma Conta Removida
+
+Para recuperar uma conta removida:
+
+1. Abra o seletor de contas e clique em **Adicionar Conta**.
+2. Escolha **Importar** e cole sua nsec ou frase semente de 12 palavras.
+3. A extensão reconstrói o armazenamento cifrado, ressincroniza o grafo de confiança e a conta fica pronta para usar.
+
+Seu histórico local (permissões, regras de aprovação automática, conexões da carteira) não é restaurado — estava ligado ao armazenamento apagado. Os dados do Nostr, como perfil, seguidos e notas, voltam a sincronizar pelos relays automaticamente.
+
+## Próximos Passos
+
+Agora que você sabe remover contas com segurança, garanta que as que ficam estão bem protegidas. Revise a segurança das chaves em [Gerenciar Identidade](/pt/guides/gerenciar-identidade), ou volte para [Primeiros Passos](/pt/guides/primeiros-passos) se estiver começando do zero.

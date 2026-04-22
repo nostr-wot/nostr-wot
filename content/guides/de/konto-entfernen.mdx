@@ -1,0 +1,92 @@
+---
+title: "Ein Konto Entfernen"
+description: "Erfahre, wie du Konten aus der Nostr WoT Erweiterung entfernst — fahre über das Konto, klicke auf das Kreuz und bestätige. Seed-Konten verlangen REMOVE."
+excerpt: "Entferne ein Konto sicher aus der Erweiterung. Verstehe, was gelöscht wird, was auf Nostr bleibt und warum Seed-Konten einen zusätzlichen Bestätigungsschritt haben."
+date: "2026-04-22"
+author:
+  name: "Leon Acosta"
+  avatar: "/authors/leon-profile.jpg"
+  npub: "npub1gxdhmu9swqduwhr6zptjy4ya693zp3ql28nemy4hd97kuufyrqdqwe5zfk"
+featuredImage: "/images/guides/removing-accounts/featured.svg"
+previewImage: "/images/guides/removing-accounts/preview.svg"
+tags:
+  - "Identität"
+  - "Konten"
+  - "Sicherheit"
+published: true
+seoTitle: "Ein Konto Entfernen — Anleitung zur Nostr WoT Erweiterung"
+seoDescription: "Erfahre, wie du Konten aus der Nostr WoT Erweiterung entfernst — fahre über das Konto, klicke auf das Kreuz und bestätige. Seed-Konten verlangen REMOVE."
+ogImage: "/images/guides/removing-accounts/og.jpg"
+translationKey: "removing-accounts"
+difficulty: "beginner"
+order: 2.5
+---
+
+Früher oder später willst du die Kontoliste der Erweiterung aufräumen: eine alte Identität, ein Testkonto oder eines, das du versehentlich importiert hast. Die Erweiterung erlaubt dir, Konten direkt aus dem Kontoauswahl-Menü mit einem einzigen Klick zu entfernen, und verlangt eine strengere Bestätigung, wenn das Konto auf einem Seed basiert, der innerhalb der Erweiterung selbst erzeugt wurde.
+
+## Bevor du ein Konto Entfernst
+
+Ein Konto zu entfernen betrifft nur die Erweiterung in diesem Browser. Deine Nostr-Identität ist ein Schlüsselpaar, und die Ereignisse, die du veröffentlicht hast, leben auf den Relays im Netzwerk. Sie bleiben dort, auch wenn dich dieser Browser nicht mehr kennt.
+
+Was das Entfernen tut:
+
+- Löscht die verschlüsselte Kopie der Schlüssel, die lokal in der Erweiterung gespeichert ist.
+- Entfernt das Konto aus der Kontoauswahl.
+- Löscht den lokalen Trust-Graph, die Berechtigungen und den Wallet-Zustand, die an dieses Konto gebunden sind.
+
+Was das Entfernen **nicht** tut:
+
+- Es löscht nicht deine Notizen, dein Profil oder deine Follow-Liste von den Nostr-Relays.
+- Es beeinflusst nicht dieselbe Identität auf anderen Geräten oder in anderen NIP-07-Signern.
+
+<Callout type="warning">
+Wenn du deine Seed-Phrase innerhalb der Erweiterung erzeugt und nie gesichert hast, ist das Entfernen des Kontos endgültig. Es gibt keine Wiederherstellung. Exportiere oder notiere deine 12 Wörter, bevor du fortfährst.
+</Callout>
+
+## So Entfernst du ein Konto
+
+### 1. Öffne die Kontoauswahl
+
+Klicke auf das Erweiterungssymbol und öffne die Kontoauswahl oben im Popup. Du siehst jedes Konto, das die Erweiterung gerade verwaltet, wobei das aktive hervorgehoben ist.
+
+![Die Kontoauswahl listet jede in der Erweiterung gespeicherte Identität auf, das aktive Konto ist oben hervorgehoben](/images/guides/removing-accounts/accounts-selector.jpg)
+
+### 2. Fahre über das Konto und Klicke auf das Kreuz
+
+Bewege den Cursor über das Konto, das du entfernen möchtest. Am rechten Rand der Zeile erscheint ein kleines Kreuz-Symbol (×). Klicke darauf.
+
+![Beim Überfahren einer Kontozeile erscheint rechts ein Kreuz — klicke darauf, um das Entfernen zu starten](/images/guides/removing-accounts/hover-remove.jpg)
+
+### 3. Bestätige das Entfernen
+
+Ein Bestätigungsdialog öffnet sich. Für ein Konto, das du mit einer bestehenden nsec importiert hast, reicht hier die Bestätigung — die Erweiterung geht davon aus, dass du den Schlüssel weiterhin an anderer Stelle hast und den Zugang später wiederherstellen kannst.
+
+![Ein einfacher Dialog bittet dich zu bestätigen, dass du das Konto aus dieser Erweiterung entfernen willst](/images/guides/removing-accounts/confirm-dialog.jpg)
+
+### 4. Seed-Konten: Tippe REMOVE
+
+Wurde das Konto in der Erweiterung aus einer Seed-Phrase erzeugt, ist die Bestätigung strenger. Du musst das Wort **REMOVE** (in Großbuchstaben) tippen, bevor der Button aktiv wird. Dieser zusätzliche Widerstand besteht, weil das Verlieren der einzigen Kopie eines Seeds effektiv bedeutet, die Identität für immer zu verlieren.
+
+![Seed-Konten verlangen, REMOVE in Großbuchstaben einzugeben, bevor der Entfernen-Button aktiv wird](/images/guides/removing-accounts/type-remove.jpg)
+
+Nach der Bestätigung verschwindet das Konto aus der Auswahl. War es das aktive, wechselt die Erweiterung zu einem anderen gespeicherten Konto oder zeigt den Einrichtungsbildschirm, wenn keines mehr übrig ist.
+
+## Warum Seed-Konten Mehr Verlangen
+
+Wenn du eine neue Identität innerhalb der Erweiterung erzeugst, werden die 12 Wörter lokal erstellt und dir genau einmal angezeigt. Die Erweiterung sendet sie nirgendwohin. Hast du sie nicht notiert, ist die verschlüsselte Kopie in der Erweiterung das Einzige, was dich mit dieser Identität verbindet. Sie ohne Backup zu entfernen bedeutet, nie wieder als dieses npub signieren zu können.
+
+Importierte Konten sind anders. Wenn du sie mit einer bestehenden nsec oder einem Seed hinzugefügt hast, liegt dieses Schlüsselmaterial bereits woanders: in einem anderen Signer, einem Passwort-Manager oder auf Papier. Die Wiederherstellung ist einfach.
+
+## Ein Entferntes Konto Wiederherstellen
+
+Um ein entferntes Konto zurückzuholen:
+
+1. Öffne die Kontoauswahl und klicke auf **Konto Hinzufügen**.
+2. Wähle **Importieren** und füge deine nsec oder deine 12-Wörter-Seed-Phrase ein.
+3. Die Erweiterung baut den verschlüsselten Speicher neu auf, synchronisiert den Trust-Graph erneut, und das Konto ist wieder einsatzbereit.
+
+Dein lokaler Verlauf (Berechtigungen, Auto-Freigabe-Regeln, Wallet-Verbindungen) wird nicht wiederhergestellt — er war an den gelöschten Speicher gebunden. Nostr-Daten wie Profil, Follows und Notizen synchronisieren sich automatisch wieder von den Relays.
+
+## Wie geht es weiter?
+
+Jetzt, da du weißt, wie man Konten sicher entfernt, stelle sicher, dass die verbleibenden gut geschützt sind. Überprüfe die Schlüsselsicherheit in [Identität Verwalten](/de/guides/identitaet-verwalten), oder kehre zu den [Ersten Schritten](/de/guides/erste-schritte) zurück, wenn du neu anfängst.

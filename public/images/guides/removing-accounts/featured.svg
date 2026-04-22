@@ -1,0 +1,102 @@
+<svg width="1200" height="630" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#1e1b4b;stop-opacity:1" />
+      <stop offset="50%" style="stop-color:#312e81;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#4c1d95;stop-opacity:1" />
+    </linearGradient>
+    <radialGradient id="glow" cx="50%" cy="45%" r="45%">
+      <stop offset="0%" style="stop-color:#7c3aed;stop-opacity:0.3" />
+      <stop offset="100%" style="stop-color:#1e1b4b;stop-opacity:0" />
+    </radialGradient>
+    <filter id="cross-glow" x="-50%" y="-50%" width="200%" height="200%">
+      <feDropShadow dx="0" dy="0" stdDeviation="10" flood-color="#f87171" flood-opacity="0.7"/>
+    </filter>
+    <filter id="card-glow" x="-50%" y="-50%" width="200%" height="200%">
+      <feDropShadow dx="0" dy="0" stdDeviation="6" flood-color="#a78bfa" flood-opacity="0.5"/>
+    </filter>
+    <filter id="element-glow" x="-50%" y="-50%" width="200%" height="200%">
+      <feDropShadow dx="0" dy="0" stdDeviation="4" flood-color="#a78bfa" flood-opacity="0.4"/>
+    </filter>
+  </defs>
+
+  <!-- Background -->
+  <rect width="100%" height="100%" fill="url(#bg)"/>
+  <rect width="100%" height="100%" fill="url(#glow)"/>
+
+  <!-- Grid -->
+  <g opacity="0.05" stroke="white" stroke-width="0.5">
+    <line x1="0" y1="0" x2="1200" y2="630"/>
+    <line x1="200" y1="0" x2="1200" y2="500"/>
+    <line x1="0" y1="200" x2="1000" y2="630"/>
+    <line x1="1200" y1="0" x2="0" y2="630"/>
+  </g>
+
+  <!-- Accounts list frame -->
+  <g filter="url(#card-glow)">
+    <rect x="370" y="100" width="460" height="430" rx="16" fill="rgba(30,27,75,0.55)" stroke="rgba(167,139,250,0.45)" stroke-width="2"/>
+    <text x="600" y="140" font-family="monospace" font-size="18" fill="rgba(167,139,250,0.85)" text-anchor="middle" font-weight="bold">ACCOUNTS</text>
+    <line x1="400" y1="158" x2="800" y2="158" stroke="rgba(167,139,250,0.25)" stroke-width="1"/>
+  </g>
+
+  <!-- Account row 1 (normal) -->
+  <g opacity="0.75">
+    <rect x="400" y="180" width="400" height="60" rx="10" fill="rgba(167,139,250,0.06)" stroke="rgba(167,139,250,0.25)" stroke-width="1"/>
+    <circle cx="435" cy="210" r="18" fill="rgba(250,204,21,0.12)" stroke="rgba(250,204,21,0.5)" stroke-width="1.5"/>
+    <rect x="470" y="198" width="180" height="10" rx="3" fill="rgba(167,139,250,0.35)"/>
+    <rect x="470" y="214" width="120" height="8" rx="3" fill="rgba(167,139,250,0.2)"/>
+  </g>
+
+  <!-- Account row 2 (being removed, highlighted, × visible) -->
+  <g filter="url(#card-glow)">
+    <rect x="400" y="260" width="400" height="70" rx="10" fill="rgba(248,113,113,0.08)" stroke="rgba(248,113,113,0.6)" stroke-width="2"/>
+    <circle cx="435" cy="295" r="20" fill="rgba(248,113,113,0.14)" stroke="rgba(248,113,113,0.7)" stroke-width="2"/>
+    <rect x="475" y="282" width="180" height="11" rx="3" fill="rgba(248,113,113,0.55)"/>
+    <rect x="475" y="300" width="140" height="9" rx="3" fill="rgba(248,113,113,0.3)"/>
+
+    <!-- Cross (x) icon highlighted -->
+    <g filter="url(#cross-glow)" transform="translate(760, 295)">
+      <circle cx="0" cy="0" r="20" fill="rgba(248,113,113,0.15)" stroke="rgba(248,113,113,0.85)" stroke-width="2"/>
+      <line x1="-9" y1="-9" x2="9" y2="9" stroke="rgba(248,113,113,1)" stroke-width="3" stroke-linecap="round"/>
+      <line x1="9" y1="-9" x2="-9" y2="9" stroke="rgba(248,113,113,1)" stroke-width="3" stroke-linecap="round"/>
+    </g>
+  </g>
+
+  <!-- Account row 3 (normal) -->
+  <g opacity="0.55">
+    <rect x="400" y="350" width="400" height="60" rx="10" fill="rgba(167,139,250,0.06)" stroke="rgba(167,139,250,0.25)" stroke-width="1"/>
+    <circle cx="435" cy="380" r="18" fill="rgba(74,222,128,0.12)" stroke="rgba(74,222,128,0.5)" stroke-width="1.5"/>
+    <rect x="470" y="368" width="150" height="10" rx="3" fill="rgba(167,139,250,0.3)"/>
+    <rect x="470" y="384" width="100" height="8" rx="3" fill="rgba(167,139,250,0.18)"/>
+  </g>
+
+  <!-- REMOVE badge (seed confirmation) -->
+  <g filter="url(#cross-glow)">
+    <rect x="500" y="440" width="200" height="56" rx="10" fill="rgba(248,113,113,0.1)" stroke="rgba(248,113,113,0.8)" stroke-width="2.5"/>
+    <text x="600" y="476" font-family="monospace" font-size="24" fill="rgba(248,113,113,0.95)" text-anchor="middle" font-weight="bold" letter-spacing="4">REMOVE</text>
+  </g>
+
+  <!-- Caret indicator (typing) -->
+  <g opacity="0.9">
+    <line x1="702" y1="452" x2="702" y2="484" stroke="rgba(248,113,113,0.7)" stroke-width="2"/>
+  </g>
+
+  <!-- Decorative corner fingerprints / orphan keys -->
+  <g filter="url(#element-glow)" opacity="0.35" transform="translate(180, 230)">
+    <ellipse cx="0" cy="0" rx="30" ry="40" fill="none" stroke="rgba(167,139,250,0.4)" stroke-width="1"/>
+    <ellipse cx="0" cy="0" rx="22" ry="30" fill="none" stroke="rgba(167,139,250,0.45)" stroke-width="1"/>
+    <ellipse cx="0" cy="0" rx="14" ry="20" fill="none" stroke="rgba(167,139,250,0.5)" stroke-width="1"/>
+    <ellipse cx="0" cy="0" rx="6" ry="10" fill="none" stroke="rgba(167,139,250,0.55)" stroke-width="1"/>
+  </g>
+
+  <g filter="url(#element-glow)" opacity="0.35" transform="translate(1020, 390)">
+    <circle cx="0" cy="-20" r="20" fill="none" stroke="rgba(250,204,21,0.55)" stroke-width="1.5"/>
+    <circle cx="0" cy="-20" r="12" fill="none" stroke="rgba(250,204,21,0.3)" stroke-width="1"/>
+    <line x1="0" y1="0" x2="0" y2="60" stroke="rgba(250,204,21,0.55)" stroke-width="2"/>
+    <line x1="0" y1="38" x2="14" y2="38" stroke="rgba(250,204,21,0.55)" stroke-width="2"/>
+    <line x1="0" y1="55" x2="10" y2="55" stroke="rgba(250,204,21,0.55)" stroke-width="2"/>
+  </g>
+
+  <!-- Dashed connector: cross -> REMOVE -->
+  <line x1="760" y1="320" x2="700" y2="440" stroke="rgba(248,113,113,0.25)" stroke-width="1" stroke-dasharray="4,4"/>
+</svg>

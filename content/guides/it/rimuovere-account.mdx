@@ -1,0 +1,92 @@
+---
+title: "Rimuovere un Account"
+description: "Scopri come rimuovere un account dall'estensione Nostr WoT — passa sopra l'account, clicca sulla croce e conferma. Per i seed occorre digitare REMOVE."
+excerpt: "Rimuovi un account dall'estensione in sicurezza. Scopri cosa viene cancellato, cosa resta su Nostr e perché gli account da seed richiedono un passaggio in più."
+date: "2026-04-22"
+author:
+  name: "Leon Acosta"
+  avatar: "/authors/leon-profile.jpg"
+  npub: "npub1gxdhmu9swqduwhr6zptjy4ya693zp3ql28nemy4hd97kuufyrqdqwe5zfk"
+featuredImage: "/images/guides/removing-accounts/featured.svg"
+previewImage: "/images/guides/removing-accounts/preview.svg"
+tags:
+  - "Identità"
+  - "Account"
+  - "Sicurezza"
+published: true
+seoTitle: "Rimuovere un Account — Guida all'Estensione Nostr WoT"
+seoDescription: "Scopri come rimuovere un account dall'estensione Nostr WoT — passa sopra l'account, clicca sulla croce e conferma. Per i seed occorre digitare REMOVE."
+ogImage: "/images/guides/removing-accounts/og.jpg"
+translationKey: "removing-accounts"
+difficulty: "beginner"
+order: 2.5
+---
+
+Prima o poi vorrai ripulire la lista degli account nell'estensione: una vecchia identità, un account di prova o uno importato per sbaglio. L'estensione ti permette di rimuovere gli account direttamente dal selettore con un singolo clic, e applica una conferma più rigida quando l'account è basato su un seed generato all'interno dell'estensione stessa.
+
+## Prima di Rimuovere un Account
+
+Rimuovere un account riguarda solo l'estensione su questo browser. La tua identità su Nostr è una coppia di chiavi, e gli eventi che hai pubblicato vivono sui relay della rete. Restano lì anche se questo browser smette di ricordarti.
+
+Cosa fa la rimozione:
+
+- Cancella la copia cifrata delle chiavi salvata localmente nell'estensione.
+- Rimuove l'account dal selettore degli account.
+- Pulisce il grafo di fiducia locale, i permessi e lo stato del wallet legati a quell'account.
+
+Cosa la rimozione **non** fa:
+
+- Non cancella le tue note, il profilo o la lista dei seguiti dai relay di Nostr.
+- Non influisce sulla stessa identità su altri dispositivi o su altri signer NIP-07.
+
+<Callout type="warning">
+Se hai generato la frase seed dentro l'estensione e non l'hai mai salvata, rimuovere l'account è definitivo. Non c'è recupero. Esporta o scrivi le tue 12 parole prima di continuare.
+</Callout>
+
+## Come Rimuovere un Account
+
+### 1. Apri il Selettore degli Account
+
+Clicca sull'icona dell'estensione e apri il selettore degli account in alto nel popup. Vedrai ogni account gestito dall'estensione, con quello attivo evidenziato.
+
+![Il selettore mostra ogni identità salvata nell'estensione, con l'account attivo evidenziato in cima](/images/guides/removing-accounts/accounts-selector.jpg)
+
+### 2. Passa Sopra l'Account e Clicca sulla Croce
+
+Sposta il cursore sull'account che vuoi rimuovere. A destra della riga compare una piccola icona a croce (×). Cliccala.
+
+![Passando sopra un account compare un'icona a croce sulla destra — cliccala per avviare la rimozione](/images/guides/removing-accounts/hover-remove.jpg)
+
+### 3. Conferma la Rimozione
+
+Si apre una finestra di conferma. Per un account importato con una nsec esistente basta confermare qui: l'estensione assume che tu abbia ancora la chiave altrove e possa ripristinare l'accesso in seguito.
+
+![Una finestra semplice ti chiede di confermare che vuoi rimuovere l'account da questa estensione](/images/guides/removing-accounts/confirm-dialog.jpg)
+
+### 4. Account da Seed: Digita REMOVE
+
+Se l'account è stato generato dentro l'estensione a partire da una frase seed, la conferma è più rigida. Ti viene chiesto di digitare la parola **REMOVE** (in maiuscolo) prima che il pulsante si attivi. Questo attrito in più esiste perché perdere l'unica copia di un seed significa perdere l'identità per sempre.
+
+![Gli account da seed richiedono di digitare REMOVE in maiuscolo prima che il pulsante di rimozione diventi attivo](/images/guides/removing-accounts/type-remove.jpg)
+
+Una volta confermato, l'account sparisce dal selettore. Se era quello attivo, l'estensione passa a un altro account salvato o mostra la schermata iniziale se non ne resta nessuno.
+
+## Perché gli Account da Seed Richiedono di Più
+
+Quando generi una nuova identità dentro l'estensione, le 12 parole vengono create localmente e mostrate una sola volta. L'estensione non le manda da nessuna parte. Se non le hai annotate, la copia cifrata dentro l'estensione è l'unica cosa che ti collega a quell'identità. Rimuoverla senza backup significa non poter più firmare come quel npub.
+
+Gli account importati sono diversi. Se li hai aggiunti usando una nsec o un seed esistente, hai già quel materiale da qualche altra parte: un altro signer, un password manager o su carta. Ripristinarli è semplice.
+
+## Ripristinare un Account Rimosso
+
+Per recuperare un account rimosso:
+
+1. Apri il selettore degli account e clicca **Aggiungi Account**.
+2. Scegli **Importa** e incolla la tua nsec o la frase seed da 12 parole.
+3. L'estensione ricostruisce l'archivio cifrato, risincronizza il grafo di fiducia e l'account torna pronto all'uso.
+
+La cronologia locale (permessi, regole di auto-approvazione, connessioni del wallet) non viene ripristinata: era legata all'archivio cancellato. I dati Nostr come profilo, seguiti e note si risincronizzano dai relay automaticamente.
+
+## Prossimi Passi
+
+Ora che sai come rimuovere gli account in sicurezza, assicurati che quelli che tieni siano ben protetti. Rivedi la sicurezza delle chiavi in [Gestione Identità](/it/guides/gestione-identita), o torna a [Guida Introduttiva](/it/guides/guida-introduttiva) se stai ripartendo da zero.

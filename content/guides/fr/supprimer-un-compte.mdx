@@ -1,0 +1,92 @@
+---
+title: "Supprimer un Compte"
+description: "Apprenez à supprimer un compte de l'extension Nostr WoT — survolez le compte, cliquez sur la croix et confirmez. Les comptes à graine demandent REMOVE."
+excerpt: "Supprimez un compte de l'extension en toute sécurité. Découvrez ce qui est effacé, ce qui reste sur Nostr et pourquoi les comptes à graine demandent plus."
+date: "2026-04-22"
+author:
+  name: "Leon Acosta"
+  avatar: "/authors/leon-profile.jpg"
+  npub: "npub1gxdhmu9swqduwhr6zptjy4ya693zp3ql28nemy4hd97kuufyrqdqwe5zfk"
+featuredImage: "/images/guides/removing-accounts/featured.svg"
+previewImage: "/images/guides/removing-accounts/preview.svg"
+tags:
+  - "Identité"
+  - "Comptes"
+  - "Sécurité"
+published: true
+seoTitle: "Supprimer un Compte — Guide de l'Extension Nostr WoT"
+seoDescription: "Apprenez à supprimer un compte de l'extension Nostr WoT — survolez le compte, cliquez sur la croix et confirmez. Les comptes à graine demandent REMOVE."
+ogImage: "/images/guides/removing-accounts/og.jpg"
+translationKey: "removing-accounts"
+difficulty: "beginner"
+order: 2.5
+---
+
+Tôt ou tard, vous voudrez faire le ménage dans la liste des comptes de l'extension : une vieille identité, un compte de test ou un compte importé par erreur. L'extension permet de supprimer des comptes depuis le sélecteur en un seul clic, et applique une confirmation plus stricte quand le compte est basé sur une graine générée à l'intérieur de l'extension.
+
+## Avant de Supprimer un Compte
+
+Supprimer un compte n'affecte que l'extension sur ce navigateur. Votre identité Nostr est une paire de clés, et les événements que vous avez publiés vivent sur les relays du réseau. Ils y resteront même si ce navigateur ne se souvient plus de vous.
+
+Ce que la suppression fait :
+
+- Efface la copie chiffrée des clés stockée localement dans l'extension.
+- Retire le compte du sélecteur de comptes.
+- Nettoie le graphe de confiance local, les permissions et l'état du portefeuille liés à ce compte.
+
+Ce que la suppression **ne fait pas** :
+
+- Elle n'efface pas vos notes, votre profil ou votre liste d'abonnements sur les relays Nostr.
+- Elle n'affecte pas la même identité sur d'autres appareils ni sur d'autres signataires NIP-07.
+
+<Callout type="warning">
+Si vous avez généré votre phrase de graine dans l'extension et ne l'avez jamais sauvegardée, supprimer le compte est définitif. Il n'y a pas de récupération. Exportez ou notez vos 12 mots avant de continuer.
+</Callout>
+
+## Comment Supprimer un Compte
+
+### 1. Ouvrez le Sélecteur de Comptes
+
+Cliquez sur l'icône de l'extension et ouvrez le sélecteur de comptes en haut du popup. Vous verrez chaque compte géré par l'extension, avec le compte actif mis en évidence.
+
+![Le sélecteur de comptes liste chaque identité stockée dans l'extension, avec le compte actif en tête](/images/guides/removing-accounts/accounts-selector.jpg)
+
+### 2. Survolez le Compte et Cliquez sur la Croix
+
+Placez le curseur sur le compte à supprimer. Une petite icône en croix (×) apparaît à droite de la ligne. Cliquez dessus.
+
+![Survoler une ligne de compte fait apparaître une icône en croix à droite — cliquez pour lancer la suppression](/images/guides/removing-accounts/hover-remove.jpg)
+
+### 3. Confirmez la Suppression
+
+Une fenêtre de confirmation s'ouvre. Pour un compte importé avec une nsec existante, il suffit de confirmer ici : l'extension part du principe que vous avez toujours la clé ailleurs et que vous pourrez restaurer l'accès plus tard.
+
+![Une fenêtre simple vous demande de confirmer que vous voulez retirer le compte de cette extension](/images/guides/removing-accounts/confirm-dialog.jpg)
+
+### 4. Comptes à Graine : Tapez REMOVE
+
+Si le compte a été généré dans l'extension à partir d'une phrase de graine, la confirmation est plus stricte. Vous devez taper le mot **REMOVE** (en majuscules) pour que le bouton s'active. Cette friction en plus existe parce que perdre la seule copie d'une graine, c'est perdre l'identité pour toujours.
+
+![Les comptes à graine demandent de taper REMOVE en majuscules avant que le bouton de suppression ne s'active](/images/guides/removing-accounts/type-remove.jpg)
+
+Une fois la confirmation faite, le compte disparaît du sélecteur. S'il était actif, l'extension bascule sur un autre compte enregistré, ou affiche l'écran d'accueil s'il n'en reste aucun.
+
+## Pourquoi les Comptes à Graine Demandent Plus
+
+Quand vous générez une nouvelle identité dans l'extension, les 12 mots sont créés localement et affichés une seule fois. L'extension ne les envoie nulle part. Si vous ne les avez pas notés, la copie chiffrée dans l'extension est la seule chose qui vous relie à cette identité. La supprimer sans sauvegarde, c'est perdre la capacité de signer en tant que ce npub à jamais.
+
+Les comptes importés sont différents. Si vous les avez ajoutés avec une nsec ou une graine existante, vous avez déjà ce matériel de clé ailleurs : un autre signataire, un gestionnaire de mots de passe ou sur papier. Les restaurer est simple.
+
+## Restaurer un Compte Supprimé
+
+Pour récupérer un compte supprimé :
+
+1. Ouvrez le sélecteur de comptes et cliquez sur **Ajouter un Compte**.
+2. Choisissez **Importer** et collez votre nsec ou votre phrase de graine de 12 mots.
+3. L'extension reconstruit le coffre chiffré, resynchronise le graphe de confiance, et le compte est prêt à être utilisé.
+
+Votre historique local (permissions, règles d'auto-approbation, connexions du portefeuille) n'est pas restauré : il était lié au coffre supprimé. Les données Nostr comme votre profil, vos abonnements et vos notes se resynchronisent automatiquement depuis les relays.
+
+## Et Ensuite ?
+
+Maintenant que vous savez supprimer des comptes en toute sécurité, assurez-vous que ceux que vous gardez sont bien protégés. Revoyez la sécurité des clés dans [Gestion de l'Identité](/fr/guides/gestion-identite), ou revenez au [Guide de Démarrage](/fr/guides/guide-de-demarrage) si vous repartez de zéro.
