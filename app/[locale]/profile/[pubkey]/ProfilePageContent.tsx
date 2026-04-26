@@ -15,6 +15,7 @@ import {
   cacheTrust,
   cacheTrustBatch,
 } from "@/lib/cache/profileCache";
+import type { ServerProfileMetadata } from "@/lib/server/fetchNostrMetadata";
 
 interface TrustInfo extends TrustData {
   isLoading?: boolean;
@@ -22,9 +23,13 @@ interface TrustInfo extends TrustData {
 
 interface ProfilePageContentProps {
   pubkey: string;
+  initialProfile?: ServerProfileMetadata | null;
 }
 
-export default function ProfilePageContent({ pubkey: pubkeyParam }: ProfilePageContentProps) {
+export default function ProfilePageContent({
+  pubkey: pubkeyParam,
+  initialProfile,
+}: ProfilePageContentProps) {
   // Normalize pubkey: convert npub to hex if needed
   const pubkey = useMemo(() => npubToHex(pubkeyParam), [pubkeyParam]);
 
@@ -280,8 +285,24 @@ export default function ProfilePageContent({ pubkey: pubkeyParam }: ProfilePageC
     router.push(`/profile/${followPubkey}`);
   };
 
+  const fallbackFromInitial = useMemo(
+    () =>
+      initialProfile
+        ? {
+            displayName: initialProfile.displayName ?? undefined,
+            name: initialProfile.name ?? undefined,
+            picture: initialProfile.picture ?? undefined,
+            nip05: initialProfile.nip05 ?? undefined,
+            about: initialProfile.about ?? undefined,
+          }
+        : null,
+    [initialProfile],
+  );
+  const effectiveProfile = profile ?? fallbackFromInitial;
   const displayName =
-    profile?.displayName || profile?.name || formatPubkey(pubkey);
+    effectiveProfile?.displayName ||
+    effectiveProfile?.name ||
+    formatPubkey(pubkey);
 
   // Filter follows based on search (within sidebar) and deduplicate
   const [followSearch, setFollowSearch] = useState("");
@@ -415,7 +436,7 @@ export default function ProfilePageContent({ pubkey: pubkeyParam }: ProfilePageC
           <div className="flex-1 min-w-0">
             {/* Profile header */}
             <div className="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 overflow-hidden">
-              {isLoading ? (
+              {isLoading && !effectiveProfile ? (
                 <ProfileHeaderSkeleton />
               ) : (
                 <>
@@ -426,9 +447,9 @@ export default function ProfilePageContent({ pubkey: pubkeyParam }: ProfilePageC
                   <div className="px-6 pb-6">
                     {/* Avatar */}
                     <div className="-mt-16 mb-4">
-                      {profile?.picture ? (
+                      {effectiveProfile?.picture ? (
                         <img
-                          src={profile.picture}
+                          src={effectiveProfile.picture}
                           alt={`${displayName} avatar`}
                           className="w-32 h-32 rounded-full border-4 border-white dark:border-gray-800 object-cover bg-gray-200 dark:bg-gray-700"
                         />
@@ -447,13 +468,13 @@ export default function ProfilePageContent({ pubkey: pubkeyParam }: ProfilePageC
                         <h1 className="text-2xl font-bold text-gray-900 dark:text-white">
                           {displayName}
                         </h1>
-                        {profile?.name &&
-                          profile.name !== profile.displayName && (
+                        {effectiveProfile?.name &&
+                          effectiveProfile.name !== effectiveProfile.displayName && (
                             <p className="text-gray-600 dark:text-gray-400">
-                              @{profile.name}
+                              @{effectiveProfile.name}
                             </p>
                           )}
-                        {profile?.nip05 && (
+                        {effectiveProfile?.nip05 && (
                           <div className="flex items-center gap-1 mt-1">
                             <svg
                               className="w-4 h-4 text-primary"
@@ -467,7 +488,7 @@ export default function ProfilePageContent({ pubkey: pubkeyParam }: ProfilePageC
                               />
                             </svg>
                             <span className="text-sm text-primary">
-                              {profile.nip05}
+                              {effectiveProfile.nip05}
                             </span>
                           </div>
                         )}
@@ -609,9 +630,9 @@ export default function ProfilePageContent({ pubkey: pubkeyParam }: ProfilePageC
                     )}
 
                     {/* About */}
-                    {profile?.about && (
+                    {effectiveProfile?.about && (
                       <p className="mt-4 text-gray-700 dark:text-gray-300 whitespace-pre-wrap">
-                        {profile.about}
+                        {effectiveProfile.about}
                       </p>
                     )}
                   </div>
