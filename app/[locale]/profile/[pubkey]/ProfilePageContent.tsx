@@ -16,6 +16,11 @@ import {
   cacheTrustBatch,
 } from "@/lib/cache/profileCache";
 import type { ServerProfileMetadata } from "@/lib/server/fetchNostrMetadata";
+import {
+  fetchReactionCounts,
+  fetchReplyParents,
+  type ParentRef,
+} from "@/lib/client/noteEnrichments";
 
 interface TrustInfo extends TrustData {
   isLoading?: boolean;
@@ -57,6 +62,10 @@ export default function ProfilePageContent({
   const [profileTrust, setProfileTrust] = useState<TrustInfo | null>(null);
   const [isLoadingTrust, setIsLoadingTrust] = useState(false);
   const [followersTrust, setFollowersTrust] = useState<Map<string, TrustInfo>>(new Map());
+  const [reactionsByNote, setReactionsByNote] = useState<Record<string, number>>({});
+  const [parentByNote, setParentByNote] = useState<Record<string, ParentRef>>({});
+  const noteSentinelRef = useRef<HTMLDivElement | null>(null);
+  const enrichedIdsRef = useRef<Set<string>>(new Set());
 
   // Pagination state for followers
   const PAGE_SIZE = 20;
@@ -231,7 +240,41 @@ export default function ProfilePageContent({
   useEffect(() => {
     setVisibleFollowersCount(PAGE_SIZE);
     setFollowersTrust(new Map());
+    setReactionsByNote({});
+    setParentByNote({});
+    enrichedIdsRef.current = new Set();
   }, [pubkey]);
+
+  // Enrich notes (reactions + reply parents) in batches as they arrive
+  useEffect(() => {
+    if (notes.length === 0) return;
+    const fresh = notes.filter((n) => !enrichedIdsRef.current.has(n.id));
+    if (fresh.length === 0) return;
+    for (const n of fresh) enrichedIdsRef.current.add(n.id);
+
+    const ids = fresh.map((n) => n.id);
+    fetchReactionCounts(ids)
+      .then((counts) => setReactionsByNote((prev) => ({ ...prev, ...counts })))
+      .catch(() => undefined);
+    fetchReplyParents(fresh.map((n) => ({ id: n.id, tags: n.tags })))
+      .then((parents) => setParentByNote((prev) => ({ ...prev, ...parents })))
+      .catch(() => undefined);
+  }, [notes]);
+
+  // Auto-load more notes when sentinel scrolls into view
+  useEffect(() => {
+    if (!hasMoreNotes || isLoadingNotes) return;
+    const node = noteSentinelRef.current;
+    if (!node) return;
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (entries.some((e) => e.isIntersecting)) fetchMoreNotes();
+      },
+      { rootMargin: "400px 0px" },
+    );
+    observer.observe(node);
+    return () => observer.disconnect();
+  }, [hasMoreNotes, isLoadingNotes, fetchMoreNotes]);
 
   // Load more followers handler
   const handleLoadMoreFollowers = useCallback(async () => {
@@ -440,8 +483,20 @@ export default function ProfilePageContent({
                 <ProfileHeaderSkeleton />
               ) : (
                 <>
-                  {/* Banner placeholder */}
-                  <div className="h-32 bg-gradient-to-r from-primary/20 to-purple-500/20" />
+                  {/* Banner */}
+                  {initialProfile?.banner ? (
+                    // eslint-disable-next-line @next/next/no-img-element
+                    <img
+                      src={initialProfile.banner}
+                      alt=""
+                      className="h-32 w-full object-cover"
+                      onError={(e) => {
+                        (e.target as HTMLImageElement).style.display = "none";
+                      }}
+                    />
+                  ) : (
+                    <div className="h-32 bg-gradient-to-r from-primary/20 to-purple-500/20" />
+                  )}
 
                   {/* Profile info */}
                   <div className="px-6 pb-6">
@@ -668,23 +723,28 @@ export default function ProfilePageContent({
               ) : (
                 <div className="space-y-4">
                   {notes.map((note) => (
-                    <div
+                    <NoteCard
                       key={note.id}
-                      className="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 overflow-hidden"
-                    >
-                      <NoteCard note={note} />
-                    </div>
+                      note={note}
+                      parent={parentByNote[note.id]}
+                      reactionCount={reactionsByNote[note.id]}
+                    />
                   ))}
 
                   {hasMoreNotes && (
-                    <Button
-                      variant="secondary"
-                      onClick={fetchMoreNotes}
-                      disabled={isLoadingNotes}
-                      className="w-full"
+                    <div
+                      ref={noteSentinelRef}
+                      className="py-6 flex items-center justify-center text-xs text-gray-500 dark:text-gray-400"
                     >
-                      {isLoadingNotes ? t("loading") : t("loadMore")}
-                    </Button>
+                      {isLoadingNotes ? (
+                        <span className="inline-flex items-center gap-2">
+                          <span className="w-3 h-3 border-2 border-gray-400 border-t-transparent rounded-full animate-spin" />
+                          {t("loading")}
+                        </span>
+                      ) : (
+                        <span>{t("loadMore")}</span>
+                      )}
+                    </div>
                   )}
                 </div>
               )}
