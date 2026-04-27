@@ -6,11 +6,19 @@ import { useTranslations } from "next-intl";
 import { nip19 } from "nostr-tools";
 import { NostrNote } from "@/lib/graph/types";
 import type { ParentRef } from "@/lib/client/noteEnrichments";
+import { useEngagement } from "@/lib/client/cache";
 
 interface NoteCardProps {
   note: NostrNote;
   parent?: ParentRef | undefined;
+  /** Optional override; if absent, NoteCard reads from the live engagement cache. */
   reactionCount?: number;
+}
+
+function formatSats(n: number): string {
+  if (n < 1000) return `${n}`;
+  if (n < 1_000_000) return `${(n / 1000).toFixed(n < 10000 ? 1 : 0).replace(/\.0$/, "")}k`;
+  return `${(n / 1_000_000).toFixed(1).replace(/\.0$/, "")}M`;
 }
 
 function formatRelativeTime(timestamp: number): string {
@@ -60,6 +68,8 @@ export default function NoteCard({ note, parent, reactionCount }: NoteCardProps)
   );
   const { text, images } = useMemo(() => parseContent(note.content), [note.content]);
   const nevent = useMemo(() => neventOf(note), [note]);
+  const engagement = useEngagement(note.id);
+  const reactionsToShow = reactionCount ?? engagement.reactionCount;
 
   return (
     <article className="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 overflow-hidden hover:border-primary/40 dark:hover:border-primary/40 transition-colors">
@@ -123,14 +133,36 @@ export default function NoteCard({ note, parent, reactionCount }: NoteCardProps)
 
         <div className="mt-3 flex items-center justify-between text-xs text-gray-500 dark:text-gray-400">
           <span>{relativeTime}</span>
-          {typeof reactionCount === "number" && (
-            <span className="inline-flex items-center gap-1">
+          <div className="flex items-center gap-3">
+            <span className="inline-flex items-center gap-1" title={t("reactions")}>
               <svg className="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 24 24">
                 <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" />
               </svg>
-              <span>{reactionCount}</span>
+              <span>{reactionsToShow}</span>
             </span>
-          )}
+            {engagement.repostCount > 0 && (
+              <span className="inline-flex items-center gap-1" title={t("reposts")}>
+                <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+                </svg>
+                <span>{engagement.repostCount}</span>
+              </span>
+            )}
+            {engagement.zapTotalSats > 0 && (
+              <span className="inline-flex items-center gap-1 text-yellow-600 dark:text-yellow-400" title={t("zaps")}>
+                <svg className="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 24 24">
+                  <path d="M13 2L3 14h7l-1 8 10-12h-7l1-8z" />
+                </svg>
+                <span>{formatSats(engagement.zapTotalSats)}</span>
+              </span>
+            )}
+            <span className="text-primary inline-flex items-center gap-0.5 font-medium">
+              {t("viewThread")}
+              <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+              </svg>
+            </span>
+          </div>
         </div>
       </Link>
     </article>

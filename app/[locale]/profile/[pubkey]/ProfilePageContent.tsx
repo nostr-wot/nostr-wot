@@ -4,10 +4,9 @@ import { useEffect, useState, useCallback, useRef, useMemo } from "react";
 import { useRouter } from "@/i18n/routing";
 import { useTranslations } from "next-intl";
 import { useWoTContext } from "nostr-wot-sdk/react";
-import { useUserProfile } from "@/hooks/useUserProfile";
 import { formatPubkey, npubToHex } from "@/lib/graph/transformers";
-import { Button } from "@/components/ui";
 import NoteCard from "@/components/playground/profile/NoteCard";
+import { Button } from "@/components/ui";
 import {
   TrustData,
   getCachedTrust,
@@ -17,10 +16,13 @@ import {
 } from "@/lib/cache/profileCache";
 import type { ServerProfileMetadata } from "@/lib/server/fetchNostrMetadata";
 import {
-  fetchReactionCounts,
-  fetchReplyParents,
-  type ParentRef,
-} from "@/lib/client/noteEnrichments";
+  useProfile,
+  useFollows,
+  useAuthorNotes,
+  useEngagementBatch,
+  useNote,
+} from "@/lib/client/cache";
+import { fetchReplyParents, type ParentRef } from "@/lib/client/noteEnrichments";
 
 interface TrustInfo extends TrustData {
   isLoading?: boolean;
@@ -42,18 +44,39 @@ export default function ProfilePageContent({
   const router = useRouter();
   const { wot, isReady: isWotReady } = useWoTContext();
 
-  const {
-    profile,
-    follows,
-    followProfiles,
-    notes,
-    isLoading,
-    isLoadingNotes,
-    error,
-    fetchUserData,
-    fetchMoreNotes,
-    hasMoreNotes,
-  } = useUserProfile();
+  // SWR-style cached fetches (profile, follows, paged notes) — populate
+  // from localStorage if present, then refresh in the background as relays
+  // respond. Components subscribe via useSyncExternalStore so each piece
+  // updates independently as data arrives.
+  const profileEntry = useProfile(pubkey);
+  const followsEntry = useFollows(pubkey);
+  const { entry: notesEntry, loadMore: loadMoreNotes, isLoading: isLoadingNotes } =
+    useAuthorNotes(pubkey);
+
+  const profile = useMemo(
+    () =>
+      profileEntry
+        ? {
+            pubkey: profileEntry.pubkey,
+            name: profileEntry.name ?? undefined,
+            displayName: profileEntry.displayName ?? undefined,
+            picture: profileEntry.picture ?? undefined,
+            about: profileEntry.about ?? undefined,
+            nip05: profileEntry.nip05 ?? undefined,
+          }
+        : null,
+    [profileEntry],
+  );
+  const follows = useMemo(() => followsEntry?.follows ?? [], [followsEntry]);
+  const noteIds = useMemo(() => notesEntry?.noteIds ?? [], [notesEntry]);
+  const isLoading = !profile && !profileEntry;
+  const error: string | null = null;
+  const hasMoreNotes = noteIds.length > 0;
+  const fetchMoreNotes = loadMoreNotes;
+  const fetchUserData = (_pk: string) => Promise.resolve();
+  const followProfiles = useMemo(() => new Map(), []);
+  // Kick batch engagement (reactions/reposts/zaps) for visible note ids
+  useEngagementBatch(noteIds);
 
   const [searchQuery, setSearchQuery] = useState("");
   const [copied, setCopied] = useState(false);
@@ -245,21 +268,31 @@ export default function ProfilePageContent({
     enrichedIdsRef.current = new Set();
   }, [pubkey]);
 
-  // Enrich notes (reactions + reply parents) in batches as they arrive
+  // Engagement (reactions/reposts/zaps) is fetched via useEngagementBatch
+  // above. Reply parents are still enriched here in batch — the per-id
+  // note + profile caches receive incremental updates when each parent
+  // resolves, so the visible affordance ("Replying to @X") shows up as
+  // soon as we know it.
   useEffect(() => {
-    if (notes.length === 0) return;
-    const fresh = notes.filter((n) => !enrichedIdsRef.current.has(n.id));
-    if (fresh.length === 0) return;
-    for (const n of fresh) enrichedIdsRef.current.add(n.id);
-
-    const ids = fresh.map((n) => n.id);
-    fetchReactionCounts(ids)
-      .then((counts) => setReactionsByNote((prev) => ({ ...prev, ...counts })))
-      .catch(() => undefined);
-    fetchReplyParents(fresh.map((n) => ({ id: n.id, tags: n.tags })))
-      .then((parents) => setParentByNote((prev) => ({ ...prev, ...parents })))
-      .catch(() => undefined);
-  }, [notes]);
+    if (noteIds.length === 0) return;
+    // Read tag arrays from the note cache (populated by useAuthorNotes as
+    // events arrive). If a note hasn't landed yet we'll re-enrich next render.
+    import("@/lib/client/cache/note-cache").then(({ _noteStore }) => {
+      const store = _noteStore();
+      const fresh: { id: string; tags: string[][] }[] = [];
+      for (const id of noteIds) {
+        if (enrichedIdsRef.current.has(id)) continue;
+        const e = store.get(id).value;
+        if (!e) continue;
+        enrichedIdsRef.current.add(id);
+        fresh.push({ id, tags: e.tags });
+      }
+      if (fresh.length === 0) return;
+      fetchReplyParents(fresh)
+        .then((parents) => setParentByNote((prev) => ({ ...prev, ...parents })))
+        .catch(() => undefined);
+    });
+  }, [noteIds]);
 
   // Auto-load more notes when sentinel scrolls into view
   useEffect(() => {
@@ -703,7 +736,7 @@ export default function ProfilePageContent({
 
               {isLoading ? (
                 <NotesSkeleton />
-              ) : notes.length === 0 ? (
+              ) : noteIds.length === 0 ? (
                 <div className="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-8 text-center">
                   <svg
                     className="w-12 h-12 text-gray-400 mx-auto mb-3"
@@ -722,13 +755,8 @@ export default function ProfilePageContent({
                 </div>
               ) : (
                 <div className="space-y-4">
-                  {notes.map((note) => (
-                    <NoteCard
-                      key={note.id}
-                      note={note}
-                      parent={parentByNote[note.id]}
-                      reactionCount={reactionsByNote[note.id]}
-                    />
+                  {noteIds.map((id) => (
+                    <NoteRow key={id} id={id} parent={parentByNote[id]} />
                   ))}
 
                   {hasMoreNotes && (
@@ -888,6 +916,34 @@ export default function ProfilePageContent({
         </div>
       </div>
     </div>
+  );
+}
+
+// Wraps NoteCard so each row reactively pulls its NoteEntry from the
+// shared note cache. The author cache pushes events into the per-id
+// store as they arrive from relays.
+function NoteRow({ id, parent }: { id: string; parent: ParentRef | undefined }) {
+  const note = useNote(id);
+  if (!note) {
+    return (
+      <div className="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 p-4 animate-pulse">
+        <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded w-3/4 mb-2" />
+        <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded w-1/2" />
+      </div>
+    );
+  }
+  return (
+    <NoteCard
+      note={{
+        id: note.id,
+        pubkey: note.pubkey,
+        content: note.content,
+        created_at: note.createdAt,
+        tags: note.tags,
+        kind: 1,
+      }}
+      parent={parent}
+    />
   );
 }
 
