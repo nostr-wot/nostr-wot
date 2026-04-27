@@ -1,0 +1,112 @@
+---
+title: "Apresentando os Nostr Widgets"
+description: "Incorpore um perfil Nostr, um botão de seguir ou um feed recente em qualquer site com uma única linha de HTML. Sem JavaScript, sem iframes, sem tracking — apenas um SVG renderizado no servidor que funciona em todo lugar."
+excerpt: "Lançamos os Nostr Widgets: um conjunto pequeno de componentes SVG incorporáveis, renderizados no servidor, para qualquer site. Um snippet <a><img></a> coloca um cartão de perfil, um botão de seguir ou um feed ao vivo no seu blog, README ou landing — e o link aponta de volta para nostr-wot.com."
+date: "2026-04-27"
+author:
+  name: "Leon Acosta"
+  avatar: "/authors/leon-profile.jpg"
+  npub: "npub1gxdhmu9swqduwhr6zptjy4ya693zp3ql28nemy4hd97kuufyrqdqwe5zfk"
+  socials:
+    linkedin: "leonacosta"
+    instagram: "leonacosta.now"
+    twitter: "leonacosta_"
+    github: "leonacostaok"
+featuredImage: "/images/blog/introducing-widgets/featured.svg"
+previewImage: "/images/blog/introducing-widgets/preview.svg"
+tags:
+  - "Anúncio"
+  - "Widgets"
+  - "Nostr"
+  - "Incorporáveis"
+  - "SEO"
+published: true
+seoTitle: "Nostr Widgets - Widgets de perfil, follow e feed incorporáveis para Nostr"
+seoDescription: "Coloque um cartão de perfil Nostr, um botão de seguir ou um feed ao vivo em qualquer blog, README ou landing com uma única linha de HTML. SVG renderizado no servidor, sem JavaScript, sem tracking."
+ogImage: "/images/blog/introducing-widgets/og.jpg"
+translationKey: "introducing-widgets"
+---
+
+Você escreve um post. Quer que seus leitores te encontrem no Nostr. Hoje você tem duas opções: colar um `npub` longo e torcer para que as pessoas saibam o que fazer com ele, ou incluir um SDK JavaScript que basicamente roda um cliente Nostr inteiro só para mostrar um avatar.
+
+Nenhuma das duas é boa. Então construímos os **Nostr Widgets**.
+
+## O que é
+
+Um widget é um SVG renderizado no servidor. Você o incorpora com uma linha de HTML:
+
+```html
+<a href="https://nostr-wot.com/p/npub1gxdhmu9..." target="_blank" rel="noopener">
+  <img
+    src="https://nostr-wot.com/widgets/profile/npub1gxdhmu9..."
+    alt="Leon Acosta no Nostr"
+    width="320"
+    height="220"
+  />
+</a>
+```
+
+É isso. Sem tag `<script>`, sem iframe, sem framework JavaScript. A imagem é um SVG estático gerado no nosso servidor a partir de dados Nostr ao vivo, cacheado agressivamente, servido com cabeçalhos `Cache-Control` e `ETag` corretos. Funciona em geradores de sites estáticos, no Notion, no Substack, em READMEs do GitHub e em qualquer editor com sabor markdown que aceite imagens.
+
+## Três tipos, um snippet para cada
+
+<Callout type="info">
+Cada widget é um `<img>` real de um SVG real. Isso o torna acessível, indexável e com degradação graciosa — se o serviço de widgets sair do ar, o `<a>` ao redor continua funcionando.
+</Callout>
+
+### 1. Cartão de perfil
+
+Um cartão autocontido com avatar, nome, NIP-05, bio e um call-to-action "Follow on Nostr". 320×220, dimensões fixas, sem layout shift. Use em bios de autor, sidebars ou seções "me encontre no Nostr".
+
+### 2. Botão de seguir
+
+Um botão em formato de pílula que linka direto ao perfil do usuário em `nostr-wot.com`. 220×44. Coloque ao lado dos seus outros botões sociais (Twitter, LinkedIn, GitHub).
+
+### 3. Feed strip
+
+As últimas 1–5 notas curtas do autor, em lista vertical. Cada nota mostra avatar, nome, timestamp e a primeira linha do conteúdo. 320×altura variável. Coloque onde você colocaria um widget "últimos tweets" — só que este é descentralizado e o link aponta para um perfil Nostr, não para uma plataforma corporativa.
+
+## Por que isso importa para SEO
+
+Quando você incorpora um widget, o `<a>` ao redor aponta para `nostr-wot.com`. Para os crawlers de mecanismos de busca, isso é um link de entrada do seu domínio para o nosso. À medida que mais sites adotam os Nostr Widgets, o grafo de links que alimenta Web of Trust no Nostr também acumula autoridade de link na web aberta — o que torna perfis Nostr mais fáceis de descobrir via Google, não apenas dentro de clientes Nostr.
+
+Não é por acaso. O ponto principal dos widgets é serem **link-friendly**: tags `<a>` reais apontando para URLs reais, não iframes que escondem o destino dos crawlers.
+
+## O que NÃO tem (de propósito)
+
+<Callout type="tip" title="Sem tracking, sem analytics, sem surpresas">
+Widgets são SVG estático. Não há pixel de tracking, não há fingerprinting via JavaScript, não há contador de impressões. Não sabemos quem incorporou o quê ou quantas vezes é visto — e gostamos assim.
+</Callout>
+
+- **Sem iframes.** Iframes não passam autoridade de link aos crawlers e introduzem um risco same-origin que não queremos correr.
+- **Sem JavaScript no lado do embed.** Adicionar um `<script>` de terceiros à sua página é um risco de segurança e performance. SVG é um `<img>`. Ele não pode ler seus cookies, não pode executar código, não faz nada além de desenhar pixels.
+- **Sem parâmetros de tema no dia 1.** Um default cuidado por tipo de widget. Talvez `?theme=light|dark` mais tarde, se houver demanda.
+
+## Como funciona por baixo dos panos
+
+O serviço de widgets é um pequeno processo Node atrás do nginx, no mesmo VPS que serve `nostr-wot.com`. Quando um crawler ou navegador requisita `/widgets/profile/<npub>`:
+
+1. Resolvemos o npub para hex pubkey.
+2. Puxamos o último kind 0 (perfil) e kind 3 (lista de follows) do usuário de um SimplePool de relays Nostr.
+3. Renderizamos uma string SVG com os dados embutidos — texto, geometria, avatar embutido (PNG 96×96 em base64, redimensionado com sharp).
+4. Devolvemos com `Cache-Control: public, max-age=300, stale-while-revalidate=86400` e um `ETag`.
+
+Um pequeno LRU em memória absorve requisições duplicadas. O pool de relays é compartilhado entre widgets, então a segunda requisição para o mesmo perfil é essencialmente gratuita.
+
+## Open source
+
+O renderer (`@nostr-widgets/renderer`) e o servidor (`apps/server`) são ambos MIT e moram no repositório [`nostr-widgets`](https://github.com/Fabricio333/nostr-widgets). Você pode self-hostar o serviço se preferir não depender de `nostr-wot.com`, ou contribuir com um novo tipo de widget (zap badge? cartão de Lightning Address? feed filtrado por tag?) via PR.
+
+## Comece
+
+Escolha seu npub, escolha um widget, cole o snippet:
+
+- **Cartão de perfil** — `https://nostr-wot.com/widgets/profile/<npub>`
+- **Botão de seguir** — `https://nostr-wot.com/widgets/follow/<npub>`
+- **Feed strip** — `https://nostr-wot.com/widgets/feed/<npub>?limit=3`
+
+Visite a [galeria de widgets](/widgets) para previews ao vivo e snippets prontos para copiar e colar.
+
+---
+
+*Tem feedback? Responda no [Nostr](https://njump.me/npub1gxdhmu9swqduwhr6zptjy4ya693zp3ql28nemy4hd97kuufyrqdqwe5zfk) ou abra uma issue no [GitHub](https://github.com/Fabricio333/nostr-widgets).*
