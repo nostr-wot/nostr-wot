@@ -101,7 +101,7 @@ export default async function BlogPostPage({ params }: Props) {
     'author': {
       '@type': 'Person',
       'name': post.author.name,
-      'url': post.author.npub ? `https://njump.me/${post.author.npub}` : undefined,
+      'url': post.author.npub ? `https://nostr-wot.com/profile/${post.author.npub}` : undefined,
       'affiliation': {
         '@type': 'Organization',
         'name': 'Nostr Web of Trust',
@@ -112,7 +112,7 @@ export default async function BlogPostPage({ params }: Props) {
           post.author.socials.twitter && `https://twitter.com/${post.author.socials.twitter}`,
           post.author.socials.github && `https://github.com/${post.author.socials.github}`,
           post.author.socials.linkedin && `https://linkedin.com/in/${post.author.socials.linkedin}`,
-          post.author.npub && `https://njump.me/${post.author.npub}`,
+          post.author.npub && `https://nostr-wot.com/profile/${post.author.npub}`,
         ].filter(Boolean),
       }),
     },
@@ -277,7 +277,7 @@ export default async function BlogPostPage({ params }: Props) {
                       </p>
                       {post.author.npub && (
                         <a
-                          href={`https://njump.me/${post.author.npub}`}
+                          href={`https://nostr-wot.com/profile/${post.author.npub}`}
                           target="_blank"
                           rel="noopener noreferrer"
                           className="text-sm text-primary hover:underline mt-1 inline-block"

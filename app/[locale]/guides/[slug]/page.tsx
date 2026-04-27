@@ -110,7 +110,7 @@ export default async function GuidePostPage({ params }: Props) {
     'author': {
       '@type': 'Person',
       'name': guide.author.name,
-      'url': guide.author.npub ? `https://njump.me/${guide.author.npub}` : undefined,
+      'url': guide.author.npub ? `https://nostr-wot.com/profile/${guide.author.npub}` : undefined,
       'affiliation': {
         '@type': 'Organization',
         'name': 'Nostr Web of Trust',

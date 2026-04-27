@@ -352,7 +352,7 @@ export function BlogSidebar({
             )}
             {authorNpub && (
               <a
-                href={`https://njump.me/${authorNpub}`}
+                href={`https://nostr-wot.com/profile/${authorNpub}`}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="p-2.5 bg-white dark:bg-gray-800 rounded-lg text-gray-600 dark:text-gray-400 hover:text-[#8B5CF6] hover:bg-[#8B5CF6]/10 transition-colors"
