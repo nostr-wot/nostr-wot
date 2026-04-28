@@ -21,7 +21,7 @@ import {
   useAuthorNotes,
   useEngagementBatch,
   useNote,
-} from "@/lib/client/cache";
+} from "nostr-wot-sdk/react";
 import { fetchReplyParents, type ParentRef } from "@/lib/client/noteEnrichments";
 
 interface TrustInfo extends TrustData {
@@ -277,7 +277,7 @@ export default function ProfilePageContent({
     if (noteIds.length === 0) return;
     // Read tag arrays from the note cache (populated by useAuthorNotes as
     // events arrive). If a note hasn't landed yet we'll re-enrich next render.
-    import("@/lib/client/cache/note-cache").then(({ _noteStore }) => {
+    import("nostr-wot-sdk/data/cache").then(({ _noteStore }) => {
       const store = _noteStore();
       const fresh: { id: string; tags: string[][] }[] = [];
       for (const id of noteIds) {

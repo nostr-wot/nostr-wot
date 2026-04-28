@@ -9,7 +9,7 @@ import { hexToNpub } from "@/lib/graph/transformers";
 import { buildNeventFromEvent } from "@/lib/server/fetchNostrEvent";
 import type { ServerNostrEvent } from "@/lib/server/fetchNostrEvent";
 import { fetchThread, type ThreadReply } from "@/lib/client/threadFetch";
-import { useEngagement, useEngagementBatch } from "@/lib/client/cache";
+import { useEngagement, useEngagementBatch } from "nostr-wot-sdk/react";
 
 type AuthorMeta = {
   pubkey: string;

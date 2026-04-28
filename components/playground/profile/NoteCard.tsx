@@ -6,7 +6,7 @@ import { useTranslations } from "next-intl";
 import { nip19 } from "nostr-tools";
 import { NostrNote } from "@/lib/graph/types";
 import type { ParentRef } from "@/lib/client/noteEnrichments";
-import { useEngagement } from "@/lib/client/cache";
+import { useEngagement } from "nostr-wot-sdk/react";
 
 interface NoteCardProps {
   note: NostrNote;
