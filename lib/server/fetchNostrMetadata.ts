@@ -1,5 +1,6 @@
 import { fetchProfile, fetchFollows, relaysForAuthor } from "@nostr-wot/data";
 import { npubToHex } from "@/lib/graph/transformers";
+import { memoizeProfile } from "./cache";
 
 export type ServerProfileMetadata = {
   pubkey: string;
@@ -27,29 +28,31 @@ export async function fetchNostrProfileMetadata(
   if (hex === pubkeyOrNpub && !/^[a-f0-9]{64}$/i.test(hex)) return null;
   const npub = pubkeyOrNpub.startsWith("npub") ? pubkeyOrNpub : "";
 
-  // Resolve outbox once so both the profile fetch and the follows fetch
-  // share the same relay set (the union of defaults + the author's
-  // declared write relays).
-  const relays = await relaysForAuthor(hex).catch(() => undefined);
+  return memoizeProfile(`profile:${hex}`, async () => {
+    // Resolve outbox once so both the profile fetch and the follows fetch
+    // share the same relay set (the union of defaults + the author's
+    // declared write relays).
+    const relays = await relaysForAuthor(hex).catch(() => undefined);
 
-  const [profile, follows] = await Promise.all([
-    fetchProfile(hex, relays),
-    fetchFollows(hex, relays),
-  ]);
+    const [profile, follows] = await Promise.all([
+      fetchProfile(hex, relays),
+      fetchFollows(hex, relays),
+    ]);
 
-  if (!profile && !follows) return null;
+    if (!profile && !follows) return null;
 
-  return {
-    pubkey: hex,
-    npub,
-    displayName: profile?.displayName ?? null,
-    name: profile?.name ?? null,
-    nip05: profile?.nip05 ?? null,
-    picture: profile?.picture ?? null,
-    banner: profile?.banner ?? null,
-    about: profile?.about ?? null,
-    website: null, // not in @nostr-wot/data's parser; can add later
-    lud16: profile?.lud16 ?? null,
-    followCount: follows?.follows.length ?? null,
-  };
+    return {
+      pubkey: hex,
+      npub,
+      displayName: profile?.displayName ?? null,
+      name: profile?.name ?? null,
+      nip05: profile?.nip05 ?? null,
+      picture: profile?.picture ?? null,
+      banner: profile?.banner ?? null,
+      about: profile?.about ?? null,
+      website: null,
+      lud16: profile?.lud16 ?? null,
+      followCount: follows?.follows.length ?? null,
+    } satisfies ServerProfileMetadata;
+  });
 }

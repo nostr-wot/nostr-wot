@@ -1,5 +1,6 @@
 import { nip19, type Event } from "nostr-tools";
 import { fetchNote, fetchProfile, findReplyParentId } from "@nostr-wot/data";
+import { memoizeNote, memoizeProfile } from "./cache";
 
 /**
  * Server-side wrappers around @nostr-wot/data fetchers — both already do
@@ -69,36 +70,41 @@ export async function fetchNostrEventById(input: string): Promise<ServerNostrEve
   const decoded = decodeNoteId(input);
   if (!decoded) return null;
 
-  const note = await fetchNote(decoded.hex, decoded.relays);
-  if (!note) return null;
-
-  return {
-    id: note.id,
-    nevent: buildNeventFromEvent({ id: note.id, pubkey: note.pubkey, kind: 1 }),
-    pubkey: note.pubkey,
-    content: note.content,
-    createdAt: note.createdAt,
-    tags: note.tags,
-    parent: findReplyParentWithPubkey(note.tags),
-  };
+  return memoizeNote(`note:${decoded.hex}`, async () => {
+    const note = await fetchNote(decoded.hex, decoded.relays);
+    if (!note) return null;
+    return {
+      id: note.id,
+      nevent: buildNeventFromEvent({ id: note.id, pubkey: note.pubkey, kind: 1 }),
+      pubkey: note.pubkey,
+      content: note.content,
+      createdAt: note.createdAt,
+      tags: note.tags,
+      parent: findReplyParentWithPubkey(note.tags),
+    } satisfies ServerNostrEvent;
+  });
 }
 
-export async function fetchNoteAuthorMetadata(pubkey: string): Promise<{
+type NoteAuthorMeta = {
   pubkey: string;
   displayName: string | null;
   name: string | null;
   picture: string | null;
   nip05: string | null;
-} | null> {
-  const profile = await fetchProfile(pubkey);
-  if (!profile) {
-    return { pubkey, displayName: null, name: null, picture: null, nip05: null };
-  }
-  return {
-    pubkey: profile.pubkey,
-    displayName: profile.displayName,
-    name: profile.name,
-    picture: profile.picture,
-    nip05: profile.nip05,
-  };
+};
+
+export async function fetchNoteAuthorMetadata(pubkey: string): Promise<NoteAuthorMeta | null> {
+  return memoizeProfile(`note-author:${pubkey}`, async () => {
+    const profile = await fetchProfile(pubkey);
+    if (!profile) {
+      return { pubkey, displayName: null, name: null, picture: null, nip05: null } satisfies NoteAuthorMeta;
+    }
+    return {
+      pubkey: profile.pubkey,
+      displayName: profile.displayName,
+      name: profile.name,
+      picture: profile.picture,
+      nip05: profile.nip05,
+    } satisfies NoteAuthorMeta;
+  });
 }
