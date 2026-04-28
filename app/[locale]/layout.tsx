@@ -5,11 +5,11 @@ import { getMessages, setRequestLocale } from "next-intl/server";
 import { GoogleAnalytics } from "@next/third-parties/google";
 import { Header, Footer, PageTransition } from "@/components/layout";
 import { ThemeProvider } from "@/components/providers";
-import { NostrAuthProvider } from "@/contexts/NostrAuthContext";
 import { WotProvider } from "@/components/providers/WotProvider";
 import { BlogTranslationsProvider } from "@/contexts/BlogTranslationsContext";
 import { locales, type Locale } from "@/i18n/config";
 import "../globals.css";
+import "@nostr-wot/ui/styles.css";
 
 const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || 'https://nostr-wot.com';
 
@@ -99,15 +99,13 @@ export default async function LocaleLayout({ children, params }: Props) {
         <ThemeProvider>
           <NextIntlClientProvider messages={messages}>
             <BlogTranslationsProvider>
-              <NostrAuthProvider>
-                <WotProvider>
-                  <Header />
-                  <div className="pt-16">
-                    <PageTransition>{children}</PageTransition>
-                  </div>
-                  <Footer />
-                </WotProvider>
-              </NostrAuthProvider>
+              <WotProvider>
+                <Header />
+                <div className="pt-16">
+                  <PageTransition>{children}</PageTransition>
+                </div>
+                <Footer />
+              </WotProvider>
             </BlogTranslationsProvider>
           </NextIntlClientProvider>
         </ThemeProvider>
