@@ -22,6 +22,7 @@ import {
   useEngagementBatch,
   useNote,
 } from "nostr-wot-sdk/react";
+import { _profileStore } from "nostr-wot-sdk/data/cache";
 import { fetchReplyParents, type ParentRef } from "@/lib/client/noteEnrichments";
 
 interface TrustInfo extends TrustData {
@@ -74,7 +75,6 @@ export default function ProfilePageContent({
   const hasMoreNotes = noteIds.length > 0;
   const fetchMoreNotes = loadMoreNotes;
   const fetchUserData = (_pk: string) => Promise.resolve();
-  const followProfiles = useMemo(() => new Map(), []);
   // Kick batch engagement (reactions/reposts/zaps) for visible note ids
   useEngagementBatch(noteIds);
 
@@ -382,17 +382,23 @@ export default function ProfilePageContent({
 
   // Filter follows based on search (within sidebar) and deduplicate
   const [followSearch, setFollowSearch] = useState("");
-  const filteredFollows = [...new Set(follows)].filter((pk) => {
-    if (!followSearch) return true;
-    const p = followProfiles.get(pk);
-    const searchLower = followSearch.toLowerCase();
-    return (
-      pk.toLowerCase().includes(searchLower) ||
-      p?.name?.toLowerCase().includes(searchLower) ||
-      p?.displayName?.toLowerCase().includes(searchLower) ||
-      p?.nip05?.toLowerCase().includes(searchLower)
-    );
-  });
+  // Search reads display-name / nip-05 from the SDK's profile cache
+  // synchronously — each FollowRow has already populated it on mount.
+  const filteredFollows = useMemo(() => {
+    const dedup = [...new Set(follows)];
+    if (!followSearch) return dedup;
+    const q = followSearch.toLowerCase();
+    return dedup.filter((pk) => {
+      if (pk.toLowerCase().includes(q)) return true;
+      const p = _profileStore().get(pk).value;
+      if (!p) return false;
+      return (
+        (p.name && p.name.toLowerCase().includes(q)) ||
+        (p.displayName && p.displayName.toLowerCase().includes(q)) ||
+        (p.nip05 && p.nip05.toLowerCase().includes(q))
+      );
+    });
+  }, [follows, followSearch]);
 
   // Fetch trust data for visible followers that don't have it yet
   // This handles the case when searching shows followers outside the initial batch
@@ -459,7 +465,7 @@ export default function ProfilePageContent({
             <button
               type="button"
               onClick={() => router.back()}
-              className="p-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg transition-colors"
+              className="p-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg transition-colors cursor-pointer"
             >
               <svg
                 className="w-5 h-5 text-gray-600 dark:text-gray-400"
@@ -584,7 +590,7 @@ export default function ProfilePageContent({
 
                       <button
                         onClick={handleCopyPubkey}
-                        className="flex items-center gap-2 px-3 py-1.5 bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 rounded-lg transition-colors text-sm text-gray-600 dark:text-gray-400"
+                        className="flex items-center gap-2 px-3 py-1.5 bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 rounded-lg transition-colors text-sm text-gray-600 dark:text-gray-400 cursor-pointer"
                       >
                         <span className="font-mono">{formatPubkey(pubkey)}</span>
                         {copied ? (
@@ -823,77 +829,20 @@ export default function ProfilePageContent({
                   ) : (
                     <div className="divide-y divide-gray-100 dark:divide-gray-700">
                       {/* When searching, show all matching results from loaded data; otherwise paginate */}
-                      {(followSearch ? filteredFollows : filteredFollows.slice(0, visibleFollowersCount)).map((followPubkey) => {
-                        const p = followProfiles.get(followPubkey);
-                        const trust = followersTrust.get(followPubkey);
-                        // Use SDK-provided score directly
-                        const score = trust?.score ?? null;
-                        return (
-                          <button
-                            key={followPubkey}
-                            onClick={() => handleFollowClick(followPubkey)}
-                            className="w-full flex items-center gap-3 p-3 hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors text-left"
-                          >
-                            {p?.picture ? (
-                              <img
-                                src={p.picture}
-                                alt={`${p?.displayName || p?.name || "User"} avatar`}
-                                className="w-10 h-10 rounded-full object-cover"
-                              />
-                            ) : (
-                              <div className="w-10 h-10 rounded-full bg-gray-200 dark:bg-gray-700 flex items-center justify-center">
-                                <span className="text-sm text-gray-500">
-                                  {(p?.displayName || p?.name || "?")[0].toUpperCase()}
-                                </span>
-                              </div>
-                            )}
-                            <div className="flex-1 min-w-0">
-                              <p className="font-medium text-gray-900 dark:text-white truncate">
-                                {p?.displayName || p?.name || formatPubkey(followPubkey)}
-                              </p>
-                              {p?.nip05 && (
-                                <p className="text-xs text-gray-500 truncate">
-                                  {p.nip05}
-                                </p>
-                              )}
-                            </div>
-                            {/* Trust badge */}
-                            {trust?.isLoading ? (
-                              <div className="w-4 h-4 border-2 border-gray-300 border-t-transparent rounded-full animate-spin" />
-                            ) : trust && trust.distance !== null ? (
-                              <div className={`flex items-center gap-1 px-2 py-0.5 rounded-full text-xs ${
-                                score !== null && score >= 0.7
-                                  ? "bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400"
-                                  : score !== null && score >= 0.3
-                                  ? "bg-yellow-100 dark:bg-yellow-900/30 text-yellow-700 dark:text-yellow-400"
-                                  : "bg-gray-100 dark:bg-gray-600 text-gray-600 dark:text-gray-400"
-                              }`}>
-                                <span>{trust.distance}h</span>
-                                {trust.paths !== null && (
-                                  <span>·{trust.paths}p</span>
-                                )}
-                                {score !== null && (
-                                  <span>·{Math.round(score * 100)}%</span>
-                                )}
-                              </div>
-                            ) : trust && trust.distance === null ? (
-                              // Not in WoT
-                              <div className="px-2 py-0.5 rounded-full text-xs bg-gray-100 dark:bg-gray-600 text-gray-500 dark:text-gray-400">
-                                —
-                              </div>
-                            ) : (
-                              // No trust data yet, show small loading
-                              <div className="w-4 h-4 border-2 border-gray-300 border-t-transparent rounded-full animate-spin" />
-                            )}
-                          </button>
-                        );
-                      })}
+                      {(followSearch ? filteredFollows : filteredFollows.slice(0, visibleFollowersCount)).map((followPubkey) => (
+                        <FollowRow
+                          key={followPubkey}
+                          pubkey={followPubkey}
+                          trust={followersTrust.get(followPubkey)}
+                          onClick={() => handleFollowClick(followPubkey)}
+                        />
+                      ))}
                       {/* Load more button - only show when not searching and there are more to load */}
                       {!followSearch && follows.length > visibleFollowersCount && (
                         <button
                           onClick={handleLoadMoreFollowers}
                           disabled={isLoadingMoreFollowers}
-                          className="w-full p-3 text-sm text-primary hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors flex items-center justify-center gap-2"
+                          className="w-full p-3 text-sm text-primary hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors flex items-center justify-center gap-2 cursor-pointer disabled:cursor-not-allowed disabled:opacity-60"
                         >
                           {isLoadingMoreFollowers ? (
                             <>
@@ -916,6 +865,83 @@ export default function ProfilePageContent({
         </div>
       </div>
     </div>
+  );
+}
+
+// Wraps a follow-list row so each one independently subscribes to its
+// follower's profile via useProfile. As kind-0 events land from relays
+// the avatar + display name fill in without re-rendering siblings.
+function FollowRow({
+  pubkey,
+  trust,
+  onClick,
+}: {
+  pubkey: string;
+  trust: TrustInfo | undefined;
+  onClick: () => void;
+}) {
+  const profile = useProfile(pubkey);
+  const displayName =
+    profile?.displayName?.trim() ||
+    profile?.name?.trim() ||
+    formatPubkey(pubkey);
+  const score = trust?.score ?? null;
+
+  return (
+    <button
+      onClick={onClick}
+      className="w-full flex items-center gap-3 p-3 hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors text-left cursor-pointer"
+    >
+      {profile?.picture ? (
+        // eslint-disable-next-line @next/next/no-img-element
+        <img
+          src={profile.picture}
+          alt={`${displayName} avatar`}
+          className="w-10 h-10 rounded-full object-cover bg-gray-200 dark:bg-gray-700"
+          loading="lazy"
+          onError={(e) => {
+            (e.target as HTMLImageElement).style.display = "none";
+          }}
+        />
+      ) : (
+        <div className="w-10 h-10 rounded-full bg-gray-200 dark:bg-gray-700 flex items-center justify-center">
+          <span className="text-sm text-gray-500">
+            {(displayName[0] || "?").toUpperCase()}
+          </span>
+        </div>
+      )}
+      <div className="flex-1 min-w-0">
+        <p className="font-medium text-gray-900 dark:text-white truncate">
+          {displayName}
+        </p>
+        {profile?.nip05 && (
+          <p className="text-xs text-gray-500 truncate">{profile.nip05}</p>
+        )}
+      </div>
+      {trust?.isLoading ? (
+        <div className="w-4 h-4 border-2 border-gray-300 border-t-transparent rounded-full animate-spin" />
+      ) : trust && trust.distance !== null ? (
+        <div
+          className={`flex items-center gap-1 px-2 py-0.5 rounded-full text-xs ${
+            score !== null && score >= 0.7
+              ? "bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400"
+              : score !== null && score >= 0.3
+              ? "bg-yellow-100 dark:bg-yellow-900/30 text-yellow-700 dark:text-yellow-400"
+              : "bg-gray-100 dark:bg-gray-600 text-gray-600 dark:text-gray-400"
+          }`}
+        >
+          <span>{trust.distance}h</span>
+          {trust.paths !== null && <span>·{trust.paths}p</span>}
+          {score !== null && <span>·{Math.round(score * 100)}%</span>}
+        </div>
+      ) : trust && trust.distance === null ? (
+        <div className="px-2 py-0.5 rounded-full text-xs bg-gray-100 dark:bg-gray-600 text-gray-500 dark:text-gray-400">
+          —
+        </div>
+      ) : (
+        <div className="w-4 h-4 border-2 border-gray-300 border-t-transparent rounded-full animate-spin" />
+      )}
+    </button>
   );
 }
 

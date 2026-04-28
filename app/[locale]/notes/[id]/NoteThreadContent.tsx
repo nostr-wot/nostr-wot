@@ -196,15 +196,7 @@ export default function NoteThreadContent({
   const npub = hexToNpub(event.pubkey);
 
   const parentNevent = parent
-    ? buildNeventFromEvent({
-        id: parent.id,
-        pubkey: parent.pubkey,
-        kind: 1,
-        created_at: parent.createdAt,
-        content: parent.content,
-        tags: parent.tags,
-        sig: "",
-      })
+    ? buildNeventFromEvent({ id: parent.id, pubkey: parent.pubkey, kind: 1 })
     : null;
 
   const parentName = parentAuthor ? authorDisplay(parentAuthor, parent?.pubkey ?? "") : null;

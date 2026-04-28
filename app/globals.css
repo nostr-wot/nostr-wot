@@ -883,3 +883,14 @@ body {
     transform: none !important;
   }
 }
+
+/* Restore browser default cursor:pointer for clickable elements.
+ * Tailwind v4's preflight sets `button { cursor: default }` to match the
+ * HTML spec; we override that for non-disabled buttons + links + role-based
+ * controls so users get the affordance they expect. */
+button:not(:disabled),
+a[href],
+[role="button"]:not([aria-disabled="true"]),
+[role="link"] {
+  cursor: pointer;
+}
