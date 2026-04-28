@@ -17,6 +17,7 @@ import pitch from './pitch.json';
 import guides from './guides.json';
 import projects from './projects.json';
 import notes from './notes.json';
+import widgets from './widgets.json';
 
 const messages = {
   common,
@@ -38,6 +39,7 @@ const messages = {
   guides,
   projects,
   notes,
+  widgets,
 };
 
 export default messages;
