@@ -68,12 +68,19 @@ export function useProfileData(): UseProfileDataResult {
       let profileCompletedRelays = 0;
       let followsCompletedRelays = 0;
 
-      // Timeout fallback
+      // Hard 5s deadline — fires once, then is cleared when both profile and
+      // follows have completed (whether by data arrival or all relays closing).
       const timeoutId = setTimeout(() => {
         closeConnections();
         setIsLoadingProfile(false);
         setIsLoadingFollowing(false);
       }, FETCH_TIMEOUT);
+
+      const maybeClearTimeout = () => {
+        const profileDone = profileReceived || profileCompletedRelays >= RELAYS.length;
+        const followsDone = followsReceived || followsCompletedRelays >= RELAYS.length;
+        if (profileDone && followsDone) clearTimeout(timeoutId);
+      };
 
       for (const relayUrl of RELAYS) {
         // Profile connection (kind:0)
@@ -109,6 +116,7 @@ export function useProfileData(): UseProfileDataResult {
                 setProfile(newProfile);
                 setIsLoadingProfile(false);
                 profileWs.close();
+                maybeClearTimeout();
               } else if (data[0] === "EOSE") {
                 profileWs.close();
               }
@@ -122,6 +130,7 @@ export function useProfileData(): UseProfileDataResult {
             if (profileCompletedRelays >= RELAYS.length && !profileReceived) {
               setIsLoadingProfile(false);
             }
+            maybeClearTimeout();
           };
 
           profileWs.onclose = () => {
@@ -129,9 +138,11 @@ export function useProfileData(): UseProfileDataResult {
             if (profileCompletedRelays >= RELAYS.length && !profileReceived) {
               setIsLoadingProfile(false);
             }
+            maybeClearTimeout();
           };
         } catch {
           profileCompletedRelays++;
+          maybeClearTimeout();
         }
 
         // Follows connection (kind:3)
@@ -163,6 +174,7 @@ export function useProfileData(): UseProfileDataResult {
                 setFollowingCount(pTags.length);
                 setIsLoadingFollowing(false);
                 followsWs.close();
+                maybeClearTimeout();
               } else if (data[0] === "EOSE") {
                 followsWs.close();
               }
@@ -176,6 +188,7 @@ export function useProfileData(): UseProfileDataResult {
             if (followsCompletedRelays >= RELAYS.length && !followsReceived) {
               setIsLoadingFollowing(false);
             }
+            maybeClearTimeout();
           };
 
           followsWs.onclose = () => {
@@ -183,19 +196,13 @@ export function useProfileData(): UseProfileDataResult {
             if (followsCompletedRelays >= RELAYS.length && !followsReceived) {
               setIsLoadingFollowing(false);
             }
+            maybeClearTimeout();
           };
         } catch {
           followsCompletedRelays++;
+          maybeClearTimeout();
         }
       }
-
-      // Clean up timeout when both complete
-      const checkComplete = setInterval(() => {
-        if (!isLoadingProfile && !isLoadingFollowing) {
-          clearTimeout(timeoutId);
-          clearInterval(checkComplete);
-        }
-      }, 100);
     },
     [closeConnections]
   );

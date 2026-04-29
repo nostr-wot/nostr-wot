@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect, useCallback } from "react";
-import { motion, AnimatePresence } from "framer-motion";
 import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/routing";
 import { GraphNode, NodeProfile } from "@/lib/graph/types";
@@ -96,31 +95,18 @@ export default function NodeProfileModal({
   if (!isOpen || !node) return null;
 
   return (
-    <AnimatePresence>
-      <motion.div
-        className="fixed inset-0 z-50 flex items-center justify-center p-4"
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        exit={{ opacity: 0 }}
-        onClick={handleBackdropClick}
-      >
-        {/* Backdrop */}
-        <motion.div
-          className="absolute inset-0 bg-black/70 backdrop-blur-sm"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          exit={{ opacity: 0 }}
-        />
+    <div
+      className="fixed inset-0 z-50 flex items-center justify-center p-4 modal-backdrop-fade"
+      onClick={handleBackdropClick}
+    >
+      {/* Backdrop */}
+      <div className="absolute inset-0 bg-black/70 backdrop-blur-sm" />
 
-        {/* Modal content */}
-        <motion.div
-          className="relative bg-gray-800 rounded-2xl max-w-lg w-full max-h-[90vh] shadow-2xl overflow-hidden flex flex-col"
-          initial={{ scale: 0.95, opacity: 0, y: 20 }}
-          animate={{ scale: 1, opacity: 1, y: 0 }}
-          exit={{ scale: 0.95, opacity: 0, y: 20 }}
-          transition={{ type: "spring", damping: 25, stiffness: 300 }}
-          onClick={(e) => e.stopPropagation()}
-        >
+      {/* Modal content */}
+      <div
+        className="relative bg-gray-800 rounded-2xl max-w-lg w-full max-h-[90vh] shadow-2xl overflow-hidden flex flex-col modal-content-in"
+        onClick={(e) => e.stopPropagation()}
+      >
           {/* Header with close button */}
           <div className="flex items-center justify-between px-6 py-4 border-b border-gray-700">
             <h2 className="text-lg font-semibold text-white">
@@ -199,8 +185,7 @@ export default function NodeProfileModal({
               </button>
             </Link>
           </div>
-        </motion.div>
-      </motion.div>
-    </AnimatePresence>
+        </div>
+      </div>
   );
 }
