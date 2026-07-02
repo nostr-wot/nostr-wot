@@ -67,13 +67,13 @@ export function ExtensionPopupIllustration({ className }: { className?: string }
           </g>
         </g>
 
-        {/* Row 2: Trust badges */}
+        {/* Row 2: Mutes & relays */}
         <g>
           {/* Shield icon */}
           <rect x="96" y="152" width="28" height="28" rx="6" fill="#8B5CF6" fillOpacity="0.1" />
           <path d="M110 158 l-6 3 l0 6 c0 5 3 8 6 10 c3-2 6-5 6-10 l0-6 z" fill="none" stroke="#8B5CF6" strokeWidth="1.5" strokeLinejoin="round" />
           <path d="M107 167 l2 2 l4-4" fill="none" stroke="#8B5CF6" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-          <text x="132" y="170" className="fill-gray-700 dark:fill-gray-300" fontSize="11" fontFamily="system-ui, sans-serif">Trust badges</text>
+          <text x="132" y="170" className="fill-gray-700 dark:fill-gray-300" fontSize="11" fontFamily="system-ui, sans-serif">Mutes &amp; relays</text>
           {/* Toggle ON */}
           <g className="toggle-green">
             <rect x="274" y="160" width="30" height="16" rx="8" fill="#10B981" />
