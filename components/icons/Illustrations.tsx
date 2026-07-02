@@ -80,7 +80,7 @@ export function ExtensionIllustration({ className }: { className?: string }) {
       </g>
       <g className="api-call">
         <rect x="70" y="226" width="120" height="20" rx="4" fill="#8B5CF6" fillOpacity="0.1"/>
-        <text x="80" y="240" fill="#8B5CF6" fontSize="10" fontFamily="monospace">window.nostr.wot</text>
+        <text x="80" y="240" fill="#8B5CF6" fontSize="10" fontFamily="monospace">signEvent()</text>
       </g>
       {/* Key glyph on extension icon */}
       <g>

@@ -236,14 +236,15 @@ export default async function AboutPage() {
         <div className="grid md:grid-cols-2 gap-6">
           <ScrollReveal animation="fade-right" delay={100}>
             <CodeBlock
-              language="javascript"
+              language="typescript"
               code={`// Check if someone is in your web of trust
-if (window.nostr?.wot) {
-  const distance = await window.nostr.wot.getDistance(pubkey);
+import { WoT } from "@nostr-wot/wot";
 
-  if (distance !== null && distance <= 2) {
-    console.log("Trusted! " + distance + " hops away");
-  }
+const wot = new WoT({ rootPubkey: myPubkey, maxHops: 2 });
+const result = await wot.getDistance(pubkey);
+
+if (result && result.hops <= 2) {
+  console.log("Trusted! " + result.hops + " hops away");
 }`}
             />
           </ScrollReveal>

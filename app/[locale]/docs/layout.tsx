@@ -31,51 +31,14 @@ export default async function DocsLayout({ children }: DocsLayoutProps) {
       ],
     },
     {
-      title: t("sidebar.extensionWotCore"),
-      links: [
-        { href: "/docs/extension", label: t("sidebar.setup") },
-        { href: "/docs/extension#getdistance", label: "getDistance" },
-        { href: "/docs/extension#isinmywot", label: "isInMyWoT" },
-        { href: "/docs/extension#getdistancebetween", label: "getDistanceBetween" },
-        { href: "/docs/extension#gettrustscore", label: "getTrustScore" },
-        { href: "/docs/extension#getdetails", label: "getDetails" },
-        { href: "/docs/extension#getconfig", label: "getConfig" },
-      ],
-    },
-    {
-      title: t("sidebar.extensionBatch"),
-      links: [
-        { href: "/docs/extension#getdistancebatch", label: "getDistanceBatch" },
-        { href: "/docs/extension#gettrustscorenbatch", label: "getTrustScoreBatch" },
-        { href: "/docs/extension#filterbywot", label: "filterByWoT" },
-      ],
-    },
-    {
-      title: t("sidebar.extensionUser"),
-      links: [
-        { href: "/docs/extension#getmypubkey", label: "getMyPubkey" },
-        { href: "/docs/extension#isconfigured", label: "isConfigured" },
-      ],
-    },
-    {
-      title: t("sidebar.extensionGraph"),
-      links: [
-        { href: "/docs/extension#getfollows", label: "getFollows" },
-        { href: "/docs/extension#getcommonfollows", label: "getCommonFollows" },
-        { href: "/docs/extension#getstats", label: "getStats" },
-        { href: "/docs/extension#getpath", label: "getPath" },
-      ],
-    },
-    {
       title: t("sidebar.sdkIntegration"),
       links: [
-        { href: "/docs/sdk", label: t("sidebar.sdkSetup") },
-        { href: "/docs/sdk#core", label: t("sidebar.sdkCore") },
-        { href: "/docs/sdk#batch", label: t("sidebar.sdkBatch") },
-        { href: "/docs/sdk#graph", label: t("sidebar.sdkGraph") },
-        { href: "/docs/sdk#config", label: t("sidebar.sdkConfig") },
-        { href: "/docs/sdk#errors", label: t("sidebar.sdkErrors") },
-        { href: "/docs/sdk#react", label: t("sidebar.sdkReact") },
+        { href: "/docs/sdk#packages", label: t("sidebar.sdkPackages") },
+        { href: "/docs/sdk#setup", label: t("sidebar.sdkSetup") },
+        { href: "/docs/sdk#data", label: t("sidebar.sdkData") },
+        { href: "/docs/sdk#relay", label: t("sidebar.sdkRelay") },
+        { href: "/docs/sdk#ui", label: t("sidebar.sdkUi") },
+        { href: "/docs/sdk#wot", label: t("sidebar.sdkWot") },
       ],
     },
     {

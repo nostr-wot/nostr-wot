@@ -66,14 +66,14 @@ export default function HowItWorksAnimation({ posts, codeComment }: HowItWorksAn
           <span className="text-gray-500">{codeComment}</span>
           <br />
           <span className="text-purple-400">const</span>{" "}
-          <span className="text-blue-300">hops</span>{" "}
+          <span className="text-blue-300">signed</span>{" "}
           <span className="text-white">=</span>{" "}
           <span className="text-purple-400">await</span>{" "}
-          <span className="text-yellow-300">window.nostr.wot</span>
+          <span className="text-yellow-300">window.nostr</span>
           <span className="text-white">.</span>
-          <span className="text-green-300">getDistance</span>
+          <span className="text-green-300">signEvent</span>
           <span className="text-white">(</span>
-          <span className="text-orange-300">pubkey</span>
+          <span className="text-orange-300">event</span>
           <span className="text-white">)</span>
         </div>
       </div>

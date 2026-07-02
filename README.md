@@ -18,11 +18,11 @@ The Nostr WoT Extension is an all-in-one identity provider for your browser — 
 
 ### JavaScript SDK
 
-The nostr-wot-sdk provides a lightweight JavaScript/TypeScript library for integrating Web of Trust directly into your applications without requiring the browser extension.
+`nostr-wot-sdk` is a TypeScript toolkit for building Nostr apps. It bundles a pure-function data/query layer (`@nostr-wot/data` — profiles, notes, threads, engagement, NIP-65 outbox), relay management (`@nostr-wot/relay`), headless login UI (`@nostr-wot/ui` — login modal/widget + session provider), and Web of Trust scoring (`@nostr-wot/wot`) as one optional module. A single `<NostrSdkProvider>` wires the family over one shared connection pool.
 
 - **Repository:** [github.com/nostr-wot/nostr-wot-sdk](https://github.com/nostr-wot/nostr-wot-sdk)
 - **NPM:** [npmjs.com/package/nostr-wot-sdk](https://www.npmjs.com/package/nostr-wot-sdk)
-- **Features:** TypeScript support, React hooks, configurable trust scoring
+- **Features:** pure-function data layer, relay pool + batcher, headless React login UI, SWR cache + hooks, optional Web of Trust scoring
 
 ### WoT Oracle
 
@@ -48,12 +48,27 @@ A high-performance Rust backend that maintains a real-time graph of the Nostr fo
 
 ## API
 
+```tsx
+// SDK (React) — data layer + optional Web of Trust, one provider
+import { NostrSdkProvider, useProfile, useTrustScore } from 'nostr-wot-sdk/react'
+
+<NostrSdkProvider
+  relays={['wss://relay.damus.io', 'wss://nos.lol']}
+  wot={{ enabled: true, options: { maxHops: 2 } }}
+>
+  <App />
+</NostrSdkProvider>
+
+// inside components:
+const profile = useProfile(pubkey)     // profiles, notes, threads, engagement
+const score = useTrustScore(pubkey)    // 0..1 or null (WoT module)
+```
+
 ```js
-// SDK (client-side)
-import { NostrWoT } from 'nostr-wot-sdk'
-const wot = new NostrWoT({ userPubkey: '...' })
-await wot.getDistance(pubkey)
-await wot.getTrustScore(pubkey)
+// SDK (vanilla WoT scoring)
+import { WoT } from '@nostr-wot/wot'
+const wot = new WoT({ rootPubkey: '...', maxHops: 2 })
+await wot.getDistance(pubkey)   // { hops, paths, score } | null
 
 // Oracle (server-side)
 GET /distance?from={pubkey}&to={pubkey}

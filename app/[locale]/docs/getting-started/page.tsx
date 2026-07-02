@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { getTranslations } from "next-intl/server";
 import { Link } from "@/i18n/routing";
-import { CodeBlock, TerminalBlock, ScrollReveal } from "@/components/ui";
+import { CodeBlock, TerminalBlock, InlineCode, ScrollReveal } from "@/components/ui";
 import { generateAlternates, generateOpenGraph, generateTwitter } from "@/lib/metadata";
 import { type Locale } from "@/i18n/config";
 
@@ -43,45 +43,31 @@ export default async function GettingStartedPage() {
       </ScrollReveal>
 
       <ScrollReveal animation="fade-up" delay={100}>
-        <h2>{t("quickStart.browser")}</h2>
+        <h2>Client-side (with the SDK)</h2>
 
       <p>
-        For client-side applications, use the browser extension API. Users will need the{" "}
-        <Link href="/download">WoT Extension</Link> installed.
+        For client-side applications, use the SDK&apos;s Web of Trust module. Install{" "}
+        <InlineCode>nostr-wot-sdk</InlineCode> and query hop distance right in the browser.
       </p>
 
-      <h3>1. Check for Extension</h3>
+      <h3>1. Install</h3>
 
-      <CodeBlock
-        language="javascript"
-        code={`// Feature detection
-function hasWoT() {
-  return typeof window !== "undefined" &&
-         window.nostr?.wot !== undefined;
-}
-
-// Wait for extension to load
-async function waitForWoT(timeout = 3000) {
-  const start = Date.now();
-  while (!hasWoT() && Date.now() - start < timeout) {
-    await new Promise(r => setTimeout(r, 100));
-  }
-  return hasWoT();
-}`}
-      />
+      <TerminalBlock commands={["npm install nostr-wot-sdk"]} />
 
       <h3>2. Query Trust Distance</h3>
 
       <CodeBlock
-        language="javascript"
-        code={`// Get distance to a pubkey
-const distance = await window.nostr.wot.getDistance(
-  "npub1targetpubkey..."
-);
+        language="typescript"
+        code={`import { WoT } from "@nostr-wot/wot";
 
-if (distance !== null && distance <= 2) {
+const wot = new WoT({ rootPubkey: "hex-your-pubkey", maxHops: 2 });
+
+// Get hop distance to a target pubkey
+const result = await wot.getDistance("hex-target-pubkey");
+
+if (result && result.hops <= 2) {
   // Within web of trust
-  console.log(\`Trusted: \${distance} hops away\`);
+  console.log(\`Trusted: \${result.hops} hops away\`);
 } else {
   // Outside web of trust or not connected
   console.log("Not in your web of trust");
@@ -90,7 +76,8 @@ if (distance !== null && distance <= 2) {
 
       <div className="not-prose my-6 p-4 bg-blue-50 dark:bg-blue-950/30 rounded-lg border border-blue-200 dark:border-blue-900">
         <p className="text-sm text-blue-800 dark:text-blue-200">
-          <strong>Tip:</strong> Distance values: 0 = yourself, 1 = direct follow, 2 = follow of follow, null = not connected.
+          <strong>Tip:</strong> Hop values: 0 = yourself, 1 = direct follow, 2 = follow of follow, null = not connected. If the{" "}
+          <Link href="/download">WoT extension</Link> is installed, the module answers queries from its locally-cached follow graph automatically.
         </p>
       </div>
       </ScrollReveal>
@@ -127,24 +114,33 @@ console.log(\`Mutual follow: \${data.mutual}\`);`}
       </ScrollReveal>
 
       <ScrollReveal animation="fade-up" delay={200}>
-        <h2>Using the SDK</h2>
+        <h2>Using the SDK in React</h2>
 
       <p>
-        For TypeScript projects, install our SDK for type-safe Oracle API access:
+        For React apps, wrap your tree in <InlineCode>{"<NostrSdkProvider>"}</InlineCode> — it wires up the
+        data layer (profiles, notes, threads, engagement) and enables the Web of Trust module when you opt in.
+        Trust hooks are then available anywhere.
       </p>
 
-      <TerminalBlock commands={["npm install nostr-wot-sdk"]} />
-
       <CodeBlock
-        language="typescript"
-        code={`import { WoTClient } from "nostr-wot-sdk";
+        language="tsx"
+        code={`import { NostrSdkProvider, useTrustScore } from "nostr-wot-sdk/react";
 
-const client = new WoTClient({
-  baseUrl: "https://wot-oracle.mappingbitcoin.com",
-});
+function App() {
+  return (
+    <NostrSdkProvider
+      relays={["wss://relay.damus.io", "wss://nos.lol"]}
+      wot={{ enabled: true, options: { maxHops: 2 } }}
+    >
+      <Feed />
+    </NostrSdkProvider>
+  );
+}
 
-const result = await client.getDistance(fromPubkey, toPubkey);
-console.log(result.distance);`}
+function TrustBadge({ pubkey }: { pubkey: string }) {
+  const score = useTrustScore(pubkey); // 0..1 or null
+  return score !== null ? <span>Trusted</span> : null;
+}`}
       />
       </ScrollReveal>
 

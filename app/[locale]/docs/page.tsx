@@ -153,22 +153,21 @@ export default async function DocsOverviewPage() {
         <ScrollReveal animation="fade-up" delay={250}>
         <h2>Quick Example</h2>
 
-        <p>Here&apos;s a simple example using the browser extension:</p>
+        <p>Here&apos;s a simple example using the SDK&apos;s Web of Trust module:</p>
 
         <CodeBlock
-          language="javascript"
-          code={`// Check if extension is available
-if (window.nostr?.wot) {
-  // Get distance to a pubkey
-  const distance = await window.nostr.wot.getDistance(
-    "npub1targetpubkey..."
-  );
+          language="typescript"
+          code={`import { WoT } from "@nostr-wot/wot";
 
-  if (distance !== null && distance <= 2) {
-    console.log(\`Trusted: \${distance} hops away\`);
-  } else {
-    console.log("Not in your web of trust");
-  }
+const wot = new WoT({ rootPubkey: "hex-your-pubkey", maxHops: 2 });
+
+// Get hop distance to a target pubkey
+const result = await wot.getDistance("hex-target-pubkey");
+
+if (result && result.hops <= 2) {
+  console.log(\`Trusted: \${result.hops} hops away\`);
+} else {
+  console.log("Not in your web of trust");
 }`}
         />
         </ScrollReveal>
