@@ -263,7 +263,7 @@ export default async function MediaKitPage() {
             </div>
             <div className="bg-white dark:bg-gray-800 rounded-xl p-6 border border-gray-200 dark:border-gray-700">
               <span className="text-sm text-gray-500 dark:text-gray-400 block mb-2">{t("typography.code")}</span>
-              <p className="font-mono text-lg mb-2">await window.nostr.wot.getDistance(pubkey)</p>
+              <p className="font-mono text-lg mb-2">await wot.getDistance(pubkey) // nostr-wot-sdk</p>
               <code className="text-sm text-gray-500">&quot;Fira Code&quot;, Consolas, Monaco, monospace</code>
             </div>
           </div>

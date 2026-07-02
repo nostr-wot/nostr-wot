@@ -10,10 +10,10 @@ Nostr has no central authority to filter spam or verify identity. Web of Trust s
 
 ### Browser Extension
 
-The WoT Extension adds Web of Trust capabilities directly to your browser, exposing the `window.nostr.wot` API for any Nostr client to use.
+The Nostr WoT Extension is an all-in-one identity provider for your browser — a NIP-07 signer with an encrypted key vault, a built-in Lightning wallet, and management for your profile, relays, and mute list. It exposes the standard `window.nostr` NIP-07 API for any Nostr client to use. (Web of Trust distance and trust-score queries live in the SDK and Oracle below, not the extension.)
 
 - **Repository:** [github.com/nostr-wot/nostr-wot-extension](https://github.com/nostr-wot/nostr-wot-extension)
-- **Features:** Real-time trust scoring, visual indicators, client-side filtering
+- **Features:** NIP-07 signing (NIP-04/NIP-44 encryption), multi-account encrypted vault, NIP-46 remote signer, Lightning/WebLN wallet, profile (kind:0), NIP-65 relays, NIP-51 mute list, granular per-site permissions
 - **Browsers:** Chrome, Brave, Edge, Opera, Firefox
 
 ### JavaScript SDK
@@ -49,13 +49,10 @@ A high-performance Rust backend that maintains a real-time graph of the Nostr fo
 ## API
 
 ```js
-// Extension (client-side)
-await window.nostr.wot.getDistance(pubkey)
-await window.nostr.wot.getTrustScore(pubkey)
-
 // SDK (client-side)
 import { NostrWoT } from 'nostr-wot-sdk'
 const wot = new NostrWoT({ userPubkey: '...' })
+await wot.getDistance(pubkey)
 await wot.getTrustScore(pubkey)
 
 // Oracle (server-side)

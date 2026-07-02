@@ -1,17 +1,17 @@
 {
   "meta": {
     "title": "Features",
-    "description": "Discover Nostr WoT features: NIP-07 signer, multi-account vault, NIP-46 remote signer, Lightning wallet, trust badges, custom scoring & privacy-first design."
+    "description": "Discover Nostr WoT features: NIP-07 signer, multi-account vault, NIP-46 remote signer, Lightning wallet, profile & relay management, and privacy-first design."
   },
   "hero": {
     "badge": "Extension Features",
-    "title": "Identity & Trust,",
+    "title": "Identity & Wallet,",
     "titleHighlight": "Everywhere",
-    "description": "A complete Nostr identity provider, Lightning wallet, and Web of Trust engine. Manage multiple accounts, sign events, encrypt messages, send zaps, inject trust badges, and define exactly what \"trusted\" means to you."
+    "description": "A complete Nostr identity provider and Lightning wallet. Manage multiple accounts, sign events, encrypt messages, send zaps, and keep your profile, relays, and mute list in sync — with granular per-site permissions."
   },
   "extensionOverview": {
     "badge": "What You Get",
-    "title": "Identity, wallet, and trust — one extension",
+    "title": "Identity, wallet, and profile — one extension",
     "description": "Everything you need for Nostr in a single install. No juggling multiple extensions.",
     "signer": {
       "title": "NIP-07 Signer",
@@ -30,8 +30,8 @@
       "description": "Built-in wallet for zaps with NWC, LNbits, or one-click quick setup"
     },
     "badges": {
-      "title": "Trust Badges",
-      "description": "Color-coded trust indicators injected into Nostr sites automatically"
+      "title": "Profile & Relays",
+      "description": "Edit your kind:0 profile and manage NIP-65 relays and your NIP-51 mute list"
     },
     "permissions": {
       "title": "Granular Permissions",
@@ -47,175 +47,175 @@
     }
   },
   "universalApi": {
-    "badge": "Universal WoT API",
-    "title": "Your Web of Trust, available on every Nostr website",
-    "description": "Once installed, any Nostr app can ask: \"Is this person in my network?\" No more rebuilding trust from scratch on every client. Your trust graph follows you.",
-    "compatibleApps": "+ any app with API"
+    "badge": "NIP-07 Signer API",
+    "title": "One signer, available on every Nostr website",
+    "description": "Once installed, any Nostr app can call window.nostr to get your public key, sign events, and encrypt messages — without ever touching your private key. Web of Trust queries live in the nostr-wot SDK and Oracle, not the extension.",
+    "compatibleApps": "+ any NIP-07 app"
   },
   "chooseSource": {
-    "badge": "Choose Your Source",
-    "title": "Two ways to power your Web of Trust",
+    "badge": "Set Up Your Account",
+    "title": "Three ways to bring your identity",
     "description": "Pick what fits your needs",
     "remote": {
-      "title": "Remote Oracle",
-      "description": "Connect to a trusted WoT oracle server. Fast queries, zero storage, always up to date.",
+      "title": "Create New Keys",
+      "description": "Generate a fresh keypair in seconds. HD-derived and encrypted in the vault from the start.",
       "features": {
-        "instant": "Instant lookups (<50ms)",
-        "noStorage": "No local storage required",
-        "default": "Default: nostr-wot.com (free)",
-        "selfHosted": "Or connect to self-hosted"
+        "instant": "Instant onboarding",
+        "noStorage": "HD-derived (BIP-32) keys",
+        "default": "Encrypted at rest",
+        "selfHosted": "Backup your seed anytime"
       },
-      "bestFor": "Most users, mobile, low-storage devices"
+      "bestFor": "New users starting fresh on Nostr"
     },
     "local": {
-      "title": "Local Graph",
-      "description": "Build and store your trust graph entirely in your browser. Full privacy, works offline.",
+      "title": "Import nsec",
+      "description": "Already have keys? Paste your nsec or seed and the extension takes over signing locally.",
       "features": {
-        "privacy": "Data never leaves your device",
-        "relays": "Sync from relays you choose",
-        "offline": "Works without internet",
-        "export": "Export/import your graph"
+        "privacy": "Keys never leave your device",
+        "relays": "Bring your existing identity",
+        "offline": "Signs fully offline",
+        "export": "Export/re-import anytime"
       },
-      "bestFor": "Privacy maximalists, offline use, developers"
+      "bestFor": "Existing Nostr users migrating in"
     },
     "hybrid": {
-      "title": "Hybrid Mode",
-      "description": "Best of both worlds. Check locally first, fall back to remote if needed.",
+      "title": "NIP-46 Remote Signer",
+      "description": "Keep keys on a bunker or remote signer. The extension routes signing requests without holding the key.",
       "features": {
-        "fast": "Fastest possible queries",
-        "privacy": "Privacy for close connections",
-        "coverage": "Full coverage via oracle",
-        "fallback": "Graceful offline fallback"
+        "fast": "Keys stay on the bunker",
+        "privacy": "Nothing sensitive stored locally",
+        "coverage": "Works with any NIP-46 signer",
+        "fallback": "Add watch-only accounts too"
       },
-      "recommended": "Recommended"
+      "recommended": "Advanced"
     }
   },
   "trustScoring": {
-    "badge": "Custom Trust Scoring",
-    "title": "Not all follows are equal",
-    "description": "Define what trust means to you",
-    "formula": "score = baseScore × distanceWeight × (1 + pathBonus)",
+    "badge": "Per-Site Permissions",
+    "title": "Not every site gets the same access",
+    "description": "Define what each app is allowed to do",
+    "formula": "permission = account × domain × method",
     "distance": {
-      "title": "Distance Weights",
-      "description": "Trust decreases with social distance:",
+      "title": "Permission Scopes",
+      "description": "Grants are scoped as narrowly as you like:",
       "headers": {
-        "hops": "Hops",
-        "default": "Weight",
+        "hops": "Scope",
+        "default": "Applies to",
         "custom": "Meaning"
       },
       "rows": {
-        "hop1": "1 hop",
-        "hop1Weight": "1.0",
-        "hop1Meaning": "Direct follow",
-        "hop2": "2 hops",
-        "hop2Weight": "0.5",
-        "hop2Meaning": "Friend of friend",
-        "hop3": "3 hops",
-        "hop3Weight": "0.25",
-        "hop3Meaning": "Extended network",
-        "hop4": "4+ hops",
-        "hop4Weight": "0.1",
-        "hop4Meaning": "Distant connection"
+        "hop1": "Account",
+        "hop1Weight": "1 identity",
+        "hop1Meaning": "Which key can sign",
+        "hop2": "Domain",
+        "hop2Weight": "1 site",
+        "hop2Meaning": "Which app is asking",
+        "hop3": "Method",
+        "hop3Weight": "1 call",
+        "hop3Meaning": "signEvent, nip44, etc.",
+        "hop4": "Kind",
+        "hop4Weight": "1 event kind",
+        "hop4Meaning": "Limit signEvent by kind"
       }
     },
     "bonuses": {
-      "title": "Path Bonuses",
-      "description": "Multiple connection paths increase trust:",
+      "title": "Approval Modes",
+      "description": "Decide how much you get asked:",
       "headers": {
-        "signal": "Distance",
-        "multiplier": "Bonus per path"
+        "signal": "Mode",
+        "multiplier": "Behavior"
       },
       "rows": {
-        "hop2Paths": "2 hops",
-        "hop2Bonus": "+15%",
-        "hop3Paths": "3 hops",
-        "hop3Bonus": "+10%",
-        "hop4Paths": "4+ hops",
-        "hop4Bonus": "+5%",
-        "maxBonus": "Max bonus: 50%"
+        "hop2Paths": "Ask every time",
+        "hop2Bonus": "Prompt",
+        "hop3Paths": "Remember for session",
+        "hop3Bonus": "Auto",
+        "hop4Paths": "Always allow",
+        "hop4Bonus": "Silent",
+        "maxBonus": "Revoke any grant instantly"
       }
     },
     "thresholds": {
-      "title": "Trust Thresholds",
-      "description": "Define your own boundaries:",
+      "title": "Access Levels",
+      "description": "Set boundaries per site:",
       "trusted": {
-        "label": "Trusted",
-        "range": "0.7 – 1.0",
-        "meaning": "Show content freely"
+        "label": "Allowed",
+        "range": "Trusted site",
+        "meaning": "Sign without prompts"
       },
       "neutral": {
-        "label": "Neutral",
-        "range": "0.3 – 0.7",
-        "meaning": "Show with caution"
+        "label": "Ask",
+        "range": "New site",
+        "meaning": "Prompt for approval"
       },
       "untrusted": {
-        "label": "Untrusted",
-        "range": "0 – 0.3",
-        "meaning": "Hide or flag"
+        "label": "Blocked",
+        "range": "Denied site",
+        "meaning": "Reject all requests"
       }
     }
   },
   "formula": {
-    "badge": "Scoring Formula",
-    "title": "Transparent. Auditable. Yours.",
+    "badge": "Encrypted Vault",
+    "title": "Your keys. Encrypted. Local.",
     "example": {
       "title": "Example:",
-      "description": "Alice is 2 hops away, you have mutual friends, and 3 distinct paths connect you.",
-      "note": "You control every variable."
+      "description": "Your private keys are sealed with AES-256-GCM and a key derived from your password via PBKDF2 (210,000 iterations).",
+      "note": "Nothing leaves your browser."
     }
   },
   "settings": {
-    "badge": "Advanced Settings",
-    "title": "Fine-tune everything",
+    "badge": "Profile & Relays",
+    "title": "Manage your Nostr presence",
     "relays": {
-      "title": "Relay Selection (Local Mode)",
-      "description": "Choose which relays to sync from:"
+      "title": "Relay List (NIP-65)",
+      "description": "Choose your read and write relays:"
     },
     "syncDepth": {
-      "title": "Sync Depth",
-      "description": "How far to crawl from your pubkey:",
+      "title": "Profile (kind:0)",
+      "description": "Edit the metadata clients display:",
       "headers": {
-        "depth": "Depth",
-        "nodes": "Nodes",
-        "storage": "Storage",
-        "time": "Time"
+        "depth": "Field",
+        "nodes": "Example",
+        "storage": "Kind",
+        "time": "Type"
       }
     },
     "cache": {
-      "title": "Cache Settings",
-      "ttl": "TTL:",
-      "ttlDesc": "How long to cache results",
-      "ttlDefault": "default: 5 min",
-      "maxEntries": "Max entries:",
-      "maxEntriesDesc": "Limit memory usage",
-      "maxEntriesDefault": "default: 10,000"
+      "title": "Auto-Lock",
+      "ttl": "Timer:",
+      "ttlDesc": "Lock the vault after inactivity",
+      "ttlDefault": "default: 15 min",
+      "maxEntries": "Password:",
+      "maxEntriesDesc": "Required to unlock and sign",
+      "maxEntriesDefault": "min 8 characters"
     },
     "lists": {
-      "title": "Blocklist & Trustlist",
+      "title": "Mute List (NIP-51)",
       "blocklist": {
-        "title": "Blocklist",
-        "description": "Manually exclude pubkeys. Blocked users score 0, regardless of distance.",
-        "add": "+ Add blocked pubkey"
+        "title": "Muted Pubkeys",
+        "description": "Hide accounts across compatible clients by publishing a NIP-51 mute list.",
+        "add": "+ Add pubkey to mute"
       },
       "trustlist": {
-        "title": "Trustlist",
-        "description": "Override scoring for specific pubkeys.",
-        "add": "+ Add trusted pubkey → always score 1.0"
+        "title": "Muted Words",
+        "description": "Filter out topics and phrases you'd rather not see.",
+        "add": "+ Add muted word or hashtag"
       }
     }
   },
   "dashboard": {
-    "badge": "Dashboard",
-    "title": "See your Web of Trust at a glance",
-    "nodes": "Nodes",
-    "edges": "Edges",
-    "cacheHitRate": "Cache Hit Rate",
-    "avgQueryTime": "Avg Query Time",
-    "lastSync": "Last sync: {time}",
+    "badge": "Accounts",
+    "title": "Switch identities in one click",
+    "nodes": "Accounts",
+    "edges": "Approved Sites",
+    "cacheHitRate": "Vault Status",
+    "avgQueryTime": "Sign Latency",
+    "lastSync": "Active account: {time}",
     "visualize": {
-      "title": "Visualize",
-      "comingSoon": "(coming soon)",
-      "description": "Interactive graph showing your trust network"
+      "title": "Account Switcher",
+      "comingSoon": "",
+      "description": "Hold multiple identities and switch the active signer instantly"
     }
   },
   "wallet": {
@@ -247,16 +247,16 @@
     "badge": "Privacy",
     "title": "Your data, your rules",
     "remote": {
-      "title": "Remote Mode",
-      "description": "Queries sent to oracle (pubkey pairs visible to server)",
+      "title": "Local Custody",
+      "description": "Private keys are encrypted and never sent anywhere",
       "features": {
-        "noContent": "No content data shared",
-        "onlyPubkey": "Only pubkey lookups"
+        "noContent": "No key ever leaves the vault",
+        "onlyPubkey": "Only signatures are shared"
       }
     },
     "local": {
-      "title": "Local Mode",
-      "description": "Everything stays in your browser",
+      "title": "No Tracking",
+      "description": "The extension phones home to no one",
       "features": {
         "noExternal": "No external requests",
         "noTracking": "No tracking",
@@ -278,26 +278,26 @@
         "description": "Create new keys, import nsec, add watch-only, or connect via NIP-46"
       },
       "mode": {
-        "title": "Choose WoT mode",
-        "description": "Remote, Local, or Hybrid"
+        "title": "Secure your vault",
+        "description": "Set a password and auto-lock timer"
       },
       "scoring": {
-        "title": "Customize settings",
-        "description": "Adjust trust scoring, permissions, and auto-lock timer"
+        "title": "Set site permissions",
+        "description": "Choose what each app can sign and approve requests"
       },
       "browse": {
         "title": "Browse Nostr",
-        "description": "Your identity and Web of Trust follow you everywhere"
+        "description": "Your identity and wallet follow you everywhere"
       }
     }
   },
   "api": {
     "badge": "API for Developers",
-    "title": "Build WoT-aware Nostr apps",
+    "title": "Build Nostr apps on window.nostr",
     "viewDocs": "View full API docs"
   },
   "pricing": {
     "title": "Free. Forever. Open source.",
-    "description": "Self-host the oracle, fork the extension, do whatever you want."
+    "description": "Fork the extension, use the SDK, or self-host the Oracle — do whatever you want."
   }
 }

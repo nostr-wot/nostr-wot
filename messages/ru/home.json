@@ -1,13 +1,13 @@
 {
   "meta": {
-    "title": "Nostr WoT Extension - Identity, Lightning Wallet & Web of Trust",
-    "description": "The all-in-one Nostr browser extension. NIP-07 identity provider, built-in Lightning wallet, Web of Trust scoring, and upcoming trust assertions for decentralized reputation."
+    "title": "Расширение Nostr WoT — идентификация, подписчик и Lightning-кошелёк",
+    "description": "Универсальное браузерное расширение для Nostr. Провайдер идентификации NIP-07, зашифрованное хранилище ключей, встроенный Lightning-кошелёк и управление профилем, реле и списком заглушённых для любого клиента."
   },
   "hero": {
     "badge": "Browser Extension for Nostr",
-    "title": "Identity. Wallet. Trust.",
+    "title": "Идентификация. Подписчик. Кошелёк.",
     "titleHighlight": "One Extension.",
-    "description": "The all-in-one Nostr extension — manage your identity, send zaps with a built-in Lightning wallet, and filter spam with Web of Trust.",
+    "description": "Универсальное расширение для Nostr — управляйте идентификацией, подписывайте события в любом клиенте, отправляйте zaps встроенным Lightning-кошельком и держите профиль, реле и заглушённых в синхронизации.",
     "builtFor": "Built for",
     "playgroundButton": "Try Playground",
     "downloadButton": "Get the Extension"
@@ -23,9 +23,9 @@
       "title": "Lightning Wallet",
       "description": "Built-in wallet for zaps — connect via NWC, LNbits, or create one in a click. WebLN provider included."
     },
-    "wot": {
-      "title": "Web of Trust",
-      "description": "Social distance scoring, trust badges, and spam filtering based on your actual network — no centralized blocklists."
+    "profile": {
+      "title": "Профиль и реле",
+      "description": "Редактируйте профиль kind:0, управляйте списком реле NIP-65 и составляйте список заглушённых NIP-51 — всё в одном месте, синхронизировано между клиентами."
     },
     "upcoming": {
       "title": "Coming Soon",
@@ -78,30 +78,29 @@
       }
     }
   },
-  "wot": {
-    "badge": "Web of Trust",
-    "title": "Trust Based on Your Network",
-    "description": "Web of Trust measures social distance — how many hops separate you from another user in the follow graph. Filter spam, see trust badges, and verify reputation without centralized authorities.",
+  "profile": {
+    "badge": "Профиль и реле",
+    "title": "Ваш профиль, реле и заглушённые",
+    "description": "Держите своё присутствие в Nostr в порядке прямо из расширения. Редактируйте метаданные профиля, управляйте реле, куда вы публикуете и откуда читаете, и ведите список заглушённых — без отдельного клиента.",
     "features": {
-      "scoring": {
-        "title": "Trust scoring",
-        "description": "0-to-1 trust scores based on social distance with bonuses for mutual follows and shared connections"
+      "metadata": {
+        "title": "Метаданные профиля (kind:0)",
+        "description": "Обновляйте имя, аватар, био и другие метаданные kind:0 и публикуйте их на свои реле в один клик"
       },
-      "badges": {
-        "title": "Trust badge injection",
-        "description": "Color-coded trust badges injected directly into Nostr clients — see who's in your network at a glance"
+      "relays": {
+        "title": "Управление реле (NIP-65)",
+        "description": "Составляйте список реле NIP-65 — реле для чтения и записи, через которые все клиенты находят и публикуют ваши заметки"
       },
-      "filtering": {
-        "title": "Spam filtering",
-        "description": "Filter content based on social distance — your network, your rules. No centralized blocklists to censor or manipulate"
+      "mutes": {
+        "title": "Список заглушённых (NIP-51)",
+        "description": "Создавайте и редактируйте список заглушённых NIP-51, чтобы скрытые аккаунты и слова оставались скрытыми повсюду"
       },
-      "privacy": {
-        "title": "Privacy modes",
-        "description": "Local mode for complete privacy (all calculations in-browser) or Remote mode with the Oracle for speed at scale"
+      "sync": {
+        "title": "Синхронизация между клиентами",
+        "description": "Ваш профиль, реле и заглушённые хранятся в Nostr — задайте их один раз, и каждый клиент их подхватит"
       }
     },
-    "apiLabel": "Trust queries via",
-    "downloadButton": "Download Extension"
+    "downloadButton": "Скачать расширение"
   },
   "upcoming": {
     "badge": "Coming Soon",
@@ -137,13 +136,13 @@
     },
     "step2": {
       "title": "Use Any Nostr Client",
-      "description": "The extension provides NIP-07 signing, Lightning wallet, and trust scoring to every Nostr app automatically."
+      "description": "Расширение автоматически предоставляет подпись NIP-07 и встроенный Lightning-кошелёк каждому Nostr-приложению."
     },
     "step3": {
-      "title": "Trust Follows You",
-      "description": "Your Web of Trust, wallet, and identity travel with you across every client — one extension, everywhere."
+      "title": "Всё следует за вами",
+      "description": "Ваша идентификация, кошелёк, профиль, реле и заглушённые следуют за вами в каждом клиенте — одно расширение, повсюду."
     },
-    "learnMoreLink": "Learn more about how Web of Trust works"
+    "learnMoreLink": "Узнать больше о том, как работает расширение"
   },
   "developers": {
     "title": "For Developers",
@@ -168,11 +167,11 @@
     "items": {
       "whatIsExtension": {
         "question": "What does the extension do?",
-        "answer": "The Nostr WoT Extension is an all-in-one browser extension that acts as your Nostr identity provider (NIP-07 signer), Lightning wallet, and Web of Trust engine. It manages your keys in an encrypted vault, signs events for any Nostr client, handles zaps, and calculates trust scores — all from a single extension."
+        "answer": "Расширение Nostr WoT — это универсальное браузерное расширение, которое работает как ваш провайдер идентификации Nostr (подписчик NIP-07) и Lightning-кошелёк. Оно хранит ключи в зашифрованном хранилище, подписывает события для любого Nostr-клиента, обрабатывает zaps и позволяет редактировать профиль, реле и список заглушённых — всё из одного расширения."
       },
-      "whatIsWot": {
-        "question": "What is Web of Trust?",
-        "answer": "Web of Trust measures social distance — how many 'hops' separate you from another user in the Nostr follow graph. If you follow someone, they're 1 hop away. If they follow someone else, that person is 2 hops from you. This helps filter spam and verify reputation without centralized blocklists."
+      "whatDoesItManage": {
+        "question": "Чем я могу управлять из расширения?",
+        "answer": "Всей вашей идентификацией Nostr: несколькими аккаунтами в зашифрованном хранилище, разрешениями на подпись для каждого сайта, встроенным Lightning-кошельком, метаданными профиля kind:0, списком реле NIP-65 и списком заглушённых NIP-51. Задайте их один раз, и каждый клиент их подхватит."
       },
       "howDoesWalletWork": {
         "question": "How does the Lightning wallet work?",
@@ -180,7 +179,7 @@
       },
       "isItPrivate": {
         "question": "Is my data private?",
-        "answer": "Yes. Your keys are stored in an AES-256-GCM encrypted vault that only you can unlock. For Web of Trust, Local mode keeps all calculations in your browser — nothing leaves your device. Remote mode only sends pubkey lookups to the Oracle (no content data). You can also self-host the Oracle."
+        "answer": "Да. Ваши ключи хранятся в зашифрованном хранилище AES-256-GCM, которое можете разблокировать только вы, и они никогда не покидают ваше устройство в незашифрованном виде. Вы предоставляете доступ к подписи для каждого сайта и метода, поэтому всегда контролируете, что именно каждое Nostr-приложение может делать с вашей идентификацией."
       },
       "whichBrowsers": {
         "question": "Which browsers are supported?",
@@ -199,7 +198,7 @@
   "playground": {
     "badge": "Interactive Demo",
     "title": "Try the Playground",
-    "description": "Explore your Web of Trust graph interactively. See your social connections, trust distances, and how the extension works in real-time.",
+    "description": "Исследуйте свой граф Web of Trust в интерактивном режиме. Смотрите свои социальные связи, дистанции доверия и то, как Oracle и SDK вычисляют их в реальном времени.",
     "tryButton": "Open Playground",
     "notice": {
       "title": "Install from Chrome Web Store",

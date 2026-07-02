@@ -20,7 +20,7 @@ export const metadata: Metadata = {
     template: "%s | Nostr WoT",
   },
   description:
-    "Nostr identity provider, NIP-07 signer, Lightning wallet, and Web of Trust browser extension. Manage keys, sign events, send zaps, and filter spam with trust scores.",
+    "The all-in-one Nostr browser extension — identity provider, NIP-07 signer, encrypted key vault, and Lightning wallet. Manage your profile, relays, and mute list with granular per-site permissions.",
   keywords: ["nostr wot", "nostr web of trust", "web of trust"],
   manifest: "/manifest.json",
   icons: {
@@ -35,7 +35,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: "Nostr Web of Trust",
     description:
-      "Nostr identity provider, NIP-07 signer, Lightning wallet, and Web of Trust browser extension. Manage keys, sign events, send zaps, and filter spam with trust scores.",
+      "The all-in-one Nostr browser extension — identity provider, NIP-07 signer, encrypted key vault, and Lightning wallet. Manage your profile, relays, and mute list with granular per-site permissions.",
     url: "https://nostr-wot.com",
     siteName: "Nostr WoT",
     locale: "en_US",
@@ -45,7 +45,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: "Nostr Web of Trust",
     description:
-      "Nostr identity provider, NIP-07 signer, Lightning wallet, and Web of Trust browser extension.",
+      "The all-in-one Nostr browser extension — identity provider, NIP-07 signer, encrypted key vault, and Lightning wallet with profile, relay, and mute-list management.",
   },
 };
 

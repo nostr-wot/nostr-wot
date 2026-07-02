@@ -277,8 +277,8 @@ export default function PitchContent() {
           <Feat>{t("slide11.feat5")}</Feat>
         </SolutionSlide>
 
-        {/* SLIDE 9 — FEATURE: Web of Trust */}
-        <SolutionSlide active={current === 9} num="WT">
+        {/* SLIDE 9 — FEATURE: Profile & Network */}
+        <SolutionSlide active={current === 9} num="PN">
           <div className="pitch-label pitch-label-v">{t("slide12.label")}</div>
           <PitchTrustScoreIcon className="pitch-svg-icon" />
           <h2 className="pitch-h2">

@@ -2,18 +2,18 @@
 
 import { ScrollReveal } from "@/components/ui";
 
-const DISTANCE_WEIGHTS = [
-  { hops: "1 hop", weight: "100%", color: "bg-emerald-500" },
-  { hops: "2 hops", weight: "50%", color: "bg-amber-500" },
-  { hops: "3 hops", weight: "25%", color: "bg-orange-500" },
-  { hops: "4+ hops", weight: "10%", color: "bg-red-500" },
+const PERMISSION_SCOPES = [
+  { hops: "Account", weight: "100%", color: "bg-emerald-500" },
+  { hops: "Domain", weight: "75%", color: "bg-amber-500" },
+  { hops: "Method", weight: "50%", color: "bg-orange-500" },
+  { hops: "Kind", weight: "25%", color: "bg-red-500" },
 ];
 
-const RELATIONSHIP_BONUSES = [
-  { signal: "2-hop paths", bonus: "+15%", desc: "Per additional connection path" },
-  { signal: "3-hop paths", bonus: "+10%", desc: "Per additional connection path" },
-  { signal: "4+ hop paths", bonus: "+5%", desc: "Per additional connection path" },
-  { signal: "Maximum bonus", bonus: "50%", desc: "Caps total path bonus" },
+const APPROVAL_MODES = [
+  { signal: "Ask every time", bonus: "Prompt", desc: "A popup for every request" },
+  { signal: "Remember for session", bonus: "Auto", desc: "Approve until the browser closes" },
+  { signal: "Always allow", bonus: "Silent", desc: "Trusted site, no prompts" },
+  { signal: "Revoke anytime", bonus: "Instant", desc: "Pull any grant from settings" },
 ];
 
 export default function ScoringDetailsGrid() {
@@ -21,10 +21,10 @@ export default function ScoringDetailsGrid() {
     <div className="grid lg:grid-cols-2 gap-8">
       <ScrollReveal animation="fade-up" delay={200}>
         <div className="bg-white dark:bg-gray-800/50 rounded-2xl p-8 shadow-sm border border-gray-200 dark:border-gray-700/50 h-full">
-          <h3 className="text-lg font-bold mb-2">Distance Weights</h3>
-          <p className="text-sm text-gray-500 dark:text-gray-400 mb-6">Closer connections carry more weight</p>
+          <h3 className="text-lg font-bold mb-2">Permission Scopes</h3>
+          <p className="text-sm text-gray-500 dark:text-gray-400 mb-6">Grant access as narrowly as you like</p>
           <div className="space-y-4">
-            {DISTANCE_WEIGHTS.map((item) => (
+            {PERMISSION_SCOPES.map((item) => (
               <div key={item.hops} className="flex items-center gap-4">
                 <div className="w-20 text-sm font-medium text-gray-700 dark:text-gray-300">{item.hops}</div>
                 <div className="flex-1">
@@ -36,16 +36,16 @@ export default function ScoringDetailsGrid() {
               </div>
             ))}
           </div>
-          <p className="text-xs text-gray-500 dark:text-gray-400 mt-6 italic">All weights are fully customizable in settings</p>
+          <p className="text-xs text-gray-500 dark:text-gray-400 mt-6 italic">Scope every grant per account, per site, per method, or per event kind</p>
         </div>
       </ScrollReveal>
 
       <ScrollReveal animation="fade-up" delay={300}>
         <div className="bg-white dark:bg-gray-800/50 rounded-2xl p-8 shadow-sm border border-gray-200 dark:border-gray-700/50 h-full">
-          <h3 className="text-lg font-bold mb-2">Path Bonuses</h3>
-          <p className="text-sm text-gray-500 dark:text-gray-400 mb-6">Multiple connection paths increase trust</p>
+          <h3 className="text-lg font-bold mb-2">Approval Modes</h3>
+          <p className="text-sm text-gray-500 dark:text-gray-400 mb-6">Decide how often you get asked</p>
           <div className="space-y-4">
-            {RELATIONSHIP_BONUSES.map((item) => (
+            {APPROVAL_MODES.map((item) => (
               <div key={item.signal} className="flex items-center justify-between p-3 rounded-lg bg-gray-50 dark:bg-gray-700/30">
                 <div>
                   <p className="font-medium text-gray-900 dark:text-white">{item.signal}</p>

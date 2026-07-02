@@ -1,13 +1,13 @@
 {
   "meta": {
-    "title": "Nostr WoT Extension - Identity, Lightning Wallet & Web of Trust",
-    "description": "The all-in-one Nostr browser extension. NIP-07 identity provider, built-in Lightning wallet, Web of Trust scoring, and upcoming trust assertions for decentralized reputation."
+    "title": "Nostr WoT Extension - Identity, Signer & Lightning Wallet",
+    "description": "The all-in-one Nostr browser extension. NIP-07 identity provider, encrypted key vault, built-in Lightning wallet, and profile, relay & mute-list management for every client."
   },
   "hero": {
     "badge": "Browser Extension for Nostr",
-    "title": "Identity. Wallet. Trust.",
+    "title": "Identity. Signer. Wallet.",
     "titleHighlight": "One Extension.",
-    "description": "The all-in-one Nostr extension — manage your identity, send zaps with a built-in Lightning wallet, and filter spam with Web of Trust.",
+    "description": "The all-in-one Nostr extension — manage your identity, sign events for any client, send zaps with a built-in Lightning wallet, and keep your profile, relays, and mutes in sync.",
     "builtFor": "Built for",
     "playgroundButton": "Try Playground",
     "downloadButton": "Get the Extension"
@@ -23,9 +23,9 @@
       "title": "Lightning Wallet",
       "description": "Built-in wallet for zaps — connect via NWC, LNbits, or create one in a click. WebLN provider included."
     },
-    "wot": {
-      "title": "Web of Trust",
-      "description": "Social distance scoring, trust badges, and spam filtering based on your actual network — no centralized blocklists."
+    "profile": {
+      "title": "Profile & Relays",
+      "description": "Edit your kind:0 profile, manage your NIP-65 relay list, and curate your NIP-51 mute list — all from one place, synced across clients."
     },
     "upcoming": {
       "title": "Coming Soon",
@@ -78,29 +78,28 @@
       }
     }
   },
-  "wot": {
-    "badge": "Web of Trust",
-    "title": "Trust Based on Your Network",
-    "description": "Web of Trust measures social distance — how many hops separate you from another user in the follow graph. Filter spam, see trust badges, and verify reputation without centralized authorities.",
+  "profile": {
+    "badge": "Profile & Relays",
+    "title": "Your Profile, Relays & Mutes",
+    "description": "Keep your Nostr presence in order from the extension. Edit your profile metadata, manage the relays you publish to and read from, and maintain your mute list — no extra client required.",
     "features": {
-      "scoring": {
-        "title": "Trust scoring",
-        "description": "0-to-1 trust scores based on social distance with bonuses for mutual follows and shared connections"
+      "metadata": {
+        "title": "Profile metadata (kind:0)",
+        "description": "Update your name, picture, bio, and other kind:0 metadata and publish it to your relays in one click"
       },
-      "badges": {
-        "title": "Trust badge injection",
-        "description": "Color-coded trust badges injected directly into Nostr clients — see who's in your network at a glance"
+      "relays": {
+        "title": "Relay management (NIP-65)",
+        "description": "Curate your NIP-65 relay list — the read and write relays every client uses to find and publish your notes"
       },
-      "filtering": {
-        "title": "Spam filtering",
-        "description": "Filter content based on social distance — your network, your rules. No centralized blocklists to censor or manipulate"
+      "mutes": {
+        "title": "Mute list (NIP-51)",
+        "description": "Build and edit your NIP-51 mute list so the accounts and words you hide stay hidden everywhere"
       },
-      "privacy": {
-        "title": "Privacy modes",
-        "description": "Local mode for complete privacy (all calculations in-browser) or Remote mode with the Oracle for speed at scale"
+      "sync": {
+        "title": "Synced across clients",
+        "description": "Your profile, relays, and mutes live on Nostr — set them once and every client you use picks them up"
       }
     },
-    "apiLabel": "Trust queries via",
     "downloadButton": "Download Extension"
   },
   "upcoming": {
@@ -137,13 +136,13 @@
     },
     "step2": {
       "title": "Use Any Nostr Client",
-      "description": "The extension provides NIP-07 signing, Lightning wallet, and trust scoring to every Nostr app automatically."
+      "description": "The extension provides NIP-07 signing and a built-in Lightning wallet to every Nostr app automatically."
     },
     "step3": {
-      "title": "Trust Follows You",
-      "description": "Your Web of Trust, wallet, and identity travel with you across every client — one extension, everywhere."
+      "title": "Everything Follows You",
+      "description": "Your identity, wallet, profile, relays, and mutes travel with you across every client — one extension, everywhere."
     },
-    "learnMoreLink": "Learn more about how Web of Trust works"
+    "learnMoreLink": "Learn more about how the extension works"
   },
   "developers": {
     "title": "For Developers",
@@ -168,11 +167,11 @@
     "items": {
       "whatIsExtension": {
         "question": "What does the extension do?",
-        "answer": "The Nostr WoT Extension is an all-in-one browser extension that acts as your Nostr identity provider (NIP-07 signer), Lightning wallet, and Web of Trust engine. It manages your keys in an encrypted vault, signs events for any Nostr client, handles zaps, and calculates trust scores — all from a single extension."
+        "answer": "The Nostr WoT Extension is an all-in-one browser extension that acts as your Nostr identity provider (NIP-07 signer) and Lightning wallet. It manages your keys in an encrypted vault, signs events for any Nostr client, handles zaps, and lets you edit your profile, relays, and mute list — all from a single extension."
       },
-      "whatIsWot": {
-        "question": "What is Web of Trust?",
-        "answer": "Web of Trust measures social distance — how many 'hops' separate you from another user in the Nostr follow graph. If you follow someone, they're 1 hop away. If they follow someone else, that person is 2 hops from you. This helps filter spam and verify reputation without centralized blocklists."
+      "whatDoesItManage": {
+        "question": "What can I manage from the extension?",
+        "answer": "Your whole Nostr identity: multiple accounts in an encrypted vault, per-site signing permissions, a built-in Lightning wallet, your kind:0 profile metadata, your NIP-65 relay list, and your NIP-51 mute list. Set them once and every client you use picks them up."
       },
       "howDoesWalletWork": {
         "question": "How does the Lightning wallet work?",
@@ -180,7 +179,7 @@
       },
       "isItPrivate": {
         "question": "Is my data private?",
-        "answer": "Yes. Your keys are stored in an AES-256-GCM encrypted vault that only you can unlock. For Web of Trust, Local mode keeps all calculations in your browser — nothing leaves your device. Remote mode only sends pubkey lookups to the Oracle (no content data). You can also self-host the Oracle."
+        "answer": "Yes. Your keys are stored in an AES-256-GCM encrypted vault that only you can unlock, and they never leave your device unencrypted. You grant signing access per site and per method, so you always control exactly what each Nostr app can do with your identity."
       },
       "whichBrowsers": {
         "question": "Which browsers are supported?",
@@ -199,7 +198,7 @@
   "playground": {
     "badge": "Interactive Demo",
     "title": "Try the Playground",
-    "description": "Explore your Web of Trust graph interactively. See your social connections, trust distances, and how the extension works in real-time.",
+    "description": "Explore your Web of Trust graph interactively. See your social connections, trust distances, and how the Oracle and SDK compute them in real-time.",
     "tryButton": "Open Playground",
     "notice": {
       "title": "Install from Chrome Web Store",

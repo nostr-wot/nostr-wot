@@ -61,7 +61,7 @@ const BROWSERS = [
   { key: "safari", Icon: SafariIcon, url: null, comingSoon: true },
 ] as const;
 
-const FAQ_KEYS = ["whatIsWot", "howExtensionWorks", "isDataPrivate", "supportedBrowsers", "nostrAccount", "hasWallet", "isFree"];
+const FAQ_KEYS = ["whatIsExtension", "howExtensionWorks", "isDataPrivate", "supportedBrowsers", "nostrAccount", "hasWallet", "isFree"];
 
 const FEATURES = [
   { key: "instantQueries", Icon: KeyIcon },
@@ -80,7 +80,7 @@ export default async function DownloadPage() {
     "name": "Nostr Web of Trust Extension",
     "applicationCategory": "BrowserApplication",
     "operatingSystem": "Chrome, Brave, Edge, Opera, Firefox, Safari (coming soon)",
-    "description": "Nostr identity provider, NIP-07 signer, Lightning wallet, and Web of Trust browser extension. Manage multiple accounts, sign events, encrypt messages, send zaps, and filter spam with trust scores.",
+    "description": "Nostr identity provider, NIP-07 signer, Lightning wallet, and profile/relay manager browser extension. Manage multiple accounts, sign events, encrypt messages, send zaps, and edit your profile, relays, and mute list.",
     "url": "https://nostr-wot.com/download",
     "downloadUrl": "https://chromewebstore.google.com/detail/nostr-wot-extension/gfmefgdkmjpjinecjchlangpamhclhdo",
     "softwareVersion": "0.3.0",
@@ -102,8 +102,9 @@ export default async function DownloadPage() {
       "NIP-04 and NIP-44 encryption",
       "NIP-46 remote signer support",
       "Encrypted vault with auto-lock",
-      "Trust badge injection on Nostr sites",
-      "Web of Trust API (window.nostr.wot)",
+      "Profile metadata management (kind:0)",
+      "NIP-65 relay list management",
+      "NIP-51 mute list management",
       "Watch-only and read-only accounts",
       "6 languages supported",
       "Granular per-site permissions",

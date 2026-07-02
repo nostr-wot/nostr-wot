@@ -50,7 +50,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   return {
     title,
     description,
-    keywords: ["nostr wot features", "nostr trust score"],
+    keywords: ["nostr nip-07 signer", "nostr identity extension"],
     alternates: generateAlternates("/features", locale as Locale),
     openGraph: generateOpenGraph({
       title,
@@ -62,29 +62,36 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   };
 }
 
-// Code examples
-const API_EXAMPLE = `// Check trust in any Nostr app
-const trusted = await window.nostr.wot.isInMyWoT(pubkey);
-const distance = await window.nostr.wot.getDistance(pubkey);
-const score = await window.nostr.wot.getTrustScore(pubkey);`;
+// Code examples — the NIP-07 surface the extension injects
+const API_EXAMPLE = `// The extension injects window.nostr (NIP-07)
+const pubkey = await window.nostr.getPublicKey();
+const signed = await window.nostr.signEvent(event);
+const ct = await window.nostr.nip44.encrypt(peer, "gm");`;
 
-const FULL_API_EXAMPLE = `// Check if extension is available
-if (window.nostr?.wot) {
-  // Simple boolean check
-  const inNetwork = await window.nostr.wot.isInMyWoT(pubkey, maxHops);
+const FULL_API_EXAMPLE = `// Check if a NIP-07 signer is available
+if (window.nostr) {
+  // Get the user's public key (with permission)
+  const pubkey = await window.nostr.getPublicKey();
 
-  // Get exact distance (number of hops)
-  const hops = await window.nostr.wot.getDistance(pubkey);
+  // Sign a Nostr event — private key never leaves the vault
+  const signed = await window.nostr.signEvent({
+    kind: 1,
+    created_at: Math.floor(Date.now() / 1000),
+    tags: [],
+    content: "Hello from a NIP-07 app",
+  });
 
-  // Get full trust score (0-1 based on distance + bonuses)
-  const score = await window.nostr.wot.getTrustScore(pubkey);
+  // Encrypt / decrypt DMs (NIP-04 and NIP-44)
+  const nip44Cipher = await window.nostr.nip44.encrypt(peerPubkey, "gm");
+  const plaintext = await window.nostr.nip04.decrypt(peerPubkey, dmCiphertext);
 
-  // Get detailed trust info (paths, mutual, bridging nodes)
-  const details = await window.nostr.wot.getDetails(pubkey);
+  // Read the user's preferred relays (NIP-65)
+  const relays = await window.nostr.getRelays();
+}
 
-  // Get current extension configuration
-  const config = await window.nostr.wot.getConfig();
-}`;
+// Web of Trust lives in the SDK / Oracle, not the extension:
+//   import { getTrustScore } from "nostr-wot-sdk";
+//   const score = await getTrustScore(pubkey);`;
 
 // Data arrays
 const COMPATIBLE_APPS = ["Primal", "Coracle", "Snort", "Habla", "Yakihonne"];
@@ -98,9 +105,9 @@ const MODE_CARDS = [
 const GET_STARTED_STEPS = [
   { title: "Install the extension", description: "Add to Chrome, Brave, Edge, Opera, or Firefox" },
   { title: "Set up your account", description: "Create new keys, import nsec, add watch-only, or connect via NIP-46" },
-  { title: "Choose your WoT mode", description: "Remote for speed, Local for privacy, or Hybrid for both" },
-  { title: "Customize settings", description: "Adjust trust scoring, permissions, and auto-lock timer" },
-  { title: "Browse Nostr", description: "Your identity and Web of Trust now follow you everywhere" },
+  { title: "Secure your vault", description: "Set a password and an auto-lock timer for your encrypted keys" },
+  { title: "Set site permissions", description: "Choose what each app can sign and approve requests" },
+  { title: "Browse Nostr", description: "Your identity and wallet now follow you everywhere" },
 ];
 
 const PRIVACY_MODES = [
@@ -108,16 +115,16 @@ const PRIVACY_MODES = [
     icon: ServerIcon,
     iconColor: "text-blue-500",
     iconBg: "bg-blue-500/10",
-    title: "Remote Mode",
-    description: "Queries sent to oracle server",
-    features: ["No content data shared", "Only pubkey lookups", "No logging or tracking"],
+    title: "Local Custody",
+    description: "Private keys are encrypted and never sent anywhere",
+    features: ["No key ever leaves the vault", "Only signatures are shared", "You approve every request"],
   },
   {
     icon: LockIcon,
     iconColor: "text-primary",
     iconBg: "bg-primary/10",
-    title: "Local Mode",
-    description: "Everything stays in your browser",
+    title: "No Tracking",
+    description: "The extension phones home to no one",
     features: ["Zero external requests", "No tracking or analytics", "Export your data anytime", "Works completely offline"],
     featured: true,
     badge: "Maximum Privacy",
@@ -131,12 +138,12 @@ export default async function FeaturesPage() {
   const jsonLd = {
     "@context": "https://schema.org",
     "@type": "WebPage",
-    "name": "Nostr Web of Trust Features",
-    "description": "Explore Nostr WoT features: NIP-07 signer, multi-account vault, Lightning wallet, trust scoring, privacy modes, badge injection, and seamless integration with any Nostr app.",
+    "name": "Nostr WoT Extension Features",
+    "description": "Explore Nostr WoT extension features: NIP-07 signer, multi-account vault, NIP-46 remote signer, Lightning wallet, profile/relay/mute management, granular per-site permissions, and privacy-first design.",
     "url": "https://nostr-wot.com/features",
     "mainEntity": {
       "@type": "SoftwareApplication",
-      "name": "Nostr Web of Trust",
+      "name": "Nostr WoT Extension",
       "applicationCategory": "DeveloperApplication",
       "operatingSystem": "Chrome, Brave, Edge, Opera, Firefox",
       "featureList": [
@@ -144,10 +151,9 @@ export default async function FeaturesPage() {
         "Multi-account management with HD derivation",
         "NIP-46 remote signer support",
         "Encrypted vault with auto-lock",
-        "Trust badge injection on Nostr sites",
-        "Universal window.nostr.wot API",
-        "Customizable trust scoring",
-        "Remote, Local, and Hybrid modes",
+        "Granular per-site signing permissions",
+        "window.nostr signEvent, nip04 and nip44 API",
+        "Profile (kind:0), NIP-65 relays, and NIP-51 mute list management",
         "Watch-only accounts",
         "6 languages supported",
         "Built-in Lightning wallet with NWC and LNbits support",

@@ -69,7 +69,7 @@ export default async function Home() {
     "alternateName": "Nostr WoT",
     "url": "https://nostr-wot.com",
     "logo": "https://nostr-wot.com/icon-512.png",
-    "description": "All-in-one Nostr browser extension — identity provider, NIP-07 signer, Lightning wallet, and Web of Trust. Manage keys, sign events, send zaps, and filter spam with trust scores.",
+    "description": "All-in-one Nostr browser extension — identity provider, NIP-07 signer, encrypted key vault, and Lightning wallet. Manage your profile, relays, and mute list with granular per-site permissions.",
     "sameAs": [
       "https://github.com/nostr-wot",
       "https://twitter.com/nostr_wot",
@@ -81,7 +81,7 @@ export default async function Home() {
     "@type": "WebSite",
     "name": "Nostr Web of Trust",
     "url": "https://nostr-wot.com",
-    "description": "All-in-one Nostr browser extension — identity provider, NIP-07 signer, Lightning wallet, and Web of Trust",
+    "description": "All-in-one Nostr browser extension — identity provider, NIP-07 signer, encrypted key vault, and Lightning wallet with profile, relay, and mute-list management",
     "potentialAction": {
       "@type": "SearchAction",
       "target": "https://nostr-wot.com/docs?search={search_term_string}",
@@ -104,7 +104,7 @@ export default async function Home() {
         "@type": "SiteNavigationElement",
         "position": 2,
         "name": "Features",
-        "description": "Identity provider, Lightning wallet, Web of Trust scoring, trust badges, and granular permissions",
+        "description": "Identity provider, NIP-07 signer, encrypted vault, Lightning wallet, profile & relay management, and granular permissions",
         "url": "https://nostr-wot.com/features",
       },
       {
@@ -140,7 +140,7 @@ export default async function Home() {
   const capabilityCards = [
     { icon: <KeyIcon className="w-7 h-7 text-indigo-600 dark:text-indigo-400" />, title: t("capabilities.identity.title"), description: t("capabilities.identity.description"), iconBg: "bg-indigo-100 dark:bg-indigo-900/40" },
     { icon: <LightningIcon className="w-7 h-7 text-amber-600 dark:text-amber-400" />, title: t("capabilities.wallet.title"), description: t("capabilities.wallet.description"), iconBg: "bg-amber-100 dark:bg-amber-900/40" },
-    { icon: <ShieldIcon className="w-7 h-7" />, title: t("capabilities.wot.title"), description: t("capabilities.wot.description"), iconBg: "bg-purple-100 dark:bg-purple-900/40" },
+    { icon: <ShieldIcon className="w-7 h-7" />, title: t("capabilities.profile.title"), description: t("capabilities.profile.description"), iconBg: "bg-purple-100 dark:bg-purple-900/40" },
     { icon: <SpeedIcon className="w-7 h-7 text-emerald-600 dark:text-emerald-400" />, title: t("capabilities.upcoming.title"), description: t("capabilities.upcoming.description"), iconBg: "bg-emerald-100 dark:bg-emerald-900/40" },
   ];
 
@@ -158,11 +158,11 @@ export default async function Home() {
     { title: t("wallet.features.webln.title"), description: t("wallet.features.webln.description") },
   ];
 
-  const wotFeatures = [
-    { title: t("wot.features.scoring.title"), description: t("wot.features.scoring.description") },
-    { title: t("wot.features.badges.title"), description: t("wot.features.badges.description") },
-    { title: t("wot.features.filtering.title"), description: t("wot.features.filtering.description") },
-    { title: t("wot.features.privacy.title"), description: t("wot.features.privacy.description") },
+  const profileFeatures = [
+    { title: t("profile.features.metadata.title"), description: t("profile.features.metadata.description") },
+    { title: t("profile.features.relays.title"), description: t("profile.features.relays.description") },
+    { title: t("profile.features.mutes.title"), description: t("profile.features.mutes.description") },
+    { title: t("profile.features.sync.title"), description: t("profile.features.sync.description") },
   ];
 
   const howItWorksSteps = [
@@ -173,7 +173,7 @@ export default async function Home() {
 
   const faqItems = [
     { question: t("faq.items.whatIsExtension.question"), answer: t("faq.items.whatIsExtension.answer") },
-    { question: t("faq.items.whatIsWot.question"), answer: t("faq.items.whatIsWot.answer") },
+    { question: t("faq.items.whatDoesItManage.question"), answer: t("faq.items.whatDoesItManage.answer") },
     { question: t("faq.items.howDoesWalletWork.question"), answer: t("faq.items.howDoesWalletWork.answer") },
     { question: t("faq.items.isItPrivate.question"), answer: t("faq.items.isItPrivate.answer") },
     { question: t("faq.items.whichBrowsers.question"), answer: t("faq.items.whichBrowsers.answer") },
@@ -340,28 +340,24 @@ export default async function Home() {
           </div>
         </Section>
 
-        {/* Web of Trust Section */}
+        {/* Profile, Relays & Mutes Section */}
         <Section padding="lg" className="overflow-hidden">
           <div className="grid lg:grid-cols-3 gap-12 lg:gap-16 items-center">
             <ScrollReveal animation="fade-right" className="lg:col-span-2">
               <div>
                 <div className="inline-flex items-center gap-2 bg-purple-100 dark:bg-purple-900/30 text-purple-700 dark:text-purple-300 px-3 py-1 rounded-full text-sm font-medium mb-6">
                   <ShieldIcon className="w-4 h-4" />
-                  {t("wot.badge")}
+                  {t("profile.badge")}
                 </div>
-                <h2 className="text-3xl md:text-4xl font-bold mb-6">{t("wot.title")}</h2>
+                <h2 className="text-3xl md:text-4xl font-bold mb-6">{t("profile.title")}</h2>
                 <p className="text-lg text-gray-600 dark:text-gray-400 mb-8">
-                  {t("wot.description")}
+                  {t("profile.description")}
                 </p>
                 <div className="grid md:grid-cols-2 gap-x-8 mb-8">
-                  <FeatureList items={wotFeatures.slice(0, 2)} iconColor="text-purple-600 dark:text-purple-400" />
-                  <FeatureList items={wotFeatures.slice(2)} iconColor="text-purple-600 dark:text-purple-400" />
+                  <FeatureList items={profileFeatures.slice(0, 2)} iconColor="text-purple-600 dark:text-purple-400" />
+                  <FeatureList items={profileFeatures.slice(2)} iconColor="text-purple-600 dark:text-purple-400" />
                 </div>
-                <p className="text-sm text-gray-500 dark:text-gray-400 mb-6">
-                  {t("wot.apiLabel")}{" "}
-                  <code className="bg-gray-200 dark:bg-gray-700 px-2 py-1 rounded text-sm font-mono">window.nostr.wot</code>
-                </p>
-                <LinkButton href="/download" className="hover-lift">{t("wot.downloadButton")}</LinkButton>
+                <LinkButton href="/download" className="hover-lift">{t("profile.downloadButton")}</LinkButton>
               </div>
             </ScrollReveal>
             <ScrollReveal animation="fade-left" delay={200}>

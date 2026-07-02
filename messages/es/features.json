@@ -1,303 +1,81 @@
 {
   "meta": {
-    "title": "Características",
-    "description": "Funciones de Nostr WoT: firmador NIP-07, bóveda multi-cuenta, firmador remoto NIP-46, wallet Lightning, insignias de confianza y puntuación personalizada."
+    "title": "Funciones",
+    "description": "Descubre las funciones de Nostr WoT: firmante NIP-07, bóveda multicuenta, firmante remoto NIP-46, monedero Lightning, gestión de perfil y relays, y diseño centrado en la privacidad."
   },
   "hero": {
-    "badge": "Características de la Extensión",
-    "title": "Identidad y Confianza,",
-    "titleHighlight": "En Todas Partes",
-    "description": "Un proveedor de identidad Nostr completo, wallet Lightning y motor Web of Trust. Gestiona múltiples cuentas, firma eventos, encripta mensajes, envía zaps, inyecta insignias de confianza y define exactamente qué significa \"confiable\" para ti."
+    "badge": "Funciones de la extensión",
+    "title": "Identidad y monedero,",
+    "titleHighlight": "En todas partes",
+    "description": "Un proveedor de identidad de Nostr completo y monedero Lightning. Gestiona varias cuentas, firma eventos, cifra mensajes, envía zaps y mantén sincronizados tu perfil, relays y lista de silenciados — con permisos granulares por sitio."
   },
   "extensionOverview": {
-    "badge": "Qué Obtienes",
-    "title": "Identidad, wallet y confianza — una extensión",
-    "description": "Todo lo que necesitas para Nostr en una sola instalación. Sin hacer malabarismos con múltiples extensiones.",
-    "signer": {
-      "title": "Firmador NIP-07",
-      "description": "Firma eventos y encripta mensajes (NIP-04 y NIP-44) en cualquier cliente Nostr"
-    },
-    "vault": {
-      "title": "Bóveda Encriptada",
-      "description": "Almacenamiento de claves encriptado AES-256-GCM con auto-bloqueo y respaldo seguro"
-    },
-    "multiAccount": {
-      "title": "Multi-Cuenta",
-      "description": "Derivación HD, solo-lectura, firmador remoto NIP-46 — cambia de identidad al instante"
-    },
-    "wallet": {
-      "title": "Wallet Lightning",
-      "description": "Wallet integrada para zaps con NWC, LNbits o configuración rápida en un clic"
-    },
-    "badges": {
-      "title": "Insignias de Confianza",
-      "description": "Indicadores de confianza con código de colores inyectados automáticamente en sitios Nostr"
-    },
-    "permissions": {
-      "title": "Permisos Granulares",
-      "description": "Controles por cuenta, por dominio y por método con registro de actividad"
-    },
-    "webln": {
-      "title": "Proveedor WebLN",
-      "description": "Los sitios pueden solicitar pagos vía window.webln con tu aprobación"
-    },
-    "i18n": {
-      "title": "6 Idiomas",
-      "description": "Inglés, español, portugués, alemán, francés e italiano"
-    }
+    "badge": "Lo que obtienes",
+    "title": "Identidad, monedero y perfil — una sola extensión",
+    "description": "Todo lo que necesitas para Nostr en una sola instalación. Sin hacer malabares con varias extensiones.",
+    "signer": { "title": "Firmante NIP-07", "description": "Firma eventos y cifra mensajes (NIP-04 y NIP-44) en cualquier cliente de Nostr" },
+    "vault": { "title": "Bóveda cifrada", "description": "Almacenamiento de claves cifrado con AES-256-GCM, bloqueo automático y respaldo seguro" },
+    "multiAccount": { "title": "Multicuenta", "description": "Derivación HD, solo lectura, firmante remoto NIP-46 — cambia de identidad al instante" },
+    "wallet": { "title": "Monedero Lightning", "description": "Monedero integrado para zaps con NWC, LNbits o configuración rápida en un clic" },
+    "badges": { "title": "Perfil y relays", "description": "Edita tu perfil kind:0 y gestiona los relays NIP-65 y tu lista de silenciados NIP-51" },
+    "permissions": { "title": "Permisos granulares", "description": "Controles por cuenta, por dominio y por método con registro de actividad" },
+    "webln": { "title": "Proveedor WebLN", "description": "Los sitios pueden solicitar pagos a través de window.webln con tu aprobación" },
+    "i18n": { "title": "6 idiomas", "description": "Inglés, español, portugués, alemán, francés e italiano" }
   },
   "universalApi": {
-    "badge": "API WoT Universal",
-    "title": "Tu Web of Trust, disponible en cada sitio web de Nostr",
-    "description": "Una vez instalado, cualquier aplicación Nostr puede preguntar: \"¿Esta persona está en mi red?\" No más reconstruir confianza desde cero en cada cliente. Tu grafo de confianza te sigue.",
-    "compatibleApps": "+ cualquier app con API"
+    "badge": "API de firmante NIP-07",
+    "title": "Un firmante, disponible en cada sitio web de Nostr",
+    "description": "Una vez instalada, cualquier app de Nostr puede llamar a window.nostr para obtener tu clave pública, firmar eventos y cifrar mensajes — sin tocar nunca tu clave privada. Las consultas de Web of Trust residen en el SDK y el Oracle de nostr-wot, no en la extensión.",
+    "compatibleApps": "+ cualquier app NIP-07"
   },
   "chooseSource": {
-    "badge": "Elige tu Fuente",
-    "title": "Dos formas de potenciar tu Web of Trust",
-    "description": "Elige lo que se adapte a tus necesidades",
-    "remote": {
-      "title": "Oracle Remoto",
-      "description": "Conéctate a un servidor oracle WoT de confianza. Consultas rápidas, sin almacenamiento, siempre actualizado.",
-      "features": {
-        "instant": "Búsquedas instantáneas (<50ms)",
-        "noStorage": "Sin almacenamiento local requerido",
-        "default": "Por defecto: nostr-wot.com (gratis)",
-        "selfHosted": "O conecta a tu propio oracle"
-      },
-      "bestFor": "La mayoría de usuarios, móvil, dispositivos con poco almacenamiento"
-    },
-    "local": {
-      "title": "Grafo Local",
-      "description": "Construye y almacena tu grafo de confianza completamente en tu navegador. Privacidad total, funciona sin conexión.",
-      "features": {
-        "privacy": "Los datos nunca salen de tu dispositivo",
-        "relays": "Sincroniza desde los relays que elijas",
-        "offline": "Funciona sin internet",
-        "export": "Exporta/importa tu grafo"
-      },
-      "bestFor": "Maximalistas de privacidad, uso sin conexión, desarrolladores"
-    },
-    "hybrid": {
-      "title": "Modo Híbrido",
-      "description": "Lo mejor de ambos mundos. Verifica localmente primero, recurre al remoto si es necesario.",
-      "features": {
-        "fast": "Consultas lo más rápidas posible",
-        "privacy": "Privacidad para conexiones cercanas",
-        "coverage": "Cobertura completa vía oracle",
-        "fallback": "Respaldo elegante sin conexión"
-      },
-      "recommended": "Recomendado"
-    }
+    "badge": "Configura tu cuenta",
+    "title": "Tres formas de traer tu identidad",
+    "description": "Elige lo que se ajuste a tus necesidades",
+    "remote": { "title": "Crear claves nuevas", "description": "Genera un par de claves nuevo en segundos. Derivadas por HD y cifradas en la bóveda desde el principio.", "features": { "instant": "Incorporación instantánea", "noStorage": "Claves derivadas por HD (BIP-32)", "default": "Cifradas en reposo", "selfHosted": "Respalda tu semilla cuando quieras" }, "bestFor": "Nuevos usuarios que empiezan desde cero en Nostr" },
+    "local": { "title": "Importar nsec", "description": "¿Ya tienes claves? Pega tu nsec o semilla y la extensión se encarga de la firma localmente.", "features": { "privacy": "Las claves nunca salen de tu dispositivo", "relays": "Trae tu identidad existente", "offline": "Firma totalmente sin conexión", "export": "Exporta/reimporta cuando quieras" }, "bestFor": "Usuarios de Nostr existentes que migran" },
+    "hybrid": { "title": "Firmante remoto NIP-46", "description": "Mantén las claves en un bunker o firmante remoto. La extensión enruta las solicitudes de firma sin retener la clave.", "features": { "fast": "Las claves permanecen en el bunker", "privacy": "Nada sensible se almacena localmente", "coverage": "Funciona con cualquier firmante NIP-46", "fallback": "Añade también cuentas de solo lectura" }, "recommended": "Avanzado" }
   },
   "trustScoring": {
-    "badge": "Puntuación de Confianza Personalizada",
-    "title": "No todos los seguidos son iguales",
-    "description": "Define qué significa confianza para ti",
-    "formula": "score = baseScore × distanceWeight × (1 + pathBonus)",
-    "distance": {
-      "title": "Pesos de Distancia",
-      "description": "La confianza disminuye con la distancia social:",
-      "headers": {
-        "hops": "Saltos",
-        "default": "Peso",
-        "custom": "Significado"
-      },
-      "rows": {
-        "hop1": "1 salto",
-        "hop1Weight": "1.0",
-        "hop1Meaning": "Seguimiento directo",
-        "hop2": "2 saltos",
-        "hop2Weight": "0.5",
-        "hop2Meaning": "Amigo de amigo",
-        "hop3": "3 saltos",
-        "hop3Weight": "0.25",
-        "hop3Meaning": "Red extendida",
-        "hop4": "4+ saltos",
-        "hop4Weight": "0.1",
-        "hop4Meaning": "Conexión distante"
-      }
-    },
-    "bonuses": {
-      "title": "Bonificaciones por Ruta",
-      "description": "Múltiples caminos de conexión aumentan la confianza:",
-      "headers": {
-        "signal": "Distancia",
-        "multiplier": "Bono por ruta"
-      },
-      "rows": {
-        "hop2Paths": "2 saltos",
-        "hop2Bonus": "+15%",
-        "hop3Paths": "3 saltos",
-        "hop3Bonus": "+10%",
-        "hop4Paths": "4+ saltos",
-        "hop4Bonus": "+5%",
-        "maxBonus": "Bono máximo: 50%"
-      }
-    },
-    "thresholds": {
-      "title": "Umbrales de Confianza",
-      "description": "Define tus propios límites:",
-      "trusted": {
-        "label": "Confiable",
-        "range": "0.7 – 1.0",
-        "meaning": "Mostrar contenido libremente"
-      },
-      "neutral": {
-        "label": "Neutral",
-        "range": "0.3 – 0.7",
-        "meaning": "Mostrar con precaución"
-      },
-      "untrusted": {
-        "label": "No confiable",
-        "range": "0 – 0.3",
-        "meaning": "Ocultar o marcar"
-      }
-    }
+    "badge": "Permisos por sitio",
+    "title": "No todos los sitios obtienen el mismo acceso",
+    "description": "Define lo que cada app puede hacer",
+    "formula": "permiso = cuenta × dominio × método",
+    "distance": { "title": "Ámbitos de permiso", "description": "Los permisos se limitan tan estrictamente como quieras:", "headers": { "hops": "Ámbito", "default": "Se aplica a", "custom": "Significado" }, "rows": { "hop1": "Cuenta", "hop1Weight": "1 identidad", "hop1Meaning": "Qué clave puede firmar", "hop2": "Dominio", "hop2Weight": "1 sitio", "hop2Meaning": "Qué app está solicitando", "hop3": "Método", "hop3Weight": "1 llamada", "hop3Meaning": "signEvent, nip44, etc.", "hop4": "Tipo", "hop4Weight": "1 tipo de evento", "hop4Meaning": "Limitar signEvent por kind" } },
+    "bonuses": { "title": "Modos de aprobación", "description": "Decide cuánto se te consulta:", "headers": { "signal": "Modo", "multiplier": "Comportamiento" }, "rows": { "hop2Paths": "Preguntar siempre", "hop2Bonus": "Solicitar", "hop3Paths": "Recordar durante la sesión", "hop3Bonus": "Automático", "hop4Paths": "Permitir siempre", "hop4Bonus": "Silencioso", "maxBonus": "Revoca cualquier permiso al instante" } },
+    "thresholds": { "title": "Niveles de acceso", "description": "Establece límites por sitio:", "trusted": { "label": "Permitido", "range": "Sitio de confianza", "meaning": "Firma sin solicitudes" }, "neutral": { "label": "Preguntar", "range": "Sitio nuevo", "meaning": "Solicitar aprobación" }, "untrusted": { "label": "Bloqueado", "range": "Sitio denegado", "meaning": "Rechazar todas las solicitudes" } }
   },
-  "formula": {
-    "badge": "Fórmula de Puntuación",
-    "title": "Transparente. Auditable. Tuya.",
-    "example": {
-      "title": "Ejemplo:",
-      "description": "Alice está a 2 saltos de distancia, tienen amigos mutuos y 3 caminos distintos los conectan.",
-      "note": "Tú controlas cada variable."
-    }
-  },
+  "formula": { "badge": "Bóveda cifrada", "title": "Tus claves. Cifradas. Locales.", "example": { "title": "Ejemplo:", "description": "Tus claves privadas se sellan con AES-256-GCM y una clave derivada de tu contraseña mediante PBKDF2 (210.000 iteraciones).", "note": "Nada sale de tu navegador." } },
   "settings": {
-    "badge": "Configuración Avanzada",
-    "title": "Ajusta todo a tu medida",
-    "relays": {
-      "title": "Selección de Relays (Modo Local)",
-      "description": "Elige desde qué relays sincronizar:"
-    },
-    "syncDepth": {
-      "title": "Profundidad de Sincronización",
-      "description": "Qué tan lejos rastrear desde tu pubkey:",
-      "headers": {
-        "depth": "Profundidad",
-        "nodes": "Nodos",
-        "storage": "Almacenamiento",
-        "time": "Tiempo"
-      }
-    },
-    "cache": {
-      "title": "Configuración de Caché",
-      "ttl": "TTL:",
-      "ttlDesc": "Cuánto tiempo guardar resultados en caché",
-      "ttlDefault": "por defecto: 5 min",
-      "maxEntries": "Máx. entradas:",
-      "maxEntriesDesc": "Limitar uso de memoria",
-      "maxEntriesDefault": "por defecto: 10,000"
-    },
-    "lists": {
-      "title": "Lista de Bloqueo y Confianza",
-      "blocklist": {
-        "title": "Lista de Bloqueo",
-        "description": "Excluye pubkeys manualmente. Los usuarios bloqueados puntúan 0, sin importar la distancia.",
-        "add": "+ Agregar pubkey bloqueada"
-      },
-      "trustlist": {
-        "title": "Lista de Confianza",
-        "description": "Anula la puntuación para pubkeys específicas.",
-        "add": "+ Agregar pubkey confiable → siempre puntúa 1.0"
-      }
-    }
+    "badge": "Perfil y relays",
+    "title": "Gestiona tu presencia en Nostr",
+    "relays": { "title": "Lista de relays (NIP-65)", "description": "Elige tus relays de lectura y escritura:" },
+    "syncDepth": { "title": "Perfil (kind:0)", "description": "Edita los metadatos que muestran los clientes:", "headers": { "depth": "Campo", "nodes": "Ejemplo", "storage": "Tipo", "time": "Tipo de dato" } },
+    "cache": { "title": "Bloqueo automático", "ttl": "Temporizador:", "ttlDesc": "Bloquea la bóveda tras la inactividad", "ttlDefault": "predeterminado: 15 min", "maxEntries": "Contraseña:", "maxEntriesDesc": "Requerida para desbloquear y firmar", "maxEntriesDefault": "mín. 8 caracteres" },
+    "lists": { "title": "Lista de silenciados (NIP-51)", "blocklist": { "title": "Pubkeys silenciadas", "description": "Oculta cuentas en clientes compatibles publicando una lista de silenciados NIP-51.", "add": "+ Añadir pubkey a silenciar" }, "trustlist": { "title": "Palabras silenciadas", "description": "Filtra temas y frases que prefieres no ver.", "add": "+ Añadir palabra o hashtag silenciado" } }
   },
-  "dashboard": {
-    "badge": "Panel de Control",
-    "title": "Ve tu Web of Trust de un vistazo",
-    "nodes": "Nodos",
-    "edges": "Conexiones",
-    "cacheHitRate": "Tasa de Aciertos de Caché",
-    "avgQueryTime": "Tiempo Promedio de Consulta",
-    "lastSync": "Última sincronización: {time}",
-    "visualize": {
-      "title": "Visualizar",
-      "comingSoon": "(próximamente)",
-      "description": "Grafo interactivo mostrando tu red de confianza"
-    }
-  },
+  "dashboard": { "badge": "Cuentas", "title": "Cambia de identidad con un clic", "nodes": "Cuentas", "edges": "Sitios aprobados", "cacheHitRate": "Estado de la bóveda", "avgQueryTime": "Latencia de firma", "lastSync": "Cuenta activa: {time}", "visualize": { "title": "Selector de cuentas", "comingSoon": "", "description": "Mantén varias identidades y cambia el firmante activo al instante" } },
   "wallet": {
-    "badge": "Wallet Lightning",
+    "badge": "Monedero Lightning",
     "title": "Zaps integrados. Sin apps adicionales.",
-    "description": "Envía sats, recibe zaps y gestiona tu balance sin salir de la extensión. Tres formas de conectar:",
-    "quickSetup": {
-      "title": "Configuración rápida",
-      "description": "Obtén una wallet en un clic — sin configuración manual. Ideal para empezar con zaps rápido."
-    },
-    "nwc": {
-      "title": "Nostr Wallet Connect",
-      "description": "Pega tu URI NWC para conectar cualquier wallet Lightning externa que ya uses."
-    },
-    "lnbits": {
-      "title": "LNbits",
-      "description": "Conecta tu instancia LNbits con una clave de administrador para acceso directo a la API."
-    },
-    "webln": {
-      "title": "Proveedor WebLN",
-      "description": "La extensión inyecta window.webln para que las apps Nostr puedan solicitar pagos automáticamente — con tu permiso."
-    },
-    "autoApprove": {
-      "title": "Auto-aprobar pagos pequeños",
-      "description": "Establece un umbral en sats. Los pagos por debajo se aprueban automáticamente — sin popup por cada zap."
-    }
+    "description": "Envía sats, recibe zaps y gestiona tu saldo sin salir de la extensión. Tres formas de conectar:",
+    "quickSetup": { "title": "Configuración rápida", "description": "Consigue un monedero en un clic — sin configuración manual. Ideal para empezar con los zaps rápido." },
+    "nwc": { "title": "Nostr Wallet Connect", "description": "Pega tu URI de NWC para conectar cualquier monedero Lightning externo que ya uses." },
+    "lnbits": { "title": "LNbits", "description": "Conecta tu instancia de LNbits con una clave de administrador para acceso directo a la API." },
+    "webln": { "title": "Proveedor WebLN", "description": "La extensión inyecta window.webln para que las apps de Nostr puedan solicitar pagos automáticamente — con tu permiso." },
+    "autoApprove": { "title": "Aprobar pagos pequeños automáticamente", "description": "Establece un umbral en sats. Los pagos por debajo se aprueban automáticamente — sin ventana emergente para cada zap." }
   },
   "privacy": {
     "badge": "Privacidad",
     "title": "Tus datos, tus reglas",
-    "remote": {
-      "title": "Modo Remoto",
-      "description": "Consultas enviadas al oracle (pares de pubkeys visibles para el servidor)",
-      "features": {
-        "noContent": "Sin datos de contenido compartidos",
-        "onlyPubkey": "Solo búsquedas de pubkey"
-      }
-    },
-    "local": {
-      "title": "Modo Local",
-      "description": "Todo permanece en tu navegador",
-      "features": {
-        "noExternal": "Sin solicitudes externas",
-        "noTracking": "Sin rastreo",
-        "noAnalytics": "Sin analíticas",
-        "export": "Exporta tus datos cuando quieras"
-      }
-    }
+    "remote": { "title": "Custodia local", "description": "Las claves privadas están cifradas y nunca se envían a ningún sitio", "features": { "noContent": "Ninguna clave sale nunca de la bóveda", "onlyPubkey": "Solo se comparten las firmas" } },
+    "local": { "title": "Sin rastreo", "description": "La extensión no se comunica con nadie", "features": { "noExternal": "Sin solicitudes externas", "noTracking": "Sin rastreo", "noAnalytics": "Sin analíticas", "export": "Exporta tus datos cuando quieras" } }
   },
   "getStarted": {
-    "badge": "Comenzar",
-    "title": "Funcionando en minutos",
-    "steps": {
-      "install": {
-        "title": "Instala la extensión",
-        "description": "Agrégala a Chrome, Firefox o Brave"
-      },
-      "pubkey": {
-        "title": "Configura tu cuenta",
-        "description": "Crea claves nuevas, importa nsec, agrega solo-lectura o conecta vía NIP-46"
-      },
-      "mode": {
-        "title": "Elige el modo WoT",
-        "description": "Remoto, Local o Híbrido"
-      },
-      "scoring": {
-        "title": "Personaliza ajustes",
-        "description": "Ajusta la puntuación de confianza, permisos y temporizador de auto-bloqueo"
-      },
-      "browse": {
-        "title": "Navega por Nostr",
-        "description": "Tu identidad y Web of Trust te siguen a todas partes"
-      }
-    }
+    "badge": "Empezar",
+    "title": "En marcha en minutos",
+    "steps": { "install": { "title": "Instala la extensión", "description": "Añádela a Chrome, Firefox o Brave" }, "pubkey": { "title": "Configura tu cuenta", "description": "Crea claves nuevas, importa un nsec, añade solo lectura o conéctate vía NIP-46" }, "mode": { "title": "Asegura tu bóveda", "description": "Establece una contraseña y un temporizador de bloqueo automático" }, "scoring": { "title": "Configura los permisos por sitio", "description": "Elige qué puede firmar cada app y aprueba las solicitudes" }, "browse": { "title": "Navega por Nostr", "description": "Tu identidad y monedero te acompañan a todas partes" } }
   },
-  "api": {
-    "badge": "API para Desarrolladores",
-    "title": "Construye aplicaciones Nostr con WoT",
-    "viewDocs": "Ver documentación completa de la API"
-  },
-  "pricing": {
-    "title": "Gratis. Para siempre. Código abierto.",
-    "description": "Auto-aloja el oracle, bifurca la extensión, haz lo que quieras."
-  }
+  "api": { "badge": "API para desarrolladores", "title": "Crea apps de Nostr con window.nostr", "viewDocs": "Ver la documentación completa de la API" },
+  "pricing": { "title": "Gratis. Para siempre. Código abierto.", "description": "Bifurca la extensión, usa el SDK o autoaloja el Oracle — haz lo que quieras." }
 }
