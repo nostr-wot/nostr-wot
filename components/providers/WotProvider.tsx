@@ -1,10 +1,7 @@
 "use client";
 
 import { NostrSdkProvider } from "nostr-wot-sdk/react";
-import { ReactNode, useMemo } from "react";
-
-const DEV_EXTENSION_ID = "ehhdbbkphncmcpkpeobbbgjnpcfjeamc";
-const PROD_EXTENSION_ID = "";
+import { ReactNode } from "react";
 
 interface WotProviderProps {
   children: ReactNode;
@@ -19,21 +16,10 @@ interface WotProviderProps {
  * can import `NostrSdkProvider` directly from `nostr-wot-sdk/react`.
  */
 export function WotProvider({ children }: WotProviderProps) {
-  const wot = useMemo(() => {
-    const isLocalhost =
-      typeof window !== "undefined" &&
-      (window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1");
-    const extensionId = isLocalhost ? DEV_EXTENSION_ID : PROD_EXTENSION_ID;
-    return {
-      enabled: true as const,
-      ...(extensionId ? { options: { extensionId } } : {}),
-    };
-  }, []);
-
   return (
     <NostrSdkProvider
       cache={{ namespace: "nostr-wot", ttlMs: 24 * 3600_000 }}
-      wot={wot}
+      wot={{ enabled: true }}
     >
       {children}
     </NostrSdkProvider>
