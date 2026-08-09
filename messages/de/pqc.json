@@ -1,0 +1,53 @@
+{
+  "meta": {
+    "title": "Post-Quanten-Identitäten für Nostr",
+    "description": "Prüfen Sie, ob ein Nostr-Profil post-quantensichere verschlüsselte Nachrichten empfangen kann, und erfahren Sie, wie Post-Quanten-Schlüssel aus einer vorhandenen Seed-Phrase abgeleitet werden."
+  },
+  "hero": {
+    "badge": "Vorschlag",
+    "title": "Post-Quanten-Nostr",
+    "subtitle": "Jede heute auf Nostr verschlüsselte Nachricht kann später von jedem entschlüsselt werden, der sie mitgeschnitten hat. Post-Quanten-Schlüssel, abgeleitet aus der Seed-Phrase, die Sie ohnehin haben, schließen diese Lücke - ohne Ihre Identität zu ändern."
+  },
+  "checker": {
+    "title": "Profil prüfen",
+    "subtitle": "Geben Sie einen npub ein, um zu sehen, ob er Post-Quanten-Schlüssel veröffentlicht und ob diese vertrauenswürdig sind.",
+    "placeholder": "npub1... oder ein hexadezimaler öffentlicher Schlüssel",
+    "action": "Prüfen",
+    "checking": "Relays werden abgefragt...",
+    "earlyNotice": "Der Vorschlag ist neu, daher veröffentlicht kaum ein Profil diese Schlüssel bereits. Ein leeres Ergebnis bedeutet, dass diese Identität ihn nicht übernommen hat - nicht, dass die Prüfung fehlgeschlagen ist."
+  },
+  "result": {
+    "invalidInput": "Das ist kein gültiger npub und kein gültiger öffentlicher Schlüssel",
+    "notFound": "Keine Post-Quanten-Schlüssel veröffentlicht",
+    "notFoundDetail": "Diese Identität hat auf den abgefragten Relays kein Attestierungs-Event. Nachrichten an sie lassen sich nur klassisch verschlüsseln - und das könnte ein Quantencomputer rückwirkend entschlüsseln.",
+    "supported": "Post-Quanten-fähig",
+    "supportedWithProblems": "Veröffentlicht, aber mit Problemen",
+    "popValid": "Besitz nachgewiesen",
+    "popInvalid": "Besitznachweis fehlgeschlagen",
+    "seedStrength": "{bits}-Bit-Seed",
+    "npub": "Identität",
+    "origin": "Herkunft des Schlüssels",
+    "profile": "Ableitungsprofil",
+    "published": "Veröffentlicht"
+  },
+  "how": {
+    "title": "So funktioniert es",
+    "subtitle": "Drei Ideen - keine davon erfordert Änderungen an den Relays.",
+    "seed": {
+      "title": "Geschwister-Schlüssel, keine Kinder",
+      "body": "Ihre Post-Quanten-Schlüssel stammen aus demselben BIP-39-Seed wie Ihr Nostr-Schlüssel, nur separat expandiert. Keiner wird aus dem anderen abgeleitet. Genau darauf kommt es an: Würde ein Post-Quanten-Schlüssel aus Ihrem privaten Schlüssel abgeleitet, müsste jemand, der Ihren Nostr-Schlüssel bricht, nur dieselbe Ableitung wiederholen. Da die Ableitung aus dem Seed eine Einbahnstraße ist, verrät ein gebrochener Nostr-Schlüssel nichts darüber."
+    },
+    "attestation": {
+      "title": "In einem eigenen Event veröffentlicht",
+      "body": "Die öffentlichen Schlüssel liegen in einem eigenen ersetzbaren Event, nicht in Ihren Profil-Metadaten. Clients bauen diese Metadaten aus den Feldern zusammen, die sie kennen - ein unbekannter Schlüssel verschwände also stillschweigend, sobald Sie anderswo Ihren Anzeigenamen ändern, ohne dass Sie es merken."
+    },
+    "wrap": {
+      "title": "Im heutigen Gift Wrap transportiert",
+      "body": "Die Post-Quanten-Nutzlast reist innerhalb der bestehenden NIP-44- und NIP-59-Schichten, kombiniert mit dem klassischen Schlüssel statt ihn zu ersetzen. Relays brauchen keine Änderungen, und Clients, die nichts davon umsetzen, bleiben unberührt."
+    }
+  },
+  "limits": {
+    "title": "Was das nicht leistet",
+    "body": "Es schützt dauerhaft die Vertraulichkeit aller ab jetzt gesendeten Nachrichten - auch gegenüber jemandem, der sie heute aufzeichnet und die Kryptografie später bricht. Es hindert einen Quantenangreifer nicht daran, Events in Ihrem Namen zu fälschen, denn Events werden weiterhin mit secp256k1 signiert. Das zu beheben erfordert eine Migration der Signaturen - eine eigene und deutlich größere Aufgabe."
+  }
+}

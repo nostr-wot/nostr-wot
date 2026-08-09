@@ -1,0 +1,53 @@
+{
+  "meta": {
+    "title": "Post-quantum Nostr identities",
+    "description": "Check whether a Nostr profile can receive post-quantum encrypted messages, and see how post-quantum keys are derived from an existing seed phrase."
+  },
+  "hero": {
+    "badge": "Proposal",
+    "title": "Post-quantum Nostr",
+    "subtitle": "Every encrypted message on Nostr today can be decrypted later by anyone who recorded it. Post-quantum keys derived from the seed phrase you already have close that gap - without changing your identity."
+  },
+  "checker": {
+    "title": "Check a profile",
+    "subtitle": "Enter an npub to see whether it publishes post-quantum keys, and whether those keys can be trusted.",
+    "placeholder": "npub1... or a hex public key",
+    "action": "Check",
+    "checking": "Checking relays...",
+    "earlyNotice": "This proposal is new, so almost no profile publishes these keys yet. An empty result means the identity has not adopted it - not that the check failed."
+  },
+  "result": {
+    "invalidInput": "That is not a valid npub or public key",
+    "notFound": "No post-quantum keys published",
+    "notFoundDetail": "This identity has no attestation event on the relays we queried. Messages to it can only be encrypted with classic cryptography, which a quantum computer would be able to decrypt retroactively.",
+    "supported": "Post-quantum capable",
+    "supportedWithProblems": "Published, but with problems",
+    "popValid": "Possession proven",
+    "popInvalid": "Possession proof failed",
+    "seedStrength": "{bits}-bit seed",
+    "npub": "Identity",
+    "origin": "Key origin",
+    "profile": "Derivation profile",
+    "published": "Published"
+  },
+  "how": {
+    "title": "How it works",
+    "subtitle": "Three ideas, none of which require a relay to change.",
+    "seed": {
+      "title": "Keys derived as siblings, not children",
+      "body": "Your post-quantum keys come from the same BIP-39 seed as your Nostr key, expanded separately. Neither key is derived from the other. That matters: if a post-quantum key were derived from your private key, an attacker who broke your Nostr key would simply repeat the derivation and get it too. Because the seed derivation is one-way, breaking your Nostr key reveals nothing about it."
+    },
+    "attestation": {
+      "title": "Published in their own event",
+      "body": "The public keys live in a dedicated replaceable event rather than in your profile metadata. Clients rebuild profile metadata from the fields they recognise, so an unknown key would silently disappear the first time you edited your display name somewhere else - and you would never know."
+    },
+    "wrap": {
+      "title": "Carried inside today's gift wrap",
+      "body": "The post-quantum payload travels inside the existing NIP-44 and NIP-59 layers, combined with the classic key rather than replacing it. Relays need no changes, and clients that have not implemented any of this are unaffected."
+    }
+  },
+  "limits": {
+    "title": "What this does not do",
+    "body": "This protects the confidentiality of messages sent from now on, permanently, even against someone who records them today and breaks the cryptography later. It does not stop a quantum attacker from forging events in your name, because events are still signed with secp256k1. Fixing that means migrating signatures, which is a separate and much larger change."
+  }
+}

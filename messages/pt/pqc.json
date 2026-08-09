@@ -1,0 +1,53 @@
+{
+  "meta": {
+    "title": "Identidades pós-quânticas no Nostr",
+    "description": "Verifique se um perfil do Nostr pode receber mensagens cifradas pós-quânticas e veja como as chaves pós-quânticas são derivadas de uma frase semente existente."
+  },
+  "hero": {
+    "badge": "Proposta",
+    "title": "Nostr pós-quântico",
+    "subtitle": "Qualquer mensagem cifrada enviada hoje no Nostr poderá ser decifrada depois por quem a tiver guardado. Chaves pós-quânticas derivadas da frase semente que você já tem fecham essa brecha, sem mudar a sua identidade."
+  },
+  "checker": {
+    "title": "Verificar um perfil",
+    "subtitle": "Digite um npub para ver se ele publica chaves pós-quânticas e se essas chaves são confiáveis.",
+    "placeholder": "npub1... ou uma chave pública em hexadecimal",
+    "action": "Verificar",
+    "checking": "Consultando relays...",
+    "earlyNotice": "A proposta é recente, então quase nenhum perfil publica essas chaves ainda. Um resultado vazio significa que a identidade não adotou a proposta, não que a verificação falhou."
+  },
+  "result": {
+    "invalidInput": "Isso não é um npub nem uma chave pública válida",
+    "notFound": "Não publica chaves pós-quânticas",
+    "notFoundDetail": "Esta identidade não tem evento de atestação nos relays consultados. Mensagens enviadas a ela só podem ser cifradas com criptografia clássica, que um computador quântico conseguiria decifrar retroativamente.",
+    "supported": "Compatível com pós-quântico",
+    "supportedWithProblems": "Publicadas, mas com problemas",
+    "popValid": "Posse comprovada",
+    "popInvalid": "A prova de posse falhou",
+    "seedStrength": "Semente de {bits} bits",
+    "npub": "Identidade",
+    "origin": "Origem da chave",
+    "profile": "Perfil de derivação",
+    "published": "Publicado"
+  },
+  "how": {
+    "title": "Como funciona",
+    "subtitle": "Três ideias, e nenhuma exige mudanças nos relays.",
+    "seed": {
+      "title": "Chaves irmãs, não descendentes",
+      "body": "Suas chaves pós-quânticas vêm da mesma semente BIP-39 da sua chave Nostr, expandida separadamente. Nenhuma é derivada da outra. É isso que importa: se uma chave pós-quântica fosse derivada da sua chave privada, quem quebrasse a sua chave Nostr bastaria repetir a derivação para obtê-la. Como a derivação a partir da semente é unidirecional, quebrar sua chave Nostr não revela nada sobre ela."
+    },
+    "attestation": {
+      "title": "Publicadas em evento próprio",
+      "body": "As chaves públicas ficam em um evento substituível próprio, não nos metadados do seu perfil. Os clientes reconstroem esses metadados com os campos que reconhecem, então uma chave desconhecida sumiria silenciosamente na primeira vez que você mudasse seu nome em outro cliente, e você nunca saberia."
+    },
+    "wrap": {
+      "title": "Dentro do gift wrap atual",
+      "body": "A carga pós-quântica viaja dentro das camadas NIP-44 e NIP-59 existentes, combinada com a chave clássica em vez de substituí-la. Os relays não precisam mudar, e clientes que não implementarem nada disso não são afetados."
+    }
+  },
+  "limits": {
+    "title": "O que isto não faz",
+    "body": "Protege permanentemente a confidencialidade das mensagens enviadas a partir de agora, mesmo contra quem as guarde hoje e quebre a criptografia depois. Não impede que um atacante quântico forje eventos em seu nome, porque os eventos continuam assinados com secp256k1. Resolver isso exige migrar as assinaturas, uma mudança separada e muito maior."
+  }
+}
