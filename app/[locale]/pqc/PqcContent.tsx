@@ -118,7 +118,7 @@ export default function PqcContent() {
                     {result.problems.length > 0 && (
                       <ul className="mt-5 list-inside list-disc space-y-1 text-sm text-amber-700 dark:text-amber-300">
                         {result.problems.map((p) => (
-                          <li key={p}>{p}</li>
+                          <li key={p.code}>{t(`problems.${p.code}`, p.params)}</li>
                         ))}
                       </ul>
                     )}

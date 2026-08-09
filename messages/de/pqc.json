@@ -49,5 +49,14 @@
   "limits": {
     "title": "Was das nicht leistet",
     "body": "Es schützt dauerhaft die Vertraulichkeit aller ab jetzt gesendeten Nachrichten - auch gegenüber jemandem, der sie heute aufzeichnet und die Kryptografie später bricht. Es hindert einen Quantenangreifer nicht daran, Events in Ihrem Namen zu fälschen, denn Events werden weiterhin mit secp256k1 signiert. Das zu beheben erfordert eine Migration der Signaturen - eine eigene und deutlich größere Aufgabe."
+  },
+  "problems": {
+    "keyLength": "Der {alg}-Schlüssel ist {bytes} Byte groß, erwartet wurden {expected}. Diese Attestierung ist fehlerhaft.",
+    "noAlgTags": "Die Attestierung enthält überhaupt keine Schlüssel.",
+    "noKem": "Kein {alg}-Kapselungsschlüssel — diese Identität kann keine post-quantensicher verschlüsselten Nachrichten empfangen.",
+    "derivedWeakSeed": "Gibt aus dem Seed abgeleitete Schlüssel bei nur {bits} Bit an. Die Spezifikation verlangt für abgeleitete Schlüssel 256 Bit; ein schwächerer Seed muss stattdessen als unabhängiger Schlüssel veröffentlicht werden.",
+    "derivedMissingSeedStrength": "Gibt aus dem Seed abgeleitete Schlüssel an, nennt aber die Seed-Stärke nicht — die Angabe ist damit nicht überprüfbar.",
+    "missingPop": "Der {alg}-Schlüssel wurde ohne Besitznachweis veröffentlicht; es gibt keinen Beleg dafür, dass der Inhaber ihn kontrolliert.",
+    "popFailed": "Der Besitznachweis lässt sich nicht verifizieren. Diesen Schlüsseln nicht vertrauen."
   }
 }

@@ -49,5 +49,14 @@
   "limits": {
     "title": "Ce que cela ne fait pas",
     "body": "Cela protège durablement la confidentialité des messages envoyés à partir de maintenant, même face à quelqu'un qui les enregistre aujourd'hui et casse la cryptographie plus tard. Cela n'empêche pas un attaquant quantique de forger des événements en votre nom, car les événements restent signés avec secp256k1. Y remédier suppose de migrer les signatures, un chantier distinct et bien plus vaste."
+  },
+  "problems": {
+    "keyLength": "La clé {alg} fait {bytes} octets alors que {expected} étaient attendus. Cette attestation est mal formée.",
+    "noAlgTags": "L'attestation ne contient aucune clé.",
+    "noKem": "Aucune clé d'encapsulation {alg} : cette identité ne peut pas recevoir de messages chiffrés post-quantiques.",
+    "derivedWeakSeed": "Déclare des clés dérivées d'une graine de {bits} bits. La spécification exige 256 bits pour les clés dérivées ; une graine plus faible doit être publiée comme clé indépendante.",
+    "derivedMissingSeedStrength": "Déclare des clés dérivées de la graine sans indiquer sa robustesse : la déclaration est invérifiable.",
+    "missingPop": "La clé {alg} est publiée sans preuve de possession : rien n'indique que son détenteur la contrôle.",
+    "popFailed": "La preuve de possession échoue. Ne faites pas confiance à ces clés."
   }
 }

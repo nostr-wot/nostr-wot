@@ -49,5 +49,14 @@
   "limits": {
     "title": "What this does not do",
     "body": "This protects the confidentiality of messages sent from now on, permanently, even against someone who records them today and breaks the cryptography later. It does not stop a quantum attacker from forging events in your name, because events are still signed with secp256k1. Fixing that means migrating signatures, which is a separate and much larger change."
+  },
+  "problems": {
+    "keyLength": "The {alg} key is {bytes} bytes; {expected} were expected. This attestation is malformed.",
+    "noAlgTags": "The attestation carries no keys at all.",
+    "noKem": "No {alg} encapsulation key, so this identity cannot receive post-quantum encrypted messages.",
+    "derivedWeakSeed": "Claims seed-derived keys from a {bits}-bit seed. The specification requires 256 bits for derived keys; a weaker seed must be published as an independent key instead.",
+    "derivedMissingSeedStrength": "Claims seed-derived keys but does not state the seed strength, so the claim cannot be checked.",
+    "missingPop": "The {alg} key is published without a proof of possession, so there is no evidence the holder controls it.",
+    "popFailed": "The proof of possession does not verify. Do not trust these keys."
   }
 }

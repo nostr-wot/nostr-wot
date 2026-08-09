@@ -49,5 +49,14 @@
   "limits": {
     "title": "Lo que esto no hace",
     "body": "Protege de forma permanente la confidencialidad de los mensajes enviados a partir de ahora, incluso frente a quien los guarde hoy y rompa la criptografía más adelante. No impide que un atacante cuántico falsifique eventos en tu nombre, porque los eventos se siguen firmando con secp256k1. Resolver eso exige migrar las firmas, un cambio distinto y mucho mayor."
+  },
+  "problems": {
+    "keyLength": "La clave {alg} ocupa {bytes} bytes y se esperaban {expected}. Esta atestación está mal formada.",
+    "noAlgTags": "La atestación no contiene ninguna clave.",
+    "noKem": "No hay clave de encapsulado {alg}, así que esta identidad no puede recibir mensajes cifrados post-cuánticos.",
+    "derivedWeakSeed": "Declara claves derivadas de una semilla de {bits} bits. La especificación exige 256 bits para las claves derivadas; una semilla más débil debe publicarse como clave independiente.",
+    "derivedMissingSeedStrength": "Declara claves derivadas de la semilla pero no indica su fortaleza, así que la declaración no se puede comprobar.",
+    "missingPop": "La clave {alg} se publica sin prueba de posesión, por lo que no hay evidencia de que su titular la controle.",
+    "popFailed": "La prueba de posesión no se verifica. No confíes en estas claves."
   }
 }

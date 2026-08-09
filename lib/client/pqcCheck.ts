@@ -47,6 +47,19 @@ export type PqcKey = {
   lengthValid: boolean;
 };
 
+/** A validation failure, as a translatable code plus its parameters. */
+export type PqcProblem = {
+  code:
+    | "keyLength"
+    | "noAlgTags"
+    | "noKem"
+    | "derivedWeakSeed"
+    | "derivedMissingSeedStrength"
+    | "missingPop"
+    | "popFailed";
+  params?: Record<string, string | number>;
+};
+
 export type PqcResult =
   | { status: "invalid-input" }
   | { status: "not-found"; pubkey: string }
@@ -62,7 +75,7 @@ export type PqcResult =
       /** null when no `pop` tag is present; true/false once verified. */
       popValid: boolean | null;
       /** Every reason this attestation should not be trusted as-is. */
-      problems: string[];
+      problems: PqcProblem[];
     };
 
 function toHexPubkey(input: string): string | null {
@@ -146,7 +159,7 @@ export async function checkPqcSupport(input: string): Promise<PqcResult> {
 
   if (!event) return { status: "not-found", pubkey };
 
-  const problems: string[] = [];
+  const problems: PqcProblem[] = [];
 
   const keys: PqcKey[] = tagValues(event, "alg")
     .filter((t) => t.length >= 3)
@@ -157,14 +170,12 @@ export async function checkPqcSupport(input: string): Promise<PqcResult> {
       const expected = expectedBytesFor(alg);
       const lengthValid = expected === null ? true : bytes === expected;
       if (expected !== null && !lengthValid) {
-        problems.push(
-          `${alg} key is ${bytes} bytes, expected ${expected}`,
-        );
+        problems.push({ code: "keyLength", params: { alg, bytes, expected } });
       }
       return { alg, base64, bytes, expectedBytes: expected, lengthValid };
     });
 
-  if (keys.length === 0) problems.push("attestation carries no algorithm tags");
+  if (keys.length === 0) problems.push({ code: "noAlgTags" });
 
   const kem = keys.find((k) => k.alg === ALG_KEM);
   const dsa = keys.find((k) => k.alg === ALG_DSA);
@@ -172,23 +183,28 @@ export async function checkPqcSupport(input: string): Promise<PqcResult> {
   const seedStrength = firstTagValue(event, "seed_strength");
   const profile = firstTagValue(event, "v");
 
-  if (!kem) problems.push(`no ${ALG_KEM} encapsulation key — cannot receive encrypted messages`);
-  if (origin === "derived" && !seedStrength) {
-    problems.push("origin is 'derived' but seed_strength is missing");
-  }
-  if (seedStrength === "128") {
-    problems.push("seed has 128 bits of entropy; the keys are no stronger than the seed");
+  if (!kem) problems.push({ code: "noKem", params: { alg: ALG_KEM } });
+
+  // The spec permits seed-derived keys only from a 256-bit (24-word) mnemonic. A weaker
+  // seed must be published as `independent` instead, so the `derived` label keeps meaning
+  // exactly one thing to whoever reads it.
+  if (origin === "derived") {
+    if (!seedStrength) {
+      problems.push({ code: "derivedMissingSeedStrength" });
+    } else if (seedStrength !== "256") {
+      problems.push({ code: "derivedWeakSeed", params: { bits: seedStrength } });
+    }
   }
 
   const popTag = event.tags.find((t) => t[0] === "pop" && t.length >= 3);
   let popValid: boolean | null = null;
 
   if (dsa && !popTag) {
-    problems.push("ML-DSA key published without a proof of possession");
+    problems.push({ code: "missingPop", params: { alg: ALG_DSA } });
   } else if (popTag && dsa && kem) {
     popValid = await verifyPop(event.pubkey, kem.base64, dsa.base64, popTag[2]);
     if (!popValid) {
-      problems.push("proof of possession does not verify — do not trust these keys");
+      problems.push({ code: "popFailed" });
     }
   }
 
