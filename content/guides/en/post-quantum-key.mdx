@@ -1,0 +1,105 @@
+---
+title: "Creating a Post-Quantum Key"
+description: "Generate post-quantum keys for your Nostr identity with a single command, entirely offline, and publish the attestation that lets others send you post-quantum encrypted messages."
+excerpt: "One command derives ML-KEM and ML-DSA keys from the seed phrase you already have and prints a signed attestation you can publish yourself. Nothing leaves your machine."
+date: "2026-08-09"
+author:
+  name: "Leon Acosta"
+  avatar: "/authors/leon-profile.jpg"
+  npub: "npub1gxdhmu9swqduwhr6zptjy4ya693zp3ql28nemy4hd97kuufyrqdqwe5zfk"
+tags:
+  - "Post-Quantum"
+  - "Keys"
+  - "Advanced"
+published: true
+seoTitle: "Creating a Post-Quantum Key — Nostr WoT Guide"
+seoDescription: "Generate ML-KEM and ML-DSA keys for your Nostr identity offline with one command, and publish the kind:10203 attestation."
+translationKey: "post-quantum-key"
+---
+
+Post-quantum keys let people send you messages that stay private even if secp256k1 is broken years from now. This guide creates them **locally** — your seed phrase never leaves your machine and nothing is transmitted anywhere. The command prints an event; you decide whether to publish it.
+
+If you only want to know whether someone *else* supports this, use the [checker](/pqc) instead.
+
+## Before you start
+
+You need **a 24-word seed phrase**. This is a hard requirement, not a recommendation, and it is worth understanding why.
+
+BIP-39 turns any mnemonic into a 64-byte seed, so a 12-word phrase would technically produce working keys. But it only carries 128 bits of real entropy. Since post-quantum keys derived from it inherit that limit, your seed — not the algorithm — becomes the weakest link. The tool refuses rather than quietly hand you something that looks post-quantum and isn't.
+
+If your identity is 12 words, imported from an `nsec`, or held in a remote signer, skip to [If you can't derive](#if-you-cant-derive).
+
+## Generate the keys
+
+```bash
+git clone https://github.com/nostr-wot/nostr-wot-extension
+cd nostr-wot-extension
+npm install
+npm run pqc:keygen
+```
+
+It asks for your seed phrase, reads it from standard input, and never writes it to disk. Output looks like this:
+
+```
+  identity      npub16sdj9zv4f8sl85e45vgq9n7nsgt5qphpvmf7vk8r5hhvmdjxx4es8rq74h
+  ml-kem-1024   1568 bytes
+  ml-dsa-87     2592 bytes
+  origin        derived (256-bit seed)
+  event         12200 bytes
+
+  These keys are recoverable from your seed phrase alone. Nothing extra to back up.
+```
+
+**Check the identity line matches your npub.** If it doesn't, you typed a different seed phrase — stop, because publishing the event would advertise keys under the wrong identity.
+
+That last line is the point of the whole design: your post-quantum keys are derived from the seed you already wrote down. There is no new backup, and the words in your safe still restore your identity after the transition.
+
+Useful flags:
+
+```bash
+npm run pqc:keygen -- --new              # create a fresh 24-word identity first
+npm run pqc:keygen -- --account 1        # a different NIP-06 account index
+npm run pqc:keygen -- --out event.json   # write the event to a file
+```
+
+## Publish the attestation
+
+The command prints a signed `kind:10203` event. Publishing it is what makes you discoverable — until you do, senders have no way to find your keys and will fall back to classic encryption.
+
+Paste the JSON into any tool that publishes a raw event to your relays. Verify it afterwards with the [checker](/pqc): paste your npub and confirm it reports **post-quantum capable** with **possession proven**.
+
+If the checker cannot find it, the event has not propagated — publish to more relays.
+
+## Why the keys are safe even if your Nostr key isn't
+
+The obvious way to build this would be to derive the post-quantum key from your Nostr private key. That is circular: an attacker who breaks secp256k1 recovers your private key, runs the same derivation, and gets the post-quantum key too.
+
+Instead, both keys are derived *separately from the seed*. Your Nostr key and your post-quantum keys are siblings, not parent and child. Because that derivation is one-way, someone who recovers your Nostr private key cannot work backwards to the seed, and so cannot reach your post-quantum keys. Messages encrypted to them stay private permanently.
+
+## What this does not protect
+
+Worth being clear, because it is easy to over-read.
+
+An attacker with a quantum computer can still **sign events as you** — your notes are still signed with secp256k1. They could also publish a replacement attestation with their own keys and intercept *future* messages.
+
+What this protects is the confidentiality of messages sent from now on, permanently, including against someone recording them today to decrypt later. That is the half of the problem that cannot be fixed after the fact, which is why it is the half worth doing first.
+
+## If you can't derive
+
+Three cases cannot use seed derivation: a 12-word mnemonic, an identity imported as a bare `nsec`, and one held in a remote signer.
+
+The first two can still generate a standalone key pair:
+
+```bash
+npm run pqc:keygen -- --independent --nsec <your hex private key>
+```
+
+This prints the secret keys along with the event. **Back them up somewhere safe.** Unlike derived keys, these cannot be recovered from your seed phrase — lose them and you lose the ability to read messages sent to them. The attestation records this as `origin: independent`, so anyone checking your profile can see the difference.
+
+Remote signers cannot use this at all yet: the signing protocol has no post-quantum operations, so the key would have to live outside the signer, which defeats the point of using one.
+
+## Related
+
+- [Post-quantum Nostr identities from the seed you already have](/blog/post-quantum-nostr-identities) — the reasoning behind the proposal
+- [Check a profile](/pqc) — see whether an identity supports post-quantum messages
+- [Managing your identity](/guides/managing-identity)
