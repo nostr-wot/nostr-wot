@@ -1,0 +1,130 @@
+---
+title: "Post-quantum Nostr identities from the seed you already have"
+description: "A proposal for deriving post-quantum keys from an existing NIP-06 mnemonic, so your identity survives the transition without you ever changing your words."
+excerpt: "Every encrypted DM on Nostr today is a future plaintext. We are proposing a NIP, jointly with QuantaKrypto, that lets an identity derive post-quantum keys from the same 24 words it already uses - no new backup, no relay changes, no flag day."
+date: "2026-08-09"
+author:
+  name: "Leon Acosta"
+  avatar: "/authors/leon-profile.jpg"
+  npub: "npub1gxdhmu9swqduwhr6zptjy4ya693zp3ql28nemy4hd97kuufyrqdqwe5zfk"
+  socials:
+    linkedin: "leonacosta"
+    instagram: "leonacosta.now"
+    twitter: "leonacosta_"
+    github: "leonacostaok"
+tags:
+  - "Post-Quantum"
+  - "Nostr"
+  - "NIP"
+  - "Cryptography"
+published: true
+seoTitle: "Post-Quantum Nostr Identities - A NIP Proposal"
+seoDescription: "Derive ML-KEM and ML-DSA keys from your existing Nostr seed phrase. A proposal for post-quantum identity on Nostr, with no relay changes required."
+translationKey: "post-quantum-nostr-identities"
+---
+
+Your Nostr public key is published to every relay you touch. That is the whole point — it is how anyone verifies your notes. It is also the exposure. Shor's algorithm recovers a private key from a public key, and Nostr hands over the input by design.
+
+This is not a new observation. What has been missing is a workable answer, and we think we have one. We are proposing it as a NIP, jointly with [QuantaKrypto](https://quantakrypto.com).
+
+## Two problems people keep conflating
+
+**Your old DMs get decrypted.** [NIP-44](https://github.com/nostr-protocol/nips/blob/master/44.md) derives its conversation key from an ECDH shared secret between two secp256k1 keys. Someone archiving encrypted events today can decrypt every one of them the day secp256k1 falls. They do not need to break anything now — they just need a hard drive.
+
+**Your identity gets forged.** The same adversary can sign events as you.
+
+These sound like one problem. They are not, and the difference decides what to build first.
+
+The first one is *already happening*. Every NIP-44 event you publish today is a future plaintext, and nothing published after the break can protect a message sent before it. The second is worse in impact but is a live-attack problem — it cannot be pre-empted by anything you publish in advance, only by migrating signatures before the break lands.
+
+So confidentiality is the thing that has to be fixed now, because it is the only one that can be fixed *retroactively*.
+
+## Why the obvious approach doesn't work
+
+Paul Millr — whose [noble libraries](https://github.com/paulmillr/noble-post-quantum) most of this ecosystem depends on — opened [issue #1971](https://github.com/nostr-protocol/nips/issues/1971) on exactly this in July 2025. It has been running ever since, with fiatjaf, Vitor Pamplona and Mike Dilger all in the thread.
+
+It keeps hitting the same wall. The natural thing to try is deriving a post-quantum key from your Nostr private key:
+
+```
+pq_key = KDF(nsec)
+```
+
+This is circular. An adversary recovers `nsec` from `npub`, runs the same KDF, and has your post-quantum key too. You have added computation and no security.
+
+That objection has killed every proposal in that thread. Working prototypes exist; a NIP does not.
+
+## Siblings, not children
+
+The fix is a change of shape, not of algorithm.
+
+[NIP-06](https://github.com/nostr-protocol/nips/blob/master/06.md) already derives your Nostr key from a BIP-39 mnemonic at `m/44'/1237'/0'/0/0`. That derivation runs through HMAC-SHA512, and it is **one-way** — given the resulting private key, you cannot walk back to the seed.
+
+So we take the *same seed* and expand it a second time, with domain separation, into post-quantum keys:
+
+```
+kem_seed = HKDF-SHA256(seed, info = "nip-pqc/v1/ml-kem-1024/0", 64 bytes)
+dsa_seed = HKDF-SHA256(seed, info = "nip-pqc/v1/ml-dsa-87/0",  32 bytes)
+```
+
+Both keys are children of the seed. Neither is a child of the other.
+
+An adversary who breaks secp256k1 and recovers your Nostr private key learns nothing about the seed — that would mean inverting HMAC-SHA512 — and therefore nothing about your post-quantum keys. Messages encrypted to your ML-KEM key stay confidential permanently, even after your identity key is gone.
+
+And you never touch your words. The same mnemonic restores your Nostr key and both post-quantum keys.
+
+## Be honest about what this doesn't do
+
+An adversary with a quantum computer can still sign events as you, because events are still signed with secp256k1. They can also publish a *replacement* attestation carrying their own post-quantum keys and intercept your future messages.
+
+This protects **past** messages, permanently. It does not protect future messages against someone who has already broken secp256k1. Any proposal claiming otherwise is overselling, and we would rather say so than let the claim inflate.
+
+## Twenty-four words
+
+BIP-39 expands any mnemonic to a 64-byte seed, so a 12-word phrase derives working post-quantum keys. But it only carries 128 bits of real entropy, and Grover's algorithm gives a quadratic speedup on unstructured search. At that point your seed, not the lattice, is the weakest link.
+
+So the first concrete change is boring: **generate 24 words by default**. It costs nothing today, it cannot be applied retroactively, and it is the difference between an identity that can carry a full-strength post-quantum key later and one that cannot. That change is [already open against our extension](https://github.com/nostr-wot/nostr-wot-extension/pull/12).
+
+Existing 12-word identities are not abandoned — they derive keys too, and that is strictly better than nothing. But the attestation records the seed strength so the person messaging you can see what they are relying on. A security feature that fails silently is worse than one that isn't there.
+
+## Where the key goes
+
+Tempting answer: a field in your kind 0 profile, since that content is free-form JSON.
+
+Wrong answer. Most clients rebuild the profile object from the fields *they* know about and republish it. The first time you change your display name in a client that hasn't implemented this, your post-quantum key silently vanishes. You still think you're reachable; senders stop seeing a key and quietly fall back to classic encryption.
+
+So the keys live in a dedicated replaceable event, `kind:10203`, signed by your normal key. Nothing else has a reason to overwrite it, and it carries what kind 0 can't — algorithm identifiers, seed strength, versioning for rotation. A kind 0 mirror is allowed as a hint, but the dedicated event wins.
+
+### Proving you actually hold the key
+
+A secp256k1 signature over that event proves you published those bytes. It does not prove you hold the post-quantum keys. Someone could advertise a key they can't decrypt with — by bug or on purpose — and people would send them messages nobody can read.
+
+So the ML-DSA key counter-signs, over a message binding your npub and both post-quantum keys together. ML-KEM can't sign, so this is also what gives the encryption key a possession proof. The reasoning follows Vitor Pamplona's [Key Set Declaration proposal](https://github.com/nostr-protocol/nips/pull/2424), which makes the same argument about unilateral key claims.
+
+## Hybrid, on purpose
+
+The post-quantum shared secret is never used alone. It gets combined with the existing NIP-44 conversation key through a KDF, so the result is no weaker than either input.
+
+Lattice schemes are young and they do break — HAWK, a third-round NIST candidate, fell in July. A flaw in a new scheme must not be able to make Nostr messaging *worse* than it is today.
+
+The whole thing rides inside the existing [gift wrap](https://github.com/nostr-protocol/nips/blob/master/59.md) machinery. Outer layers stay secp256k1, so post-quantum messages cross today's relay network unmodified and clients that ignore all of this are unaffected. **No relay changes. No flag day.**
+
+## What we're deliberately not proposing
+
+Signature migration. An ML-DSA-87 signature is 4,627 bytes — about 6.2 KB base64 — on *every event*. That's a several-fold increase in relay storage and bandwidth for a short note, and it's a decision that needs relay operators at the table, not something a client ships unilaterally.
+
+Publishing the ML-DSA verification key now is what keeps that door open. The commitment exists, signed by your classic key, from before the break — so when signatures eventually migrate, nobody needs a new seed phrase.
+
+That's the part that has to be right today, because it's the only part that can't be fixed later.
+
+<Bibliography>
+  <BibEntry id={1} authors="nostr-protocol" title="NIP-06: Basic key derivation from mnemonic seed phrase" source="GitHub" year="2026" url="https://github.com/nostr-protocol/nips/blob/master/06.md" />
+  <BibEntry id={2} authors="nostr-protocol" title="NIP-44: Versioned Encryption" source="GitHub" year="2026" url="https://github.com/nostr-protocol/nips/blob/master/44.md" />
+  <BibEntry id={3} authors="nostr-protocol" title="NIP-59: Gift Wrap" source="GitHub" year="2026" url="https://github.com/nostr-protocol/nips/blob/master/59.md" />
+  <BibEntry id={4} authors="Paul Millr and contributors" title="NIP-44: post-quantum security (issue #1971)" source="nostr-protocol/nips" year="2025" url="https://github.com/nostr-protocol/nips/issues/1971" />
+  <BibEntry id={5} authors="Vitor Pamplona" title="NIP-A1: Key Set Declaration (PR #2424)" source="nostr-protocol/nips" year="2026" url="https://github.com/nostr-protocol/nips/pull/2424" />
+  <BibEntry id={6} authors="NIST" title="FIPS 203: Module-Lattice-Based Key-Encapsulation Mechanism Standard" source="NIST" year="2024" url="https://csrc.nist.gov/pubs/fips/203/final" />
+  <BibEntry id={7} authors="NIST" title="FIPS 204: Module-Lattice-Based Digital Signature Standard" source="NIST" year="2024" url="https://csrc.nist.gov/pubs/fips/204/final" />
+  <BibEntry id={8} authors="CISA, NSA, NIST" title="Quantum-Readiness: Migration to Post-Quantum Cryptography" source="CISA" year="2023" url="https://www.cisa.gov/sites/default/files/2023-08/Quantum%20Readiness_Final_CLEAR_508c%20%283%29.pdf" />
+  <BibEntry id={9} authors="NIST" title="NIST IR 8547 ipd: Transition to Post-Quantum Cryptography Standards (initial public draft)" source="NIST" year="2024" url="https://csrc.nist.gov/pubs/ir/8547/ipd" />
+  <BibEntry id={10} authors="Australian Signals Directorate" title="Planning for post-quantum cryptography" source="ASD" year="2025" url="https://www.cyber.gov.au/business-government/secure-design/planning-for-post-quantum-cryptography" />
+</Bibliography>
