@@ -326,6 +326,55 @@ export default function ChatContent() {
           </p>
         </div>
       </Section>
+
+      <Section>
+        <div className="mx-auto max-w-3xl rounded-xl border border-gray-200 p-8 text-center dark:border-gray-800">
+          <p className="text-sm uppercase tracking-wider text-gray-500 dark:text-gray-400">
+            {t("collab.eyebrow")}
+          </p>
+          <a
+            href="https://quantakrypto.com"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="mt-5 inline-block"
+            aria-label="QuantaKrypto"
+          >
+            {/* Two files rather than one CSS-filtered logo: the mark is not */}
+            {/* monochrome, so recolouring it would misrepresent the brand. */}
+            <img
+              src="/brand/quantakrypto-logo-dark.svg"
+              alt="QuantaKrypto"
+              className="h-10 w-auto dark:hidden"
+            />
+            <img
+              src="/brand/quantakrypto-logo-light.svg"
+              alt="QuantaKrypto"
+              className="hidden h-10 w-auto dark:block"
+            />
+          </a>
+          <p className="mx-auto mt-5 max-w-xl text-gray-600 dark:text-gray-300">
+            {t("collab.body")}
+          </p>
+          <div className="mt-6 flex flex-wrap justify-center gap-4 text-sm">
+            <a
+              href="https://quantakrypto.com"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-primary hover:underline"
+            >
+              {t("collab.linkSite")}
+            </a>
+            <a
+              href="https://github.com/nostr-wot/nostr-wot-sdk/tree/main/packages/pq"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-primary hover:underline"
+            >
+              {t("collab.linkSpec")}
+            </a>
+          </div>
+        </div>
+      </Section>
     </>
   );
 }
