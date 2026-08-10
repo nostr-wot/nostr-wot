@@ -21,6 +21,9 @@ import {
   type RelayActivity,
   type TraceEntry,
 } from "@/lib/client/pqChat";
+import { paletteFor, reservePalettes, forgetPalette } from "@/lib/client/pqPeople";
+import type { Keyholder } from "@/lib/client/pqLayers";
+import EventExplorer from "./EventExplorer";
 import {
   hasExtension,
   connectExtension,
@@ -111,11 +114,13 @@ function ChatPane({
     setDraft("");
   };
 
+  const pal = paletteFor(me.pubkey);
+
   return (
-    <div className="flex flex-col rounded-xl border border-gray-200 dark:border-gray-800">
+    <div className={`flex flex-col rounded-xl border border-gray-200 dark:border-gray-800 ${pal.ring}`}>
       <div className="border-b border-gray-200 p-4 dark:border-gray-800">
         <div className="flex items-center justify-between gap-2">
-          <h3 className="font-semibold text-gray-900 dark:text-white">{me.label}</h3>
+          <h3 className={`font-semibold ${pal.text}`}>{me.label}</h3>
           <Badge>{badge}</Badge>
         </div>
         <p className="mt-1 break-all font-mono text-xs text-gray-500 dark:text-gray-400">
@@ -141,29 +146,18 @@ function ChatPane({
         )}
         {mine.map(m => {
           const outgoing = m.from === me.pubkey;
+          // Coloured by *sender*, always. Alignment says whether it is yours; colour says
+          // who, which alignment cannot do once there are three people in the room.
+          const pal = paletteFor(m.from);
           return (
             <div key={m.id} className={`flex ${outgoing ? "justify-end" : "justify-start"}`}>
-              <div
-                className={`max-w-[85%] rounded-2xl px-3 py-2 text-sm ${
-                  outgoing
-                    ? "bg-primary text-white"
-                    : "bg-gray-100 text-gray-900 dark:bg-gray-800 dark:text-gray-100"
-                }`}
-              >
-                <p
-                  className={`mb-0.5 text-[11px] font-medium ${
-                    outgoing ? "text-white/80" : "text-gray-500 dark:text-gray-400"
-                  }`}
-                >
+              <div className={`max-w-[85%] rounded-2xl px-3 py-2 text-sm ${outgoing ? pal.solid : pal.soft}`}>
+                <p className={`mb-0.5 text-[11px] font-medium ${outgoing ? "text-white/80" : "opacity-70"}`}>
                   {nameFor(m.from)} → {nameFor(m.to)}
                 </p>
                 <p className="whitespace-pre-wrap break-words">{m.content}</p>
                 {m.bytes > 0 && (
-                  <p
-                    className={`mt-1 text-[11px] ${
-                      outgoing ? "text-white/70" : "text-gray-500 dark:text-gray-400"
-                    }`}
-                  >
+                  <p className={`mt-1 text-[11px] ${outgoing ? "text-white/70" : "opacity-70"}`}>
                     {t("pane.wireSize", { bytes: m.bytes.toLocaleString() })}
                     {/* Naming the relay is the proof that this was not echoed locally. */}
                     {m.relays.length > 0 &&
@@ -256,9 +250,15 @@ function ChatPane({
  */
 function RelayActivityStrip({
   activity,
+  people,
+  eventCount,
+  onOpen,
   t,
 }: {
   activity: RelayActivity;
+  people: { pubkey: string; label: string; count: number }[];
+  eventCount: number;
+  onOpen: () => void;
   t: ReturnType<typeof useTranslations>;
 }) {
   const [syncing, setSyncing] = useState(false);
@@ -274,50 +274,76 @@ function RelayActivityStrip({
   const host = (url: string) => url.replace(/^wss:\/\//, "").replace(/\/$/, "");
 
   return (
-    <div
-      className={`rounded-xl border p-4 transition-colors ${
-        syncing ? "border-primary bg-primary/5" : "border-gray-200 dark:border-gray-800"
+    <button
+      type="button"
+      onClick={onOpen}
+      className={`w-full rounded-xl border p-3 text-left transition-colors ${
+        syncing
+          ? "border-primary bg-primary/5"
+          : "border-gray-200 hover:border-gray-300 dark:border-gray-800 dark:hover:border-gray-700"
       }`}
+      aria-label={t("explorer.open")}
     >
-      <div className="flex flex-wrap items-center justify-between gap-3">
-        <h3 className="text-sm font-semibold text-gray-900 dark:text-white">{t("relays.title")}</h3>
-        <span className="flex items-center gap-2 text-xs text-gray-500 dark:text-gray-400">
-          {syncing && <span className="inline-block h-2 w-2 animate-ping rounded-full bg-primary" />}
-          {syncing
-            ? t("relays.syncing", { relays: activity.last?.relays.map(host).join(", ") || "—" })
-            : t("relays.received", { count: activity.received })}
+      <div className="flex flex-wrap items-center gap-x-5 gap-y-2">
+        {/* Relay lamps: green when connected, primary while one is handing us an event. */}
+        <span className="flex items-center gap-3">
+          {CHAT_RELAYS.map(url => {
+            const up = activity.status[url];
+            const serving = syncing && !!activity.last?.relays.includes(url);
+            return (
+              <span key={url} className="flex items-center gap-1.5" title={host(url)}>
+                <span
+                  className={`inline-block h-2 w-2 rounded-full ${
+                    serving
+                      ? "animate-ping bg-primary"
+                      : up
+                        ? "bg-green-500"
+                        : "bg-gray-300 dark:bg-gray-600"
+                  }`}
+                />
+                <span
+                  className={`hidden text-[11px] lg:inline ${
+                    up ? "text-gray-600 dark:text-gray-400" : "text-gray-400 dark:text-gray-600"
+                  }`}
+                >
+                  {host(url)}
+                </span>
+              </span>
+            );
+          })}
+        </span>
+
+        <span className="h-4 w-px bg-gray-200 dark:bg-gray-800" />
+
+        {/* Who is in the room, in their own colour, with how many events each has. */}
+        <span className="flex flex-wrap items-center gap-2">
+          {people.map(p => {
+            const pal = paletteFor(p.pubkey);
+            return (
+              <span
+                key={p.pubkey}
+                className={`flex items-center gap-1.5 rounded-full px-2 py-0.5 text-[11px] font-medium ${pal.chip}`}
+              >
+                <span className={`inline-block h-1.5 w-1.5 rounded-full ${pal.dot}`} />
+                {p.label}
+                <span className="opacity-70">{p.count}</span>
+              </span>
+            );
+          })}
+        </span>
+
+        <span className="ml-auto flex items-center gap-3 text-[11px] text-gray-500 dark:text-gray-400">
+          <span>
+            {syncing
+              ? t("relays.syncing", { relays: activity.last?.relays.map(host).join(", ") || "—" })
+              : t("relays.received", { count: activity.received })}
+          </span>
+          <span className="rounded-lg bg-gray-100 px-2 py-1 font-medium text-gray-700 dark:bg-gray-800 dark:text-gray-300">
+            {t("explorer.open")} ({eventCount})
+          </span>
         </span>
       </div>
-
-      <ul className="mt-3 flex flex-wrap gap-x-5 gap-y-2 text-xs">
-        {CHAT_RELAYS.map(url => {
-          const up = activity.status[url];
-          const serving = syncing && !!activity.last?.relays.includes(url);
-          return (
-            <li key={url} className="flex items-center gap-2">
-              <span
-                className={`inline-block h-2 w-2 rounded-full ${
-                  serving ? "bg-primary" : up ? "bg-green-500" : "bg-gray-300 dark:bg-gray-600"
-                }`}
-              />
-              <span
-                className={
-                  up ? "text-gray-700 dark:text-gray-300" : "text-gray-400 dark:text-gray-500"
-                }
-              >
-                {host(url)}
-              </span>
-            </li>
-          );
-        })}
-      </ul>
-
-      <p className="mt-3 text-xs text-gray-500 dark:text-gray-400">
-        {activity.caughtUp.length
-          ? t("relays.caughtUp", { inboxes: activity.caughtUp.join(", ") })
-          : t("relays.waiting")}
-      </p>
-    </div>
+    </button>
   );
 }
 
@@ -439,6 +465,8 @@ export default function ChatContent() {
     caughtUp: [],
   });
 
+  const [explorerOpen, setExplorerOpen] = useState(false);
+
   useEffect(() => subscribeRelayActivity(setActivity), []);
 
   // Ids already seen coming back. The relay round trip can beat the state update that
@@ -532,6 +560,7 @@ export default function ChatContent() {
 
     namesRef.current.set(a.pubkey, a.label);
     namesRef.current.set(b.pubkey, b.label);
+    reservePalettes([a.pubkey, b.pubkey]); // Alice first, Bob second, always
     setAlice(a);
     setBob(b);
     addTrace({
@@ -590,8 +619,11 @@ export default function ChatContent() {
   const regenerate = useCallback(() => {
     const a = createIdentity(t("alice"));
     const b = createIdentity(t("bob"));
+    if (alice) forgetPalette(alice.pubkey);
+    if (bob) forgetPalette(bob.pubkey);
     namesRef.current.set(a.pubkey, a.label);
     namesRef.current.set(b.pubkey, b.label);
+    reservePalettes([a.pubkey, b.pubkey]);
 
     setAlice(a);
     setBob(b);
@@ -609,13 +641,14 @@ export default function ChatContent() {
       label: t("trace.newIdentities"),
       detail: t("trace.identitiesDetail"),
     });
-  }, [t, addTrace, extension]);
+  }, [t, addTrace, extension, alice, bob]);
 
   const connect = useCallback(async () => {
     setExtensionError("");
     try {
       const me = await connectExtension();
       namesRef.current.set(me.pubkey, t("extension.paneLabel"));
+      paletteFor(me.pubkey);
       setExtension(me);
 
       const asRecipient = extensionRecipient(me, t("extension.paneLabel"));
@@ -724,6 +757,25 @@ export default function ChatContent() {
     [lastSize],
   );
 
+  /** Everyone in the room, in colour order, with how many events each has produced. */
+  const people = useMemo(() => {
+    const list: { pubkey: string; label: string; count: number }[] = [];
+    const push = (pubkey: string, label: string) =>
+      list.push({ pubkey, label, count: trace.filter(e => e.event && e.owner === pubkey).length });
+    if (alice) push(alice.pubkey, alice.label);
+    if (bob) push(bob.pubkey, bob.label);
+    if (extension) push(extension.pubkey, t("extension.paneLabel"));
+    return list;
+  }, [alice, bob, extension, trace, t]);
+
+  /** Identities whose keys this browser holds, so the explorer can open what it can. */
+  const keyholders = useMemo<Keyholder[]>(
+    () => [alice, bob].filter(Boolean).map(i => i as Identity),
+    [alice, bob],
+  );
+
+  const eventCount = useMemo(() => trace.filter(e => e.event).length, [trace]);
+
   const targetsFor = useCallback(
     (pubkey: string) => roster.filter(r => r.pubkey !== pubkey),
     [roster],
@@ -761,35 +813,41 @@ export default function ChatContent() {
           <p className="mt-4 text-lg text-gray-600 dark:text-gray-300">{t("subtitle")}</p>
           <p className="mt-3 text-sm text-amber-700 dark:text-amber-400">{t("liveNotice")}</p>
 
-          {/* Publishing is a deliberate act, not a side effect of loading the page — so
-              it has to look like the next thing to do, not like a footnote. */}
-          {(phase === "idle" || phase === "failed") && (
-            <div className="mx-auto mt-8 max-w-2xl rounded-xl border-2 border-primary bg-primary/5 p-6 text-left">
-              <h2 className="text-lg font-semibold text-gray-900 dark:text-white">
-                {t("status.startTitle")}
-              </h2>
-              <p className="mt-2 text-sm text-gray-600 dark:text-gray-300">
-                {t("status.startExplainer")}
-              </p>
-              <div className="mt-4">
-                <Button onClick={() => void begin(alice, bob, false)}>
-                  {phase === "failed" ? t("status.retry") : t("status.start")}
+          {/* One control slot, whatever the phase. Registering and regenerating are the
+              same decision seen from either side, so they belong in the same place —
+              hunting for a differently-placed button is what made this hard to find. */}
+          <div
+            className={`mx-auto mt-8 max-w-2xl rounded-xl p-6 text-left ${
+              phase === "ready"
+                ? "border border-gray-200 dark:border-gray-800"
+                : "border-2 border-primary bg-primary/5"
+            }`}
+          >
+            <h2 className="text-lg font-semibold text-gray-900 dark:text-white">
+              {phase === "ready" ? t("status.readyTitle") : t("status.startTitle")}
+            </h2>
+            <p className="mt-2 text-sm text-gray-600 dark:text-gray-300">
+              {phase === "ready" ? t("status.readyExplainer") : t("status.startExplainer")}
+            </p>
+            <div className="mt-4">
+              {phase === "ready" ? (
+                <Button variant="secondary" onClick={regenerate}>
+                  {t("status.newIdentities")}
                 </Button>
-              </div>
+              ) : (
+                <Button
+                  onClick={() => void begin(alice, bob, false)}
+                  disabled={phase === "publishing" || phase === "resolving"}
+                >
+                  {phase === "publishing" || phase === "resolving"
+                    ? t("status.working")
+                    : phase === "failed"
+                      ? t("status.retry")
+                      : t("status.start")}
+                </Button>
+              )}
             </div>
-          )}
-
-          {(phase === "publishing" || phase === "resolving") && (
-            <p className="mt-8 text-sm text-gray-600 dark:text-gray-300">{t("status.working")}</p>
-          )}
-
-          {phase === "ready" && (
-            <div className="mt-8">
-              <Button variant="secondary" onClick={regenerate}>
-                {t("status.newIdentities")}
-              </Button>
-            </div>
-          )}
+          </div>
 
           {(phase === "publishing" || phase === "resolving") && (
             <p className="mt-6 text-sm text-gray-500 dark:text-gray-400">
@@ -801,7 +859,13 @@ export default function ChatContent() {
 
       <Section>
         <div className="mx-auto mb-6 max-w-6xl">
-          <RelayActivityStrip activity={activity} t={t} />
+          <RelayActivityStrip
+            activity={activity}
+            people={people}
+            eventCount={eventCount}
+            onOpen={() => setExplorerOpen(true)}
+            t={t}
+          />
         </div>
 
         <div className="mx-auto grid max-w-6xl gap-6 md:grid-cols-2 xl:grid-cols-3">
@@ -935,6 +999,15 @@ export default function ChatContent() {
           </div>
         </div>
       </Section>
+
+      <EventExplorer
+        open={explorerOpen}
+        onClose={() => setExplorerOpen(false)}
+        trace={trace}
+        keyholders={keyholders}
+        people={people}
+        t={t}
+      />
     </>
   );
 }

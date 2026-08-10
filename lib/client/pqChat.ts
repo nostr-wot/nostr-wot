@@ -149,6 +149,10 @@ export type TraceEntry = {
   event?: Event;
   /** Serialized size in bytes, for the event steps. */
   bytes?: number;
+  /** Whose transcript this belongs to, so the explorer can filter by account. */
+  owner?: string;
+  /** Relays that served or accepted it. */
+  relays?: string[];
 };
 
 export type ChatMessage = {
@@ -246,6 +250,8 @@ export async function publishAttestation(
       : "Without this, no one can discover the ML-KEM key, so no message can be encrypted to this identity.",
     event,
     bytes: JSON.stringify(event).length,
+    owner: id.pubkey,
+    relays: accepted,
   });
 
   return { event, accepted };
@@ -382,6 +388,7 @@ export async function sendMessage(
       "The post-quantum payload sits in the kind:13 seal, wrapped in a kind:1059 signed by a throwaway key. The sender's pubkey appears nowhere on the outside.",
     event: wrap,
     bytes,
+    owner: from.pubkey,
   });
 
   const results = await Promise.allSettled(getPool().publish(CHAT_RELAYS, wrap));
@@ -457,6 +464,8 @@ export function watchInbox(
         detail: `Served by ${relays.length ? relays.join(", ") : "an unrecorded relay"}. The seal's signature authenticated the sender, and the rumor's claimed author was checked against it before the content was trusted.`,
         event: evt,
         bytes: JSON.stringify(evt).length,
+        owner: me.pubkey,
+        relays,
       });
 
       onMessage({
@@ -477,24 +486,27 @@ export function watchInbox(
 
 // ── Session reuse ───────────────────────────────────────────────────────────
 
-const SESSION_KEY = "nostr-wot:pqc-chat";
+const SESSION_KEY = "nostr-wot:pqc-chat:v1";
 
 /**
- * Remember this tab's demo identities.
+ * Remember the demo identities on this machine.
  *
- * Not a convenience. Each visit publishes two ~12 kB replaceable events under a new
- * pubkey, and replaceable only means "replaceable per author" — so without this, every
- * reload would leave another permanent 24 kB on four public relays. Reusing the
- * mnemonics means a reload replaces its own attestations instead of adding to them.
+ * Two reasons, and the second is the important one. Each registration publishes two
+ * ~12 kB replaceable events, and replaceable only means "replaceable per author" — so a
+ * page that minted new keys on every visit would leave another permanent 24 kB on four
+ * public relays each time. Reusing the mnemonics means a return visit *replaces* its own
+ * attestations instead of adding to them.
  *
- * sessionStorage, not localStorage: these are throwaway keys and should not outlive
- * the tab.
+ * localStorage rather than sessionStorage, so the identities survive closing the tab and
+ * the demo is not rebuilt from scratch every time. These are disposable keys for a
+ * public demonstration and hold nothing worth stealing; "Generate new identities"
+ * discards them.
  */
 export type SavedSession = { alice: string; bob: string; published: boolean };
 
 export function readSession(): SavedSession | null {
   try {
-    const raw = sessionStorage.getItem(SESSION_KEY);
+    const raw = localStorage.getItem(SESSION_KEY);
     if (!raw) return null;
     const parsed = JSON.parse(raw) as SavedSession;
     return validateMnemonic(parsed.alice, wordlist) && validateMnemonic(parsed.bob, wordlist)
@@ -507,7 +519,7 @@ export function readSession(): SavedSession | null {
 
 export function writeSession(session: SavedSession): void {
   try {
-    sessionStorage.setItem(SESSION_KEY, JSON.stringify(session));
+    localStorage.setItem(SESSION_KEY, JSON.stringify(session));
   } catch {
     // Private mode, or storage full. The page works without it.
   }
