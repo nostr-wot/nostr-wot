@@ -1,0 +1,56 @@
+{
+  "meta": {
+    "title": "Post-quantum chat",
+    "description": "Send real post-quantum encrypted Nostr messages between two identities and inspect every event that goes over the wire."
+  },
+  "badge": "Live demo",
+  "title": "Post-quantum chat",
+  "subtitle": "Two identities, generated in your browser, exchanging real post-quantum encrypted messages over public Nostr relays.",
+  "liveNotice": "These are real events published to public relays. They are encrypted and use throwaway keys, but they are not simulated.",
+  "generating": "Generating two identities and deriving their post-quantum keys...",
+  "alice": "Alice",
+  "bob": "Bob",
+  "pane": {
+    "pqReady": "Post-quantum ready",
+    "empty": "No messages yet. Send one and watch the transcript below.",
+    "placeholder": "Message {peer}...",
+    "send": "Send",
+    "sending": "Sending...",
+    "wireSize": "{bytes} bytes on the wire",
+    "awaitingRelay": "awaiting relay"
+  },
+  "sizeCompare": "That message travelled as {pq} bytes. The same text as a classic NIP-17 gift wrap would be {classic} bytes — {ratio}x smaller. The difference is almost entirely the ML-KEM ciphertext.",
+  "trace": {
+    "identitiesCreated": "Two identities created",
+    "identitiesDetail": "Each has a 24-word seed phrase generated in your browser. The secp256k1 key and the ML-KEM and ML-DSA keys are all derived from that one seed, as siblings — no key is derived from another. Nothing was sent anywhere.",
+    "sendFailed": "Sending failed"
+  },
+  "inspector": {
+    "title": "What went over the wire",
+    "subtitle": "Every step, with the raw event behind it. Open any entry to see the exact JSON a relay received.",
+    "empty": "Nothing yet. Send a message to populate the transcript.",
+    "show": "Inspect",
+    "hide": "Close",
+    "copy": "Copy JSON",
+    "copied": "Copied",
+    "relays": "Relays: {relays}"
+  },
+  "collab": {
+    "eyebrow": "In collaboration with",
+    "body": "The post-quantum design, specification and cryptographic review are a joint effort between Nostr WoT and QuantaKrypto, an applied post-quantum cryptography practice.",
+    "linkSite": "quantakrypto.com",
+    "linkSpec": "Read the specification"
+  },
+  "extension": {
+    "label": "Extension",
+    "title": "Use your own identity",
+    "connect": "Connect extension",
+    "notFound": "No Nostr extension detected. Install the Nostr WoT extension to send from your own identity.",
+    "canReceive": "Your post-quantum keys are published, so Alice and Bob can message you back.",
+    "cannotReceive": "You can send, but not receive yet: no post-quantum attestation was found for your identity. Publish one from the extension — Menu → Security → Post-quantum key — so senders can find your ML-KEM key.",
+    "placeholder": "Message from your own identity...",
+    "sendTo": "Send to {peer}",
+    "sent": "Sent to {peer} — accepted by {count} relays",
+    "sentDetail": "The payload was encrypted and the seal signed by your extension. Only the outer wrap was built here, because it is signed by a throwaway key."
+  }
+}

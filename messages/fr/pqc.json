@@ -1,0 +1,62 @@
+{
+  "meta": {
+    "title": "Identités Nostr post-quantiques",
+    "description": "Vérifiez si un profil Nostr peut recevoir des messages chiffrés post-quantiques et découvrez comment les clés post-quantiques sont dérivées d'une phrase de récupération existante."
+  },
+  "hero": {
+    "badge": "Proposition",
+    "title": "Nostr post-quantique",
+    "subtitle": "Tout message chiffré envoyé aujourd'hui sur Nostr pourra être déchiffré plus tard par quiconque l'a enregistré. Des clés post-quantiques dérivées de la phrase de récupération que vous avez déjà comblent cette faille, sans changer votre identité."
+  },
+  "checker": {
+    "title": "Vérifier un profil",
+    "subtitle": "Saisissez un npub pour voir s'il publie des clés post-quantiques et si ces clés sont dignes de confiance.",
+    "placeholder": "npub1... ou une clé publique hexadécimale",
+    "action": "Vérifier",
+    "checking": "Interrogation des relais...",
+    "earlyNotice": "La proposition est récente, donc presque aucun profil ne publie encore ces clés. Un résultat vide signifie que cette identité ne l'a pas adoptée, pas que la vérification a échoué."
+  },
+  "result": {
+    "invalidInput": "Ce n'est pas un npub ni une clé publique valide",
+    "notFound": "Aucune clé post-quantique publiée",
+    "notFoundDetail": "Cette identité n'a aucun événement d'attestation sur les relais interrogés. Les messages qui lui sont envoyés ne peuvent être chiffrés qu'avec de la cryptographie classique, qu'un ordinateur quantique pourrait déchiffrer rétroactivement.",
+    "supported": "Compatible post-quantique",
+    "supportedWithProblems": "Publiées, mais avec des problèmes",
+    "popValid": "Possession prouvée",
+    "popInvalid": "La preuve de possession a échoué",
+    "seedStrength": "Graine de {bits} bits",
+    "npub": "Identité",
+    "origin": "Origine de la clé",
+    "profile": "Profil de dérivation",
+    "published": "Publié"
+  },
+  "how": {
+    "title": "Comment ça marche",
+    "subtitle": "Trois idées, dont aucune n'exige de modifier les relais.",
+    "seed": {
+      "title": "Des clés sœurs, pas descendantes",
+      "body": "Vos clés post-quantiques proviennent de la même graine BIP-39 que votre clé Nostr, étendue séparément. Aucune n'est dérivée de l'autre. C'est là tout l'enjeu : si une clé post-quantique était dérivée de votre clé privée, quiconque casserait votre clé Nostr n'aurait qu'à répéter la dérivation pour l'obtenir. Comme la dérivation depuis la graine est à sens unique, casser votre clé Nostr ne révèle rien à son sujet."
+    },
+    "attestation": {
+      "title": "Publiées dans leur propre événement",
+      "body": "Les clés publiques résident dans un événement remplaçable dédié, et non dans les métadonnées de votre profil. Les clients reconstruisent ces métadonnées à partir des champs qu'ils reconnaissent : une clé inconnue disparaîtrait donc silencieusement dès que vous changeriez votre nom ailleurs, sans que vous le sachiez."
+    },
+    "wrap": {
+      "title": "Transportées dans le gift wrap actuel",
+      "body": "La charge post-quantique circule dans les couches NIP-44 et NIP-59 existantes, combinée à la clé classique plutôt qu'à sa place. Les relais n'ont rien à changer, et les clients qui n'implémentent rien de tout cela ne sont pas affectés."
+    }
+  },
+  "limits": {
+    "title": "Ce que cela ne fait pas",
+    "body": "Cela protège durablement la confidentialité des messages envoyés à partir de maintenant, même face à quelqu'un qui les enregistre aujourd'hui et casse la cryptographie plus tard. Cela n'empêche pas un attaquant quantique de forger des événements en votre nom, car les événements restent signés avec secp256k1. Y remédier suppose de migrer les signatures, un chantier distinct et bien plus vaste."
+  },
+  "problems": {
+    "keyLength": "La clé {alg} fait {bytes} octets alors que {expected} étaient attendus. Cette attestation est mal formée.",
+    "noAlgTags": "L'attestation ne contient aucune clé.",
+    "noKem": "Aucune clé d'encapsulation {alg} : cette identité ne peut pas recevoir de messages chiffrés post-quantiques.",
+    "derivedWeakSeed": "Déclare des clés dérivées d'une graine de {bits} bits. La spécification exige 256 bits pour les clés dérivées ; une graine plus faible doit être publiée comme clé indépendante.",
+    "derivedMissingSeedStrength": "Déclare des clés dérivées de la graine sans indiquer sa robustesse : la déclaration est invérifiable.",
+    "missingPop": "La clé {alg} est publiée sans preuve de possession : rien n'indique que son détenteur la contrôle.",
+    "popFailed": "La preuve de possession échoue. Ne faites pas confiance à ces clés."
+  }
+}

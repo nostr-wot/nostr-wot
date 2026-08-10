@@ -1,0 +1,62 @@
+{
+  "meta": {
+    "title": "Identidades post-cuánticas en Nostr",
+    "description": "Comprueba si un perfil de Nostr puede recibir mensajes cifrados post-cuánticos y descubre cómo se derivan las claves post-cuánticas de una frase semilla existente."
+  },
+  "hero": {
+    "badge": "Propuesta",
+    "title": "Nostr post-cuántico",
+    "subtitle": "Cualquier mensaje cifrado que se envía hoy en Nostr podrá descifrarlo más adelante quien lo haya guardado. Las claves post-cuánticas derivadas de la frase semilla que ya tienes cierran esa brecha, sin cambiar tu identidad."
+  },
+  "checker": {
+    "title": "Comprobar un perfil",
+    "subtitle": "Introduce un npub para ver si publica claves post-cuánticas y si esas claves son fiables.",
+    "placeholder": "npub1... o una clave pública en hexadecimal",
+    "action": "Comprobar",
+    "checking": "Consultando relés...",
+    "earlyNotice": "La propuesta es reciente, así que casi ningún perfil publica todavía estas claves. Un resultado vacío significa que esa identidad no la ha adoptado, no que la comprobación haya fallado."
+  },
+  "result": {
+    "invalidInput": "Eso no es un npub ni una clave pública válida",
+    "notFound": "No publica claves post-cuánticas",
+    "notFoundDetail": "Esta identidad no tiene evento de atestación en los relés consultados. Los mensajes que se le envíen solo pueden cifrarse con criptografía clásica, que un ordenador cuántico podría descifrar de forma retroactiva.",
+    "supported": "Compatible con post-cuántico",
+    "supportedWithProblems": "Publicadas, pero con problemas",
+    "popValid": "Posesión demostrada",
+    "popInvalid": "La prueba de posesión falló",
+    "seedStrength": "Semilla de {bits} bits",
+    "npub": "Identidad",
+    "origin": "Origen de la clave",
+    "profile": "Perfil de derivación",
+    "published": "Publicado"
+  },
+  "how": {
+    "title": "Cómo funciona",
+    "subtitle": "Tres ideas, y ninguna exige cambios en los relés.",
+    "seed": {
+      "title": "Claves hermanas, no descendientes",
+      "body": "Tus claves post-cuánticas salen de la misma semilla BIP-39 que tu clave de Nostr, expandida por separado. Ninguna se deriva de la otra. Esto es lo importante: si una clave post-cuántica se derivara de tu clave privada, quien rompiera tu clave de Nostr solo tendría que repetir la derivación para obtenerla. Como la derivación desde la semilla es unidireccional, romper tu clave de Nostr no revela nada sobre ella."
+    },
+    "attestation": {
+      "title": "Publicadas en su propio evento",
+      "body": "Las claves públicas viven en un evento reemplazable propio y no en los metadatos de tu perfil. Los clientes reconstruyen esos metadatos con los campos que reconocen, así que una clave desconocida desaparecería en silencio la primera vez que cambiaras tu nombre en otro cliente, y nunca te enterarías."
+    },
+    "wrap": {
+      "title": "Dentro del gift wrap actual",
+      "body": "La carga post-cuántica viaja dentro de las capas NIP-44 y NIP-59 existentes, combinada con la clave clásica en lugar de sustituirla. Los relés no necesitan cambios y los clientes que no implementen nada de esto no se ven afectados."
+    }
+  },
+  "limits": {
+    "title": "Lo que esto no hace",
+    "body": "Protege de forma permanente la confidencialidad de los mensajes enviados a partir de ahora, incluso frente a quien los guarde hoy y rompa la criptografía más adelante. No impide que un atacante cuántico falsifique eventos en tu nombre, porque los eventos se siguen firmando con secp256k1. Resolver eso exige migrar las firmas, un cambio distinto y mucho mayor."
+  },
+  "problems": {
+    "keyLength": "La clave {alg} ocupa {bytes} bytes y se esperaban {expected}. Esta atestación está mal formada.",
+    "noAlgTags": "La atestación no contiene ninguna clave.",
+    "noKem": "No hay clave de encapsulado {alg}, así que esta identidad no puede recibir mensajes cifrados post-cuánticos.",
+    "derivedWeakSeed": "Declara claves derivadas de una semilla de {bits} bits. La especificación exige 256 bits para las claves derivadas; una semilla más débil debe publicarse como clave independiente.",
+    "derivedMissingSeedStrength": "Declara claves derivadas de la semilla pero no indica su fortaleza, así que la declaración no se puede comprobar.",
+    "missingPop": "La clave {alg} se publica sin prueba de posesión, por lo que no hay evidencia de que su titular la controle.",
+    "popFailed": "La prueba de posesión no se verifica. No confíes en estas claves."
+  }
+}

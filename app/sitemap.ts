@@ -37,6 +37,8 @@ const routes: {
   { path: "/docs/sdk", changeFrequency: "weekly", priority: 0.7 },
   { path: "/docs/oracle", changeFrequency: "weekly", priority: 0.7 },
   { path: "/oracle", changeFrequency: "monthly", priority: 0.7 },
+  { path: "/pqc", changeFrequency: "weekly", priority: 0.8 },
+  { path: "/pqc/chat", changeFrequency: "weekly", priority: 0.7 },
   { path: "/about", changeFrequency: "monthly", priority: 0.6 },
   { path: "/contact", changeFrequency: "monthly", priority: 0.5 },
   { path: "/guides", changeFrequency: "weekly", priority: 0.8 },
