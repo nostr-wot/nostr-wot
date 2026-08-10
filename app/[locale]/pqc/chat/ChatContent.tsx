@@ -30,7 +30,15 @@ type Pane = { me: Identity; peer: Identity };
  * relay hands it back would make the demo prove nothing — it would look identical
  * whether the network accepted the event or dropped it on the floor.
  */
-type Pending = { id: string; from: string; to: string; content: string };
+type Pending = {
+  id: string;
+  from: string;
+  to: string;
+  content: string;
+  /** sending → published to relays → confirmed only when a relay hands it back. */
+  status: "sending" | "sent";
+  acceptedBy?: number;
+};
 
 function shortNpub(npub: string) {
   return `${npub.slice(0, 12)}…${npub.slice(-6)}`;
@@ -41,6 +49,7 @@ function ChatPane({
   pane,
   messages,
   pending,
+  nameFor,
   onSend,
   busy,
   t,
@@ -48,6 +57,7 @@ function ChatPane({
   pane: Pane;
   messages: ChatMessage[];
   pending: Pending[];
+  nameFor: (pubkey: string) => string;
   onSend: (text: string) => void;
   busy: boolean;
   t: ReturnType<typeof useTranslations>;
@@ -82,7 +92,9 @@ function ChatPane({
         {messages.length === 0 && pending.length === 0 && (
           <p className="text-sm text-gray-500 dark:text-gray-400">{t("pane.empty")}</p>
         )}
-        {messages.map(m => {
+        {messages
+          .filter(m => m.from === pane.me.pubkey || m.to === pane.me.pubkey)
+          .map(m => {
           const mine = m.from === pane.me.pubkey;
           return (
             <div key={m.id} className={`flex ${mine ? "justify-end" : "justify-start"}`}>
@@ -93,6 +105,9 @@ function ChatPane({
                     : "bg-gray-100 text-gray-900 dark:bg-gray-800 dark:text-gray-100"
                 }`}
               >
+                <p className={`mb-0.5 text-[11px] font-medium ${mine ? "text-white/80" : "text-gray-500 dark:text-gray-400"}`}>
+                  {mine ? nameFor(m.from) : `${nameFor(m.from)} → ${nameFor(m.to)}`}
+                </p>
                 <p className="whitespace-pre-wrap break-words">{m.content}</p>
                 {m.bytes > 0 && (
                   <p className={`mt-1 text-[11px] ${mine ? "text-white/70" : "text-gray-500 dark:text-gray-400"}`}>
@@ -109,7 +124,9 @@ function ChatPane({
               <p className="whitespace-pre-wrap break-words">{p.content}</p>
               <p className="mt-1 flex items-center gap-1 text-[11px]">
                 <span className="inline-block h-1.5 w-1.5 animate-pulse rounded-full bg-primary" />
-                {t("pane.awaitingRelay")}
+                {p.status === "sending"
+                  ? t("pane.sendingStatus")
+                  : t("pane.sentAwaiting", { count: p.acceptedBy ?? 0 })}
               </p>
             </div>
           </div>
@@ -234,10 +251,12 @@ function Inspector({ trace, t }: { trace: TraceEntry[]; t: ReturnType<typeof use
 function ExtensionPane({
   peers,
   onTrace,
+  nameFor,
   t,
 }: {
   peers: Identity[];
   onTrace: (e: Omit<TraceEntry, "id" | "at">) => void;
+  nameFor: (pubkey: string) => string;
   t: ReturnType<typeof useTranslations>;
 }) {
   const [available, setAvailable] = useState(false);
@@ -334,7 +353,10 @@ function ExtensionPane({
           {received.length > 0 && (
             <ul className="mt-4 space-y-1 text-sm text-gray-700 dark:text-gray-300">
               {received.map(r => (
-                <li key={r.id}>&ldquo;{r.content}&rdquo;</li>
+                <li key={r.id}>
+                  <span className="text-xs text-gray-500 dark:text-gray-400">{nameFor(r.sender)}: </span>
+                  &ldquo;{r.content}&rdquo;
+                </li>
               ))}
             </ul>
           )}
@@ -406,7 +428,17 @@ export default function ChatContent() {
         setPending(prev =>
           deliveredIds.current.has(res.wrap.id)
             ? prev // already came back while we were still publishing
-            : [...prev, { id: res.wrap.id, from: from.pubkey, to: to.pubkey, content: text }],
+            : [
+                ...prev,
+                {
+                  id: res.wrap.id,
+                  from: from.pubkey,
+                  to: to.pubkey,
+                  content: text,
+                  status: "sent" as const,
+                  acceptedBy: res.accepted.length,
+                },
+              ],
         );
       } catch (e) {
         addTrace({ from: from.label, kind: "error", label: t("trace.sendFailed"), detail: (e as Error).message });
@@ -415,6 +447,16 @@ export default function ChatContent() {
       }
     },
     [addTrace, t],
+  );
+
+  /** Label a pubkey. Falls back to a short key for anyone outside the demo. */
+  const nameFor = useCallback(
+    (pubkey: string) => {
+      if (alice && pubkey === alice.pubkey) return alice.label;
+      if (bob && pubkey === bob.pubkey) return bob.label;
+      return `${pubkey.slice(0, 8)}…`;
+    },
+    [alice, bob],
   );
 
   const ratio = useMemo(
@@ -442,11 +484,12 @@ export default function ChatContent() {
       </Section>
 
       <Section>
-        <div className="mx-auto grid max-w-5xl gap-6 md:grid-cols-2">
+        <div className="mx-auto grid max-w-6xl gap-6 md:grid-cols-2 xl:grid-cols-3">
           <ChatPane
             pane={{ me: alice, peer: bob }}
             messages={messages}
             pending={pending.filter(p => p.from === alice.pubkey)}
+            nameFor={nameFor}
             onSend={text => send(alice, bob, text)}
             busy={busy}
             t={t}
@@ -455,14 +498,12 @@ export default function ChatContent() {
             pane={{ me: bob, peer: alice }}
             messages={messages}
             pending={pending.filter(p => p.from === bob.pubkey)}
+            nameFor={nameFor}
             onSend={text => send(bob, alice, text)}
             busy={busy}
             t={t}
           />
-        </div>
-
-        <div className="mx-auto mt-6 max-w-5xl">
-          <ExtensionPane peers={[alice, bob]} onTrace={addTrace} t={t} />
+          <ExtensionPane peers={[alice, bob]} onTrace={addTrace} nameFor={nameFor} t={t} />
         </div>
 
         {lastSize && (
