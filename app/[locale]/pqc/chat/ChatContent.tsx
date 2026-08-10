@@ -72,6 +72,8 @@ function ChatPane({
   nameFor,
   targets,
   onSend,
+  onRegister,
+  registering,
   busy,
   t,
   children,
@@ -84,6 +86,9 @@ function ChatPane({
   nameFor: (pubkey: string) => string;
   targets: Recipient[];
   onSend: (to: Recipient, text: string) => void;
+  /** Offered in the composer while there is nobody to send to yet. */
+  onRegister?: () => void;
+  registering?: boolean;
   busy: boolean;
   t: ReturnType<typeof useTranslations>;
   children?: React.ReactNode;
@@ -204,7 +209,17 @@ function ChatPane({
 
       <div className="flex flex-col gap-2 border-t border-gray-200 p-3 dark:border-gray-800">
         {targets.length === 0 ? (
-          <p className="text-xs text-gray-500 dark:text-gray-400">{t("pane.noTargets")}</p>
+          // The register action belongs here too, not only in the header: this is where
+          // you look when you want to send, and "nobody to send to" reads as broken
+          // unless the thing that fixes it is within reach.
+          <>
+            <p className="text-xs text-gray-500 dark:text-gray-400">{t("pane.noTargets")}</p>
+            {onRegister && (
+              <Button type="button" onClick={onRegister} disabled={registering}>
+                {registering ? t("status.working") : t("status.start")}
+              </Button>
+            )}
+          </>
         ) : (
           <>
             <Input
@@ -566,6 +581,36 @@ export default function ChatContent() {
     );
   }, [extension, receive, addTrace, t]);
 
+  /**
+   * Throw away the demo identities and mint two new ones, unregistered.
+   *
+   * Without this the page is a one-shot: once a session has published, there is no way
+   * back to the state the whole demo is about — fresh keys that nobody can reach yet.
+   */
+  const regenerate = useCallback(() => {
+    const a = createIdentity(t("alice"));
+    const b = createIdentity(t("bob"));
+    namesRef.current.set(a.pubkey, a.label);
+    namesRef.current.set(b.pubkey, b.label);
+
+    setAlice(a);
+    setBob(b);
+    setMessages([]);
+    setPending([]);
+    deliveredIds.current.clear();
+    // The extension keeps its place; only the demo pair is replaced.
+    setRoster(prev => prev.filter(r => r.pubkey === extension?.pubkey));
+    writeSession({ alice: a.mnemonic, bob: b.mnemonic, published: false });
+    setPhase("idle");
+
+    addTrace({
+      from: "—",
+      kind: "info",
+      label: t("trace.newIdentities"),
+      detail: t("trace.identitiesDetail"),
+    });
+  }, [t, addTrace, extension]);
+
   const connect = useCallback(async () => {
     setExtensionError("");
     try {
@@ -716,15 +761,33 @@ export default function ChatContent() {
           <p className="mt-4 text-lg text-gray-600 dark:text-gray-300">{t("subtitle")}</p>
           <p className="mt-3 text-sm text-amber-700 dark:text-amber-400">{t("liveNotice")}</p>
 
-          {/* Publishing is a deliberate act, not a side effect of loading the page. */}
+          {/* Publishing is a deliberate act, not a side effect of loading the page — so
+              it has to look like the next thing to do, not like a footnote. */}
           {(phase === "idle" || phase === "failed") && (
-            <div className="mx-auto mt-8 max-w-2xl rounded-xl border border-gray-200 p-6 dark:border-gray-800">
-              <p className="text-sm text-gray-600 dark:text-gray-300">{t("status.startExplainer")}</p>
+            <div className="mx-auto mt-8 max-w-2xl rounded-xl border-2 border-primary bg-primary/5 p-6 text-left">
+              <h2 className="text-lg font-semibold text-gray-900 dark:text-white">
+                {t("status.startTitle")}
+              </h2>
+              <p className="mt-2 text-sm text-gray-600 dark:text-gray-300">
+                {t("status.startExplainer")}
+              </p>
               <div className="mt-4">
                 <Button onClick={() => void begin(alice, bob, false)}>
                   {phase === "failed" ? t("status.retry") : t("status.start")}
                 </Button>
               </div>
+            </div>
+          )}
+
+          {(phase === "publishing" || phase === "resolving") && (
+            <p className="mt-8 text-sm text-gray-600 dark:text-gray-300">{t("status.working")}</p>
+          )}
+
+          {phase === "ready" && (
+            <div className="mt-8">
+              <Button variant="secondary" onClick={regenerate}>
+                {t("status.newIdentities")}
+              </Button>
             </div>
           )}
 
@@ -753,6 +816,12 @@ export default function ChatContent() {
               nameFor={nameFor}
               targets={targetsFor(id.pubkey)}
               onSend={(to, text) => send(asSender(id), to, text)}
+              onRegister={
+                phase === "idle" || phase === "failed"
+                  ? () => void begin(alice, bob, false)
+                  : undefined
+              }
+              registering={phase === "publishing" || phase === "resolving"}
               busy={busyKeys.includes(id.pubkey)}
               t={t}
             />
