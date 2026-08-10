@@ -13,6 +13,13 @@ import {
   type Identity,
   type TraceEntry,
 } from "@/lib/client/pqChat";
+import {
+  hasExtension,
+  connectExtension,
+  sendFromExtension,
+  watchExtensionInbox,
+  type ExtensionIdentity,
+} from "@/lib/client/pqExtension";
 
 type Pane = { me: Identity; peer: Identity };
 
@@ -217,6 +224,126 @@ function Inspector({ trace, t }: { trace: TraceEntry[]; t: ReturnType<typeof use
   );
 }
 
+/**
+ * Drive the demo from a real identity held in the browser extension.
+ *
+ * Receiving requires this identity to have published a kind:10203 attestation, because
+ * that is how a sender learns its ML-KEM key — there is deliberately no way to read one
+ * out of the extension. When it is missing we say so rather than pretending.
+ */
+function ExtensionPane({
+  peers,
+  onTrace,
+  t,
+}: {
+  peers: Identity[];
+  onTrace: (e: Omit<TraceEntry, "id" | "at">) => void;
+  t: ReturnType<typeof useTranslations>;
+}) {
+  const [available, setAvailable] = useState(false);
+  const [me, setMe] = useState<ExtensionIdentity | null>(null);
+  const [error, setError] = useState("");
+  const [draft, setDraft] = useState("");
+  const [busy, setBusy] = useState(false);
+  const [received, setReceived] = useState<{ id: string; sender: string; content: string }[]>([]);
+
+  useEffect(() => setAvailable(hasExtension()), []);
+
+  useEffect(() => {
+    if (!me?.pubkey) return;
+    return watchExtensionInbox(
+      me.pubkey,
+      m => setReceived(prev => (prev.some(p => p.id === m.id) ? prev : [...prev, m])),
+      (label, detail) => onTrace({ from: t("extension.label"), kind: "error", label, detail }),
+    );
+  }, [me?.pubkey, onTrace, t]);
+
+  const connect = async () => {
+    setError("");
+    try {
+      setMe(await connectExtension());
+    } catch (e) {
+      setError((e as Error).message);
+    }
+  };
+
+  const send = async (peer: Identity) => {
+    if (!me || !draft.trim()) return;
+    setBusy(true);
+    try {
+      const kemB64 = btoa(String.fromCharCode(...peer.pq.kem.publicKey));
+      const res = await sendFromExtension(me.pubkey, peer.pubkey, kemB64, draft.trim());
+      onTrace({
+        from: t("extension.label"),
+        kind: "event",
+        label: t("extension.sent", { peer: peer.label, count: res.accepted.length }),
+        detail: t("extension.sentDetail"),
+        event: res.wrap,
+        bytes: JSON.stringify(res.wrap).length,
+      });
+      setDraft("");
+    } catch (e) {
+      setError((e as Error).message);
+    } finally {
+      setBusy(false);
+    }
+  };
+
+  if (!available) {
+    return (
+      <div className="rounded-xl border border-dashed border-gray-300 p-6 text-center dark:border-gray-700">
+        <p className="text-sm text-gray-500 dark:text-gray-400">{t("extension.notFound")}</p>
+      </div>
+    );
+  }
+
+  return (
+    <div className="rounded-xl border border-gray-200 p-6 dark:border-gray-800">
+      <div className="flex flex-wrap items-center justify-between gap-3">
+        <h3 className="font-semibold text-gray-900 dark:text-white">{t("extension.title")}</h3>
+        {!me && <Button onClick={connect}>{t("extension.connect")}</Button>}
+      </div>
+
+      {error && <p className="mt-3 text-sm text-red-600 dark:text-red-400">{error}</p>}
+
+      {me && (
+        <>
+          <p className="mt-2 break-all font-mono text-xs text-gray-500 dark:text-gray-400">{me.npub}</p>
+
+          {me.attestation.status === "found" && me.attestation.problems.length === 0 ? (
+            <p className="mt-3 text-sm text-green-700 dark:text-green-400">{t("extension.canReceive")}</p>
+          ) : (
+            <p className="mt-3 text-sm text-amber-700 dark:text-amber-400">{t("extension.cannotReceive")}</p>
+          )}
+
+          <div className="mt-4 flex flex-col gap-2 sm:flex-row">
+            <Input
+              value={draft}
+              onChange={e => setDraft(e.target.value)}
+              placeholder={t("extension.placeholder")}
+              aria-label={t("extension.placeholder")}
+              className="flex-1"
+            />
+            {peers.map(p => (
+              <Button key={p.pubkey} onClick={() => send(p)} disabled={busy || !draft.trim()}>
+                {busy ? t("pane.sending") : t("extension.sendTo", { peer: p.label })}
+              </Button>
+            ))}
+          </div>
+
+          {received.length > 0 && (
+            <ul className="mt-4 space-y-1 text-sm text-gray-700 dark:text-gray-300">
+              {received.map(r => (
+                <li key={r.id}>&ldquo;{r.content}&rdquo;</li>
+              ))}
+            </ul>
+          )}
+        </>
+      )}
+    </div>
+  );
+}
+
 export default function ChatContent() {
   const t = useTranslations("pqcChat");
   const [alice, setAlice] = useState<Identity | null>(null);
@@ -332,6 +459,10 @@ export default function ChatContent() {
             busy={busy}
             t={t}
           />
+        </div>
+
+        <div className="mx-auto mt-6 max-w-5xl">
+          <ExtensionPane peers={[alice, bob]} onTrace={addTrace} t={t} />
         </div>
 
         {lastSize && (
