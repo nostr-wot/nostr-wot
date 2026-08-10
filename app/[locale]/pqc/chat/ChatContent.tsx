@@ -16,6 +16,15 @@ import {
 
 type Pane = { me: Identity; peer: Identity };
 
+/**
+ * A message we have published but not yet seen return from a relay.
+ *
+ * Kept separate from real messages on purpose. Showing it as delivered before the
+ * relay hands it back would make the demo prove nothing — it would look identical
+ * whether the network accepted the event or dropped it on the floor.
+ */
+type Pending = { id: string; from: string; to: string; content: string };
+
 function shortNpub(npub: string) {
   return `${npub.slice(0, 12)}…${npub.slice(-6)}`;
 }
@@ -24,12 +33,14 @@ function shortNpub(npub: string) {
 function ChatPane({
   pane,
   messages,
+  pending,
   onSend,
   busy,
   t,
 }: {
   pane: Pane;
   messages: ChatMessage[];
+  pending: Pending[];
   onSend: (text: string) => void;
   busy: boolean;
   t: ReturnType<typeof useTranslations>;
@@ -39,7 +50,7 @@ function ChatPane({
 
   useEffect(() => {
     endRef.current?.scrollIntoView({ behavior: "smooth" });
-  }, [messages.length]);
+  }, [messages.length, pending.length]);
 
   const submit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -61,7 +72,7 @@ function ChatPane({
       </div>
 
       <div className="h-72 flex-1 space-y-2 overflow-y-auto p-4">
-        {messages.length === 0 && (
+        {messages.length === 0 && pending.length === 0 && (
           <p className="text-sm text-gray-500 dark:text-gray-400">{t("pane.empty")}</p>
         )}
         {messages.map(m => {
@@ -85,6 +96,17 @@ function ChatPane({
             </div>
           );
         })}
+        {pending.map(p => (
+          <div key={p.id} className="flex justify-end">
+            <div className="max-w-[85%] rounded-2xl border border-dashed border-primary/50 px-3 py-2 text-sm text-gray-500 dark:text-gray-400">
+              <p className="whitespace-pre-wrap break-words">{p.content}</p>
+              <p className="mt-1 flex items-center gap-1 text-[11px]">
+                <span className="inline-block h-1.5 w-1.5 animate-pulse rounded-full bg-primary" />
+                {t("pane.awaitingRelay")}
+              </p>
+            </div>
+          </div>
+        ))}
         <div ref={endRef} />
       </div>
 
@@ -200,6 +222,11 @@ export default function ChatContent() {
   const [alice, setAlice] = useState<Identity | null>(null);
   const [bob, setBob] = useState<Identity | null>(null);
   const [messages, setMessages] = useState<ChatMessage[]>([]);
+  const [pending, setPending] = useState<Pending[]>([]);
+  // Ids already seen coming back. The relay round trip can beat `setPending`, in which
+  // case the arrival clears an empty list and the entry is added afterwards, stranded
+  // as "awaiting" forever. Checking against this makes the order irrelevant.
+  const deliveredIds = useRef<Set<string>>(new Set());
   const [trace, setTrace] = useState<TraceEntry[]>([]);
   const [busy, setBusy] = useState(false);
   const [lastSize, setLastSize] = useState<{ pq: number; classic: number } | null>(null);
@@ -225,7 +252,13 @@ export default function ChatContent() {
 
   useEffect(() => {
     if (!alice || !bob) return;
-    const onMessage = (m: ChatMessage) => setMessages(prev => (prev.some(p => p.id === m.id) ? prev : [...prev, m]));
+    const onMessage = (m: ChatMessage) => {
+      deliveredIds.current.add(m.id);
+      setMessages(prev => (prev.some(p => p.id === m.id) ? prev : [...prev, m]));
+      // The wrap id we published is the id we get back, so this clears the exact
+      // message rather than guessing by content.
+      setPending(prev => prev.filter(p => p.id !== m.id));
+    };
     const stopA = watchInbox(alice, [bob], onMessage, addTrace);
     const stopB = watchInbox(bob, [alice], onMessage, addTrace);
     return () => {
@@ -240,19 +273,14 @@ export default function ChatContent() {
       try {
         const res = await sendMessage(from, to, text, addTrace);
         setLastSize({ pq: res.bytes, classic: res.classicBytes });
-        // Show it locally straight away; the relay round-trip confirms delivery.
-        setMessages(prev => [
-          ...prev,
-          {
-            id: res.wrap.id,
-            from: from.pubkey,
-            to: to.pubkey,
-            content: text,
-            at: Math.floor(Date.now() / 1000),
-            bytes: res.bytes,
-            classicBytes: res.classicBytes,
-          },
-        ]);
+        // Deliberately NOT added to `messages` here. It stays in flight until a relay
+        // hands it back and it decrypts — that round trip is the thing this page exists
+        // to demonstrate, and faking it would make a failed publish look successful.
+        setPending(prev =>
+          deliveredIds.current.has(res.wrap.id)
+            ? prev // already came back while we were still publishing
+            : [...prev, { id: res.wrap.id, from: from.pubkey, to: to.pubkey, content: text }],
+        );
       } catch (e) {
         addTrace({ from: from.label, kind: "error", label: t("trace.sendFailed"), detail: (e as Error).message });
       } finally {
@@ -291,6 +319,7 @@ export default function ChatContent() {
           <ChatPane
             pane={{ me: alice, peer: bob }}
             messages={messages}
+            pending={pending.filter(p => p.from === alice.pubkey)}
             onSend={text => send(alice, bob, text)}
             busy={busy}
             t={t}
@@ -298,6 +327,7 @@ export default function ChatContent() {
           <ChatPane
             pane={{ me: bob, peer: alice }}
             messages={messages}
+            pending={pending.filter(p => p.from === bob.pubkey)}
             onSend={text => send(bob, alice, text)}
             busy={busy}
             t={t}

@@ -199,9 +199,13 @@ export function watchInbox(
   trace: (t: Omit<TraceEntry, "id" | "at">) => void,
 ): () => void {
   const seen = new Set<string>();
-  const since = Math.floor(Date.now() / 1000) - 60;
 
-  const sub = getPool().subscribe(CHAT_RELAYS, inboxFilter(me.pubkey, since) as never, {
+  // No `since` filter, deliberately. NIP-59 randomises a gift wrap's created_at up to
+  // two days into the past so that wrap timing does not correlate with send timing —
+  // so a recent-looking window silently excludes messages that were just published.
+  // These identities are freshly generated and have no history, so an unbounded inbox
+  // query costs nothing.
+  const sub = getPool().subscribe(CHAT_RELAYS, inboxFilter(me.pubkey) as never, {
     onevent(evt: Event) {
       if (seen.has(evt.id)) return;
       seen.add(evt.id);
