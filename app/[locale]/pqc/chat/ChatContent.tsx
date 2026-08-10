@@ -12,11 +12,13 @@ import {
   watchInbox,
   readSession,
   writeSession,
+  subscribeRelayActivity,
   CHAT_RELAYS,
   nextId,
   type ChatMessage,
   type Identity,
   type Recipient,
+  type RelayActivity,
   type TraceEntry,
 } from "@/lib/client/pqChat";
 import {
@@ -158,6 +160,11 @@ function ChatPane({
                     }`}
                   >
                     {t("pane.wireSize", { bytes: m.bytes.toLocaleString() })}
+                    {/* Naming the relay is the proof that this was not echoed locally. */}
+                    {m.relays.length > 0 &&
+                      ` · ${t("pane.viaRelay", {
+                        relay: m.relays[0]!.replace(/^wss:\/\//, "").replace(/\/$/, ""),
+                      })}`}
                   </p>
                 )}
               </div>
@@ -221,6 +228,80 @@ function ChatPane({
           </>
         )}
       </div>
+    </div>
+  );
+}
+
+/**
+ * Live view of the relay connections.
+ *
+ * The page claims nothing is displayed until the network hands it back. That claim is
+ * only worth anything if the network is visible, so this shows the connection state of
+ * every relay, flashes on each inbound event, and names the relay that served it.
+ */
+function RelayActivityStrip({
+  activity,
+  t,
+}: {
+  activity: RelayActivity;
+  t: ReturnType<typeof useTranslations>;
+}) {
+  const [syncing, setSyncing] = useState(false);
+
+  // A flash on each arrival, so an event that lands while you are reading is not missed.
+  useEffect(() => {
+    if (!activity.last) return;
+    setSyncing(true);
+    const timer = setTimeout(() => setSyncing(false), 1400);
+    return () => clearTimeout(timer);
+  }, [activity.last]);
+
+  const host = (url: string) => url.replace(/^wss:\/\//, "").replace(/\/$/, "");
+
+  return (
+    <div
+      className={`rounded-xl border p-4 transition-colors ${
+        syncing ? "border-primary bg-primary/5" : "border-gray-200 dark:border-gray-800"
+      }`}
+    >
+      <div className="flex flex-wrap items-center justify-between gap-3">
+        <h3 className="text-sm font-semibold text-gray-900 dark:text-white">{t("relays.title")}</h3>
+        <span className="flex items-center gap-2 text-xs text-gray-500 dark:text-gray-400">
+          {syncing && <span className="inline-block h-2 w-2 animate-ping rounded-full bg-primary" />}
+          {syncing
+            ? t("relays.syncing", { relays: activity.last?.relays.map(host).join(", ") || "—" })
+            : t("relays.received", { count: activity.received })}
+        </span>
+      </div>
+
+      <ul className="mt-3 flex flex-wrap gap-x-5 gap-y-2 text-xs">
+        {CHAT_RELAYS.map(url => {
+          const up = activity.status[url];
+          const serving = syncing && !!activity.last?.relays.includes(url);
+          return (
+            <li key={url} className="flex items-center gap-2">
+              <span
+                className={`inline-block h-2 w-2 rounded-full ${
+                  serving ? "bg-primary" : up ? "bg-green-500" : "bg-gray-300 dark:bg-gray-600"
+                }`}
+              />
+              <span
+                className={
+                  up ? "text-gray-700 dark:text-gray-300" : "text-gray-400 dark:text-gray-500"
+                }
+              >
+                {host(url)}
+              </span>
+            </li>
+          );
+        })}
+      </ul>
+
+      <p className="mt-3 text-xs text-gray-500 dark:text-gray-400">
+        {activity.caughtUp.length
+          ? t("relays.caughtUp", { inboxes: activity.caughtUp.join(", ") })
+          : t("relays.waiting")}
+      </p>
     </div>
   );
 }
@@ -336,6 +417,14 @@ export default function ChatContent() {
   const [busyKeys, setBusyKeys] = useState<string[]>([]);
   const [trace, setTrace] = useState<TraceEntry[]>([]);
   const [lastSize, setLastSize] = useState<{ pq: number; classic: number } | null>(null);
+  const [activity, setActivity] = useState<RelayActivity>({
+    status: {},
+    received: 0,
+    last: null,
+    caughtUp: [],
+  });
+
+  useEffect(() => subscribeRelayActivity(setActivity), []);
 
   // Ids already seen coming back. The relay round trip can beat the state update that
   // records the message as in flight, which would otherwise strand it as "awaiting"
@@ -461,6 +550,7 @@ export default function ChatContent() {
     if (!extension) return;
     return watchExtensionInbox(
       extension.pubkey,
+      t("extension.paneLabel"),
       m =>
         receive({
           id: m.id,
@@ -470,6 +560,7 @@ export default function ChatContent() {
           at: m.at,
           bytes: m.bytes,
           classicBytes: 0,
+          relays: m.relays,
         }),
       (label, detail) => addTrace({ from: t("extension.paneLabel"), kind: "error", label, detail }),
     );
@@ -646,6 +737,10 @@ export default function ChatContent() {
       </Section>
 
       <Section>
+        <div className="mx-auto mb-6 max-w-6xl">
+          <RelayActivityStrip activity={activity} t={t} />
+        </div>
+
         <div className="mx-auto grid max-w-6xl gap-6 md:grid-cols-2 xl:grid-cols-3">
           {[alice, bob].map(id => (
             <ChatPane

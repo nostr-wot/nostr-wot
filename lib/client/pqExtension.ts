@@ -21,7 +21,6 @@
  */
 
 import {
-  SimplePool,
   generateSecretKey,
   getPublicKey,
   nip19,
@@ -31,7 +30,13 @@ import {
   type Event,
 } from "nostr-tools";
 import { isPqEnvelope, inboxFilter } from "@nostr-wot/pq";
-import { CHAT_RELAYS, type Recipient } from "./pqChat";
+import {
+  CHAT_RELAYS,
+  getChatPool,
+  noteExtensionInbound,
+  noteExtensionCaughtUp,
+  type Recipient,
+} from "./pqChat";
 import { checkPqcSupport, type PqcResult } from "./pqcCheck";
 
 type Nip44Pq = {
@@ -50,8 +55,9 @@ declare global {
   }
 }
 
-let pool: SimplePool | null = null;
-const getPool = () => (pool ??= new SimplePool());
+// One shared pool, so the relay activity the page shows covers every subscription
+// rather than just the ones this module happens to own.
+const getPool = getChatPool;
 
 export function hasExtension(): boolean {
   return typeof window !== "undefined" && !!window.nostr;
@@ -153,6 +159,8 @@ export type ExtensionMessage = {
   content: string;
   bytes: number;
   at: number;
+  /** Which relays served this event. */
+  relays: string[];
 };
 
 /**
@@ -164,15 +172,20 @@ export type ExtensionMessage = {
  */
 export function watchExtensionInbox(
   myPubkey: string,
+  label: string,
   onMessage: (m: ExtensionMessage) => void,
   onError: (label: string, detail: string) => void,
 ): () => void {
   const seen = new Set<string>();
 
   const sub = getPool().subscribe(CHAT_RELAYS, inboxFilter(myPubkey) as never, {
+    oneose() {
+      noteExtensionCaughtUp(label);
+    },
     async onevent(evt: Event) {
       if (seen.has(evt.id)) return;
       seen.add(evt.id);
+      const relays = noteExtensionInbound(evt);
       try {
         const sealJson = await window.nostr!.nip44!.decrypt(evt.pubkey, evt.content);
         const seal = JSON.parse(sealJson) as Event;
@@ -199,6 +212,7 @@ export function watchExtensionInbox(
           content: rumor.content,
           bytes: JSON.stringify(evt).length,
           at: rumor.created_at,
+          relays,
         });
       } catch {
         // Not for us, or not decryptable by this identity. Ordinary traffic, not an error.

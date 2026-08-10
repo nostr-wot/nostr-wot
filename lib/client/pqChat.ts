@@ -36,8 +36,96 @@ export const CHAT_RELAYS = [
 
 let pool: SimplePool | null = null;
 function getPool(): SimplePool {
-  if (!pool) pool = new SimplePool();
+  if (!pool) {
+    pool = new SimplePool();
+    // Record which relay served each event. Without this the page can say a message
+    // arrived but not where from, which is exactly the thing worth being able to check.
+    pool.trackRelays = true;
+  }
   return pool;
+}
+
+// ── Relay activity ──────────────────────────────────────────────────────────
+
+/**
+ * A running account of what the relay connections are doing.
+ *
+ * The page's whole claim is that nothing is displayed until the network hands it back.
+ * That claim is unfalsifiable unless the network is visible, so every inbound event,
+ * every end-of-stored-events marker and every connection state change is recorded here
+ * and surfaced in the UI.
+ */
+export type RelayActivity = {
+  /** relay url → connected. */
+  status: Record<string, boolean>;
+  /** Inbound events accepted from a subscription, ever. */
+  received: number;
+  /** When the last inbound event landed, and which relays had it. */
+  last: { at: number; relays: string[]; kind: number; id: string } | null;
+  /** Inboxes whose subscription has finished replaying stored events. */
+  caughtUp: string[];
+};
+
+let activity: RelayActivity = { status: {}, received: 0, last: null, caughtUp: [] };
+const activityListeners = new Set<(a: RelayActivity) => void>();
+
+function emitActivity(next: Partial<RelayActivity>) {
+  activity = { ...activity, ...next };
+  for (const fn of activityListeners) fn(activity);
+}
+
+export function subscribeRelayActivity(fn: (a: RelayActivity) => void): () => void {
+  activityListeners.add(fn);
+  fn(activity);
+
+  // Connection state has no callback on the pool once it is built, so poll it. Cheap:
+  // it reads a map the pool already maintains.
+  const tick = () => {
+    const status: Record<string, boolean> = {};
+    for (const url of CHAT_RELAYS) status[url] = false;
+    for (const [url, connected] of getPool().listConnectionStatus()) status[url] = connected;
+    if (CHAT_RELAYS.some(u => status[u] !== activity.status[u])) emitActivity({ status });
+  };
+  tick();
+  const timer = setInterval(tick, 2000);
+
+  return () => {
+    activityListeners.delete(fn);
+    clearInterval(timer);
+  };
+}
+
+/** Which relays handed us this event, as recorded by the pool. */
+function relaysFor(eventId: string): string[] {
+  return [...(getPool().seenOn.get(eventId) ?? [])].map(r => r.url);
+}
+
+/** The one pool everything shares, so there is a single set of connections to watch. */
+export function getChatPool(): SimplePool {
+  return getPool();
+}
+
+/** Record an inbound event from a subscription driven elsewhere (the extension pane). */
+export function noteExtensionInbound(evt: Event): string[] {
+  return noteInbound(evt);
+}
+
+export function noteExtensionCaughtUp(label: string): void {
+  noteCaughtUp(label);
+}
+
+function noteInbound(evt: Event): string[] {
+  const relays = relaysFor(evt.id);
+  emitActivity({
+    received: activity.received + 1,
+    last: { at: Date.now(), relays, kind: evt.kind, id: evt.id },
+  });
+  return relays;
+}
+
+function noteCaughtUp(label: string) {
+  if (activity.caughtUp.includes(label)) return;
+  emitActivity({ caughtUp: [...activity.caughtUp, label] });
 }
 
 export type Identity = {
@@ -73,6 +161,8 @@ export type ChatMessage = {
   bytes: number;
   /** The equivalent classic NIP-17 size, for comparison. */
   classicBytes: number;
+  /** Which relays handed this event over. Empty would mean it did not come from one. */
+  relays: string[];
 };
 
 /**
@@ -330,9 +420,16 @@ export function watchInbox(
   // These identities are freshly generated and have no history, so an unbounded inbox
   // query costs nothing.
   const sub = getPool().subscribe(CHAT_RELAYS, inboxFilter(me.pubkey) as never, {
+    oneose() {
+      noteCaughtUp(me.label);
+    },
     onevent(evt: Event) {
       if (seen.has(evt.id)) return;
       seen.add(evt.id);
+
+      // Recorded before we try to open it: an event we cannot read is still an event
+      // the network delivered, and the activity strip should say so.
+      const relays = noteInbound(evt);
 
       let opened;
       try {
@@ -357,8 +454,7 @@ export function watchInbox(
         from: me.label,
         kind: "event",
         label: `Decrypted a message from ${nameFor(opened.sender)}`,
-        detail:
-          "The seal's signature authenticated the sender, and the rumor's claimed author was checked against it before the content was trusted.",
+        detail: `Served by ${relays.length ? relays.join(", ") : "an unrecorded relay"}. The seal's signature authenticated the sender, and the rumor's claimed author was checked against it before the content was trusted.`,
         event: evt,
         bytes: JSON.stringify(evt).length,
       });
@@ -371,6 +467,7 @@ export function watchInbox(
         at: opened.createdAt,
         bytes: JSON.stringify(evt).length,
         classicBytes: 0,
+        relays,
       });
     },
   });
