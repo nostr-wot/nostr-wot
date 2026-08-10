@@ -13,16 +13,21 @@
   "pane": {
     "pqReady": "Post-Quanten-bereit",
     "empty": "Noch keine Nachrichten. Senden Sie eine und beobachten Sie das Protokoll unten.",
-    "placeholder": "Nachricht an {peer} ...",
-    "send": "Senden",
+    "placeholder": "Nachricht eingeben …",
     "sending": "Wird gesendet ...",
     "wireSize": "{bytes} Byte auf der Leitung",
-    "awaitingRelay": "warte auf Relay"
+    "sendingStatus": "Wird gesendet…",
+    "sentAwaiting": "An {count, plural, one {# Relay} other {# Relays}} gesendet — warte auf Rückkehr",
+    "sendTo": "An {peer} senden",
+    "noTargets": "Noch niemand zum Senden — erreichbar wird niemand, bevor die Attestierungen auf einem Relay liegen.",
+    "stalled": "Veröffentlicht, aber kein Relay hat sie zurückgeliefert",
+    "failed": "Kein Relay hat sie angenommen",
+    "viaRelay": "über {relay}"
   },
-  "sizeCompare": "Diese Nachricht war {pq} Byte groß. Derselbe Text als klassischer NIP-17-Gift-Wrap wäre {classic} Byte — {ratio}x kleiner. Der Unterschied ist fast vollständig der ML-KEM-Chiffretext.",
+  "sizeCompare": "Diese Nachricht war {pq} Byte groß. Derselbe Text als klassischer NIP-17-Gift-Wrap wäre {classic} Byte — post-quantum kostet also das {ratio}-Fache. Der Unterschied ist fast vollständig der ML-KEM-Chiffretext.",
   "trace": {
     "identitiesCreated": "Zwei Identitäten erzeugt",
-    "identitiesDetail": "Jede hat eine 24-Wort-Phrase, die in Ihrem Browser erzeugt wurde. Der secp256k1-Schlüssel sowie die ML-KEM- und ML-DSA-Schlüssel werden alle aus demselben Seed abgeleitet, als Geschwister — keiner aus dem anderen. Es wurde nichts irgendwohin gesendet.",
+    "identitiesDetail": "Jede hat eine im Browser erzeugte 24-Wort-Seed-Phrase. Der secp256k1-Schlüssel sowie die ML-KEM- und ML-DSA-Schlüssel werden alle aus diesem einen Seed abgeleitet, als Geschwister — kein Schlüssel stammt von einem anderen. Bisher hat nichts Ihren Browser verlassen.",
     "sendFailed": "Senden fehlgeschlagen"
   },
   "inspector": {
@@ -42,15 +47,31 @@
     "linkSpec": "Spezifikation lesen"
   },
   "extension": {
-    "label": "Erweiterung",
     "title": "Eigene Identität verwenden",
     "connect": "Erweiterung verbinden",
     "notFound": "Keine Nostr-Erweiterung gefunden. Installieren Sie die Nostr-WoT-Erweiterung, um von Ihrer eigenen Identität zu senden.",
     "canReceive": "Ihre Post-Quanten-Schlüssel sind veröffentlicht — Alice und Bob können Ihnen antworten.",
     "cannotReceive": "Senden geht, Empfangen noch nicht: für Ihre Identität wurde keine Post-Quanten-Attestierung gefunden. Veröffentlichen Sie eine über die Erweiterung (Menü → Sicherheit → Post-Quanten-Schlüssel), damit Absender Ihren ML-KEM-Schlüssel finden.",
-    "placeholder": "Nachricht von Ihrer Identität ...",
-    "sendTo": "An {peer} senden",
     "sent": "An {peer} gesendet — von {count} Relays angenommen",
-    "sentDetail": "Die Erweiterung hat die Nutzlast verschlüsselt und das Siegel signiert. Nur die äußere Hülle entstand hier, weil sie mit einem Wegwerf-Schlüssel signiert wird."
+    "sentDetail": "Die Erweiterung hat die Nutzlast verschlüsselt und das Siegel signiert. Nur die äußere Hülle entstand hier, weil sie mit einem Wegwerf-Schlüssel signiert wird.",
+    "paneLabel": "Sie",
+    "badge": "Ihre Erweiterung",
+    "connectHint": "Verbinden Sie Ihre Nostr-Erweiterung, um mit Ihrer eigenen Identität an der Unterhaltung teilzunehmen."
+  },
+  "status": {
+    "publishing": "Die Attestierung jeder Identität wird veröffentlicht, damit die anderen ihren ML-KEM-Schlüssel finden …",
+    "resolving": "Die Schlüssel werden von den Relays zurückgelesen — nichts wird gesendet, bevor sie dort gefunden sind.",
+    "failed": "Die Attestierungen wurden auf keinem Relay gefunden, es gibt also nichts, wofür verschlüsselt werden könnte. Die Seite bricht hier ab, statt auf klassische Verschlüsselung zurückzufallen.",
+    "notPublished": "Noch nicht veröffentlicht.",
+    "startExplainer": "Es wurde noch nichts veröffentlicht. Beim Start wird für jede Identität eine kind:10203-Attestierung an die unten genannten Relays gesendet — nur so erfährt jemand ihren ML-KEM-Schlüssel, und nur so kann gesendet werden, ohne dass die Seite schummelt und Schlüssel aus dem eigenen Speicher liest.",
+    "start": "Attestierungen veröffentlichen und starten",
+    "retry": "Erneut versuchen"
+  },
+  "relays": {
+    "title": "Relay-Aktivität",
+    "syncing": "Empfang von {relays}",
+    "received": "{count, plural, one {# Ereignis} other {# Ereignisse}} von Relays empfangen",
+    "caughtUp": "Gespeicherte Ereignisse aufgeholt: {inboxes}",
+    "waiting": "Warte darauf, dass die Relays gespeicherte Ereignisse zu Ende senden."
   }
 }
