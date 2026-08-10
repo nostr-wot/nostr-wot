@@ -13,18 +13,20 @@
   "pane": {
     "pqReady": "Post-quantum ready",
     "empty": "No messages yet. Send one and watch the transcript below.",
-    "placeholder": "Message {peer}...",
-    "send": "Send",
+    "placeholder": "Type a message…",
     "sending": "Sending...",
     "wireSize": "{bytes} bytes on the wire",
-    "awaitingRelay": "awaiting relay",
     "sendingStatus": "Sending…",
-    "sentAwaiting": "Sent to {count} relays — waiting for it to come back"
+    "sentAwaiting": "Sent to {count} relays — waiting for it to come back",
+    "sendTo": "Send to {peer}",
+    "noTargets": "Nobody to send to yet — nothing is reachable until the attestations are on a relay.",
+    "stalled": "Published, but no relay has served it back",
+    "failed": "No relay accepted it"
   },
-  "sizeCompare": "That message travelled as {pq} bytes. The same text as a classic NIP-17 gift wrap would be {classic} bytes — {ratio}x smaller. The difference is almost entirely the ML-KEM ciphertext.",
+  "sizeCompare": "That message travelled as {pq} bytes. The same text as a classic NIP-17 gift wrap would be {classic} bytes, so post-quantum costs {ratio}x more. The difference is almost entirely the ML-KEM ciphertext.",
   "trace": {
     "identitiesCreated": "Two identities created",
-    "identitiesDetail": "Each has a 24-word seed phrase generated in your browser. The secp256k1 key and the ML-KEM and ML-DSA keys are all derived from that one seed, as siblings — no key is derived from another. Nothing was sent anywhere.",
+    "identitiesDetail": "Each has a 24-word seed phrase generated in your browser. The secp256k1 key and the ML-KEM and ML-DSA keys are all derived from that one seed, as siblings — no key is derived from another. Nothing has left your browser yet.",
     "sendFailed": "Sending failed"
   },
   "inspector": {
@@ -44,15 +46,24 @@
     "linkSpec": "Read the specification"
   },
   "extension": {
-    "label": "Extension",
     "title": "Use your own identity",
     "connect": "Connect extension",
     "notFound": "No Nostr extension detected. Install the Nostr WoT extension to send from your own identity.",
     "canReceive": "Your post-quantum keys are published, so Alice and Bob can message you back.",
     "cannotReceive": "You can send, but not receive yet: no post-quantum attestation was found for your identity. Publish one from the extension — Menu → Security → Post-quantum key — so senders can find your ML-KEM key.",
-    "placeholder": "Message from your own identity...",
-    "sendTo": "Send to {peer}",
     "sent": "Sent to {peer} — accepted by {count} relays",
-    "sentDetail": "The payload was encrypted and the seal signed by your extension. Only the outer wrap was built here, because it is signed by a throwaway key."
+    "sentDetail": "The payload was encrypted and the seal signed by your extension. Only the outer wrap was built here, because it is signed by a throwaway key.",
+    "paneLabel": "You",
+    "badge": "Your extension",
+    "connectHint": "Connect your Nostr extension to join the conversation with your own identity."
+  },
+  "status": {
+    "publishing": "Publishing each identity's attestation, so the others can find its ML-KEM key…",
+    "resolving": "Reading the keys back off the relays — nothing is sent until they are found there.",
+    "failed": "The attestations could not be found on any relay, so there is nothing to encrypt to. The page stops here rather than falling back to classic encryption.",
+    "notPublished": "Not published yet.",
+    "startExplainer": "Nothing has been published yet. Starting publishes one kind:10203 attestation for each identity to the relays below — that is the only way anyone learns their ML-KEM key, and the only way to send without the page cheating by reading keys out of its own memory.",
+    "start": "Publish the attestations and start",
+    "retry": "Try again"
   }
 }

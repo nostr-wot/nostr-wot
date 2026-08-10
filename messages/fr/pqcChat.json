@@ -13,18 +13,20 @@
   "pane": {
     "pqReady": "Prêt pour le post-quantique",
     "empty": "Pas encore de messages. Envoyez-en un et observez le journal ci-dessous.",
-    "placeholder": "Message à {peer}...",
-    "send": "Envoyer",
+    "placeholder": "Écrivez un message…",
     "sending": "Envoi...",
     "wireSize": "{bytes} octets sur le réseau",
-    "awaitingRelay": "en attente du relais",
     "sendingStatus": "Envoi…",
-    "sentAwaiting": "Envoyé à {count} relais — en attente du retour"
+    "sentAwaiting": "Envoyé à {count} relais — en attente du retour",
+    "sendTo": "Envoyer à {peer}",
+    "noTargets": "Personne à qui écrire pour l'instant — personne n'est joignable tant que les attestations ne sont pas sur un relais.",
+    "stalled": "Publié, mais aucun relais ne l'a renvoyé",
+    "failed": "Aucun relais ne l'a accepté"
   },
-  "sizeCompare": "Ce message a circulé en {pq} octets. Le même texte dans un gift wrap NIP-17 classique ferait {classic} octets, soit {ratio}x moins. L'écart tient presque entièrement au chiffré ML-KEM.",
+  "sizeCompare": "Ce message a circulé en {pq} octets. Le même texte dans un gift wrap NIP-17 classique ferait {classic} octets : le post-quantique coûte donc {ratio}x plus. L'écart tient presque entièrement au chiffré ML-KEM.",
   "trace": {
     "identitiesCreated": "Deux identités créées",
-    "identitiesDetail": "Chacune possède une phrase de récupération de 24 mots générée dans votre navigateur. La clé secp256k1 et les clés ML-KEM et ML-DSA en dérivent toutes, en tant que sœurs : aucune n'est dérivée d'une autre. Rien n'a été envoyé nulle part.",
+    "identitiesDetail": "Chacune possède une phrase de récupération de 24 mots générée dans votre navigateur. La clé secp256k1 ainsi que les clés ML-KEM et ML-DSA sont toutes dérivées de cette seule graine, comme des sœurs — aucune clé ne dérive d'une autre. Rien n'a encore quitté votre navigateur.",
     "sendFailed": "Échec de l'envoi"
   },
   "inspector": {
@@ -44,15 +46,24 @@
     "linkSpec": "Lire la spécification"
   },
   "extension": {
-    "label": "Extension",
     "title": "Utilisez votre propre identité",
     "connect": "Connecter l'extension",
     "notFound": "Aucune extension Nostr détectée. Installez l'extension Nostr WoT pour envoyer depuis votre identité.",
     "canReceive": "Vos clés post-quantiques sont publiées : Alice et Bob peuvent vous répondre.",
     "cannotReceive": "Vous pouvez envoyer, mais pas encore recevoir : aucune attestation post-quantique trouvée pour votre identité. Publiez-en une depuis l'extension (Menu → Sécurité → Clé post-quantique) pour que les expéditeurs trouvent votre clé ML-KEM.",
-    "placeholder": "Message depuis votre identité...",
-    "sendTo": "Envoyer à {peer}",
     "sent": "Envoyé à {peer} — accepté par {count} relais",
-    "sentDetail": "L'extension a chiffré la charge et signé le sceau. Seule l'enveloppe extérieure a été construite ici, car elle est signée par une clé jetable."
+    "sentDetail": "L'extension a chiffré la charge et signé le sceau. Seule l'enveloppe extérieure a été construite ici, car elle est signée par une clé jetable.",
+    "paneLabel": "Vous",
+    "badge": "Votre extension",
+    "connectHint": "Connectez votre extension Nostr pour rejoindre la conversation avec votre propre identité."
+  },
+  "status": {
+    "publishing": "Publication de l'attestation de chaque identité, pour que les autres trouvent sa clé ML-KEM…",
+    "resolving": "Relecture des clés depuis les relais — rien n'est envoyé avant de les y trouver.",
+    "failed": "Les attestations n'ont été trouvées sur aucun relais : il n'y a rien vers quoi chiffrer. La page s'arrête ici plutôt que de revenir au chiffrement classique.",
+    "notPublished": "Pas encore publié.",
+    "startExplainer": "Rien n'a encore été publié. Démarrer publie une attestation kind:10203 par identité sur les relais ci-dessous : c'est le seul moyen que quelqu'un apprenne sa clé ML-KEM, et le seul d'envoyer sans que la page triche en lisant les clés dans sa propre mémoire.",
+    "start": "Publier les attestations et démarrer",
+    "retry": "Réessayer"
   }
 }

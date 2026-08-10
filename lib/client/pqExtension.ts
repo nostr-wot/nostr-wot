@@ -31,7 +31,7 @@ import {
   type Event,
 } from "nostr-tools";
 import { isPqEnvelope, inboxFilter } from "@nostr-wot/pq";
-import { CHAT_RELAYS } from "./pqChat";
+import { CHAT_RELAYS, type Recipient } from "./pqChat";
 import { checkPqcSupport, type PqcResult } from "./pqcCheck";
 
 type Nip44Pq = {
@@ -77,6 +77,19 @@ export async function connectExtension(): Promise<ExtensionIdentity> {
   };
 }
 
+/**
+ * Turn a connected extension identity into something others can send to.
+ *
+ * Returns null unless a valid attestation was found — the extension will not hand out
+ * its ML-KEM public key, so no attestation means genuinely unreachable, not a fallback.
+ */
+export function extensionRecipient(me: ExtensionIdentity, label: string): Recipient | null {
+  if (me.attestation.status !== "found" || me.attestation.problems.length > 0) return null;
+  const kem = me.attestation.keys.find(k => k.alg === "ml-kem-1024");
+  if (!kem) return null;
+  return { label, pubkey: me.pubkey, kem: Uint8Array.from(atob(kem.base64), c => c.charCodeAt(0)) };
+}
+
 function randomPastTimestamp(): number {
   return Math.floor(Date.now() / 1000) - Math.floor(Math.random() * 172800);
 }
@@ -88,11 +101,11 @@ function randomPastTimestamp(): number {
  */
 export async function sendFromExtension(
   senderPubkey: string,
-  recipientPubkey: string,
-  recipientKemKeyB64: string,
+  to: Recipient,
   content: string,
 ): Promise<{ wrap: Event; accepted: string[] }> {
   const nostr = window.nostr!;
+  const recipientPubkey = to.pubkey;
 
   const rumor = {
     kind: 14,
@@ -102,10 +115,12 @@ export async function sendFromExtension(
     content,
   };
 
-  // The extension holds the ML-KEM secret; it encapsulates and seals for us.
+  // The extension holds the ML-KEM secret; it encapsulates and seals for us. The
+  // recipient's key was read off their attestation, so this is the same discovery
+  // path a real client walks.
   const payload = await nostr.nip44!.encrypt(recipientPubkey, JSON.stringify(rumor), {
     scheme: "pq",
-    recipientKemKey: recipientKemKeyB64,
+    recipientKemKey: btoa(String.fromCharCode(...to.kem)),
   });
 
   const seal = await nostr.signEvent({
@@ -132,7 +147,13 @@ export async function sendFromExtension(
   return { wrap, accepted };
 }
 
-export type ExtensionMessage = { id: string; sender: string; content: string; bytes: number };
+export type ExtensionMessage = {
+  id: string;
+  sender: string;
+  content: string;
+  bytes: number;
+  at: number;
+};
 
 /**
  * Watch this identity's inbox, unwrapping through the extension.
@@ -159,7 +180,12 @@ export function watchExtensionInbox(
         if (!isPqEnvelope(seal.content)) return; // an ordinary classic message
 
         const rumorJson = await window.nostr!.nip44!.decrypt(seal.pubkey, seal.content);
-        const rumor = JSON.parse(rumorJson) as { kind: number; pubkey: string; content: string };
+        const rumor = JSON.parse(rumorJson) as {
+          kind: number;
+          pubkey: string;
+          content: string;
+          created_at: number;
+        };
         if (rumor.kind !== 14) return;
 
         // The rumor is unsigned, so its author is only a claim until checked.
@@ -167,7 +193,13 @@ export function watchExtensionInbox(
           onError("Rejected a forged message", "The rumor claimed an author the seal did not sign.");
           return;
         }
-        onMessage({ id: evt.id, sender: rumor.pubkey, content: rumor.content, bytes: JSON.stringify(evt).length });
+        onMessage({
+          id: evt.id,
+          sender: rumor.pubkey,
+          content: rumor.content,
+          bytes: JSON.stringify(evt).length,
+          at: rumor.created_at,
+        });
       } catch {
         // Not for us, or not decryptable by this identity. Ordinary traffic, not an error.
       }

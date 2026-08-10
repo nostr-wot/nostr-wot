@@ -13,18 +13,20 @@
   "pane": {
     "pqReady": "Pronto per il post-quantistico",
     "empty": "Ancora nessun messaggio. Inviane uno e osserva il registro qui sotto.",
-    "placeholder": "Messaggio a {peer}...",
-    "send": "Invia",
+    "placeholder": "Scrivi un messaggio…",
     "sending": "Invio...",
     "wireSize": "{bytes} byte in rete",
-    "awaitingRelay": "in attesa del relay",
     "sendingStatus": "Invio…",
-    "sentAwaiting": "Inviato a {count} relay — in attesa del ritorno"
+    "sentAwaiting": "Inviato a {count} relay — in attesa del ritorno",
+    "sendTo": "Invia a {peer}",
+    "noTargets": "Ancora nessuno a cui inviare: nessuno è raggiungibile finché le attestazioni non sono su un relay.",
+    "stalled": "Pubblicato, ma nessun relay lo ha restituito",
+    "failed": "Nessun relay lo ha accettato"
   },
-  "sizeCompare": "Quel messaggio ha viaggiato con {pq} byte. Lo stesso testo in un gift wrap classico NIP-17 sarebbe {classic} byte, {ratio}x in meno. La differenza è quasi tutta il cifrato ML-KEM.",
+  "sizeCompare": "Quel messaggio ha viaggiato con {pq} byte. Lo stesso testo in un gift wrap classico NIP-17 sarebbe {classic} byte, quindi il post-quantistico costa {ratio}x in più. La differenza è quasi tutta il cifrato ML-KEM.",
   "trace": {
     "identitiesCreated": "Due identità create",
-    "identitiesDetail": "Ognuna ha una frase seme di 24 parole generata nel tuo browser. La chiave secp256k1 e le chiavi ML-KEM e ML-DSA derivano tutte dallo stesso seme, come sorelle: nessuna deriva da un'altra. Nulla è stato inviato da nessuna parte.",
+    "identitiesDetail": "Ognuna ha una frase seed di 24 parole generata nel tuo browser. La chiave secp256k1 e le chiavi ML-KEM e ML-DSA derivano tutte da quell'unico seed, come sorelle: nessuna chiave deriva da un'altra. Finora nulla ha lasciato il tuo browser.",
     "sendFailed": "Invio fallito"
   },
   "inspector": {
@@ -44,15 +46,24 @@
     "linkSpec": "Leggi la specifica"
   },
   "extension": {
-    "label": "Estensione",
     "title": "Usa la tua identità",
     "connect": "Connetti estensione",
     "notFound": "Nessuna estensione Nostr rilevata. Installa l'estensione Nostr WoT per inviare dalla tua identità.",
     "canReceive": "Le tue chiavi post-quantistiche sono pubblicate: Alice e Bruno possono risponderti.",
     "cannotReceive": "Puoi inviare, ma non ancora ricevere: nessuna attestazione post-quantistica trovata per la tua identità. Pubblicane una dall'estensione (Menu → Sicurezza → Chiave post-quantistica) così i mittenti trovano la tua chiave ML-KEM.",
-    "placeholder": "Messaggio dalla tua identità...",
-    "sendTo": "Invia a {peer}",
     "sent": "Inviato a {peer} — accettato da {count} relay",
-    "sentDetail": "L'estensione ha cifrato il contenuto e firmato il sigillo. Qui è stato costruito solo l'involucro esterno, firmato da una chiave usa e getta."
+    "sentDetail": "L'estensione ha cifrato il contenuto e firmato il sigillo. Qui è stato costruito solo l'involucro esterno, firmato da una chiave usa e getta.",
+    "paneLabel": "Tu",
+    "badge": "La tua estensione",
+    "connectHint": "Collega la tua estensione Nostr per partecipare alla conversazione con la tua identità."
+  },
+  "status": {
+    "publishing": "Pubblicazione dell'attestazione di ogni identità, così le altre trovano la sua chiave ML-KEM…",
+    "resolving": "Rilettura delle chiavi dai relay: nulla viene inviato finché non si trovano lì.",
+    "failed": "Le attestazioni non sono state trovate su nessun relay, quindi non c'è nulla verso cui cifrare. La pagina si ferma qui invece di ripiegare sulla cifratura classica.",
+    "notPublished": "Non ancora pubblicato.",
+    "startExplainer": "Non è stato ancora pubblicato nulla. Avviare pubblica un'attestazione kind:10203 per ogni identità sui relay qui sotto: è l'unico modo perché qualcuno conosca la sua chiave ML-KEM, e l'unico per inviare senza che la pagina bari leggendo le chiavi dalla propria memoria.",
+    "start": "Pubblica le attestazioni e avvia",
+    "retry": "Riprova"
   }
 }

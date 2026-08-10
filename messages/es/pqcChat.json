@@ -13,18 +13,20 @@
   "pane": {
     "pqReady": "Listo para post-cuántico",
     "empty": "Aún no hay mensajes. Envía uno y observa la traza de abajo.",
-    "placeholder": "Mensaje para {peer}...",
-    "send": "Enviar",
+    "placeholder": "Escribe un mensaje…",
     "sending": "Enviando...",
     "wireSize": "{bytes} bytes en la red",
-    "awaitingRelay": "esperando al relé",
     "sendingStatus": "Enviando…",
-    "sentAwaiting": "Enviado a {count} relés: esperando a que vuelva"
+    "sentAwaiting": "Enviado a {count} relés: esperando a que vuelva",
+    "sendTo": "Enviar a {peer}",
+    "noTargets": "Aún no hay a quién enviar: nadie es localizable hasta que las atestaciones estén en un relé.",
+    "stalled": "Publicado, pero ningún relé lo ha devuelto",
+    "failed": "Ningún relé lo aceptó"
   },
-  "sizeCompare": "Ese mensaje viajó como {pq} bytes. El mismo texto en un gift wrap clásico NIP-17 ocuparía {classic} bytes: {ratio}x menos. La diferencia es casi toda el texto cifrado de ML-KEM.",
+  "sizeCompare": "Ese mensaje viajó como {pq} bytes. El mismo texto en un gift wrap clásico NIP-17 ocuparía {classic} bytes, así que el post-cuántico cuesta {ratio}x más. La diferencia es casi toda el texto cifrado de ML-KEM.",
   "trace": {
     "identitiesCreated": "Dos identidades creadas",
-    "identitiesDetail": "Cada una tiene una frase semilla de 24 palabras generada en tu navegador. La clave secp256k1 y las claves ML-KEM y ML-DSA se derivan todas de esa misma semilla, como hermanas: ninguna se deriva de otra. No se envió nada a ninguna parte.",
+    "identitiesDetail": "Cada una tiene una frase semilla de 24 palabras generada en tu navegador. La clave secp256k1 y las claves ML-KEM y ML-DSA se derivan todas de esa única semilla, como hermanas: ninguna clave deriva de otra. Todavía no ha salido nada de tu navegador.",
     "sendFailed": "Falló el envío"
   },
   "inspector": {
@@ -44,15 +46,24 @@
     "linkSpec": "Leer la especificación"
   },
   "extension": {
-    "label": "Extensión",
     "title": "Usa tu propia identidad",
     "connect": "Conectar extensión",
     "notFound": "No se detectó ninguna extensión de Nostr. Instala la extensión Nostr WoT para enviar desde tu propia identidad.",
     "canReceive": "Tus claves post-cuánticas están publicadas, así que Alicia y Roberto pueden responderte.",
     "cannotReceive": "Puedes enviar, pero aún no recibir: no se encontró una atestación post-cuántica para tu identidad. Publica una desde la extensión (Menú → Seguridad → Clave post-cuántica) para que los remitentes encuentren tu clave ML-KEM.",
-    "placeholder": "Mensaje desde tu identidad...",
-    "sendTo": "Enviar a {peer}",
     "sent": "Enviado a {peer}: aceptado por {count} relés",
-    "sentDetail": "La extensión cifró la carga y firmó el sello. Aquí solo se construyó la envoltura exterior, porque la firma una clave desechable."
+    "sentDetail": "La extensión cifró la carga y firmó el sello. Aquí solo se construyó la envoltura exterior, porque la firma una clave desechable.",
+    "paneLabel": "Tú",
+    "badge": "Tu extensión",
+    "connectHint": "Conecta tu extensión de Nostr para unirte a la conversación con tu propia identidad."
+  },
+  "status": {
+    "publishing": "Publicando la atestación de cada identidad para que las demás encuentren su clave ML-KEM…",
+    "resolving": "Leyendo las claves de vuelta desde los relés: no se envía nada hasta encontrarlas allí.",
+    "failed": "No se encontraron las atestaciones en ningún relé, así que no hay a qué cifrar. La página se detiene aquí en vez de recurrir al cifrado clásico.",
+    "notPublished": "Aún sin publicar.",
+    "startExplainer": "Todavía no se ha publicado nada. Al empezar se publica una atestación kind:10203 por identidad en los relés de abajo: es la única forma de que alguien conozca su clave ML-KEM, y la única de enviar sin que la página haga trampa leyendo claves de su propia memoria.",
+    "start": "Publicar las atestaciones y empezar",
+    "retry": "Reintentar"
   }
 }
