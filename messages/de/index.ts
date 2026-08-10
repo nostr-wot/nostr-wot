@@ -18,6 +18,8 @@ import guides from './guides.json';
 import projects from './projects.json';
 import notes from './notes.json';
 import widgets from './widgets.json';
+import pqc from './pqc.json';
+import pqcChat from './pqcChat.json';
 
 const messages = {
   common,
@@ -40,6 +42,8 @@ const messages = {
   projects,
   notes,
   widgets,
+  pqc,
+  pqcChat,
 };
 
 export default messages;

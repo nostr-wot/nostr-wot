@@ -1,0 +1,62 @@
+{
+  "meta": {
+    "title": "Identità Nostr post-quantistiche",
+    "description": "Verifica se un profilo Nostr può ricevere messaggi cifrati post-quantistici e scopri come le chiavi post-quantistiche vengono derivate da una frase seme esistente."
+  },
+  "hero": {
+    "badge": "Proposta",
+    "title": "Nostr post-quantistico",
+    "subtitle": "Qualsiasi messaggio cifrato inviato oggi su Nostr potrà essere decifrato in futuro da chi lo ha registrato. Chiavi post-quantistiche derivate dalla frase seme che hai già colmano questa lacuna, senza cambiare la tua identità."
+  },
+  "checker": {
+    "title": "Controlla un profilo",
+    "subtitle": "Inserisci un npub per vedere se pubblica chiavi post-quantistiche e se quelle chiavi sono affidabili.",
+    "placeholder": "npub1... o una chiave pubblica esadecimale",
+    "action": "Controlla",
+    "checking": "Interrogazione dei relay...",
+    "earlyNotice": "La proposta è recente, quindi quasi nessun profilo pubblica ancora queste chiavi. Un risultato vuoto significa che quell'identità non l'ha adottata, non che il controllo sia fallito."
+  },
+  "result": {
+    "invalidInput": "Non è un npub né una chiave pubblica valida",
+    "notFound": "Nessuna chiave post-quantistica pubblicata",
+    "notFoundDetail": "Questa identità non ha un evento di attestazione sui relay interrogati. I messaggi inviati possono essere cifrati solo con crittografia classica, che un computer quantistico potrebbe decifrare retroattivamente.",
+    "supported": "Compatibile post-quantistico",
+    "supportedWithProblems": "Pubblicate, ma con problemi",
+    "popValid": "Possesso dimostrato",
+    "popInvalid": "Prova di possesso fallita",
+    "seedStrength": "Seme da {bits} bit",
+    "npub": "Identità",
+    "origin": "Origine della chiave",
+    "profile": "Profilo di derivazione",
+    "published": "Pubblicato"
+  },
+  "how": {
+    "title": "Come funziona",
+    "subtitle": "Tre idee, nessuna delle quali richiede modifiche ai relay.",
+    "seed": {
+      "title": "Chiavi sorelle, non figlie",
+      "body": "Le tue chiavi post-quantistiche derivano dallo stesso seme BIP-39 della tua chiave Nostr, espanso separatamente. Nessuna deriva dall'altra. È questo il punto: se una chiave post-quantistica derivasse dalla tua chiave privata, chi violasse la tua chiave Nostr dovrebbe solo ripetere la derivazione per ottenerla. Poiché la derivazione dal seme è a senso unico, violare la tua chiave Nostr non rivela nulla su di essa."
+    },
+    "attestation": {
+      "title": "Pubblicate in un evento dedicato",
+      "body": "Le chiavi pubbliche risiedono in un evento sostituibile dedicato, non nei metadati del profilo. I client ricostruiscono quei metadati dai campi che riconoscono, quindi una chiave sconosciuta sparirebbe silenziosamente la prima volta che cambi il tuo nome altrove, senza che tu te ne accorga."
+    },
+    "wrap": {
+      "title": "Trasportate nel gift wrap attuale",
+      "body": "Il payload post-quantistico viaggia dentro i livelli NIP-44 e NIP-59 esistenti, combinato con la chiave classica anziché sostituirla. I relay non richiedono modifiche e i client che non implementano nulla di tutto ciò non sono interessati."
+    }
+  },
+  "limits": {
+    "title": "Cosa non fa",
+    "body": "Protegge in modo permanente la riservatezza dei messaggi inviati da ora in poi, anche contro chi li registra oggi e viola la crittografia in futuro. Non impedisce a un attaccante quantistico di falsificare eventi a tuo nome, perché gli eventi restano firmati con secp256k1. Risolverlo richiede la migrazione delle firme, un intervento distinto e molto più ampio."
+  },
+  "problems": {
+    "keyLength": "La chiave {alg} è di {bytes} byte, ne erano attesi {expected}. Questa attestazione è malformata.",
+    "noAlgTags": "L'attestazione non contiene alcuna chiave.",
+    "noKem": "Nessuna chiave di incapsulamento {alg}: questa identità non può ricevere messaggi cifrati post-quantistici.",
+    "derivedWeakSeed": "Dichiara chiavi derivate da un seme di {bits} bit. La specifica richiede 256 bit per le chiavi derivate; un seme più debole va pubblicato come chiave indipendente.",
+    "derivedMissingSeedStrength": "Dichiara chiavi derivate dal seme ma non ne indica la robustezza, quindi la dichiarazione non è verificabile.",
+    "missingPop": "La chiave {alg} è pubblicata senza prova di possesso: non c'è alcuna evidenza che il titolare la controlli.",
+    "popFailed": "La prova di possesso non risulta valida. Non fidarti di queste chiavi."
+  }
+}
