@@ -157,7 +157,11 @@ function ChatPane({
         {children}
       </div>
 
-      <div ref={listRef} className="h-72 flex-1 space-y-2 overflow-y-auto p-4">
+      {/* Fixed height, not flex-1: `flex: 1 1 0%` overrides the basis in a column and
+          lets the list grow with its content, so the pane got taller with every message
+          instead of scrolling. Capped and scrolled, the newest message stays put at the
+          bottom where the eye already is. */}
+      <div ref={listRef} className="h-80 shrink-0 space-y-2 overflow-y-auto p-4">
         {mine.length === 0 && pending.length === 0 && (
           <p className="text-sm text-gray-500 dark:text-gray-400">{t("pane.empty")}</p>
         )}
