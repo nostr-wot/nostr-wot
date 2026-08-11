@@ -12,7 +12,7 @@
  * published and confirm it is an ordinary gift wrap.
  */
 
-import { SimplePool, generateSecretKey, getPublicKey, nip19, nip44, finalizeEvent, type Event } from "nostr-tools";
+import { generateSecretKey, getPublicKey, nip19, nip44, finalizeEvent, type Event } from "nostr-tools";
 import { generateMnemonic, mnemonicToSeedSync, validateMnemonic } from "@scure/bip39";
 import { wordlist } from "@scure/bip39/wordlists/english.js";
 import { HDKey } from "@scure/bip32";
@@ -21,29 +21,15 @@ import {
   createPqDirectMessage,
   openPqDirectMessage,
   buildAttestationTags,
+  fromBase64,
   inboxFilter,
   PQC_KIND,
   type PqKeys,
 } from "@nostr-wot/pq";
 import { checkPqcSupport } from "./pqcCheck";
+import { CHAT_RELAYS, getPool, acceptedFrom } from "./pqRelays";
 
-export const CHAT_RELAYS = [
-  "wss://relay.damus.io",
-  "wss://nos.lol",
-  "wss://relay.primal.net",
-  "wss://relay.snort.social",
-];
-
-let pool: SimplePool | null = null;
-function getPool(): SimplePool {
-  if (!pool) {
-    pool = new SimplePool();
-    // Record which relay served each event. Without this the page can say a message
-    // arrived but not where from, which is exactly the thing worth being able to check.
-    pool.trackRelays = true;
-  }
-  return pool;
-}
+export { CHAT_RELAYS };
 
 // ── Relay activity ──────────────────────────────────────────────────────────
 
@@ -98,11 +84,6 @@ export function subscribeRelayActivity(fn: (a: RelayActivity) => void): () => vo
 /** Which relays handed us this event, as recorded by the pool. */
 function relaysFor(eventId: string): string[] {
   return [...(getPool().seenOn.get(eventId) ?? [])].map(r => r.url);
-}
-
-/** The one pool everything shares, so there is a single set of connections to watch. */
-export function getChatPool(): SimplePool {
-  return getPool();
 }
 
 /** Record an inbound event from a subscription driven elsewhere (the extension pane). */
@@ -234,10 +215,10 @@ export async function publishAttestation(
     id.secretKey,
   );
 
-  const results = await Promise.allSettled(getPool().publish(CHAT_RELAYS, event));
-  const accepted = results
-    .map((r, i) => (r.status === "fulfilled" ? CHAT_RELAYS[i]! : null))
-    .filter(Boolean) as string[];
+  const accepted = acceptedFrom(
+    await Promise.allSettled(getPool().publish(CHAT_RELAYS, event)),
+    CHAT_RELAYS,
+  );
 
   trace({
     from: id.label,
@@ -284,7 +265,7 @@ export async function resolveRecipient(
           label: `Found ${label}'s ML-KEM key in their attestation`,
           detail: `Read from a relay, not from memory: kind:${PQC_KIND}, ${kem.bytes.toLocaleString()}-byte ML-KEM-1024 key, origin "${result.origin}", proof of possession verified.`,
         });
-        return { label, pubkey, kem: Uint8Array.from(atob(kem.base64), c => c.charCodeAt(0)) };
+        return { label, pubkey, kem: fromBase64(kem.base64) };
       }
     }
 
@@ -391,10 +372,9 @@ export async function sendMessage(
     owner: from.pubkey,
   });
 
-  const results = await Promise.allSettled(getPool().publish(CHAT_RELAYS, wrap));
-  const accepted: string[] = [];
-  const rejected: string[] = [];
-  results.forEach((r, i) => (r.status === "fulfilled" ? accepted : rejected).push(CHAT_RELAYS[i]!));
+  const settled = await Promise.allSettled(getPool().publish(CHAT_RELAYS, wrap));
+  const accepted = acceptedFrom(settled, CHAT_RELAYS);
+  const rejected = CHAT_RELAYS.filter(url => !accepted.includes(url));
 
   trace({
     from: from.label,

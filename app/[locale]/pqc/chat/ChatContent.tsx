@@ -118,7 +118,14 @@ function ChatPane({
 
   const send = () => {
     if (!draft.trim() || busy) return;
-    const chosen = target === "all" ? targets : targets.filter(x => x.pubkey === target);
+    // Mirror the value the select is actually showing, which falls back to the first
+    // target when "all" is not on offer.
+    const chosen =
+      target === "all" && targets.length > 1
+        ? targets
+        : (targets.filter(x => x.pubkey === target).length
+            ? targets.filter(x => x.pubkey === target)
+            : targets.slice(0, 1));
     if (chosen.length === 0) return;
     for (const to of chosen) onSend(to, draft.trim());
     setDraft("");
@@ -238,7 +245,11 @@ function ChatPane({
               </label>
               <select
                 id={`to-${me.pubkey}`}
-                value={target}
+                value={
+                  targets.some(x => x.pubkey === target) || (target === "all" && targets.length > 1)
+                    ? target
+                    : (targets[0]?.pubkey ?? "")
+                }
                 onChange={e => setTarget(e.target.value)}
                 className="min-w-0 flex-1 rounded-lg border border-gray-300 bg-white px-2 py-2 text-sm text-gray-900 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-100"
               >
@@ -310,7 +321,16 @@ function RelayActivityStrip({
             const up = activity.status[url];
             const serving = syncing && !!activity.last?.relays.includes(url);
             return (
-              <span key={url} className="flex items-center gap-1.5" title={host(url)}>
+              // Colour alone would carry the state, and below `lg` the hostname is
+              // hidden, so the state is spelled out for anyone who cannot use the hue.
+              <span
+                key={url}
+                className="flex items-center gap-1.5"
+                title={`${host(url)} — ${up ? t("relays.up") : t("relays.down")}`}
+              >
+                <span className="sr-only">
+                  {up ? t("relays.upNamed", { relay: host(url) }) : t("relays.downNamed", { relay: host(url) })}
+                </span>
                 <span
                   className={`inline-block h-2 w-2 rounded-full ${
                     serving
@@ -405,6 +425,16 @@ export default function ChatContent() {
   // Names resolved through a ref so long-lived relay subscriptions always see the
   // current roster without being torn down and resubscribed on every change.
   const namesRef = useRef<Map<string, string>>(new Map());
+  // Stall timers, so a page teardown or a regenerate does not leave them firing.
+  const stallTimers = useRef<Set<ReturnType<typeof setTimeout>>>(new Set());
+
+  useEffect(
+    () => () => {
+      for (const timer of stallTimers.current) clearTimeout(timer);
+      stallTimers.current.clear();
+    },
+    [],
+  );
 
   const addTrace = useCallback((entry: Omit<TraceEntry, "id" | "at">) => {
     setTrace(prev => [{ ...entry, id: nextId(), at: Date.now() }, ...prev].slice(0, 120));
@@ -414,11 +444,21 @@ export default function ChatContent() {
   // first trace is added, and written back whenever it grows.
   useEffect(() => {
     const saved = readEventLog();
-    if (saved.length) setTrace(prev => [...prev, ...saved]);
+    if (!saved.length) return;
+    // Deduped by id: React runs this effect twice in development, and appending blindly
+    // would double the log, collide list keys, and then write the doubled copy back.
+    setTrace(prev => {
+      const seen = new Set(prev.map(e => e.id));
+      return [...prev, ...saved.filter(e => !seen.has(e.id))];
+    });
   }, []);
 
+  // Debounced: a single send produces three or four entries, and each write serialises
+  // the whole log — which embeds full ~12 kB attestation events.
   useEffect(() => {
-    if (trace.length) writeEventLog(trace);
+    if (!trace.length) return;
+    const timer = setTimeout(() => writeEventLog(trace), 500);
+    return () => clearTimeout(timer);
   }, [trace]);
 
   const nameFor = useCallback(
@@ -528,7 +568,25 @@ export default function ChatContent() {
     };
   }, [alice, bob, addTrace, nameFor, receive]);
 
-  useEffect(() => setExtensionAvailable(hasExtension()), []);
+  // Extensions inject `window.nostr` at their own pace, sometimes after hydration, so a
+  // single check on mount would show "not found" for the life of the page.
+  useEffect(() => {
+    if (hasExtension()) {
+      setExtensionAvailable(true);
+      return;
+    }
+    const timer = setInterval(() => {
+      if (hasExtension()) {
+        setExtensionAvailable(true);
+        clearInterval(timer);
+      }
+    }, 1000);
+    const stop = setTimeout(() => clearInterval(timer), 10_000);
+    return () => {
+      clearInterval(timer);
+      clearTimeout(stop);
+    };
+  }, []);
 
   useEffect(() => {
     if (!extension) return;
@@ -581,6 +639,8 @@ export default function ChatContent() {
     writeSession({ alice: a.mnemonic, bob: b.mnemonic, published: false });
     // The old log describes identities that no longer exist here.
     clearEventLog();
+    for (const timer of stallTimers.current) clearTimeout(timer);
+    stallTimers.current.clear();
     setTrace([]);
     setPhase("idle");
     setRegenerating(false);
@@ -608,17 +668,15 @@ export default function ChatContent() {
         addTrace({
           from: t("extension.paneLabel"),
           kind: "info",
-          label: `Found your ML-KEM key in your attestation`,
-          detail:
-            "Read off the relays, exactly as for the demo identities. Alice and Bob can now encrypt to you.",
+          label: t("extension.foundKey"),
+          detail: t("extension.foundKeyDetail"),
         });
       } else {
         addTrace({
           from: t("extension.paneLabel"),
           kind: "error",
-          label: "No usable attestation for your identity",
-          detail:
-            "You can still send, because sending only needs the recipient's key. Nobody can send to you until you publish one from the extension.",
+          label: t("extension.noAttestation"),
+          detail: t("extension.noAttestationDetail"),
         });
       }
     } catch (e) {
@@ -684,11 +742,13 @@ export default function ChatContent() {
 
         // A message that never returns must stop looking like one still in flight.
         if (accepted.length) {
-          setTimeout(() => {
+          const timer = setTimeout(() => {
+            stallTimers.current.delete(timer);
             setPending(prev =>
               prev.map(p => (p.id === wrapId && p.status === "sent" ? { ...p, status: "stalled" } : p)),
             );
           }, STALL_AFTER_MS);
+          stallTimers.current.add(timer);
         }
       } catch (e) {
         setPending(prev =>

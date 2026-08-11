@@ -277,7 +277,7 @@ export default function EventExplorer({
                     {e.event
                       ? `kind ${e.event.kind} · ${(e.bytes ?? 0).toLocaleString()} B`
                       : t("explorer.step")}
-                    {e.relays?.length ? ` · ${e.relays.length} relays` : ""}
+                    {e.relays?.length ? ` · ${t("explorer.relayCount", { count: e.relays.length })}` : ""}
                   </span>
                 </button>
               </li>

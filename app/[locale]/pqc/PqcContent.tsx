@@ -5,6 +5,7 @@ import { useTranslations } from "next-intl";
 import {
   Badge,
   Button,
+  Card,
   Input,
   LinkButton,
   Modal,
@@ -17,18 +18,22 @@ import {
 import Faq from "./Faq";
 import { checkPqcSupport, type PqcResult } from "@/lib/client/pqcCheck";
 
-function StatusPill({ tone, children }: { tone: "ok" | "warn" | "bad" | "muted"; children: React.ReactNode }) {
-  const styles = {
-    ok: "bg-green-100 text-green-800 dark:bg-green-900/40 dark:text-green-300",
-    warn: "bg-amber-100 text-amber-800 dark:bg-amber-900/40 dark:text-amber-300",
-    bad: "bg-red-100 text-red-800 dark:bg-red-900/40 dark:text-red-300",
-    muted: "bg-gray-100 text-gray-700 dark:bg-gray-800 dark:text-gray-300",
-  }[tone];
-  return (
-    <span className={`inline-flex items-center rounded-full px-3 py-1 text-sm font-medium ${styles}`}>
-      {children}
-    </span>
-  );
+/** Badge, with the tone names this page thinks in. */
+const PILL_VARIANT = {
+  ok: "success",
+  warn: "warning",
+  bad: "error",
+  muted: "neutral",
+} as const;
+
+function StatusPill({
+  tone,
+  children,
+}: {
+  tone: keyof typeof PILL_VARIANT;
+  children: React.ReactNode;
+}) {
+  return <Badge variant={PILL_VARIANT[tone]}>{children}</Badge>;
 }
 
 function KeyRow({ label, value }: { label: string; value: string }) {
@@ -72,7 +77,19 @@ export default function PqcContent() {
               <p className="mt-6 text-lg text-gray-600 dark:text-gray-300">{t("hero.subtitle")}</p>
             </div>
             {/* The derivation is the argument, so it leads rather than decorates. */}
-            <SiblingDerivationIllustration className="max-w-md justify-self-center" />
+            <SiblingDerivationIllustration
+              className="max-w-md justify-self-center"
+              labels={{
+                alt: t("art.siblings.alt"),
+                seed: t("art.siblings.seed"),
+                classic: t("art.siblings.classic"),
+                classicSub: t("art.siblings.classicSub"),
+                pq: t("art.siblings.pq"),
+                pqSub: t("art.siblings.pqSub"),
+                severed: t("art.siblings.severed"),
+                severedSub: t("art.siblings.severedSub"),
+              }}
+            />
           </div>
         </ScrollReveal>
       </Section>
@@ -83,7 +100,7 @@ export default function PqcContent() {
           <div className="mx-auto max-w-5xl">
             <SectionHeader title={t("tools.title")} description={t("tools.subtitle")} />
             <div className="grid gap-6 md:grid-cols-2">
-              <div className="flex flex-col rounded-xl border border-gray-200 p-6 dark:border-gray-800">
+              <Card className="flex flex-col">
                 <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
                   {t("tools.check.title")}
                 </h3>
@@ -93,9 +110,9 @@ export default function PqcContent() {
                 <div className="mt-5">
                   <Button onClick={() => setCheckerOpen(true)}>{t("tools.check.action")}</Button>
                 </div>
-              </div>
+              </Card>
 
-              <div className="flex flex-col rounded-xl border border-gray-200 p-6 dark:border-gray-800">
+              <Card className="flex flex-col">
                 <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
                   {t("tools.chat.title")}
                 </h3>
@@ -103,7 +120,7 @@ export default function PqcContent() {
                 <div className="mt-5">
                   <LinkButton href="/pqc/chat">{t("tools.chat.action")}</LinkButton>
                 </div>
-              </div>
+              </Card>
             </div>
           </div>
         </ScrollReveal>
@@ -137,7 +154,7 @@ export default function PqcContent() {
             <p className="mt-3 text-sm text-gray-500 dark:text-gray-400">{t("checker.earlyNotice")}</p>
 
             {result && (
-              <div className="mt-8 rounded-xl border border-gray-200 p-6 dark:border-gray-800">
+              <Card className="mt-8">
                 {result.status === "invalid-input" && (
                   <StatusPill tone="bad">{t("result.invalidInput")}</StatusPill>
                 )}
@@ -182,7 +199,9 @@ export default function PqcContent() {
                         <KeyRow
                           key={k.alg}
                           label={k.alg}
-                          value={`${k.bytes} bytes${k.lengthValid ? "" : " (unexpected length)"} · ${k.base64.slice(0, 40)}…`}
+                          value={`${t("result.bytes", { count: k.bytes })}${
+                            k.lengthValid ? "" : ` (${t("result.unexpectedLength")})`
+                          } · ${k.base64.slice(0, 40)}…`}
                         />
                       ))}
                       {result.origin && <KeyRow label={t("result.origin")} value={result.origin} />}
@@ -194,7 +213,7 @@ export default function PqcContent() {
                     </div>
                   </>
                 )}
-              </div>
+              </Card>
             )}
         </div>
       </Modal>
@@ -204,15 +223,25 @@ export default function PqcContent() {
         <ScrollReveal>
           <div className="mx-auto max-w-3xl">
             <SectionHeader title={t("how.title")} description={t("how.subtitle")} />
-            <GiftWrapIllustration className="mx-auto max-w-sm" />
+            <GiftWrapIllustration
+              className="mx-auto max-w-sm"
+              labels={{
+                alt: t("art.wrap.alt"),
+                rumor: t("art.wrap.rumor"),
+                rumorSub: t("art.wrap.rumorSub"),
+                seal: t("art.wrap.seal"),
+                wrap: t("art.wrap.wrap"),
+                caption: t("art.wrap.caption"),
+              }}
+            />
             <div className="mt-8 space-y-6">
               {["seed", "attestation", "wrap"].map((k) => (
-                <div key={k} className="rounded-xl border border-gray-200 p-6 dark:border-gray-800">
+                <Card key={k}>
                   <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
                     {t(`how.${k}.title`)}
                   </h3>
                   <p className="mt-2 text-gray-600 dark:text-gray-300">{t(`how.${k}.body`)}</p>
-                </div>
+                </Card>
               ))}
             </div>
           </div>

@@ -11,33 +11,25 @@
  * is a sender believing a recipient is reachable post-quantum when they are not.
  */
 
-import { SimplePool, nip19, type Event } from "nostr-tools";
+import { nip19, type Event } from "nostr-tools";
+import {
+  ALG_KEM,
+  ALG_DSA,
+  KEM_PUBLIC_KEY_BYTES,
+  DSA_PUBLIC_KEY_BYTES,
+  PQC_KIND,
+  attestationFilter,
+  fromBase64,
+  popMessage,
+} from "@nostr-wot/pq";
+import { DISCOVERY_RELAYS, getPool } from "./pqRelays";
 
-const RELAYS = [
-  "wss://relay.damus.io",
-  "wss://relay.nostr.band",
-  "wss://nos.lol",
-  "wss://relay.snort.social",
-  "wss://purplepag.es",
-  "wss://relay.primal.net",
-];
-
-/** Replaceable kind carrying post-quantum public keys. See the proposed NIP. */
-export const PQC_KIND = 10203;
-
-const ALG_KEM = "ml-kem-1024";
-const ALG_DSA = "ml-dsa-87";
-const KEM_PUBLIC_KEY_BYTES = 1568;
-const DSA_PUBLIC_KEY_BYTES = 2592;
-const PQ_PROFILE = "nip-pqc/v1";
+// Constants and the proof-of-possession message format come from the package rather
+// than being restated here: a checker that validates against its own copy of the spec
+// would keep passing after the spec moved.
+export { PQC_KIND };
 
 const TIMEOUT = 5000;
-
-let pool: SimplePool | null = null;
-function getPool(): SimplePool {
-  if (!pool) pool = new SimplePool();
-  return pool;
-}
 
 export type PqcKey = {
   alg: string;
@@ -94,8 +86,7 @@ function toHexPubkey(input: string): string | null {
 
 function b64Bytes(b64: string): number {
   try {
-    if (typeof atob !== "function") return -1;
-    return atob(b64).length;
+    return fromBase64(b64).length;
   } catch {
     return -1;
   }
@@ -131,12 +122,10 @@ async function verifyPop(
 ): Promise<boolean> {
   try {
     const { ml_dsa87 } = await import("@noble/post-quantum/ml-dsa.js");
-    const bin = (b64: string) =>
-      Uint8Array.from(atob(b64), (c) => c.charCodeAt(0));
-    const message = new TextEncoder().encode(
-      `${PQ_PROFILE}/pop:${pubkeyHex}:${kemB64}:${dsaB64}`,
-    );
-    return ml_dsa87.verify(bin(popB64), message, bin(dsaB64));
+    // popMessage builds the exact byte string the signer committed to, so the format
+    // lives in one place instead of being retyped on this side of the check.
+    const message = popMessage(pubkeyHex, kemB64, dsaB64);
+    return ml_dsa87.verify(fromBase64(popB64), message, fromBase64(dsaB64));
   } catch {
     return false;
   }
@@ -150,7 +139,7 @@ export async function checkPqcSupport(input: string): Promise<PqcResult> {
   let event: Event | null = null;
   try {
     event = await Promise.race([
-      pool.get(RELAYS, { kinds: [PQC_KIND], authors: [pubkey] }),
+      pool.get(DISCOVERY_RELAYS, attestationFilter([pubkey])),
       new Promise<null>((resolve) => setTimeout(() => resolve(null), TIMEOUT)),
     ]);
   } catch {

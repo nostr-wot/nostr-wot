@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, type ReactNode } from "react";
+import { useEffect, useRef, type ReactNode } from "react";
 
 /**
  * A dialog overlay: escape to close, click-outside to close, body scroll locked.
@@ -28,14 +28,53 @@ export function Modal({
   size?: "lg" | "xl";
   children: ReactNode;
 }) {
+  const panelRef = useRef<HTMLDivElement>(null);
+
   useEffect(() => {
     if (!open) return;
-    const onKey = (e: KeyboardEvent) => e.key === "Escape" && onClose();
+
+    // aria-modal tells a screen reader the rest of the page is not there, so Tab has to
+    // agree with it. Without a trap the two disagree and the dialog becomes a maze.
+    const focusable = () =>
+      Array.from(
+        panelRef.current?.querySelectorAll<HTMLElement>(
+          'a[href], button:not([disabled]), input:not([disabled]), select:not([disabled]), textarea:not([disabled]), summary, [tabindex]:not([tabindex="-1"])',
+        ) ?? [],
+      ).filter(el => el.offsetParent !== null);
+
+    const opener = document.activeElement as HTMLElement | null;
+    focusable()[0]?.focus();
+
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") {
+        onClose();
+        return;
+      }
+      if (e.key !== "Tab") return;
+
+      const items = focusable();
+      if (items.length === 0) return;
+      const first = items[0]!;
+      const last = items[items.length - 1]!;
+      const active = document.activeElement;
+
+      if (e.shiftKey && (active === first || !panelRef.current?.contains(active))) {
+        e.preventDefault();
+        last.focus();
+      } else if (!e.shiftKey && active === last) {
+        e.preventDefault();
+        first.focus();
+      }
+    };
+
     window.addEventListener("keydown", onKey);
     document.body.style.overflow = "hidden";
+
     return () => {
       window.removeEventListener("keydown", onKey);
       document.body.style.overflow = "";
+      // Back where they came from, so closing does not dump focus at the top of the page.
+      opener?.focus?.();
     };
   }, [open, onClose]);
 
@@ -50,6 +89,7 @@ export function Modal({
       onClick={e => e.target === e.currentTarget && onClose()}
     >
       <div
+        ref={panelRef}
         className={`flex max-h-full w-full flex-col overflow-hidden rounded-2xl bg-white shadow-2xl dark:bg-gray-950 ${
           size === "xl" ? "max-w-6xl" : "max-w-2xl"
         }`}

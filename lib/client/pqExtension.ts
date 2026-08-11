@@ -29,14 +29,9 @@ import {
   verifyEvent,
   type Event,
 } from "nostr-tools";
-import { isPqEnvelope, inboxFilter } from "@nostr-wot/pq";
-import {
-  CHAT_RELAYS,
-  getChatPool,
-  noteExtensionInbound,
-  noteExtensionCaughtUp,
-  type Recipient,
-} from "./pqChat";
+import { isPqEnvelope, inboxFilter, fromBase64, toBase64 } from "@nostr-wot/pq";
+import { noteExtensionInbound, noteExtensionCaughtUp, type Recipient } from "./pqChat";
+import { CHAT_RELAYS, getPool, acceptedFrom } from "./pqRelays";
 import { checkPqcSupport, type PqcResult } from "./pqcCheck";
 
 type Nip44Pq = {
@@ -55,9 +50,8 @@ declare global {
   }
 }
 
-// One shared pool, so the relay activity the page shows covers every subscription
-// rather than just the ones this module happens to own.
-const getPool = getChatPool;
+// The pool is shared with everything else on the page, so the relay activity strip
+// covers every subscription rather than just the ones this module happens to own.
 
 export function hasExtension(): boolean {
   return typeof window !== "undefined" && !!window.nostr;
@@ -93,7 +87,7 @@ export function extensionRecipient(me: ExtensionIdentity, label: string): Recipi
   if (me.attestation.status !== "found" || me.attestation.problems.length > 0) return null;
   const kem = me.attestation.keys.find(k => k.alg === "ml-kem-1024");
   if (!kem) return null;
-  return { label, pubkey: me.pubkey, kem: Uint8Array.from(atob(kem.base64), c => c.charCodeAt(0)) };
+  return { label, pubkey: me.pubkey, kem: fromBase64(kem.base64) };
 }
 
 function randomPastTimestamp(): number {
@@ -126,7 +120,7 @@ export async function sendFromExtension(
   // path a real client walks.
   const payload = await nostr.nip44!.encrypt(recipientPubkey, JSON.stringify(rumor), {
     scheme: "pq",
-    recipientKemKey: btoa(String.fromCharCode(...to.kem)),
+    recipientKemKey: toBase64(to.kem),
   });
 
   const seal = await nostr.signEvent({
@@ -148,8 +142,10 @@ export async function sendFromExtension(
     ephemeral,
   );
 
-  const results = await Promise.allSettled(getPool().publish(CHAT_RELAYS, wrap));
-  const accepted = results.map((r, i) => (r.status === "fulfilled" ? CHAT_RELAYS[i]! : null)).filter(Boolean) as string[];
+  const accepted = acceptedFrom(
+    await Promise.allSettled(getPool().publish(CHAT_RELAYS, wrap)),
+    CHAT_RELAYS,
+  );
   return { wrap, accepted };
 }
 
