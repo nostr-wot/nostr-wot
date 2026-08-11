@@ -372,6 +372,13 @@ function RelayActivityStrip({
         </span>
 
         <span className="ml-auto flex items-center gap-3 text-[11px] text-gray-500 dark:text-gray-400">
+          {/* End-of-stored-events, so "nothing has arrived" is distinguishable from
+              "the relays finished replaying and there was nothing to send". */}
+          <span className="hidden sm:inline">
+            {activity.caughtUp.length
+              ? t("relays.caughtUp", { inboxes: activity.caughtUp.join(", ") })
+              : t("relays.waiting")}
+          </span>
           <span>
             {syncing
               ? t("relays.syncing", { relays: activity.last?.relays.map(host).join(", ") || "—" })
