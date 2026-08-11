@@ -22,7 +22,10 @@
     "noTargets": "Noch niemand zum Senden — erreichbar wird niemand, bevor die Attestierungen auf einem Relay liegen.",
     "stalled": "Veröffentlicht, aber kein Relay hat sie zurückgeliefert",
     "failed": "Kein Relay hat sie angenommen",
-    "viaRelay": "über {relay}"
+    "viaRelay": "über {relay}",
+    "send": "Senden",
+    "recipient": "Empfänger",
+    "toEveryone": "Alle"
   },
   "sizeCompare": "Diese Nachricht war {pq} Byte groß. Derselbe Text als klassischer NIP-17-Gift-Wrap wäre {classic} Byte — post-quantum kostet also das {ratio}-Fache. Der Unterschied ist fast vollständig der ML-KEM-Chiffretext.",
   "trace": {
@@ -71,7 +74,8 @@
     "working": "Wird registriert …",
     "newIdentities": "Neue Identitäten erzeugen",
     "readyTitle": "Registriert und erreichbar",
-    "readyExplainer": "Beide Identitäten haben ihre Post-Quanten-Schlüssel auf den Relays, und sie bleiben zwischen Besuchen auf diesem Gerät. Neue zu erzeugen verwirft sie und beginnt von vorn."
+    "readyExplainer": "Beide Identitäten haben ihre Post-Quanten-Schlüssel auf den Relays, und sie bleiben zwischen Besuchen auf diesem Gerät. Neue zu erzeugen verwirft sie und beginnt von vorn.",
+    "creating": "Neue Schlüssel werden abgeleitet — das dauert einen Moment."
   },
   "relays": {
     "title": "Relay-Aktivität",
@@ -93,6 +97,37 @@
     "relaySees": "Ein Relay sieht:",
     "showJson": "Rohes JSON anzeigen",
     "hideJson": "Rohes JSON ausblenden",
-    "layersIntro": "{count} Schichten, äußerste zuerst."
+    "layersIntro": "{count} Schichten, äußerste zuerst.",
+    "step": "Schritt"
+  },
+  "faq": {
+    "title": "Fragen zu dieser Demo",
+    "subtitle": "Was sie zeigt, was nicht, und was sie auf Ihrem Gerät hinterlässt.",
+    "items": {
+      "real": {
+        "q": "Sind das echte Nachrichten?",
+        "a": "Ja. Jede Nachricht ist ein echter NIP-59-Gift-Wrap, auf öffentlichen Relays veröffentlicht und mit echtem ML-KEM-1024 verschlüsselt. Nichts ist simuliert: Eine Nachricht erscheint erst, wenn ein Relay sie zurückliefert und sie sich entschlüsseln lässt, und jede nennt das Relay, das sie geliefert hat."
+      },
+      "keys": {
+        "q": "Woher kommen die Post-Quanten-Schlüssel?",
+        "a": "Aus derselben 24-Wort-Seed-Phrase wie der Nostr-Schlüssel, ein zweites Mal mit HKDF unter einem anderen Label expandiert. Die Schlüssel sind Geschwister, nicht Eltern und Kind — wer den privaten Nostr-Schlüssel wiederherstellt, erfährt nichts über die Post-Quanten-Schlüssel."
+      },
+      "size": {
+        "q": "Warum ist eine Post-Quanten-Nachricht so viel größer?",
+        "a": "Der ML-KEM-1024-Chiffretext ist 1.568 Byte groß, bei jeder Nachricht, und dominiert alles andere. Öffnen Sie eine Nachricht im Ereignis-Explorer: Die Byte-Karte zeigt genau, wohin die Größe geht."
+      },
+      "protects": {
+        "q": "Was schützt das tatsächlich?",
+        "a": "Die Vertraulichkeit aller ab jetzt gesendeten Nachrichten, dauerhaft — auch gegenüber jemandem, der sie heute archiviert, um sie später zu entschlüsseln. Es hindert einen Angreifer mit Quantencomputer nicht daran, Ereignisse in Ihrem Namen zu signieren, denn Ereignisse werden weiterhin mit secp256k1 signiert."
+      },
+      "relays": {
+        "q": "Müssen sich Relays ändern?",
+        "a": "Nein. Die äußere Hülle ist ein gewöhnliches kind:1059-Ereignis, also durchqueren Post-Quanten-Nachrichten das heutige Relay-Netz unverändert, und Clients, die nichts davon wissen, sind nicht betroffen."
+      },
+      "stored": {
+        "q": "Was wird auf meinem Gerät gespeichert?",
+        "a": "Zwei Seed-Phrasen und der Ereignisverlauf, im lokalen Speicher dieses Browsers. Es sind Wegwerf-Demo-Schlüssel, die nur deshalb bleiben, damit ein erneuter Besuch sie wiederverwendet, statt ein weiteres Paar Attestierungen auf öffentlichen Relays zu veröffentlichen. „Neue Identitäten erzeugen“ im Ereignis-Explorer verwirft sie."
+      }
+    }
   }
 }

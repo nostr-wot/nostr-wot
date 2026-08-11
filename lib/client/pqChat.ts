@@ -525,4 +525,51 @@ export function writeSession(session: SavedSession): void {
   }
 }
 
+// ── Event log ───────────────────────────────────────────────────────────────
+
+const LOG_KEY = "nostr-wot:pqc-chat:events:v1";
+/** Keep the log bounded; attestations alone are ~12 kB each. */
+const LOG_MAX_ENTRIES = 120;
+const LOG_MAX_BYTES = 2_000_000;
+
+/**
+ * Persist the event history alongside the identities.
+ *
+ * Relays are not an archive — they drop old events, and a gift wrap nobody re-requests
+ * may simply be gone. If the point of the page is to keep an honest account of what
+ * these identities have done over time, that account has to live somewhere that does not
+ * depend on a relay still holding it.
+ */
+export function readEventLog(): TraceEntry[] {
+  try {
+    const raw = localStorage.getItem(LOG_KEY);
+    if (!raw) return [];
+    const parsed = JSON.parse(raw) as TraceEntry[];
+    return Array.isArray(parsed) ? parsed : [];
+  } catch {
+    return [];
+  }
+}
+
+export function writeEventLog(entries: TraceEntry[]): void {
+  try {
+    // Newest first everywhere, so trimming drops the oldest.
+    let kept = entries.slice(0, LOG_MAX_ENTRIES);
+    while (kept.length > 1 && JSON.stringify(kept).length > LOG_MAX_BYTES) {
+      kept = kept.slice(0, Math.floor(kept.length / 2));
+    }
+    localStorage.setItem(LOG_KEY, JSON.stringify(kept));
+  } catch {
+    // Over quota or unavailable. The in-memory log still works for this visit.
+  }
+}
+
+export function clearEventLog(): void {
+  try {
+    localStorage.removeItem(LOG_KEY);
+  } catch {
+    // Nothing to do.
+  }
+}
+
 export { nextId };

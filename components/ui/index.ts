@@ -44,5 +44,9 @@ export { NewsletterForm } from "./NewsletterForm";
 
 export { WotGraphIllustration } from "./WotGraphIllustration";
 
+export { SiblingDerivationIllustration, GiftWrapIllustration } from "./PqcIllustrations";
+
+export { Modal } from "./Modal";
+
 export { AccordionList } from "./AccordionList";
 export type { AccordionItem } from "./AccordionList";

@@ -2,7 +2,7 @@
 
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useTranslations } from "next-intl";
-import { Badge, Button, Input, Section, SectionHeader } from "@/components/ui";
+import { Badge, Button, Input, Section } from "@/components/ui";
 import {
   createIdentity,
   identityFromMnemonic,
@@ -12,6 +12,9 @@ import {
   watchInbox,
   readSession,
   writeSession,
+  readEventLog,
+  writeEventLog,
+  clearEventLog,
   subscribeRelayActivity,
   CHAT_RELAYS,
   nextId,
@@ -24,6 +27,7 @@ import {
 import { paletteFor, reservePalettes, forgetPalette } from "@/lib/client/pqPeople";
 import type { Keyholder } from "@/lib/client/pqLayers";
 import EventExplorer from "./EventExplorer";
+import Faq from "../Faq";
 import {
   hasExtension,
   connectExtension,
@@ -97,20 +101,26 @@ function ChatPane({
   children?: React.ReactNode;
 }) {
   const [draft, setDraft] = useState("");
-  const endRef = useRef<HTMLDivElement>(null);
+  const [target, setTarget] = useState<string>("all");
+  const listRef = useRef<HTMLDivElement>(null);
 
   const mine = useMemo(
     () => messages.filter(m => m.from === me.pubkey || m.to === me.pubkey),
     [messages, me.pubkey],
   );
 
+  // Scroll the list, not the document. scrollIntoView on a page with three panes
+  // yanks the whole viewport away from whatever you were reading.
   useEffect(() => {
-    endRef.current?.scrollIntoView({ behavior: "smooth" });
+    const el = listRef.current;
+    if (el) el.scrollTop = el.scrollHeight;
   }, [mine.length, pending.length]);
 
-  const send = (to: Recipient) => {
+  const send = () => {
     if (!draft.trim() || busy) return;
-    onSend(to, draft.trim());
+    const chosen = target === "all" ? targets : targets.filter(x => x.pubkey === target);
+    if (chosen.length === 0) return;
+    for (const to of chosen) onSend(to, draft.trim());
     setDraft("");
   };
 
@@ -140,7 +150,7 @@ function ChatPane({
         {children}
       </div>
 
-      <div className="h-72 flex-1 space-y-2 overflow-y-auto p-4">
+      <div ref={listRef} className="h-72 flex-1 space-y-2 overflow-y-auto p-4">
         {mine.length === 0 && pending.length === 0 && (
           <p className="text-sm text-gray-500 dark:text-gray-400">{t("pane.empty")}</p>
         )}
@@ -198,7 +208,6 @@ function ChatPane({
             </div>
           );
         })}
-        <div ref={endRef} />
       </div>
 
       <div className="flex flex-col gap-2 border-t border-gray-200 p-3 dark:border-gray-800">
@@ -219,20 +228,30 @@ function ChatPane({
             <Input
               value={draft}
               onChange={e => setDraft(e.target.value)}
+              onKeyDown={e => e.key === "Enter" && send()}
               placeholder={t("pane.placeholder")}
               aria-label={t("pane.placeholder")}
             />
-            <div className="flex flex-wrap gap-2">
-              {targets.map(to => (
-                <Button
-                  key={to.pubkey}
-                  type="button"
-                  onClick={() => send(to)}
-                  disabled={busy || !draft.trim()}
-                >
-                  {busy ? t("pane.sending") : t("pane.sendTo", { peer: to.label })}
-                </Button>
-              ))}
+            <div className="flex flex-wrap items-center gap-2">
+              <label className="sr-only" htmlFor={`to-${me.pubkey}`}>
+                {t("pane.recipient")}
+              </label>
+              <select
+                id={`to-${me.pubkey}`}
+                value={target}
+                onChange={e => setTarget(e.target.value)}
+                className="min-w-0 flex-1 rounded-lg border border-gray-300 bg-white px-2 py-2 text-sm text-gray-900 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-100"
+              >
+                {targets.length > 1 && <option value="all">{t("pane.toEveryone")}</option>}
+                {targets.map(to => (
+                  <option key={to.pubkey} value={to.pubkey}>
+                    {to.label}
+                  </option>
+                ))}
+              </select>
+              <Button type="button" onClick={send} disabled={busy || !draft.trim()}>
+                {busy ? t("pane.sending") : t("pane.send")}
+              </Button>
             </div>
           </>
         )}
@@ -347,97 +366,6 @@ function RelayActivityStrip({
   );
 }
 
-/** The transcript: every step, with the raw event behind each one. */
-function Inspector({ trace, t }: { trace: TraceEntry[]; t: ReturnType<typeof useTranslations> }) {
-  const [openId, setOpenId] = useState<string | null>(null);
-  const [copiedId, setCopiedId] = useState<string | null>(null);
-
-  const copy = async (entry: TraceEntry) => {
-    if (!entry.event) return;
-    await navigator.clipboard.writeText(JSON.stringify(entry.event, null, 2));
-    setCopiedId(entry.id);
-    setTimeout(() => setCopiedId(null), 1500);
-  };
-
-  if (trace.length === 0) {
-    return <p className="text-sm text-gray-500 dark:text-gray-400">{t("inspector.empty")}</p>;
-  }
-
-  return (
-    <ol className="space-y-2">
-      {trace.map(entry => {
-        const open = openId === entry.id;
-        const tone =
-          entry.kind === "error"
-            ? "border-red-300 dark:border-red-800"
-            : entry.kind === "event"
-              ? "border-primary/40"
-              : "border-gray-200 dark:border-gray-800";
-        return (
-          <li key={entry.id} className={`rounded-lg border ${tone}`}>
-            <button
-              type="button"
-              onClick={() => setOpenId(open ? null : entry.id)}
-              className="flex w-full items-start justify-between gap-3 p-3 text-left"
-              aria-expanded={open}
-            >
-              <span className="min-w-0">
-                <span className="block text-sm font-medium text-gray-900 dark:text-gray-100">
-                  {entry.label}
-                </span>
-                <span className="mt-0.5 block text-xs text-gray-500 dark:text-gray-400">
-                  {entry.from}
-                  {entry.bytes ? ` · ${entry.bytes.toLocaleString()} bytes` : ""}
-                </span>
-              </span>
-              {entry.event && (
-                <span className="flex-shrink-0 text-xs text-primary">
-                  {open ? t("inspector.hide") : t("inspector.show")}
-                </span>
-              )}
-            </button>
-
-            {open && (
-              <div className="border-t border-gray-200 p-3 dark:border-gray-800">
-                {entry.detail && (
-                  <p className="mb-3 whitespace-pre-wrap text-sm text-gray-600 dark:text-gray-300">
-                    {entry.detail}
-                  </p>
-                )}
-                {entry.event && (
-                  <>
-                    <div className="mb-2 flex flex-wrap gap-2 text-xs">
-                      <span className="rounded bg-gray-100 px-2 py-1 dark:bg-gray-800">
-                        kind {entry.event.kind}
-                      </span>
-                      <span className="rounded bg-gray-100 px-2 py-1 dark:bg-gray-800">
-                        {entry.event.tags.length} tags
-                      </span>
-                      <span className="rounded bg-gray-100 px-2 py-1 dark:bg-gray-800">
-                        content {entry.event.content.length.toLocaleString()} chars
-                      </span>
-                      <button
-                        type="button"
-                        onClick={() => copy(entry)}
-                        className="rounded bg-primary/10 px-2 py-1 text-primary"
-                      >
-                        {copiedId === entry.id ? t("inspector.copied") : t("inspector.copy")}
-                      </button>
-                    </div>
-                    <pre className="max-h-72 overflow-auto rounded bg-gray-900 p-3 text-[11px] leading-relaxed text-gray-100">
-                      {JSON.stringify(entry.event, null, 2)}
-                    </pre>
-                  </>
-                )}
-              </div>
-            )}
-          </li>
-        );
-      })}
-    </ol>
-  );
-}
-
 export default function ChatContent() {
   const t = useTranslations("pqcChat");
 
@@ -446,7 +374,7 @@ export default function ChatContent() {
   /** Everyone reachable, as discovered from their published attestations. */
   const [roster, setRoster] = useState<Recipient[]>([]);
   const [phase, setPhase] = useState<
-    "generating" | "idle" | "publishing" | "resolving" | "ready" | "failed"
+    "generating" | "creating" | "idle" | "publishing" | "resolving" | "ready" | "failed"
   >("generating");
 
   const [extension, setExtension] = useState<ExtensionIdentity | null>(null);
@@ -466,6 +394,7 @@ export default function ChatContent() {
   });
 
   const [explorerOpen, setExplorerOpen] = useState(false);
+  const [regenerating, setRegenerating] = useState(false);
 
   useEffect(() => subscribeRelayActivity(setActivity), []);
 
@@ -478,8 +407,19 @@ export default function ChatContent() {
   const namesRef = useRef<Map<string, string>>(new Map());
 
   const addTrace = useCallback((entry: Omit<TraceEntry, "id" | "at">) => {
-    setTrace(prev => [{ ...entry, id: nextId(), at: Date.now() }, ...prev].slice(0, 80));
+    setTrace(prev => [{ ...entry, id: nextId(), at: Date.now() }, ...prev].slice(0, 120));
   }, []);
+
+  // Relays are not an archive, so the history is kept here too. Restored before the
+  // first trace is added, and written back whenever it grows.
+  useEffect(() => {
+    const saved = readEventLog();
+    if (saved.length) setTrace(prev => [...prev, ...saved]);
+  }, []);
+
+  useEffect(() => {
+    if (trace.length) writeEventLog(trace);
+  }, [trace]);
 
   const nameFor = useCallback(
     (pubkey: string) => namesRef.current.get(pubkey) ?? `${pubkey.slice(0, 8)}…`,
@@ -616,7 +556,13 @@ export default function ChatContent() {
    * Without this the page is a one-shot: once a session has published, there is no way
    * back to the state the whole demo is about — fresh keys that nobody can reach yet.
    */
-  const regenerate = useCallback(() => {
+  const regenerate = useCallback(async () => {
+    // Deriving two ML-KEM and two ML-DSA key pairs blocks for long enough to notice, so
+    // paint the loading state before starting rather than freezing on the click.
+    setRegenerating(true);
+    setPhase("creating");
+    await new Promise(r => setTimeout(r, 30));
+
     const a = createIdentity(t("alice"));
     const b = createIdentity(t("bob"));
     if (alice) forgetPalette(alice.pubkey);
@@ -633,7 +579,11 @@ export default function ChatContent() {
     // The extension keeps its place; only the demo pair is replaced.
     setRoster(prev => prev.filter(r => r.pubkey === extension?.pubkey));
     writeSession({ alice: a.mnemonic, bob: b.mnemonic, published: false });
+    // The old log describes identities that no longer exist here.
+    clearEventLog();
+    setTrace([]);
     setPhase("idle");
+    setRegenerating(false);
 
     addTrace({
       from: "—",
@@ -781,7 +731,12 @@ export default function ChatContent() {
     [roster],
   );
 
+  /** Anything that must finish before the page will accept another instruction. */
+  const working =
+    regenerating || phase === "publishing" || phase === "resolving" || phase === "creating";
+
   const statusNotice = useMemo((): { tone: "ok" | "warn"; text: string } | undefined => {
+    if (phase === "creating") return { tone: "warn", text: t("status.creating") };
     if (phase === "idle") return { tone: "warn", text: t("status.notPublished") };
     if (phase === "publishing") return { tone: "warn", text: t("status.publishing") };
     if (phase === "resolving") return { tone: "warn", text: t("status.resolving") };
@@ -813,46 +768,30 @@ export default function ChatContent() {
           <p className="mt-4 text-lg text-gray-600 dark:text-gray-300">{t("subtitle")}</p>
           <p className="mt-3 text-sm text-amber-700 dark:text-amber-400">{t("liveNotice")}</p>
 
-          {/* One control slot, whatever the phase. Registering and regenerating are the
-              same decision seen from either side, so they belong in the same place —
-              hunting for a differently-placed button is what made this hard to find. */}
-          <div
-            className={`mx-auto mt-8 max-w-2xl rounded-xl p-6 text-left ${
-              phase === "ready"
-                ? "border border-gray-200 dark:border-gray-800"
-                : "border-2 border-primary bg-primary/5"
-            }`}
-          >
-            <h2 className="text-lg font-semibold text-gray-900 dark:text-white">
-              {phase === "ready" ? t("status.readyTitle") : t("status.startTitle")}
-            </h2>
-            <p className="mt-2 text-sm text-gray-600 dark:text-gray-300">
-              {phase === "ready" ? t("status.readyExplainer") : t("status.startExplainer")}
-            </p>
-            <div className="mt-4">
-              {phase === "ready" ? (
-                <Button variant="secondary" onClick={regenerate}>
-                  {t("status.newIdentities")}
-                </Button>
-              ) : (
+          {/* Registering is the only thing to decide here. Once it is done the page has
+              nothing left to ask for, so the whole card goes away rather than lingering
+              as a control nobody needs again. */}
+          {phase !== "ready" && (
+            <div className="mx-auto mt-8 max-w-2xl rounded-xl border-2 border-primary bg-primary/5 p-6 text-left">
+              <h2 className="text-lg font-semibold text-gray-900 dark:text-white">
+                {t("status.startTitle")}
+              </h2>
+              <p className="mt-2 text-sm text-gray-600 dark:text-gray-300">
+                {t("status.startExplainer")}
+              </p>
+              <div className="mt-4">
                 <Button
                   onClick={() => void begin(alice, bob, false)}
-                  disabled={phase === "publishing" || phase === "resolving"}
+                  disabled={working}
                 >
-                  {phase === "publishing" || phase === "resolving"
+                  {working
                     ? t("status.working")
                     : phase === "failed"
                       ? t("status.retry")
                       : t("status.start")}
                 </Button>
-              )}
+              </div>
             </div>
-          </div>
-
-          {(phase === "publishing" || phase === "resolving") && (
-            <p className="mt-6 text-sm text-gray-500 dark:text-gray-400">
-              {phase === "publishing" ? t("status.publishing") : t("status.resolving")}
-            </p>
           )}
         </div>
       </Section>
@@ -885,7 +824,7 @@ export default function ChatContent() {
                   ? () => void begin(alice, bob, false)
                   : undefined
               }
-              registering={phase === "publishing" || phase === "resolving"}
+              registering={working}
               busy={busyKeys.includes(id.pubkey)}
               t={t}
             />
@@ -941,15 +880,6 @@ export default function ChatContent() {
         )}
       </Section>
 
-      <Section>
-        <div className="mx-auto max-w-5xl">
-          <SectionHeader title={t("inspector.title")} description={t("inspector.subtitle")} />
-          <Inspector trace={trace} t={t} />
-          <p className="mt-4 text-xs text-gray-500 dark:text-gray-400">
-            {t("inspector.relays", { relays: CHAT_RELAYS.join(", ") })}
-          </p>
-        </div>
-      </Section>
 
       <Section>
         <div className="mx-auto max-w-3xl rounded-xl border border-gray-200 p-8 text-center dark:border-gray-800">
@@ -963,15 +893,16 @@ export default function ChatContent() {
             className="mt-5 inline-block"
             aria-label="QuantaKrypto"
           >
-            {/* Two files rather than one CSS-filtered logo: the mark is not */}
-            {/* monochrome, so recolouring it would misrepresent the brand. */}
+            {/* Two files rather than one CSS-filtered logo: the mark is not monochrome,
+                so recolouring it would misrepresent the brand. The -light file carries
+                dark ink (#0E1626) for light backgrounds; -dark carries white. */}
             <img
-              src="/brand/quantakrypto-logo-dark.svg"
+              src="/brand/quantakrypto-logo-light.svg"
               alt="QuantaKrypto"
               className="h-10 w-auto dark:hidden"
             />
             <img
-              src="/brand/quantakrypto-logo-light.svg"
+              src="/brand/quantakrypto-logo-dark.svg"
               alt="QuantaKrypto"
               className="hidden h-10 w-auto dark:block"
             />
@@ -1000,12 +931,16 @@ export default function ChatContent() {
         </div>
       </Section>
 
+      <Faq namespace="pqcChat" ids={["real", "keys", "size", "protects", "relays", "stored"]} />
+
       <EventExplorer
         open={explorerOpen}
         onClose={() => setExplorerOpen(false)}
         trace={trace}
         keyholders={keyholders}
         people={people}
+        onRegenerate={() => void regenerate()}
+        regenerating={working}
         t={t}
       />
     </>

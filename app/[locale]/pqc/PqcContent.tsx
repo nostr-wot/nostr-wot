@@ -2,7 +2,19 @@
 
 import { useState, type FormEvent } from "react";
 import { useTranslations } from "next-intl";
-import { Badge, Button, Input, Section, SectionHeader, ScrollReveal } from "@/components/ui";
+import {
+  Badge,
+  Button,
+  Input,
+  LinkButton,
+  Modal,
+  Section,
+  SectionHeader,
+  ScrollReveal,
+  SiblingDerivationIllustration,
+  GiftWrapIllustration,
+} from "@/components/ui";
+import Faq from "./Faq";
 import { checkPqcSupport, type PqcResult } from "@/lib/client/pqcCheck";
 
 function StatusPill({ tone, children }: { tone: "ok" | "warn" | "bad" | "muted"; children: React.ReactNode }) {
@@ -32,6 +44,7 @@ export default function PqcContent() {
   const t = useTranslations("pqc");
   const [input, setInput] = useState("");
   const [loading, setLoading] = useState(false);
+  const [checkerOpen, setCheckerOpen] = useState(false);
   const [result, setResult] = useState<PqcResult | null>(null);
 
   async function onSubmit(e: FormEvent) {
@@ -50,22 +63,62 @@ export default function PqcContent() {
     <>
       <Section>
         <ScrollReveal>
-          <div className="mx-auto max-w-3xl text-center">
-            <Badge>{t("hero.badge")}</Badge>
-            <h1 className="mt-4 text-4xl font-bold text-gray-900 dark:text-white sm:text-5xl">
-              {t("hero.title")}
-            </h1>
-            <p className="mt-6 text-lg text-gray-600 dark:text-gray-300">{t("hero.subtitle")}</p>
+          <div className="mx-auto grid max-w-5xl items-center gap-10 md:grid-cols-2">
+            <div>
+              <Badge>{t("hero.badge")}</Badge>
+              <h1 className="mt-4 text-4xl font-bold text-gray-900 dark:text-white sm:text-5xl">
+                {t("hero.title")}
+              </h1>
+              <p className="mt-6 text-lg text-gray-600 dark:text-gray-300">{t("hero.subtitle")}</p>
+            </div>
+            {/* The derivation is the argument, so it leads rather than decorates. */}
+            <SiblingDerivationIllustration className="max-w-md justify-self-center" />
           </div>
         </ScrollReveal>
       </Section>
 
-      {/* Checker */}
+      {/* Tools */}
       <Section>
         <ScrollReveal>
-          <div className="mx-auto max-w-3xl">
-            <SectionHeader title={t("checker.title")} description={t("checker.subtitle")} />
+          <div className="mx-auto max-w-5xl">
+            <SectionHeader title={t("tools.title")} description={t("tools.subtitle")} />
+            <div className="grid gap-6 md:grid-cols-2">
+              <div className="flex flex-col rounded-xl border border-gray-200 p-6 dark:border-gray-800">
+                <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
+                  {t("tools.check.title")}
+                </h3>
+                <p className="mt-2 flex-1 text-gray-600 dark:text-gray-300">
+                  {t("tools.check.body")}
+                </p>
+                <div className="mt-5">
+                  <Button onClick={() => setCheckerOpen(true)}>{t("tools.check.action")}</Button>
+                </div>
+              </div>
 
+              <div className="flex flex-col rounded-xl border border-gray-200 p-6 dark:border-gray-800">
+                <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
+                  {t("tools.chat.title")}
+                </h3>
+                <p className="mt-2 flex-1 text-gray-600 dark:text-gray-300">{t("tools.chat.body")}</p>
+                <div className="mt-5">
+                  <LinkButton href="/pqc/chat">{t("tools.chat.action")}</LinkButton>
+                </div>
+              </div>
+            </div>
+          </div>
+        </ScrollReveal>
+      </Section>
+
+      {/* The checker lives in a dialog: it is a tool you reach for, not something that
+          should sit in the reading path of the page explaining the proposal. */}
+      <Modal
+        open={checkerOpen}
+        onClose={() => setCheckerOpen(false)}
+        title={t("checker.title")}
+        subtitle={t("checker.subtitle")}
+        closeLabel={t("checker.close")}
+      >
+        <div className="overflow-y-auto p-6">
             <form onSubmit={onSubmit} className="mt-6 flex flex-col gap-3 sm:flex-row">
               <Input
                 value={input}
@@ -143,15 +196,15 @@ export default function PqcContent() {
                 )}
               </div>
             )}
-          </div>
-        </ScrollReveal>
-      </Section>
+        </div>
+      </Modal>
 
       {/* How it works */}
       <Section>
         <ScrollReveal>
           <div className="mx-auto max-w-3xl">
             <SectionHeader title={t("how.title")} description={t("how.subtitle")} />
+            <GiftWrapIllustration className="mx-auto max-w-sm" />
             <div className="mt-8 space-y-6">
               {["seed", "attestation", "wrap"].map((k) => (
                 <div key={k} className="rounded-xl border border-gray-200 p-6 dark:border-gray-800">
@@ -177,6 +230,8 @@ export default function PqcContent() {
           </div>
         </ScrollReveal>
       </Section>
+
+      <Faq namespace="pqc" ids={["what", "notfound", "proof", "getone", "standard"]} />
     </>
   );
 }

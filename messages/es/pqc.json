@@ -14,7 +14,8 @@
     "placeholder": "npub1... o una clave pública en hexadecimal",
     "action": "Comprobar",
     "checking": "Consultando relés...",
-    "earlyNotice": "La propuesta es reciente, así que casi ningún perfil publica todavía estas claves. Un resultado vacío significa que esa identidad no la ha adoptado, no que la comprobación haya fallado."
+    "earlyNotice": "La propuesta es reciente, así que casi ningún perfil publica todavía estas claves. Un resultado vacío significa que esa identidad no la ha adoptado, no que la comprobación haya fallado.",
+    "close": "Cerrar"
   },
   "result": {
     "invalidInput": "Eso no es un npub ni una clave pública válida",
@@ -58,5 +59,45 @@
     "derivedMissingSeedStrength": "Declara claves derivadas de la semilla pero no indica su fortaleza, así que la declaración no se puede comprobar.",
     "missingPop": "La clave {alg} se publica sin prueba de posesión, por lo que no hay evidencia de que su titular la controle.",
     "popFailed": "La prueba de posesión no se verifica. No confíes en estas claves."
+  },
+  "faq": {
+    "title": "Preguntas sobre el verificador",
+    "subtitle": "Qué consulta y qué hacer con la respuesta.",
+    "items": {
+      "what": {
+        "q": "¿Qué está comprobando?",
+        "a": "Busca la atestación kind:10203 de la identidad en relés públicos y la valida: si las longitudes de clave corresponden a ML-KEM-1024 y ML-DSA-87, si el origen concuerda con la fuerza de semilla declarada y si la prueba de posesión verifica."
+      },
+      "notfound": {
+        "q": "¿Por qué dice que no encontró atestación?",
+        "a": "Porque esa identidad no ha publicado ninguna. No hay alternativa ni conjeturas: sin una clave ML-KEM publicada no hay forma de enviarle un mensaje post-cuántico, y decir algo más suave invitaría a una degradación silenciosa al cifrado clásico."
+      },
+      "proof": {
+        "q": "¿Qué significa «posesión demostrada»?",
+        "a": "Una firma secp256k1 prueba que alguien publicó esos bytes, no que posea los secretos post-cuánticos correspondientes. Por eso la clave ML-DSA contrafirma un mensaje que vincula el npub y ambas claves públicas. ML-KEM no puede firmar, y por eso esto es también lo que da a la clave de cifrado una prueba de posesión."
+      },
+      "getone": {
+        "q": "¿Cómo obtengo claves post-cuánticas?",
+        "a": "Derívalas de la frase semilla de 24 palabras que ya tienes: sin copia de seguridad nueva, y las mismas palabras siguen restaurándolo todo. La extensión Nostr WoT puede publicar la atestación por ti, o la guía explica cómo hacerlo sin conexión desde la línea de comandos."
+      },
+      "standard": {
+        "q": "¿Es un estándar aceptado?",
+        "a": "Es una propuesta, desarrollada conjuntamente por Nostr WoT y QuantaKrypto, sobre los estándares finalizados del NIST FIPS 203 y FIPS 204. Está implementada y funcionando, no es teórica: ese es el sentido de la demostración de chat en vivo."
+      }
+    }
+  },
+  "tools": {
+    "title": "Dos herramientas",
+    "subtitle": "Una comprueba a otra persona. La otra te deja ver todo el proceso.",
+    "check": {
+      "title": "Verificar un perfil",
+      "body": "Consulta cualquier npub y comprueba si ha publicado claves post-cuánticas, si las longitudes son correctas y si la posesión está demostrada.",
+      "action": "Abrir el verificador"
+    },
+    "chat": {
+      "title": "Chat post-cuántico en vivo",
+      "body": "Dos identidades se registran en relés públicos e intercambian mensajes reales cifrados con ML-KEM. Desmonta cualquier evento capa por capa y ve exactamente qué almacena un relé.",
+      "action": "Abrir la demostración"
+    }
   }
 }

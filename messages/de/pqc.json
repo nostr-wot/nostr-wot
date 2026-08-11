@@ -14,7 +14,8 @@
     "placeholder": "npub1... oder ein hexadezimaler öffentlicher Schlüssel",
     "action": "Prüfen",
     "checking": "Relays werden abgefragt...",
-    "earlyNotice": "Der Vorschlag ist neu, daher veröffentlicht kaum ein Profil diese Schlüssel bereits. Ein leeres Ergebnis bedeutet, dass diese Identität ihn nicht übernommen hat - nicht, dass die Prüfung fehlgeschlagen ist."
+    "earlyNotice": "Der Vorschlag ist neu, daher veröffentlicht kaum ein Profil diese Schlüssel bereits. Ein leeres Ergebnis bedeutet, dass diese Identität ihn nicht übernommen hat - nicht, dass die Prüfung fehlgeschlagen ist.",
+    "close": "Schließen"
   },
   "result": {
     "invalidInput": "Das ist kein gültiger npub und kein gültiger öffentlicher Schlüssel",
@@ -58,5 +59,45 @@
     "derivedMissingSeedStrength": "Gibt aus dem Seed abgeleitete Schlüssel an, nennt aber die Seed-Stärke nicht — die Angabe ist damit nicht überprüfbar.",
     "missingPop": "Der {alg}-Schlüssel wurde ohne Besitznachweis veröffentlicht; es gibt keinen Beleg dafür, dass der Inhaber ihn kontrolliert.",
     "popFailed": "Der Besitznachweis lässt sich nicht verifizieren. Diesen Schlüsseln nicht vertrauen."
+  },
+  "faq": {
+    "title": "Fragen zum Prüfer",
+    "subtitle": "Was er abfragt und was mit der Antwort zu tun ist.",
+    "items": {
+      "what": {
+        "q": "Was wird hier geprüft?",
+        "a": "Er sucht die kind:10203-Attestierung der Identität auf öffentlichen Relays und validiert sie: Stimmen die Schlüssellängen für ML-KEM-1024 und ML-DSA-87, passt die Herkunft zur angegebenen Seed-Stärke, und lässt sich der Besitznachweis verifizieren."
+      },
+      "notfound": {
+        "q": "Warum heißt es, es wurde keine Attestierung gefunden?",
+        "a": "Weil diese Identität keine veröffentlicht hat. Es gibt keinen Rückfallweg und kein Raten: Ohne veröffentlichten ML-KEM-Schlüssel lässt sich keine Post-Quanten-Nachricht senden, und eine weichere Formulierung würde eine stille Rückstufung auf klassische Verschlüsselung einladen."
+      },
+      "proof": {
+        "q": "Was bedeutet „Besitz nachgewiesen“?",
+        "a": "Eine secp256k1-Signatur beweist, dass jemand diese Bytes veröffentlicht hat, nicht dass er die passenden Post-Quanten-Geheimnisse besitzt. Deshalb gegensigniert der ML-DSA-Schlüssel eine Nachricht, die den npub und beide öffentlichen Schlüssel verbindet. ML-KEM kann nicht signieren — deshalb erhält auch der Verschlüsselungsschlüssel darüber seinen Besitznachweis."
+      },
+      "getone": {
+        "q": "Wie bekomme ich Post-Quanten-Schlüssel?",
+        "a": "Leiten Sie sie aus Ihrer vorhandenen 24-Wort-Seed-Phrase ab — kein neues Backup, und dieselben Wörter stellen weiterhin alles wieder her. Die Nostr-WoT-Erweiterung kann die Attestierung für Sie veröffentlichen, oder die Anleitung zeigt den Weg offline über die Kommandozeile."
+      },
+      "standard": {
+        "q": "Ist das ein anerkannter Standard?",
+        "a": "Es ist ein Vorschlag, gemeinsam von Nostr WoT und QuantaKrypto entwickelt, aufbauend auf den finalisierten NIST-Standards FIPS 203 und FIPS 204. Er ist implementiert und läuft, statt theoretisch zu bleiben — genau dafür gibt es die Live-Chat-Demo."
+      }
+    }
+  },
+  "tools": {
+    "title": "Zwei Werkzeuge",
+    "subtitle": "Das eine prüft jemand anderen. Das andere lässt Sie dem Ganzen zusehen.",
+    "check": {
+      "title": "Profil prüfen",
+      "body": "Schlagen Sie einen beliebigen npub nach und sehen Sie, ob Post-Quanten-Schlüssel veröffentlicht wurden, ob die Schlüssellängen stimmen und ob der Besitz nachgewiesen ist.",
+      "action": "Prüfer öffnen"
+    },
+    "chat": {
+      "title": "Post-Quanten-Chat live",
+      "body": "Zwei Identitäten registrieren sich auf öffentlichen Relays und tauschen echte ML-KEM-verschlüsselte Nachrichten aus. Zerlegen Sie jedes Ereignis Schicht für Schicht und sehen Sie genau, was ein Relay speichert.",
+      "action": "Demo öffnen"
+    }
   }
 }

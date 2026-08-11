@@ -22,7 +22,10 @@
     "noTargets": "Ainda não há para quem enviar — ninguém é alcançável até as atestações estarem em um relay.",
     "stalled": "Publicado, mas nenhum relay o devolveu",
     "failed": "Nenhum relay aceitou",
-    "viaRelay": "via {relay}"
+    "viaRelay": "via {relay}",
+    "send": "Enviar",
+    "recipient": "Destinatário",
+    "toEveryone": "Todos"
   },
   "sizeCompare": "Essa mensagem trafegou com {pq} bytes. O mesmo texto em um gift wrap clássico NIP-17 teria {classic} bytes, ou seja, o pós-quântico custa {ratio}x mais. A diferença é quase toda o texto cifrado do ML-KEM.",
   "trace": {
@@ -71,7 +74,8 @@
     "working": "Registrando…",
     "newIdentities": "Gerar novas identidades",
     "readyTitle": "Registradas e alcançáveis",
-    "readyExplainer": "As duas identidades têm suas chaves pós-quânticas nos relays, e elas permanecem nesta máquina entre visitas. Gerar novas as descarta e recomeça."
+    "readyExplainer": "As duas identidades têm suas chaves pós-quânticas nos relays, e elas permanecem nesta máquina entre visitas. Gerar novas as descarta e recomeça.",
+    "creating": "Derivando novas chaves — leva um instante."
   },
   "relays": {
     "title": "Atividade dos relays",
@@ -93,6 +97,37 @@
     "relaySees": "Um relay vê:",
     "showJson": "Mostrar JSON bruto",
     "hideJson": "Ocultar JSON bruto",
-    "layersIntro": "{count} camadas, da mais externa."
+    "layersIntro": "{count} camadas, da mais externa.",
+    "step": "etapa"
+  },
+  "faq": {
+    "title": "Perguntas sobre esta demonstração",
+    "subtitle": "O que ela prova, o que não prova, e o que deixa na sua máquina.",
+    "items": {
+      "real": {
+        "q": "São mensagens reais?",
+        "a": "Sim. Cada mensagem é um gift wrap NIP-59 real publicado em relays públicos e cifrado com ML-KEM-1024 real. Nada é simulado: uma mensagem só aparece quando um relay a devolve e ela decifra, e cada uma indica o relay que a serviu."
+      },
+      "keys": {
+        "q": "De onde vêm as chaves pós-quânticas?",
+        "a": "Da mesma semente de 24 palavras da chave Nostr, expandida uma segunda vez com HKDF sob outro rótulo. As chaves são irmãs, não mãe e filha: recuperar a chave privada Nostr não revela nada sobre as pós-quânticas."
+      },
+      "size": {
+        "q": "Por que uma mensagem pós-quântica é tão maior?",
+        "a": "O texto cifrado ML-KEM-1024 tem 1.568 bytes em cada mensagem e domina todo o resto. Abra qualquer mensagem no explorador de eventos e o mapa de bytes mostra exatamente para onde vai o tamanho."
+      },
+      "protects": {
+        "q": "O que isto protege de fato?",
+        "a": "A confidencialidade das mensagens enviadas de agora em diante, permanentemente — inclusive contra quem as arquive hoje para decifrar depois. Não impede que um atacante com computador quântico assine eventos no seu nome, porque os eventos continuam assinados com secp256k1."
+      },
+      "relays": {
+        "q": "Os relays precisam mudar?",
+        "a": "Não. O envoltório externo é um evento kind:1059 comum, então mensagens pós-quânticas atravessam a rede de relays atual sem alterações e clientes que nada sabem disso não são afetados."
+      },
+      "stored": {
+        "q": "O que fica guardado na minha máquina?",
+        "a": "Duas frases semente e o histórico de eventos, no armazenamento local deste navegador. São chaves descartáveis de demonstração, mantidas apenas para que uma nova visita as reutilize em vez de publicar outro par de atestações em relays públicos. \"Gerar novas identidades\", no explorador de eventos, as descarta."
+      }
+    }
   }
 }

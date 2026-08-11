@@ -22,7 +22,10 @@
     "noTargets": "Personne à qui écrire pour l'instant — personne n'est joignable tant que les attestations ne sont pas sur un relais.",
     "stalled": "Publié, mais aucun relais ne l'a renvoyé",
     "failed": "Aucun relais ne l'a accepté",
-    "viaRelay": "via {relay}"
+    "viaRelay": "via {relay}",
+    "send": "Envoyer",
+    "recipient": "Destinataire",
+    "toEveryone": "Tout le monde"
   },
   "sizeCompare": "Ce message a circulé en {pq} octets. Le même texte dans un gift wrap NIP-17 classique ferait {classic} octets : le post-quantique coûte donc {ratio}x plus. L'écart tient presque entièrement au chiffré ML-KEM.",
   "trace": {
@@ -71,7 +74,8 @@
     "working": "Enregistrement…",
     "newIdentities": "Générer de nouvelles identités",
     "readyTitle": "Enregistrées et joignables",
-    "readyExplainer": "Les deux identités ont leurs clés post-quantiques sur les relais, et elles restent sur cette machine entre les visites. En générer de nouvelles les supprime et repart de zéro."
+    "readyExplainer": "Les deux identités ont leurs clés post-quantiques sur les relais, et elles restent sur cette machine entre les visites. En générer de nouvelles les supprime et repart de zéro.",
+    "creating": "Dérivation de nouvelles clés — cela prend un instant."
   },
   "relays": {
     "title": "Activité des relais",
@@ -93,6 +97,37 @@
     "relaySees": "Un relais voit :",
     "showJson": "Afficher le JSON brut",
     "hideJson": "Masquer le JSON brut",
-    "layersIntro": "{count} couches, de l'extérieur vers l'intérieur."
+    "layersIntro": "{count} couches, de l'extérieur vers l'intérieur.",
+    "step": "étape"
+  },
+  "faq": {
+    "title": "Questions sur cette démonstration",
+    "subtitle": "Ce qu’elle prouve, ce qu’elle ne prouve pas, et ce qu’elle laisse sur votre machine.",
+    "items": {
+      "real": {
+        "q": "Ces messages sont-ils réels ?",
+        "a": "Oui. Chaque message est un véritable gift wrap NIP-59 publié sur des relais publics et chiffré avec un vrai ML-KEM-1024. Rien n’est simulé : un message n’apparaît qu’une fois qu’un relais l’a renvoyé et qu’il se déchiffre, et chacun nomme le relais qui l’a servi."
+      },
+      "keys": {
+        "q": "D’où viennent les clés post-quantiques ?",
+        "a": "De la même phrase de 24 mots que la clé Nostr, étendue une seconde fois avec HKDF sous une autre étiquette. Les clés sont sœurs, non parent et enfant : retrouver la clé privée Nostr n’apprend rien sur les clés post-quantiques."
+      },
+      "size": {
+        "q": "Pourquoi un message post-quantique est-il si volumineux ?",
+        "a": "Le chiffré ML-KEM-1024 fait 1 568 octets, sur chaque message, et domine tout le reste. Ouvrez un message dans l’explorateur d’événements : la carte des octets montre exactement où passe la taille."
+      },
+      "protects": {
+        "q": "Que protège cela réellement ?",
+        "a": "La confidentialité des messages envoyés à partir de maintenant, définitivement — y compris contre quelqu’un qui les archive aujourd’hui pour les déchiffrer plus tard. Cela n’empêche pas un attaquant disposant d’un ordinateur quantique de signer des événements à votre place, car les événements restent signés avec secp256k1."
+      },
+      "relays": {
+        "q": "Les relais doivent-ils changer ?",
+        "a": "Non. L’enveloppe extérieure est un événement kind:1059 ordinaire, donc les messages post-quantiques traversent le réseau de relais actuel sans modification et les clients qui ignorent tout de ceci ne sont pas affectés."
+      },
+      "stored": {
+        "q": "Qu’est-ce qui est stocké sur ma machine ?",
+        "a": "Deux phrases mnémoniques et l’historique des événements, dans le stockage local de ce navigateur. Ce sont des clés de démonstration jetables, conservées uniquement pour qu’une nouvelle visite les réutilise au lieu de publier une paire d’attestations de plus sur des relais publics. « Générer de nouvelles identités », dans l’explorateur d’événements, les supprime."
+      }
+    }
   }
 }

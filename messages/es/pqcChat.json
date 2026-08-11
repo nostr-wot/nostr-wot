@@ -22,7 +22,10 @@
     "noTargets": "Aún no hay a quién enviar: nadie es localizable hasta que las atestaciones estén en un relé.",
     "stalled": "Publicado, pero ningún relé lo ha devuelto",
     "failed": "Ningún relé lo aceptó",
-    "viaRelay": "vía {relay}"
+    "viaRelay": "vía {relay}",
+    "send": "Enviar",
+    "recipient": "Destinatario",
+    "toEveryone": "Todos"
   },
   "sizeCompare": "Ese mensaje viajó como {pq} bytes. El mismo texto en un gift wrap clásico NIP-17 ocuparía {classic} bytes, así que el post-cuántico cuesta {ratio}x más. La diferencia es casi toda el texto cifrado de ML-KEM.",
   "trace": {
@@ -71,7 +74,8 @@
     "working": "Registrando…",
     "newIdentities": "Generar nuevas identidades",
     "readyTitle": "Registradas y localizables",
-    "readyExplainer": "Ambas identidades tienen sus claves post-cuánticas en los relés, y permanecen en este equipo entre visitas. Generar nuevas las descarta y empieza de cero."
+    "readyExplainer": "Ambas identidades tienen sus claves post-cuánticas en los relés, y permanecen en este equipo entre visitas. Generar nuevas las descarta y empieza de cero.",
+    "creating": "Derivando nuevas claves: tarda un momento."
   },
   "relays": {
     "title": "Actividad de los relés",
@@ -93,6 +97,37 @@
     "relaySees": "Un relé ve:",
     "showJson": "Ver JSON en bruto",
     "hideJson": "Ocultar JSON en bruto",
-    "layersIntro": "{count} capas, de fuera hacia dentro."
+    "layersIntro": "{count} capas, de fuera hacia dentro.",
+    "step": "paso"
+  },
+  "faq": {
+    "title": "Preguntas sobre esta demostración",
+    "subtitle": "Qué demuestra, qué no, y qué deja en tu equipo.",
+    "items": {
+      "real": {
+        "q": "¿Son mensajes reales?",
+        "a": "Sí. Cada mensaje es un gift wrap NIP-59 real publicado en relés públicos y cifrado con ML-KEM-1024 real. Nada está simulado: un mensaje solo aparece cuando un relé lo devuelve y se descifra, y cada uno indica el relé que lo sirvió."
+      },
+      "keys": {
+        "q": "¿De dónde salen las claves post-cuánticas?",
+        "a": "De la misma semilla de 24 palabras que la clave de Nostr, expandida una segunda vez con HKDF bajo otra etiqueta. Las claves son hermanas, no madre e hija: recuperar la clave privada de Nostr no revela nada sobre las post-cuánticas."
+      },
+      "size": {
+        "q": "¿Por qué un mensaje post-cuántico ocupa tanto más?",
+        "a": "El texto cifrado de ML-KEM-1024 son 1.568 bytes en cada mensaje, y domina todo lo demás. Abre cualquier mensaje en el explorador de eventos y el mapa de bytes muestra exactamente a dónde va el tamaño."
+      },
+      "protects": {
+        "q": "¿Qué protege esto realmente?",
+        "a": "La confidencialidad de los mensajes enviados a partir de ahora, de forma permanente, incluso frente a quien los archive hoy para descifrarlos después. No impide que un atacante con computación cuántica firme eventos en tu nombre, porque los eventos se siguen firmando con secp256k1."
+      },
+      "relays": {
+        "q": "¿Tienen que cambiar los relés?",
+        "a": "No. La envoltura exterior es un evento kind:1059 corriente, así que los mensajes post-cuánticos atraviesan la red de relés actual sin cambios y los clientes que no saben nada de esto no se ven afectados."
+      },
+      "stored": {
+        "q": "¿Qué se guarda en mi equipo?",
+        "a": "Dos frases semilla y el historial de eventos, en el almacenamiento local de este navegador. Son claves de demostración desechables, guardadas solo para que una nueva visita las reutilice en vez de publicar otro par de atestaciones en relés públicos. «Generar nuevas identidades», en el explorador de eventos, las descarta."
+      }
+    }
   }
 }

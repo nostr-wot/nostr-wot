@@ -1,10 +1,11 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 import { useTranslations } from "next-intl";
+import { Modal } from "@/components/ui";
 import { analyzeEvent, type Keyholder, type Layer } from "@/lib/client/pqLayers";
 import { paletteFor } from "@/lib/client/pqPeople";
-import type { TraceEntry } from "@/lib/client/pqChat";
+import { CHAT_RELAYS, type TraceEntry } from "@/lib/client/pqChat";
 
 /** One horizontal band per byte range, sized in proportion. */
 function ByteMap({ layer }: { layer: Layer }) {
@@ -154,6 +155,8 @@ export default function EventExplorer({
   trace,
   keyholders,
   people,
+  onRegenerate,
+  regenerating,
   t,
 }: {
   open: boolean;
@@ -161,16 +164,17 @@ export default function EventExplorer({
   trace: TraceEntry[];
   keyholders: Keyholder[];
   people: { pubkey: string; label: string }[];
+  onRegenerate?: () => void;
+  regenerating?: boolean;
   t: ReturnType<typeof useTranslations>;
 }) {
   const [account, setAccount] = useState<string | "all">("all");
   const [selectedId, setSelectedId] = useState<string | null>(null);
 
+  // Every step, not only the ones carrying an event: "encapsulating to Bob's key" is
+  // part of the story even though it produced nothing to inspect.
   const events = useMemo(
-    () =>
-      trace.filter(
-        e => e.event && (account === "all" || e.owner === account),
-      ),
+    () => trace.filter(e => account === "all" || e.owner === account),
     [trace, account],
   );
 
@@ -184,123 +188,135 @@ export default function EventExplorer({
     [selected, keyholders],
   );
 
-  useEffect(() => {
-    if (!open) return;
-    const onKey = (e: KeyboardEvent) => e.key === "Escape" && onClose();
-    window.addEventListener("keydown", onKey);
-    document.body.style.overflow = "hidden";
-    return () => {
-      window.removeEventListener("keydown", onKey);
-      document.body.style.overflow = "";
-    };
-  }, [open, onClose]);
-
-  if (!open) return null;
+  const host = (url: string) => url.replace(/^wss:\/\//, "").replace(/\/$/, "");
 
   return (
-    <div
-      className="fixed inset-0 z-50 flex items-start justify-center bg-black/50 p-2 sm:p-6"
-      role="dialog"
-      aria-modal="true"
-      aria-label={t("explorer.title")}
-      onClick={e => e.target === e.currentTarget && onClose()}
+    <Modal
+      open={open}
+      onClose={onClose}
+      title={t("explorer.title")}
+      subtitle={t("explorer.subtitle")}
+      closeLabel={t("explorer.close")}
+      size="xl"
+      footer={
+        <footer className="flex flex-wrap items-center justify-between gap-3 border-t border-gray-200 p-3 text-[11px] text-gray-500 dark:border-gray-800 dark:text-gray-400">
+          <span>{t("inspector.relays", { relays: CHAT_RELAYS.map(host).join(", ") })}</span>
+          {/* Kept here rather than on the page: once registered there is nothing left to
+              decide, so starting over belongs with the history it would discard. */}
+          {onRegenerate && (
+            <button
+              type="button"
+              onClick={onRegenerate}
+              disabled={regenerating}
+              className="text-primary hover:underline disabled:opacity-50"
+            >
+              {regenerating ? t("status.working") : t("status.newIdentities")}
+            </button>
+          )}
+        </footer>
+      }
     >
-      <div className="flex max-h-full w-full max-w-6xl flex-col overflow-hidden rounded-2xl bg-white shadow-2xl dark:bg-gray-950">
-        <header className="flex items-center justify-between gap-4 border-b border-gray-200 p-4 dark:border-gray-800">
-          <div className="min-w-0">
-            <h2 className="font-semibold text-gray-900 dark:text-white">{t("explorer.title")}</h2>
-            <p className="text-xs text-gray-500 dark:text-gray-400">{t("explorer.subtitle")}</p>
-          </div>
-          <button
-            type="button"
-            onClick={onClose}
-            className="rounded-lg px-3 py-1.5 text-sm text-gray-600 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-800"
-          >
-            {t("explorer.close")}
-          </button>
-        </header>
+      <div className="flex flex-wrap gap-2 border-b border-gray-200 p-3 dark:border-gray-800">
+        <button
+          type="button"
+          onClick={() => setAccount("all")}
+          className={`rounded-full px-3 py-1 text-xs font-medium ${
+            account === "all"
+              ? "bg-gray-900 text-white dark:bg-white dark:text-gray-900"
+              : "bg-gray-100 text-gray-700 dark:bg-gray-800 dark:text-gray-300"
+          }`}
+        >
+          {t("explorer.all")}
+        </button>
+        {people.map(p => {
+          const pal = paletteFor(p.pubkey);
+          const active = account === p.pubkey;
+          return (
+            <button
+              key={p.pubkey}
+              type="button"
+              onClick={() => setAccount(p.pubkey)}
+              className={`rounded-full px-3 py-1 text-xs font-medium ${active ? pal.chipActive : pal.chip}`}
+            >
+              {p.label}
+            </button>
+          );
+        })}
+      </div>
 
-        <div className="flex flex-wrap gap-2 border-b border-gray-200 p-3 dark:border-gray-800">
-          <button
-            type="button"
-            onClick={() => setAccount("all")}
-            className={`rounded-full px-3 py-1 text-xs font-medium ${
-              account === "all"
-                ? "bg-gray-900 text-white dark:bg-white dark:text-gray-900"
-                : "bg-gray-100 text-gray-700 dark:bg-gray-800 dark:text-gray-300"
-            }`}
-          >
-            {t("explorer.all")}
-          </button>
-          {people.map(p => {
-            const pal = paletteFor(p.pubkey);
-            const active = account === p.pubkey;
+      <div className="grid min-h-0 flex-1 gap-0 overflow-hidden md:grid-cols-[18rem_1fr]">
+        <ol className="min-h-0 overflow-y-auto border-b border-gray-200 p-2 md:border-b-0 md:border-r dark:border-gray-800">
+          {events.length === 0 && (
+            <li className="p-3 text-sm text-gray-500 dark:text-gray-400">{t("explorer.empty")}</li>
+          )}
+          {events.map(e => {
+            const pal = paletteFor(e.owner);
+            const active = selected?.id === e.id;
             return (
-              <button
-                key={p.pubkey}
-                type="button"
-                onClick={() => setAccount(p.pubkey)}
-                className={`rounded-full px-3 py-1 text-xs font-medium ${
-                  active ? pal.chipActive : pal.chip
-                }`}
-              >
-                {p.label}
-              </button>
+              <li key={e.id}>
+                <button
+                  type="button"
+                  onClick={() => setSelectedId(e.id)}
+                  className={`w-full rounded-lg p-3 text-left ${
+                    active ? "bg-gray-100 dark:bg-gray-800" : "hover:bg-gray-50 dark:hover:bg-gray-900"
+                  }`}
+                >
+                  <span className="flex items-center gap-2">
+                    <span className={`h-2 w-2 flex-shrink-0 rounded-full ${pal.dot}`} />
+                    <span
+                      className={`truncate text-sm ${
+                        e.kind === "error"
+                          ? "text-red-600 dark:text-red-400"
+                          : "text-gray-900 dark:text-gray-100"
+                      }`}
+                    >
+                      {e.label}
+                    </span>
+                  </span>
+                  <span className="mt-0.5 block text-[11px] text-gray-500 dark:text-gray-400">
+                    {e.event
+                      ? `kind ${e.event.kind} · ${(e.bytes ?? 0).toLocaleString()} B`
+                      : t("explorer.step")}
+                    {e.relays?.length ? ` · ${e.relays.length} relays` : ""}
+                  </span>
+                </button>
+              </li>
             );
           })}
-        </div>
+        </ol>
 
-        <div className="grid min-h-0 flex-1 gap-0 overflow-hidden md:grid-cols-[18rem_1fr]">
-          <ol className="min-h-0 overflow-y-auto border-b border-gray-200 p-2 md:border-b-0 md:border-r dark:border-gray-800">
-            {events.length === 0 && (
-              <li className="p-3 text-sm text-gray-500 dark:text-gray-400">{t("explorer.empty")}</li>
-            )}
-            {events.map(e => {
-              const pal = paletteFor(e.owner);
-              const active = selected?.id === e.id;
-              return (
-                <li key={e.id}>
-                  <button
-                    type="button"
-                    onClick={() => setSelectedId(e.id)}
-                    className={`w-full rounded-lg p-3 text-left ${
-                      active ? "bg-gray-100 dark:bg-gray-800" : "hover:bg-gray-50 dark:hover:bg-gray-900"
-                    }`}
-                  >
-                    <span className="flex items-center gap-2">
-                      <span className={`h-2 w-2 flex-shrink-0 rounded-full ${pal.dot}`} />
-                      <span className="truncate text-sm text-gray-900 dark:text-gray-100">
-                        {e.label}
-                      </span>
-                    </span>
-                    <span className="mt-0.5 block text-[11px] text-gray-500 dark:text-gray-400">
-                      kind {e.event!.kind} · {(e.bytes ?? 0).toLocaleString()} B
-                      {e.relays?.length ? ` · ${e.relays.length} relays` : ""}
-                    </span>
-                  </button>
-                </li>
-              );
-            })}
-          </ol>
-
-          <div className="min-h-0 overflow-y-auto p-4">
-            {!selected ? (
-              <p className="text-sm text-gray-500 dark:text-gray-400">{t("explorer.pick")}</p>
-            ) : (
-              <>
-                <p className="mb-3 text-xs text-gray-500 dark:text-gray-400">
-                  {t("explorer.layersIntro", { count: layers.length })}
+        <div className="min-h-0 overflow-y-auto p-4">
+          {!selected ? (
+            <p className="text-sm text-gray-500 dark:text-gray-400">{t("explorer.pick")}</p>
+          ) : (
+            <>
+              <h3 className="font-semibold text-gray-900 dark:text-white">{selected.label}</h3>
+              <p className="mt-0.5 text-xs text-gray-500 dark:text-gray-400">
+                {selected.from} · {new Date(selected.at).toLocaleTimeString()}
+                {selected.relays?.length ? ` · ${selected.relays.map(host).join(", ")}` : ""}
+              </p>
+              {selected.detail && (
+                <p className="mt-3 whitespace-pre-wrap text-sm text-gray-600 dark:text-gray-300">
+                  {selected.detail}
                 </p>
-                <ol className="space-y-3">
-                  {layers.map((l, i) => (
-                    <LayerCard key={l.id} layer={l} index={i + 1} t={t} />
-                  ))}
-                </ol>
-              </>
-            )}
-          </div>
+              )}
+
+              {layers.length > 0 && (
+                <>
+                  <p className="mb-3 mt-5 text-xs text-gray-500 dark:text-gray-400">
+                    {t("explorer.layersIntro", { count: layers.length })}
+                  </p>
+                  <ol className="space-y-3">
+                    {layers.map((l, i) => (
+                      <LayerCard key={l.id} layer={l} index={i + 1} t={t} />
+                    ))}
+                  </ol>
+                </>
+              )}
+            </>
+          )}
         </div>
       </div>
-    </div>
+    </Modal>
   );
 }

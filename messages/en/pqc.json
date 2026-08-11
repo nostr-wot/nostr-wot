@@ -14,7 +14,8 @@
     "placeholder": "npub1... or a hex public key",
     "action": "Check",
     "checking": "Checking relays...",
-    "earlyNotice": "This proposal is new, so almost no profile publishes these keys yet. An empty result means the identity has not adopted it - not that the check failed."
+    "earlyNotice": "This proposal is new, so almost no profile publishes these keys yet. An empty result means the identity has not adopted it - not that the check failed.",
+    "close": "Close"
   },
   "result": {
     "invalidInput": "That is not a valid npub or public key",
@@ -58,5 +59,45 @@
     "derivedMissingSeedStrength": "Claims seed-derived keys but does not state the seed strength, so the claim cannot be checked.",
     "missingPop": "The {alg} key is published without a proof of possession, so there is no evidence the holder controls it.",
     "popFailed": "The proof of possession does not verify. Do not trust these keys."
+  },
+  "faq": {
+    "title": "Questions about the checker",
+    "subtitle": "What it looks up, and what to do with the answer.",
+    "items": {
+      "what": {
+        "q": "What is this checking?",
+        "a": "It looks up the identity’s kind:10203 attestation on public relays and validates it: are the key lengths right for ML-KEM-1024 and ML-DSA-87, does the origin match the declared seed strength, and does the proof of possession verify."
+      },
+      "notfound": {
+        "q": "Why does it say no attestation was found?",
+        "a": "Because that identity has not published one. There is no fallback and no guessing: without a published ML-KEM key there is no way to send them a post-quantum message, and reporting anything softer would invite a silent downgrade to classic encryption."
+      },
+      "proof": {
+        "q": "What does \"possession proven\" mean?",
+        "a": "A secp256k1 signature proves someone published those bytes, not that they hold the matching post-quantum secrets. So the ML-DSA key counter-signs a message binding the npub and both public keys together. ML-KEM cannot sign, which is why this is also what gives the encryption key a possession proof."
+      },
+      "getone": {
+        "q": "How do I get post-quantum keys?",
+        "a": "Derive them from the 24-word seed phrase you already have — no new backup, and the same words still restore everything. The Nostr WoT extension can publish the attestation for you, or the guide walks through doing it offline from the command line."
+      },
+      "standard": {
+        "q": "Is this an accepted standard?",
+        "a": "It is a proposal, developed jointly by Nostr WoT and QuantaKrypto, built on the finalised NIST standards FIPS 203 and FIPS 204. It is implemented and running rather than theoretical, which is the point of the live chat demo."
+      }
+    }
+  },
+  "tools": {
+    "title": "Two tools",
+    "subtitle": "One checks somebody else. The other lets you watch the whole thing happen.",
+    "check": {
+      "title": "Check a profile",
+      "body": "Look up any npub and see whether it has published post-quantum keys, whether the key lengths are right, and whether possession is proven.",
+      "action": "Open the checker"
+    },
+    "chat": {
+      "title": "Live post-quantum chat",
+      "body": "Two identities register on public relays and exchange real ML-KEM encrypted messages. Take any event apart layer by layer and see exactly what a relay stores.",
+      "action": "Open the chat demo"
+    }
   }
 }

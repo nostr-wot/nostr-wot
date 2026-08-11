@@ -22,7 +22,10 @@
     "noTargets": "Nobody to send to yet — nothing is reachable until the attestations are on a relay.",
     "stalled": "Published, but no relay has served it back",
     "failed": "No relay accepted it",
-    "viaRelay": "via {relay}"
+    "viaRelay": "via {relay}",
+    "send": "Send",
+    "recipient": "Recipient",
+    "toEveryone": "Everyone"
   },
   "sizeCompare": "That message travelled as {pq} bytes. The same text as a classic NIP-17 gift wrap would be {classic} bytes, so post-quantum costs {ratio}x more. The difference is almost entirely the ML-KEM ciphertext.",
   "trace": {
@@ -71,7 +74,8 @@
     "working": "Registering…",
     "newIdentities": "Generate new identities",
     "readyTitle": "Registered and reachable",
-    "readyExplainer": "Both identities have their post-quantum keys on the relays, and they stay on this machine between visits. Generating new ones discards them and starts over."
+    "readyExplainer": "Both identities have their post-quantum keys on the relays, and they stay on this machine between visits. Generating new ones discards them and starts over.",
+    "creating": "Deriving new keys — this takes a moment."
   },
   "relays": {
     "title": "Relay activity",
@@ -93,6 +97,37 @@
     "relaySees": "A relay sees:",
     "showJson": "Show raw JSON",
     "hideJson": "Hide raw JSON",
-    "layersIntro": "{count} layers, outermost first."
+    "layersIntro": "{count} layers, outermost first.",
+    "step": "step"
+  },
+  "faq": {
+    "title": "Questions about this demo",
+    "subtitle": "What it proves, what it does not, and what it leaves on your machine.",
+    "items": {
+      "real": {
+        "q": "Are these real messages?",
+        "a": "Yes. Every message is a real NIP-59 gift wrap published to public relays, encrypted with real ML-KEM-1024. Nothing is simulated: a message only appears once a relay hands it back and it decrypts, and each one names the relay that served it."
+      },
+      "keys": {
+        "q": "Where do the post-quantum keys come from?",
+        "a": "From the same 24-word seed as the Nostr key, expanded a second time with HKDF under a different label. The keys are siblings, not parent and child — so recovering the Nostr private key tells an attacker nothing about the post-quantum ones."
+      },
+      "size": {
+        "q": "Why is a post-quantum message so much bigger?",
+        "a": "The ML-KEM-1024 ciphertext is 1,568 bytes, on every message, and it dominates everything else. Open any message in the event explorer and the byte map shows exactly where the size goes."
+      },
+      "protects": {
+        "q": "What does this actually protect?",
+        "a": "The confidentiality of messages sent from now on, permanently — including against someone archiving them today to decrypt later. It does not stop an attacker with a quantum computer from signing events as you, because events are still signed with secp256k1."
+      },
+      "relays": {
+        "q": "Do relays have to change?",
+        "a": "No. The outer gift wrap is an ordinary kind:1059 event, so post-quantum messages cross today’s relay network unmodified and clients that know nothing about this are unaffected."
+      },
+      "stored": {
+        "q": "What is stored on my machine?",
+        "a": "Two mnemonics and the event history, in this browser’s local storage. They are disposable demo keys, kept only so a return visit reuses them instead of publishing another pair of attestations to public relays. \"Generate new identities\", in the event explorer, discards them."
+      }
+    }
   }
 }
