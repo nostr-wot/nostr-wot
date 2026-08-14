@@ -46,7 +46,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   return {
     title,
     description,
-    keywords: ["nostr wot", "nostr web of trust", "nostr extension", "nostr identity", "nostr lightning wallet", "nip-07 signer", "trust assertions"],
+    keywords: ["nostr wot", "nostr web of trust", "nostr extension", "nostr identity", "nostr lightning wallet", "nip-07 signer", "trust assertions", "post-quantum nostr", "quantum resistant nostr", "ml-kem", "ml-dsa"],
     alternates: generateAlternates("/", locale as Locale),
     openGraph: generateOpenGraph({
       title,
@@ -121,6 +121,13 @@ export default async function Home() {
         "description": "Interactive Web of Trust graph explorer",
         "url": "https://nostr-wot.com/playground",
       },
+      {
+        "@type": "SiteNavigationElement",
+        "position": 5,
+        "name": "Post-Quantum Nostr",
+        "description": "Hybrid post-quantum encryption for Nostr — ML-KEM-1024 and ML-DSA-87 keys derived from an existing BIP-39 seed, built with QuantaKrypto",
+        "url": "https://nostr-wot.com/pqc",
+      },
     ],
   };
 
@@ -163,6 +170,13 @@ export default async function Home() {
     { title: t("profile.features.relays.title"), description: t("profile.features.relays.description") },
     { title: t("profile.features.mutes.title"), description: t("profile.features.mutes.description") },
     { title: t("profile.features.sync.title"), description: t("profile.features.sync.description") },
+  ];
+
+  const postQuantumFeatures = [
+    { title: t("postQuantum.features.hybrid.title"), description: t("postQuantum.features.hybrid.description") },
+    { title: t("postQuantum.features.seed.title"), description: t("postQuantum.features.seed.description") },
+    { title: t("postQuantum.features.relays.title"), description: t("postQuantum.features.relays.description") },
+    { title: t("postQuantum.features.attestation.title"), description: t("postQuantum.features.attestation.description") },
   ];
 
   const howItWorksSteps = [
@@ -369,6 +383,63 @@ export default async function Home() {
               </div>
             </ScrollReveal>
           </div>
+        </Section>
+
+        {/* Post-Quantum — hybrid PQC, built with QuantaKrypto */}
+        <Section background="gradient" padding="lg">
+          <ScrollReveal animation="fade-up">
+            <SectionHeader
+              badgeIcon={<LockIcon className="w-4 h-4" />}
+              badge={t("postQuantum.badge")}
+              title={t("postQuantum.title")}
+              description={t("postQuantum.description")}
+            />
+          </ScrollReveal>
+          <div className="grid md:grid-cols-2 gap-x-12 gap-y-2 max-w-4xl mx-auto mb-12">
+            <ScrollReveal animation="fade-right" delay={100}>
+              <FeatureList items={postQuantumFeatures.slice(0, 2)} iconColor="text-cyan-600 dark:text-cyan-400" />
+            </ScrollReveal>
+            <ScrollReveal animation="fade-left" delay={200}>
+              <FeatureList items={postQuantumFeatures.slice(2)} iconColor="text-cyan-600 dark:text-cyan-400" />
+            </ScrollReveal>
+          </div>
+          <ScrollReveal animation="fade-up" delay={300}>
+            <div className="flex flex-col sm:flex-row gap-4 justify-center mb-12">
+              <LinkButton href="/pqc" className="hover-lift">{t("postQuantum.exploreButton")}</LinkButton>
+              <LinkButton href="/pqc/chat" variant="secondary" className="hover-lift">{t("postQuantum.chatButton")}</LinkButton>
+            </div>
+          </ScrollReveal>
+          <ScrollReveal animation="fade-up" delay={400}>
+            <div className="mx-auto max-w-3xl rounded-xl border border-gray-200 p-8 text-center dark:border-gray-800">
+              <p className="text-sm uppercase tracking-wider text-gray-500 dark:text-gray-400">
+                {t("postQuantum.collab.eyebrow")}
+              </p>
+              <a
+                href="https://quantakrypto.com"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="mt-5 inline-block"
+                aria-label="QuantaKrypto"
+              >
+                {/* Two files rather than one CSS-filtered logo: the mark is not monochrome,
+                    so recolouring it would misrepresent the brand. The -light file carries
+                    dark ink (#0E1626) for light backgrounds; -dark carries white. */}
+                <img
+                  src="/brand/quantakrypto-logo-light.svg"
+                  alt="QuantaKrypto"
+                  className="h-10 w-auto dark:hidden"
+                />
+                <img
+                  src="/brand/quantakrypto-logo-dark.svg"
+                  alt="QuantaKrypto"
+                  className="hidden h-10 w-auto dark:block"
+                />
+              </a>
+              <p className="mx-auto mt-5 max-w-xl text-gray-600 dark:text-gray-300">
+                {t("postQuantum.collab.body")}
+              </p>
+            </div>
+          </ScrollReveal>
         </Section>
 
         {/* Coming Soon — Trust Assertions & Services Integration */}

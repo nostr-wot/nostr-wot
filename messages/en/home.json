@@ -102,6 +102,35 @@
     },
     "downloadButton": "Download Extension"
   },
+  "postQuantum": {
+    "badge": "Post-quantum",
+    "title": "Hybrid post-quantum encryption, already running",
+    "description": "Every encrypted message on Nostr today can be recorded now and decrypted later, once a quantum computer breaks secp256k1. The extension derives post-quantum keys from the seed phrase you already have and combines them with today’s encryption, so messages you send from now on stay confidential permanently. It is a proposal, but an implemented and running one.",
+    "features": {
+      "hybrid": {
+        "title": "Hybrid, never bare",
+        "description": "The ML-KEM-1024 secret is combined with the classic NIP-44 key through a KDF, so the result is never weaker than what Nostr uses today."
+      },
+      "seed": {
+        "title": "Derived from the seed you already have",
+        "description": "ML-KEM-1024 and ML-DSA-87 keys come from the same BIP-39 seed as your Nostr key, expanded separately. Your identity does not change and there is nothing new to back up."
+      },
+      "relays": {
+        "title": "No relay changes",
+        "description": "The payload travels inside today’s NIP-44 and NIP-59 gift wrap. Relays see an ordinary event, and clients that have not implemented it are unaffected."
+      },
+      "attestation": {
+        "title": "Provable key possession",
+        "description": "Public keys are published in their own replaceable event, counter-signed by the ML-DSA key, so advertising a key you cannot decrypt with is detectable."
+      }
+    },
+    "exploreButton": "Post-quantum Nostr",
+    "chatButton": "See the live demo",
+    "collab": {
+      "eyebrow": "In collaboration with",
+      "body": "The post-quantum design, specification and cryptographic review are a joint effort between Nostr WoT and QuantaKrypto, an applied post-quantum cryptography practice."
+    }
+  },
   "upcoming": {
     "badge": "Coming Soon",
     "title": "The Future of Trust on Nostr",

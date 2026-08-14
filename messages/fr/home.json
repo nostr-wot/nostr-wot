@@ -102,6 +102,35 @@
     },
     "downloadButton": "Télécharger l'extension"
   },
+  "postQuantum": {
+    "badge": "Post-quantique",
+    "title": "Chiffrement post-quantique hybride, déjà en service",
+    "description": "Tout message chiffré sur Nostr aujourd’hui peut être enregistré maintenant et déchiffré plus tard, dès qu’un ordinateur quantique cassera secp256k1. L’extension dérive des clés post-quantiques de la phrase de récupération que vous avez déjà et les combine au chiffrement actuel : les messages que vous envoyez à partir de maintenant restent confidentiels pour toujours. C’est une proposition, mais implémentée et en fonctionnement.",
+    "features": {
+      "hybrid": {
+        "title": "Hybride, jamais seul",
+        "description": "Le secret ML-KEM-1024 est combiné à la clé classique NIP-44 par une KDF, le résultat n’est donc jamais plus faible que ce que Nostr utilise aujourd’hui."
+      },
+      "seed": {
+        "title": "Dérivées de la phrase que vous avez déjà",
+        "description": "Les clés ML-KEM-1024 et ML-DSA-87 proviennent de la même graine BIP-39 que votre clé Nostr, étendue séparément. Votre identité ne change pas et il n’y a rien de nouveau à sauvegarder."
+      },
+      "relays": {
+        "title": "Aucun changement côté relais",
+        "description": "La charge utile voyage dans le gift wrap NIP-44 et NIP-59 actuel. Les relais voient un événement ordinaire, et les clients qui ne l’ont pas implémenté ne sont pas affectés."
+      },
+      "attestation": {
+        "title": "Possession des clés prouvable",
+        "description": "Les clés publiques sont publiées dans leur propre événement remplaçable, contresigné par la clé ML-DSA : annoncer une clé avec laquelle on ne peut pas déchiffrer devient détectable."
+      }
+    },
+    "exploreButton": "Nostr post-quantique",
+    "chatButton": "Voir la démo en direct",
+    "collab": {
+      "eyebrow": "En collaboration avec",
+      "body": "La conception post-quantique, la spécification et la revue cryptographique sont un travail commun entre Nostr WoT et QuantaKrypto, un cabinet de cryptographie post-quantique appliquée."
+    }
+  },
   "upcoming": {
     "badge": "Coming Soon",
     "title": "The Future of Trust on Nostr",
