@@ -102,6 +102,35 @@
     },
     "downloadButton": "Descargar Extensión"
   },
+  "postQuantum": {
+    "badge": "Post-cuántico",
+    "title": "Cifrado post-cuántico híbrido, ya en funcionamiento",
+    "description": "Cualquier mensaje cifrado en Nostr hoy puede guardarse ahora y descifrarse más adelante, cuando un ordenador cuántico rompa secp256k1. La extensión deriva claves post-cuánticas de la frase semilla que ya tienes y las combina con el cifrado actual, así que los mensajes que envíes a partir de ahora seguirán siendo confidenciales para siempre. Es una propuesta, pero implementada y en funcionamiento.",
+    "features": {
+      "hybrid": {
+        "title": "Híbrido, nunca solo",
+        "description": "El secreto ML-KEM-1024 se combina con la clave clásica de NIP-44 mediante un KDF, así que el resultado nunca es más débil que lo que Nostr usa hoy."
+      },
+      "seed": {
+        "title": "Derivadas de la semilla que ya tienes",
+        "description": "Las claves ML-KEM-1024 y ML-DSA-87 salen de la misma semilla BIP-39 que tu clave de Nostr, expandida por separado. Tu identidad no cambia y no hay nada nuevo que respaldar."
+      },
+      "relays": {
+        "title": "Sin cambios en los relays",
+        "description": "La carga viaja dentro del gift wrap actual de NIP-44 y NIP-59. Los relays ven un evento normal y los clientes que no lo han implementado no se ven afectados."
+      },
+      "attestation": {
+        "title": "Posesión de claves demostrable",
+        "description": "Las claves públicas se publican en su propio evento reemplazable, refrendado por la clave ML-DSA, así que anunciar una clave con la que no puedes descifrar es detectable."
+      }
+    },
+    "exploreButton": "Nostr post-cuántico",
+    "chatButton": "Ver la demo en vivo",
+    "collab": {
+      "eyebrow": "En colaboración con",
+      "body": "El diseño post-cuántico, la especificación y la revisión criptográfica son un trabajo conjunto entre Nostr WoT y QuantaKrypto, una consultora de criptografía post-cuántica aplicada."
+    }
+  },
   "upcoming": {
     "badge": "Coming Soon",
     "title": "The Future of Trust on Nostr",
