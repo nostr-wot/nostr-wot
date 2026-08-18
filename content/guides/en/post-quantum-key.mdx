@@ -88,7 +88,15 @@ What this protects is the confidentiality of messages sent from now on, permanen
 
 Three cases cannot use seed derivation: a 12-word mnemonic, an identity imported as a bare `nsec`, and one held in a remote signer.
 
-The first two can still generate a standalone key pair:
+The first two can still generate a standalone key pair. If you want the extension to hold it — so it can decrypt incoming messages and publish the attestation for you — write a key file and import it:
+
+```bash
+npm run pqc:keygen -- --independent --keyfile keys.json
+```
+
+Then import it under **Menu → Security → Post-quantum key**. See [Turning On Post-Quantum Keys](/guides/turn-on-post-quantum-keys) for that flow. The extension verifies the pairs before storing anything.
+
+If you would rather keep the keys outside the extension entirely, sign the attestation yourself instead:
 
 ```bash
 npm run pqc:keygen -- --independent --nsec <your hex private key>
@@ -102,4 +110,5 @@ Remote signers cannot use this at all yet: the signing protocol has no post-quan
 
 - [Post-quantum Nostr identities from the seed you already have](/blog/post-quantum-nostr-identities) — the reasoning behind the proposal
 - [Check a profile](/pqc) — see whether an identity supports post-quantum messages
+- [Turning On Post-Quantum Keys](/guides/turn-on-post-quantum-keys) — the same thing from the extension, in a few clicks
 - [Managing your identity](/guides/managing-identity)
