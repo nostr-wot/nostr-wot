@@ -264,8 +264,18 @@ export function CodeBlock({
 
       {/* Code */}
       <div className="overflow-x-auto">
+        {/*
+          `text-gray-100` is load-bearing, not decoration. The block is dark in
+          BOTH themes (bg-gray-950 has no light variant), but only JS and TS get
+          per-token colours from `HighlightedCode`. Every other language falls
+          through to a bare <span>, which inherits whatever the page's text
+          colour is: near-black in light mode, on a near-black block. The guides
+          are almost entirely ```bash fences, so in light mode they rendered
+          invisible. Setting a light default here means untokenized code is
+          always readable, and the token classes still override it.
+        */}
         <pre className="p-5 text-sm leading-relaxed">
-          <code className="font-mono">
+          <code className="font-mono text-gray-100">
             {showLineNumbers ? (
               <table className="border-collapse w-full">
                 <tbody>
