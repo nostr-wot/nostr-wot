@@ -1,7 +1,7 @@
 ---
 title: "Why quantum-resistant direct messages have to be opt-in"
-description: "Post-quantum encryption on Nostr is opt-in by design, not by omission. Automatic negotiation would produce silent downgrades, and a silent downgrade dressed as protection is worse than no protection at all."
-excerpt: "The obvious design is for clients to negotiate post-quantum encryption automatically. We built the opposite: an explicit opt-in, and a way for a client to ask a signer what it can do. Here is the failure that decided it."
+description: "Nostr's identity is a secp256k1 keypair and nothing else. There is no post-quantum key inside it and no way to derive one from it, which is why post-quantum messaging is additive, and why additive means opt-in."
+excerpt: "People assume post-quantum encryption is opt-in because someone chose caution. It is not a policy decision. Nostr's identity layer was designed around a key that has no post-quantum half, so anything post-quantum has to be bolted on beside it."
 date: "2026-08-19"
 author:
   name: "Leon Acosta"
@@ -20,84 +20,75 @@ tags:
   - "Cryptography"
 published: true
 seoTitle: "Opt-In Quantum-Resistant Direct Messages on Nostr"
-seoDescription: "Why post-quantum encrypted DMs on Nostr are opt-in: silent downgrades, signer capability detection, and the three states a conversation can be in."
+seoDescription: "Nostr identities are secp256k1 keypairs with no post-quantum half. That is why quantum-resistant DMs are additive, opt-in, and cannot be the default yet."
 translationKey: "opt-in-quantum-resistant-direct-messages"
 ---
 
-There is an obvious way to add post-quantum encryption to a messaging protocol. Both clients advertise what they support, they agree on the strongest thing they have in common, and the user never has to know. That is roughly how TLS works, and it has served the web well for thirty years.
+A Nostr identity is a secp256k1 keypair. Not mostly. Entirely.
 
-We built the opposite. Post-quantum encryption in the [Nostr WoT extension](https://github.com/nostr-wot/nostr-wot-extension) is opt-in: a client has to ask for it explicitly, by name, passing the recipient's key. Nothing negotiates anything on your behalf.
+Your npub *is* the public half of that keypair. [NIP-06](https://github.com/nostr-protocol/nips/blob/master/06.md) derives it from a mnemonic, relays index by it, every signature verifies against it, and every client treats it as the account. There is no envelope around it with room for other keys, no capability field, no version byte, nothing that says what else this identity can do.
 
-That was not laziness, and it is worth explaining, because the same decision is coming for every messaging protocol that adds post-quantum support.
+That single fact is why post-quantum direct messages are opt-in, and it is worth being precise about, because "opt-in" usually implies somebody chose caution. Nobody chose. The protocol was designed around an identity that has no post-quantum half, and you cannot make a default out of something the identity layer cannot express.
 
-## The failure that decided it
+## What post-quantum encryption actually needs
 
-Post-quantum encryption rides on an optional third argument to an existing function. A caller asks for ordinary encryption like this:
+To send someone a post-quantum protected message you need their **ML-KEM public key**, a lattice key roughly 1,568 bytes long. It has no relationship to secp256k1. It is not a transformation of their npub, not a hash of it, not derivable from it by any means.
 
-```js
-window.nostr.nip44.encrypt(pubkey, plaintext)
-```
+That is not an accident of our design, it is the point of it. Our keys are derived from the BIP-39 seed as *siblings* of the secp256k1 key, deliberately never *from* it. If a post-quantum key could be computed from a Nostr private key, then Shor's algorithm recovers the private key from the published pubkey, the attacker runs the same derivation, and the post-quantum key falls with it. The scheme would be circular and worth nothing.
 
-and for post-quantum encryption like this:
+So the property that makes the derivation safe is the same property that makes automatic use impossible. **A sender cannot look at an npub and learn anything about post-quantum capability, by construction.**
+
+## The key has to be published separately, and usually is not
+
+Because it cannot be derived, it has to be announced. A user publishes a `kind:10203` event carrying their ML-KEM and ML-DSA public keys, signed by their ordinary Nostr key, with a proof of possession binding the three together.
+
+Two consequences follow, and both of them force opt-in.
+
+**Most identities have no such event.** The overwhelming majority of Nostr accounts have never published one and many never will. A protocol default has to work for everyone; this cannot work for anyone who has not taken a separate action first.
+
+**Finding out requires a network round trip.** The sender has to fetch the recipient's attestation from a relay, verify its proof of possession, and only then encrypt. That is a lookup with latency, a cache, and a failure mode, sitting in front of an operation callers expect to be immediate.
+
+## Additive by necessity, optional by consequence
+
+Put those together and the shape is forced. Post-quantum cannot replace anything, because the identity everything else depends on is still secp256k1. It can only be **added beside** what exists: an extra key, published in an extra event, used by an extra argument.
+
+Anything purely additive is optional by definition. Something has to decide whether to use it, that something needs the recipient's key in hand, and the only layer holding both the key and the context is the application. So the call is explicit:
 
 ```js
 window.nostr.nip44.encrypt(pubkey, plaintext, { scheme: 'pq', recipientKemKey })
 ```
 
-Now consider what happens when a client sends the second call to a signer that has never heard of post-quantum anything.
+Not because explicitness is a virtue. Because there is nowhere else the decision could live.
 
-JavaScript discards surplus arguments silently. The old signer ignores the third one, encrypts the message the way it always has, and hands back a perfectly valid ciphertext. No error. No warning. Nothing in the return value distinguishes it from the post-quantum one, because a ciphertext is a ciphertext.
+## The trap that comes with being additive
 
-The client then shows the user a badge saying the message is protected against quantum attack. It is not. It has exactly the protection it had last week, and the user has been told otherwise.
+Additive has a cost, and it caught us during implementation.
 
-**A silent downgrade dressed as protection is worse than no protection at all.** Someone who knows their messages are ordinary encrypted messages behaves accordingly. Someone who has been told they are quantum-safe does not.
+JavaScript discards surplus arguments. A signer that has never heard of post-quantum receives that third argument, ignores it, encrypts the message the ordinary way, and returns a perfectly valid ciphertext. No error. Nothing in the return value distinguishes it from the post-quantum one.
 
-## Ask, do not guess
+A client that assumed support would then show the user a badge saying the message is quantum-protected. It is not. Someone who knows their messages are ordinary encrypted messages behaves accordingly; someone who has been told otherwise does not.
 
-The fix is not clever. The signer publishes what it accepts:
+So the signer publishes what it accepts, and a client asks instead of guessing:
 
 ```js
 window.nostr.nip44.schemes  // ["nip44", "pq"]
 ```
 
-A client checks that list before it promises anything:
+An absent `schemes` and a `schemes` of `["nip44"]` are different answers: the first is an older signer whose capability is unknown, the second is a signer stating it does not do post-quantum. Both mean do not send post-quantum, but only one of them is an answer.
 
-```js
-const supportsPq =
-  Array.isArray(window.nostr?.nip44?.schemes) &&
-  window.nostr.nip44.schemes.includes('pq');
-```
+This is worth stressing as a *consequence* rather than the reason. The capability marker exists because post-quantum had to be additive. Additive is not a style choice, it is what the identity layer permits.
 
-The marker is additive, so every existing caller is untouched. And it distinguishes two things that look identical from the outside but are not the same at all:
+## Decryption is not opt-in, and that asymmetry proves the point
 
-- **No `schemes` property.** An older signer. Its capability is unknown.
-- **`schemes` is `["nip44"]`.** A signer stating that it does not do post-quantum.
+Reading a post-quantum message requires no flag at all. The payload leads with a version byte and an algorithm byte, so the signer inspects it and routes it. A caller cannot get it wrong because it is never asked.
 
-Both mean "do not send post-quantum". Only the second is an answer. A client that wants to tell a user whether the obstacle is on their side or their signer's needs to know which one it is looking at.
+The difference is where the information lives. Coming in, the ciphertext knows what it is. Going out, nothing knows: not the npub, not the protocol, not the signer. Only the application, and only after it has fetched something.
 
-## Why not negotiate automatically
-
-The tempting alternative is for the signer to work it out. If the recipient has published post-quantum keys, use them; otherwise fall back.
-
-The signer cannot do this, and the reason is structural rather than a missing feature.
-
-Post-quantum encryption needs the recipient's ML-KEM public key. The signer does not have it. It lives in a `kind:10203` event on a relay, which means inferring the scheme would require the signer to fetch from the network *in the middle of a signing call*. That is an operation callers expect to be local and immediate, now carrying latency and a failure mode.
-
-Then ask what happens when that lookup fails. There are two options. Throw, and break every existing caller. Or fall back to classic encryption silently, which is the exact failure at the top of this article, reintroduced by the mechanism meant to prevent it.
-
-The calling application already knows whether it wants post-quantum. It already has the recipient's attestation, or knows what to do when it does not, and it is the layer that can actually tell the user what happened. So the decision belongs there, and it passes the key it already holds.
-
-## Decryption takes no flag
-
-Only one direction is opt-in. Decryption is automatic, and that asymmetry is deliberate rather than an inconsistency.
-
-The post-quantum payload is self-describing: it leads with a version byte and an algorithm byte. A signer reads those and routes the payload without being told anything. A caller cannot get it wrong, because it is never asked.
-
-The rule underneath both halves is the same. **Infer when the data can tell you the answer; ask when it cannot.** On the way in, the ciphertext knows what it is. On the way out, nothing knows except the application.
+**Infer when the data can tell you. Ask when it cannot.** Encryption is opt-in because the identity cannot tell you.
 
 ## What a user actually sees
 
-Three states, not two, and the difference matters more than it looks.
+Three states, not two.
 
 | State | What holds |
 | --- | --- |
@@ -105,36 +96,38 @@ Three states, not two, and the difference matters more than it looks.
 | **Safe** | Messages are unreadable and nobody can see who you are talking to, but a quantum computer could open them one day |
 | **Basic** | Messages are unreadable, but the servers carrying them can see who you are talking to |
 
-Most conversations sit in the middle, and the middle is genuinely good news. [NIP-17](https://github.com/nostr-protocol/nips/blob/master/17.md) gift wrap already hides who is talking to whom, which is real protection working right now. An interface that reduces this to a binary, quantum-safe or not, says nothing about the protection the user does have, and it turns the common case into a permanent warning that people stop reading.
+Most conversations sit in the middle, and the middle is genuinely good news. [NIP-17](https://github.com/nostr-protocol/nips/blob/master/17.md) gift wrap already hides who is talking to whom, which is real protection working right now. Reducing this to quantum-safe or not says nothing about the protection a user does have, and turns the ordinary case into a permanent warning that people stop reading. [Obelisk](https://obelisk.ar) shows it as one small icon in the conversation header rather than a banner.
 
-[Obelisk](https://obelisk.ar) shows this as a single icon in the conversation header. Not a banner. A standing warning about the state nearly every Nostr conversation is in, and will stay in for a while, is furniture within a week.
+## What would stop it being opt-in
 
-## Opt-in is not the same as off
+The honest answer is that opt-in is a symptom, and the cure is not on the messaging layer at all.
 
-Opt-in describes where the decision is made, not how much friction the user faces.
+Post-quantum stops being additive when the **identity** stops being secp256k1-only: when a Nostr identity carries a post-quantum component the way it carries its curve key today, so that having an npub means having a post-quantum key, and a sender can stop asking.
 
-In practice a user turns post-quantum keys on once, in their signer, and never thinks about it again. From then on the client asks for post-quantum encryption whenever the person on the other end has published keys too. The explicit call happens between the client and the signer, dozens of times a day, without anybody looking at it.
+That is a protocol-wide change. Signatures would move too, and an ML-DSA-87 signature is 4,627 bytes on every event, which is a relay storage and bandwidth decision that needs relay operators at the table rather than a client shipping unilaterally. It is not close, and it should not be rushed.
 
-What opt-in buys is that the promise shown to the user and the cryptography actually performed cannot drift apart. Nothing silently decides on their behalf, so nothing can silently decide wrong.
+Until then, opt-in is not the conservative option. It is the only shape available, and pretending otherwise would mean a client promising protection the identity layer cannot deliver.
+
+What can be done in advance is the half that expires: publishing the keys now, so messages sent today are protected against a break years away. That is [harvest now, decrypt later](https://obelisk.ar/guides/quantum-safe-dms), and it is the one part of this problem that cannot be fixed retroactively.
 
 ## The specifications
 
-The capability marker and the envelope format are written up as public drafts, so a second implementation can interoperate without reading our source:
+Public drafts, so a second implementation can interoperate without reading our source:
 
-- [Draft 04: signer encryption capability](https://github.com/nostr-wot/nostr-wot-extension/blob/main/nips/04-nip07-encryption-capability.md): `schemes`, the `encrypt` opt-in, and why the two are one design
-- [Draft 03: the post-quantum NIP-44 envelope](https://github.com/nostr-wot/nostr-wot-extension/blob/main/nips/03-pq-nip44-envelope.md): the wire format that makes decryption inferable
-- [Draft 02: key attestation](https://github.com/nostr-wot/nostr-wot-extension/blob/main/nips/02-pq-key-attestation.md): the `kind:10203` event a sender reads the recipient's key from
-- [Draft 01: key derivation](https://github.com/nostr-wot/nostr-wot-extension/blob/main/nips/01-pq-key-derivation.md): deriving the keys from the seed phrase you already have
+- [Draft 01: key derivation](https://github.com/nostr-wot/nostr-wot-extension/blob/main/nips/01-pq-key-derivation.md): siblings of the secp256k1 key, never derived from it, and why that direction is the whole security property
+- [Draft 02: key attestation](https://github.com/nostr-wot/nostr-wot-extension/blob/main/nips/02-pq-key-attestation.md): the `kind:10203` event that exists because the key cannot be derived
+- [Draft 03: the post-quantum NIP-44 envelope](https://github.com/nostr-wot/nostr-wot-extension/blob/main/nips/03-pq-nip44-envelope.md): the self-describing wire format that makes decryption inferable
+- [Draft 04: signer encryption capability](https://github.com/nostr-wot/nostr-wot-extension/blob/main/nips/04-nip07-encryption-capability.md): `schemes`, and the downgrade it prevents
 
 None of them has a NIP number yet. Disagreement about the wire format is more useful now than after a second client ships against it.
 
-The identity half of this work is covered in [post-quantum Nostr identities](/blog/post-quantum-nostr-identities), the implementation write-up is on [QuantaKrypto](https://quantakrypto.com/blog/obelisk-first-nostr-client-post-quantum-dms), and if you just want to switch it on, Obelisk has a [step-by-step guide](https://obelisk.ar/guides/quantum-safe-dms).
+The identity half is covered in [post-quantum Nostr identities](/blog/post-quantum-nostr-identities), and the implementation write-up is on [QuantaKrypto](https://quantakrypto.com/blog/obelisk-first-nostr-client-post-quantum-dms).
 
 <Bibliography>
-  <BibEntry id={1} authors="nostr-protocol" title="NIP-07: window.nostr capability for web browsers" source="GitHub" year="2026" url="https://github.com/nostr-protocol/nips/blob/master/07.md" />
-  <BibEntry id={2} authors="nostr-protocol" title="NIP-44: Versioned Encryption" source="GitHub" year="2026" url="https://github.com/nostr-protocol/nips/blob/master/44.md" />
-  <BibEntry id={3} authors="nostr-protocol" title="NIP-17: Private Direct Messages" source="GitHub" year="2026" url="https://github.com/nostr-protocol/nips/blob/master/17.md" />
-  <BibEntry id={4} authors="nostr-protocol" title="NIP-59: Gift Wrap" source="GitHub" year="2026" url="https://github.com/nostr-protocol/nips/blob/master/59.md" />
+  <BibEntry id={1} authors="nostr-protocol" title="NIP-06: Basic key derivation from mnemonic seed phrase" source="GitHub" year="2026" url="https://github.com/nostr-protocol/nips/blob/master/06.md" />
+  <BibEntry id={2} authors="nostr-protocol" title="NIP-07: window.nostr capability for web browsers" source="GitHub" year="2026" url="https://github.com/nostr-protocol/nips/blob/master/07.md" />
+  <BibEntry id={3} authors="nostr-protocol" title="NIP-44: Versioned Encryption" source="GitHub" year="2026" url="https://github.com/nostr-protocol/nips/blob/master/44.md" />
+  <BibEntry id={4} authors="nostr-protocol" title="NIP-17: Private Direct Messages" source="GitHub" year="2026" url="https://github.com/nostr-protocol/nips/blob/master/17.md" />
   <BibEntry id={5} authors="Paul Millr and contributors" title="NIP-44: post-quantum security (issue #1971)" source="nostr-protocol/nips" year="2025" url="https://github.com/nostr-protocol/nips/issues/1971" />
   <BibEntry id={6} authors="NIST" title="FIPS 203: Module-Lattice-Based Key-Encapsulation Mechanism Standard" source="NIST" year="2024" url="https://csrc.nist.gov/pubs/fips/203/final" />
   <BibEntry id={7} authors="CISA, NSA, NIST" title="Quantum-Readiness: Migration to Post-Quantum Cryptography" source="CISA" year="2023" url="https://www.cisa.gov/sites/default/files/2023-08/Quantum%20Readiness_Final_CLEAR_508c%20%283%29.pdf" />
