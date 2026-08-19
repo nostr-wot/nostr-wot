@@ -1,7 +1,7 @@
 ---
-title: "Post-quantum Nostr identities from the seed you already have"
+title: "Post-quantum Nostr identities, from your seed where possible"
 description: "A proposal for deriving post-quantum keys from an existing NIP-06 mnemonic, so your identity survives the transition without you ever changing your words."
-excerpt: "Every encrypted DM on Nostr today is a future plaintext. We are proposing a NIP, jointly with QuantaKrypto, that lets an identity derive post-quantum keys from the same 24 words it already uses - no new backup, no relay changes, no flag day."
+excerpt: "Every encrypted DM on Nostr today is a future plaintext. We are proposing a NIP, jointly with QuantaKrypto, that lets a 24-word identity derive post-quantum keys from the words it already uses. Identities without one, which is most of them, generate an independent key instead."
 date: "2026-08-09"
 author:
   name: "Leon Acosta"
@@ -84,7 +84,9 @@ BIP-39 expands any mnemonic to a 64-byte seed, so a 12-word phrase derives worki
 
 So the first concrete change is boring: **generate 24 words by default**. It costs nothing today, it cannot be applied retroactively, and it is the difference between an identity that can carry a full-strength post-quantum key later and one that cannot. That change is [already open against our extension](https://github.com/nostr-wot/nostr-wot-extension/pull/12).
 
-Existing 12-word identities are not abandoned — they derive keys too, and that is strictly better than nothing. But the attestation records the seed strength so the person messaging you can see what they are relying on. A security feature that fails silently is worse than one that isn't there.
+Existing 12-word identities are not abandoned, but they are handled differently, and it is worth being exact because we got this wrong in an earlier version of this post. A 12-word phrase carries 128 bits, which would make the seed the weakest link rather than the lattice, so we refuse to derive from it rather than issue a key that looks full-strength and is not. Those accounts generate an **independent** post-quantum key instead, and their attestation is tagged `origin: independent` with no seed-strength claim, so a reader can tell the two provenances apart.
+
+The cost is real and worth stating: an independent key cannot be recovered from the mnemonic, so it needs its own separate backup. That is also the situation for the large number of Nostr identities that have no mnemonic at all, which is most of them. A security feature that fails silently is worse than one that isn't there, and so is one that quietly promises a backup story it cannot deliver.
 
 ## Where the key goes
 
