@@ -118,6 +118,11 @@ export default function Footer() {
                 </Link>
               </li>
               <li>
+                <Link href="/news" className="text-gray-600 dark:text-gray-400 text-sm hover:text-primary transition-colors">
+                  {t("nav.news")}
+                </Link>
+              </li>
+              <li>
                 <a
                   href="https://github.com/nostr-wot"
                   target="_blank"
