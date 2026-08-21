@@ -5,6 +5,7 @@ import { getTranslations } from 'next-intl/server';
 import { getBlogPost, getBlogSlugs, getRelatedPosts, getAllTags, getAllBlogPosts, formatDate } from '@/lib/blog';
 import { generateBlogAlternates, getFullUrl } from '@/lib/metadata';
 import { type Locale, locales } from '@/i18n/config';
+import { JsonLd, blogPostingJsonLd, breadcrumbJsonLd } from '@/lib/jsonld';
 
 const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || 'https://nostr-wot.com';
 
@@ -90,82 +91,34 @@ export default async function BlogPostPage({ params }: Props) {
   const allPosts = getAllBlogPosts(locale as Locale);
 
   // JSON-LD structured data
-  const jsonLd = {
-    '@context': 'https://schema.org',
-    '@type': 'BlogPosting',
-    'headline': post.title,
-    'description': post.excerpt,
-    'image': post.featuredImage,
-    'datePublished': post.date,
-    'dateModified': post.date,
-    'author': {
-      '@type': 'Person',
-      'name': post.author.name,
-      'url': post.author.npub ? `https://nostr-wot.com/profile/${post.author.npub}` : undefined,
-      'affiliation': {
-        '@type': 'Organization',
-        'name': 'Nostr Web of Trust',
-        'url': 'https://nostr-wot.com',
-      },
-      ...(post.author.socials && {
-        'sameAs': [
+  const postLd = blogPostingJsonLd({
+    headline: post.title,
+    description: post.excerpt,
+    image: post.featuredImage,
+    datePublished: post.date,
+    authorName: post.author.name,
+    authorUrl: post.author.npub ? `https://nostr-wot.com/profile/${post.author.npub}` : undefined,
+    authorSameAs: post.author.socials
+      ? ([
           post.author.socials.twitter && `https://twitter.com/${post.author.socials.twitter}`,
           post.author.socials.github && `https://github.com/${post.author.socials.github}`,
           post.author.socials.linkedin && `https://linkedin.com/in/${post.author.socials.linkedin}`,
           post.author.npub && `https://nostr-wot.com/profile/${post.author.npub}`,
-        ].filter(Boolean),
-      }),
-    },
-    'publisher': {
-      '@type': 'Organization',
-      'name': 'Nostr Web of Trust',
-      'logo': {
-        '@type': 'ImageObject',
-        'url': 'https://nostr-wot.com/icon-512.png',
-      },
-    },
-    'mainEntityOfPage': {
-      '@type': 'WebPage',
-      '@id': getFullUrl(`/blog/${slug}`, locale as Locale),
-    },
-    'keywords': post.tags.join(', '),
-  };
+        ].filter(Boolean) as string[])
+      : undefined,
+    tags: post.tags,
+    url: getFullUrl(`/blog/${slug}`, locale as Locale),
+  });
 
-  const breadcrumbJsonLd = {
-    '@context': 'https://schema.org',
-    '@type': 'BreadcrumbList',
-    'itemListElement': [
-      {
-        '@type': 'ListItem',
-        'position': 1,
-        'name': 'Home',
-        'item': 'https://nostr-wot.com',
-      },
-      {
-        '@type': 'ListItem',
-        'position': 2,
-        'name': 'Blog',
-        'item': getFullUrl('/blog', locale as Locale),
-      },
-      {
-        '@type': 'ListItem',
-        'position': 3,
-        'name': post.title,
-        'item': getFullUrl(`/blog/${slug}`, locale as Locale),
-      },
-    ],
-  };
+  const crumbsLd = breadcrumbJsonLd([
+    { name: 'Home', url: 'https://nostr-wot.com' },
+    { name: 'Blog', url: getFullUrl('/blog', locale as Locale) },
+    { name: post.title, url: getFullUrl(`/blog/${slug}`, locale as Locale) },
+  ]);
 
   return (
     <BlogPostWrapper translations={post.translations}>
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
-      />
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd) }}
-      />
+      <JsonLd data={[postLd, crumbsLd]} />
       <main className="py-4 mb-14">
         <article>
           {/* Hero */}
