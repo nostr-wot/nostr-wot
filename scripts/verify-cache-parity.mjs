@@ -33,6 +33,10 @@ function run(script) {
   execFileSync('node', [path.join(ROOT, 'scripts', script)], { stdio: 'inherit' });
 }
 
+function generatedPath(name) {
+  return path.join(GENERATED_DIR, `${name}-cache.json`);
+}
+
 const snapshot = process.argv.includes('--snapshot');
 
 if (snapshot) {
@@ -55,7 +59,35 @@ for (const name of COLLECTIONS) {
   }
 }
 
+// Delete the previous generated files so a silently no-op generator cannot
+// leave stale (possibly already-matching) files behind and pass vacuously.
+for (const name of COLLECTIONS) {
+  const generatedPathForName = generatedPath(name);
+  if (fs.existsSync(generatedPathForName)) {
+    fs.rmSync(generatedPathForName);
+  }
+}
+
 run('generate-content-cache.mjs');
+
+for (const name of COLLECTIONS) {
+  const generatedPathForName = generatedPath(name);
+  if (!fs.existsSync(generatedPathForName)) {
+    console.error(`❌ ${name}-cache.json was not written. generate-content-cache.mjs did not produce lib/generated/${name}-cache.json.`);
+    process.exit(1);
+  }
+  let parsed;
+  try {
+    parsed = JSON.parse(fs.readFileSync(generatedPathForName, 'utf8'));
+  } catch (err) {
+    console.error(`❌ ${name}-cache.json is not valid JSON: ${err.message}`);
+    process.exit(1);
+  }
+  if (!parsed.locales || !parsed.locales.en || !Array.isArray(parsed.locales.en.posts) || parsed.locales.en.posts.length === 0) {
+    console.error(`❌ ${name}-cache.json is degenerate: the generator produced a cache with no "locales.en.posts". Refusing to compare.`);
+    process.exit(1);
+  }
+}
 
 let failed = false;
 for (const name of COLLECTIONS) {
