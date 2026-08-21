@@ -1,6 +1,6 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { buildDocument } from '../lib/content/build.ts';
+import { buildDocument } from '../lib/content/build';
 
 const BLOG_SHAPE = {
   defaults: {
