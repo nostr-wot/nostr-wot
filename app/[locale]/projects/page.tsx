@@ -93,9 +93,9 @@ export default async function ProjectsPage() {
 
         {/* Projects Grid */}
         <Section padding="md">
-          <div className="grid md:grid-cols-2 gap-8 max-w-4xl mx-auto">
-            {PROJECTS.map((project, i) => (
-              <ScrollReveal key={project.key} animation="fade-up" delay={i * 150}>
+          <div className="grid grid-cols-1 gap-8 max-w-3xl mx-auto">
+            {PROJECTS.map((project) => (
+              <ScrollReveal key={project.key} animation="fade-up">
                 <a
                   href={project.url}
                   target="_blank"
