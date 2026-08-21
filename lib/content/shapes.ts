@@ -49,3 +49,60 @@ export const guidesSort = (
   a: ContentMeta & GuideExtras,
   b: ContentMeta & GuideExtras
 ): number => (a.order || 99) - (b.order || 99);
+
+export interface NewsSource {
+  title: string;
+  url: string;
+  publisher?: string;
+  date?: string;
+}
+
+export interface NewsDigestItem {
+  title: string;
+  url: string;
+  summary: string;
+}
+
+export interface NewsExtras {
+  /** 'digest' = weekly round-up, 'story' = a single notable event. */
+  type: 'digest' | 'story';
+  /** Primary sources. Required and non-empty for real content. */
+  sources: NewsSource[];
+  /** Real dateModified. Absent means never revised. */
+  updated?: string;
+  /**
+   * When the file actually shipped. This is the ONLY value permitted to appear
+   * as `datePublished` in structured data. `date` is the EVENT date and drives
+   * the slug, the displayed date and sort order. For a retrofilled post the two
+   * deliberately differ.
+   */
+  publishedAt: string;
+  /** True for entries written retrospectively as part of the archive. */
+  backfilled: boolean;
+  /** Digest-only: the week's items, for the ItemList JSON-LD. */
+  items: NewsDigestItem[];
+}
+
+export const newsShape: CollectionShape<NewsExtras> = {
+  defaults: {
+    featuredImage: '/images/news/default-featured.svg',
+    previewImage: '/images/news/default-preview.svg',
+    authorName: 'Nostr WoT Newsroom',
+  },
+  includeAuthorSocials: false,
+  parseExtra: (data) => ({
+    type: data.type || 'story',
+    sources: data.sources || [],
+    updated: data.updated ? new Date(data.updated).toISOString() : undefined,
+    publishedAt: data.publishedAt
+      ? new Date(data.publishedAt).toISOString()
+      : data.date
+        ? new Date(data.date).toISOString()
+        : new Date().toISOString(),
+    backfilled: data.backfilled === true,
+    items: data.items || [],
+  }),
+};
+
+export const newsSort = (a: ContentMeta, b: ContentMeta): number =>
+  new Date(b.date).getTime() - new Date(a.date).getTime();
