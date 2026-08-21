@@ -305,6 +305,21 @@ primary sources, adds a viewpoint, discloses how it was produced, and — most
 importantly — **the pipeline does not publish when there is nothing worth
 saying**. The skip path is the feature.
 
+## Carried forward from phase 1
+
+Phase 1 landed the shared collection. Two things it discovered that phase 2 must handle:
+
+- **News is excluded from the cache-parity golden.** `content/news/` holds only
+  placeholders, there is no `lib/news.ts`, and nothing imports `news-cache.json`, so
+  news currently has no TypeScript mapper that could drift from the generator's. The
+  moment phase 2 adds a news shim, it must also add news fixtures and a news entry to
+  `tests/fixtures/content-cache-golden.json`, or news silently loses the drift
+  protection blog and guides have. `CONTENT_CACHE_NOW` already exists to pin the
+  non-deterministic `publishedAt` fallback, so nothing blocks this.
+- **Phase 2 turns on the news `.ts` type file.** The generator's `emitTypes` is
+  deliberately `null` for news because `lib/news.ts` does not exist yet; emitting a
+  type file that imports from it would break the build.
+
 ## Implementation phasing
 
 The work is too large for one undifferentiated pass, and the phases have
