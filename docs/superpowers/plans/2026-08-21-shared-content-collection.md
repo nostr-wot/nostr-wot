@@ -240,7 +240,7 @@ Create `tests/content-build.test.ts`:
 ```ts
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { buildDocument } from '../lib/content/build.ts';
+import { buildDocument } from '../lib/content/build';
 
 const BLOG_SHAPE = {
   defaults: {
@@ -868,7 +868,7 @@ Create `tests/content-collection.test.ts`:
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import path from 'node:path';
-import { createContentCollection } from '../lib/content/collection.ts';
+import { createContentCollection } from '../lib/content/collection';
 
 const demo = createContentCollection({
   name: 'demo',
