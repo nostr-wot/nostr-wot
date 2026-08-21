@@ -259,7 +259,7 @@ export default async function GuidePostPage({ params }: Props) {
 
           {/* Content + Sidebar */}
           <div className="flex justify-center max-w-7xl mx-auto px-6 pb-16">
-            <div className="lg:flex lg:gap-12">
+            <div className="min-w-0 lg:flex lg:gap-12">
               {/* Main Content */}
               <article className="flex-1 min-w-0 max-w-prose">
                 <BlogContent content={guide.content} />
