@@ -2,6 +2,7 @@ import { MetadataRoute } from "next";
 import { locales, defaultLocale } from "@/i18n/config";
 import { getAllBlogPosts } from "@/lib/blog";
 import { getAllGuides } from "@/lib/guides";
+import { getAllNews, getNewsArchiveMonths, getNewsForMonth } from "@/lib/news";
 
 const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || "https://nostr-wot.com";
 
@@ -31,6 +32,7 @@ const routes: {
   { path: "/download", changeFrequency: "weekly", priority: 0.9 },
   { path: "/playground", changeFrequency: "weekly", priority: 0.8 },
   { path: "/blog", changeFrequency: "daily", priority: 0.8 },
+  { path: "/news", changeFrequency: "daily", priority: 0.9 },
   { path: "/docs", changeFrequency: "weekly", priority: 0.8 },
   { path: "/docs/getting-started", changeFrequency: "weekly", priority: 0.8 },
   { path: "/docs/extension", changeFrequency: "weekly", priority: 0.7 },
@@ -127,6 +129,80 @@ export default function sitemap(): MetadataRoute.Sitemap {
         lastModified: new Date(guide.date),
         changeFrequency: "monthly",
         priority: 0.7,
+        alternates: {
+          languages: alternateLanguages,
+        },
+      });
+    }
+  }
+
+  // Generate entries for news posts
+  const newsPosts = getAllNews();
+  for (const post of newsPosts) {
+    const alternateLanguages: Record<string, string> = {};
+    for (const locale of locales) {
+      const translatedSlug = post.translations[locale];
+      if (translatedSlug) {
+        alternateLanguages[locale] = getLocalizedUrl(`/news/${translatedSlug}`, locale);
+      }
+    }
+
+    for (const locale of locales) {
+      const translatedSlug = post.translations[locale];
+      if (!translatedSlug) continue;
+
+      const url = getLocalizedUrl(`/news/${translatedSlug}`, locale);
+
+      sitemapEntries.push({
+        url,
+        // `date` is the EVENT date; `lastModified` must reflect when the page
+        // itself last changed, which is the real ship date (or a later edit).
+        lastModified: new Date(post.updated || post.publishedAt),
+        changeFrequency: "monthly",
+        priority: 0.8,
+        alternates: {
+          languages: alternateLanguages,
+        },
+      });
+    }
+  }
+
+  // Generate entries for news archive month pages
+  // Only emit a locale's archive URL for months where that locale actually has
+  // posts — the archive route notFound()s otherwise, and a sitemap listing a
+  // 404 is worse than one that omits it. Months are collected per locale
+  // (rather than from the default locale alone) so a month with posts only in
+  // a non-default locale is not silently dropped.
+  const archiveMonthKeys = new Set<string>();
+  for (const locale of locales) {
+    for (const { year, month } of getNewsArchiveMonths(locale)) {
+      archiveMonthKeys.add(`${year}-${month}`);
+    }
+  }
+  const archiveMonths = [...archiveMonthKeys].map((key) => {
+    const [year, month] = key.split("-").map(Number);
+    return { year, month };
+  });
+  for (const { year, month } of archiveMonths) {
+    const monthPath = `/news/archive/${year}/${String(month).padStart(2, "0")}`;
+
+    const alternateLanguages: Record<string, string> = {};
+    for (const locale of locales) {
+      if (getNewsForMonth(year, month, locale).length > 0) {
+        alternateLanguages[locale] = getLocalizedUrl(monthPath, locale);
+      }
+    }
+
+    for (const locale of locales) {
+      if (getNewsForMonth(year, month, locale).length === 0) continue;
+
+      const url = getLocalizedUrl(monthPath, locale);
+
+      sitemapEntries.push({
+        url,
+        lastModified: new Date(),
+        changeFrequency: "monthly",
+        priority: 0.6,
         alternates: {
           languages: alternateLanguages,
         },
