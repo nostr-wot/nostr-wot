@@ -7,12 +7,19 @@ import {
   collectionPageJsonLd,
 } from '../lib/jsonld';
 
+/**
+ * The event date of the article the fixture below describes. It is NOT an
+ * argument to `newsArticleJsonLd` — the builder deliberately has no way to
+ * accept it — and it lives here so the tests can assert it never leaks into the
+ * graph.
+ */
+const EVENT_DATE = '2026-08-21T00:00:00.000Z';
+
 const base = {
   headline: 'ML-DSA lands in a client',
   description: 'Excerpt here',
   image: '/images/news/default-featured.svg',
   url: 'https://nostr-wot.com/news/2026-08-21-ml-dsa',
-  eventDate: '2026-08-21T00:00:00.000Z',
   publishedAt: '2026-08-25T00:00:00.000Z',
   tags: ['Nostr', 'PQC'],
   sources: [{ title: 'Release notes', url: 'https://example.com/r' }],
@@ -21,7 +28,15 @@ const base = {
 test('datePublished uses publishedAt, never the event date', () => {
   const ld = newsArticleJsonLd(base) as any;
   assert.equal(ld.datePublished, '2026-08-25T00:00:00.000Z');
-  assert.notEqual(ld.datePublished, base.eventDate);
+  assert.notEqual(ld.datePublished, EVENT_DATE);
+});
+
+test('the event date appears nowhere in the graph', () => {
+  const ld = newsArticleJsonLd({ ...base, updated: '2026-09-01T00:00:00.000Z' });
+  assert.ok(
+    !JSON.stringify(ld).includes(EVENT_DATE),
+    `event date leaked into the NewsArticle graph: ${JSON.stringify(ld)}`
+  );
 });
 
 test('dateModified falls back to publishedAt when never revised', () => {

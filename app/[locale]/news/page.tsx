@@ -1,31 +1,96 @@
 import type { Metadata } from 'next';
+import { notFound } from 'next/navigation';
 import { getTranslations } from 'next-intl/server';
 import { Link } from '@/i18n/routing';
 import { getAllNews, getNewsArchiveMonths } from '@/lib/news';
-import { generateAlternates, generateOpenGraph, generateTwitter, getFullUrl } from '@/lib/metadata';
-import { type Locale } from '@/i18n/config';
+import { generateOpenGraph, generateTwitter, getFullUrl } from '@/lib/metadata';
+import { type Locale, locales, defaultLocale } from '@/i18n/config';
 import { NewsCard } from '@/components/news';
 import { ScrollReveal, Section } from '@/components/ui';
 import { JsonLd, breadcrumbJsonLd, collectionPageJsonLd } from '@/lib/jsonld';
 import { NewsletterSection } from '@/components/layout/NewsletterSection';
 
-const LATEST_COUNT = 12;
+/** Entries per index page. */
+const PAGE_SIZE = 12;
+
+type SearchParams = { [key: string]: string | string[] | undefined };
 
 type Props = {
   params: Promise<{ locale: string }>;
+  searchParams: Promise<SearchParams>;
 };
 
-export async function generateMetadata({ params }: Props): Promise<Metadata> {
+/**
+ * Reads `?page=N`.
+ *
+ * Returns 1 when the parameter is absent, so plain `/news` is always page one,
+ * and `null` for anything that is not a positive integer. A malformed page is
+ * NOT silently clamped: the route answers 404 rather than serving the first
+ * page's content under an arbitrary URL, which would let crawlers mint endless
+ * duplicates of it.
+ */
+function parsePage(raw: string | string[] | undefined): number | null {
+  if (raw === undefined) return 1;
+  // A repeated `?page=1&page=2` is ambiguous, not a request for either.
+  if (Array.isArray(raw)) return null;
+  if (!/^\d+$/.test(raw)) return null;
+  const page = Number(raw);
+  return page >= 1 ? page : null;
+}
+
+/** Total index pages for a locale. Always at least one, so `/news` can render its empty state. */
+function pageCount(total: number): number {
+  return Math.max(1, Math.ceil(total / PAGE_SIZE));
+}
+
+/** `/news` for page one, `/news?page=N` beyond it. Page one never carries `?page=1`. */
+function indexPath(page: number): string {
+  return page <= 1 ? '/news' : `/news?page=${page}`;
+}
+
+/**
+ * Language alternates for one index page.
+ *
+ * Page one exists in every locale, empty or not. Deeper pages do not: each
+ * locale is populated independently, so `/news?page=2` is a 404 in a locale
+ * with only nine entries. Advertise a locale only when it actually has that
+ * page, the same rule the archive route and `generateBlogAlternates` follow.
+ */
+function indexAlternates(page: number, currentLocale: Locale): Metadata['alternates'] {
+  const languages: Record<string, string> = {};
+
+  for (const locale of locales) {
+    if (page === 1 || page <= pageCount(getAllNews(locale).length)) {
+      languages[locale] = `${getFullUrl('/news', locale)}${page > 1 ? `?page=${page}` : ''}`;
+    }
+  }
+
+  if (languages[defaultLocale]) {
+    languages['x-default'] = languages[defaultLocale];
+  }
+
+  return {
+    canonical: `${getFullUrl('/news', currentLocale)}${page > 1 ? `?page=${page}` : ''}`,
+    languages,
+  };
+}
+
+export async function generateMetadata({ params, searchParams }: Props): Promise<Metadata> {
   const { locale } = await params;
+  const page = parsePage((await searchParams).page);
   const t = await getTranslations('news.meta');
   const title = t('title');
   const description = t('description');
+
+  if (page === null || page > pageCount(getAllNews(locale as Locale).length)) {
+    return { title: 'Not Found' };
+  }
 
   return {
     title,
     description,
     keywords: ['nostr news', 'nostr ecosystem news', 'nostr web of trust news'],
-    alternates: generateAlternates('/news', locale as Locale),
+    alternates: indexAlternates(page, locale as Locale),
     openGraph: generateOpenGraph({
       title,
       description,
@@ -43,20 +108,32 @@ function monthName(year: number, month: number, locale: string): string {
   });
 }
 
-export default async function NewsPage({ params }: Props) {
+export default async function NewsPage({ params, searchParams }: Props) {
   const { locale } = await params;
   const t = await getTranslations('news');
   const allPosts = getAllNews(locale as Locale);
-  const posts = allPosts.slice(0, LATEST_COUNT);
+  const totalPages = pageCount(allPosts.length);
+
+  const page = parsePage((await searchParams).page);
+  if (page === null || page > totalPages) {
+    notFound();
+  }
+
+  const posts = allPosts.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE);
   const archiveMonths = getNewsArchiveMonths(locale as Locale);
 
-  const featuredPost = posts[0];
-  const otherPosts = posts.slice(1);
+  // Only the first page has a "latest" entry to lead with; deeper pages are a
+  // plain grid, so nothing further down the list is dressed up as the newest.
+  const featuredPost = page === 1 ? posts[0] : undefined;
+  const otherPosts = page === 1 ? posts.slice(1) : posts;
+
+  const pageUrl = `${getFullUrl('/news', locale as Locale)}${page > 1 ? `?page=${page}` : ''}`;
 
   const collectionLd = collectionPageJsonLd({
+    // Scoped to this page's slice, so the graph describes what the URL renders.
     name: t('meta.title'),
     description: t('meta.description'),
-    url: getFullUrl('/news', locale as Locale),
+    url: pageUrl,
     items: posts.map((post) => ({
       name: post.title,
       url: getFullUrl(`/news/${post.slug}`, locale as Locale),
@@ -108,8 +185,54 @@ export default async function NewsPage({ params }: Props) {
             </section>
           )}
 
+          {/* Pagination. Page one is reachable at plain /news, never /news?page=1. */}
+          {totalPages > 1 && (
+            <ScrollReveal animation="fade-up">
+              <nav
+                className="mt-12 flex items-center justify-between gap-4 border-t border-gray-200 dark:border-gray-700 pt-6"
+                // No dedicated pagination label exists in the message set, and
+                // the position string is an accurate accessible name for it.
+                aria-label={t('pagination.page', { current: page, total: totalPages })}
+              >
+                {page > 1 ? (
+                  <Link
+                    href={indexPath(page - 1)}
+                    rel="prev"
+                    className="inline-flex items-center gap-2 rounded-full border border-gray-200 dark:border-gray-700 px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:border-primary hover:text-primary transition-colors"
+                  >
+                    <span aria-hidden="true">←</span>
+                    {t('pagination.previous')}
+                  </Link>
+                ) : (
+                  <span className="px-4 py-2 text-sm text-gray-400 dark:text-gray-600">
+                    <span aria-hidden="true">←</span> {t('pagination.previous')}
+                  </span>
+                )}
+
+                <span className="text-sm text-gray-600 dark:text-gray-400">
+                  {t('pagination.page', { current: page, total: totalPages })}
+                </span>
+
+                {page < totalPages ? (
+                  <Link
+                    href={indexPath(page + 1)}
+                    rel="next"
+                    className="inline-flex items-center gap-2 rounded-full border border-gray-200 dark:border-gray-700 px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:border-primary hover:text-primary transition-colors"
+                  >
+                    {t('pagination.next')}
+                    <span aria-hidden="true">→</span>
+                  </Link>
+                ) : (
+                  <span className="px-4 py-2 text-sm text-gray-400 dark:text-gray-600">
+                    {t('pagination.next')} <span aria-hidden="true">→</span>
+                  </span>
+                )}
+              </nav>
+            </ScrollReveal>
+          )}
+
           {/* Empty state — the state this section ships in. */}
-          {posts.length === 0 && (
+          {allPosts.length === 0 && (
             <ScrollReveal animation="fade-up" delay={100}>
               <div className="max-w-2xl mx-auto rounded-2xl border border-dashed border-gray-300 dark:border-gray-700 bg-gray-50/60 dark:bg-gray-800/30 px-8 py-16 text-center">
                 <div

@@ -187,7 +187,7 @@ test('news parseExtra is identical on both sides for every extras permutation', 
     { type: 'story', publishedAt: '2026-02-02', date: '2026-01-01' },
     { sources: [{ title: 'Source', url: 'https://example.com/s' }], date: '2026-01-01' },
     { updated: '2026-03-03', date: '2026-01-01' },
-    { backfilled: true, date: '2026-01-01' },
+    { backfilled: true, publishedAt: '2026-08-21', date: '2026-01-01' },
     {
       items: [{ title: 'Item', url: 'https://example.com/i', summary: 'Summary' }],
       date: '2026-01-01',
@@ -209,6 +209,43 @@ test('news parseExtra is identical on both sides for every extras permutation', 
       collection.parseExtra(sample),
       `news parseExtra diverged for ${JSON.stringify(sample)}`
     );
+  }
+});
+
+// The backfilled-without-publishedAt guard is the one place news' parseExtra
+// throws instead of returning. Both sides must refuse the same inputs with the
+// same message, or `prebuild` and dev-mode would disagree about what is valid.
+test('news parseExtra rejects backfilled-without-publishedAt identically on both sides', () => {
+  const collection = jsCollection('news');
+  const offenders: Array<Record<string, any>> = [
+    { backfilled: true, date: '2026-03-11' },
+    { backfilled: true, date: '2026-03-11', title: 'A backfilled story' },
+    {
+      backfilled: true,
+      date: '2026-03-11',
+      title: 'A backfilled story',
+      translationKey: '2026-03-11-a-backfilled-story',
+    },
+    { backfilled: true, publishedAt: '', date: '2026-03-11' },
+  ];
+
+  for (const sample of offenders) {
+    const where = JSON.stringify(sample);
+    let tsErr: Error | undefined;
+    let jsErr: Error | undefined;
+    try {
+      newsShape.parseExtra(sample);
+    } catch (err) {
+      tsErr = err as Error;
+    }
+    try {
+      collection.parseExtra(sample);
+    } catch (err) {
+      jsErr = err as Error;
+    }
+    assert.ok(tsErr, `TS mapper did not throw for ${where}`);
+    assert.ok(jsErr, `generator mapper did not throw for ${where}`);
+    assert.equal(tsErr.message, jsErr.message, `throw message diverged for ${where}`);
   }
 });
 

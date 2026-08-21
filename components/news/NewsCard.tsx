@@ -139,9 +139,23 @@ export function NewsCard({ post, featured = false }: NewsCardProps) {
           <p className="text-sm text-gray-600 dark:text-gray-400 mb-4 line-clamp-2 flex-1">
             {post.excerpt}
           </p>
-          <div className="flex items-center justify-between text-xs text-gray-500 dark:text-gray-400 pt-4 border-t border-gray-100 dark:border-gray-700/50">
-            <time dateTime={post.date}>{formatDate(post.date, locale)}</time>
-            <span>{post.readingTime}</span>
+          <div className="pt-4 border-t border-gray-100 dark:border-gray-700/50">
+            <div className="flex items-center justify-between text-xs text-gray-500 dark:text-gray-400">
+              <time dateTime={post.date}>{formatDate(post.date, locale)}</time>
+              <span>{post.readingTime}</span>
+            </div>
+            {/*
+              The date above is the EVENT date. Archive-month pages are grid
+              cards only, so this is the primary surface on which a reader meets
+              a retrospectively written entry. Secondary, but always visible and
+              never truncated: it is an honesty surface, not decoration.
+            */}
+            {post.backfilled && (
+              <p className="mt-2 flex items-start gap-1.5 text-xs text-amber-700 dark:text-amber-300">
+                <span aria-hidden="true">⏳</span>
+                <span>{t('backfilled')}</span>
+              </p>
+            )}
           </div>
         </div>
       </article>

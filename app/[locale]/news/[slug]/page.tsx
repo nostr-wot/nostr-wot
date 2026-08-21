@@ -102,9 +102,8 @@ export default async function NewsPostPage({ params }: Props) {
     description: post.excerpt,
     image: post.featuredImage,
     url,
-    // post.date is the EVENT date; post.publishedAt is the real ship date and
-    // is the only value that may become `datePublished`. Do not swap these.
-    eventDate: post.date,
+    // post.date is the EVENT date and has no place in this graph; only
+    // post.publishedAt, the real ship date, may become `datePublished`.
     publishedAt: post.publishedAt,
     updated: post.updated,
     tags: post.tags,

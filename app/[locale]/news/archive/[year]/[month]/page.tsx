@@ -2,8 +2,8 @@ import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import { getTranslations } from 'next-intl/server';
 import { getNewsArchiveMonths, getNewsForMonth } from '@/lib/news';
-import { generateAlternates, generateOpenGraph, generateTwitter, getFullUrl } from '@/lib/metadata';
-import { type Locale, locales } from '@/i18n/config';
+import { generateOpenGraph, generateTwitter, getFullUrl } from '@/lib/metadata';
+import { type Locale, locales, defaultLocale } from '@/i18n/config';
 import { NewsCard } from '@/components/news';
 import { ScrollReveal, Section, LinkButton } from '@/components/ui';
 import { ArrowLeftIcon } from '@/components/icons';
@@ -35,6 +35,41 @@ function monthName(year: number, month: number, locale: string): string {
 
 function archivePath(year: number, month: number): string {
   return `/news/archive/${year}/${String(month).padStart(2, '0')}`;
+}
+
+/**
+ * Language alternates for one archive month.
+ *
+ * This route calls `notFound()` when the active locale has no posts in the
+ * month, and locales are populated independently, so the blanket 7-locale
+ * `generateAlternates` would advertise hreflang links to pages that 404. Emit a
+ * language only when that locale actually has posts for the month — the same
+ * thing `generateBlogAlternates` does with translated slugs.
+ */
+function archiveAlternates(
+  year: number,
+  month: number,
+  currentLocale: Locale
+): Metadata['alternates'] {
+  const path = archivePath(year, month);
+  const languages: Record<string, string> = {};
+
+  for (const locale of locales) {
+    if (getNewsForMonth(year, month, locale).length > 0) {
+      languages[locale] = getFullUrl(path, locale);
+    }
+  }
+
+  if (languages[defaultLocale]) {
+    languages['x-default'] = languages[defaultLocale];
+  }
+
+  return {
+    // The page only renders when the current locale has posts, so its own
+    // canonical is always a real URL.
+    canonical: getFullUrl(path, currentLocale),
+    languages,
+  };
 }
 
 export async function generateStaticParams() {
@@ -75,7 +110,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   return {
     title,
     description,
-    alternates: generateAlternates(path, locale as Locale),
+    alternates: archiveAlternates(parsed.year, parsed.month, locale as Locale),
     openGraph: generateOpenGraph({
       title,
       description,

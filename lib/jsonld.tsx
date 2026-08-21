@@ -27,9 +27,14 @@ export interface NewsArticleArgs {
   description: string;
   image: string;
   url: string;
-  /** The EVENT date. Deliberately NOT used for datePublished. */
-  eventDate: string;
-  /** When the article actually shipped. The only value allowed as datePublished. */
+  /**
+   * When the article actually shipped, and the only value allowed as
+   * datePublished.
+   *
+   * The EVENT date (`post.date`) is deliberately NOT an argument here. There is
+   * nothing in this graph it may legitimately fill, and accepting it would
+   * invite a caller to believe passing it does something.
+   */
   publishedAt: string;
   updated?: string;
   tags?: string[];
