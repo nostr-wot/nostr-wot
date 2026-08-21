@@ -1,13 +1,14 @@
 import path from 'path';
 import { createContentCollection } from '@/lib/content/collection';
+import { guidesShape, guidesSort } from '@/lib/content/shapes';
+import type { GuideExtras } from '@/lib/content/shapes';
 import type { ContentMeta, ContentDoc } from '@/lib/content/types';
 import guidesCache from '@/lib/generated/guides-cache.json';
 import type { Locale } from '@/i18n/config';
 
-export interface GuideExtras {
-  difficulty?: 'beginner' | 'intermediate' | 'advanced';
-  order?: number;
-}
+// GuideExtras now lives in lib/content/shapes.ts alongside the mapping rules it
+// describes; re-exported here so this module's public surface is unchanged.
+export type { GuideExtras };
 
 // Names below are the EXACT current exports of lib/guides.ts, verified against
 // call sites. Note they differ from the blog naming: GuidePostMeta/GuidePost,
@@ -19,19 +20,8 @@ const collection = createContentCollection<GuideExtras>({
   name: 'guides',
   contentDir: path.join(process.cwd(), 'content', 'guides'),
   cache: guidesCache as never,
-  shape: {
-    defaults: {
-      featuredImage: '/images/guides/default-featured.svg',
-      previewImage: '/images/guides/default-preview.svg',
-      authorName: 'Nostr WoT Team',
-    },
-    includeAuthorSocials: false,
-    parseExtra: (data) => ({
-      difficulty: data.difficulty || 'beginner',
-      order: data.order || 99,
-    }),
-  },
-  sort: (a, b) => (a.order || 99) - (b.order || 99),
+  shape: guidesShape,
+  sort: guidesSort,
 });
 
 export const getGuideSlugs = (locale?: Locale) => collection.getSlugs(locale);

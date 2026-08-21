@@ -1,5 +1,6 @@
 import path from 'path';
 import { createContentCollection, formatDate } from '@/lib/content/collection';
+import { blogShape, blogSort, type BlogExtras } from '@/lib/content/shapes';
 import type { ContentAuthor, AuthorSocials, ContentMeta, ContentDoc } from '@/lib/content/types';
 import blogCache from '@/lib/generated/blog-cache.json';
 import type { Locale } from '@/i18n/config';
@@ -8,20 +9,12 @@ export type { AuthorSocials, ContentAuthor };
 export type BlogPostMeta = ContentMeta;
 export type BlogPost = ContentDoc;
 
-const collection = createContentCollection<Record<string, never>>({
+const collection = createContentCollection<BlogExtras>({
   name: 'blog',
   contentDir: path.join(process.cwd(), 'content', 'blog'),
   cache: blogCache as never,
-  shape: {
-    defaults: {
-      featuredImage: '/images/blog/default-featured.svg',
-      previewImage: '/images/blog/default-preview.svg',
-      authorName: 'Nostr WoT Team',
-    },
-    includeAuthorSocials: true,
-    parseExtra: () => ({}),
-  },
-  sort: (a, b) => new Date(b.date).getTime() - new Date(a.date).getTime(),
+  shape: blogShape,
+  sort: blogSort,
 });
 
 export const getBlogSlugs = (locale?: Locale) => collection.getSlugs(locale);

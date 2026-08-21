@@ -1,28 +1,53 @@
 #!/usr/bin/env node
 /**
  * Pre-generates content caches as JSON for production builds.
- * Replaces generate-blog-cache.mjs and generate-guides-cache.mjs.
  *
- * Key insertion order below is compared byte-for-byte against the legacy
- * generators by scripts/verify-cache-parity.mjs. Do not reorder.
+ * Key insertion order below is asserted by scripts/verify-cache-parity.mjs
+ * (golden file) and by tests/content-mapper-parity.test.ts (cross-checks this
+ * mapper against lib/content/build.ts). Do not reorder.
+ *
+ * Test hooks. All four are unset in normal use, so `prebuild` behaviour is the
+ * historical one; they exist so the parity harness and the unit tests can drive
+ * this generator over fixtures deterministically:
+ *   CONTENT_CACHE_ROOT  content root to scan          (default <repo>/content)
+ *   CONTENT_CACHE_OUT   directory to write caches to  (default <repo>/lib/generated)
+ *   CONTENT_CACHE_ONLY  comma-separated collection allow-list (default: all)
+ *   CONTENT_CACHE_NOW   fixed "now" for generatedAt and missing dates
+ *
+ * This module only generates when it is the process entry point, so tests can
+ * import COLLECTIONS/buildDocument without writing anything.
  */
 import fs from 'fs';
 import path from 'path';
 import matter from 'gray-matter';
 import readingTime from 'reading-time';
-import { fileURLToPath } from 'url';
+import { fileURLToPath, pathToFileURL } from 'url';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const ROOT = path.join(__dirname, '..');
-const OUTPUT_DIR = path.join(ROOT, 'lib', 'generated');
+const CONTENT_ROOT = process.env.CONTENT_CACHE_ROOT
+  ? path.resolve(process.env.CONTENT_CACHE_ROOT)
+  : path.join(ROOT, 'content');
+const OUTPUT_DIR = process.env.CONTENT_CACHE_OUT
+  ? path.resolve(process.env.CONTENT_CACHE_OUT)
+  : path.join(ROOT, 'lib', 'generated');
+const ONLY = process.env.CONTENT_CACHE_ONLY
+  ? new Set(process.env.CONTENT_CACHE_ONLY.split(',').map((s) => s.trim()).filter(Boolean))
+  : null;
+
+/** Current time, overridable so fixture runs are byte-stable. */
+function now() {
+  return process.env.CONTENT_CACHE_NOW ? new Date(process.env.CONTENT_CACHE_NOW) : new Date();
+}
+
 const locales = ['en', 'es', 'pt', 'ru', 'it', 'fr', 'de'];
 
-const COLLECTIONS = [
+export const COLLECTIONS = [
   {
     name: 'blog',
     label: '📝',
     noun: 'posts',
-    dir: path.join(ROOT, 'content', 'blog'),
+    dir: path.join(CONTENT_ROOT, 'blog'),
     defaults: {
       featuredImage: '/images/blog/default-featured.svg',
       previewImage: '/images/blog/default-preview.svg',
@@ -44,7 +69,7 @@ const COLLECTIONS = [
     name: 'guides',
     label: '📖',
     noun: 'guides',
-    dir: path.join(ROOT, 'content', 'guides'),
+    dir: path.join(CONTENT_ROOT, 'guides'),
     defaults: {
       featuredImage: '/images/guides/default-featured.svg',
       previewImage: '/images/guides/default-preview.svg',
@@ -64,7 +89,7 @@ const COLLECTIONS = [
     name: 'news',
     label: '📰',
     noun: 'news items',
-    dir: path.join(ROOT, 'content', 'news'),
+    dir: path.join(CONTENT_ROOT, 'news'),
     defaults: {
       featuredImage: '/images/news/default-featured.svg',
       previewImage: '/images/news/default-preview.svg',
@@ -79,7 +104,7 @@ const COLLECTIONS = [
         ? new Date(data.publishedAt).toISOString()
         : data.date
           ? new Date(data.date).toISOString()
-          : new Date().toISOString(),
+          : now().toISOString(),
       backfilled: data.backfilled === true,
       items: data.items || [],
     }),
@@ -108,7 +133,7 @@ function readFile(dir, locale, slug) {
   return null;
 }
 
-function buildTranslationMap(collection) {
+export function buildTranslationMap(collection) {
   const map = new Map();
   for (const locale of locales) {
     for (const slug of getSlugs(collection.dir, locale)) {
@@ -123,7 +148,7 @@ function buildTranslationMap(collection) {
   return map;
 }
 
-function buildDocument(collection, slug, locale, translationMap) {
+export function buildDocument(collection, slug, locale, translationMap) {
   const raw = readFile(collection.dir, locale, slug);
   if (!raw) return null;
 
@@ -158,7 +183,7 @@ function buildDocument(collection, slug, locale, translationMap) {
     title: data.title || 'Untitled',
     description: data.description || '',
     excerpt: data.excerpt || '',
-    date: data.date ? new Date(data.date).toISOString() : new Date().toISOString(),
+    date: data.date ? new Date(data.date).toISOString() : now().toISOString(),
     author,
     featuredImage: data.featuredImage || collection.defaults.featuredImage,
     previewImage: data.previewImage || data.featuredImage || collection.defaults.previewImage,
@@ -181,7 +206,7 @@ function generate(collection) {
   console.log(`${collection.label} Generating ${collection.name} cache...`);
 
   const translationMap = buildTranslationMap(collection);
-  const cache = { generatedAt: new Date().toISOString(), locales: {} };
+  const cache = { generatedAt: now().toISOString(), locales: {} };
 
   for (const locale of locales) {
     const posts = getSlugs(collection.dir, locale)
@@ -225,6 +250,12 @@ export default ${collection.name}Cache;
 `);
 }
 
-for (const collection of COLLECTIONS) {
-  generate(collection);
+const isEntryPoint =
+  process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href;
+
+if (isEntryPoint) {
+  for (const collection of COLLECTIONS) {
+    if (ONLY && !ONLY.has(collection.name)) continue;
+    generate(collection);
+  }
 }
