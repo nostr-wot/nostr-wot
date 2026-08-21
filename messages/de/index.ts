@@ -20,6 +20,7 @@ import notes from './notes.json';
 import widgets from './widgets.json';
 import pqc from './pqc.json';
 import pqcChat from './pqcChat.json';
+import news from './news.json';
 
 const messages = {
   common,
@@ -44,6 +45,7 @@ const messages = {
   widgets,
   pqc,
   pqcChat,
+  news,
 };
 
 export default messages;

@@ -19,7 +19,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import matter from 'gray-matter';
 import { buildDocument as buildDocumentTs } from '../lib/content/build';
-import { blogShape, blogSort, guidesShape, guidesSort } from '../lib/content/shapes';
+import { blogShape, blogSort, guidesShape, guidesSort, newsShape, newsSort } from '../lib/content/shapes';
 import type { CollectionShape } from '../lib/content/types';
 import type { Locale } from '@/i18n/config';
 import {
@@ -111,6 +111,12 @@ const GUIDES_DOCS: Array<[Locale, string]> = [
   ['es', 'primeros-pasos'],
 ];
 
+const NEWS_DOCS: Array<[Locale, string]> = [
+  ['en', '2026-01-05-week-in-review'], // digest, explicit sources + items
+  ['en', '2026-01-07-a-story'], // backfilled: date and publishedAt differ, updated set
+  ['en', '2026-01-09-minimal'], // .md, no publishedAt/type/sources/items -> defaults
+];
+
 for (const [locale, slug] of BLOG_DOCS) {
   test(`blog mapper parity: TS and generator agree on ${locale}/${slug}`, () => {
     assertIdentical('blog', blogShape, locale, slug);
@@ -123,10 +129,17 @@ for (const [locale, slug] of GUIDES_DOCS) {
   });
 }
 
+for (const [locale, slug] of NEWS_DOCS) {
+  test(`news mapper parity: TS and generator agree on ${locale}/${slug}`, () => {
+    assertIdentical('news', newsShape, locale, slug);
+  });
+}
+
 test('collection defaults are identical on both sides', () => {
   for (const [name, shape] of [
     ['blog', blogShape],
     ['guides', guidesShape],
+    ['news', newsShape],
   ] as Array<[string, CollectionShape<any>]>) {
     const collection = jsCollection(name);
     assert.deepEqual(shape.defaults, collection.defaults, `${name} defaults diverged`);
@@ -162,6 +175,80 @@ test('parseExtra is identical on both sides for every extras permutation', () =>
   }
 });
 
+// News' parseExtra falls back to the real clock when both `publishedAt` and
+// `date` are absent, and the TS side's fallback (`new Date()`) is not
+// pinnable via CONTENT_CACHE_NOW the way the generator's is. Every sample
+// here carries a `date` so neither side ever reaches that branch, keeping
+// the comparison deterministic while still exercising every other default.
+test('news parseExtra is identical on both sides for every extras permutation', () => {
+  const samples: Array<Record<string, any>> = [
+    { date: '2026-01-01' },
+    { type: 'digest', date: '2026-01-01' },
+    { type: 'story', publishedAt: '2026-02-02', date: '2026-01-01' },
+    { sources: [{ title: 'Source', url: 'https://example.com/s' }], date: '2026-01-01' },
+    { updated: '2026-03-03', date: '2026-01-01' },
+    { backfilled: true, publishedAt: '2026-08-21', date: '2026-01-01' },
+    {
+      items: [{ title: 'Item', url: 'https://example.com/i', summary: 'Summary' }],
+      date: '2026-01-01',
+    },
+    {
+      type: '',
+      sources: null,
+      updated: '',
+      publishedAt: '',
+      backfilled: false,
+      items: null,
+      date: '2026-01-01',
+    },
+  ];
+  const collection = jsCollection('news');
+  for (const sample of samples) {
+    assert.deepEqual(
+      newsShape.parseExtra(sample),
+      collection.parseExtra(sample),
+      `news parseExtra diverged for ${JSON.stringify(sample)}`
+    );
+  }
+});
+
+// The backfilled-without-publishedAt guard is the one place news' parseExtra
+// throws instead of returning. Both sides must refuse the same inputs with the
+// same message, or `prebuild` and dev-mode would disagree about what is valid.
+test('news parseExtra rejects backfilled-without-publishedAt identically on both sides', () => {
+  const collection = jsCollection('news');
+  const offenders: Array<Record<string, any>> = [
+    { backfilled: true, date: '2026-03-11' },
+    { backfilled: true, date: '2026-03-11', title: 'A backfilled story' },
+    {
+      backfilled: true,
+      date: '2026-03-11',
+      title: 'A backfilled story',
+      translationKey: '2026-03-11-a-backfilled-story',
+    },
+    { backfilled: true, publishedAt: '', date: '2026-03-11' },
+  ];
+
+  for (const sample of offenders) {
+    const where = JSON.stringify(sample);
+    let tsErr: Error | undefined;
+    let jsErr: Error | undefined;
+    try {
+      newsShape.parseExtra(sample);
+    } catch (err) {
+      tsErr = err as Error;
+    }
+    try {
+      collection.parseExtra(sample);
+    } catch (err) {
+      jsErr = err as Error;
+    }
+    assert.ok(tsErr, `TS mapper did not throw for ${where}`);
+    assert.ok(jsErr, `generator mapper did not throw for ${where}`);
+    assert.equal(tsErr.message, jsErr.message, `throw message diverged for ${where}`);
+  }
+});
+
 test('sort comparators are identical on both sides', () => {
   const blogRows = [
     { date: '2026-01-02T00:00:00.000Z' },
@@ -179,5 +266,16 @@ test('sort comparators are identical on both sides', () => {
   assert.deepEqual(
     [...guideRows].sort(guidesSort as any).map((r) => (r as any).order),
     [...guideRows].sort(guidesJs).map((r) => (r as any).order)
+  );
+
+  const newsRows = [
+    { date: '2026-01-02T00:00:00.000Z' },
+    { date: '2026-03-04T00:00:00.000Z' },
+    { date: '2026-02-03T00:00:00.000Z' },
+  ];
+  const newsJs = jsCollection('news').sort;
+  assert.deepEqual(
+    [...newsRows].sort(newsSort as any).map((r) => r.date),
+    [...newsRows].sort(newsJs).map((r) => r.date)
   );
 });

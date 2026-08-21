@@ -42,6 +42,23 @@ function now() {
 
 const locales = ['en', 'es', 'pt', 'ru', 'it', 'fr', 'de'];
 
+/**
+ * Duplicated verbatim from `backfilledWithoutPublishedAtMessage` in
+ * lib/content/shapes.ts. The parity test asserts both sides throw the same
+ * text, so edit them together.
+ */
+export function backfilledWithoutPublishedAtMessage(data) {
+  const name = data.translationKey || data.title || 'untitled news entry';
+  return (
+    `news: "${name}" is marked \`backfilled: true\` but has no \`publishedAt\`. ` +
+    'A backfilled entry must state its real publication date: `date` is the EVENT ' +
+    'date (slug, displayed date, sort, archive bucketing) and `publishedAt` is the ' +
+    'ship date, the only value permitted as `datePublished` in structured data. ' +
+    'Falling back to `date` would make the article claim it shipped on the day the ' +
+    'event happened. Add `publishedAt` to the frontmatter.'
+  );
+}
+
 export const COLLECTIONS = [
   {
     name: 'blog',
@@ -96,22 +113,29 @@ export const COLLECTIONS = [
       authorName: 'Nostr WoT Newsroom',
     },
     includeAuthorSocials: false,
-    parseExtra: (data) => ({
-      type: data.type || 'story',
-      sources: data.sources || [],
-      updated: data.updated ? new Date(data.updated).toISOString() : undefined,
-      publishedAt: data.publishedAt
-        ? new Date(data.publishedAt).toISOString()
-        : data.date
-          ? new Date(data.date).toISOString()
-          : now().toISOString(),
-      backfilled: data.backfilled === true,
-      items: data.items || [],
-    }),
+    parseExtra: (data) => {
+      // A backfilled entry that omits `publishedAt` would silently inherit the
+      // event date and then assert it as `datePublished`. Refuse loudly instead.
+      if (data.backfilled === true && !data.publishedAt) {
+        throw new Error(backfilledWithoutPublishedAtMessage(data));
+      }
+      return {
+        type: data.type || 'story',
+        sources: data.sources || [],
+        updated: data.updated ? new Date(data.updated).toISOString() : undefined,
+        // Non-backfilled posts legitimately ship on their event date, so the
+        // fallback stays for them.
+        publishedAt: data.publishedAt
+          ? new Date(data.publishedAt).toISOString()
+          : data.date
+            ? new Date(data.date).toISOString()
+            : now().toISOString(),
+        backfilled: data.backfilled === true,
+        items: data.items || [],
+      };
+    },
     sort: (a, b) => new Date(b.date).getTime() - new Date(a.date).getTime(),
-    // `lib/news.ts` does not exist until Phase 2. Emitting a type file that
-    // imports from it would break the build now. Phase 2 turns this on.
-    emitTypes: null,
+    emitTypes: { typeName: 'NewsPost', typeImport: "import type { NewsPost } from '@/lib/news';", interfaceName: 'NewsCache' },
   },
 ];
 
