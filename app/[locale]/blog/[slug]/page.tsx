@@ -251,7 +251,7 @@ export default async function BlogPostPage({ params }: Props) {
 
           {/* Content + Sidebar */}
           <div className="flex justify-center max-w-7xl mx-auto px-6 pb-16">
-            <div className="lg:flex lg:gap-12">
+            <div className="min-w-0 lg:flex lg:gap-12">
               {/* Main Content - max-w-prose for optimal readability (65ch ~700px) */}
               <article className="flex-1 min-w-0 max-w-prose">
                 <BlogContent content={post.content} />
