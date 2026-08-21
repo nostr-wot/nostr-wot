@@ -32,7 +32,13 @@ const COLLECTIONS = [
     parseExtra: () => ({}),
     sort: (a, b) => new Date(b.date).getTime() - new Date(a.date).getTime(),
     // Only blog emits a .ts type file today. Preserve that exactly.
-    emitTypes: { typeName: 'BlogPost', typeImport: "import type { BlogPost } from '@/lib/blog';" },
+    // interfaceName is deliberately separate from typeName: the legacy
+    // generator emitted `interface BlogCache`, not `BlogPostCache`.
+    emitTypes: {
+      typeName: 'BlogPost',
+      interfaceName: 'BlogCache',
+      typeImport: "import type { BlogPost } from '@/lib/blog';",
+    },
   },
   {
     name: 'guides',
@@ -199,14 +205,14 @@ function generate(collection) {
 
   if (!collection.emitTypes) return;
 
-  const { typeName, typeImport } = collection.emitTypes;
+  const { typeName, typeImport, interfaceName } = collection.emitTypes;
   const tsPath = path.join(OUTPUT_DIR, `${collection.name}-cache.ts`);
   fs.writeFileSync(tsPath, `// Auto-generated - do not edit
 import type { Locale } from '@/i18n/config';
 ${typeImport}
 import cache from './${collection.name}-cache.json';
 
-export interface ${typeName}Cache {
+export interface ${interfaceName} {
   generatedAt: string;
   locales: Record<Locale, {
     posts: ${typeName}[];
@@ -214,7 +220,7 @@ export interface ${typeName}Cache {
   }>;
 }
 
-export const ${collection.name}Cache = cache as ${typeName}Cache;
+export const ${collection.name}Cache = cache as ${interfaceName};
 export default ${collection.name}Cache;
 `);
 }
