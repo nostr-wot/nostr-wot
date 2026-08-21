@@ -34,7 +34,7 @@ import { fileURLToPath } from 'node:url';
 const ROOT = path.join(path.dirname(fileURLToPath(import.meta.url)), '..');
 const FIXTURE_ROOT = path.join(ROOT, 'tests', 'fixtures', 'content', 'parity');
 const GOLDEN_PATH = path.join(ROOT, 'tests', 'fixtures', 'content-cache-golden.json');
-const COLLECTIONS = ['blog', 'guides'];
+const COLLECTIONS = ['blog', 'guides', 'news'];
 /** Any fixed instant; only stability matters. */
 const FIXED_NOW = '2026-06-01T00:00:00.000Z';
 

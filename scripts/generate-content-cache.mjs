@@ -109,9 +109,7 @@ export const COLLECTIONS = [
       items: data.items || [],
     }),
     sort: (a, b) => new Date(b.date).getTime() - new Date(a.date).getTime(),
-    // `lib/news.ts` does not exist until Phase 2. Emitting a type file that
-    // imports from it would break the build now. Phase 2 turns this on.
-    emitTypes: null,
+    emitTypes: { typeName: 'NewsPost', typeImport: "import type { NewsPost } from '@/lib/news';", interfaceName: 'NewsCache' },
   },
 ];
 
