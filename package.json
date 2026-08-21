@@ -5,11 +5,14 @@
   "author": "Leon Acosta <leon@nostr-wot.com>",
   "scripts": {
     "dev": "next dev",
-    "prebuild": "node scripts/generate-blog-cache.mjs && node scripts/generate-guides-cache.mjs",
+    "prebuild": "node scripts/generate-content-cache.mjs",
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "indexnow": "npx tsx scripts/indexnow.ts"
+    "indexnow": "npx tsx scripts/indexnow.ts",
+    "test": "node --import tsx --test tests/*.test.ts",
+    "test:parity": "node scripts/verify-cache-parity.mjs",
+    "test:parity:update": "node scripts/verify-cache-parity.mjs --update"
   },
   "dependencies": {
     "@next/third-parties": "^16.1.6",
