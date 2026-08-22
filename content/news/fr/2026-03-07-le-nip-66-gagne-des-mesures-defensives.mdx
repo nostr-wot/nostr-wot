@@ -1,0 +1,47 @@
+---
+title: "Le NIP-66 gagne des mesures defensives"
+description: "Un petit ajout au NIP-66 indique aux clients de ne pas dependre des donnees d'un moniteur de relais et explique comment se proteger d'un moniteur qui publie des informations erronees."
+excerpt: "Les evenements de decouverte de relais du NIP-66 permettent aux clients d'obtenir des informations sur les relais via des moniteurs tiers. Une modification de mars 2026 ajoute une section Attenuation des Risques qui precise ce qui se passe quand ces donnees sont fausses."
+date: "2026-03-07"
+publishedAt: "2026-08-22"
+backfilled: true
+type: "story"
+tags:
+  - "Nostr"
+  - "NIP-66"
+translationKey: "2026-03-07-nip-66-gains-defensive-measures"
+sources:
+  - title: "Update 66.md with defensive measures"
+    url: "https://github.com/nostr-protocol/nips/pull/2240"
+    publisher: "nostr-protocol/nips"
+    date: "2026-03-07"
+published: true
+---
+
+Le NIP-66 definit comment les relais sont decouverts et surveilles sur Nostr. Un moniteur de relais interroge les relais, en verifiant des elements comme le temps d'aller-retour, les NIP pris en charge et la correspondance avec leur propre autodescription NIP-11, puis publie ce qu'il trouve sous forme d'evenement de decouverte de relais `30166`. Les clients peuvent interroger ces evenements pour decider a quels relais il vaut la peine de se connecter.
+
+Cette conception place un tiers, le moniteur, en position d'influencer les relais qu'un client utilisera. La [PR #2240](https://github.com/nostr-protocol/nips/pull/2240), fusionnee le 7 mars 2026, ajoute a `66.md` une courte section "Attenuation des Risques" qui traite de ce qui se passe quand cette influence tourne mal.
+
+## Ce qui a change
+
+La PR, ouverte par alltheseas, ajoute six lignes a la specification. Selon la description de la PR, elle fait suite a une discussion sur les "enseignements des benchmarks" du NIP-66 dans une issue de nostrability/outbox, ou plusieurs developpeurs avaient souleve des inquietudes sur les scenarios problematiques de la specification et les implications de s'appuyer sur les donnees d'un moniteur.
+
+La nouvelle section indique :
+
+- Les clients NE DOIVENT PAS exiger d'evenements `30166` pour fonctionner. L'absence de donnees de surveillance NE DOIT PAS empecher une connexion a un relais.
+- Un moniteur peut publier des evenements `30166` errones, que ce soit par mauvaise configuration ou intention malveillante.
+- Les clients NE DEVRAIENT PAS faire confiance a une seule source. Les defenses suggerees incluent le filtrage par web of trust, l'interrogation de plusieurs moniteurs et le rejet des resultats de filtrage d'un moniteur si leur application supprimerait une proportion deraisonnable de relais.
+
+## Pourquoi c'est important
+
+Le NIP-66 concerne la decouverte de relais, donc le risque ici n'est pas qu'un moniteur attaque directement un relais. Il s'agit de ce qu'un client fait des donnees qu'un moniteur lui fournit. Un evenement `30166` n'est jamais qu'un evenement Nostr comme un autre : n'importe qui peut en publier un, correct ou non. Avant ce changement, la specification ne precisait pas ce qu'un client devait faire si les donnees d'un moniteur s'averaient fausses, que ce soit par erreur ou intentionnellement.
+
+Les trois ajouts comblent cette lacune du cote client. La premiere regle maintient la surveillance comme une amelioration optionnelle plutot qu'une dependance, de sorte qu'un client incapable de joindre un moniteur, ou qui n'obtient pas de reponse, doit quand meme pouvoir se connecter normalement aux relais. La deuxieme regle nomme la menace sans detour : un moniteur peut se tromper, par accident ou deliberement. La troisieme regle donne aux clients des moyens concrets de reagir, en recoupant les moniteurs entre eux, en les ponderant via le web of trust, et en traitant un filtre qui exclurait une proportion deraisonnable de relais comme un signal que le probleme vient du filtre lui-meme, pas des relais.
+
+Pris ensemble, ces changements decrivent un client qui traite les donnees d'un moniteur de relais comme une entree parmi d'autres, et non comme une verite absolue. Cela correspond au reste de la conception de Nostr, ou aucun publicateur unique d'un type d'evenement ne fait autorite et ou les clients sont censes recouper les informations.
+
+## A quoi ressemblent les evenements du NIP-66
+
+Un evenement `30166` porte un tag `d` avec l'URL normalisee du relais, ainsi que des tags supplementaires comme `rtt-open`, `rtt-read` et `rtt-write` pour les temps d'aller-retour, `N` pour les NIP pris en charge, et `R` pour les indicateurs d'exigences NIP-11 comme `auth` ou `payment`. Le champ `content` de l'evenement peut inclure le document NIP-11 du relais tel que rapporte par le moniteur. Rien de tout cela ne change avec cette PR. Ce qui change, c'est la recommandation sur le degre de confiance qu'un client devrait accorder a ces donnees.
+
+Le changement n'a touche que `66.md`, avec six lignes ajoutees et aucune supprimee.

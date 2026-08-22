@@ -1,0 +1,45 @@
+---
+title: "NIP-70: Reposts, die geschützte Events einbetten, müssen abgelehnt werden"
+description: "PR #2251 ergänzt NIP-70 um eine Regel, nach der Relays Reposts ablehnen müssen, die den Inhalt eines geschützten Events einbetten."
+excerpt: "NIP-70 stellt jetzt klar, dass Reposts kein geschütztes Event einbetten dürfen und Relays jeden Repost ablehnen sollen, der es doch tut. Damit schließt sich ein Weg, über den der Inhalt eines geschützten Events an Relays gelangen konnte, die sein Autor nie autorisiert hatte."
+date: "2026-05-13"
+publishedAt: "2026-08-22"
+backfilled: true
+type: "story"
+tags:
+  - "Nostr"
+  - "NIP"
+  - "NIP-70"
+  - "Privatsphäre"
+translationKey: "2026-05-13-nip-70-rejects-reposts-of-protected-events"
+sources:
+  - title: "nip70: reposts that embed protected events must be rejected"
+    url: "https://github.com/nostr-protocol/nips/pull/2251"
+    publisher: "nostr-protocol/nips"
+    date: "2026-05-13"
+published: true
+---
+
+NIP-70 definiert geschützte Events: Events, die so markiert sind, dass ein Relay sie standardmäßig ablehnt, sofern sie nicht direkt von ihrem Autor stammen, authentifiziert über eine NIP-42-`AUTH`-Sitzung. [PR #2251](https://github.com/nostr-protocol/nips/pull/2251), eröffnet von fiatjaf und gemerged am 13. Mai 2026, schließt eine Lücke in diesem Schutz, indem sie ausdrücklich festlegt, dass Reposts kein geschütztes Event einbetten dürfen.
+
+## Was ein geschütztes Event ist
+
+Ein geschütztes Event trägt das Tag `["-"]`. Nach dem bereits bestehenden Text von NIP-70 MUSS das Standardverhalten eines Relays sein, jedes Event mit diesem Tag abzulehnen, sofern der Client nicht zuerst den `AUTH`-Ablauf nach NIP-42 durchläuft und der authentifizierte Pubkey mit dem des Events selbst übereinstimmt. In der Praxis entscheidet der Autor, Relay für Relay, ob ein geschütztes Event überhaupt akzeptiert wird. Wird es an ein Relay veröffentlicht, bei dem sich der Autor nie authentifiziert hat, soll dieses Relay es zurückweisen.
+
+## Die Lücke, die die PR schließt
+
+Ein Repost, vom Kind `6`, sowie der generische Repost vom Kind `16`, ist ein Event, dessen `content`-Feld das vollständige JSON des reposteten Events trägt, damit ein Client die repostete Notiz ohne eine separate Abfrage anzeigen kann. Das ist praktisch für eine gewöhnliche Notiz, ließ aber eine Lücke für eine geschützte offen: Nichts im bisherigen Text hinderte jemanden daran, ein geschütztes Event in einen Repost zu verpacken und diesen Repost an ein beliebiges Relay zu veröffentlichen. Das Schutz-Tag gilt für das geschützte Event selbst, nicht für eine Kopie seines Inhalts, die im `content`-Feld eines anderen Events landet.
+
+Die PR fügt `70.md` zwei Sätze hinzu:
+
+> Reposts of protected events MUST NOT embed the reposted event. If a repost of a protected event embeds the event anyway, relays SHOULD summarily reject it.
+
+Das ist die gesamte Änderung: zwei hinzugefügte Zeilen, keine entfernte. Die Anforderung gilt in beide Richtungen. Der erste Satz richtet sich an denjenigen, der den Repost erstellt: den Inhalt eines geschützten Events unter keinen Umständen in einen Repost einbetten. Der zweite richtet sich an Relays: Taucht trotzdem einer auf, mit dem Inhalt eines geschützten Events im `content`-Feld eines Reposts, soll er sofort abgelehnt werden, auch wenn das äußere Repost-Event selbst nicht mit `["-"]` markiert ist.
+
+## Warum das eine Grenze für die Privatsphäre ist, kein Detail der Zustellung
+
+Ohne diese Regel ließ sich das Tag für geschützte Events mühelos umgehen. Es genügte, das Event zu reposten, damit sein Inhalt zu jedem Relay wanderte, an das dieser Repost veröffentlicht wurde, ohne dass eines davon eine Authentifizierung des ursprünglichen Autors verlangt hätte. Die Entscheidung des Autors, welche Relays das Event speichern dürfen, durchgesetzt auf Relay-Ebene über `AUTH` nach NIP-42, würde kaum noch etwas bedeuten, sobald jeder ihren Inhalt in eine ungeschützte Hülle kopieren und veröffentlichen könnte, wo er möchte.
+
+Die Korrektur belässt den Durchsetzungspunkt dort, wo er hingehört. Ein Relay, das einen Repost mit eingebettetem geschütztem Event sieht, hat nun einen ausdrücklichen, im Spezifikationstext selbst genannten Grund, ihn abzulehnen, genau wie wenn das geschützte Event direkt an dieses Relay veröffentlicht worden wäre.
+
+Der Autor der PR, fiatjaf, merkte in der Beschreibung an, er habe erwartet, dass diese Regel bereits vorhanden sei: "I thought we had this here already, but apparently not" ("Ich dachte, das hätten wir hier schon, aber offenbar nicht"). Die Ergänzung um zwei Zeilen bringt den geschriebenen Text mit dieser Erwartung in Einklang.

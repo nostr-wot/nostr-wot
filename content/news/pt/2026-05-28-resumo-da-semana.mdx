@@ -1,0 +1,112 @@
+---
+title: "Resumo da Semana: Oito Pull Requests Mesclados no nostr-protocol/nips"
+description: "Oito pull requests foram mesclados no nostr-protocol/nips em 28 de maio de 2026, cobrindo conexões de relays, áudio/vídeo em grupos, exclusão de mensagens diretas e mais."
+excerpt: "Em 28 de maio de 2026, oito pull requests foram mesclados no nostr-protocol/nips em cerca de noventa minutos, incluindo um novo tipo de gift wrap efêmero e uma seção de exclusão para as mensagens diretas do NIP-17."
+date: "2026-05-28"
+publishedAt: "2026-08-22"
+backfilled: true
+type: "digest"
+tags:
+  - "Nostr"
+  - "NIP"
+translationKey: "2026-05-28-week-in-review"
+sources:
+  - title: "NIP-59: Add ephemeral gift wrap event kind (21059)"
+    url: "https://github.com/nostr-protocol/nips/pull/2245"
+    publisher: "nostr-protocol/nips"
+    date: "2026-05-28"
+  - title: "One sentence in NIP-01 that helps resolves a huge issue with relay connection management."
+    url: "https://github.com/nostr-protocol/nips/pull/2307"
+    publisher: "nostr-protocol/nips"
+    date: "2026-05-28"
+  - title: "nip29: audio/video live spaces"
+    url: "https://github.com/nostr-protocol/nips/pull/2238"
+    publisher: "nostr-protocol/nips"
+    date: "2026-05-28"
+  - title: "nip78: a normal application-specific kind"
+    url: "https://github.com/nostr-protocol/nips/pull/2292"
+    publisher: "nostr-protocol/nips"
+    date: "2026-05-28"
+  - title: "Add section on deletion"
+    url: "https://github.com/nostr-protocol/nips/pull/2260"
+    publisher: "nostr-protocol/nips"
+    date: "2026-05-28"
+  - title: "NIP-71 feat: video multiple audio tracks"
+    url: "https://github.com/nostr-protocol/nips/pull/2255"
+    publisher: "nostr-protocol/nips"
+    date: "2026-05-28"
+  - title: "NIP-85: Clarifications"
+    url: "https://github.com/nostr-protocol/nips/pull/2304"
+    publisher: "nostr-protocol/nips"
+    date: "2026-05-28"
+  - title: "Update C7 to only allow kind 9 messages in chat views"
+    url: "https://github.com/nostr-protocol/nips/pull/2310"
+    publisher: "nostr-protocol/nips"
+    date: "2026-05-28"
+items:
+  - title: "NIP-59: Add ephemeral gift wrap event kind (21059)"
+    url: "https://github.com/nostr-protocol/nips/pull/2245"
+    summary: "Adiciona o kind:21059, um gift wrap efêmero para mensagens em tempo real que os relays não devem armazenar."
+  - title: "One sentence in NIP-01 that helps resolves a huge issue with relay connection management."
+    url: "https://github.com/nostr-protocol/nips/pull/2307"
+    summary: "Exige que os relays tratem qualquer segmento adicional da URL como o mesmo endpoint único."
+  - title: "nip29: audio/video live spaces"
+    url: "https://github.com/nostr-protocol/nips/pull/2238"
+    summary: "Permite que grupos do NIP-29 anunciem salas de voz e vídeo LiveKit por meio de uma tag livekit."
+  - title: "nip78: a normal application-specific kind"
+    url: "https://github.com/nostr-protocol/nips/pull/2292"
+    summary: "Adiciona o kind 78 como evento normal ao lado do kind:30078 endereçável já existente."
+  - title: "Add section on deletion"
+    url: "https://github.com/nostr-protocol/nips/pull/2260"
+    summary: "Adiciona uma seção Delete and Edit ao NIP-17 sobre eventos de exclusão embrulhados em gift wrap."
+  - title: "NIP-71 feat: video multiple audio tracks"
+    url: "https://github.com/nostr-protocol/nips/pull/2255"
+    summary: "Estende as tags imeta para descrever várias faixas de áudio por idioma em um vídeo."
+  - title: "NIP-85: Clarifications"
+    url: "https://github.com/nostr-protocol/nips/pull/2304"
+    summary: "Reformula a descrição do kind:10040 para cobrir múltiplas chaves e personalização por usuário."
+  - title: "Update C7 to only allow kind 9 messages in chat views"
+    url: "https://github.com/nostr-protocol/nips/pull/2310"
+    summary: "Restringe as visualizações de chat do C7 a buscar apenas eventos kind 9 para manter o contexto consistente."
+published: true
+---
+
+Em 28 de maio de 2026, oito pull requests foram mesclados no [nostr-protocol/nips](https://github.com/nostr-protocol/nips), o repositório que hospeda os NIPs do protocolo Nostr. Todos os oito foram mesclados entre 19h50 e 21h20 UTC, um período incomumente movimentado para o repositório. Eles abrangem sete NIPs diferentes mais a convenção de chat C7, e não fazem parte de um lançamento coordenado: cada um é uma mudança separada e independente que passou pela revisão na mesma janela de tempo.
+
+Dois dos oito têm relação direta com mensagens privadas e são explicados com mais detalhe abaixo. O restante cobre o tratamento de conexões de relays, áudio e vídeo em grupos, metadados de vídeo, armazenamento de aplicações e o texto sobre provedores de confiança.
+
+## NIP-59: um novo tipo de gift wrap efêmero para mensagens em tempo real
+
+O [PR #2245](https://github.com/nostr-protocol/nips/pull/2245) adiciona o `kind:21059`, uma contraparte efêmera do `kind:1059` já existente para gift wrap. Ele tem a mesma estrutura do `kind:1059`, mas segue a semântica de eventos efêmeros definida no NIP-01, o que significa que os relays NÃO DEVEM armazená-lo. O NIP-59 agora explicita a divisão pretendida: `kind:1059` é para mensagens persistentes e assíncronas, como as conversas do NIP-17 que precisam de entrega offline, enquanto `kind:21059` é para contextos em tempo real, como chat ao vivo ou jogos, onde só importam os destinatários conectados naquele momento. Isso não muda como as mensagens diretas do NIP-17 funcionam hoje: adiciona um segundo tipo de gift wrap, não persistente, para casos de uso que não precisam de histórico de mensagens.
+
+## NIP-17: mensagens diretas em gift wrap ganham uma seção de exclusão e edição
+
+O [PR #2260](https://github.com/nostr-protocol/nips/pull/2260) adiciona uma seção "Delete and Edit" ao NIP-17. Ela estabelece que, além do comportamento de exclusão já especificado no NIP-59, no qual um gift wrap pode ser excluído pelo destinatário marcado com a tag p, os clientes PODEM permitir que um usuário exclua uma mensagem embrulhando um evento de exclusão `kind:5` dentro de um gift wrap `kind:1059` e enviando-o ao destinatário como parte da conversa. Os clientes DEVERIAM então remover a mensagem excluída da conversa, ou marcá-la como excluída. A mesma seção também permite implementar a edição de mensagens como uma exclusão seguida da publicação de um novo evento com o mesmo timestamp. Essa é uma orientação nova adicionada sobre o formato de gift wrap existente, não uma mudança na criptografia em si.
+
+## NIP-01: relays devem tratar segmentos de caminho extras como o mesmo endpoint
+
+O [PR #2307](https://github.com/nostr-protocol/nips/pull/2307) adiciona uma única frase ao NIP-01: "Relays MUST only accept connections to a single endpoint when additional path segments do not influence its behavior." A descrição do PR aponta que uma URL de relay como `wss://relay.example/<random-string>` era, na maioria dos relays em funcionamento, funcionalmente idêntica a `wss://relay.example/`, uma ambiguidade que dificultava aos clientes raciocinar sobre a identidade e a deduplicação de relays.
+
+## NIP-29: espaços ao vivo de áudio e vídeo para grupos
+
+O [PR #2238](https://github.com/nostr-protocol/nips/pull/2238) adiciona uma seção ao NIP-29 que permite a um grupo anunciar uma sala de voz e vídeo com LiveKit por meio de uma tag `livekit` no evento de anúncio do grupo, junto com uma nova tag `supported_kinds` que lista quais tipos de evento o grupo aceita (uma lista vazia significa que ele não aceita nenhum kind, apenas a sala de áudio/vídeo). Os clientes solicitam um token de entrada ao endpoint `/.well-known/nip29/livekit/<group-id>` de um relay usando um evento de autorização do NIP-98, e os relays podem publicar quem está na sala no momento por meio de um novo evento de participantes `kind:39004`.
+
+## NIP-71: múltiplas faixas de áudio por vídeo
+
+O [PR #2255](https://github.com/nostr-protocol/nips/pull/2255) estende as convenções da tag `imeta` no NIP-71 para que um único vídeo possa listar várias faixas de áudio, marcadas por idioma com uma tag `l` e uma flag `ov` indicando a faixa no idioma original. Também adiciona uma propriedade `waveform`, uma pequena lista de valores de amplitude separados por espaço, para que os clientes possam renderizar a forma de onda de uma faixa de áudio sem baixá-la antes.
+
+## NIP-78: um kind normal e não endereçável para dados específicos de aplicação
+
+O [PR #2292](https://github.com/nostr-protocol/nips/pull/2292) adiciona o `kind:78` ao NIP-78 como evento normal, ao lado do `kind:30078` endereçável já existente. A distinção importa para aplicações que precisam armazenar e consultar vários eventos do mesmo tipo: um kind endereçável mantém apenas o evento mais recente por tag `d`, enquanto um kind normal mantém todos eles. O PR também adiciona o novo kind à tabela de tipos de evento do README dos NIPs.
+
+## NIP-85: descrição reformulada do kind:10040
+
+O [PR #2304](https://github.com/nostr-protocol/nips/pull/2304) reformula um único parágrafo do NIP-85. Ele muda o texto que descrevia o `kind:10040` como uma lista de "provedores de serviço confiáveis" para descrevê-lo, em vez disso, como a fonte preferida do usuário para cada resultado, e esclarece que um provedor de serviço pode usar múltiplas chaves e relays, incluindo uma chave emitida por usuário quando os resultados são personalizados para aquele usuário.
+
+## C7: visualizações de chat restritas ao kind 9
+
+O [PR #2310](https://github.com/nostr-protocol/nips/pull/2310) adiciona uma linha à convenção C7: clientes que renderizam uma "visualização de chat" como um fluxo ordenado de eventos DEVEM buscar apenas eventos `kind:9`, para evitar perder contexto entre implementações diferentes. Outros tipos de conteúdo ainda podem ser referenciados dentro de uma mensagem `kind:9` por meio de citação, conforme o NIP-18.
+
+## Um lote, não um lançamento coordenado
+
+Além das duas mudanças sobre mensagens diretas, não há um fio condutor ligando esses oito pull requests. Eles tocam partes não relacionadas do protocolo, do tratamento de conexões de relays ao vídeo em grupos e ao armazenamento de aplicações, e simplesmente passaram pela revisão dentro da mesma janela de cerca de noventa minutos em 28 de maio. Foi um lote, não um lançamento temático.

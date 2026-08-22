@@ -1,0 +1,54 @@
+---
+title: "NIP-67: EOSE Completeness Hint"
+description: "A new NIP lets relays tell clients whether an EOSE marks a truly complete result set or a truncated one."
+excerpt: "EOSE has always meant the relay is done sending stored events, not that it sent all of them. NIP-67 adds an optional hint so clients can finally tell the difference."
+date: "2026-06-06"
+publishedAt: "2026-08-22"
+backfilled: true
+type: "story"
+tags:
+  - "Nostr"
+  - "NIP"
+  - "Relays"
+translationKey: "2026-06-06-nip-67-eose-completeness-hint"
+sources:
+  - title: "NIP-67: EOSE Completeness Hint"
+    url: "https://github.com/nostr-protocol/nips/pull/2317"
+    publisher: "nostr-protocol/nips"
+    date: "2026-06-06"
+published: true
+---
+
+[NIP-01](https://github.com/nostr-protocol/nips/blob/master/01.md) defines `EOSE` as the boundary between stored events and real-time events for a subscription. What it has never defined is whether the relay actually sent everything it holds that matches the filter. [NIP-67](https://github.com/nostr-protocol/nips/pull/2317), merged on 6 June 2026 by mattn, gives relays a way to say so.
+
+## The gap EOSE left open
+
+Most relays enforce an internal cap on how many stored events they will return for a single subscription, independent of whatever `limit` the client asked for. A client has no way to see that cap. All it can do is compare the number of events it received against the `limit` it requested, and guess.
+
+That guess fails in two specific ways.
+
+First, when the relay's cap sits below the client's requested `limit`, the client is fooled into thinking the result is complete. A client asks for the last 500 notes. The relay caps responses at 300 and sends exactly 300. Because 300 is less than 500, the client concludes it has everything. It has not. The rest of the matching notes are sitting on the relay, and the client never learns they exist.
+
+Second, when the number of matching events happens to equal the relay's cap exactly, the client cannot tell that it received all of them. It has no choice but to send another `REQ` with `until` set to the oldest event's timestamp, purely to confirm that the next batch is empty. A relay capped at 300 events gets queried at least twice for any subscription that reaches that cap, whether or not there was ever more data to fetch.
+
+## What NIP-67 adds
+
+The spec adds an optional third element to the `EOSE` message, an array of hint strings:
+
+```
+["EOSE", <subscription_id>, [<hint>, ...]]
+```
+
+Two hint values are defined. `"finish"` means the relay has sent every stored event matching the subscription's filters, so the client should not paginate further. `"more"` means the relay is holding back additional matching stored events that it has not sent, so the client should paginate to retrieve them. A relay is not obliged to send `"more"` even when it is true, since knowing for certain that more matching data exists is not free on every storage backend.
+
+The hints array can carry either value, both, or neither. The spec is explicit that their presence is definitive and their absence is not: if a relay omits the third element entirely, or sends an `EOSE` with no hints in it, the client falls back to the same `until`-based pagination heuristic it already uses today. Nothing about existing client behaviour has to change to remain correct.
+
+Compatibility runs in both directions. A relay that adds this NIP keeps sending a two-element `EOSE` to clients that don't understand the hint, because clients that don't implement NIP-67 index `EOSE` by position and JSON parsers accept the trailing array element without complaint. A client that adds support for the hint gets nothing extra from relays that haven't implemented it, and simply keeps using its existing pagination logic.
+
+The NIP also addresses a related edge case around tied timestamps. When a relay does not send `"finish"`, several stored events can share the same oldest `created_at` value in a response, and pagination keyed on `until` risks silently dropping events that share that boundary timestamp. Relays are advised, where possible, to advance far enough that every event at the boundary timestamp is included in one response, and to only emit `"finish"` once there is genuinely nothing older left.
+
+Relays that implement NIP-67 are expected to list `67` in their `supported_nips` field, per [NIP-11](https://github.com/nostr-protocol/nips/blob/master/11.md).
+
+## Why it matters
+
+Silent truncation and a genuinely empty result look identical to a client today. That distinction matters most for anything that treats "no more results" as meaningful, moderation queries, audits, or a client trying to establish that a given pubkey really has no more events of a certain kind. NIP-67 does not change how events are stored or delivered. It gives relays a small, optional vocabulary for telling the truth about whether a subscription's stored-event history was actually exhausted.

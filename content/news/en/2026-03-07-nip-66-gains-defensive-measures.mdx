@@ -1,0 +1,47 @@
+---
+title: "NIP-66 gains defensive measures"
+description: "A small addition to NIP-66 tells clients not to depend on relay monitor data and how to guard against a monitor that publishes bad information."
+excerpt: "NIP-66's relay discovery events let clients learn about relays from third-party monitors. A March 2026 change adds a Risk Mitigation section spelling out what happens when that data is wrong."
+date: "2026-03-07"
+publishedAt: "2026-08-22"
+backfilled: true
+type: "story"
+tags:
+  - "Nostr"
+  - "NIP-66"
+translationKey: "2026-03-07-nip-66-gains-defensive-measures"
+sources:
+  - title: "Update 66.md with defensive measures"
+    url: "https://github.com/nostr-protocol/nips/pull/2240"
+    publisher: "nostr-protocol/nips"
+    date: "2026-03-07"
+published: true
+---
+
+NIP-66 defines how relays get discovered and monitored on Nostr. A relay monitor probes relays, checking things like round-trip time, supported NIPs, and whether they match their own NIP-11 self-description, then publishes what it finds as a `30166` relay discovery event. Clients can query those events to decide which relays are worth connecting to.
+
+That design puts a third party, the monitor, in a position to influence which relays a client will use. [PR #2240](https://github.com/nostr-protocol/nips/pull/2240), merged on 7 March 2026, adds a short "Risk Mitigation" section to `66.md` addressing what happens when that influence goes wrong.
+
+## What changed
+
+The PR, opened by alltheseas, adds six lines to the specification. According to the PR description, it follows discussion of NIP-66 "benchmark learnings" in a nostrability/outbox issue, where multiple developers raised concerns about the spec's unhappy paths and the implications of relying on monitor data.
+
+The new section says:
+
+- Clients MUST NOT require `30166` events to function. The absence of monitoring data MUST NOT prevent a relay connection.
+- A monitor may publish erroneous `30166` events, whether through misconfiguration or malicious intent.
+- Clients SHOULD NOT trust a single source. Suggested defenses include web-of-trust filtering, querying multiple monitors, and discarding a monitor's filter results if applying them would remove an unreasonable proportion of relays.
+
+## Why it matters
+
+NIP-66 concerns relay discovery, so the risk here is not about a monitor attacking a relay directly. It is about what a client does with the data a monitor hands it. A `30166` event is just another Nostr event: anyone can publish one, correctly or not. Before this change, the spec did not say what a client should do if a monitor's data turned out to be wrong, whether by mistake or on purpose.
+
+The three additions close that gap from the client's side. The first rule keeps monitoring an optional enhancement rather than a dependency, so a client that cannot reach any monitor, or gets no answer, should still connect to relays normally. The second rule names the threat plainly: a monitor can be wrong, by accident or deliberately. The third rule gives clients concrete ways to respond, cross-checking monitors against each other, weighing them by web of trust, and treating a filter that would exclude an unreasonable share of relays as a signal that the filter itself, not the relays, is the problem.
+
+Read together, the changes describe a client that treats relay monitor data as one input among several, not as ground truth. That fits the rest of Nostr's design, where no single publisher of an event kind is authoritative and clients are expected to corroborate.
+
+## What NIP-66 events look like
+
+A `30166` event carries a `d` tag with the relay's normalized URL, plus additional tags such as `rtt-open`, `rtt-read`, and `rtt-write` for round-trip timing, `N` for supported NIPs, and `R` for NIP-11 requirement flags like `auth` or `payment`. The event's `content` may include the relay's NIP-11 document as reported by the monitor. None of that changes with this PR. What changes is the guidance on how much a client should lean on it.
+
+The change touched only `66.md`, with six lines added and none removed.

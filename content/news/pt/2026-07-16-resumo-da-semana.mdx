@@ -1,0 +1,87 @@
+---
+title: "Resumo da semana: grupos NIP-29 ganham fixação de mensagens, subgrupos, convites e banner"
+description: "Cinco pull requests foram mesclados no NIP-29 entre 15 e 17 de julho de 2026, adicionando fixação de mensagens, subgrupos, um formato de código de convite e uma tag de banner para grupos."
+excerpt: "Em três dias, cinco pull requests foram mesclados no NIP-29: fixação de mensagens, um formato de código de convite, subgrupos, uma tag de banner e uma extensão da lista de mensagens fixadas. Vistos em conjunto, mostram grupos baseados em relays ganhando recursos que plataformas de chat estabelecidas já têm."
+date: "2026-07-16"
+publishedAt: "2026-08-22"
+backfilled: true
+type: "digest"
+tags:
+  - "Nostr"
+  - "NIP-29"
+  - "Grupos"
+  - "Resumo"
+translationKey: "2026-07-16-week-in-review"
+sources:
+  - title: "NIP-29: add message pinning (update-pin-list and kind:39005)"
+    url: "https://github.com/nostr-protocol/nips/pull/2379"
+    publisher: "nostr-protocol/nips"
+    date: "2026-07-15"
+  - title: "NIP-29: invite code suffix for group identifiers"
+    url: "https://github.com/nostr-protocol/nips/pull/2380"
+    publisher: "nostr-protocol/nips"
+    date: "2026-07-16"
+  - title: "NIP-29: add subgroups spec"
+    url: "https://github.com/nostr-protocol/nips/pull/2319"
+    publisher: "nostr-protocol/nips"
+    date: "2026-07-16"
+  - title: "NIP-29: add banner tag to group metadata (kind:39000)"
+    url: "https://github.com/nostr-protocol/nips/pull/2383"
+    publisher: "nostr-protocol/nips"
+    date: "2026-07-16"
+  - title: "NIP-29: allow a tags in pin list"
+    url: "https://github.com/nostr-protocol/nips/pull/2416"
+    publisher: "nostr-protocol/nips"
+    date: "2026-07-17"
+published: true
+items:
+  - title: "NIP-29: add message pinning (update-pin-list and kind:39005)"
+    url: "https://github.com/nostr-protocol/nips/pull/2379"
+    summary: "Adiciona a ação de moderação update-pin-list e um novo evento kind:39005 para que administradores mantenham uma lista de mensagens fixadas."
+  - title: "NIP-29: invite code suffix for group identifiers"
+    url: "https://github.com/nostr-protocol/nips/pull/2380"
+    summary: "Adiciona um formato de sufixo para que o identificador de um grupo possa carregar um código de convite."
+  - title: "NIP-29: add subgroups spec"
+    url: "https://github.com/nostr-protocol/nips/pull/2319"
+    summary: "Adiciona uma seção de Subgrupos ao NIP-29: tags parent e child em kind:39000, aplicadas pelo relay via edições kind:9002, com checagem de ciclos e consentimento cruzado."
+  - title: "NIP-29: add banner tag to group metadata (kind:39000)"
+    url: "https://github.com/nostr-protocol/nips/pull/2383"
+    summary: "Adiciona uma tag banner ao evento de metadados de grupo kind:39000."
+  - title: "NIP-29: allow a tags in pin list"
+    url: "https://github.com/nostr-protocol/nips/pull/2416"
+    summary: "Estende o formato da lista de fixados de #2379 para também aceitar tags a, referências a eventos endereçáveis, além das que já eram aceitas."
+---
+
+Entre 15 e 17 de julho de 2026, cinco pull requests foram mesclados no [NIP-29](https://github.com/nostr-protocol/nips/blob/master/29.md), a especificação de grupos baseados em relays. É uma concentração incomum para um único NIP: [#2379](https://github.com/nostr-protocol/nips/pull/2379), [#2380](https://github.com/nostr-protocol/nips/pull/2380), [#2319](https://github.com/nostr-protocol/nips/pull/2319) e [#2383](https://github.com/nostr-protocol/nips/pull/2383) foram mesclados em cerca de um dia, três deles (#2380, #2319 e #2383) dentro de uma janela de 25 segundos em 16 de julho, e [#2416](https://github.com/nostr-protocol/nips/pull/2416) veio na manhã seguinte.
+
+Vistas isoladamente, cada mudança é pequena. Vistas em conjunto, descrevem o mesmo tipo de trabalho: grupos baseados em relays ganhando a mobília que plataformas de chat estabelecidas já têm. Mensagens fixadas, links de convite, subcanais e uma imagem de banner não são ideias novas em software de chat de modo geral. O que é novo aqui é que o NIP-29 ganhou uma forma especificada e aplicada pelo relay para cada uma delas, um merge de cada vez.
+
+## A fixação de mensagens chega primeiro (#2379)
+
+O primeiro dos cinco, mesclado em 2026-07-15, [#2379](https://github.com/nostr-protocol/nips/pull/2379) adiciona a fixação de mensagens ao NIP-29. Ele introduz uma ação de moderação `update-pin-list` junto com um novo tipo de evento, `kind:39005`, para registrar quais mensagens os administradores de um grupo fixaram. É a menor adição conceitual da semana, mas também é a que a última PR do lote, a #2416, retoma dois dias depois.
+
+## Um formato de código de convite para identificadores de grupo (#2380)
+
+[#2380](https://github.com/nostr-protocol/nips/pull/2380) adiciona um formato de sufixo que permite que o identificador de um grupo carregue um código de convite. Com 8 linhas adicionadas, é o menor diff dos cinco, mas dá aos grupos NIP-29 uma forma, em nível de especificação, de distribuir um convite como parte do próprio identificador, em vez de um link fora de banda.
+
+## Subgrupos: a maior mudança da semana (#2319)
+
+[#2319](https://github.com/nostr-protocol/nips/pull/2319) é estruturalmente a maior das cinco, com 62 linhas adicionadas, e é a que mais muda a forma como os grupos se relacionam entre si. Ela adiciona uma seção de Subgrupos ao NIP-29, permitindo organizar grupos hierarquicamente. Faz isso sem introduzir nenhum tipo de evento novo: reutiliza o `kind:39000` já existente (metadados de grupo) e o `kind:9002` (edit-metadata), e adiciona dois nomes de tag, `parent` e `child`.
+
+Uma tag `parent` no evento `kind:39000` de um grupo aponta para o identificador `d` do grupo pai. Sem tag `parent`, ou com uma vazia, o grupo é uma raiz sem pai. Espera-se que os clientes montem a árvore de grupos localmente lendo eventos `kind:39000`, em vez de consultar um endpoint dedicado à hierarquia.
+
+Definir pai, trocar de pai ou promover um grupo de volta a raiz acontece por meio de um evento `kind:9002` de edit-metadata. O relay é responsável por manter os dois lados da relação sincronizados: quando o pai de um grupo muda, o relay atualiza as tags `child` tanto do pai anterior quanto do novo em seus eventos `kind:39000`. O `kind:39000` do pai deve listar cada um de seus filhos como uma tag ordenada `["child", "<id>"]`, e a especificação faz os relays rejeitarem edições de metadados que removeriam silenciosamente um filho existente. Como a ordem vem da posição da tag, administradores podem reordenar a lista de filhos.
+
+A relação é aplicada pelo relay, não negociada entre clientes. Um evento `kind:9002` que define `["parent", "X"]` é rejeitado a menos que seu autor também seja administrador do grupo X, segundo a lista de administradores `kind:39001` daquele grupo. Como editar o grupo filho já exige ser administrador do filho, os dois lados do vínculo, pai e filho, precisam consentir de forma independente antes que um relay o aceite. A especificação também faz os relays rejeitarem ciclos, incluindo um grupo que se liste como seu próprio pai, fechando o tipo de árvore malformada que uma checagem apenas do lado do cliente poderia deixar passar.
+
+## Uma tag banner para os metadados de grupo (#2383)
+
+[#2383](https://github.com/nostr-protocol/nips/pull/2383) adiciona uma tag `banner` ao evento de metadados de grupo `kind:39000`, uma adição de 2 linhas (com uma linha alterada) que dá aos grupos um lugar em nível de especificação para declarar uma imagem de banner junto aos metadados que já carregam, como nome e foto.
+
+## A lista de fixados aprende a referenciar eventos endereçáveis (#2416)
+
+[#2416](https://github.com/nostr-protocol/nips/pull/2416), mesclado na manhã seguinte ao restante do lote, retoma a lista de mensagens fixadas que a #2379 introduziu dois dias antes. Ela estende o formato para que a lista também possa conter tags `a`, a convenção do NIP-01 para referenciar eventos endereçáveis por kind, chave pública e identificador `d`, além das tags que já eram aceitas para referenciar eventos comuns, não endereçáveis.
+
+## O que a semana soma
+
+Nenhuma dessas cinco pull requests é grande por si só, e o registro desta semana não diz por que os mantenedores as trataram juntas nem o que vem a seguir. O que ele mostra é o formato do trabalho: em três dias, o NIP-29 ganhou uma forma de fixar mensagens, uma forma de convidar por identificador, uma forma de aninhar grupos dentro de outros grupos, uma forma de definir um banner, e uma lista de fixados ampliada que se conecta à primeira mudança. É uma especificação preenchendo ativamente os recursos que um protocolo de chat em grupo precisa assim que as pessoas começam a pedi-los.

@@ -1,0 +1,50 @@
+---
+title: "NIP-47 Simplifica sua Especificação Base e Adiciona um Repositório de Extensões"
+description: "O PR #2419 corta a especificação base do NIP-47 em 332 linhas, movendo notificações, keysend, faturas retidas, list_transactions e o tratamento de metadados para um novo repositório de extensões do NWC."
+excerpt: "Um pull request mesclado reduz o NIP-47 a três tipos de evento e cinco métodos centrais, movendo notificações, pagamentos keysend, faturas retidas, listagem de transações e tratamento de metadados para um repositório de extensões separado."
+date: "2026-08-01"
+publishedAt: "2026-08-22"
+backfilled: true
+type: "story"
+tags:
+  - "Nostr"
+  - "NIP-47"
+  - "Lightning"
+translationKey: "2026-08-01-nip-47-simplifies-core-adds-extensions"
+sources:
+  - title: "NIP-47: simplify core spec and introduce extensions"
+    url: "https://github.com/nostr-protocol/nips/pull/2419"
+    publisher: "nostr-protocol/nips"
+    date: "2026-08-01"
+published: true
+---
+
+O NIP-47 define o Nostr Wallet Connect (NWC): uma forma de um cliente Nostr acessar uma carteira Lightning remota via relays, para pedir pagamentos, consultar um saldo ou criar faturas sem custodiar os fundos ele mesmo. Em 2026-08-01, o [PR #2419](https://github.com/nostr-protocol/nips/pull/2419), de frnandu, foi mesclado à especificação e reescreveu o `47.md`, reduzindo-o a um núcleo bem menor e movendo a maior parte do que ele descrevia para um novo repositório dedicado de extensões do NWC. A mudança afetou um único arquivo, com 19 linhas adicionadas e 332 removidas, de longe a maior reescrita de um único arquivo coberta aqui para este NIP.
+
+## O que permanece no núcleo
+
+Três tipos de evento permanecem: o evento de informação (kind 13194), o evento de solicitação (kind 23194) e o evento de resposta (kind 23195). Cinco métodos mantêm sua definição completa de solicitação e resposta no `47.md`: `pay_invoice`, `make_invoice`, `lookup_invoice`, `get_balance` e `get_info`. A negociação de criptografia entre cliente e wallet service (NIP-44 com reserva para NIP-04, anunciada pela tag `encryption` do evento de informação), a lista de códigos de erro, o fluxo de exemplo para pagar uma fatura e a nota sobre usar um relay dedicado permanecem como estavam.
+
+## O que foi movido para fora
+
+Tudo o resto perdeu seu texto de especificação no `47.md`. O tipo de evento de notificação, kind 23197 (com o kind 23196 mantido na versão anterior por compatibilidade com NIP-04), desaparece da lista de tipos de evento do núcleo, e toda a descrição de "Notification Events" junto com a seção "Notifications", que detalhava o formato JSON dos eventos `payment_received`, `payment_sent` e `hold_invoice_accepted`, foi eliminada por completo.
+
+O método `pay_keysend`, com seu formato completo de solicitação e resposta, desapareceu. O mesmo aconteceu com `list_transactions`, incluindo seus parâmetros de paginação e filtragem. Os três métodos de faturas retidas, `make_hold_invoice`, `cancel_hold_invoice` e `settle_hold_invoice`, foram eliminados junto com o passo a passo do apêndice "Example Hold Invoice Support Flow". A seção Metadata, que definia o limite de 4096 caracteres para metadados e documentava convenções que alguns clientes usam para comentários LUD-12, dados de pagador e destinatário LUD-18, requisições de zap NIP-57 incorporadas e registros TLV de keysend, também desapareceu. A seção de deep links que descrevia o esquema de URI `nostrnwc://connect` e seus parâmetros `appicon`, `appname` e `callback` para o pareamento de carteiras também foi removida.
+
+## A tag de capacidades mudou de forma
+
+Isso não é só uma questão de texto removido: uma parte da especificação que afeta o formato na rede também mudou. O `47.md` anterior fazia o evento de informação anunciar suporte a notificações por meio de uma tag `notifications` (por exemplo `payment_received payment_sent`), e a lista de capacidades no campo `content` do evento podia incluir a palavra `notifications` ao lado dos nomes dos métodos. A nova versão elimina essa tag por completo. Em seu lugar, o evento de informação agora carrega uma tag `extensions` que lista quais identificadores de extensão opcionais um wallet service suporta (o exemplo da especificação usa `02 03 04`), e diz que quaisquer métodos vindos dessas extensões devem continuar refletidos na lista de capacidades do campo `content`. O exemplo desenvolvido no apêndice mostra isso de forma concreta: o evento de informação de exemplo anterior anunciava nove capacidades incluindo `notifications`; o novo anuncia cinco, `pay_invoice get_balance get_info make_invoice lookup_invoice`, com uma tag `extensions` que lista separadamente `02 03 04 06 07 08`. Nem o diff nem a descrição do PR indicam qual identificador de extensão corresponde a cada funcionalidade removida.
+
+## Para onde vai o texto removido
+
+Uma nova seção "Extensions" substitui a maior parte do que foi cortado. Ela estabelece que o NIP-47 agora define apenas o protocolo central e um pequeno conjunto de comandos comuns, e que métodos adicionais, convenções de metadados, fluxos de pareamento e comportamentos de autorização mais granulares podem ser definidos em especificações de extensão opcionais do NWC, mantidas em `https://github.com/nostr-wallet-connect/nwc`. Esse repositório, segundo a nova seção, reserva o `01.md` para a especificação central correspondente a este NIP-47 simplificado, com funcionalidades opcionais começando em `02.md`.
+
+## As carteiras existentes quebram?
+
+Nada no diff toca o formato na rede dos cinco métodos que permanecem no núcleo, nem os números de kind dos três tipos de evento centrais. Uma carteira ou cliente construído sobre o `47.md` anterior que implemente `pay_invoice`, `get_balance`, `make_invoice`, `lookup_invoice` e `get_info` continua funcionando exatamente como antes. O PR também não reescreve os corpos de solicitação e resposta das funcionalidades que remove, como `pay_keysend` ou os métodos de faturas retidas, então seu formato na rede previamente documentado também não muda retroativamente com este diff: simplesmente não está mais especificado dentro do `47.md`.
+
+O único ponto concreto de compatibilidade é a tag de capacidades do evento de informação: a tag `notifications` não aparece mais na especificação, substituída pelo esquema de tag e identificadores `extensions`. Implementações novas escritas a partir do `47.md` atual cobrirão apenas os cinco métodos centrais, a menos que também consultem o repositório de extensões.
+
+## Por que a divisão
+
+Segundo a descrição do PR, o objetivo é manter o `47.md` pequeno, estável e fácil de implementar, dando às funcionalidades opcionais do NWC um lugar dedicado para evoluir de forma independente. O autor descreve o trabalho como relacionado a ideias exploradas no projeto `matbalez/universal-lightning-wallet`, e alinhado com uma direção acordada em uma discussão anterior no repositório de NIPs, que apontava para deixar espaço para uma futura especificação de carteira mais simples, reconhecendo ao mesmo tempo que o NIP-47 já podia ser reduzido movendo a funcionalidade menos comum para fora do núcleo.

@@ -1,0 +1,47 @@
+---
+title: "NIP-58 renumera Profile Badges e adiciona Badge Sets"
+description: "O PR #2276 move o evento Profile Badges do NIP-58 do kind 30008 para o kind 10008 e introduz um novo evento Badge Sets no kind 30008, reaproveitando o número antigo para outro propósito."
+excerpt: "Um pull request mesclado muda o número de kind usado pelo evento Profile Badges do NIP-58, de 30008 para 10008, e define um novo evento Badge Sets no kind 30008 que ficou vago."
+date: "2026-04-01"
+publishedAt: "2026-08-22"
+backfilled: true
+type: "story"
+tags:
+  - "Nostr"
+  - "NIP"
+translationKey: "2026-04-01-nip-58-renumbers-profile-badges"
+sources:
+  - title: "NIP-58: change Profile Badges to kind 10008, add kind 30008 Badge sets"
+    url: "https://github.com/nostr-protocol/nips/pull/2276"
+    publisher: "nostr-protocol/nips"
+    date: "2026-04-01"
+published: true
+---
+
+O NIP-58 define como funcionam os selos (badges) no Nostr: um emissor define um selo, o concede a chaves públicas, e quem recebe escolhe quais selos concedidos exibir no perfil. Em 2026-04-01, o [PR #2276](https://github.com/nostr-protocol/nips/pull/2276), de autoria de alexgleason e que fecha a [issue #2275](https://github.com/nostr-protocol/nips/issues/2275), foi mesclado à especificação e mudou o número de kind usado pelo evento "Profile Badges", além de adicionar um novo tipo de evento para agrupar selos em conjuntos.
+
+## O que mudou, com precisão
+
+Antes deste PR, o evento Profile Badges, aquele que um usuário publica para dizer "estes são os selos que aceito e quero exibir no meu perfil", era definido como um evento endereçável no **kind 30008**, identificado por uma tag `d` fixa com o valor `profile_badges`.
+
+Depois deste PR, Profile Badges é um **evento substituível no kind 10008**, definido como uma lista padrão do NIP-51. Ele não precisa mais de nenhuma tag `d`, porque eventos substituíveis não exigem uma para serem únicos por chave pública. O evento continua contendo os mesmos pares ordenados de tags `a` e `e`, um par por selo, referenciando a Badge Definition e o Badge Award de cada selo que o usuário está exibindo.
+
+O kind 30008 não foi aposentado. Ele foi **reatribuído**. O PR dá a ele um novo significado: um evento "Badge Set", um conjunto endereçável do NIP-51 que permite a um usuário agrupar seus selos aceitos em categorias nomeadas, cada uma com seus próprios pares ordenados de tags `a`/`e` apontando para Badge Definitions e Badge Awards.
+
+Essa reatribuição é a parte que vale a pena precisar. Números de kind no Nostr não são separados por namespace por NIP: um cliente ou relay que consultar o kind 30008 esperando o formato antigo de Profile Badges agora vai receber eventos Badge Set no lugar, que compartilham um formato de tags parecido mas um significado diferente e uma convenção de tag `d` diferente (um identificador de conjunto escolhido pelo usuário, não a string fixa `profile_badges`). Qualquer coisa que ainda leia o kind 30008 sob a suposição antiga quebra silenciosamente em vez de dar erro, porque o evento ainda é interpretável, só que agora significa outra coisa.
+
+A especificação trata da transição diretamente. Uma nova seção "Deprecated Profile Badges event" declara que uma versão anterior do NIP-58 usava um evento endereçável de kind 30008 com uma tag `d` de `profile_badges` para Profile Badges, e instrui os clientes a tratar esses eventos antigos como equivalentes ao novo kind 10008 e migrar para o novo formato.
+
+## Onde mais os números mudaram
+
+O PR também atualiza o NIP-51 (`51.md`), o NIP de listas e conjuntos sobre o qual o NIP-58 se apoia, e o índice de NIPs (`README.md`), para manter os três arquivos consistentes:
+
+- `51.md` adiciona o kind `10008` à sua tabela de listas padrão como "Profile badges", referenciando tanto as definições de selo (tags `a` para o kind 30009) quanto as concessões de selo (tags `e` para o kind 8), além de tags `a` para o novo kind 30008 de badge sets.
+- `51.md` adiciona o kind `30008` à sua tabela de conjuntos padrão como "Badge sets", apontando para definições de selo do kind 30009 e concessões de selo do kind 8.
+- O índice de kinds do `README.md` agora lista `10008` como "Profile Badges" (referenciando NIP-51 e NIP-58) e renomeia `30008` de "Profile Badges" para "Badge sets" (agora referenciando NIP-51 e NIP-58 em conjunto, quando antes referenciava apenas NIP-58).
+
+O kind 30009, o evento Badge Definition, e o kind 8, o evento Badge Award, não mudam com este PR.
+
+## Escopo da mudança
+
+O PR tocou três arquivos, `51.md`, `58.md` e `README.md`, com 15 linhas adicionadas e 10 removidas no total. O NIP-58 continua marcado como `draft` e `optional`.

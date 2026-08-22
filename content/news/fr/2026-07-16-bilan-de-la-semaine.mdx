@@ -1,0 +1,87 @@
+---
+title: "Bilan de la semaine : les groupes NIP-29 gagnent l'epinglage de messages, les sous-groupes, les invitations et une banniere"
+description: "Cinq pull requests ont ete fusionnees dans NIP-29 entre le 15 et le 17 juillet 2026, ajoutant l'epinglage de messages, les sous-groupes, un format de code d'invitation et une balise de banniere pour les groupes."
+excerpt: "En trois jours, cinq pull requests ont ete fusionnees dans NIP-29 : epinglage de messages, format de code d'invitation, sous-groupes, balise de banniere et extension de la liste des messages epingles. Prises ensemble, elles montrent les groupes bases sur les relays qui acquierent des fonctions que les plateformes de chat etablies possedent deja."
+date: "2026-07-16"
+publishedAt: "2026-08-22"
+backfilled: true
+type: "digest"
+tags:
+  - "Nostr"
+  - "NIP-29"
+  - "Groupes"
+  - "Bilan"
+translationKey: "2026-07-16-week-in-review"
+sources:
+  - title: "NIP-29: add message pinning (update-pin-list and kind:39005)"
+    url: "https://github.com/nostr-protocol/nips/pull/2379"
+    publisher: "nostr-protocol/nips"
+    date: "2026-07-15"
+  - title: "NIP-29: invite code suffix for group identifiers"
+    url: "https://github.com/nostr-protocol/nips/pull/2380"
+    publisher: "nostr-protocol/nips"
+    date: "2026-07-16"
+  - title: "NIP-29: add subgroups spec"
+    url: "https://github.com/nostr-protocol/nips/pull/2319"
+    publisher: "nostr-protocol/nips"
+    date: "2026-07-16"
+  - title: "NIP-29: add banner tag to group metadata (kind:39000)"
+    url: "https://github.com/nostr-protocol/nips/pull/2383"
+    publisher: "nostr-protocol/nips"
+    date: "2026-07-16"
+  - title: "NIP-29: allow a tags in pin list"
+    url: "https://github.com/nostr-protocol/nips/pull/2416"
+    publisher: "nostr-protocol/nips"
+    date: "2026-07-17"
+published: true
+items:
+  - title: "NIP-29: add message pinning (update-pin-list and kind:39005)"
+    url: "https://github.com/nostr-protocol/nips/pull/2379"
+    summary: "Ajoute l'action de moderation update-pin-list et un nouvel evenement kind:39005 pour que les administrateurs puissent tenir une liste de messages epingles."
+  - title: "NIP-29: invite code suffix for group identifiers"
+    url: "https://github.com/nostr-protocol/nips/pull/2380"
+    summary: "Ajoute un format de suffixe permettant a l'identifiant d'un groupe de porter un code d'invitation."
+  - title: "NIP-29: add subgroups spec"
+    url: "https://github.com/nostr-protocol/nips/pull/2319"
+    summary: "Ajoute une section Sous-groupes a NIP-29 : balises parent et child sur kind:39000, appliquees par le relay via des modifications kind:9002, avec verification des cycles et consentement croise."
+  - title: "NIP-29: add banner tag to group metadata (kind:39000)"
+    url: "https://github.com/nostr-protocol/nips/pull/2383"
+    summary: "Ajoute une balise banner a l'evenement de metadonnees de groupe kind:39000."
+  - title: "NIP-29: allow a tags in pin list"
+    url: "https://github.com/nostr-protocol/nips/pull/2416"
+    summary: "Etend le format de la liste des epingles introduite par #2379 pour accepter aussi les balises a, references a des evenements adressables, en plus de celles deja prises en charge."
+---
+
+Entre le 15 et le 17 juillet 2026, cinq pull requests ont ete fusionnees dans [NIP-29](https://github.com/nostr-protocol/nips/blob/master/29.md), la specification des groupes bases sur les relays. C'est une concentration inhabituelle pour un seul NIP : [#2379](https://github.com/nostr-protocol/nips/pull/2379), [#2380](https://github.com/nostr-protocol/nips/pull/2380), [#2319](https://github.com/nostr-protocol/nips/pull/2319) et [#2383](https://github.com/nostr-protocol/nips/pull/2383) ont ete fusionnees en l'espace d'environ une journee, trois d'entre elles (#2380, #2319 et #2383) dans une fenetre de 25 secondes le 16 juillet, et [#2416](https://github.com/nostr-protocol/nips/pull/2416) est arrivee le lendemain matin.
+
+Prise individuellement, chaque modification est petite. Prises ensemble, elles decrivent le meme type de travail : les groupes bases sur les relays qui acquierent le mobilier que les plateformes de chat etablies possedent deja. Messages epingles, liens d'invitation, sous-canaux et image de banniere ne sont pas des idees nouvelles dans les logiciels de chat en general. Ce qui est nouveau ici, c'est que NIP-29 a obtenu une facon specifiee et appliquee par le relay de faire chacune de ces choses, une fusion a la fois.
+
+## L'epinglage de messages arrive en premier (#2379)
+
+La premiere des cinq, fusionnee le 2026-07-15, [#2379](https://github.com/nostr-protocol/nips/pull/2379) ajoute l'epinglage de messages a NIP-29. Elle introduit une action de moderation `update-pin-list` accompagnee d'un nouveau type d'evenement, `kind:39005`, pour suivre les messages que les administrateurs d'un groupe ont epingles. C'est l'ajout conceptuellement le plus petit de la semaine, mais c'est aussi celui que la derniere PR du lot, la #2416, vient prolonger deux jours plus tard.
+
+## Un format de code d'invitation pour les identifiants de groupe (#2380)
+
+[#2380](https://github.com/nostr-protocol/nips/pull/2380) ajoute un format de suffixe permettant a l'identifiant d'un groupe de porter un code d'invitation. Avec 8 lignes ajoutees, c'est le plus petit diff des cinq, mais il donne aux groupes NIP-29 un moyen, au niveau de la specification, de distribuer une invitation directement dans l'identifiant plutot que via un lien externe.
+
+## Sous-groupes : la modification la plus importante de la semaine (#2319)
+
+[#2319](https://github.com/nostr-protocol/nips/pull/2319) est structurellement la plus grande des cinq, avec 62 lignes ajoutees, et c'est celle qui change le plus la maniere dont les groupes se relient entre eux. Elle ajoute une section Sous-groupes a NIP-29, permettant d'organiser les groupes de maniere hierarchique. Elle le fait sans introduire aucun nouveau type d'evenement : elle reutilise le `kind:39000` existant (metadonnees de groupe) et le `kind:9002` (edit-metadata), et ajoute deux noms de balises, `parent` et `child`.
+
+Une balise `parent` sur l'evenement `kind:39000` d'un groupe pointe vers l'identifiant `d` du groupe parent. L'absence de balise `parent`, ou une balise vide, signifie que le groupe est une racine sans parent. Les clients sont censes construire l'arbre des groupes localement en lisant les evenements `kind:39000`, plutot qu'en interrogeant un point de terminaison dedie a la hierarchie.
+
+Attribuer un parent, le changer, ou promouvoir un groupe de nouveau au rang de racine se fait via un evenement `kind:9002` d'edit-metadata. Le relay est charge de garder synchronises les deux cotes de la relation : quand le parent d'un groupe change, le relay met a jour les balises `child` de l'ancien et du nouveau parent dans leurs evenements `kind:39000`. Le `kind:39000` du parent doit lister chacun de ses enfants sous la forme d'une balise ordonnee `["child", "<id>"]`, et la specification prevoit que les relays rejettent les modifications de metadonnees qui supprimeraient silencieusement un enfant existant. Comme l'ordre provient de la position de la balise, les administrateurs peuvent reordonner la liste de leurs enfants.
+
+La relation est appliquee par le relay, pas negociee entre clients. Un evenement `kind:9002` qui definit `["parent", "X"]` est rejete a moins que son auteur ne soit aussi administrateur du groupe X, selon la liste d'administrateurs `kind:39001` de ce groupe. Comme modifier le groupe enfant exige deja d'etre administrateur de cet enfant, les deux cotes du lien, parent et enfant, doivent consentir independamment avant qu'un relay ne l'accepte. La specification prevoit egalement que les relays rejettent les cycles, y compris un groupe qui se designe lui-meme comme son propre parent, ce qui ferme le type d'arbre malforme qu'une verification purement cote client pourrait manquer.
+
+## Une balise banniere pour les metadonnees de groupe (#2383)
+
+[#2383](https://github.com/nostr-protocol/nips/pull/2383) ajoute une balise `banner` a l'evenement de metadonnees de groupe `kind:39000`, un ajout de 2 lignes (avec une ligne modifiee) qui donne aux groupes un emplacement, au niveau de la specification, pour declarer une image de banniere aux cotes des metadonnees qu'ils portent deja, comme le nom et l'image de profil.
+
+## La liste des epingles apprend a referencer des evenements adressables (#2416)
+
+[#2416](https://github.com/nostr-protocol/nips/pull/2416), fusionnee le matin suivant le reste du lot, revient sur la liste des messages epingles que #2379 avait introduite deux jours plus tot. Elle etend le format pour que la liste puisse aussi contenir des balises `a`, la convention de NIP-01 pour referencer des evenements adressables par kind, cle publique et identifiant `d`, en plus des balises deja prises en charge pour referencer des evenements ordinaires, non adressables.
+
+## Ce que la semaine met en evidence
+
+Aucune de ces cinq pull requests n'est grande a elle seule, et le registre de cette semaine ne dit pas pourquoi les mainteneurs les ont traitees ensemble ni ce qui vient ensuite. Ce qu'il montre, c'est la forme du travail : en trois jours, NIP-29 a gagne un moyen d'epingler des messages, un moyen d'inviter par identifiant, un moyen d'imbriquer des groupes les uns dans les autres, un moyen de definir une banniere, et une liste d'epingles elargie qui se rattache a la premiere modification. C'est une specification qui remplit activement les fonctions dont un protocole de chat de groupe a besoin des lors que les utilisateurs commencent a les demander.

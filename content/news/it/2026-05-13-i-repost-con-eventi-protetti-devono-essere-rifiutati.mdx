@@ -1,0 +1,45 @@
+---
+title: "NIP-70: i repost che incorporano eventi protetti devono essere rifiutati"
+description: "La PR #2251 aggiunge una regola al NIP-70 che richiede ai relay di rifiutare i repost che incorporano il contenuto di un evento protetto."
+excerpt: "Il NIP-70 ora afferma che i repost non devono incorporare un evento protetto, e che i relay devono rifiutare qualsiasi repost che lo faccia, chiudendo una via attraverso cui il contenuto di un evento protetto poteva raggiungere relay mai autorizzati dal suo autore."
+date: "2026-05-13"
+publishedAt: "2026-08-22"
+backfilled: true
+type: "story"
+tags:
+  - "Nostr"
+  - "NIP"
+  - "NIP-70"
+  - "Privacy"
+translationKey: "2026-05-13-nip-70-rejects-reposts-of-protected-events"
+sources:
+  - title: "nip70: reposts that embed protected events must be rejected"
+    url: "https://github.com/nostr-protocol/nips/pull/2251"
+    publisher: "nostr-protocol/nips"
+    date: "2026-05-13"
+published: true
+---
+
+Il NIP-70 definisce gli eventi protetti: eventi contrassegnati in modo che il comportamento predefinito di un relay sia rifiutarli, a meno che non provengano direttamente dal loro autore, autenticato tramite una sessione `AUTH` del NIP-42. La [PR #2251](https://github.com/nostr-protocol/nips/pull/2251), aperta da fiatjaf e fusa il 13 maggio 2026, chiude una lacuna in quella protezione affermando esplicitamente che i repost non possono incorporare un evento protetto.
+
+## Cos'è un evento protetto
+
+Un evento protetto porta il tag `["-"]`. Secondo il testo già esistente del NIP-70, il comportamento predefinito di un relay DEVE essere rifiutare qualsiasi evento che contenga quel tag, a meno che il client non completi prima il flusso `AUTH` del NIP-42 e la chiave pubblica autenticata corrisponda a quella dell'evento stesso. In pratica è l'autore a decidere, relay per relay, se un evento protetto viene accettato o meno. Pubblicato verso un relay a cui l'autore non si è mai autenticato, quel relay dovrebbe rifiutarlo.
+
+## La lacuna che la PR chiude
+
+Un repost, di kind `6`, e il repost generico di kind `16`, è un evento il cui campo `content` porta il JSON completo dell'evento ripostato, così che un client possa mostrare la nota ripostata senza una richiesta separata. Questo è comodo per una nota ordinaria, ma lasciava aperta una via per una protetta: nulla nel testo precedente impediva di avvolgere un evento protetto dentro un repost e pubblicare quel repost verso qualsiasi relay si volesse. Il tag di protezione governa l'evento protetto stesso, non una copia del suo contenuto finita dentro il campo `content` di un evento diverso.
+
+La PR aggiunge due frasi a `70.md`:
+
+> Reposts of protected events MUST NOT embed the reposted event. If a repost of a protected event embeds the event anyway, relays SHOULD summarily reject it.
+
+Questo è l'intero cambiamento: due righe aggiunte, nessuna rimossa. Il requisito vale in entrambe le direzioni. La prima frase è rivolta a chi costruisce il repost: non incorporare il contenuto di un evento protetto in un repost, in nessun caso. La seconda è rivolta ai relay: se uno di questi compare comunque, con il contenuto di un evento protetto dentro il campo `content` di un repost, va rifiutato subito, anche se l'evento di repost in sé non porta il tag `["-"]`.
+
+## Perché questo è un confine di privacy, non un dettaglio di consegna
+
+Senza questa regola, il tag di evento protetto poteva essere aggirato facilmente. Bastava ripostare l'evento perché il suo contenuto viaggiasse verso ogni relay a cui quel repost veniva pubblicato, nessuno dei quali aveva richiesto l'autenticazione dell'autore originale. La scelta dell'autore su quali relay possono conservare l'evento, applicata a livello di relay tramite `AUTH` del NIP-42, varrebbe poco nel momento in cui chiunque potesse copiare il suo contenuto dentro un involucro non protetto e pubblicarlo dove preferisce.
+
+La correzione mantiene il punto di applicazione dove deve stare. Un relay che vede un repost che incorpora un evento protetto ha ora un motivo esplicito, dichiarato nel testo stesso della specifica, per rifiutarlo, allo stesso modo in cui farebbe se l'evento protetto fosse stato pubblicato direttamente verso quel relay.
+
+L'autore della PR, fiatjaf, ha osservato nella descrizione di aspettarsi che questa regola fosse già presente nella specifica: "I thought we had this here already, but apparently not" ("Pensavo l'avessimo già qui, ma a quanto pare no"). L'aggiunta di due righe allinea il testo scritto a quell'aspettativa.
