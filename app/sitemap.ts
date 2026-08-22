@@ -3,6 +3,8 @@ import { locales, defaultLocale } from "@/i18n/config";
 import { getAllBlogPosts } from "@/lib/blog";
 import { getAllGuides } from "@/lib/guides";
 import { getAllNews, getNewsArchiveMonths, getNewsForMonth } from "@/lib/news";
+import { routes, resolveRouteLastModified } from "@/lib/sitemap-routes.mjs";
+import routeModified from "@/lib/generated/route-modified.json";
 
 const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || "https://nostr-wot.com";
 
@@ -21,36 +23,14 @@ function getLocalizedUrl(path: string, locale: string): string {
   return `${BASE_URL}/${locale}${normalizedPath}`;
 }
 
-// Define all static routes with their change frequency and priority
-const routes: {
-  path: string;
-  changeFrequency: "always" | "hourly" | "daily" | "weekly" | "monthly" | "yearly" | "never";
-  priority: number;
-}[] = [
-  { path: "", changeFrequency: "weekly", priority: 1.0 },
-  { path: "/features", changeFrequency: "weekly", priority: 0.9 },
-  { path: "/download", changeFrequency: "weekly", priority: 0.9 },
-  { path: "/playground", changeFrequency: "weekly", priority: 0.8 },
-  { path: "/blog", changeFrequency: "daily", priority: 0.8 },
-  { path: "/news", changeFrequency: "daily", priority: 0.9 },
-  { path: "/docs", changeFrequency: "weekly", priority: 0.8 },
-  { path: "/docs/getting-started", changeFrequency: "weekly", priority: 0.8 },
-  { path: "/docs/extension", changeFrequency: "weekly", priority: 0.7 },
-  { path: "/docs/sdk", changeFrequency: "weekly", priority: 0.7 },
-  { path: "/docs/oracle", changeFrequency: "weekly", priority: 0.7 },
-  { path: "/oracle", changeFrequency: "monthly", priority: 0.7 },
-  { path: "/pqc", changeFrequency: "weekly", priority: 0.8 },
-  { path: "/pqc/chat", changeFrequency: "weekly", priority: 0.7 },
-  { path: "/about", changeFrequency: "monthly", priority: 0.6 },
-  { path: "/contact", changeFrequency: "monthly", priority: 0.5 },
-  { path: "/guides", changeFrequency: "weekly", priority: 0.8 },
-  { path: "/projects", changeFrequency: "monthly", priority: 0.6 },
-  { path: "/widgets", changeFrequency: "monthly", priority: 0.7 },
-  { path: "/pitch", changeFrequency: "monthly", priority: 0.5 },
-  { path: "/media-kit", changeFrequency: "monthly", priority: 0.4 },
-  { path: "/privacy", changeFrequency: "yearly", priority: 0.3 },
-  { path: "/terms", changeFrequency: "yearly", priority: 0.3 },
-];
+// Static route path/changeFrequency/priority list lives in
+// lib/sitemap-routes.mjs, shared with scripts/generate-route-modified.mjs,
+// so the two never drift into two different route lists.
+
+// `lib/generated/route-modified.json` maps a subset of route paths (only
+// the ones a git commit date could honestly be determined for — see
+// scripts/generate-route-modified.mjs) to an ISO commit date.
+const routeModifiedDates: Record<string, string> = routeModified;
 
 export default function sitemap(): MetadataRoute.Sitemap {
   const sitemapEntries: MetadataRoute.Sitemap = [];
@@ -60,9 +40,17 @@ export default function sitemap(): MetadataRoute.Sitemap {
     for (const locale of locales) {
       const url = getLocalizedUrl(route.path, locale);
 
+      // Static routes are locale-invariant content-wise (the same page
+      // component backs every locale), so the git-derived date is per path,
+      // not per locale. Only set lastModified when a date was actually
+      // resolved for this route — omit the key entirely otherwise rather
+      // than fabricate one. See lib/sitemap-routes.mjs and
+      // scripts/generate-route-modified.mjs.
+      const lastModified = resolveRouteLastModified(route.path, routeModifiedDates);
+
       sitemapEntries.push({
         url,
-        lastModified: new Date(),
+        ...(lastModified ? { lastModified } : {}),
         changeFrequency: route.changeFrequency,
         priority: route.priority,
         alternates: {
