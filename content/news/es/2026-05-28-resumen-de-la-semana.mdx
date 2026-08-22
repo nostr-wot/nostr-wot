@@ -1,7 +1,7 @@
 ---
-title: "Resumen de la Semana: Ocho Pull Requests Fusionados en nostr-protocol/nips"
-description: "Ocho pull requests se fusionaron en nostr-protocol/nips el 28 de mayo de 2026, cubriendo conexiones de relays, audio/video en grupos, eliminación de mensajes directos y más."
-excerpt: "El 28 de mayo de 2026, ocho pull requests se fusionaron en nostr-protocol/nips en un lapso de unos noventa minutos, incluyendo un nuevo tipo de gift wrap efímero y una sección de eliminación para los mensajes directos de NIP-17."
+title: "Resumen de la Semana: Nueve Pull Requests Fusionados en nostr-protocol/nips"
+description: "Nueve pull requests se fusionaron en nostr-protocol/nips el 28 de mayo de 2026, cubriendo conexiones de relays, audio/video en grupos, eliminación de mensajes directos, un nuevo NIP de podcasts y más."
+excerpt: "El 28 de mayo de 2026, nueve pull requests se fusionaron en nostr-protocol/nips en un lapso de unos noventa minutos, incluyendo un nuevo tipo de gift wrap efímero, una sección de eliminación para los mensajes directos de NIP-17 y un NIP completo en borrador para podcasts."
 date: "2026-05-28"
 publishedAt: "2026-08-22"
 backfilled: true
@@ -43,6 +43,10 @@ sources:
     url: "https://github.com/nostr-protocol/nips/pull/2310"
     publisher: "nostr-protocol/nips"
     date: "2026-05-28"
+  - title: "NIP-F4: podcasts"
+    url: "https://github.com/nostr-protocol/nips/pull/1093"
+    publisher: "nostr-protocol/nips"
+    date: "2026-05-28"
 items:
   - title: "NIP-59: Add ephemeral gift wrap event kind (21059)"
     url: "https://github.com/nostr-protocol/nips/pull/2245"
@@ -68,12 +72,15 @@ items:
   - title: "Update C7 to only allow kind 9 messages in chat views"
     url: "https://github.com/nostr-protocol/nips/pull/2310"
     summary: "Restringe las vistas de chat de C7 a obtener solo eventos kind 9 para mantener el contexto consistente."
+  - title: "NIP-F4: podcasts"
+    url: "https://github.com/nostr-protocol/nips/pull/1093"
+    summary: "Agrega un NIP en borrador que define los eventos de programas y episodios de podcast, una contra-afirmación de autoría y una lista de favoritos."
 published: true
 ---
 
-El 28 de mayo de 2026 se fusionaron ocho pull requests en [nostr-protocol/nips](https://github.com/nostr-protocol/nips), el repositorio que aloja los NIPs del protocolo Nostr. Los ocho se fusionaron entre las 19:50 y las 21:20 UTC, un tramo inusualmente activo para el repositorio. Abarcan siete NIPs distintos más la convención de chat C7, y no forman parte de un lanzamiento coordinado: cada uno es un cambio separado e independiente que pasó revisión en la misma ventana de tiempo.
+El 28 de mayo de 2026 se fusionaron nueve pull requests en [nostr-protocol/nips](https://github.com/nostr-protocol/nips), el repositorio que aloja los NIPs del protocolo Nostr. Los nueve se fusionaron entre las 19:50 y las 21:20 UTC, un tramo inusualmente activo para el repositorio. Abarcan nueve NIPs distintos más la convención de chat C7, y no forman parte de un lanzamiento coordinado: cada uno es un cambio separado e independiente que pasó revisión en la misma ventana de tiempo.
 
-Dos de los ocho tienen relación directa con la mensajería privada y se explican con más detalle abajo. El resto abarca el manejo de conexiones de relays, audio y video en grupos, metadatos de video, almacenamiento de aplicaciones y el texto sobre proveedores de confianza.
+Dos de los nueve tienen relación directa con la mensajería privada y se explican con más detalle abajo. El resto abarca el manejo de conexiones de relays, audio y video en grupos, metadatos de video, almacenamiento de aplicaciones, el texto sobre proveedores de confianza y una nueva especificación en borrador para podcasts.
 
 ## NIP-59: un nuevo tipo de gift wrap efímero para mensajes en tiempo real
 
@@ -93,7 +100,7 @@ El [PR #2238](https://github.com/nostr-protocol/nips/pull/2238) agrega una secci
 
 ## NIP-71: varias pistas de audio por video
 
-El [PR #2255](https://github.com/nostr-protocol/nips/pull/2255) extiende las convenciones de la etiqueta `imeta` en NIP-71 para que un solo video pueda listar varias pistas de audio, etiquetadas por idioma con una etiqueta `l` y una marca `ov` que indica la pista en el idioma original. También agrega una propiedad `waveform`, una breve lista de valores de amplitud separados por espacios, para que los clientes puedan renderizar una forma de onda de una pista de audio sin descargarla antes.
+El [PR #2255](https://github.com/nostr-protocol/nips/pull/2255) extiende las convenciones de la etiqueta `imeta` en NIP-71 para que un solo video pueda listar varias pistas de audio como etiquetas `imeta` independientes, cada una con una propiedad `l` para su idioma y una propiedad `ov` que marca la pista en el idioma original. También agrega una propiedad `waveform`, una breve lista de valores de amplitud separados por espacios, para que los clientes puedan renderizar una forma de onda de una pista de audio.
 
 ## NIP-78: un kind normal y no direccionable para datos específicos de aplicación
 
@@ -107,6 +114,10 @@ El [PR #2304](https://github.com/nostr-protocol/nips/pull/2304) reformula un sol
 
 El [PR #2310](https://github.com/nostr-protocol/nips/pull/2310) agrega una línea a la convención C7: los clientes que renderizan una "vista de chat" como un flujo ordenado de eventos DEBEN obtener únicamente eventos `kind:9`, para evitar perder contexto entre distintas implementaciones. Otros tipos de contenido aún pueden referenciarse dentro de un mensaje `kind:9` citándolos, según NIP-18.
 
+## NIP-F4: un nuevo NIP en borrador para podcasts
+
+El [PR #1093](https://github.com/nostr-protocol/nips/pull/1093) es, con mucha diferencia, el cambio más grande del día: agrega una especificación completa en borrador de más de cien líneas nuevas. Introduce NIP-F4, un NIP en borrador y opcional que define cómo se publican y se leen desde los relays los programas y episodios de podcast como eventos de Nostr, pensado para encajar en los flujos de trabajo de los reproductores de podcast existentes. Con NIP-F4, cada podcast tiene su propio par de claves de Nostr, lo que le permite combinar su presencia como podcast con un perfil normal `kind:0`/`kind:1`. La información a nivel de programa, como el título, la imagen de portada, la descripción y el sitio web, se publica como un evento reemplazable `kind:10154` que también puede acreditar a presentadores, copresentadores y editores por su clave pública. Los episodios individuales son eventos `kind:54` separados, publicados directamente con la clave propia del podcast, cada uno con un título, una descripción y una o varias etiquetas `audio` que apuntan al archivo multimedia del episodio. Como cualquiera podría hacerse pasar falsamente por el autor de un podcast, NIP-F4 agrega un evento `kind:10064` mediante el cual los autores reales de un podcast publican su propia lista de los podcasts que autoran, de modo que una autoría reclamada pueda verificarse contra esa contra-afirmación en lugar de darse por buena sin más. El PR también actualiza NIP-51 para agregar una lista "Favorite podcasts" de tipo `kind:10054`, que permite a cualquier usuario indicar públicamente qué podcasts sigue usando etiquetas `p` para las claves públicas de los podcasts y etiquetas `url` para las URL de los feeds RSS/XML, y agrega los nuevos kinds de evento a la tabla de kinds del README de los NIPs.
+
 ## Un lote, no un lanzamiento coordinado
 
-Más allá de los dos cambios sobre mensajes directos, no hay un hilo común que conecte a estos ocho pull requests. Tocan partes no relacionadas del protocolo, desde el manejo de conexiones de relays hasta el video en grupos y el almacenamiento de aplicaciones, y simplemente pasaron revisión dentro de la misma ventana de unos noventa minutos el 28 de mayo. Fue un lote, no un lanzamiento temático.
+Más allá de los dos cambios sobre mensajes directos, no hay un hilo común que conecte a estos nueve pull requests. Tocan partes no relacionadas del protocolo, desde el manejo de conexiones de relays hasta el video en grupos, el almacenamiento de aplicaciones y la distribución de podcasts, y simplemente pasaron revisión dentro de la misma ventana de unos noventa minutos el 28 de mayo. Fue un lote, no un lanzamiento temático, aunque el cambio más grande del día, con mucha diferencia, el nuevo NIP de podcasts, llegó en la misma ventana que otros ocho mucho más pequeños.

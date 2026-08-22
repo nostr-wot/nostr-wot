@@ -19,7 +19,7 @@ sources:
 published: true
 ---
 
-[NIP-01](https://github.com/nostr-protocol/nips/blob/master/01.md) defines `EOSE` as the boundary between stored events and real-time events for a subscription. What it has never defined is whether the relay actually sent everything it holds that matches the filter. [NIP-67](https://github.com/nostr-protocol/nips/pull/2317), merged on 6 June 2026 by mattn, gives relays a way to say so.
+[NIP-01](https://github.com/nostr-protocol/nips/blob/master/01.md) defines `EOSE` as the boundary between stored events and real-time events for a subscription. What it has never defined is whether the relay actually sent everything it holds that matches the filter. [NIP-67](https://github.com/nostr-protocol/nips/pull/2317), authored by mattn and merged on 6 June 2026, gives relays a way to say so.
 
 ## The gap EOSE left open
 
@@ -43,7 +43,7 @@ Two hint values are defined. `"finish"` means the relay has sent every stored ev
 
 The hints array can carry either value, both, or neither. The spec is explicit that their presence is definitive and their absence is not: if a relay omits the third element entirely, or sends an `EOSE` with no hints in it, the client falls back to the same `until`-based pagination heuristic it already uses today. Nothing about existing client behaviour has to change to remain correct.
 
-Compatibility runs in both directions. A relay that adds this NIP keeps sending a two-element `EOSE` to clients that don't understand the hint, because clients that don't implement NIP-67 index `EOSE` by position and JSON parsers accept the trailing array element without complaint. A client that adds support for the hint gets nothing extra from relays that haven't implemented it, and simply keeps using its existing pagination logic.
+Compatibility runs in both directions. A relay that adds this NIP sends the three-element `EOSE` to every client, whether or not that client understands the hint, because clients that don't implement NIP-67 already parse `EOSE` by position and simply ignore the extra element, the way a JSON parser accepts a trailing array item without complaint. A client that adds support for the hint gets nothing extra from relays that haven't implemented it, and simply keeps using its existing pagination logic.
 
 The NIP also addresses a related edge case around tied timestamps. When a relay does not send `"finish"`, several stored events can share the same oldest `created_at` value in a response, and pagination keyed on `until` risks silently dropping events that share that boundary timestamp. Relays are advised, where possible, to advance far enough that every event at the boundary timestamp is included in one response, and to only emit `"finish"` once there is genuinely nothing older left.
 

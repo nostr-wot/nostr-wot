@@ -19,7 +19,7 @@ sources:
 published: true
 ---
 
-El [NIP-01](https://github.com/nostr-protocol/nips/blob/master/01.md) define `EOSE` como el límite entre eventos almacenados y eventos en tiempo real para una suscripción. Lo que nunca ha definido es si el relay realmente envió todo lo que tiene almacenado que coincide con el filtro. El [NIP-67](https://github.com/nostr-protocol/nips/pull/2317), fusionado el 6 de junio de 2026 por mattn, le da a los relays una forma de decirlo.
+El [NIP-01](https://github.com/nostr-protocol/nips/blob/master/01.md) define `EOSE` como el límite entre eventos almacenados y eventos en tiempo real para una suscripción. Lo que nunca ha definido es si el relay realmente envió todo lo que tiene almacenado que coincide con el filtro. El [NIP-67](https://github.com/nostr-protocol/nips/pull/2317), redactado por mattn y fusionado el 6 de junio de 2026, le da a los relays una forma de decirlo.
 
 ## El vacío que dejaba EOSE
 
@@ -43,7 +43,7 @@ Se definen dos valores de indicio. `"finish"` significa que el relay envió todo
 
 El arreglo de indicios puede llevar uno de los valores, ambos, o ninguno. La especificación es explícita: su presencia es definitiva y su ausencia no lo es. Si un relay omite el tercer elemento por completo, o envía un `EOSE` sin indicios, el cliente recae en la misma heurística de paginación basada en `until` que ya usa hoy. Nada del comportamiento actual del cliente tiene que cambiar para seguir siendo correcto.
 
-La compatibilidad funciona en ambas direcciones. Un relay que agrega este NIP sigue enviando un `EOSE` de dos elementos a los clientes que no entienden el indicio, porque los clientes que no implementan NIP-67 indexan `EOSE` por posición y los parsers de JSON aceptan sin problema el elemento adicional al final del arreglo. Un cliente que agrega soporte para el indicio no obtiene nada extra de los relays que aún no lo implementan, y simplemente sigue usando su lógica de paginación actual.
+La compatibilidad funciona en ambas direcciones. Un relay que agrega este NIP envía el `EOSE` de tres elementos a todos los clientes, entiendan o no el indicio, porque los clientes que no implementan NIP-67 ya indexan `EOSE` por posición y simplemente ignoran el elemento adicional, tal como un parser de JSON acepta sin problema un elemento extra al final de un arreglo. Un cliente que agrega soporte para el indicio no obtiene nada extra de los relays que aún no lo implementan, y simplemente sigue usando su lógica de paginación actual.
 
 El NIP también aborda un caso límite relacionado con marcas de tiempo empatadas. Cuando un relay no envía `"finish"`, varios eventos almacenados pueden compartir el mismo valor de `created_at` más antiguo en una respuesta, y la paginación basada en `until` corre el riesgo de descartar silenciosamente eventos que comparten esa marca de tiempo límite. Se recomienda a los relays, cuando sea posible, avanzar lo suficiente para que todos los eventos con esa marca de tiempo límite queden incluidos en una sola respuesta, y emitir `"finish"` solo cuando realmente no quede nada más antiguo.
 

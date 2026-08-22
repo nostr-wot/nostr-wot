@@ -19,7 +19,7 @@ sources:
 published: true
 ---
 
-[NIP-01](https://github.com/nostr-protocol/nips/blob/master/01.md) définit `EOSE` comme la frontière entre les événements stockés et les événements en temps réel pour un abonnement. Ce qu'il n'a jamais précisé, c'est si le relais a réellement envoyé tout ce qu'il détient et qui correspond au filtre. [NIP-67](https://github.com/nostr-protocol/nips/pull/2317), fusionné le 6 juin 2026 par mattn, donne aux relais un moyen de le dire.
+[NIP-01](https://github.com/nostr-protocol/nips/blob/master/01.md) définit `EOSE` comme la frontière entre les événements stockés et les événements en temps réel pour un abonnement. Ce qu'il n'a jamais précisé, c'est si le relais a réellement envoyé tout ce qu'il détient et qui correspond au filtre. [NIP-67](https://github.com/nostr-protocol/nips/pull/2317), rédigé par mattn et fusionné le 6 juin 2026, donne aux relais un moyen de le dire.
 
 ## Le vide que laissait EOSE
 
@@ -43,7 +43,7 @@ Deux valeurs d'indice sont définies. `"finish"` signifie que le relais a envoy�
 
 Le tableau d'indices peut contenir l'une des deux valeurs, les deux, ou aucune. La spécification est explicite : leur présence est définitive, leur absence ne l'est pas. Si un relais omet entièrement le troisième élément, ou envoie un `EOSE` sans indice, le client retombe sur la même heuristique de pagination basée sur `until` qu'il utilise déjà aujourd'hui. Rien dans le comportement actuel du client n'a besoin de changer pour rester correct.
 
-La compatibilité fonctionne dans les deux sens. Un relais qui adopte ce NIP continue d'envoyer un `EOSE` à deux éléments aux clients qui ne comprennent pas l'indice, parce que les clients qui n'implémentent pas NIP-67 indexent `EOSE` par position et les analyseurs JSON acceptent sans problème l'élément supplémentaire en fin de tableau. Un client qui ajoute le support de l'indice n'obtient rien de plus des relais qui ne l'ont pas encore implémenté, et continue simplement d'utiliser sa logique de pagination existante.
+La compatibilité fonctionne dans les deux sens. Un relais qui adopte ce NIP envoie l'`EOSE` à trois éléments à tous les clients, qu'ils comprennent l'indice ou non, parce que les clients qui n'implémentent pas NIP-67 indexent déjà `EOSE` par position et ignorent simplement l'élément supplémentaire, de la même façon qu'un analyseur JSON accepte sans problème un élément superflu en fin de tableau. Un client qui ajoute le support de l'indice n'obtient rien de plus des relais qui ne l'ont pas encore implémenté, et continue simplement d'utiliser sa logique de pagination existante.
 
 Le NIP traite aussi un cas limite lié aux horodatages identiques. Quand un relais n'envoie pas `"finish"`, plusieurs événements stockés peuvent partager la même valeur `created_at` la plus ancienne dans une réponse, et la pagination basée sur `until` risque de perdre silencieusement des événements qui partagent cet horodatage limite. Il est recommandé aux relais, quand c'est possible, d'avancer suffisamment pour que tous les événements portant cet horodatage limite soient inclus dans une seule réponse, et de n'émettre `"finish"` que lorsqu'il ne reste vraiment plus rien de plus ancien.
 

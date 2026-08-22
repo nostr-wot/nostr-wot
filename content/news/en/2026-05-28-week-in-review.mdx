@@ -1,7 +1,7 @@
 ---
-title: "Week in Review: Eight Pull Requests Merged Into nostr-protocol/nips"
-description: "Eight pull requests were merged into nostr-protocol/nips on 28 May 2026, covering relay connections, group audio/video, direct message deletion, and more."
-excerpt: "On 28 May 2026, eight pull requests landed in nostr-protocol/nips within about ninety minutes of each other, including a new ephemeral gift wrap kind and a deletion section for NIP-17 direct messages."
+title: "Week in Review: Nine Pull Requests Merged Into nostr-protocol/nips"
+description: "Nine pull requests were merged into nostr-protocol/nips on 28 May 2026, covering relay connections, group audio/video, direct message deletion, a new podcast NIP, and more."
+excerpt: "On 28 May 2026, nine pull requests landed in nostr-protocol/nips within about ninety minutes of each other, including a new ephemeral gift wrap kind, a deletion section for NIP-17 direct messages, and a full draft NIP for podcasts."
 date: "2026-05-28"
 publishedAt: "2026-08-22"
 backfilled: true
@@ -43,6 +43,10 @@ sources:
     url: "https://github.com/nostr-protocol/nips/pull/2310"
     publisher: "nostr-protocol/nips"
     date: "2026-05-28"
+  - title: "NIP-F4: podcasts"
+    url: "https://github.com/nostr-protocol/nips/pull/1093"
+    publisher: "nostr-protocol/nips"
+    date: "2026-05-28"
 items:
   - title: "NIP-59: Add ephemeral gift wrap event kind (21059)"
     url: "https://github.com/nostr-protocol/nips/pull/2245"
@@ -68,12 +72,15 @@ items:
   - title: "Update C7 to only allow kind 9 messages in chat views"
     url: "https://github.com/nostr-protocol/nips/pull/2310"
     summary: "Restricts C7 chat views to fetching kind 9 events to keep context consistent."
+  - title: "NIP-F4: podcasts"
+    url: "https://github.com/nostr-protocol/nips/pull/1093"
+    summary: "Adds a draft NIP defining podcast show and episode events, an authorship counter-claim, and a favorites list."
 published: true
 ---
 
-On 28 May 2026, eight pull requests were merged into [nostr-protocol/nips](https://github.com/nostr-protocol/nips), the repository that hosts the Nostr protocol's NIPs. All eight merged between 19:50 and 21:20 UTC, an unusually busy stretch for the repository. They span seven different NIPs plus the C7 chat convention, and they are not part of a coordinated release: each is a separate, independent change that happened to clear review in the same window.
+On 28 May 2026, nine pull requests were merged into [nostr-protocol/nips](https://github.com/nostr-protocol/nips), the repository that hosts the Nostr protocol's NIPs. All nine merged between 19:50 and 21:20 UTC, an unusually busy stretch for the repository. They span nine different NIPs plus the C7 chat convention, and they are not part of a coordinated release: each is a separate, independent change that happened to clear review in the same window.
 
-Two of the eight bear directly on private messaging and get a closer look below. The rest range across relay connection handling, group audio and video, video metadata, application storage, and trust provider wording.
+Two of the nine bear directly on private messaging and get a closer look below. The rest range across relay connection handling, group audio and video, video metadata, application storage, trust provider wording, and a new draft specification for podcasts.
 
 ## NIP-59: a new ephemeral gift wrap kind for real-time messages
 
@@ -93,7 +100,7 @@ Two of the eight bear directly on private messaging and get a closer look below.
 
 ## NIP-71: multiple audio tracks per video
 
-[PR #2255](https://github.com/nostr-protocol/nips/pull/2255) extends the `imeta` tag conventions in NIP-71 so a single video can list several audio tracks, tagged by language with an `l` tag and an `ov` flag marking the original-language track. It also adds a `waveform` property, a short space-separated list of amplitude values, so clients can render a waveform for an audio track without downloading it first.
+[PR #2255](https://github.com/nostr-protocol/nips/pull/2255) extends the `imeta` tag conventions in NIP-71 so a single video can list several audio tracks as separate `imeta` tags, each carrying an `l` property for its language and an `ov` property flagging the original-language track. It also adds a `waveform` property, a short space-separated list of amplitude values, so clients can render a waveform for an audio track.
 
 ## NIP-78: a normal, non-addressable application-specific kind
 
@@ -107,6 +114,10 @@ Two of the eight bear directly on private messaging and get a closer look below.
 
 [PR #2310](https://github.com/nostr-protocol/nips/pull/2310) adds one line to the C7 convention: clients that render a "chat view" as an ordered stream of events MUST only fetch `kind:9` events, to avoid losing context across different implementations. Other content types can still be referenced inside a `kind:9` message by quoting them, per NIP-18.
 
+## NIP-F4: a new draft NIP for podcasts
+
+[PR #1093](https://github.com/nostr-protocol/nips/pull/1093) is the largest change of the day by a wide margin, adding a full draft specification of more than a hundred new lines. It introduces NIP-F4, a draft, optional NIP defining how podcast shows and episodes are published to and read from Nostr relays, structured to fit into existing podcast player workflows. Under NIP-F4, each podcast is its own Nostr keypair, letting it combine a podcasting presence with an ordinary `kind:0`/`kind:1` profile. Show-level information, such as title, cover image, description, and website, is published as a replaceable `kind:10154` event that can also credit hosts, co-hosts, and editors by pubkey. Individual episodes are separate `kind:54` events published directly by the podcast's own key, each carrying a title, description, and one or more `audio` tags pointing to the episode's media file. Because anyone could otherwise falsely claim to be a podcast's author, NIP-F4 adds a `kind:10064` event through which a podcast's real authors publish their own list of the podcasts they author, so a claimed authorship can be checked against that counter-claim rather than trusted on its face. The PR also updates NIP-51 to add a `kind:10054` "Favorite podcasts" list, letting any user publicly note which podcasts they follow using `p` tags for podcast pubkeys and `url` tags for RSS/XML feed URLs, and adds the new event kinds to the NIPs README's kind table.
+
 ## A batch, not a coordinated release
 
-Beyond the two direct message changes, there is no shared thread connecting these eight pull requests. They touch unrelated parts of the protocol, from relay connection handling to group video to application storage, and simply cleared review within the same roughly ninety minute window on 28 May. It was a batch, not a themed release.
+Beyond the two direct message changes, there is no shared thread connecting these nine pull requests. They touch unrelated parts of the protocol, from relay connection handling to group video, application storage, and podcast distribution, and simply cleared review within the same roughly ninety minute window on 28 May. It was a batch, not a themed release, even though the day's largest change by far, the new podcast NIP, landed in the same window as eight much smaller ones.

@@ -19,7 +19,7 @@ sources:
 published: true
 ---
 
-O [NIP-01](https://github.com/nostr-protocol/nips/blob/master/01.md) define `EOSE` como o limite entre eventos armazenados e eventos em tempo real para uma assinatura. O que ele nunca definiu é se o relay realmente enviou tudo o que possui e que corresponde ao filtro. O [NIP-67](https://github.com/nostr-protocol/nips/pull/2317), mesclado em 6 de junho de 2026 por mattn, dá aos relays uma forma de dizer isso.
+O [NIP-01](https://github.com/nostr-protocol/nips/blob/master/01.md) define `EOSE` como o limite entre eventos armazenados e eventos em tempo real para uma assinatura. O que ele nunca definiu é se o relay realmente enviou tudo o que possui e que corresponde ao filtro. O [NIP-67](https://github.com/nostr-protocol/nips/pull/2317), escrito por mattn e mesclado em 6 de junho de 2026, dá aos relays uma forma de dizer isso.
 
 ## A lacuna que o EOSE deixava aberta
 
@@ -43,7 +43,7 @@ Dois valores de dica são definidos. `"finish"` significa que o relay enviou tod
 
 O array de dicas pode carregar um dos valores, os dois, ou nenhum. A especificação é explícita: sua presença é definitiva e sua ausência não é. Se um relay omitir o terceiro elemento por completo, ou enviar um `EOSE` sem dicas, o cliente recorre à mesma heurística de paginação baseada em `until` que já usa hoje. Nada do comportamento atual do cliente precisa mudar para continuar correto.
 
-A compatibilidade funciona nas duas direções. Um relay que adota este NIP continua enviando um `EOSE` de dois elementos para clientes que não entendem a dica, porque clientes que não implementam o NIP-67 indexam `EOSE` por posição e parsers JSON aceitam sem reclamar o elemento extra no fim do array. Um cliente que passa a suportar a dica não ganha nada extra de relays que ainda não a implementaram, e simplesmente continua usando sua lógica de paginação atual.
+A compatibilidade funciona nas duas direções. Um relay que adota este NIP envia o `EOSE` de três elementos a todos os clientes, entendam ou não a dica, porque clientes que não implementam o NIP-67 já indexam `EOSE` por posição e simplesmente ignoram o elemento extra, do mesmo modo que um parser JSON aceita sem reclamar um elemento extra no fim de um array. Um cliente que passa a suportar a dica não ganha nada extra de relays que ainda não a implementaram, e simplesmente continua usando sua lógica de paginação atual.
 
 O NIP também trata um caso limite relacionado a timestamps empatados. Quando um relay não envia `"finish"`, vários eventos armazenados podem compartilhar o mesmo valor de `created_at` mais antigo em uma resposta, e a paginação baseada em `until` corre o risco de descartar silenciosamente eventos que compartilham esse timestamp limite. Recomenda-se aos relays, quando possível, avançar o suficiente para que todos os eventos com esse timestamp limite fiquem incluídos em uma única resposta, e emitir `"finish"` somente quando de fato não restar nada mais antigo.
 

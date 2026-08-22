@@ -1,7 +1,7 @@
 ---
-title: "Resumo da Semana: Oito Pull Requests Mesclados no nostr-protocol/nips"
-description: "Oito pull requests foram mesclados no nostr-protocol/nips em 28 de maio de 2026, cobrindo conexões de relays, áudio/vídeo em grupos, exclusão de mensagens diretas e mais."
-excerpt: "Em 28 de maio de 2026, oito pull requests foram mesclados no nostr-protocol/nips em cerca de noventa minutos, incluindo um novo tipo de gift wrap efêmero e uma seção de exclusão para as mensagens diretas do NIP-17."
+title: "Resumo da Semana: Nove Pull Requests Mesclados no nostr-protocol/nips"
+description: "Nove pull requests foram mesclados no nostr-protocol/nips em 28 de maio de 2026, cobrindo conexões de relays, áudio/vídeo em grupos, exclusão de mensagens diretas, um novo NIP de podcasts e mais."
+excerpt: "Em 28 de maio de 2026, nove pull requests foram mesclados no nostr-protocol/nips em cerca de noventa minutos, incluindo um novo tipo de gift wrap efêmero, uma seção de exclusão para as mensagens diretas do NIP-17 e um NIP completo em rascunho para podcasts."
 date: "2026-05-28"
 publishedAt: "2026-08-22"
 backfilled: true
@@ -43,6 +43,10 @@ sources:
     url: "https://github.com/nostr-protocol/nips/pull/2310"
     publisher: "nostr-protocol/nips"
     date: "2026-05-28"
+  - title: "NIP-F4: podcasts"
+    url: "https://github.com/nostr-protocol/nips/pull/1093"
+    publisher: "nostr-protocol/nips"
+    date: "2026-05-28"
 items:
   - title: "NIP-59: Add ephemeral gift wrap event kind (21059)"
     url: "https://github.com/nostr-protocol/nips/pull/2245"
@@ -68,12 +72,15 @@ items:
   - title: "Update C7 to only allow kind 9 messages in chat views"
     url: "https://github.com/nostr-protocol/nips/pull/2310"
     summary: "Restringe as visualizações de chat do C7 a buscar apenas eventos kind 9 para manter o contexto consistente."
+  - title: "NIP-F4: podcasts"
+    url: "https://github.com/nostr-protocol/nips/pull/1093"
+    summary: "Adiciona um NIP em rascunho que define os eventos de programas e episódios de podcast, uma contraclaim de autoria e uma lista de favoritos."
 published: true
 ---
 
-Em 28 de maio de 2026, oito pull requests foram mesclados no [nostr-protocol/nips](https://github.com/nostr-protocol/nips), o repositório que hospeda os NIPs do protocolo Nostr. Todos os oito foram mesclados entre 19h50 e 21h20 UTC, um período incomumente movimentado para o repositório. Eles abrangem sete NIPs diferentes mais a convenção de chat C7, e não fazem parte de um lançamento coordenado: cada um é uma mudança separada e independente que passou pela revisão na mesma janela de tempo.
+Em 28 de maio de 2026, nove pull requests foram mesclados no [nostr-protocol/nips](https://github.com/nostr-protocol/nips), o repositório que hospeda os NIPs do protocolo Nostr. Todos os nove foram mesclados entre 19h50 e 21h20 UTC, um período incomumente movimentado para o repositório. Eles abrangem nove NIPs diferentes mais a convenção de chat C7, e não fazem parte de um lançamento coordenado: cada um é uma mudança separada e independente que passou pela revisão na mesma janela de tempo.
 
-Dois dos oito têm relação direta com mensagens privadas e são explicados com mais detalhe abaixo. O restante cobre o tratamento de conexões de relays, áudio e vídeo em grupos, metadados de vídeo, armazenamento de aplicações e o texto sobre provedores de confiança.
+Dois dos nove têm relação direta com mensagens privadas e são explicados com mais detalhe abaixo. O restante cobre o tratamento de conexões de relays, áudio e vídeo em grupos, metadados de vídeo, armazenamento de aplicações, o texto sobre provedores de confiança e uma nova especificação em rascunho para podcasts.
 
 ## NIP-59: um novo tipo de gift wrap efêmero para mensagens em tempo real
 
@@ -93,7 +100,7 @@ O [PR #2238](https://github.com/nostr-protocol/nips/pull/2238) adiciona uma seç
 
 ## NIP-71: múltiplas faixas de áudio por vídeo
 
-O [PR #2255](https://github.com/nostr-protocol/nips/pull/2255) estende as convenções da tag `imeta` no NIP-71 para que um único vídeo possa listar várias faixas de áudio, marcadas por idioma com uma tag `l` e uma flag `ov` indicando a faixa no idioma original. Também adiciona uma propriedade `waveform`, uma pequena lista de valores de amplitude separados por espaço, para que os clientes possam renderizar a forma de onda de uma faixa de áudio sem baixá-la antes.
+O [PR #2255](https://github.com/nostr-protocol/nips/pull/2255) estende as convenções da tag `imeta` no NIP-71 para que um único vídeo possa listar várias faixas de áudio como tags `imeta` separadas, cada uma com uma propriedade `l` para o idioma e uma propriedade `ov` indicando a faixa no idioma original. Também adiciona uma propriedade `waveform`, uma pequena lista de valores de amplitude separados por espaço, para que os clientes possam renderizar a forma de onda de uma faixa de áudio.
 
 ## NIP-78: um kind normal e não endereçável para dados específicos de aplicação
 
@@ -107,6 +114,10 @@ O [PR #2304](https://github.com/nostr-protocol/nips/pull/2304) reformula um úni
 
 O [PR #2310](https://github.com/nostr-protocol/nips/pull/2310) adiciona uma linha à convenção C7: clientes que renderizam uma "visualização de chat" como um fluxo ordenado de eventos DEVEM buscar apenas eventos `kind:9`, para evitar perder contexto entre implementações diferentes. Outros tipos de conteúdo ainda podem ser referenciados dentro de uma mensagem `kind:9` por meio de citação, conforme o NIP-18.
 
+## NIP-F4: um novo NIP em rascunho para podcasts
+
+O [PR #1093](https://github.com/nostr-protocol/nips/pull/1093) é, de longe, a maior mudança do dia: adiciona uma especificação completa em rascunho com mais de cem linhas novas. Ele introduz o NIP-F4, um NIP em rascunho e opcional que define como programas e episódios de podcast são publicados nos relays e lidos a partir deles como eventos Nostr, estruturado para se encaixar nos fluxos de trabalho de tocadores de podcast já existentes. No NIP-F4, cada podcast tem seu próprio par de chaves Nostr, o que permite combinar a presença como podcast com um perfil comum `kind:0`/`kind:1`. As informações do programa, como título, imagem de capa, descrição e site, são publicadas como um evento substituível `kind:10154`, que também pode creditar apresentadores, coapresentadores e editores por chave pública. Os episódios individuais são eventos `kind:54` separados, publicados diretamente pela própria chave do podcast, cada um com título, descrição e uma ou mais tags `audio` apontando para o arquivo de mídia do episódio. Como qualquer pessoa poderia, do contrário, alegar falsamente ser autora de um podcast, o NIP-F4 adiciona um evento `kind:10064` por meio do qual os autores reais de um podcast publicam sua própria lista dos podcasts que autoram, de modo que uma autoria alegada possa ser verificada contra essa contraclaim em vez de aceita sem checagem. O PR também atualiza o NIP-51 para adicionar uma lista "Favorite podcasts" do tipo `kind:10054`, permitindo que qualquer usuário indique publicamente quais podcasts segue usando tags `p` para as chaves públicas dos podcasts e tags `url` para as URLs dos feeds RSS/XML, e adiciona os novos kinds de evento à tabela de kinds do README dos NIPs.
+
 ## Um lote, não um lançamento coordenado
 
-Além das duas mudanças sobre mensagens diretas, não há um fio condutor ligando esses oito pull requests. Eles tocam partes não relacionadas do protocolo, do tratamento de conexões de relays ao vídeo em grupos e ao armazenamento de aplicações, e simplesmente passaram pela revisão dentro da mesma janela de cerca de noventa minutos em 28 de maio. Foi um lote, não um lançamento temático.
+Além das duas mudanças sobre mensagens diretas, não há um fio condutor ligando esses nove pull requests. Eles tocam partes não relacionadas do protocolo, do tratamento de conexões de relays ao vídeo em grupos, ao armazenamento de aplicações e à distribuição de podcasts, e simplesmente passaram pela revisão dentro da mesma janela de cerca de noventa minutos em 28 de maio. Foi um lote, não um lançamento temático, ainda que a maior mudança do dia, de longe, o novo NIP de podcasts, tenha chegado na mesma janela que outras oito, muito menores.

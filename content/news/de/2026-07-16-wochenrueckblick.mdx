@@ -43,16 +43,16 @@ items:
     summary: "Fügt ein Suffix-Format hinzu, mit dem eine Gruppenkennung einen Einladungscode tragen kann."
   - title: "NIP-29: add subgroups spec"
     url: "https://github.com/nostr-protocol/nips/pull/2319"
-    summary: "Fügt NIP-29 einen Abschnitt zu Untergruppen hinzu: parent- und child-Tags auf kind:39000, vom Relay über kind:9002-Edits durchgesetzt, mit Zyklenprüfung und wechselseitiger Zustimmung."
+    summary: "Fügt NIP-29 einen Abschnitt zu Untergruppen hinzu: parent- und child-Tags auf kind:39000, vom Relay über kind:9002-Edits durchgesetzt, mit Zyklenprüfung und einem auf einen einzelnen Relay begrenzten Baum."
   - title: "NIP-29: add banner tag to group metadata (kind:39000)"
     url: "https://github.com/nostr-protocol/nips/pull/2383"
     summary: "Fügt dem Gruppenmetadaten-Event kind:39000 ein banner-Tag hinzu."
   - title: "NIP-29: allow a tags in pin list"
     url: "https://github.com/nostr-protocol/nips/pull/2416"
-    summary: "Erweitert das Pin-Listen-Format aus #2379 so, dass zusätzlich a-Tags, Referenzen auf adressierbare Events, neben den bereits unterstützten Tags akzeptiert werden."
+    summary: "Erweitert das Pin-Listen-Format aus #2379 so, dass zusätzlich a-Tags, Referenzen auf adressierbare Events, neben den bereits unterstützten e-Tags akzeptiert werden."
 ---
 
-Zwischen dem 15. und 17. Juli 2026 wurden fünf Pull Requests in [NIP-29](https://github.com/nostr-protocol/nips/blob/master/29.md) gemergt, die Spezifikation für relay-basierte Gruppen. Das ist eine ungewöhnlich dichte Häufung für ein einzelnes NIP: [#2379](https://github.com/nostr-protocol/nips/pull/2379), [#2380](https://github.com/nostr-protocol/nips/pull/2380), [#2319](https://github.com/nostr-protocol/nips/pull/2319) und [#2383](https://github.com/nostr-protocol/nips/pull/2383) wurden innerhalb von etwa einem Tag gemergt, drei davon (#2380, #2319 und #2383) sogar innerhalb eines 25-Sekunden-Fensters am 16. Juli, und [#2416](https://github.com/nostr-protocol/nips/pull/2416) folgte am nächsten Morgen.
+Zwischen dem 15. und 17. Juli 2026 wurden fünf Pull Requests in [NIP-29](https://github.com/nostr-protocol/nips/blob/master/29.md) gemergt, die Spezifikation für relay-basierte Gruppen. Das ist eine ungewöhnlich dichte Häufung für ein einzelnes NIP: [#2379](https://github.com/nostr-protocol/nips/pull/2379), [#2380](https://github.com/nostr-protocol/nips/pull/2380), [#2319](https://github.com/nostr-protocol/nips/pull/2319) und [#2383](https://github.com/nostr-protocol/nips/pull/2383) wurden innerhalb von etwa einem Tag gemergt, drei davon (#2380, #2319 und #2383) sogar innerhalb eines 25-Sekunden-Fensters am 16. Juli, und [#2416](https://github.com/nostr-protocol/nips/pull/2416) folgte um 00:01:30 UTC am 17. Juli.
 
 Einzeln betrachtet ist jede Änderung klein. Zusammen betrachtet beschreiben sie dieselbe Art von Arbeit: relay-basierte Gruppen erhalten das Inventar, das etablierte Chat-Plattformen bereits haben. Angepinnte Nachrichten, Einladungslinks, Unterkanäle und ein Banner-Bild sind für Chat-Software im Allgemeinen keine neuen Ideen. Neu ist hier, dass NIP-29 für jede dieser Funktionen einen spezifizierten, vom Relay durchgesetzten Weg bekommen hat, ein Merge nach dem anderen.
 
@@ -62,13 +62,13 @@ Der früheste der fünf, gemergt am 2026-07-15, [#2379](https://github.com/nostr
 
 ## Ein Einladungscode-Format für Gruppenkennungen (#2380)
 
-[#2380](https://github.com/nostr-protocol/nips/pull/2380) fügt ein Suffix-Format hinzu, mit dem eine Gruppenkennung einen Einladungscode tragen kann. Mit 8 hinzugefügten Zeilen ist es der kleinste Diff der fünf, gibt NIP-29-Gruppen aber eine Möglichkeit auf Spezifikationsebene, eine Einladung als Teil der Kennung selbst zu verteilen, statt als Link außerhalb der Kennung.
+[#2380](https://github.com/nostr-protocol/nips/pull/2380) fügt ein Suffix-Format hinzu, mit dem eine Gruppenkennung einen Einladungscode tragen kann. Mit 8 hinzugefügten Zeilen gibt es NIP-29-Gruppen eine Möglichkeit auf Spezifikationsebene, eine Einladung als Teil der Kennung selbst zu verteilen, statt als Link außerhalb der Kennung.
 
 ## Untergruppen: die größte Änderung der Woche (#2319)
 
 [#2319](https://github.com/nostr-protocol/nips/pull/2319) ist strukturell die größte der fünf, mit 62 hinzugefügten Zeilen, und diejenige, die am meisten daran ändert, wie sich Gruppen zueinander verhalten. Sie fügt NIP-29 einen Abschnitt zu Untergruppen hinzu, der es erlaubt, Gruppen hierarchisch zu organisieren. Das geschieht ohne ein neues Event-Kind: Es werden das bestehende `kind:39000` (Gruppenmetadaten) und `kind:9002` (edit-metadata) wiederverwendet, ergänzt um zwei Tag-Namen, `parent` und `child`.
 
-Ein `parent`-Tag im `kind:39000`-Event einer Gruppe verweist auf die `d`-Kennung der übergeordneten Gruppe. Fehlt das `parent`-Tag oder ist es leer, ist die Gruppe eine Wurzel ohne übergeordnete Gruppe. Clients sollen den Gruppenbaum lokal aufbauen, indem sie `kind:39000`-Events lesen, statt einen eigenen Hierarchie-Endpunkt abzufragen.
+Ein `parent`-Tag im `kind:39000`-Event einer Gruppe verweist auf die `d`-Kennung der übergeordneten Gruppe. Fehlt das `parent`-Tag, ist die Gruppe eine Wurzel ohne übergeordnete Gruppe, und ein edit-metadata-Event ohne `parent`-Tag ist genau das, was eine Gruppe wieder zur Wurzel löst. Clients sollen den Gruppenbaum lokal aufbauen, indem sie `kind:39000`-Events lesen, statt einen eigenen Hierarchie-Endpunkt abzufragen.
 
 Das Setzen, Ändern oder Zurücksetzen einer übergeordneten Gruppe geschieht über ein `kind:9002`-edit-metadata-Event. Der Relay ist dafür verantwortlich, beide Seiten der Beziehung synchron zu halten: Ändert sich die übergeordnete Gruppe, aktualisiert der Relay die `child`-Tags sowohl der alten als auch der neuen übergeordneten Gruppe in deren `kind:39000`-Events. Das `kind:39000` der übergeordneten Gruppe muss jedes ihrer Kinder als geordnetes `["child", "<id>"]`-Tag auflisten, und die Spezifikation lässt Relays Metadaten-Änderungen ablehnen, die ein bestehendes Kind stillschweigend entfernen würden. Da die Reihenfolge aus der Tag-Position stammt, können Admins die Reihenfolge ihrer Kinder ändern.
 
@@ -76,12 +76,12 @@ Die Beziehung wird vom Relay durchgesetzt, nicht zwischen Clients ausgehandelt. 
 
 ## Ein Banner-Tag für Gruppenmetadaten (#2383)
 
-[#2383](https://github.com/nostr-protocol/nips/pull/2383) fügt dem `kind:39000`-Gruppenmetadaten-Event ein `banner`-Tag hinzu, eine Ergänzung von 2 Zeilen (mit einer geänderten Zeile), die Gruppen einen Platz auf Spezifikationsebene gibt, um ein Banner-Bild neben den bereits vorhandenen Metadaten wie Name und Profilbild anzugeben.
+[#2383](https://github.com/nostr-protocol/nips/pull/2383) fügt dem `kind:39000`-Gruppenmetadaten-Event ein `banner`-Tag hinzu. Mit zwei hinzugefügten und einer entfernten Zeile ist es der kleinste Diff der fünf und gibt Gruppen einen Platz auf Spezifikationsebene, um ein Banner-Bild neben den bereits vorhandenen Metadaten wie Name und Profilbild anzugeben.
 
 ## Die Pin-Liste lernt, auf adressierbare Events zu verweisen (#2416)
 
-[#2416](https://github.com/nostr-protocol/nips/pull/2416), gemergt am Morgen nach dem Rest der Serie, greift die Pin-Liste auf, die #2379 zwei Tage zuvor eingeführt hatte. Er erweitert das Format so, dass die Liste zusätzlich `a`-Tags enthalten kann, die NIP-01-Konvention zum Verweisen auf adressierbare Events über Kind, Public Key und `d`-Kennung, zusätzlich zu den bereits unterstützten Tags für Verweise auf gewöhnliche, nicht adressierbare Events.
+[#2416](https://github.com/nostr-protocol/nips/pull/2416), gemergt um 00:01:30 UTC am 17. Juli, greift die Pin-Liste auf, die #2379 zwei Tage zuvor eingeführt hatte. Er erweitert das Format so, dass die Liste zusätzlich `a`-Tags enthalten kann, die NIP-01-Konvention zum Verweisen auf adressierbare Events über Kind, Public Key und `d`-Kennung, zusätzlich zu den bereits unterstützten `e`-Tags für Verweise auf gewöhnliche, nicht adressierbare Events.
 
 ## Was die Woche zusammenfasst
 
-Keiner dieser fünf Pull Requests ist für sich genommen groß, und die Aufzeichnung dieser Woche sagt nicht, warum die Maintainer sie zusammen angegangen sind oder was als Nächstes kommt. Was sie zeigt, ist die Form der Arbeit: In drei Tagen erhielt NIP-29 eine Möglichkeit, Nachrichten anzupinnen, eine Möglichkeit, per Kennung einzuladen, eine Möglichkeit, Gruppen ineinander zu verschachteln, eine Möglichkeit, ein Banner festzulegen, und eine erweiterte Pin-Liste, die sich auf die erste Änderung zurückbezieht. Das ist eine Spezifikation, die aktiv die Funktionen füllt, die ein Gruppenchat-Protokoll braucht, sobald Menschen danach fragen.
+Keiner dieser fünf Pull Requests ist für sich genommen groß, und die Quellen sagen nicht, warum die Maintainer sie zusammen angegangen sind oder was als Nächstes kommt. Was sie zeigt, ist die Form der Arbeit: In drei Tagen erhielt NIP-29 eine Möglichkeit, Nachrichten anzupinnen, eine Möglichkeit, per Kennung einzuladen, eine Möglichkeit, Gruppen ineinander zu verschachteln, eine Möglichkeit, ein Banner festzulegen, und eine erweiterte Pin-Liste, die sich auf die erste Änderung zurückbezieht. Das ist eine Spezifikation, die aktiv die Funktionen füllt, die ein Gruppenchat-Protokoll braucht, sobald Menschen danach fragen.

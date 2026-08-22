@@ -19,7 +19,7 @@ sources:
 published: true
 ---
 
-[NIP-01](https://github.com/nostr-protocol/nips/blob/master/01.md) definiert `EOSE` als die Grenze zwischen gespeicherten Events und Echtzeit-Events für ein Abonnement. Was es nie festgelegt hat, ist, ob das Relay tatsächlich alles gesendet hat, was es besitzt und was zum Filter passt. [NIP-67](https://github.com/nostr-protocol/nips/pull/2317), am 6. Juni 2026 von mattn gemergt, gibt Relays eine Möglichkeit, das mitzuteilen.
+[NIP-01](https://github.com/nostr-protocol/nips/blob/master/01.md) definiert `EOSE` als die Grenze zwischen gespeicherten Events und Echtzeit-Events für ein Abonnement. Was es nie festgelegt hat, ist, ob das Relay tatsächlich alles gesendet hat, was es besitzt und was zum Filter passt. [NIP-67](https://github.com/nostr-protocol/nips/pull/2317), verfasst von mattn und am 6. Juni 2026 gemergt, gibt Relays eine Möglichkeit, das mitzuteilen.
 
 ## Die Lücke, die EOSE offen ließ
 
@@ -43,7 +43,7 @@ Zwei Hinweiswerte sind definiert. `"finish"` bedeutet, dass das Relay alle gespe
 
 Das Hinweis-Array kann einen der beiden Werte, beide oder keinen enthalten. Die Spezifikation ist eindeutig: Ihre Anwesenheit ist definitiv, ihre Abwesenheit nicht. Lässt ein Relay das dritte Element ganz weg oder sendet ein `EOSE` ohne Hinweise, fällt der Client auf dieselbe `until`-basierte Paginierungs-Heuristik zurück, die er bereits heute verwendet. Am bestehenden Client-Verhalten muss nichts geändert werden, damit es korrekt bleibt.
 
-Die Kompatibilität funktioniert in beide Richtungen. Ein Relay, das dieses NIP einführt, sendet weiterhin ein zweiteiliges `EOSE` an Clients, die den Hinweis nicht verstehen, weil Clients ohne NIP-67-Unterstützung `EOSE` positionsbasiert indizieren und JSON-Parser das zusätzliche Element am Ende des Arrays klaglos akzeptieren. Ein Client, der Unterstützung für den Hinweis hinzufügt, bekommt von Relays, die ihn noch nicht implementiert haben, nichts extra und nutzt einfach weiter seine bestehende Paginierungslogik.
+Die Kompatibilität funktioniert in beide Richtungen. Ein Relay, das dieses NIP einführt, sendet das dreiteilige `EOSE` an jeden Client, egal ob dieser den Hinweis versteht oder nicht, weil Clients ohne NIP-67-Unterstützung `EOSE` ohnehin positionsbasiert indizieren und das zusätzliche Element einfach ignorieren, so wie ein JSON-Parser ein überzähliges Element am Ende eines Arrays klaglos akzeptiert. Ein Client, der Unterstützung für den Hinweis hinzufügt, bekommt von Relays, die ihn noch nicht implementiert haben, nichts extra und nutzt einfach weiter seine bestehende Paginierungslogik.
 
 Das NIP behandelt auch einen verwandten Grenzfall bei gleichen Zeitstempeln. Sendet ein Relay kein `"finish"`, können mehrere gespeicherte Events in einer Antwort denselben ältesten `created_at`-Wert teilen, und die `until`-basierte Paginierung riskiert, Events, die diesen Grenz-Zeitstempel teilen, stillschweigend zu verlieren. Relays wird empfohlen, wo möglich, weit genug voranzuschreiten, damit alle Events mit diesem Grenz-Zeitstempel in einer Antwort enthalten sind, und `"finish"` erst dann zu senden, wenn wirklich nichts Älteres mehr übrig ist.
 

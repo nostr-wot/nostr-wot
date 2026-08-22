@@ -1,7 +1,7 @@
 ---
-title: "Wochenrückblick: Acht Pull Requests in nostr-protocol/nips gemergt"
-description: "Am 28. Mai 2026 wurden acht Pull Requests in nostr-protocol/nips gemergt, die Relay-Verbindungen, Gruppen-Audio/Video, das Löschen von Direktnachrichten und mehr betreffen."
-excerpt: "Am 28. Mai 2026 landeten acht Pull Requests innerhalb von etwa neunzig Minuten in nostr-protocol/nips, darunter ein neuer ephemerer Gift-Wrap-Kind und ein Abschnitt zum Löschen für NIP-17-Direktnachrichten."
+title: "Wochenrückblick: Neun Pull Requests in nostr-protocol/nips gemergt"
+description: "Am 28. Mai 2026 wurden neun Pull Requests in nostr-protocol/nips gemergt, die Relay-Verbindungen, Gruppen-Audio/Video, das Löschen von Direktnachrichten, einen neuen Podcast-NIP und mehr betreffen."
+excerpt: "Am 28. Mai 2026 landeten neun Pull Requests innerhalb von etwa neunzig Minuten in nostr-protocol/nips, darunter ein neuer ephemerer Gift-Wrap-Kind, ein Abschnitt zum Löschen für NIP-17-Direktnachrichten und ein vollständiger Entwurfs-NIP für Podcasts."
 date: "2026-05-28"
 publishedAt: "2026-08-22"
 backfilled: true
@@ -43,6 +43,10 @@ sources:
     url: "https://github.com/nostr-protocol/nips/pull/2310"
     publisher: "nostr-protocol/nips"
     date: "2026-05-28"
+  - title: "NIP-F4: podcasts"
+    url: "https://github.com/nostr-protocol/nips/pull/1093"
+    publisher: "nostr-protocol/nips"
+    date: "2026-05-28"
 items:
   - title: "NIP-59: Add ephemeral gift wrap event kind (21059)"
     url: "https://github.com/nostr-protocol/nips/pull/2245"
@@ -68,12 +72,15 @@ items:
   - title: "Update C7 to only allow kind 9 messages in chat views"
     url: "https://github.com/nostr-protocol/nips/pull/2310"
     summary: "Beschränkt C7-Chat-Ansichten darauf, nur kind-9-Events abzurufen, um den Kontext konsistent zu halten."
+  - title: "NIP-F4: podcasts"
+    url: "https://github.com/nostr-protocol/nips/pull/1093"
+    summary: "Fügt einen Entwurfs-NIP hinzu, der Events für Podcast-Shows und -Episoden, einen Gegenbeleg zur Urheberschaft und eine Favoritenliste definiert."
 published: true
 ---
 
-Am 28. Mai 2026 wurden acht Pull Requests in [nostr-protocol/nips](https://github.com/nostr-protocol/nips) gemergt, das Repository, in dem die NIPs des Nostr-Protokolls liegen. Alle acht wurden zwischen 19:50 und 21:20 UTC gemergt, ein ungewöhnlich dichter Zeitraum für dieses Repository. Sie betreffen sieben verschiedene NIPs sowie die C7-Chat-Konvention und sind nicht Teil eines koordinierten Releases: Jeder ist eine eigenständige, unabhängige Änderung, die zufällig im selben Zeitfenster durch den Review kam.
+Am 28. Mai 2026 wurden neun Pull Requests in [nostr-protocol/nips](https://github.com/nostr-protocol/nips) gemergt, das Repository, in dem die NIPs des Nostr-Protokolls liegen. Alle neun wurden zwischen 19:50 und 21:20 UTC gemergt, ein ungewöhnlich dichter Zeitraum für dieses Repository. Sie betreffen neun verschiedene NIPs sowie die C7-Chat-Konvention und sind nicht Teil eines koordinierten Releases: Jeder ist eine eigenständige, unabhängige Änderung, die zufällig im selben Zeitfenster durch den Review kam.
 
-Zwei der acht betreffen direkt private Nachrichten und werden weiter unten genauer betrachtet. Die übrigen reichen von der Handhabung von Relay-Verbindungen über Gruppen-Audio und -Video bis zu Video-Metadaten, Anwendungsspeicherung und der Formulierung zu vertrauenswürdigen Anbietern.
+Zwei der neun betreffen direkt private Nachrichten und werden weiter unten genauer betrachtet. Die übrigen reichen von der Handhabung von Relay-Verbindungen über Gruppen-Audio und -Video bis zu Video-Metadaten, Anwendungsspeicherung, der Formulierung zu vertrauenswürdigen Anbietern und einer neuen Entwurfsspezifikation für Podcasts.
 
 ## NIP-59: ein neuer ephemerer Gift-Wrap-Kind für Echtzeit-Nachrichten
 
@@ -93,7 +100,7 @@ Zwei der acht betreffen direkt private Nachrichten und werden weiter unten genau
 
 ## NIP-71: mehrere Audiospuren pro Video
 
-[PR #2255](https://github.com/nostr-protocol/nips/pull/2255) erweitert die `imeta`-Tag-Konventionen in NIP-71, sodass ein einzelnes Video mehrere Audiospuren auflisten kann, die per Sprache mit einem `l`-Tag gekennzeichnet werden, sowie einem `ov`-Flag, das die Spur in der Originalsprache markiert. Außerdem wird eine `waveform`-Eigenschaft hinzugefügt, eine kurze, durch Leerzeichen getrennte Liste von Amplitudenwerten, mit der Clients eine Wellenform für eine Audiospur darstellen können, ohne sie vorher herunterzuladen.
+[PR #2255](https://github.com/nostr-protocol/nips/pull/2255) erweitert die `imeta`-Tag-Konventionen in NIP-71, sodass ein einzelnes Video mehrere Audiospuren als separate `imeta`-Tags auflisten kann, jeweils mit einer `l`-Eigenschaft für die Sprache und einer `ov`-Eigenschaft, die die Spur in der Originalsprache markiert. Außerdem wird eine `waveform`-Eigenschaft hinzugefügt, eine kurze, durch Leerzeichen getrennte Liste von Amplitudenwerten, mit der Clients eine Wellenform für eine Audiospur darstellen können.
 
 ## NIP-78: ein normaler, nicht adressierbarer Kind für anwendungsspezifische Daten
 
@@ -107,6 +114,10 @@ Zwei der acht betreffen direkt private Nachrichten und werden weiter unten genau
 
 [PR #2310](https://github.com/nostr-protocol/nips/pull/2310) fügt der C7-Konvention eine Zeile hinzu: Clients, die eine "Chat-Ansicht" als geordneten Event-Strom darstellen, DÜRFEN nur `kind:9`-Events abrufen, um zu vermeiden, dass zwischen unterschiedlichen Implementierungen Kontext verloren geht. Andere Inhaltstypen können weiterhin innerhalb einer `kind:9`-Nachricht durch Zitieren referenziert werden, gemäß NIP-18.
 
+## NIP-F4: ein neuer Entwurfs-NIP für Podcasts
+
+[PR #1093](https://github.com/nostr-protocol/nips/pull/1093) ist mit großem Abstand die größte Änderung des Tages: Sie fügt eine vollständige Entwurfsspezifikation von über hundert neuen Zeilen hinzu. Sie führt NIP-F4 ein, einen Entwurfs- und optionalen NIP, der festlegt, wie Podcast-Shows und -Episoden als Nostr-Events an Relays veröffentlicht und von dort gelesen werden, so gestaltet, dass er in bestehende Podcast-Player-Workflows passt. Unter NIP-F4 hat jeder Podcast sein eigenes Nostr-Schlüsselpaar, wodurch sich die Podcast-Präsenz mit einem gewöhnlichen `kind:0`/`kind:1`-Profil verbinden lässt. Informationen auf Show-Ebene wie Titel, Coverbild, Beschreibung und Website werden als ersetzbares `kind:10154`-Event veröffentlicht, das auch Hosts, Co-Hosts und Editoren per Pubkey nennen kann. Einzelne Episoden sind separate `kind:54`-Events, die direkt mit dem eigenen Schlüssel des Podcasts veröffentlicht werden und jeweils Titel, Beschreibung sowie ein oder mehrere `audio`-Tags mit Verweis auf die Mediendatei der Episode tragen. Da sonst jeder fälschlich behaupten könnte, Urheber eines Podcasts zu sein, fügt NIP-F4 ein `kind:10064`-Event hinzu, über das die tatsächlichen Urheber eines Podcasts ihre eigene Liste der von ihnen verantworteten Podcasts veröffentlichen, sodass eine behauptete Urheberschaft gegen diesen Gegenbeleg geprüft werden kann, statt ungeprüft übernommen zu werden. Der PR aktualisiert außerdem NIP-51 um eine "Favorite podcasts"-Liste vom Typ `kind:10054`, mit der jeder Nutzer öffentlich festhalten kann, welchen Podcasts er folgt, unter Verwendung von `p`-Tags für Podcast-Pubkeys und `url`-Tags für RSS/XML-Feed-URLs, und ergänzt die neuen Event-Kinds in der Kind-Tabelle der NIPs-README.
+
 ## Ein Bündel, kein koordiniertes Release
 
-Abgesehen von den beiden Änderungen zu Direktnachrichten gibt es keinen gemeinsamen roten Faden, der diese acht Pull Requests verbindet. Sie betreffen nicht zusammenhängende Teile des Protokolls, von der Handhabung von Relay-Verbindungen über Gruppenvideo bis zur Anwendungsspeicherung, und kamen einfach innerhalb desselben etwa neunzigminütigen Zeitfensters am 28. Mai durch den Review. Es war ein Bündel, kein thematisches Release.
+Abgesehen von den beiden Änderungen zu Direktnachrichten gibt es keinen gemeinsamen roten Faden, der diese neun Pull Requests verbindet. Sie betreffen nicht zusammenhängende Teile des Protokolls, von der Handhabung von Relay-Verbindungen über Gruppenvideo und Anwendungsspeicherung bis zur Podcast-Verbreitung, und kamen einfach innerhalb desselben etwa neunzigminütigen Zeitfensters am 28. Mai durch den Review. Es war ein Bündel, kein thematisches Release, auch wenn die mit Abstand größte Änderung des Tages, der neue Podcast-NIP, im selben Zeitfenster landete wie acht weitaus kleinere.

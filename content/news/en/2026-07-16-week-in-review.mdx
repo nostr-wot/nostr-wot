@@ -43,16 +43,16 @@ items:
     summary: "Adds a suffix format so a group identifier can carry an invite code."
   - title: "NIP-29: add subgroups spec"
     url: "https://github.com/nostr-protocol/nips/pull/2319"
-    summary: "Adds a Subgroups section to NIP-29: parent and child tags on kind:39000, relay-enforced via kind:9002 edits, with cycle and cross-relay checks."
+    summary: "Adds a Subgroups section to NIP-29: parent and child tags on kind:39000, relay-enforced via kind:9002 edits, with cycle checks and a tree scoped to a single relay."
   - title: "NIP-29: add banner tag to group metadata (kind:39000)"
     url: "https://github.com/nostr-protocol/nips/pull/2383"
     summary: "Adds a banner tag to the kind:39000 group metadata event."
   - title: "NIP-29: allow a tags in pin list"
     url: "https://github.com/nostr-protocol/nips/pull/2416"
-    summary: "Extends the pin list format from #2379 to also accept a tags, addressable event references, alongside the tags it already supported."
+    summary: "Extends the pin list format from #2379 to also accept a tags, addressable event references, alongside the e tags it already supported."
 ---
 
-Between July 15 and July 17, 2026, five pull requests were merged into [NIP-29](https://github.com/nostr-protocol/nips/blob/master/29.md), the specification for relay-based groups. That is an unusually tight cluster for a single NIP: [#2379](https://github.com/nostr-protocol/nips/pull/2379), [#2380](https://github.com/nostr-protocol/nips/pull/2380), [#2319](https://github.com/nostr-protocol/nips/pull/2319) and [#2383](https://github.com/nostr-protocol/nips/pull/2383) all merged within about a day of each other, three of them (#2380, #2319, #2383) within a 25-second window on July 16, and [#2416](https://github.com/nostr-protocol/nips/pull/2416) followed the next morning.
+Between July 15 and July 17, 2026, five pull requests were merged into [NIP-29](https://github.com/nostr-protocol/nips/blob/master/29.md), the specification for relay-based groups. That is an unusually tight cluster for a single NIP: [#2379](https://github.com/nostr-protocol/nips/pull/2379), [#2380](https://github.com/nostr-protocol/nips/pull/2380), [#2319](https://github.com/nostr-protocol/nips/pull/2319) and [#2383](https://github.com/nostr-protocol/nips/pull/2383) all merged within about a day of each other, three of them (#2380, #2319, #2383) within a 25-second window on July 16, and [#2416](https://github.com/nostr-protocol/nips/pull/2416) followed at 00:01:30 UTC on July 17.
 
 Looked at individually, each change is small. Looked at together, they describe the same category of work: relay-based groups picking up the furniture that established chat platforms already have. Pinned messages, invite links, sub-channels and a banner image are not new ideas in chat software generally. What is new here is that NIP-29 gained a specified, relay-enforced way to do each of them, one merge at a time.
 
@@ -62,13 +62,13 @@ The earliest of the five, merged 2026-07-15, [#2379](https://github.com/nostr-pr
 
 ## An invite code format for group identifiers (#2380)
 
-[#2380](https://github.com/nostr-protocol/nips/pull/2380) adds a suffix format that lets a group identifier carry an invite code. At 8 added lines, it is the smallest diff of the five, but it gives NIP-29 groups a spec-level way to distribute an invite as part of the identifier itself rather than as an out-of-band link.
+[#2380](https://github.com/nostr-protocol/nips/pull/2380) adds a suffix format that lets a group identifier carry an invite code. At 8 added lines, it gives NIP-29 groups a spec-level way to distribute an invite as part of the identifier itself rather than as an out-of-band link.
 
 ## Subgroups: the largest change of the week (#2319)
 
 [#2319](https://github.com/nostr-protocol/nips/pull/2319) is the structurally largest of the five, at 62 added lines, and it is the one that does the most to change how groups relate to each other. It adds a Subgroups section to NIP-29, letting groups be organized hierarchically. It does this without introducing any new event kind: it reuses the existing `kind:39000` (group metadata) and `kind:9002` (edit-metadata) and adds two tag names, `parent` and `child`.
 
-A `parent` tag on a group's `kind:39000` event points at the parent group's `d` identifier. No `parent` tag, or an empty one, means the group is a root with no parent. Clients are expected to build the group tree locally by reading `kind:39000` events rather than querying a dedicated hierarchy endpoint.
+A `parent` tag on a group's `kind:39000` event points at the parent group's `d` identifier. No `parent` tag means the group is a root with no parent, and an edit-metadata event submitted with no `parent` tag is how a group gets detached back to root. Clients are expected to build the group tree locally by reading `kind:39000` events rather than querying a dedicated hierarchy endpoint.
 
 Parenting, re-parenting, and promoting a group back to root all happen through a `kind:9002` edit-metadata event. The relay is responsible for keeping both sides of the relationship in sync: when a group's parent changes, the relay updates the `child` tags on the old and new parent's `kind:39000` events to match. The parent's `kind:39000` must list every one of its children as an ordered `["child", "<id>"]` tag, and the spec has relays reject metadata edits that would silently drop an existing child. Since order comes from tag position, admins can rearrange the listed order of their children.
 
@@ -76,12 +76,12 @@ The relationship is relay-enforced rather than negotiated between clients. A `ki
 
 ## A banner tag for group metadata (#2383)
 
-[#2383](https://github.com/nostr-protocol/nips/pull/2383) adds a `banner` tag to the `kind:39000` group metadata event, a 2-line addition (with one line changed) that gives groups a spec-level place to declare a banner image alongside whatever metadata they already carry, such as name and picture.
+[#2383](https://github.com/nostr-protocol/nips/pull/2383) adds a `banner` tag to the `kind:39000` group metadata event. At two lines added and one removed, it is the smallest diff of the five, giving groups a spec-level place to declare a banner image alongside whatever metadata they already carry, such as name and picture.
 
 ## The pin list learns to reference addressable events (#2416)
 
-[#2416](https://github.com/nostr-protocol/nips/pull/2416), merged the morning after the rest of the batch, returns to the pin list that #2379 introduced two days earlier. It extends the format so the list can also hold `a` tags, the NIP-01 convention for referencing addressable events by kind, pubkey and `d` identifier, rather than only the tags it already supported for referencing regular, non-addressable events.
+[#2416](https://github.com/nostr-protocol/nips/pull/2416), merged at 00:01:30 UTC on July 17, returns to the pin list that #2379 introduced two days earlier. It extends the format so the list can also hold `a` tags, the NIP-01 convention for referencing addressable events by kind, pubkey and `d` identifier, alongside the `e` tags it already supported for referencing regular, non-addressable events.
 
 ## What the week adds up to
 
-None of these five pull requests is large on its own, and the ledger for this week does not say why the maintainers took them up together or what happens next. What it does show is the shape of the work: in three days, NIP-29 gained a way to pin messages, a way to invite by identifier, a way to nest groups inside other groups, a way to set a banner, and a broadened pin list to tie back into the first change. That is a specification actively filling in the features a group chat protocol needs once people start asking for them.
+None of these five pull requests is large on its own, and the sources do not say why the maintainers took them up together or what happens next. What it does show is the shape of the work: in three days, NIP-29 gained a way to pin messages, a way to invite by identifier, a way to nest groups inside other groups, a way to set a banner, and a broadened pin list to tie back into the first change. That is a specification actively filling in the features a group chat protocol needs once people start asking for them.

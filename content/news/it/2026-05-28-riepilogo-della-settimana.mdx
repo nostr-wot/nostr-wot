@@ -1,7 +1,7 @@
 ---
-title: "Riepilogo della Settimana: Otto Pull Request Uniti in nostr-protocol/nips"
-description: "Otto pull request sono stati uniti a nostr-protocol/nips il 28 maggio 2026, riguardanti le connessioni ai relay, audio/video nei gruppi, l'eliminazione dei messaggi diretti e altro."
-excerpt: "Il 28 maggio 2026, otto pull request sono stati uniti a nostr-protocol/nips nell'arco di circa novanta minuti, incluso un nuovo tipo di gift wrap effimero e una sezione sull'eliminazione per i messaggi diretti di NIP-17."
+title: "Riepilogo della Settimana: Nove Pull Request Uniti in nostr-protocol/nips"
+description: "Nove pull request sono stati uniti a nostr-protocol/nips il 28 maggio 2026, riguardanti le connessioni ai relay, audio/video nei gruppi, l'eliminazione dei messaggi diretti, un nuovo NIP per i podcast e altro."
+excerpt: "Il 28 maggio 2026, nove pull request sono stati uniti a nostr-protocol/nips nell'arco di circa novanta minuti, incluso un nuovo tipo di gift wrap effimero, una sezione sull'eliminazione per i messaggi diretti di NIP-17 e un NIP completo in bozza per i podcast."
 date: "2026-05-28"
 publishedAt: "2026-08-22"
 backfilled: true
@@ -43,6 +43,10 @@ sources:
     url: "https://github.com/nostr-protocol/nips/pull/2310"
     publisher: "nostr-protocol/nips"
     date: "2026-05-28"
+  - title: "NIP-F4: podcasts"
+    url: "https://github.com/nostr-protocol/nips/pull/1093"
+    publisher: "nostr-protocol/nips"
+    date: "2026-05-28"
 items:
   - title: "NIP-59: Add ephemeral gift wrap event kind (21059)"
     url: "https://github.com/nostr-protocol/nips/pull/2245"
@@ -68,12 +72,15 @@ items:
   - title: "Update C7 to only allow kind 9 messages in chat views"
     url: "https://github.com/nostr-protocol/nips/pull/2310"
     summary: "Limita le viste chat di C7 al recupero dei soli eventi kind 9 per mantenere il contesto coerente."
+  - title: "NIP-F4: podcasts"
+    url: "https://github.com/nostr-protocol/nips/pull/1093"
+    summary: "Aggiunge un NIP in bozza che definisce gli eventi di show ed episodi podcast, una contro-attestazione di autorialità e una lista dei preferiti."
 published: true
 ---
 
-Il 28 maggio 2026 sono stati uniti otto pull request a [nostr-protocol/nips](https://github.com/nostr-protocol/nips), il repository che ospita i NIP del protocollo Nostr. Tutti e otto sono stati uniti tra le 19:50 e le 21:20 UTC, un intervallo insolitamente intenso per il repository. Riguardano sette NIP diversi più la convenzione di chat C7, e non fanno parte di un rilascio coordinato: ciascuno è una modifica separata e indipendente che ha superato la revisione nella stessa finestra temporale.
+Il 28 maggio 2026 sono stati uniti nove pull request a [nostr-protocol/nips](https://github.com/nostr-protocol/nips), il repository che ospita i NIP del protocollo Nostr. Tutti e nove sono stati uniti tra le 19:50 e le 21:20 UTC, un intervallo insolitamente intenso per il repository. Riguardano nove NIP diversi più la convenzione di chat C7, e non fanno parte di un rilascio coordinato: ciascuno è una modifica separata e indipendente che ha superato la revisione nella stessa finestra temporale.
 
-Due di questi otto riguardano direttamente la messaggistica privata e vengono approfonditi qui sotto. Gli altri spaziano dalla gestione delle connessioni ai relay all'audio e video nei gruppi, ai metadati video, all'archiviazione dati delle applicazioni e al testo sui provider di fiducia.
+Due di questi nove riguardano direttamente la messaggistica privata e vengono approfonditi qui sotto. Gli altri spaziano dalla gestione delle connessioni ai relay all'audio e video nei gruppi, ai metadati video, all'archiviazione dati delle applicazioni, al testo sui provider di fiducia e a una nuova specifica in bozza per i podcast.
 
 ## NIP-59: un nuovo tipo di gift wrap effimero per messaggi in tempo reale
 
@@ -93,7 +100,7 @@ La [PR #2238](https://github.com/nostr-protocol/nips/pull/2238) aggiunge una sez
 
 ## NIP-71: più tracce audio per video
 
-La [PR #2255](https://github.com/nostr-protocol/nips/pull/2255) estende le convenzioni del tag `imeta` in NIP-71 in modo che un singolo video possa elencare più tracce audio, etichettate per lingua con un tag `l` e un flag `ov` che indica la traccia nella lingua originale. Aggiunge anche una proprietà `waveform`, un breve elenco di valori di ampiezza separati da spazi, così i client possono disegnare la forma d'onda di una traccia audio senza doverla prima scaricare.
+La [PR #2255](https://github.com/nostr-protocol/nips/pull/2255) estende le convenzioni del tag `imeta` in NIP-71 in modo che un singolo video possa elencare più tracce audio come tag `imeta` separati, ciascuno con una proprietà `l` per la lingua e una proprietà `ov` che indica la traccia nella lingua originale. Aggiunge anche una proprietà `waveform`, un breve elenco di valori di ampiezza separati da spazi, così i client possono disegnare la forma d'onda di una traccia audio.
 
 ## NIP-78: un kind normale e non indirizzabile per dati specifici dell'applicazione
 
@@ -107,6 +114,10 @@ La [PR #2304](https://github.com/nostr-protocol/nips/pull/2304) riformula un sin
 
 La [PR #2310](https://github.com/nostr-protocol/nips/pull/2310) aggiunge una riga alla convenzione C7: i client che visualizzano una "vista chat" come un flusso ordinato di eventi DEVONO recuperare solo eventi `kind:9`, per evitare di perdere il contesto tra implementazioni diverse. Altri tipi di contenuto possono comunque essere richiamati all'interno di un messaggio `kind:9` citandoli, secondo NIP-18.
 
+## NIP-F4: un nuovo NIP in bozza per i podcast
+
+La [PR #1093](https://github.com/nostr-protocol/nips/pull/1093) è, con ampio margine, la modifica più grande della giornata: aggiunge una specifica completa in bozza di oltre cento nuove righe. Introduce NIP-F4, un NIP in bozza e opzionale che definisce come gli show e gli episodi podcast vengono pubblicati sui relay e letti da essi come eventi Nostr, pensato per inserirsi nei flussi di lavoro dei lettori di podcast già esistenti. Con NIP-F4, ogni podcast ha una propria coppia di chiavi Nostr, il che permette di unire la presenza podcast a un normale profilo `kind:0`/`kind:1`. Le informazioni a livello di show, come titolo, immagine di copertina, descrizione e sito web, vengono pubblicate come evento sostituibile `kind:10154`, che può anche accreditare host, co-host ed editor tramite la loro chiave pubblica. I singoli episodi sono eventi `kind:54` separati, pubblicati direttamente con la chiave del podcast stesso, ciascuno con titolo, descrizione e uno o più tag `audio` che puntano al file multimediale dell'episodio. Poiché altrimenti chiunque potrebbe dichiararsi falsamente autore di un podcast, NIP-F4 aggiunge un evento `kind:10064` tramite cui i veri autori di un podcast pubblicano il proprio elenco dei podcast di cui sono autori, così un'autorialità dichiarata può essere verificata rispetto a questa contro-attestazione invece di essere accettata senza controllo. La PR aggiorna anche NIP-51 aggiungendo una lista "Favorite podcasts" di tipo `kind:10054`, che permette a qualsiasi utente di indicare pubblicamente quali podcast segue usando tag `p` per le chiavi pubbliche dei podcast e tag `url` per gli URL dei feed RSS/XML, e aggiunge i nuovi kind di evento alla tabella dei kind nel README dei NIP.
+
 ## Un insieme di modifiche, non un rilascio coordinato
 
-Al di là delle due modifiche sui messaggi diretti, non esiste un filo conduttore che colleghi questi otto pull request. Toccano parti non correlate del protocollo, dalla gestione delle connessioni ai relay al video nei gruppi fino all'archiviazione dati delle applicazioni, e hanno semplicemente superato la revisione nella stessa finestra di circa novanta minuti il 28 maggio. È stato un insieme di modifiche, non un rilascio a tema.
+Al di là delle due modifiche sui messaggi diretti, non esiste un filo conduttore che colleghi questi nove pull request. Toccano parti non correlate del protocollo, dalla gestione delle connessioni ai relay al video nei gruppi, all'archiviazione dati delle applicazioni e alla distribuzione di podcast, e hanno semplicemente superato la revisione nella stessa finestra di circa novanta minuti il 28 maggio. È stato un insieme di modifiche, non un rilascio a tema, anche se la modifica più grande della giornata, con ampio margine, il nuovo NIP per i podcast, è arrivata nella stessa finestra di altre otto molto più piccole.
