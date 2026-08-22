@@ -8,6 +8,7 @@ import { ThemeProvider } from "@/components/providers";
 import { WotProvider } from "@/components/providers/WotProvider";
 import { BlogTranslationsProvider } from "@/contexts/BlogTranslationsContext";
 import { locales, type Locale } from "@/i18n/config";
+import { getFullUrl } from "@/lib/metadata";
 import "../globals.css";
 import "@nostr-wot/ui/styles.css";
 
@@ -93,6 +94,18 @@ export default async function LocaleLayout({ children, params }: Props) {
           src="https://analytics.ahrefs.com/analytics.js"
           data-key="vfOr4k8Sfsy9wYfOO0Nehw"
           async
+        />
+        <link
+          rel="alternate"
+          type="application/rss+xml"
+          title="Nostr WoT News"
+          href={getFullUrl('/news/feed.xml', locale as Locale)}
+        />
+        <link
+          rel="alternate"
+          type="application/feed+json"
+          title="Nostr WoT News"
+          href={getFullUrl('/news/feed.json', locale as Locale)}
         />
       </head>
       <body className="bg-gray-50 dark:bg-gray-950 text-gray-900 dark:text-gray-100 min-h-screen">

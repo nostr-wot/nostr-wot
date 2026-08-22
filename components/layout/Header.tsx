@@ -28,6 +28,9 @@ export default function Header() {
           <Link href="/docs" className={navLinkStyles}>
             {t("nav.developers")}
           </Link>
+          <Link href="/news" className={navLinkStyles}>
+            {t("nav.news")}
+          </Link>
 
           <LinkButton href="/download" className="hover-lift">
             {t("buttons.download")}

@@ -32,6 +32,7 @@ import { CodeBlock } from "@/components/ui";
 import { generateAlternates, generateOpenGraph, generateTwitter } from "@/lib/metadata";
 import { type Locale } from "@/i18n/config";
 import { NewsletterSection } from "@/components/layout/NewsletterSection";
+import { getAllNews } from "@/lib/news";
 
 type Props = {
   params: Promise<{ locale: string }>;
@@ -58,8 +59,16 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   };
 }
 
-export default async function Home() {
+export default async function Home({ params }: Props) {
+  const { locale } = await params;
   const t = await getTranslations("home");
+  const tNews = await getTranslations("news");
+
+  // The newsroom strip is the homepage half of the spec's Discoverability
+  // requirement. It links to a section that ships empty, so it renders only
+  // when there is something behind the link — an empty shell pointing at an
+  // empty index is worse than no strip at all.
+  const hasNews = getAllNews(locale as Locale).length > 0;
 
   // JSON-LD structured data
   const organizationJsonLd = {
@@ -580,6 +589,27 @@ export default async function Home() {
             </ScrollReveal>
           </div>
         </Section>
+
+        {/* Newsroom — hidden entirely while the section has no entries */}
+        {hasNews && (
+          <Section padding="sm">
+            <ScrollReveal animation="fade-up">
+              <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
+                <div>
+                  <h2 className="text-2xl md:text-3xl font-bold mb-2">{tNews("title")}</h2>
+                  <p className="text-gray-600 dark:text-gray-400">{tNews("subtitle")}</p>
+                </div>
+                <Link
+                  href="/news"
+                  className="inline-flex items-center gap-2 text-primary font-medium hover:underline link-underline shrink-0"
+                >
+                  {tNews("home.cta")}
+                  <ArrowRightIcon className="w-4 h-4" />
+                </Link>
+              </div>
+            </ScrollReveal>
+          </Section>
+        )}
 
         {/* FAQ Section */}
         <Section padding="lg">
