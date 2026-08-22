@@ -1,6 +1,7 @@
+import { getTranslations } from 'next-intl/server';
 import { getAllNews } from '@/lib/news';
 import { getFullUrl } from '@/lib/metadata';
-import { absoluteUrl } from '@/lib/feeds';
+import { absoluteUrl, byPublishedAtDesc, feedItemContentHtml } from '@/lib/feeds';
 import { locales, type Locale } from '@/i18n/config';
 
 export const dynamic = 'force-static';
@@ -15,20 +16,32 @@ export async function GET(
 ) {
   const { locale } = await params;
   const l = locale as Locale;
-  const posts = getAllNews(l).slice(0, 50);
+  // Same reasoning as feed.xml: localized channel metadata, and ordering by
+  // `publishedAt` because that is the date every item advertises.
+  const t = await getTranslations({ locale: l, namespace: 'news' });
+  const posts = [...getAllNews(l)].sort(byPublishedAtDesc).slice(0, 50);
+  const disclosure = t('disclosure');
+  const backfilledLabel = t('backfilled');
 
   const feed = {
     version: 'https://jsonfeed.org/version/1.1',
-    title: 'Nostr WoT News',
+    title: t('meta.title'),
     home_page_url: getFullUrl('/news', l),
     feed_url: getFullUrl('/news/feed.json', l),
-    description: 'What is actually happening across the Nostr ecosystem',
+    description: t('meta.description'),
     language: l,
     items: posts.map((p) => ({
       id: getFullUrl(`/news/${p.slug}`, l),
       url: getFullUrl(`/news/${p.slug}`, l),
       title: p.title,
       summary: p.excerpt || p.description,
+      // Carries the archive notice and the AI-provenance disclosure, which a
+      // reader would otherwise only ever see on the article page.
+      content_html: feedItemContentHtml({
+        excerpt: p.excerpt || p.description,
+        backfilledLabel: p.backfilled ? backfilledLabel : undefined,
+        disclosure,
+      }),
       image: absoluteUrl(p.previewImage),
       date_published: p.publishedAt,
       ...(p.updated ? { date_modified: p.updated } : {}),

@@ -1,6 +1,6 @@
 import { getAllNews } from '@/lib/news';
 import { getFullUrl } from '@/lib/metadata';
-import { escapeXml } from '@/lib/feeds';
+import { escapeXml, isNewsSitemapEligible } from '@/lib/feeds';
 import { locales, type Locale } from '@/i18n/config';
 
 export const dynamic = 'force-dynamic';
@@ -12,17 +12,20 @@ export const dynamic = 'force-dynamic';
  * That is not a limitation of this implementation — an article older than that
  * does not belong in a news sitemap, and including it does not help it rank.
  * The regular sitemap.xml carries the full archive.
+ *
+ * Backfilled entries are excluded on top of the window; `isNewsSitemapEligible`
+ * carries the full reasoning, and the short version is that a retrospective
+ * article's ship date is not a news date.
  */
-const WINDOW_MS = 48 * 60 * 60 * 1000;
 
 export async function GET() {
-  const cutoff = Date.now() - WINDOW_MS;
+  const now = Date.now();
   const entries: string[] = [];
 
   for (const locale of locales) {
     const l = locale as Locale;
     for (const post of getAllNews(l)) {
-      if (new Date(post.publishedAt).getTime() < cutoff) continue;
+      if (!isNewsSitemapEligible(post, now)) continue;
       const url = getFullUrl(`/news/${post.slug}`, l);
       entries.push(`  <url>
     <loc>${escapeXml(url)}</loc>

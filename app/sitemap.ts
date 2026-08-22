@@ -194,13 +194,28 @@ export default function sitemap(): MetadataRoute.Sitemap {
     }
 
     for (const locale of locales) {
-      if (getNewsForMonth(year, month, locale).length === 0) continue;
+      const monthPosts = getNewsForMonth(year, month, locale);
+      if (monthPosts.length === 0) continue;
 
       const url = getLocalizedUrl(monthPath, locale);
 
+      // Derived from the content, never from the clock. `new Date()` here told
+      // every crawler that every archive month had changed on every deploy,
+      // which is both false and a reason to stop trusting the whole sitemap.
+      // An archive month page changes when one of its posts does, so its
+      // lastmod is the newest real ship-or-edit date among that locale's posts
+      // for that month.
+      const lastModified = new Date(
+        Math.max(
+          ...monthPosts.map((post) =>
+            new Date(post.updated || post.publishedAt).getTime()
+          )
+        )
+      );
+
       sitemapEntries.push({
         url,
-        lastModified: new Date(),
+        lastModified,
         changeFrequency: "monthly",
         priority: 0.6,
         alternates: {
