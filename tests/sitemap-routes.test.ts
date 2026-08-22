@@ -1,5 +1,7 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
+import fs from 'node:fs';
+import path from 'node:path';
 import {
   routes,
   sourceFileSegments,
@@ -29,14 +31,28 @@ test('messageFileSegments returns null when a route has no message namespace', (
   assert.equal(messageFileSegments(null), null);
 });
 
-test('every static route resolves to a distinct, existing page.tsx path shape', () => {
-  // Guards against the route list and the resolver silently drifting apart.
-  for (const route of routes) {
-    const segments = sourceFileSegments(route.path);
-    assert.equal(segments[segments.length - 1], 'page.tsx');
-    assert.equal(segments[0], 'app');
-    assert.equal(segments[1], '[locale]');
+test('every static route resolves to a distinct, existing page.tsx path', () => {
+  // Guards against the route list and the resolver silently drifting apart:
+  // if a route's derived page.tsx does not actually exist on disk, that
+  // route would (correctly, but silently) never get a git-derived date —
+  // this test is what turns that into a loud failure instead. Pure
+  // filesystem check: no git involved, so it stays fast and hermetic.
+  const resolvedPaths = routes.map((route) =>
+    path.join(process.cwd(), ...sourceFileSegments(route.path))
+  );
+
+  for (const absPath of resolvedPaths) {
+    assert.ok(
+      fs.existsSync(absPath),
+      `expected page file to exist on disk: ${absPath}`
+    );
   }
+
+  assert.equal(
+    new Set(resolvedPaths).size,
+    resolvedPaths.length,
+    'expected every static route to resolve to a distinct page.tsx path'
+  );
 });
 
 test('resolveRouteLastModified returns the mapped date for a route that has one', () => {
