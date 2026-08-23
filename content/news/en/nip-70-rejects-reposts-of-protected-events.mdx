@@ -1,0 +1,46 @@
+---
+title: "NIP-70: Reposts That Embed Protected Events Must Be Rejected"
+description: "PR #2251 adds a rule to NIP-70 requiring relays to reject reposts that embed a protected event's content."
+excerpt: "NIP-70 now states that reposts must not embed a protected event, and that relays should reject any repost that does, closing a way a protected event's content could reach relays its author never authorised."
+date: "2026-05-13"
+publishedAt: "2026-08-22"
+backfilled: true
+type: "story"
+tags:
+  - "Nostr"
+  - "NIP"
+  - "NIP-70"
+  - "Privacy"
+translationKey: "nip-70-rejects-reposts-of-protected-events"
+featuredImage: "/images/news/nip-70-rejects-reposts-of-protected-events.svg"
+sources:
+  - title: "nip70: reposts that embed protected events must be rejected"
+    url: "https://github.com/nostr-protocol/nips/pull/2251"
+    publisher: "nostr-protocol/nips"
+    date: "2026-05-13"
+published: true
+---
+
+NIP-70 defines protected events: events tagged so that a relay's default behaviour is to reject them unless they come directly from their author, authenticated over a NIP-42 `AUTH` session. [PR #2251](https://github.com/nostr-protocol/nips/pull/2251), opened by fiatjaf and merged on 13 May 2026, closes a gap in that protection by stating explicitly that reposts are not allowed to embed a protected event.
+
+## What a protected event is
+
+A protected event carries the tag `["-"]`. Under the existing NIP-70 text, a relay's default behaviour MUST be to reject any event containing that tag, unless the client first completes the NIP-42 `AUTH` flow and the authenticated pubkey matches the event's own pubkey. In practice, the author decides, relay by relay, whether a protected event is accepted at all. Publish it toward a relay the author has never authenticated to, and that relay is supposed to refuse it.
+
+## The gap the PR closes
+
+A repost, kind `6`, and the generic kind `16`, is an event whose `content` field carries the full JSON of the event it reposts, so a client can render the reposted note without a separate fetch. That's convenient for an ordinary note, but it left an opening for a protected one: nothing in the earlier text stopped someone from wrapping a protected event inside a repost and publishing that repost to any relay they liked. The protected tag governs the protected event itself, not a copy of its content sitting inside a different event's `content` field.
+
+The PR adds two sentences to `70.md`:
+
+> Reposts of protected events MUST NOT embed the reposted event. If a repost of a protected event embeds the event anyway, relays SHOULD summarily reject it.
+
+That's the entire change: two lines added, nothing removed. The requirement runs in both directions. The first sentence is aimed at whoever builds the repost: don't embed a protected event's content in a repost at all. The second is aimed at relays: if one shows up anyway, with a protected event's content sitting inside a repost's `content` field, reject it on sight, even though the outer repost event itself isn't tagged `["-"]`.
+
+## Why this is a privacy boundary, not a delivery detail
+
+Without this rule, the protected-event tag could be worked around trivially. Repost the event, and its content travels to every relay that repost gets published to, none of which the original author had to authenticate against. The author's choice of which relays get to hold the event, enforced at the relay level through NIP-42 `AUTH`, would mean little once anyone could copy its content into an unprotected wrapper and publish it wherever they liked.
+
+The fix keeps the enforcement point where it belongs. A relay that sees a repost embedding a protected event now has explicit grounds, stated in the spec text itself, to refuse it, the same as if the protected event had been published to that relay directly.
+
+The PR's author, fiatjaf, noted in the description that this rule was expected to already be in the spec: "I thought we had this here already, but apparently not." The two-line addition brings the written text in line with that expectation.

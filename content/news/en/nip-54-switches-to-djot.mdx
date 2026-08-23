@@ -1,0 +1,51 @@
+---
+title: "NIP-54 Switches Wiki Articles from Asciidoc to Djot"
+description: "PR #2242 changes NIP-54's content format from Asciidoc to Djot, replacing the double-bracket wikilink syntax with Djot reference-style links."
+excerpt: "NIP-54 wiki articles no longer use Asciidoc. A merged pull request switches the spec's markup language to Djot and rewrites the wikilink syntax to match."
+date: "2026-03-17"
+publishedAt: "2026-08-22"
+backfilled: true
+type: "story"
+tags:
+  - "Nostr"
+  - "NIP"
+translationKey: "nip-54-switches-to-djot"
+featuredImage: "/images/news/nip-54-switches-to-djot.svg"
+sources:
+  - title: "NIP-54: Switch from Asciidoc to Djot"
+    url: "https://github.com/nostr-protocol/nips/pull/2242"
+    publisher: "nostr-protocol/nips"
+    date: "2026-03-17"
+published: true
+---
+
+NIP-54 defines wiki-style, collaboratively editable articles on Nostr: addressable events that a client can render as encyclopedia-style pages, complete with wikilinks between articles. On 2026-03-17, [PR #2242](https://github.com/nostr-protocol/nips/pull/2242), authored by VincenzoImp, merged into the spec and changed the markup language that the `content` field of a wiki article is written in, from Asciidoc to [Djot](https://djot.net/).
+
+## Why a markup change is not cosmetic
+
+NIP-54 doesn't wrap `content` in a container format with its own type field. It just says: this is prose in a particular markup language, and clients are expected to parse and render it that way. That means every client that renders NIP-54 articles, and every relay or tool that generates them, has to agree on what the markup means. Swapping the markup language changes what "correct rendering" looks like for the entire event kind, not just for one article. It's the kind of change that matters to implementers even though no event kind number or tag structure moved.
+
+## What the syntax looks like now
+
+The old spec described Asciidoc content with a special wikilink extension using double brackets: `[[Target Page]]` linked to the article at `target-page`, and `[[target page|see this]]` let you set custom display text.
+
+Djot doesn't have a bracket-pair wikilink syntax of its own, so NIP-54 repurposes Djot's native reference-style links instead. A link like `[cryptocurrency][]` normally resolves to a reference defined elsewhere in the document; NIP-54 now says that when no such reference exists, the client should treat it as a wikilink and resolve it to the wiki article whose `d` tag matches the normalized link text. So `[cryptocurrency][]` becomes a wikilink to the article tagged `cryptocurrency`, while `[Satoshi Nakamoto][]` stays a normal link if a reference for "Satoshi Nakamoto" is defined in the document (for instance, pointing at an `npub`). The PR also adds worked examples for non-Latin scripts, showing how the same reference-style syntax normalizes a Japanese or Cyrillic link target.
+
+`nostr:` links as defined in NIP-21 are unaffected: they still work for linking to profiles or specific events, though the spec continues to recommend wikilinks over pinning a link to one version of an article.
+
+## What else the PR fills in
+
+Two sections of NIP-54 had been left as placeholders, marked `[INSERT EVENT EXAMPLE]`, since the NIP was first drafted. PR #2242 fills both in with real JSON:
+
+- The `kind:818` Merge Request event, used to ask another pubkey to merge a forked article back into the source, now has a complete example tagging the destination article with an `a` tag, the base version with an `e` tag, and the version to merge with an `e` tag carrying a `source` marker.
+- The `kind:30819` Redirect event, used to point one article title at another (the PR's example is "BTC" redirecting to "Bitcoin"), gets the same treatment: a `d` tag naming the source title and an `a` tag pointing at the target article.
+
+## Why Djot
+
+The PR adds a new "Why Djot?" section to the spec, replacing the previous "Why Asciidoc?" rationale. It explains the choice in a few concrete terms: Djot was created by John MacFarlane, the author of Pandoc and a co-author of CommonMark, and unlike Markdown, which splits into many incompatible dialects, or Asciidoc, whose spec is tied to its Ruby implementation, Djot has a clear, standalone specification. It already has native implementations in JavaScript, Lua, Rust and Go, with no transpilation step needed, and it supports the features an encyclopedic wiki format needs: superscript, subscript, footnotes, tables, definition lists and math. Its syntax stays close to basic Markdown, and its parser is designed to run in linear time.
+
+## Context
+
+According to the PR body, #2242 continues work started in [#2082](https://github.com/nostr-protocol/nips/pull/2082), the proposal that first raised switching away from Asciidoc, and builds on [#2177](https://github.com/nostr-protocol/nips/pull/2177), an earlier merged change establishing `d` tag normalization rules for non-Latin scripts, which the new wikilink examples rely on directly.
+
+The change touched a single file, `54.md`, with 63 lines added and 37 removed.

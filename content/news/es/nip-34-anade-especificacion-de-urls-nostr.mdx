@@ -1,0 +1,59 @@
+---
+title: "El NIP-34 añade una especificación de URLs de clonado nostr://"
+description: "La PR #2312 formaliza el formato de URL de clonado nostr:// en el NIP-34 y exige codificación porcentual para que los identificadores de repositorio que no son kebab-case sigan produciendo URLs válidas."
+excerpt: "El NIP-34 ahora especifica el formato de URL de clonado nostr:// que varias herramientas de git sobre Nostr ya usaban de manera informal, y exige codificación porcentual para que los identificadores de repositorio que no son kebab-case sigan produciendo URLs válidas."
+date: "2026-04-10"
+publishedAt: "2026-08-22"
+backfilled: true
+type: "story"
+tags:
+  - "Nostr"
+  - "NIP"
+  - "NIP-34"
+  - "Git"
+translationKey: "nip-34-adds-nostr-clone-urls"
+featuredImage: "/images/news/nip-34-adds-nostr-clone-urls.svg"
+sources:
+  - title: "NIP-34 add nostr:// clone urls spec"
+    url: "https://github.com/nostr-protocol/nips/pull/2312"
+    publisher: "nostr-protocol/nips"
+    date: "2026-04-10"
+published: true
+---
+
+El NIP-34 describe git sobre Nostr: cómo se puede anunciar y seguir un repositorio mediante eventos comunes de Nostr en lugar de depender únicamente de un forge centralizado. La [PR #2312](https://github.com/nostr-protocol/nips/pull/2312), abierta por DanConwayDev y fusionada el 10 de abril de 2026, añade una especificación formal para las URLs de clonado `nostr://` a ese NIP.
+
+## Qué es una URL de clonado nostr://
+
+Una URL `nostr://` direcciona un repositorio a través del propio protocolo, en lugar de hacerlo mediante un remoto HTTPS o SSH que apunte a un forge específico. La nueva sección de `34.md` define tres formas para ella:
+
+```
+nostr://<naddr>
+nostr://<npub|nip05>/<identifier>
+nostr://<npub|nip05>/<relay-hint>/<identifier>
+```
+
+El `<identifier>` es el valor de la etiqueta `d` del evento de anuncio de tipo `30617` del repositorio, el evento direccionable que el NIP-34 usa para publicar un repositorio. El `<relay-hint>`, opcional, señala al cliente un relay que probablemente lleve los eventos de ese repositorio, y su esquema `wss://` puede omitirse por brevedad. Cuando hay instalado un helper `git-remote-nostr`, una URL con este formato puede pasarse directamente a `git clone`, igual que se haría con un remoto HTTPS.
+
+La descripción de la PR señala que el formato ya estaba en uso antes de que la especificación lo alcanzara. Tanto ngit como shakespeare lo implementan como URL de clonado bajo el nombre `git-remote-nostr`, y aparece en clientes como gitworkshop.dev y nostrhub.io. La CLI nak lo soporta sin necesidad de NIP-05. Incorporarlo al texto del NIP convierte una convención en la que varias herramientas independientes ya habían coincidido informalmente en algo contra lo que se puede verificar la especificación.
+
+## El fallo que la misma PR corrige
+
+El NIP-34 recomienda kebab-case para la etiqueta identificadora `d` de un anuncio de repositorio, pero no lo exige. Un repositorio cuyo valor `d` no sea kebab-case, por ejemplo uno que contenga espacios o barras, podía producir una URL `nostr://` que no coincidiera con la especificación de git-remote-helper, ni con ninguna especificación de URL.
+
+El nuevo texto cierra esa brecha exigiendo codificación porcentual: tanto `<relay-hint>` como `<identifier>` DEBEN estar codificados en porcentaje según la RFC 3986 §2.1. Los propios ejemplos de la PR muestran por qué esto importa:
+
+```
+nostr://npub15qydau2hjma6ngxkl2cyar74wzyjshvl65za5k5rl69264ar2exs5cyejr/relay.ngit.dev/ngit
+nostr://npub15qydau2hjma6ngxkl2cyar74wzyjshvl65za5k5rl69264ar2exs5cyejr/my%20%F0%9F%9A%80%20repo
+nostr://danconwaydev.com/ws%3A%2F%2Flocalhost%3A7334/my-local-only-repo
+nostr://danconwaydev.com/relay.ngit.dev/ngit
+```
+
+El segundo ejemplo lleva un identificador `d` con espacios y un emoji, que sigue siendo una URL válida una vez codificado en porcentaje. El tercero lleva una indicación de relay escrita como una dirección local `ws://` sencilla, también codificada en porcentaje para que sobreviva al quedar incrustada dentro del segmento de ruta de la URL.
+
+## Por qué importa para git sobre Nostr
+
+Un repositorio accesible solo por HTTPS o SSH depende de dondequiera que esté alojado ese único remoto. Una URL de clonado `nostr://`, en cambio, se resuelve a través de relays: un `naddr`, o un npub o identificador NIP-05 junto con una indicación de relay opcional, basta para encontrar el anuncio actual del repositorio sin importar qué forge o servidor lo esté sirviendo en ese momento. Esa es la parte del NIP-34 que esta PR precisa: no la idea general, que es anterior a la PR, sino el formato exacto que implementaciones independientes necesitan acordar para que `git clone nostr://...` se comporte igual en ngit, shakespeare, gitworkshop.dev, nostrhub.io y nak.
+
+El cambio en sí es pequeño, 22 líneas añadidas y 1 eliminada en `34.md`, pero convierte una convención en la que varias herramientas ya habían coincidido informalmente en un texto contra el que se puede verificar la especificación.
