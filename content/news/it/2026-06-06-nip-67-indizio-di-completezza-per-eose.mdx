@@ -1,0 +1,54 @@
+---
+title: "NIP-67: indizio di completezza per EOSE"
+description: "Un nuovo NIP permette ai relay di indicare ai client se un EOSE segna un set di risultati davvero completo o uno troncato."
+excerpt: "EOSE ha sempre significato che il relay ha finito di inviare gli eventi memorizzati, non che li ha inviati tutti. NIP-67 aggiunge un indizio opzionale che permette finalmente ai client di distinguere i due casi."
+date: "2026-06-06"
+publishedAt: "2026-08-22"
+backfilled: true
+type: "story"
+tags:
+  - "Nostr"
+  - "NIP"
+  - "Relays"
+translationKey: "2026-06-06-nip-67-eose-completeness-hint"
+sources:
+  - title: "NIP-67: EOSE Completeness Hint"
+    url: "https://github.com/nostr-protocol/nips/pull/2317"
+    publisher: "nostr-protocol/nips"
+    date: "2026-06-06"
+published: true
+---
+
+[NIP-01](https://github.com/nostr-protocol/nips/blob/master/01.md) definisce `EOSE` come il confine tra eventi memorizzati ed eventi in tempo reale per una sottoscrizione. Ciò che non ha mai definito è se il relay abbia davvero inviato tutto ciò che possiede e che corrisponde al filtro. [NIP-67](https://github.com/nostr-protocol/nips/pull/2317), scritto da mattn e unito alla specifica il 6 giugno 2026, dà ai relay un modo per dirlo.
+
+## Il vuoto lasciato da EOSE
+
+La maggior parte dei relay applica un limite interno al numero di eventi memorizzati che restituisce per una singola sottoscrizione, indipendente dal `limit` richiesto dal client. Il client non ha modo di vedere quel limite. Tutto ciò che può fare è confrontare il numero di eventi ricevuti con il `limit` richiesto, e indovinare.
+
+Questa supposizione fallisce in due modi precisi.
+
+Primo, quando il limite del relay è inferiore al `limit` richiesto dal client, il client viene indotto a pensare che il risultato sia completo. Un client chiede le ultime 500 note. Il relay limita le risposte a 300 e ne invia esattamente 300. Poiché 300 è minore di 500, il client conclude di avere tutto. Non è così. Il resto delle note corrispondenti resta sul relay, e il client non viene mai a sapere che esistono.
+
+Secondo, quando il numero di eventi corrispondenti risulta essere esattamente uguale al limite del relay, il client non può sapere di averli ricevuti tutti. Non gli resta che inviare un altro `REQ` con `until` impostato sul timestamp dell'evento più vecchio ricevuto, solo per confermare che il lotto successivo è vuoto. Un relay limitato a 300 eventi riceve almeno due interrogazioni per qualsiasi sottoscrizione che raggiunga quel limite, che ci fossero o meno altri dati da recuperare.
+
+## Cosa aggiunge NIP-67
+
+La specifica aggiunge un terzo elemento opzionale al messaggio `EOSE`, un array di stringhe di indizio:
+
+```
+["EOSE", <subscription_id>, [<hint>, ...]]
+```
+
+Sono definiti due valori di indizio. `"finish"` significa che il relay ha inviato tutti gli eventi memorizzati che corrispondono ai filtri della sottoscrizione, quindi il client non dovrebbe paginare oltre. `"more"` significa che il relay sta trattenendo altri eventi corrispondenti che non ha inviato, quindi il client dovrebbe paginare per recuperarli. Un relay non è obbligato a inviare `"more"` anche quando è vero, dato che sapere con certezza che esistono altri dati corrispondenti non è gratuito su ogni backend di storage.
+
+L'array di indizi può contenere uno dei due valori, entrambi, o nessuno. La specifica è esplicita: la loro presenza è definitiva, la loro assenza no. Se un relay omette del tutto il terzo elemento, o invia un `EOSE` senza indizi, il client ricade sulla stessa euristica di paginazione basata su `until` che già usa oggi. Nulla del comportamento attuale del client deve cambiare per restare corretto.
+
+La compatibilità funziona in entrambe le direzioni. Un relay che adotta questo NIP invia l'`EOSE` a tre elementi a ogni client, che questo capisca o meno l'indizio, perché i client che non implementano NIP-67 indicizzano già `EOSE` per posizione e ignorano semplicemente l'elemento aggiuntivo, così come un parser JSON accetta senza problemi un elemento in più in coda a un array. Un client che aggiunge il supporto per l'indizio non ottiene nulla in più dai relay che non l'hanno ancora implementato, e continua semplicemente a usare la sua logica di paginazione esistente.
+
+Il NIP affronta anche un caso limite legato a timestamp coincidenti. Quando un relay non invia `"finish"`, più eventi memorizzati possono condividere lo stesso valore `created_at` più vecchio in una risposta, e la paginazione basata su `until` rischia di perdere silenziosamente eventi che condividono quel timestamp limite. Ai relay è consigliato, quando possibile, di avanzare abbastanza da includere in un'unica risposta tutti gli eventi con quel timestamp limite, ed emettere `"finish"` solo quando non resta davvero nulla di più vecchio.
+
+Ci si aspetta che i relay che implementano NIP-67 includano `67` nel proprio campo `supported_nips`, secondo [NIP-11](https://github.com/nostr-protocol/nips/blob/master/11.md).
+
+## Perché è importante
+
+Un troncamento silenzioso e un risultato genuinamente vuoto oggi appaiono identici a un client. Questa distinzione conta soprattutto per tutto ciò che tratta "nessun altro risultato" come un dato significativo: interrogazioni di moderazione, audit, o un client che cerca di stabilire che una determinata chiave pubblica non ha davvero più eventi di un certo tipo. NIP-67 non cambia come gli eventi vengono memorizzati o consegnati. Dà ai relay un piccolo vocabolario opzionale per dire la verità su se la cronologia degli eventi memorizzati di una sottoscrizione sia stata effettivamente esaurita.

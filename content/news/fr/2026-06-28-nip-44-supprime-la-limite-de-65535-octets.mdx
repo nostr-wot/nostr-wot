@@ -1,0 +1,55 @@
+---
+title: "NIP-44 supprime la limite de 65535 octets"
+description: "Le plafond de texte en clair de NIP-44 était fixé à 65535 octets à cause d'un champ de longueur sur 2 octets. Un changement fusionné l'étend à 4 294 967 295 octets sans toucher à la version du format."
+excerpt: "Chaque payload NIP-44 portait un préfixe de longueur sur 2 octets limitant le texte en clair à 65535 octets. Un changement fusionné le 28 juin 2026 ajoute un préfixe de longueur variable qui relève le plafond à un peu moins de 4 Go, sans changer de version et sans rien casser de déjà déployé."
+date: "2026-06-28"
+publishedAt: "2026-08-22"
+backfilled: true
+type: "story"
+tags:
+  - "Nostr"
+  - "NIP"
+  - "Encryption"
+translationKey: "2026-06-28-nip-44-drops-the-65535-byte-limit"
+sources:
+  - title: "allow NIP-44 to encrypt more than 65535 bytes"
+    url: "https://github.com/nostr-protocol/nips/pull/1907"
+    publisher: "nostr-protocol/nips"
+    date: "2026-06-28"
+published: true
+---
+
+[NIP-44](https://github.com/nostr-protocol/nips/blob/master/44.md) est le schéma de chiffrement sur lequel repose l'essentiel de la messagerie privée de Nostr, y compris les messages directs enveloppés en cadeau de [NIP-17](https://github.com/nostr-protocol/nips/blob/master/17.md). Depuis son introduction, il avait un plafond fixe sur ce qu'on peut chiffrer dans un seul payload : 65535 octets. Le 28 juin 2026, [un changement de fiatjaf](https://github.com/nostr-protocol/nips/pull/1907) a supprimé ce plafond, et il vaut la peine d'être précis sur ce qui a réellement changé.
+
+## D'où venait l'ancienne limite
+
+Le plafond de 65535 octets n'a jamais été une décision de politique délibérée. C'était une conséquence directe de la manière dont NIP-44 remplit le texte en clair avant de le chiffrer. Le format de remplissage stockait la longueur du texte en clair comme les deux premiers octets du blob rempli, un entier non signé de 16 bits en big-endian, `u16`. Un `u16` ne peut représenter que des valeurs de 0 à 65535, donc tout ce qui était plus grand ne pouvait tout simplement pas être exprimé dans le préfixe de longueur, que le chiffrement sous-jacent puisse ou non le gérer par ailleurs. La section des constantes de la spécification l'indiquait directement : `max_plaintext_size` était de 65535, "64 Ko moins 1".
+
+Cette même hypothèse sur 2 octets se propageait vers l'extérieur. Les règles de validation de NIP-44 sur le payload encodé en base64 et sur la chaîne d'octets décodée étaient toutes deux des vérifications de plage, pas seulement de longueur minimale : un payload base64 valide devait se situer entre 132 et 87472 caractères, et un message décodé valide entre 99 et 65603 octets. Les deux bornes supérieures existaient uniquement parce qu'un message plus grand était structurellement impossible sous le préfixe à 2 octets.
+
+## Ce que fait le nouveau schéma
+
+Le changement fusionné conserve le préfixe à 2 octets pour tout ce qui y tient encore, et ajoute un second format, plus grand, pour ce qui n'y tient pas. La règle est un seuil à 65536 octets :
+
+- Si la longueur du texte en clair est inférieure à 65536 octets, le préfixe reste de 2 octets, exactement l'ancien format `u16` : `[plaintext_length: u16][plaintext][zero_bytes]`.
+- Si la longueur du texte en clair est de 65536 octets ou plus, le préfixe passe à 6 octets : deux octets à zéro suivis d'un `u32` en big-endian, `[0x00, 0x00][plaintext_length: u32][plaintext][zero_bytes]`.
+
+Les deux octets à zéro au début du préfixe étendu ne sont pas du remplissage pour lui-même, ce sont le signal. Un texte en clair valide fait toujours au moins 1 octet, donc une valeur `u16` exactement égale à zéro ne pouvait jamais se produire dans l'ancien format. Le décodage devient donc sans ambiguïté : lire les 2 premiers octets comme un `u16` ; s'ils sont à zéro, lire les 4 octets suivants comme un `u32` pour obtenir la vraie longueur ; s'ils ne sont pas à zéro, cette valeur est la longueur et le préfixe n'a jamais fait que 2 octets.
+
+`max_plaintext_size` passe de 65535 à 4 294 967 295, soit 2^32 moins 1, environ 4 Go. Les vérifications de plage sur la longueur du payload en base64 et décodé perdent entièrement leur borne supérieure et deviennent des vérifications de minimum uniquement : au moins 132 caractères base64, au moins 99 octets décodés, sans plafond.
+
+La spécification a aussi gagné une nouvelle section "considérations d'implémentation". Elle indique aux implémentations d'imposer leur propre taille maximale de payload adaptée à leur plateforme, et de rejeter les payloads trop volumineux tôt, avant le décodage base64, spécifiquement pour éviter un déni de service lors du décodage d'entrées énormes. Elle signale que le déchiffrement peut nécessiter plusieurs fois la taille du payload en mémoire de travail, que les systèmes basés sur la JVM limitent les tableaux contigus à environ 2 Go, bien en dessous du nouveau plafond théorique de 4 Go, et que les calculs de longueur remplie peuvent désormais atteindre 2^32, donc les implémentations ont besoin d'arithmétique 64 bits pour calculer correctement le remplissage.
+
+De nouveaux vecteurs de test ont été ajoutés à la frontière, testant un texte en clair de 65535 octets face à un texte de 65536 octets, pour confirmer que les implémentations changent de format de préfixe exactement au bon point.
+
+## Même version, aucun changement de version
+
+C'est toujours NIP-44 version 2. Le changement n'a pas touché à l'octet de version ni ajouté de nouveau numéro de version à négocier. Il étend le format de remplissage v2 existant avec une seconde longueur de préfixe qui ne s'active que lorsque le message dépasse 65536 octets. Un décodeur version 2 mis à jour pour ce NIP gère à la fois les anciens et les nouveaux messages sous le même identifiant de version.
+
+## Rétrocompatible, selon l'auteur de la PR lui-même
+
+Le corps de la PR l'affirme sans détour : "This is backwards-compatible and no one has to change anything if they do not care about bigger messages" ("Ceci est rétrocompatible et personne n'a besoin de rien changer si les messages plus grands ne l'intéressent pas"). Rien ne change pour le cas courant. Tout texte en clair de moins de 65536 octets est encodé avec exactement le même préfixe de 2 octets qu'avant, octet pour octet. Les implémentations qui n'ont jamais besoin d'envoyer plus grand n'ont pas du tout besoin d'être mises à jour.
+
+Le corps de la PR nomme aussi le cas concret qui a motivé le changement : "The only reasonable case where this necessity has shown up so far was signing of big kind:3 lists via NIP-46" ("Le seul cas raisonnable où ce besoin s'est manifesté jusqu'ici était la signature de grandes listes kind:3 via NIP-46"). Les grandes listes de contacts `kind:3`, envoyées via la signature distante de NIP-46, étaient la charge de travail qui se heurtait à l'ancien plafond.
+
+NIP-44 est le fondement du chiffrement des messages directs sur Nostr, donc une limite sur la taille du texte en clair est une limite sur ce qu'un seul message chiffré peut transporter. La relever ne touche ni à la manière dont la clé de conversation est dérivée, ni au fonctionnement du chiffrement ChaCha20, ni au calcul du MAC. Ce qui change, c'est ce qui tient dans un message.

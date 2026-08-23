@@ -1,0 +1,47 @@
+---
+title: "NIP-58 nummeriert Profile Badges neu und fügt Badge Sets hinzu"
+description: "PR #2276 verschiebt das Profile-Badges-Event von NIP-58 von Kind 30008 auf Kind 10008 und führt ein neues Badge-Sets-Event bei Kind 30008 ein, das die alte Nummer für einen anderen Zweck wiederverwendet."
+excerpt: "Ein gemergter Pull Request ändert die Kind-Nummer des Profile-Badges-Events von NIP-58 von 30008 auf 10008 und definiert ein neues Badge-Sets-Event am freigewordenen Kind 30008."
+date: "2026-04-01"
+publishedAt: "2026-08-22"
+backfilled: true
+type: "story"
+tags:
+  - "Nostr"
+  - "NIP"
+translationKey: "2026-04-01-nip-58-renumbers-profile-badges"
+sources:
+  - title: "NIP-58: change Profile Badges to kind 10008, add kind 30008 Badge sets"
+    url: "https://github.com/nostr-protocol/nips/pull/2276"
+    publisher: "nostr-protocol/nips"
+    date: "2026-04-01"
+published: true
+---
+
+NIP-58 definiert, wie Badges auf Nostr funktionieren: Ein Aussteller definiert ein Badge, vergibt es an Public Keys, und der Empfänger wählt, welche vergebenen Badges auf dem eigenen Profil angezeigt werden. Am 2026-04-01 wurde [PR #2276](https://github.com/nostr-protocol/nips/pull/2276) von alexgleason, der [Issue #2275](https://github.com/nostr-protocol/nips/issues/2275) schließt, in die Spezifikation gemergt und änderte die Kind-Nummer des "Profile Badges"-Events, während gleichzeitig ein neuer Event-Typ hinzukam, um Badges in Sets zu gruppieren.
+
+## Was sich genau verschoben hat
+
+Vor diesem PR war das Profile-Badges-Event, also jenes, das ein Nutzer veröffentlicht, um zu sagen "das sind die Badges, die ich akzeptiere und auf meinem Profil anzeigen möchte", als adressierbares Event bei **Kind 30008** definiert, identifiziert durch ein festes `d`-Tag mit dem Wert `profile_badges`.
+
+Nach diesem PR ist Profile Badges ein **ersetzbares Event bei Kind 10008**, definiert als Standard-Liste nach NIP-51. Es braucht überhaupt kein `d`-Tag mehr, da ersetzbare Events keines benötigen, um pro Public Key eindeutig zu sein. Das Event enthält weiterhin dieselben geordneten Paare von `a`- und `e`-Tags, ein Paar pro Badge, die auf die Badge Definition und den Badge Award jedes angezeigten Badges verweisen.
+
+Kind 30008 wurde nicht abgeschafft. Es wurde **neu vergeben**. Der PR gibt ihm eine neue Bedeutung: ein "Badge Set"-Event, ein adressierbares NIP-51-Set, mit dem ein Nutzer seine akzeptierten Badges in benannte Kategorien gruppieren kann, jede mit eigenen geordneten `a`/`e`-Tag-Paaren, die auf Badge Definitions und Badge Awards verweisen.
+
+Diese Neuvergabe ist der Punkt, den man genau festhalten sollte. Kind-Nummern auf Nostr sind nicht nach NIP voneinander getrennt: Ein Client oder Relay, der Kind 30008 abfragt und dabei das alte Profile-Badges-Format erwartet, bekommt jetzt stattdessen Badge-Set-Events, die eine ähnliche Tag-Form haben, aber eine andere Bedeutung und eine andere `d`-Tag-Konvention (eine vom Nutzer gewählte Set-Kennung statt der festen Zeichenkette `profile_badges`). Alles, was Kind 30008 noch unter der alten Annahme liest, bricht damit still ab, statt einen Fehler zu werfen, denn das Event lässt sich weiterhin parsen, es bedeutet nur jetzt etwas anderes.
+
+Die Spezifikation adressiert den Übergang direkt. Ein neuer Abschnitt "Deprecated Profile Badges event" hält fest, dass eine frühere Version von NIP-58 ein adressierbares Event vom Kind 30008 mit einem `d`-Tag `profile_badges` für Profile Badges verwendet hat, und weist Clients an, diese alten Events als äquivalent zum neuen Kind 10008 zu behandeln und zum neuen Format zu migrieren.
+
+## Wo sich sonst noch Nummern geändert haben
+
+Der PR aktualisiert außerdem NIP-51 (`51.md`), das Listen- und Set-NIP, auf dem NIP-58 aufbaut, sowie den NIP-Index (`README.md`), damit alle drei Dateien konsistent bleiben:
+
+- `51.md` fügt Kind `10008` seiner Tabelle der Standardlisten als "Profile badges" hinzu, mit Verweisen sowohl auf Badge-Definitionen (`a`-Tags auf Kind 30009) als auch auf Badge-Vergaben (`e`-Tags auf Kind 8), plus `a`-Tags auf das neue Kind 30008 der Badge Sets.
+- `51.md` fügt Kind `30008` seiner Tabelle der Standard-Sets als "Badge sets" hinzu, mit Verweisen auf Badge-Definitionen von Kind 30009 und Badge-Vergaben von Kind 8.
+- Der Kind-Index in `README.md` listet `10008` jetzt als "Profile Badges" (mit Verweis auf NIP-51 und NIP-58) und benennt `30008` von "Profile Badges" in "Badge sets" um (jetzt mit Verweis auf NIP-51 und NIP-58 zusammen, wo zuvor nur auf NIP-58 verwiesen wurde).
+
+Kind 30009, das Badge-Definition-Event, und Kind 8, das Badge-Award-Event, ändern sich durch diesen PR nicht.
+
+## Umfang der Änderung
+
+Der PR betraf drei Dateien, `51.md`, `58.md` und `README.md`, mit insgesamt 15 hinzugefügten und 10 entfernten Zeilen. NIP-58 bleibt als `draft` und `optional` markiert.

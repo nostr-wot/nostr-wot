@@ -1,0 +1,123 @@
+---
+title: "Week in Review: Nine Pull Requests Merged Into nostr-protocol/nips"
+description: "Nine pull requests were merged into nostr-protocol/nips on 28 May 2026, covering relay connections, group audio/video, direct message deletion, a new podcast NIP, and more."
+excerpt: "On 28 May 2026, nine pull requests landed in nostr-protocol/nips within about ninety minutes of each other, including a new ephemeral gift wrap kind, a deletion section for NIP-17 direct messages, and a full draft NIP for podcasts."
+date: "2026-05-28"
+publishedAt: "2026-08-22"
+backfilled: true
+type: "digest"
+tags:
+  - "Nostr"
+  - "NIP"
+translationKey: "2026-05-28-week-in-review"
+sources:
+  - title: "NIP-59: Add ephemeral gift wrap event kind (21059)"
+    url: "https://github.com/nostr-protocol/nips/pull/2245"
+    publisher: "nostr-protocol/nips"
+    date: "2026-05-28"
+  - title: "One sentence in NIP-01 that helps resolves a huge issue with relay connection management."
+    url: "https://github.com/nostr-protocol/nips/pull/2307"
+    publisher: "nostr-protocol/nips"
+    date: "2026-05-28"
+  - title: "nip29: audio/video live spaces"
+    url: "https://github.com/nostr-protocol/nips/pull/2238"
+    publisher: "nostr-protocol/nips"
+    date: "2026-05-28"
+  - title: "nip78: a normal application-specific kind"
+    url: "https://github.com/nostr-protocol/nips/pull/2292"
+    publisher: "nostr-protocol/nips"
+    date: "2026-05-28"
+  - title: "Add section on deletion"
+    url: "https://github.com/nostr-protocol/nips/pull/2260"
+    publisher: "nostr-protocol/nips"
+    date: "2026-05-28"
+  - title: "NIP-71 feat: video multiple audio tracks"
+    url: "https://github.com/nostr-protocol/nips/pull/2255"
+    publisher: "nostr-protocol/nips"
+    date: "2026-05-28"
+  - title: "NIP-85: Clarifications"
+    url: "https://github.com/nostr-protocol/nips/pull/2304"
+    publisher: "nostr-protocol/nips"
+    date: "2026-05-28"
+  - title: "Update C7 to only allow kind 9 messages in chat views"
+    url: "https://github.com/nostr-protocol/nips/pull/2310"
+    publisher: "nostr-protocol/nips"
+    date: "2026-05-28"
+  - title: "NIP-F4: podcasts"
+    url: "https://github.com/nostr-protocol/nips/pull/1093"
+    publisher: "nostr-protocol/nips"
+    date: "2026-05-28"
+items:
+  - title: "NIP-59: Add ephemeral gift wrap event kind (21059)"
+    url: "https://github.com/nostr-protocol/nips/pull/2245"
+    summary: "Adds kind:21059, an ephemeral gift wrap for real-time messaging that relays must not store."
+  - title: "One sentence in NIP-01 that helps resolves a huge issue with relay connection management."
+    url: "https://github.com/nostr-protocol/nips/pull/2307"
+    summary: "Requires relays to treat any additional URL path segments as the same single endpoint."
+  - title: "nip29: audio/video live spaces"
+    url: "https://github.com/nostr-protocol/nips/pull/2238"
+    summary: "Lets NIP-29 groups advertise LiveKit voice and video rooms via a livekit tag."
+  - title: "nip78: a normal application-specific kind"
+    url: "https://github.com/nostr-protocol/nips/pull/2292"
+    summary: "Adds kind 78 as a normal event alongside the existing addressable kind:30078."
+  - title: "Add section on deletion"
+    url: "https://github.com/nostr-protocol/nips/pull/2260"
+    summary: "Adds a Delete and Edit section to NIP-17 covering gift-wrapped delete events."
+  - title: "NIP-71 feat: video multiple audio tracks"
+    url: "https://github.com/nostr-protocol/nips/pull/2255"
+    summary: "Extends imeta tags to describe multiple language audio tracks per video."
+  - title: "NIP-85: Clarifications"
+    url: "https://github.com/nostr-protocol/nips/pull/2304"
+    summary: "Rewords the kind:10040 description to cover multiple keys and per-user personalization."
+  - title: "Update C7 to only allow kind 9 messages in chat views"
+    url: "https://github.com/nostr-protocol/nips/pull/2310"
+    summary: "Restricts C7 chat views to fetching kind 9 events to keep context consistent."
+  - title: "NIP-F4: podcasts"
+    url: "https://github.com/nostr-protocol/nips/pull/1093"
+    summary: "Adds a draft NIP defining podcast show and episode events, an authorship counter-claim, and a favorites list."
+published: true
+---
+
+On 28 May 2026, nine pull requests were merged into [nostr-protocol/nips](https://github.com/nostr-protocol/nips), the repository that hosts the Nostr protocol's NIPs. All nine merged between 19:50 and 21:20 UTC, an unusually busy stretch for the repository. They span nine different NIPs plus the C7 chat convention, and they are not part of a coordinated release: each is a separate, independent change that happened to clear review in the same window.
+
+Two of the nine bear directly on private messaging and get a closer look below. The rest range across relay connection handling, group audio and video, video metadata, application storage, trust provider wording, and a new draft specification for podcasts.
+
+## NIP-59: a new ephemeral gift wrap kind for real-time messages
+
+[PR #2245](https://github.com/nostr-protocol/nips/pull/2245) adds `kind:21059`, an ephemeral counterpart to the existing `kind:1059` gift wrap. It has the same structure as `kind:1059`, but follows the ephemeral event semantics defined in NIP-01, meaning relays MUST NOT store it. NIP-59 now spells out the intended split: `kind:1059` is for persisted, asynchronous messaging, such as NIP-17 conversations that need offline delivery, while `kind:21059` is for real-time contexts, such as live chat or gaming, where only currently connected recipients matter. This does not change how NIP-17 direct messages work today; it adds a second, non-persisted gift wrap kind for use cases that don't need message history.
+
+## NIP-17: gift-wrapped DMs get a deletion and edit section
+
+[PR #2260](https://github.com/nostr-protocol/nips/pull/2260) adds a "Delete and Edit" section to NIP-17. It states that, in addition to the deletion behaviour already specified in NIP-59, where a gift wrap can be deleted by its p-tagged recipient, clients MAY let a user delete a message by wrapping a `kind:5` delete event inside a `kind:1059` gift wrap and sending it to the recipient as part of the conversation. Clients SHOULD then remove the deleted message from the conversation, or mark it as deleted. The same section also allows implementing message editing as a delete followed by a new event published with the same timestamp. This is new guidance layered on top of the existing gift wrap format, not a change to the encryption itself.
+
+## NIP-01: relays must treat extra path segments as the same endpoint
+
+[PR #2307](https://github.com/nostr-protocol/nips/pull/2307) adds one sentence to NIP-01: "Relays MUST only accept connections to a single endpoint when additional path segments do not influence its behavior." The PR's description points out that a relay URL such as `wss://relay.example/<random-string>` was, on most running relays, functionally identical to `wss://relay.example/`, an ambiguity that made relay identity and deduplication harder for clients to reason about.
+
+## NIP-29: audio and video live spaces for groups
+
+[PR #2238](https://github.com/nostr-protocol/nips/pull/2238) adds a section to NIP-29 letting a group advertise a LiveKit-powered voice and video room through a `livekit` tag on the group announcement event, alongside a new `supported_kinds` tag that lists which event kinds the group accepts (an empty list means it supports no kinds at all, only the AV room). Clients request a join token from a relay's `/.well-known/nip29/livekit/<group-id>` endpoint using a NIP-98 authorization event, and relays may publish who is currently in the room through a new `kind:39004` participants event.
+
+## NIP-71: multiple audio tracks per video
+
+[PR #2255](https://github.com/nostr-protocol/nips/pull/2255) extends the `imeta` tag conventions in NIP-71 so a single video can list several audio tracks as separate `imeta` tags, each carrying an `l` property for its language and an `ov` property flagging the original-language track. It also adds a `waveform` property, a short space-separated list of amplitude values, so clients can render a waveform for an audio track.
+
+## NIP-78: a normal, non-addressable application-specific kind
+
+[PR #2292](https://github.com/nostr-protocol/nips/pull/2292) adds `kind:78` to NIP-78 as a normal event, alongside the existing addressable `kind:30078`. The distinction matters for apps that need to store and query several events of the same type: an addressable kind keeps only the latest event per `d` tag, while a normal kind keeps all of them. The PR also adds the new kind to the NIPs README's event kind table.
+
+## NIP-85: reworded description of kind:10040
+
+[PR #2304](https://github.com/nostr-protocol/nips/pull/2304) rewords a single paragraph of NIP-85. It changes language describing `kind:10040` as a list of "trusted service providers" to describe it instead as the user's preferred source per result, and clarifies that a service provider may use multiple keys and relays, including a key issued per user when results are personalized to that user.
+
+## C7: chat views restricted to kind 9
+
+[PR #2310](https://github.com/nostr-protocol/nips/pull/2310) adds one line to the C7 convention: clients that render a "chat view" as an ordered stream of events MUST only fetch `kind:9` events, to avoid losing context across different implementations. Other content types can still be referenced inside a `kind:9` message by quoting them, per NIP-18.
+
+## NIP-F4: a new draft NIP for podcasts
+
+[PR #1093](https://github.com/nostr-protocol/nips/pull/1093) is the largest change of the day by a wide margin, adding a full draft specification of more than a hundred new lines. It introduces NIP-F4, a draft, optional NIP defining how podcast shows and episodes are published to and read from Nostr relays, structured to fit into existing podcast player workflows. Under NIP-F4, each podcast is its own Nostr keypair, letting it combine a podcasting presence with an ordinary `kind:0`/`kind:1` profile. Show-level information, such as title, cover image, description, and website, is published as a replaceable `kind:10154` event that can also credit hosts, co-hosts, and editors by pubkey. Individual episodes are separate `kind:54` events published directly by the podcast's own key, each carrying a title, description, and one or more `audio` tags pointing to the episode's media file. Because anyone could otherwise falsely claim to be a podcast's author, NIP-F4 adds a `kind:10064` event through which a podcast's real authors publish their own list of the podcasts they author, so a claimed authorship can be checked against that counter-claim rather than trusted on its face. The PR also updates NIP-51 to add a `kind:10054` "Favorite podcasts" list, letting any user publicly note which podcasts they follow using `p` tags for podcast pubkeys and `url` tags for RSS/XML feed URLs, and adds the new event kinds to the NIPs README's kind table.
+
+## A batch, not a coordinated release
+
+Beyond the two direct message changes, there is no shared thread connecting these nine pull requests. They touch unrelated parts of the protocol, from relay connection handling to group video, application storage, and podcast distribution, and simply cleared review within the same roughly ninety minute window on 28 May. It was a batch, not a themed release, even though the day's largest change by far, the new podcast NIP, landed in the same window as eight much smaller ones.
