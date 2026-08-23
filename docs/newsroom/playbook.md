@@ -99,6 +99,7 @@ publishedAt: "<today, YYYY-MM-DD>"
 backfilled: false
 type: "story"        # or "digest"
 tags: ["Nostr", "NIP"]
+featuredImage: "/images/news/<the English slug>.svg"
 translationKey: "<the English slug>"
 sources:
   - title: "..."
@@ -122,14 +123,40 @@ these report current events. The build throws if `backfilled: true` is set witho
 
 Publish in all seven: `en, es, pt, ru, it, fr, de`. `pt` is Brazilian Portuguese.
 
-- Slug: `YYYY-MM-DD-<kebab-title>`; digests `YYYY-MM-DD-week-in-review`.
-- Non-English slugs keep the date prefix and translate only the title part.
+- Slug: a short kebab-case phrase from the headline. **No date prefix.**
+  `nip-47-simplifies-core-adds-extensions`, never `2026-08-01-nip-47-...`.
+  The date already lives in the `date` frontmatter field and on the page; it does
+  not belong in the URL.
+- Digests need a descriptive slug from their own headline too. A generic
+  `week-in-review` collides with every other digest, in every locale.
+- Non-English slugs come from that locale's own translated headline, not from a
+  transliteration of the English one. Russian uses Latin-script transliteration,
+  following the convention already in `content/news/ru/`.
 - `translationKey` is the English slug, identical across all seven files.
 - Translate properly, matching each locale's register in `content/blog/<locale>/`.
   Keep technical terms, kind numbers, tag names and JSON in English.
 - **French needs its accents.** A French file written without them ships broken.
 - An article missing a locale never enters the sitemap for that locale, so it ships
   invisible to search there. All seven, or do not publish.
+
+## Illustration
+
+Every article gets its own illustration. Never leave an article on the shared
+default image.
+
+```
+node scripts/generate-news-illustration.mjs <slug>
+```
+
+This writes `public/images/news/<slug>.svg`, derived deterministically from the
+slug, so the same article always produces the identical file and rebuilds never
+churn. Set that path as `featuredImage` in all seven locale files, keyed on the
+English slug, so every translation of an article shares one image.
+
+`npm run news:illustrations` regenerates every article's image at once.
+
+If the generator fails, do not fall back to the default and publish anyway. Fix
+it, or skip the day and log why.
 
 ## Before pushing
 
