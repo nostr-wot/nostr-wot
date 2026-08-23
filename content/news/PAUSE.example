@@ -1,0 +1,14 @@
+Rename or copy this file to `PAUSE` (no extension) in this directory to stop the
+daily newsroom agent.
+
+    cp content/news/PAUSE.example content/news/PAUSE
+    git add content/news/PAUSE && git commit -m "Pause the newsroom" && git push
+
+The agent checks for `content/news/PAUSE` as the very first thing it does on every
+run. If the file is present it publishes nothing, appends a `paused` line to
+docs/newsroom/log.md, and exits.
+
+Delete the file and push to resume.
+
+This exists because the agent publishes to production with no review gate, so
+stopping it must be one commit and must not require access to any schedule.
