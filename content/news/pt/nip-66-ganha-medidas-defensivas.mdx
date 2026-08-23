@@ -1,0 +1,48 @@
+---
+title: "NIP-66 ganha medidas defensivas"
+description: "Uma pequena adição ao NIP-66 diz aos clientes para não dependerem dos dados de monitores de relay e como se proteger de um monitor que publica informações erradas."
+excerpt: "Os eventos de descoberta de relay do NIP-66 permitem que clientes conheçam relays por meio de monitores de terceiros. Uma mudança de março de 2026 adiciona uma seção de Mitigação de Risco detalhando o que acontece quando esses dados estão errados."
+date: "2026-03-07"
+publishedAt: "2026-08-22"
+backfilled: true
+type: "story"
+tags:
+  - "Nostr"
+  - "NIP-66"
+translationKey: "nip-66-gains-defensive-measures"
+featuredImage: "/images/news/nip-66-gains-defensive-measures.svg"
+sources:
+  - title: "Update 66.md with defensive measures"
+    url: "https://github.com/nostr-protocol/nips/pull/2240"
+    publisher: "nostr-protocol/nips"
+    date: "2026-03-07"
+published: true
+---
+
+O NIP-66 define como relays são descobertos e monitorados na Nostr. Um monitor de relay sonda relays, verificando itens como tempo de ida e volta, NIPs suportados e se correspondem à própria autodescrição NIP-11, e publica o que encontra como um evento de descoberta de relay `30166`. Clientes podem consultar esses eventos para decidir a quais relays vale a pena se conectar.
+
+Esse design coloca um terceiro, o monitor, em posição de influenciar quais relays um cliente vai usar. A [PR #2240](https://github.com/nostr-protocol/nips/pull/2240), mesclada em 7 de março de 2026, adiciona uma pequena seção de "Mitigação de Risco" ao `66.md`, tratando do que acontece quando essa influência dá errado.
+
+## O que mudou
+
+A PR, aberta por alltheseas, adiciona seis linhas à especificação. Segundo a descrição da PR, ela decorre de uma discussão sobre os "aprendizados de benchmark" do NIP-66 em uma issue do nostrability/outbox, na qual vários desenvolvedores levantaram preocupações sobre os caminhos problemáticos da especificação e as implicações de depender dos dados de um monitor.
+
+A nova seção diz:
+
+- Clientes NÃO DEVEM exigir eventos `30166` para funcionar. A ausência de dados de monitoramento NÃO DEVE impedir uma conexão com o relay.
+- Um monitor pode publicar eventos `30166` errôneos, seja por má configuração ou intenção maliciosa.
+- Clientes NÃO DEVERIAM confiar em uma única fonte. As defesas sugeridas incluem filtragem por web of trust, consulta a vários monitores e descarte dos resultados de filtragem de um monitor caso aplicá-los removesse uma proporção irrazoável de relays.
+
+## Por que isso importa
+
+O NIP-66 trata da descoberta de relay, então o risco aqui não é um monitor atacar um relay diretamente. É sobre o que um cliente faz com os dados que um monitor lhe entrega. Um evento `30166` é apenas mais um evento Nostr: qualquer um pode publicar um, correto ou não. Antes dessa mudança, a especificação não dizia o que um cliente deveria fazer se os dados de um monitor se revelassem errados, seja por engano ou de propósito.
+
+As três adições fecham essa lacuna do lado do cliente. A primeira regra mantém o monitoramento como uma melhoria opcional em vez de uma dependência, de modo que um cliente incapaz de alcançar qualquer monitor, ou que não recebe resposta, ainda consiga se conectar a relays normalmente. A segunda regra nomeia a ameaça sem rodeios: um monitor pode estar errado, por acidente ou deliberadamente. A terceira regra dá aos clientes formas concretas de reagir, cruzando dados entre monitores, ponderando-os pelo web of trust e tratando um filtro que excluiria uma proporção irrazoável de relays como um sinal de que o problema é o filtro, não os relays.
+
+Em conjunto, as mudanças descrevem um cliente que trata os dados de um monitor de relay como mais uma entrada entre várias, não como verdade absoluta. Isso é coerente com o restante do design da Nostr, em que nenhum publicador de um tipo de evento é a autoridade única e espera-se que os clientes corroborem as informações.
+
+## Como são os eventos do NIP-66
+
+Um evento `30166` carrega uma tag `d` com a URL normalizada do relay, além de tags adicionais como `rtt-open`, `rtt-read` e `rtt-write` para os tempos de ida e volta, `N` para os NIPs suportados e `R` para as flags de requisitos do NIP-11, como `auth` ou `payment`. O `content` do evento pode incluir o documento NIP-11 do relay conforme relatado pelo monitor. Nada disso muda com essa PR. O que muda é a orientação sobre o quanto um cliente deveria confiar nesses dados.
+
+A mudança afetou apenas `66.md`, com seis linhas adicionadas e nenhuma removida.

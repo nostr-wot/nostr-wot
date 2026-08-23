@@ -1,0 +1,51 @@
+---
+title: "NIP-54 passe d'Asciidoc à Djot pour les articles wiki"
+description: "La PR #2242 change le format de contenu de NIP-54, d'Asciidoc à Djot, en remplaçant la syntaxe des wikilinks à double crochets par les liens de référence de Djot."
+excerpt: "Les articles wiki de NIP-54 n'utilisent plus Asciidoc. Une pull request fusionnée change le langage de balisage de la spécification vers Djot et réécrit la syntaxe des wikilinks en conséquence."
+date: "2026-03-17"
+publishedAt: "2026-08-22"
+backfilled: true
+type: "story"
+tags:
+  - "Nostr"
+  - "NIP"
+translationKey: "nip-54-switches-to-djot"
+featuredImage: "/images/news/nip-54-switches-to-djot.svg"
+sources:
+  - title: "NIP-54: Switch from Asciidoc to Djot"
+    url: "https://github.com/nostr-protocol/nips/pull/2242"
+    publisher: "nostr-protocol/nips"
+    date: "2026-03-17"
+published: true
+---
+
+NIP-54 définit des articles wiki modifiables de façon collaborative sur Nostr : des événements adressables qu'un client peut afficher comme des pages de style encyclopédique, avec des wikilinks entre articles. Le 2026-03-17, la [PR #2242](https://github.com/nostr-protocol/nips/pull/2242), rédigée par VincenzoImp, a été fusionnée dans la spécification et a changé le langage de balisage utilisé pour le champ `content` d'un article wiki, d'Asciidoc vers [Djot](https://djot.net/).
+
+## Pourquoi un changement de balisage n'est pas cosmétique
+
+NIP-54 n'enveloppe pas `content` dans un format conteneur avec son propre champ de type. Il dit simplement : ceci est du texte écrit dans un langage de balisage donné, et les clients sont censés l'interpréter et l'afficher en conséquence. Cela signifie que chaque client qui affiche des articles NIP-54, et chaque outil ou relay qui les génère, doit s'accorder sur ce que signifie ce balisage. Changer le langage de balisage change ce qu'est un "rendu correct" pour tout le kind d'événement, pas seulement pour un article. C'est le genre de changement qui compte pour les implémenteurs, même si aucun numéro de kind ni aucune structure de tags n'a bougé.
+
+## À quoi ressemble la syntaxe maintenant
+
+L'ancienne spécification décrivait du contenu en Asciidoc avec une extension spéciale de wikilinks utilisant des doubles crochets : `[[Target Page]]` renvoyait vers l'article à `target-page`, et `[[target page|see this]]` permettait de définir un texte d'affichage personnalisé.
+
+Djot n'a pas de syntaxe de wikilinks à paire de crochets qui lui soit propre, donc NIP-54 réutilise à la place les liens de référence natifs de Djot. Un lien comme `[cryptocurrency][]` se résout normalement contre une référence définie ailleurs dans le document ; NIP-54 précise désormais que lorsque cette référence n'existe pas, le client doit le traiter comme un wikilink et le résoudre vers l'article wiki dont le tag `d` correspond au texte du lien normalisé. Ainsi, `[cryptocurrency][]` devient un wikilink vers l'article tagué `cryptocurrency`, tandis que `[Satoshi Nakamoto][]` reste un lien normal si une référence pour "Satoshi Nakamoto" est définie dans le document (pointant par exemple vers un `npub`). La PR ajoute aussi des exemples travaillés pour les écritures non latines, montrant comment la même syntaxe de référence normalise une cible de lien en japonais ou en cyrillique.
+
+Les liens `nostr:` définis dans NIP-21 ne sont pas affectés : ils continuent de fonctionner pour lier des profils ou des événements spécifiques, même si la spécification continue de recommander les wikilinks plutôt que de figer un lien sur une version précise d'un article.
+
+## Ce que la PR complète aussi
+
+Deux sections de NIP-54 étaient restées à l'état de placeholders, marquées `[INSERT EVENT EXAMPLE]`, depuis la première rédaction du NIP. La PR #2242 les complète toutes les deux avec du JSON réel :
+
+- L'événement `kind:818` de Merge Request, utilisé pour demander à une autre clé publique de fusionner un article forké vers la source, dispose maintenant d'un exemple complet taguant l'article de destination avec un tag `a`, la version de base avec un tag `e`, et la version à fusionner avec un tag `e` portant le marqueur `source`.
+- L'événement `kind:30819` de Redirect, utilisé pour faire pointer un titre d'article vers un autre (l'exemple de la PR est "BTC" redirigeant vers "Bitcoin"), reçoit le même traitement : un tag `d` avec le titre d'origine et un tag `a` pointant vers l'article de destination.
+
+## Pourquoi Djot
+
+La PR ajoute une nouvelle section "Why Djot?" à la spécification, remplaçant l'ancienne justification "Why Asciidoc?". Elle explique ce choix en termes concrets : Djot a été créé par John MacFarlane, l'auteur de Pandoc et co-auteur de CommonMark, et contrairement à Markdown, qui se divise en de nombreux dialectes incompatibles, ou à Asciidoc, dont la spécification est liée à son implémentation en Ruby, Djot dispose d'une spécification claire et autonome. Il dispose déjà d'implémentations natives en JavaScript, Lua, Rust et Go, sans étape de transpilation nécessaire, et prend en charge les fonctionnalités dont un format de wiki encyclopédique a besoin : exposant, indice, notes de bas de page, tableaux, listes de définitions et mathématiques. Sa syntaxe reste proche du Markdown de base, et son analyseur est conçu pour s'exécuter en temps linéaire.
+
+## Contexte
+
+Selon le corps de la PR, la #2242 poursuit le travail commencé dans la [#2082](https://github.com/nostr-protocol/nips/pull/2082), la proposition qui a d'abord soulevé l'idée d'abandonner Asciidoc, et s'appuie sur la [#2177](https://github.com/nostr-protocol/nips/pull/2177), un changement fusionné auparavant qui a établi les règles de normalisation du tag `d` pour les écritures non latines, dont dépendent directement les nouveaux exemples de wikilinks.
+
+Le changement n'a touché qu'un seul fichier, `54.md`, avec 63 lignes ajoutées et 37 supprimées.

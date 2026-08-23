@@ -1,0 +1,56 @@
+---
+title: "NIP-44 rimuove il limite di 65535 byte"
+description: "Il tetto del testo in chiaro di NIP-44 era fissato a 65535 byte a causa di un campo di lunghezza a 2 byte. Una modifica unita alla specifica lo estende a 4.294.967.295 byte senza toccare la versione del formato."
+excerpt: "Ogni payload di NIP-44 portava un prefisso di lunghezza a 2 byte che limitava il testo in chiaro a 65535 byte. Una modifica unita il 28 giugno 2026 aggiunge un prefisso a lunghezza variabile che alza il tetto a poco meno di 4 GB, senza cambiare versione e senza rompere nulla di già distribuito."
+date: "2026-06-28"
+publishedAt: "2026-08-22"
+backfilled: true
+type: "story"
+tags:
+  - "Nostr"
+  - "NIP"
+  - "Encryption"
+translationKey: "nip-44-drops-the-65535-byte-limit"
+featuredImage: "/images/news/nip-44-drops-the-65535-byte-limit.svg"
+sources:
+  - title: "allow NIP-44 to encrypt more than 65535 bytes"
+    url: "https://github.com/nostr-protocol/nips/pull/1907"
+    publisher: "nostr-protocol/nips"
+    date: "2026-06-28"
+published: true
+---
+
+[NIP-44](https://github.com/nostr-protocol/nips/blob/master/44.md) è lo schema di cifratura su cui si basa gran parte della messaggistica privata di Nostr, compresi i messaggi diretti impacchettati in regalo di [NIP-17](https://github.com/nostr-protocol/nips/blob/master/17.md). Da quando è stato introdotto, aveva un tetto fisso su quanto si può cifrare in un singolo payload: 65535 byte. Il 28 giugno 2026, [una modifica di fiatjaf](https://github.com/nostr-protocol/nips/pull/1907) ha rimosso quel tetto, ed è utile essere precisi su cosa sia cambiato davvero.
+
+## Da dove veniva il vecchio limite
+
+Il tetto di 65535 byte non è mai stato una scelta deliberata di policy. Era una conseguenza diretta di come NIP-44 aggiunge il padding al testo in chiaro prima di cifrarlo. Il formato di padding memorizzava la lunghezza del testo in chiaro come i primi due byte del blob con padding, un intero senza segno a 16 bit in big-endian, `u16`. Un `u16` può rappresentare solo valori da 0 a 65535, quindi qualsiasi cosa più grande semplicemente non poteva essere espressa nel prefisso di lunghezza, indipendentemente dal fatto che il cifrario sottostante potesse gestirla o meno. La sezione delle costanti della specifica lo dichiarava direttamente: `max_plaintext_size` era 65535, "64kB meno 1".
+
+Quella stessa assunzione a 2 byte si propagava verso l'esterno. Le regole di validazione di NIP-44 sul payload codificato in base64 e sulla stringa di byte decodificata erano entrambe controlli di intervallo, non solo di lunghezza minima: un payload base64 valido doveva rientrare tra 132 e 87472 caratteri, e un messaggio decodificato valido tra 99 e 65603 byte. Entrambi i limiti superiori esistevano soltanto perché un messaggio più grande era strutturalmente impossibile sotto il prefisso a 2 byte.
+
+## Cosa fa il nuovo schema
+
+La modifica unita mantiene il prefisso a 2 byte per tutto ciò che ci sta ancora dentro, e aggiunge un secondo formato, più grande, per ciò che non ci sta. La regola è una soglia a 65536 byte:
+
+- Se la lunghezza del testo in chiaro è inferiore a 65536 byte, il prefisso resta di 2 byte, esattamente il vecchio formato `u16`: `[plaintext_length: u16][plaintext][zero_bytes]`.
+- Se la lunghezza del testo in chiaro è 65536 byte o più, il prefisso diventa di 6 byte: due byte a zero seguiti da un `u32` in big-endian, `[0x00, 0x00][plaintext_length: u32][plaintext][zero_bytes]`.
+
+I due byte a zero all'inizio del prefisso esteso non sono padding fine a sé stesso, sono il segnale. Un testo in chiaro valido ha sempre almeno 1 byte, quindi un valore `u16` esattamente pari a zero non potrebbe mai verificarsi nel vecchio formato. La decodifica diventa quindi univoca: leggere i primi 2 byte come `u16`; se sono zero, leggere i 4 byte successivi come `u32` per ottenere la lunghezza reale; se non sono zero, quel valore è la lunghezza e il prefisso era di soli 2 byte.
+
+`max_plaintext_size` passa da 65535 a 4.294.967.295, cioè 2^32 meno 1, circa 4 GB. I controlli di intervallo sulla lunghezza del payload in base64 e decodificato perdono completamente il limite superiore e diventano controlli di solo minimo: almeno 132 caratteri base64, almeno 99 byte decodificati, senza tetto.
+
+La specifica ha anche guadagnato una nuova sezione "considerazioni di implementazione". Indica alle implementazioni di imporre una propria dimensione massima del payload adatta alla propria piattaforma, e di rifiutare i payload troppo grandi presto, prima della decodifica base64, in particolare per evitare denial-of-service dal tentativo di decodificare input enormi. Segnala che la decifratura può richiedere più volte la dimensione del payload in memoria di lavoro, che i sistemi basati su JVM limitano gli array contigui a circa 2 GB, ben al di sotto del nuovo tetto teorico di 4 GB, e che i calcoli della lunghezza con padding possono ora raggiungere 2^32, quindi le implementazioni hanno bisogno di aritmetica a 64 bit per calcolare correttamente il padding.
+
+Sono stati aggiunti nuovi vettori di test al confine, verificando un testo in chiaro di 65535 byte contro uno di 65536 byte, per confermare che le implementazioni cambino formato di prefisso esattamente nel punto giusto.
+
+## Stessa versione, nessun cambio di versione
+
+Questo resta NIP-44 versione 2. La modifica non ha toccato il byte di versione né ha aggiunto un nuovo numero di versione da negoziare. Estende il formato di padding v2 esistente con una seconda lunghezza di prefisso che si attiva solo quando il messaggio supera i 65536 byte. Un decodificatore versione 2 aggiornato a questo NIP gestisce sia i messaggi vecchi sia quelli nuovi sotto lo stesso identificativo di versione.
+
+## Retrocompatibile, secondo l'autore stesso della PR
+
+Il corpo della PR dichiara senza mezzi termini: "This is backwards-compatible and no one has to change anything if they do not care about bigger messages" ("Questo è retrocompatibile e nessuno deve cambiare nulla se non gli interessano i messaggi più grandi"). Per il caso comune non cambia nulla. Qualsiasi testo in chiaro sotto i 65536 byte viene codificato esattamente con lo stesso prefisso a 2 byte di prima, byte per byte. Le implementazioni che non hanno mai bisogno di inviare qualcosa di più grande non devono aggiornarsi affatto.
+
+Il corpo della PR nomina anche il caso concreto che ha motivato la modifica: "The only reasonable case where this necessity has shown up so far was signing of big kind:3 lists via NIP-46" ("L'unico caso ragionevole in cui questa necessità si è presentata finora è stata la firma di grandi liste kind:3 tramite NIP-46"). Le grandi liste di contatti `kind:3`, inviate tramite la firma remota di NIP-46, erano il carico di lavoro che urtava contro il vecchio tetto.
+
+NIP-44 è alla base della cifratura dei messaggi diretti su Nostr, quindi un limite sulla dimensione del testo in chiaro è un limite su ciò che può contenere un singolo messaggio cifrato. Alzarlo non tocca come viene derivata la chiave di conversazione, come funziona la cifratura ChaCha20, né come viene calcolato il MAC. Cambia cosa entra in un messaggio.

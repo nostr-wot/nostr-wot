@@ -1,0 +1,55 @@
+---
+title: "NIP-67: Vollständigkeitshinweis für EOSE"
+description: "Ein neues NIP lässt Relays Clients mitteilen, ob ein EOSE ein wirklich vollständiges Ergebnis markiert oder ein abgeschnittenes."
+excerpt: "EOSE bedeutete schon immer, dass das Relay mit dem Senden gespeicherter Events fertig ist, nicht dass es alle gesendet hat. NIP-67 fügt einen optionalen Hinweis hinzu, mit dem Clients diesen Unterschied endlich erkennen können."
+date: "2026-06-06"
+publishedAt: "2026-08-22"
+backfilled: true
+type: "story"
+tags:
+  - "Nostr"
+  - "NIP"
+  - "Relays"
+translationKey: "nip-67-eose-completeness-hint"
+featuredImage: "/images/news/nip-67-eose-completeness-hint.svg"
+sources:
+  - title: "NIP-67: EOSE Completeness Hint"
+    url: "https://github.com/nostr-protocol/nips/pull/2317"
+    publisher: "nostr-protocol/nips"
+    date: "2026-06-06"
+published: true
+---
+
+[NIP-01](https://github.com/nostr-protocol/nips/blob/master/01.md) definiert `EOSE` als die Grenze zwischen gespeicherten Events und Echtzeit-Events für ein Abonnement. Was es nie festgelegt hat, ist, ob das Relay tatsächlich alles gesendet hat, was es besitzt und was zum Filter passt. [NIP-67](https://github.com/nostr-protocol/nips/pull/2317), verfasst von mattn und am 6. Juni 2026 gemergt, gibt Relays eine Möglichkeit, das mitzuteilen.
+
+## Die Lücke, die EOSE offen ließ
+
+Die meisten Relays setzen eine interne Obergrenze für die Anzahl gespeicherter Events, die sie für ein einzelnes Abonnement zurückgeben, unabhängig davon, welches `limit` der Client angefragt hat. Der Client hat keine Möglichkeit, diese Obergrenze zu sehen. Alles, was er tun kann, ist die Anzahl der erhaltenen Events mit dem angeforderten `limit` zu vergleichen und zu raten.
+
+Diese Vermutung scheitert auf zwei konkrete Arten.
+
+Erstens: Wenn die Obergrenze des Relays unter dem vom Client angeforderten `limit` liegt, wird der Client fälschlich zu der Annahme verleitet, das Ergebnis sei vollständig. Ein Client fragt nach den letzten 500 Notizen. Das Relay begrenzt Antworten auf 300 und sendet genau 300. Da 300 kleiner als 500 ist, schließt der Client, alles erhalten zu haben. Das stimmt nicht. Der Rest der passenden Notizen bleibt auf dem Relay, und der Client erfährt nie, dass sie existieren.
+
+Zweitens: Wenn die Anzahl der passenden Events zufällig genau der Obergrenze des Relays entspricht, kann der Client nicht erkennen, dass er alle erhalten hat. Ihm bleibt nichts anderes übrig, als ein weiteres `REQ` mit `until` auf den Zeitstempel des ältesten erhaltenen Events zu senden, nur um zu bestätigen, dass die nächste Charge leer ist. Ein auf 300 Events begrenztes Relay wird für jedes Abonnement, das diese Obergrenze erreicht, mindestens zweimal angefragt, unabhängig davon, ob es überhaupt weitere Daten gab.
+
+## Was NIP-67 hinzufügt
+
+Die Spezifikation fügt der `EOSE`-Nachricht ein optionales drittes Element hinzu, ein Array von Hinweis-Strings:
+
+```
+["EOSE", <subscription_id>, [<hint>, ...]]
+```
+
+Zwei Hinweiswerte sind definiert. `"finish"` bedeutet, dass das Relay alle gespeicherten Events gesendet hat, die den Filtern des Abonnements entsprechen, der Client sollte also nicht weiter paginieren. `"more"` bedeutet, dass das Relay weitere passende gespeicherte Events zurückhält, die es nicht gesendet hat, der Client sollte also paginieren, um sie abzurufen. Ein Relay ist nicht verpflichtet, `"more"` zu senden, selbst wenn es zutrifft, da sicheres Wissen darüber, dass mehr passende Daten existieren, nicht auf jedem Storage-Backend kostenlos ist.
+
+Das Hinweis-Array kann einen der beiden Werte, beide oder keinen enthalten. Die Spezifikation ist eindeutig: Ihre Anwesenheit ist definitiv, ihre Abwesenheit nicht. Lässt ein Relay das dritte Element ganz weg oder sendet ein `EOSE` ohne Hinweise, fällt der Client auf dieselbe `until`-basierte Paginierungs-Heuristik zurück, die er bereits heute verwendet. Am bestehenden Client-Verhalten muss nichts geändert werden, damit es korrekt bleibt.
+
+Die Kompatibilität funktioniert in beide Richtungen. Ein Relay, das dieses NIP einführt, sendet das dreiteilige `EOSE` an jeden Client, egal ob dieser den Hinweis versteht oder nicht, weil Clients ohne NIP-67-Unterstützung `EOSE` ohnehin positionsbasiert indizieren und das zusätzliche Element einfach ignorieren, so wie ein JSON-Parser ein überzähliges Element am Ende eines Arrays klaglos akzeptiert. Ein Client, der Unterstützung für den Hinweis hinzufügt, bekommt von Relays, die ihn noch nicht implementiert haben, nichts extra und nutzt einfach weiter seine bestehende Paginierungslogik.
+
+Das NIP behandelt auch einen verwandten Grenzfall bei gleichen Zeitstempeln. Sendet ein Relay kein `"finish"`, können mehrere gespeicherte Events in einer Antwort denselben ältesten `created_at`-Wert teilen, und die `until`-basierte Paginierung riskiert, Events, die diesen Grenz-Zeitstempel teilen, stillschweigend zu verlieren. Relays wird empfohlen, wo möglich, weit genug voranzuschreiten, damit alle Events mit diesem Grenz-Zeitstempel in einer Antwort enthalten sind, und `"finish"` erst dann zu senden, wenn wirklich nichts Älteres mehr übrig ist.
+
+Von Relays, die NIP-67 implementieren, wird erwartet, dass sie `67` in ihrem `supported_nips`-Feld gemäß [NIP-11](https://github.com/nostr-protocol/nips/blob/master/11.md) angeben.
+
+## Warum das wichtig ist
+
+Ein stillschweigendes Abschneiden und ein wirklich leeres Ergebnis sehen für einen Client heute identisch aus. Dieser Unterschied zählt vor allem bei allem, was "keine weiteren Ergebnisse" als bedeutsam behandelt: Moderations-Abfragen, Audits, oder ein Client, der feststellen will, dass ein bestimmter öffentlicher Schlüssel wirklich keine weiteren Events eines bestimmten Typs mehr hat. NIP-67 ändert nicht, wie Events gespeichert oder ausgeliefert werden. Es gibt Relays ein kleines, optionales Vokabular, um ehrlich mitzuteilen, ob die Historie gespeicherter Events eines Abonnements tatsächlich erschöpft wurde.
