@@ -1,8 +1,77 @@
 {
-  "generatedAt": "2026-08-23T18:23:26.662Z",
+  "generatedAt": "2026-08-24T17:37:33.672Z",
   "locales": {
     "en": {
       "posts": [
+        {
+          "slug": "nip-22-drops-its-kind-1-prohibition",
+          "title": "Week in Review: NIP-22 Drops Its Kind 1 Prohibition, Amethyst Ships 1.14.0",
+          "description": "In the week to 24 August 2026, one pull request merged into nostr-protocol/nips, removing the line that forbade kind 1111 comments from replying to kind 1 notes, and Amethyst tagged version 1.14.0.",
+          "excerpt": "A two line deletion in NIP-22 removes the rule that comments MUST NOT reply to kind 1 notes, leaving NIP-10's mirror rule in place and allowing a thread under a note to hold two different event kinds.",
+          "date": "2026-08-24T00:00:00.000Z",
+          "author": {
+            "name": "Nostr WoT Newsroom"
+          },
+          "featuredImage": "/images/news/nip-22-drops-its-kind-1-prohibition.svg",
+          "previewImage": "/images/news/nip-22-drops-its-kind-1-prohibition.svg",
+          "tags": [
+            "Nostr",
+            "NIP",
+            "NIP-22"
+          ],
+          "published": true,
+          "readingTime": "4 min read",
+          "locale": "en",
+          "translationKey": "nip-22-drops-its-kind-1-prohibition",
+          "translations": {
+            "en": "nip-22-drops-its-kind-1-prohibition",
+            "es": "nip-22-elimina-su-prohibicion-sobre-kind-1",
+            "pt": "nip-22-remove-sua-proibicao-sobre-notas-kind-1",
+            "ru": "nip-22-otmenyaet-zapret-na-kind-1",
+            "it": "il-nip-22-rimuove-il-suo-divieto-su-kind-1",
+            "fr": "le-nip-22-supprime-son-interdiction-sur-kind-1",
+            "de": "nip-22-streicht-sein-kind-1-verbot"
+          },
+          "availableLocales": [
+            "en",
+            "es",
+            "pt",
+            "ru",
+            "it",
+            "fr",
+            "de"
+          ],
+          "type": "digest",
+          "sources": [
+            {
+              "title": "Use kind 1111 replies to kind 1 notes (#2250)",
+              "url": "https://github.com/nostr-protocol/nips/pull/2358",
+              "publisher": "nostr-protocol/nips",
+              "date": "2026-08-24"
+            },
+            {
+              "title": "Amethyst v1.14.0",
+              "url": "https://github.com/vitorpamplona/amethyst/releases/tag/v1.14.0",
+              "publisher": "vitorpamplona/amethyst",
+              "date": "2026-08-22"
+            }
+          ],
+          "publishedAt": "2026-08-24T00:00:00.000Z",
+          "backfilled": false,
+          "items": [
+            {
+              "title": "Use kind 1111 replies to kind 1 notes (#2250)",
+              "url": "https://github.com/nostr-protocol/nips/pull/2358",
+              "summary": "Removes the line forbidding kind 1111 comments from being used to reply to kind 1 notes."
+            },
+            {
+              "title": "Amethyst v1.14.0",
+              "url": "https://github.com/vitorpamplona/amethyst/releases/tag/v1.14.0",
+              "summary": "Adds NIP-84 highlights, Pictures, Videos, Shorts and Torrents feeds, NIP-29 channel deletion and archival, and NIP-73 rich previews."
+            }
+          ],
+          "content": "\nBetween 18 and 24 August 2026, one pull request was merged into [nostr-protocol/nips](https://github.com/nostr-protocol/nips), and one major client tagged a release. The merge count was cross-checked against the repository's commit history for the same window, which holds a single commit on `master`.\n\nThe specification change is small in size and specific in effect. NIP-22 no longer forbids using a comment to reply to a kind 1 note.\n\n## NIP-22: the line barring comments on kind 1 notes is gone\n\n[PR #2358](https://github.com/nostr-protocol/nips/pull/2358), opened by zhoreeq and merged on 24 August 2026 at 16:54 UTC, deletes two lines from `22.md` and adds none. The removed sentence read:\n\n> Comments MUST NOT be used to reply to kind 1 notes. NIP-10 should instead be followed.\n\nThe pull request describes itself as removing \"the line that discourages the use of kind 1111 replies to kind 1 notes\". Nothing was written in its place. There is no new permission, no MAY, and no replacement guidance. The prohibition is simply absent from the specification now.\n\nNIP-22 defines `kind:1111`, a comment event always scoped to a root event or to an `I`-tag from NIP-73. A comment points at its root scope with uppercase tags (`E`, `A`, `I`, `K`, `P`) and at its immediate parent with the lowercase equivalents (`e`, `a`, `i`, `k`, `p`), and both `K` and `k` MUST be present so that the kind of the root and the kind of the parent are explicit. That structure is untouched by this merge. The only difference is which root kinds a comment is allowed to point at.\n\n## What the two threading NIPs say now\n\nBefore this change, the two threading specifications fenced each other off in both directions. NIP-10 governs kind 1 text notes and their replies, which are themselves kind 1 events linked by `e` tags. NIP-22 governs kind 1111 comments on everything else. Each told implementers to stay out of the other's territory.\n\nOnly one of those two statements survives. NIP-10 still reads:\n\n> Kind 1 events with `e` tags are replies to other kind 1 events. Kind 1 replies MUST NOT be used to reply to other kinds, use NIP-22 instead.\n\nA kind 1 reply therefore still may not target an event of another kind. What has gone is the matching rule in the opposite direction. A kind 1111 comment whose `K` and `k` tags carry the value `1` is now within the specification.\n\nThe practical consequence is that a thread hanging off a kind 1 note may contain events of two different kinds, structured two different ways. Kind 1 replies carry marked `e` tags as described in NIP-10. Kind 1111 comments carry an uppercase root scope plus lowercase parent tags as described in NIP-22. A client that assembles a thread by reading only NIP-10 `e` tags will not see kind 1111 comments underneath a note, and a client that reads only NIP-22 tags will not see the kind 1 replies. Reading both is what shows the whole thread.\n\nBoth NIP-10 and NIP-22 remain marked `draft` `optional`.\n\n## Amethyst 1.14.0\n\n[Amethyst v1.14.0](https://github.com/vitorpamplona/amethyst/releases/tag/v1.14.0) was tagged on 22 August 2026. Its release notes list user-visible additions including NIP-84 highlights support across the composer, the feed and the share intent; new Pictures, Videos, Shorts and Torrents feed types, with matching media share targets; NIP-29 channel deletion and archival; and rich previews for NIP-73 external-content comments. The release also carries a long list of internal fixes covering relay subscription handling, media playback and metadata parsing.\n\n## The week in total\n\nOne specification change and one client release. The NIP-22 edit removes two lines, and it reaches every client that renders a thread under a kind 1 note, because such a thread may now hold kind 1111 comments alongside kind 1 replies.\n"
+        },
         {
           "slug": "nip-47-simplifies-core-adds-extensions",
           "title": "NIP-47 Simplifies Its Core Spec and Adds an Extensions Repository",
@@ -726,6 +795,7 @@
         "Lightning",
         "NIP",
         "NIP-19",
+        "NIP-22",
         "NIP-29",
         "NIP-34",
         "NIP-47",
@@ -738,6 +808,75 @@
     },
     "es": {
       "posts": [
+        {
+          "slug": "nip-22-elimina-su-prohibicion-sobre-kind-1",
+          "title": "Resumen semanal: el NIP-22 elimina su prohibición sobre las notas kind 1 y Amethyst publica la 1.14.0",
+          "description": "En la semana hasta el 24 de agosto de 2026 se fusionó un pull request en nostr-protocol/nips, que suprime la línea que impedía que los comentarios kind 1111 respondieran a notas kind 1, y Amethyst etiquetó la versión 1.14.0.",
+          "excerpt": "Una eliminación de dos líneas en el NIP-22 retira la regla que decía que los comentarios NO DEBEN responder a notas kind 1, deja intacta la regla espejo del NIP-10 y permite que un hilo bajo una nota contenga dos tipos de evento distintos.",
+          "date": "2026-08-24T00:00:00.000Z",
+          "author": {
+            "name": "Nostr WoT Newsroom"
+          },
+          "featuredImage": "/images/news/nip-22-drops-its-kind-1-prohibition.svg",
+          "previewImage": "/images/news/nip-22-drops-its-kind-1-prohibition.svg",
+          "tags": [
+            "Nostr",
+            "NIP",
+            "NIP-22"
+          ],
+          "published": true,
+          "readingTime": "4 min read",
+          "locale": "es",
+          "translationKey": "nip-22-drops-its-kind-1-prohibition",
+          "translations": {
+            "en": "nip-22-drops-its-kind-1-prohibition",
+            "es": "nip-22-elimina-su-prohibicion-sobre-kind-1",
+            "pt": "nip-22-remove-sua-proibicao-sobre-notas-kind-1",
+            "ru": "nip-22-otmenyaet-zapret-na-kind-1",
+            "it": "il-nip-22-rimuove-il-suo-divieto-su-kind-1",
+            "fr": "le-nip-22-supprime-son-interdiction-sur-kind-1",
+            "de": "nip-22-streicht-sein-kind-1-verbot"
+          },
+          "availableLocales": [
+            "en",
+            "es",
+            "pt",
+            "ru",
+            "it",
+            "fr",
+            "de"
+          ],
+          "type": "digest",
+          "sources": [
+            {
+              "title": "Use kind 1111 replies to kind 1 notes (#2250)",
+              "url": "https://github.com/nostr-protocol/nips/pull/2358",
+              "publisher": "nostr-protocol/nips",
+              "date": "2026-08-24"
+            },
+            {
+              "title": "Amethyst v1.14.0",
+              "url": "https://github.com/vitorpamplona/amethyst/releases/tag/v1.14.0",
+              "publisher": "vitorpamplona/amethyst",
+              "date": "2026-08-22"
+            }
+          ],
+          "publishedAt": "2026-08-24T00:00:00.000Z",
+          "backfilled": false,
+          "items": [
+            {
+              "title": "Use kind 1111 replies to kind 1 notes (#2250)",
+              "url": "https://github.com/nostr-protocol/nips/pull/2358",
+              "summary": "Suprime la línea que prohibía usar comentarios kind 1111 para responder a notas kind 1."
+            },
+            {
+              "title": "Amethyst v1.14.0",
+              "url": "https://github.com/vitorpamplona/amethyst/releases/tag/v1.14.0",
+              "summary": "Añade destacados NIP-84, feeds de Pictures, Videos, Shorts y Torrents, borrado y archivado de canales NIP-29, y vistas previas enriquecidas NIP-73."
+            }
+          ],
+          "content": "\nEntre el 18 y el 24 de agosto de 2026 se fusionó un pull request en [nostr-protocol/nips](https://github.com/nostr-protocol/nips) y un cliente importante etiquetó una versión. El recuento de fusiones se contrastó con el historial de commits del repositorio para esa misma ventana, que contiene un único commit en `master`.\n\nEl cambio en la especificación es pequeño en tamaño y concreto en su efecto. El NIP-22 ya no prohíbe usar un comentario para responder a una nota kind 1.\n\n## NIP-22: desaparece la línea que vetaba los comentarios en notas kind 1\n\nLa [PR #2358](https://github.com/nostr-protocol/nips/pull/2358), abierta por zhoreeq y fusionada el 24 de agosto de 2026 a las 16:54 UTC, elimina dos líneas de `22.md` y no añade ninguna. La frase suprimida decía:\n\n> Los comentarios NO DEBEN usarse para responder a notas kind 1. En su lugar debería seguirse el NIP-10.\n\nEl pull request se describe a sí mismo como la eliminación de \"la línea que desaconseja el uso de respuestas kind 1111 a notas kind 1\". No se escribió nada en su lugar. No hay un permiso nuevo, ni un PUEDE, ni una guía de reemplazo. La prohibición sencillamente ya no está en la especificación.\n\nEl NIP-22 define `kind:1111`, un evento de comentario siempre delimitado por un evento raíz o por una etiqueta `I` del NIP-73. Un comentario apunta a su ámbito raíz con etiquetas en mayúscula (`E`, `A`, `I`, `K`, `P`) y a su elemento padre inmediato con las equivalentes en minúscula (`e`, `a`, `i`, `k`, `p`), y tanto `K` como `k` DEBEN estar presentes para que el kind de la raíz y el del padre queden explícitos. Esa estructura no se ve alterada por esta fusión. La única diferencia está en a qué kinds raíz puede apuntar un comentario.\n\n## Qué dicen ahora los dos NIPs de hilos\n\nAntes de este cambio, las dos especificaciones de hilos se delimitaban mutuamente en ambas direcciones. El NIP-10 rige las notas de texto kind 1 y sus respuestas, que son a su vez eventos kind 1 enlazados mediante etiquetas `e`. El NIP-22 rige los comentarios kind 1111 sobre todo lo demás. Cada uno indicaba a los implementadores que se mantuvieran fuera del terreno del otro.\n\nSolo sobrevive una de esas dos afirmaciones. El NIP-10 sigue diciendo:\n\n> Los eventos kind 1 con etiquetas `e` son respuestas a otros eventos kind 1. Las respuestas kind 1 NO DEBEN usarse para responder a otros kinds; úsese el NIP-22 en su lugar.\n\nPor tanto, una respuesta kind 1 sigue sin poder apuntar a un evento de otro kind. Lo que ha desaparecido es la regla equivalente en el sentido contrario. Un comentario kind 1111 cuyas etiquetas `K` y `k` lleven el valor `1` está ahora dentro de la especificación.\n\nLa consecuencia práctica es que un hilo que cuelga de una nota kind 1 puede contener eventos de dos kinds distintos, estructurados de dos maneras distintas. Las respuestas kind 1 llevan etiquetas `e` marcadas, tal como describe el NIP-10. Los comentarios kind 1111 llevan un ámbito raíz en mayúsculas más etiquetas de padre en minúsculas, tal como describe el NIP-22. Un cliente que arme el hilo leyendo únicamente las etiquetas `e` del NIP-10 no verá los comentarios kind 1111 situados bajo una nota, y un cliente que lea únicamente las etiquetas del NIP-22 no verá las respuestas kind 1. Leer ambas es lo que muestra el hilo completo.\n\nTanto el NIP-10 como el NIP-22 siguen marcados como `draft` `optional`.\n\n## Amethyst 1.14.0\n\n[Amethyst v1.14.0](https://github.com/vitorpamplona/amethyst/releases/tag/v1.14.0) se etiquetó el 22 de agosto de 2026. Sus notas de versión enumeran añadidos visibles para el usuario, entre ellos soporte de destacados NIP-84 en el compositor, el feed y la acción de compartir; nuevos tipos de feed Pictures, Videos, Shorts y Torrents, con sus destinos de compartición de medios correspondientes; borrado y archivado de canales NIP-29; y vistas previas enriquecidas para comentarios NIP-73 sobre contenido externo. La versión incluye además una larga lista de correcciones internas que abarcan la gestión de suscripciones a relés, la reproducción de medios y el análisis de metadatos.\n\n## El total de la semana\n\nUn cambio de especificación y una versión de cliente. La edición del NIP-22 suprime dos líneas y alcanza a todo cliente que dibuje un hilo bajo una nota kind 1, porque ese hilo puede contener ahora comentarios kind 1111 junto a respuestas kind 1.\n"
+        },
         {
           "slug": "nip-47-simplifica-el-nucleo-y-anade-extensiones",
           "title": "NIP-47 Simplifica su Especificación Base y Añade un Repositorio de Extensiones",
@@ -1460,6 +1599,7 @@
         "Lightning",
         "NIP",
         "NIP-19",
+        "NIP-22",
         "NIP-29",
         "NIP-34",
         "NIP-47",
@@ -1473,6 +1613,75 @@
     },
     "pt": {
       "posts": [
+        {
+          "slug": "nip-22-remove-sua-proibicao-sobre-notas-kind-1",
+          "title": "Resumo da semana: o NIP-22 remove sua proibição sobre notas kind 1 e o Amethyst lança a 1.14.0",
+          "description": "Na semana até 24 de agosto de 2026, um pull request foi mesclado no nostr-protocol/nips, removendo a linha que impedia comentários kind 1111 de responderem a notas kind 1, e o Amethyst marcou a versão 1.14.0.",
+          "excerpt": "Uma remoção de duas linhas no NIP-22 elimina a regra de que comentários NÃO DEVEM responder a notas kind 1, mantém intacta a regra espelhada do NIP-10 e permite que uma thread sob uma nota contenha dois tipos de evento diferentes.",
+          "date": "2026-08-24T00:00:00.000Z",
+          "author": {
+            "name": "Nostr WoT Newsroom"
+          },
+          "featuredImage": "/images/news/nip-22-drops-its-kind-1-prohibition.svg",
+          "previewImage": "/images/news/nip-22-drops-its-kind-1-prohibition.svg",
+          "tags": [
+            "Nostr",
+            "NIP",
+            "NIP-22"
+          ],
+          "published": true,
+          "readingTime": "4 min read",
+          "locale": "pt",
+          "translationKey": "nip-22-drops-its-kind-1-prohibition",
+          "translations": {
+            "en": "nip-22-drops-its-kind-1-prohibition",
+            "es": "nip-22-elimina-su-prohibicion-sobre-kind-1",
+            "pt": "nip-22-remove-sua-proibicao-sobre-notas-kind-1",
+            "ru": "nip-22-otmenyaet-zapret-na-kind-1",
+            "it": "il-nip-22-rimuove-il-suo-divieto-su-kind-1",
+            "fr": "le-nip-22-supprime-son-interdiction-sur-kind-1",
+            "de": "nip-22-streicht-sein-kind-1-verbot"
+          },
+          "availableLocales": [
+            "en",
+            "es",
+            "pt",
+            "ru",
+            "it",
+            "fr",
+            "de"
+          ],
+          "type": "digest",
+          "sources": [
+            {
+              "title": "Use kind 1111 replies to kind 1 notes (#2250)",
+              "url": "https://github.com/nostr-protocol/nips/pull/2358",
+              "publisher": "nostr-protocol/nips",
+              "date": "2026-08-24"
+            },
+            {
+              "title": "Amethyst v1.14.0",
+              "url": "https://github.com/vitorpamplona/amethyst/releases/tag/v1.14.0",
+              "publisher": "vitorpamplona/amethyst",
+              "date": "2026-08-22"
+            }
+          ],
+          "publishedAt": "2026-08-24T00:00:00.000Z",
+          "backfilled": false,
+          "items": [
+            {
+              "title": "Use kind 1111 replies to kind 1 notes (#2250)",
+              "url": "https://github.com/nostr-protocol/nips/pull/2358",
+              "summary": "Remove a linha que proibia o uso de comentários kind 1111 para responder a notas kind 1."
+            },
+            {
+              "title": "Amethyst v1.14.0",
+              "url": "https://github.com/vitorpamplona/amethyst/releases/tag/v1.14.0",
+              "summary": "Adiciona destaques NIP-84, feeds de Pictures, Videos, Shorts e Torrents, exclusão e arquivamento de canais NIP-29 e pré-visualizações ricas NIP-73."
+            }
+          ],
+          "content": "\nEntre 18 e 24 de agosto de 2026, um pull request foi mesclado no [nostr-protocol/nips](https://github.com/nostr-protocol/nips) e um cliente importante marcou uma versão. A contagem de merges foi conferida contra o histórico de commits do repositório na mesma janela, que contém um único commit no `master`.\n\nA mudança na especificação é pequena em tamanho e específica em efeito. O NIP-22 não proíbe mais o uso de um comentário para responder a uma nota kind 1.\n\n## NIP-22: some a linha que vetava comentários em notas kind 1\n\nO [PR #2358](https://github.com/nostr-protocol/nips/pull/2358), aberto por zhoreeq e mesclado em 24 de agosto de 2026 às 16:54 UTC, apaga duas linhas de `22.md` e não acrescenta nenhuma. A frase removida dizia:\n\n> Comentários NÃO DEVEM ser usados para responder a notas kind 1. O NIP-10 deve ser seguido em vez disso.\n\nO pull request se descreve como a remoção da \"linha que desaconselha o uso de respostas kind 1111 a notas kind 1\". Nada foi escrito em seu lugar. Não há permissão nova, nem um PODE, nem orientação substituta. A proibição simplesmente não está mais na especificação.\n\nO NIP-22 define `kind:1111`, um evento de comentário sempre delimitado por um evento raiz ou por uma tag `I` do NIP-73. Um comentário aponta para seu escopo raiz com tags em maiúsculas (`E`, `A`, `I`, `K`, `P`) e para seu item pai imediato com as equivalentes em minúsculas (`e`, `a`, `i`, `k`, `p`), e tanto `K` quanto `k` DEVEM estar presentes para que o kind da raiz e o do pai fiquem explícitos. Essa estrutura não é alterada por esse merge. A única diferença está em quais kinds de raiz um comentário pode referenciar.\n\n## O que os dois NIPs de threading dizem agora\n\nAntes dessa mudança, as duas especificações de threading se delimitavam mutuamente nas duas direções. O NIP-10 rege as notas de texto kind 1 e suas respostas, que são elas próprias eventos kind 1 ligados por tags `e`. O NIP-22 rege os comentários kind 1111 sobre todo o resto. Cada um dizia aos implementadores para ficarem fora do território do outro.\n\nApenas uma dessas duas afirmações sobrevive. O NIP-10 ainda diz:\n\n> Eventos kind 1 com tags `e` são respostas a outros eventos kind 1. Respostas kind 1 NÃO DEVEM ser usadas para responder a outros kinds; use o NIP-22 em vez disso.\n\nPortanto, uma resposta kind 1 continua sem poder apontar para um evento de outro kind. O que sumiu foi a regra correspondente no sentido contrário. Um comentário kind 1111 cujas tags `K` e `k` carreguem o valor `1` está agora dentro da especificação.\n\nA consequência prática é que uma thread pendurada em uma nota kind 1 pode conter eventos de dois kinds diferentes, estruturados de duas maneiras diferentes. Respostas kind 1 carregam tags `e` marcadas, como descreve o NIP-10. Comentários kind 1111 carregam um escopo raiz em maiúsculas mais tags de pai em minúsculas, como descreve o NIP-22. Um cliente que monte a thread lendo apenas as tags `e` do NIP-10 não verá os comentários kind 1111 abaixo de uma nota, e um cliente que leia apenas as tags do NIP-22 não verá as respostas kind 1. Ler as duas é o que mostra a thread inteira.\n\nTanto o NIP-10 quanto o NIP-22 seguem marcados como `draft` `optional`.\n\n## Amethyst 1.14.0\n\nO [Amethyst v1.14.0](https://github.com/vitorpamplona/amethyst/releases/tag/v1.14.0) foi marcado em 22 de agosto de 2026. Suas notas de versão listam adições visíveis ao usuário, entre elas suporte a destaques NIP-84 no compositor, no feed e na ação de compartilhar; novos tipos de feed Pictures, Videos, Shorts e Torrents, com os destinos de compartilhamento de mídia correspondentes; exclusão e arquivamento de canais NIP-29; e pré-visualizações ricas para comentários NIP-73 sobre conteúdo externo. A versão traz ainda uma longa lista de correções internas cobrindo o gerenciamento de assinaturas de relays, a reprodução de mídia e a análise de metadados.\n\n## O total da semana\n\nUma mudança de especificação e um lançamento de cliente. A edição do NIP-22 remove duas linhas e alcança todo cliente que renderiza uma thread sob uma nota kind 1, porque essa thread pode agora conter comentários kind 1111 ao lado de respostas kind 1.\n"
+        },
         {
           "slug": "nip-47-simplifica-o-nucleo-e-adiciona-extensoes",
           "title": "NIP-47 Simplifica sua Especificação Base e Adiciona um Repositório de Extensões",
@@ -2195,6 +2404,7 @@
         "Lightning",
         "NIP",
         "NIP-19",
+        "NIP-22",
         "NIP-29",
         "NIP-34",
         "NIP-47",
@@ -2208,6 +2418,75 @@
     },
     "ru": {
       "posts": [
+        {
+          "slug": "nip-22-otmenyaet-zapret-na-kind-1",
+          "title": "Итоги недели: NIP-22 отменяет запрет на ответы к заметкам kind 1, Amethyst выпускает 1.14.0",
+          "description": "За неделю до 24 августа 2026 года в nostr-protocol/nips был слит один pull request, убравший строку, которая запрещала комментариям kind 1111 отвечать на заметки kind 1, а Amethyst выпустил версию 1.14.0.",
+          "excerpt": "Удаление двух строк в NIP-22 убирает правило о том, что комментарии НЕ ДОЛЖНЫ отвечать на заметки kind 1, оставляет зеркальное правило NIP-10 нетронутым и позволяет ветке под заметкой содержать события двух разных видов.",
+          "date": "2026-08-24T00:00:00.000Z",
+          "author": {
+            "name": "Nostr WoT Newsroom"
+          },
+          "featuredImage": "/images/news/nip-22-drops-its-kind-1-prohibition.svg",
+          "previewImage": "/images/news/nip-22-drops-its-kind-1-prohibition.svg",
+          "tags": [
+            "Nostr",
+            "NIP",
+            "NIP-22"
+          ],
+          "published": true,
+          "readingTime": "3 min read",
+          "locale": "ru",
+          "translationKey": "nip-22-drops-its-kind-1-prohibition",
+          "translations": {
+            "en": "nip-22-drops-its-kind-1-prohibition",
+            "es": "nip-22-elimina-su-prohibicion-sobre-kind-1",
+            "pt": "nip-22-remove-sua-proibicao-sobre-notas-kind-1",
+            "ru": "nip-22-otmenyaet-zapret-na-kind-1",
+            "it": "il-nip-22-rimuove-il-suo-divieto-su-kind-1",
+            "fr": "le-nip-22-supprime-son-interdiction-sur-kind-1",
+            "de": "nip-22-streicht-sein-kind-1-verbot"
+          },
+          "availableLocales": [
+            "en",
+            "es",
+            "pt",
+            "ru",
+            "it",
+            "fr",
+            "de"
+          ],
+          "type": "digest",
+          "sources": [
+            {
+              "title": "Use kind 1111 replies to kind 1 notes (#2250)",
+              "url": "https://github.com/nostr-protocol/nips/pull/2358",
+              "publisher": "nostr-protocol/nips",
+              "date": "2026-08-24"
+            },
+            {
+              "title": "Amethyst v1.14.0",
+              "url": "https://github.com/vitorpamplona/amethyst/releases/tag/v1.14.0",
+              "publisher": "vitorpamplona/amethyst",
+              "date": "2026-08-22"
+            }
+          ],
+          "publishedAt": "2026-08-24T00:00:00.000Z",
+          "backfilled": false,
+          "items": [
+            {
+              "title": "Use kind 1111 replies to kind 1 notes (#2250)",
+              "url": "https://github.com/nostr-protocol/nips/pull/2358",
+              "summary": "Убирает строку, запрещавшую использовать комментарии kind 1111 для ответа на заметки kind 1."
+            },
+            {
+              "title": "Amethyst v1.14.0",
+              "url": "https://github.com/vitorpamplona/amethyst/releases/tag/v1.14.0",
+              "summary": "Добавляет выделения NIP-84, ленты Pictures, Videos, Shorts и Torrents, удаление и архивацию каналов NIP-29 и расширенные превью NIP-73."
+            }
+          ],
+          "content": "\nС 18 по 24 августа 2026 года в [nostr-protocol/nips](https://github.com/nostr-protocol/nips) был слит один pull request, и один крупный клиент выпустил новую версию. Число слияний было сверено с историей коммитов репозитория за то же окно, где в `master` находится ровно один коммит.\n\nИзменение в спецификации невелико по объёму и вполне определённо по последствиям. NIP-22 больше не запрещает использовать комментарий для ответа на заметку kind 1.\n\n## NIP-22: строка, запрещавшая комментарии к заметкам kind 1, исчезла\n\n[PR #2358](https://github.com/nostr-protocol/nips/pull/2358), открытый zhoreeq и слитый 24 августа 2026 года в 16:54 UTC, удаляет из `22.md` две строки и не добавляет ни одной. Удалённое предложение гласило:\n\n> Комментарии НЕ ДОЛЖНЫ использоваться для ответа на заметки kind 1. Вместо этого следует применять NIP-10.\n\nСам pull request описывает себя как удаление «строки, которая не рекомендует использовать ответы kind 1111 на заметки kind 1». Взамен не было написано ничего. Нет ни нового разрешения, ни МОЖЕТ, ни замещающих указаний. Запрет просто отсутствует в спецификации.\n\nNIP-22 определяет `kind:1111`, событие-комментарий, всегда привязанное к корневому событию или к тегу `I` из NIP-73. Комментарий указывает на свою корневую область тегами в верхнем регистре (`E`, `A`, `I`, `K`, `P`), а на непосредственного родителя указывает их эквивалентами в нижнем регистре (`e`, `a`, `i`, `k`, `p`), причём и `K`, и `k` ДОЛЖНЫ присутствовать, чтобы вид корня и вид родителя были заданы явно. Эта структура данным слиянием не затронута. Изменилось только то, на какие корневые виды событий комментарию разрешено указывать.\n\n## Что теперь говорят два NIP о ветках\n\nДо этого изменения две спецификации веток отгораживались друг от друга в обе стороны. NIP-10 описывает текстовые заметки kind 1 и ответы на них, которые сами являются событиями kind 1, связанными тегами `e`. NIP-22 описывает комментарии kind 1111 ко всему остальному. Каждый указывал разработчикам не заходить на территорию другого.\n\nИз этих двух утверждений сохранилось лишь одно. NIP-10 по-прежнему гласит:\n\n> События kind 1 с тегами `e` являются ответами на другие события kind 1. Ответы kind 1 НЕ ДОЛЖНЫ использоваться для ответа на события других видов, вместо этого следует применять NIP-22.\n\nТаким образом, ответ kind 1 по-прежнему не может указывать на событие другого вида. Исчезло парное правило в обратном направлении. Комментарий kind 1111, у которого теги `K` и `k` несут значение `1`, теперь соответствует спецификации.\n\nПрактическое следствие состоит в том, что ветка, растущая из заметки kind 1, может содержать события двух разных видов, устроенные двумя разными способами. Ответы kind 1 несут размеченные теги `e`, как описано в NIP-10. Комментарии kind 1111 несут корневую область в верхнем регистре плюс родительские теги в нижнем, как описано в NIP-22. Клиент, собирающий ветку только по тегам `e` из NIP-10, не увидит комментарии kind 1111 под заметкой, а клиент, читающий только теги NIP-22, не увидит ответы kind 1. Полную ветку показывает чтение и тех, и других.\n\nИ NIP-10, и NIP-22 по-прежнему помечены как `draft` `optional`.\n\n## Amethyst 1.14.0\n\n[Amethyst v1.14.0](https://github.com/vitorpamplona/amethyst/releases/tag/v1.14.0) был выпущен 22 августа 2026 года. В примечаниях к выпуску перечислены заметные для пользователя добавления, среди которых поддержка выделений NIP-84 в редакторе, ленте и меню «Поделиться»; новые типы лент Pictures, Videos, Shorts и Torrents с соответствующими целями для отправки медиа; удаление и архивация каналов NIP-29; а также расширенные превью для комментариев NIP-73 к внешнему контенту. Выпуск содержит и длинный список внутренних исправлений, затрагивающих работу с подписками на реле, воспроизведение медиа и разбор метаданных.\n\n## Итог недели\n\nОдно изменение спецификации и один выпуск клиента. Правка NIP-22 убирает две строки и затрагивает каждый клиент, который отрисовывает ветку под заметкой kind 1, поскольку такая ветка теперь может содержать комментарии kind 1111 наряду с ответами kind 1.\n"
+        },
         {
           "slug": "nip-47-uproshchaet-yadro-i-dobavlyaet-rasshireniya",
           "title": "NIP-47 Упрощает Базовую Спецификацию и Добавляет Репозиторий Расширений",
@@ -2929,6 +3208,7 @@
         "Lightning",
         "NIP",
         "NIP-19",
+        "NIP-22",
         "NIP-29",
         "NIP-34",
         "NIP-47",
@@ -2943,6 +3223,75 @@
     },
     "it": {
       "posts": [
+        {
+          "slug": "il-nip-22-rimuove-il-suo-divieto-su-kind-1",
+          "title": "Riepilogo settimanale: il NIP-22 rimuove il suo divieto sulle note kind 1 e Amethyst pubblica la 1.14.0",
+          "description": "Nella settimana fino al 24 agosto 2026 è stata unita una pull request in nostr-protocol/nips, che elimina la riga che impediva ai commenti kind 1111 di rispondere alle note kind 1, e Amethyst ha pubblicato la versione 1.14.0.",
+          "excerpt": "Una rimozione di due righe nel NIP-22 elimina la regola secondo cui i commenti NON DEVONO rispondere alle note kind 1, lascia intatta la regola speculare del NIP-10 e consente a un thread sotto una nota di contenere due tipi di evento diversi.",
+          "date": "2026-08-24T00:00:00.000Z",
+          "author": {
+            "name": "Nostr WoT Newsroom"
+          },
+          "featuredImage": "/images/news/nip-22-drops-its-kind-1-prohibition.svg",
+          "previewImage": "/images/news/nip-22-drops-its-kind-1-prohibition.svg",
+          "tags": [
+            "Nostr",
+            "NIP",
+            "NIP-22"
+          ],
+          "published": true,
+          "readingTime": "4 min read",
+          "locale": "it",
+          "translationKey": "nip-22-drops-its-kind-1-prohibition",
+          "translations": {
+            "en": "nip-22-drops-its-kind-1-prohibition",
+            "es": "nip-22-elimina-su-prohibicion-sobre-kind-1",
+            "pt": "nip-22-remove-sua-proibicao-sobre-notas-kind-1",
+            "ru": "nip-22-otmenyaet-zapret-na-kind-1",
+            "it": "il-nip-22-rimuove-il-suo-divieto-su-kind-1",
+            "fr": "le-nip-22-supprime-son-interdiction-sur-kind-1",
+            "de": "nip-22-streicht-sein-kind-1-verbot"
+          },
+          "availableLocales": [
+            "en",
+            "es",
+            "pt",
+            "ru",
+            "it",
+            "fr",
+            "de"
+          ],
+          "type": "digest",
+          "sources": [
+            {
+              "title": "Use kind 1111 replies to kind 1 notes (#2250)",
+              "url": "https://github.com/nostr-protocol/nips/pull/2358",
+              "publisher": "nostr-protocol/nips",
+              "date": "2026-08-24"
+            },
+            {
+              "title": "Amethyst v1.14.0",
+              "url": "https://github.com/vitorpamplona/amethyst/releases/tag/v1.14.0",
+              "publisher": "vitorpamplona/amethyst",
+              "date": "2026-08-22"
+            }
+          ],
+          "publishedAt": "2026-08-24T00:00:00.000Z",
+          "backfilled": false,
+          "items": [
+            {
+              "title": "Use kind 1111 replies to kind 1 notes (#2250)",
+              "url": "https://github.com/nostr-protocol/nips/pull/2358",
+              "summary": "Elimina la riga che vietava di usare i commenti kind 1111 per rispondere alle note kind 1."
+            },
+            {
+              "title": "Amethyst v1.14.0",
+              "url": "https://github.com/vitorpamplona/amethyst/releases/tag/v1.14.0",
+              "summary": "Aggiunge gli highlight NIP-84, i feed Pictures, Videos, Shorts e Torrents, l'eliminazione e l'archiviazione dei canali NIP-29 e le anteprime ricche NIP-73."
+            }
+          ],
+          "content": "\nTra il 18 e il 24 agosto 2026 è stata unita una pull request in [nostr-protocol/nips](https://github.com/nostr-protocol/nips) e un client importante ha pubblicato una versione. Il conteggio dei merge è stato verificato rispetto alla cronologia dei commit del repository nella stessa finestra, che contiene un solo commit su `master`.\n\nLa modifica alla specifica è piccola per dimensione e precisa nell'effetto. Il NIP-22 non vieta più di usare un commento per rispondere a una nota kind 1.\n\n## NIP-22: sparisce la riga che vietava i commenti sulle note kind 1\n\nLa [PR #2358](https://github.com/nostr-protocol/nips/pull/2358), aperta da zhoreeq e unita il 24 agosto 2026 alle 16:54 UTC, elimina due righe da `22.md` e non ne aggiunge nessuna. La frase rimossa diceva:\n\n> I commenti NON DEVONO essere usati per rispondere alle note kind 1. Al loro posto si dovrebbe seguire il NIP-10.\n\nLa pull request si descrive come la rimozione della \"riga che sconsiglia l'uso di risposte kind 1111 alle note kind 1\". Al suo posto non è stato scritto nulla. Non c'è un nuovo permesso, né un PUÒ, né una guida sostitutiva. Il divieto è semplicemente assente dalla specifica.\n\nIl NIP-22 definisce `kind:1111`, un evento di commento sempre delimitato da un evento radice o da un tag `I` del NIP-73. Un commento punta al proprio ambito radice con tag maiuscoli (`E`, `A`, `I`, `K`, `P`) e all'elemento padre immediato con gli equivalenti minuscoli (`e`, `a`, `i`, `k`, `p`), e sia `K` sia `k` DEVONO essere presenti affinché il kind della radice e quello del padre siano espliciti. Questa struttura non viene toccata da questo merge. L'unica differenza riguarda a quali kind radice un commento può puntare.\n\n## Cosa dicono ora i due NIP sui thread\n\nPrima di questa modifica, le due specifiche sui thread si delimitavano a vicenda in entrambe le direzioni. Il NIP-10 governa le note di testo kind 1 e le loro risposte, che sono a loro volta eventi kind 1 collegati da tag `e`. Il NIP-22 governa i commenti kind 1111 su tutto il resto. Ciascuno diceva agli implementatori di restare fuori dal territorio dell'altro.\n\nSolo una di quelle due affermazioni sopravvive. Il NIP-10 recita ancora:\n\n> Gli eventi kind 1 con tag `e` sono risposte ad altri eventi kind 1. Le risposte kind 1 NON DEVONO essere usate per rispondere ad altri kind, si usi invece il NIP-22.\n\nUna risposta kind 1 non può quindi ancora puntare a un evento di un altro kind. Ciò che è sparito è la regola corrispondente nella direzione opposta. Un commento kind 1111 i cui tag `K` e `k` portano il valore `1` rientra ora nella specifica.\n\nLa conseguenza pratica è che un thread che pende da una nota kind 1 può contenere eventi di due kind diversi, strutturati in due modi diversi. Le risposte kind 1 portano tag `e` marcati, come descrive il NIP-10. I commenti kind 1111 portano un ambito radice maiuscolo più tag del padre minuscoli, come descrive il NIP-22. Un client che costruisce il thread leggendo soltanto i tag `e` del NIP-10 non vedrà i commenti kind 1111 sotto una nota, e un client che legge soltanto i tag del NIP-22 non vedrà le risposte kind 1. Leggere entrambi è ciò che mostra il thread completo.\n\nSia il NIP-10 sia il NIP-22 restano contrassegnati come `draft` `optional`.\n\n## Amethyst 1.14.0\n\n[Amethyst v1.14.0](https://github.com/vitorpamplona/amethyst/releases/tag/v1.14.0) è stata pubblicata il 22 agosto 2026. Le sue note di rilascio elencano aggiunte visibili all'utente, tra cui il supporto agli highlight NIP-84 nel compositore, nel feed e nell'intent di condivisione; nuovi tipi di feed Pictures, Videos, Shorts e Torrents, con le corrispondenti destinazioni di condivisione dei media; l'eliminazione e l'archiviazione dei canali NIP-29; e le anteprime ricche per i commenti NIP-73 su contenuti esterni. La versione porta inoltre un lungo elenco di correzioni interne che riguardano la gestione delle sottoscrizioni ai relay, la riproduzione dei media e il parsing dei metadati.\n\n## Il totale della settimana\n\nUna modifica di specifica e una versione di client. La modifica al NIP-22 rimuove due righe e raggiunge ogni client che disegna un thread sotto una nota kind 1, perché quel thread può ora contenere commenti kind 1111 accanto alle risposte kind 1.\n"
+        },
         {
           "slug": "nip-47-semplifica-il-nucleo-e-aggiunge-estensioni",
           "title": "NIP-47 Semplifica la sua Specifica di Base e Aggiunge un Repository di Estensioni",
@@ -3665,6 +4014,7 @@
         "Lightning",
         "NIP",
         "NIP-19",
+        "NIP-22",
         "NIP-29",
         "NIP-34",
         "NIP-47",
@@ -3678,6 +4028,75 @@
     },
     "fr": {
       "posts": [
+        {
+          "slug": "le-nip-22-supprime-son-interdiction-sur-kind-1",
+          "title": "Résumé de la semaine : le NIP-22 supprime son interdiction sur les notes kind 1 et Amethyst publie la 1.14.0",
+          "description": "Dans la semaine jusqu'au 24 août 2026, une pull request a été fusionnée dans nostr-protocol/nips, retirant la ligne qui empêchait les commentaires kind 1111 de répondre aux notes kind 1, et Amethyst a publié la version 1.14.0.",
+          "excerpt": "Une suppression de deux lignes dans le NIP-22 retire la règle selon laquelle les commentaires NE DOIVENT PAS répondre aux notes kind 1, laisse intacte la règle miroir du NIP-10 et permet à un fil sous une note de contenir deux types d'événements différents.",
+          "date": "2026-08-24T00:00:00.000Z",
+          "author": {
+            "name": "Nostr WoT Newsroom"
+          },
+          "featuredImage": "/images/news/nip-22-drops-its-kind-1-prohibition.svg",
+          "previewImage": "/images/news/nip-22-drops-its-kind-1-prohibition.svg",
+          "tags": [
+            "Nostr",
+            "NIP",
+            "NIP-22"
+          ],
+          "published": true,
+          "readingTime": "4 min read",
+          "locale": "fr",
+          "translationKey": "nip-22-drops-its-kind-1-prohibition",
+          "translations": {
+            "en": "nip-22-drops-its-kind-1-prohibition",
+            "es": "nip-22-elimina-su-prohibicion-sobre-kind-1",
+            "pt": "nip-22-remove-sua-proibicao-sobre-notas-kind-1",
+            "ru": "nip-22-otmenyaet-zapret-na-kind-1",
+            "it": "il-nip-22-rimuove-il-suo-divieto-su-kind-1",
+            "fr": "le-nip-22-supprime-son-interdiction-sur-kind-1",
+            "de": "nip-22-streicht-sein-kind-1-verbot"
+          },
+          "availableLocales": [
+            "en",
+            "es",
+            "pt",
+            "ru",
+            "it",
+            "fr",
+            "de"
+          ],
+          "type": "digest",
+          "sources": [
+            {
+              "title": "Use kind 1111 replies to kind 1 notes (#2250)",
+              "url": "https://github.com/nostr-protocol/nips/pull/2358",
+              "publisher": "nostr-protocol/nips",
+              "date": "2026-08-24"
+            },
+            {
+              "title": "Amethyst v1.14.0",
+              "url": "https://github.com/vitorpamplona/amethyst/releases/tag/v1.14.0",
+              "publisher": "vitorpamplona/amethyst",
+              "date": "2026-08-22"
+            }
+          ],
+          "publishedAt": "2026-08-24T00:00:00.000Z",
+          "backfilled": false,
+          "items": [
+            {
+              "title": "Use kind 1111 replies to kind 1 notes (#2250)",
+              "url": "https://github.com/nostr-protocol/nips/pull/2358",
+              "summary": "Retire la ligne qui interdisait d'utiliser des commentaires kind 1111 pour répondre aux notes kind 1."
+            },
+            {
+              "title": "Amethyst v1.14.0",
+              "url": "https://github.com/vitorpamplona/amethyst/releases/tag/v1.14.0",
+              "summary": "Ajoute les surlignages NIP-84, les fils Pictures, Videos, Shorts et Torrents, la suppression et l'archivage des canaux NIP-29, et les aperçus enrichis NIP-73."
+            }
+          ],
+          "content": "\nEntre le 18 et le 24 août 2026, une pull request a été fusionnée dans [nostr-protocol/nips](https://github.com/nostr-protocol/nips) et un client majeur a publié une version. Le nombre de fusions a été recoupé avec l'historique des commits du dépôt sur la même fenêtre, qui contient un seul commit sur `master`.\n\nLa modification de la spécification est petite par sa taille et précise par son effet. Le NIP-22 n'interdit plus d'utiliser un commentaire pour répondre à une note kind 1.\n\n## NIP-22 : la ligne interdisant les commentaires sur les notes kind 1 a disparu\n\nLa [PR #2358](https://github.com/nostr-protocol/nips/pull/2358), ouverte par zhoreeq et fusionnée le 24 août 2026 à 16h54 UTC, supprime deux lignes de `22.md` et n'en ajoute aucune. La phrase retirée disait :\n\n> Les commentaires NE DOIVENT PAS être utilisés pour répondre aux notes kind 1. Il convient de suivre le NIP-10 à la place.\n\nLa pull request se décrit elle-même comme la suppression de « la ligne qui déconseille l'usage de réponses kind 1111 aux notes kind 1 ». Rien n'a été écrit à sa place. Il n'y a pas de nouvelle permission, pas de PEUT, pas de directive de remplacement. L'interdiction est simplement absente de la spécification.\n\nLe NIP-22 définit `kind:1111`, un événement de commentaire toujours rattaché à un événement racine ou à une balise `I` du NIP-73. Un commentaire désigne sa portée racine avec des balises en majuscules (`E`, `A`, `I`, `K`, `P`) et son élément parent immédiat avec leurs équivalents en minuscules (`e`, `a`, `i`, `k`, `p`), et `K` comme `k` DOIVENT être présentes pour que le kind de la racine et celui du parent soient explicites. Cette structure n'est pas modifiée par cette fusion. La seule différence porte sur les kinds racines qu'un commentaire est autorisé à désigner.\n\n## Ce que disent désormais les deux NIP sur les fils\n\nAvant ce changement, les deux spécifications de fils se délimitaient mutuellement dans les deux sens. Le NIP-10 régit les notes textuelles kind 1 et leurs réponses, qui sont elles-mêmes des événements kind 1 reliés par des balises `e`. Le NIP-22 régit les commentaires kind 1111 sur tout le reste. Chacun demandait aux implémenteurs de rester en dehors du territoire de l'autre.\n\nUne seule de ces deux affirmations subsiste. Le NIP-10 indique toujours :\n\n> Les événements kind 1 munis de balises `e` sont des réponses à d'autres événements kind 1. Les réponses kind 1 NE DOIVENT PAS être utilisées pour répondre à d'autres kinds, utilisez le NIP-22 à la place.\n\nUne réponse kind 1 ne peut donc toujours pas viser un événement d'un autre kind. Ce qui a disparu, c'est la règle correspondante dans le sens inverse. Un commentaire kind 1111 dont les balises `K` et `k` portent la valeur `1` est désormais conforme à la spécification.\n\nLa conséquence pratique est qu'un fil rattaché à une note kind 1 peut contenir des événements de deux kinds différents, structurés de deux façons différentes. Les réponses kind 1 portent des balises `e` marquées, comme le décrit le NIP-10. Les commentaires kind 1111 portent une portée racine en majuscules plus des balises de parent en minuscules, comme le décrit le NIP-22. Un client qui construit le fil en ne lisant que les balises `e` du NIP-10 ne verra pas les commentaires kind 1111 situés sous une note, et un client qui ne lit que les balises du NIP-22 ne verra pas les réponses kind 1. C'est la lecture des deux qui montre le fil entier.\n\nLe NIP-10 comme le NIP-22 restent marqués `draft` `optional`.\n\n## Amethyst 1.14.0\n\n[Amethyst v1.14.0](https://github.com/vitorpamplona/amethyst/releases/tag/v1.14.0) a été publiée le 22 août 2026. Ses notes de version énumèrent des ajouts visibles par l'utilisateur, parmi lesquels la prise en charge des surlignages NIP-84 dans le compositeur, le fil et l'intent de partage ; de nouveaux types de fils Pictures, Videos, Shorts et Torrents, avec les cibles de partage de médias correspondantes ; la suppression et l'archivage des canaux NIP-29 ; et des aperçus enrichis pour les commentaires NIP-73 sur des contenus externes. La version comporte également une longue liste de corrections internes touchant la gestion des abonnements aux relais, la lecture des médias et l'analyse des métadonnées.\n\n## Le total de la semaine\n\nUne modification de spécification et une version de client. La modification du NIP-22 retire deux lignes et atteint tout client qui affiche un fil sous une note kind 1, puisque ce fil peut désormais contenir des commentaires kind 1111 aux côtés des réponses kind 1.\n"
+        },
         {
           "slug": "nip-47-simplifie-le-noyau-et-ajoute-des-extensions",
           "title": "NIP-47 Simplifie sa Spécification de Base et Ajoute un Dépôt d'Extensions",
@@ -4402,6 +4821,7 @@
         "Lightning",
         "NIP",
         "NIP-19",
+        "NIP-22",
         "NIP-29",
         "NIP-34",
         "NIP-47",
@@ -4413,6 +4833,75 @@
     },
     "de": {
       "posts": [
+        {
+          "slug": "nip-22-streicht-sein-kind-1-verbot",
+          "title": "Wochenrückblick: NIP-22 streicht sein Verbot für kind-1-Notizen, Amethyst veröffentlicht 1.14.0",
+          "description": "In der Woche bis zum 24. August 2026 wurde ein Pull Request in nostr-protocol/nips gemergt, der die Zeile entfernt, die kind-1111-Kommentare als Antwort auf kind-1-Notizen untersagte, und Amethyst hat Version 1.14.0 getaggt.",
+          "excerpt": "Eine Löschung von zwei Zeilen in NIP-22 entfernt die Regel, dass Kommentare NICHT als Antwort auf kind-1-Notizen verwendet werden DÜRFEN, lässt die Spiegelregel in NIP-10 unangetastet und erlaubt einem Thread unter einer Notiz zwei verschiedene Event-Kinds.",
+          "date": "2026-08-24T00:00:00.000Z",
+          "author": {
+            "name": "Nostr WoT Newsroom"
+          },
+          "featuredImage": "/images/news/nip-22-drops-its-kind-1-prohibition.svg",
+          "previewImage": "/images/news/nip-22-drops-its-kind-1-prohibition.svg",
+          "tags": [
+            "Nostr",
+            "NIP",
+            "NIP-22"
+          ],
+          "published": true,
+          "readingTime": "3 min read",
+          "locale": "de",
+          "translationKey": "nip-22-drops-its-kind-1-prohibition",
+          "translations": {
+            "en": "nip-22-drops-its-kind-1-prohibition",
+            "es": "nip-22-elimina-su-prohibicion-sobre-kind-1",
+            "pt": "nip-22-remove-sua-proibicao-sobre-notas-kind-1",
+            "ru": "nip-22-otmenyaet-zapret-na-kind-1",
+            "it": "il-nip-22-rimuove-il-suo-divieto-su-kind-1",
+            "fr": "le-nip-22-supprime-son-interdiction-sur-kind-1",
+            "de": "nip-22-streicht-sein-kind-1-verbot"
+          },
+          "availableLocales": [
+            "en",
+            "es",
+            "pt",
+            "ru",
+            "it",
+            "fr",
+            "de"
+          ],
+          "type": "digest",
+          "sources": [
+            {
+              "title": "Use kind 1111 replies to kind 1 notes (#2250)",
+              "url": "https://github.com/nostr-protocol/nips/pull/2358",
+              "publisher": "nostr-protocol/nips",
+              "date": "2026-08-24"
+            },
+            {
+              "title": "Amethyst v1.14.0",
+              "url": "https://github.com/vitorpamplona/amethyst/releases/tag/v1.14.0",
+              "publisher": "vitorpamplona/amethyst",
+              "date": "2026-08-22"
+            }
+          ],
+          "publishedAt": "2026-08-24T00:00:00.000Z",
+          "backfilled": false,
+          "items": [
+            {
+              "title": "Use kind 1111 replies to kind 1 notes (#2250)",
+              "url": "https://github.com/nostr-protocol/nips/pull/2358",
+              "summary": "Entfernt die Zeile, die es untersagte, kind-1111-Kommentare als Antwort auf kind-1-Notizen zu verwenden."
+            },
+            {
+              "title": "Amethyst v1.14.0",
+              "url": "https://github.com/vitorpamplona/amethyst/releases/tag/v1.14.0",
+              "summary": "Ergänzt NIP-84-Highlights, die Feeds Pictures, Videos, Shorts und Torrents, das Löschen und Archivieren von NIP-29-Kanälen sowie NIP-73-Rich-Previews."
+            }
+          ],
+          "content": "\nZwischen dem 18. und dem 24. August 2026 wurde ein Pull Request in [nostr-protocol/nips](https://github.com/nostr-protocol/nips) gemergt, und ein großer Client hat eine Version getaggt. Die Anzahl der Merges wurde gegen die Commit-Historie des Repositorys im selben Zeitfenster geprüft, die einen einzigen Commit auf `master` enthält.\n\nDie Änderung an der Spezifikation ist gering im Umfang und eindeutig in ihrer Wirkung. NIP-22 untersagt es nicht länger, einen Kommentar als Antwort auf eine kind-1-Notiz zu verwenden.\n\n## NIP-22: Die Zeile gegen Kommentare unter kind-1-Notizen ist weg\n\n[PR #2358](https://github.com/nostr-protocol/nips/pull/2358), eröffnet von zhoreeq und gemergt am 24. August 2026 um 16:54 UTC, löscht zwei Zeilen aus `22.md` und fügt keine hinzu. Der entfernte Satz lautete:\n\n> Kommentare DÜRFEN NICHT als Antwort auf kind-1-Notizen verwendet werden. Stattdessen sollte NIP-10 befolgt werden.\n\nDer Pull Request beschreibt sich selbst als Entfernung „der Zeile, die von der Verwendung von kind-1111-Antworten auf kind-1-Notizen abrät“. An seine Stelle wurde nichts geschrieben. Es gibt keine neue Erlaubnis, kein KANN und keine ersetzende Anweisung. Das Verbot fehlt in der Spezifikation nun schlicht.\n\nNIP-22 definiert `kind:1111`, ein Kommentar-Event, das immer an ein Wurzel-Event oder an ein `I`-Tag aus NIP-73 gebunden ist. Ein Kommentar verweist auf seinen Wurzelbereich mit Tags in Großbuchstaben (`E`, `A`, `I`, `K`, `P`) und auf sein unmittelbares Elternelement mit deren Entsprechungen in Kleinbuchstaben (`e`, `a`, `i`, `k`, `p`), wobei sowohl `K` als auch `k` vorhanden sein MÜSSEN, damit der Kind der Wurzel und der des Elternelements ausdrücklich benannt sind. Diese Struktur bleibt von diesem Merge unberührt. Der einzige Unterschied besteht darin, auf welche Wurzel-Kinds ein Kommentar verweisen darf.\n\n## Was die beiden Threading-NIPs jetzt sagen\n\nVor dieser Änderung grenzten sich die beiden Threading-Spezifikationen in beide Richtungen gegeneinander ab. NIP-10 regelt kind-1-Textnotizen und deren Antworten, die selbst kind-1-Events sind und über `e`-Tags verknüpft werden. NIP-22 regelt kind-1111-Kommentare zu allem Übrigen. Jede wies Implementierende an, sich aus dem Gebiet der anderen herauszuhalten.\n\nNur eine dieser beiden Aussagen bleibt bestehen. NIP-10 lautet weiterhin:\n\n> Kind-1-Events mit `e`-Tags sind Antworten auf andere kind-1-Events. Kind-1-Antworten DÜRFEN NICHT als Antwort auf andere Kinds verwendet werden, nutzen Sie stattdessen NIP-22.\n\nEine kind-1-Antwort darf also nach wie vor kein Event eines anderen Kinds adressieren. Weggefallen ist die entsprechende Regel in der Gegenrichtung. Ein kind-1111-Kommentar, dessen `K`- und `k`-Tags den Wert `1` tragen, entspricht jetzt der Spezifikation.\n\nDie praktische Folge ist, dass ein Thread, der an einer kind-1-Notiz hängt, Events zweier verschiedener Kinds enthalten kann, die auf zwei verschiedene Weisen aufgebaut sind. Kind-1-Antworten tragen markierte `e`-Tags, wie in NIP-10 beschrieben. Kind-1111-Kommentare tragen einen Wurzelbereich in Großbuchstaben plus Eltern-Tags in Kleinbuchstaben, wie in NIP-22 beschrieben. Ein Client, der den Thread allein über die `e`-Tags aus NIP-10 zusammensetzt, wird die kind-1111-Kommentare unter einer Notiz nicht sehen, und ein Client, der nur die NIP-22-Tags liest, wird die kind-1-Antworten nicht sehen. Erst das Lesen beider zeigt den vollständigen Thread.\n\nSowohl NIP-10 als auch NIP-22 sind weiterhin als `draft` `optional` gekennzeichnet.\n\n## Amethyst 1.14.0\n\n[Amethyst v1.14.0](https://github.com/vitorpamplona/amethyst/releases/tag/v1.14.0) wurde am 22. August 2026 getaggt. Die Release Notes führen für Nutzende sichtbare Ergänzungen auf, darunter die Unterstützung von NIP-84-Highlights im Editor, im Feed und im Share-Intent; neue Feed-Typen Pictures, Videos, Shorts und Torrents mitsamt den zugehörigen Zielen zum Teilen von Medien; das Löschen und Archivieren von NIP-29-Kanälen; sowie Rich Previews für NIP-73-Kommentare zu externen Inhalten. Die Version bringt außerdem eine lange Liste interner Korrekturen an der Verwaltung von Relay-Subscriptions, der Medienwiedergabe und dem Parsen von Metadaten.\n\n## Die Woche insgesamt\n\nEine Spezifikationsänderung und eine Client-Version. Die NIP-22-Änderung entfernt zwei Zeilen und betrifft jeden Client, der einen Thread unter einer kind-1-Notiz darstellt, denn dieser Thread kann nun kind-1111-Kommentare neben kind-1-Antworten enthalten.\n"
+        },
         {
           "slug": "nip-47-vereinfacht-den-kern-und-fuegt-erweiterungen-hinzu",
           "title": "NIP-47 Vereinfacht Seine Kernspezifikation und Fügt ein Erweiterungs-Repository Hinzu",
@@ -5135,6 +5624,7 @@
         "Lightning",
         "NIP",
         "NIP-19",
+        "NIP-22",
         "NIP-29",
         "NIP-34",
         "NIP-47",

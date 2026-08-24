@@ -1,0 +1,68 @@
+---
+title: "Week in Review: NIP-22 Drops Its Kind 1 Prohibition, Amethyst Ships 1.14.0"
+description: "In the week to 24 August 2026, one pull request merged into nostr-protocol/nips, removing the line that forbade kind 1111 comments from replying to kind 1 notes, and Amethyst tagged version 1.14.0."
+excerpt: "A two line deletion in NIP-22 removes the rule that comments MUST NOT reply to kind 1 notes, leaving NIP-10's mirror rule in place and allowing a thread under a note to hold two different event kinds."
+date: "2026-08-24"
+publishedAt: "2026-08-24"
+backfilled: false
+type: "digest"
+tags:
+  - "Nostr"
+  - "NIP"
+  - "NIP-22"
+translationKey: "nip-22-drops-its-kind-1-prohibition"
+featuredImage: "/images/news/nip-22-drops-its-kind-1-prohibition.svg"
+sources:
+  - title: "Use kind 1111 replies to kind 1 notes (#2250)"
+    url: "https://github.com/nostr-protocol/nips/pull/2358"
+    publisher: "nostr-protocol/nips"
+    date: "2026-08-24"
+  - title: "Amethyst v1.14.0"
+    url: "https://github.com/vitorpamplona/amethyst/releases/tag/v1.14.0"
+    publisher: "vitorpamplona/amethyst"
+    date: "2026-08-22"
+items:
+  - title: "Use kind 1111 replies to kind 1 notes (#2250)"
+    url: "https://github.com/nostr-protocol/nips/pull/2358"
+    summary: "Removes the line forbidding kind 1111 comments from being used to reply to kind 1 notes."
+  - title: "Amethyst v1.14.0"
+    url: "https://github.com/vitorpamplona/amethyst/releases/tag/v1.14.0"
+    summary: "Adds NIP-84 highlights, Pictures, Videos, Shorts and Torrents feeds, NIP-29 channel deletion and archival, and NIP-73 rich previews."
+published: true
+---
+
+Between 18 and 24 August 2026, one pull request was merged into [nostr-protocol/nips](https://github.com/nostr-protocol/nips), and one major client tagged a release. The merge count was cross-checked against the repository's commit history for the same window, which holds a single commit on `master`.
+
+The specification change is small in size and specific in effect. NIP-22 no longer forbids using a comment to reply to a kind 1 note.
+
+## NIP-22: the line barring comments on kind 1 notes is gone
+
+[PR #2358](https://github.com/nostr-protocol/nips/pull/2358), opened by zhoreeq and merged on 24 August 2026 at 16:54 UTC, deletes two lines from `22.md` and adds none. The removed sentence read:
+
+> Comments MUST NOT be used to reply to kind 1 notes. NIP-10 should instead be followed.
+
+The pull request describes itself as removing "the line that discourages the use of kind 1111 replies to kind 1 notes". Nothing was written in its place. There is no new permission, no MAY, and no replacement guidance. The prohibition is simply absent from the specification now.
+
+NIP-22 defines `kind:1111`, a comment event always scoped to a root event or to an `I`-tag from NIP-73. A comment points at its root scope with uppercase tags (`E`, `A`, `I`, `K`, `P`) and at its immediate parent with the lowercase equivalents (`e`, `a`, `i`, `k`, `p`), and both `K` and `k` MUST be present so that the kind of the root and the kind of the parent are explicit. That structure is untouched by this merge. The only difference is which root kinds a comment is allowed to point at.
+
+## What the two threading NIPs say now
+
+Before this change, the two threading specifications fenced each other off in both directions. NIP-10 governs kind 1 text notes and their replies, which are themselves kind 1 events linked by `e` tags. NIP-22 governs kind 1111 comments on everything else. Each told implementers to stay out of the other's territory.
+
+Only one of those two statements survives. NIP-10 still reads:
+
+> Kind 1 events with `e` tags are replies to other kind 1 events. Kind 1 replies MUST NOT be used to reply to other kinds, use NIP-22 instead.
+
+A kind 1 reply therefore still may not target an event of another kind. What has gone is the matching rule in the opposite direction. A kind 1111 comment whose `K` and `k` tags carry the value `1` is now within the specification.
+
+The practical consequence is that a thread hanging off a kind 1 note may contain events of two different kinds, structured two different ways. Kind 1 replies carry marked `e` tags as described in NIP-10. Kind 1111 comments carry an uppercase root scope plus lowercase parent tags as described in NIP-22. A client that assembles a thread by reading only NIP-10 `e` tags will not see kind 1111 comments underneath a note, and a client that reads only NIP-22 tags will not see the kind 1 replies. Reading both is what shows the whole thread.
+
+Both NIP-10 and NIP-22 remain marked `draft` `optional`.
+
+## Amethyst 1.14.0
+
+[Amethyst v1.14.0](https://github.com/vitorpamplona/amethyst/releases/tag/v1.14.0) was tagged on 22 August 2026. Its release notes list user-visible additions including NIP-84 highlights support across the composer, the feed and the share intent; new Pictures, Videos, Shorts and Torrents feed types, with matching media share targets; NIP-29 channel deletion and archival; and rich previews for NIP-73 external-content comments. The release also carries a long list of internal fixes covering relay subscription handling, media playback and metadata parsing.
+
+## The week in total
+
+One specification change and one client release. The NIP-22 edit removes two lines, and it reaches every client that renders a thread under a kind 1 note, because such a thread may now hold kind 1111 comments alongside kind 1 replies.

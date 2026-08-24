@@ -1,0 +1,68 @@
+---
+title: "Wochenrückblick: NIP-22 streicht sein Verbot für kind-1-Notizen, Amethyst veröffentlicht 1.14.0"
+description: "In der Woche bis zum 24. August 2026 wurde ein Pull Request in nostr-protocol/nips gemergt, der die Zeile entfernt, die kind-1111-Kommentare als Antwort auf kind-1-Notizen untersagte, und Amethyst hat Version 1.14.0 getaggt."
+excerpt: "Eine Löschung von zwei Zeilen in NIP-22 entfernt die Regel, dass Kommentare NICHT als Antwort auf kind-1-Notizen verwendet werden DÜRFEN, lässt die Spiegelregel in NIP-10 unangetastet und erlaubt einem Thread unter einer Notiz zwei verschiedene Event-Kinds."
+date: "2026-08-24"
+publishedAt: "2026-08-24"
+backfilled: false
+type: "digest"
+tags:
+  - "Nostr"
+  - "NIP"
+  - "NIP-22"
+translationKey: "nip-22-drops-its-kind-1-prohibition"
+featuredImage: "/images/news/nip-22-drops-its-kind-1-prohibition.svg"
+sources:
+  - title: "Use kind 1111 replies to kind 1 notes (#2250)"
+    url: "https://github.com/nostr-protocol/nips/pull/2358"
+    publisher: "nostr-protocol/nips"
+    date: "2026-08-24"
+  - title: "Amethyst v1.14.0"
+    url: "https://github.com/vitorpamplona/amethyst/releases/tag/v1.14.0"
+    publisher: "vitorpamplona/amethyst"
+    date: "2026-08-22"
+items:
+  - title: "Use kind 1111 replies to kind 1 notes (#2250)"
+    url: "https://github.com/nostr-protocol/nips/pull/2358"
+    summary: "Entfernt die Zeile, die es untersagte, kind-1111-Kommentare als Antwort auf kind-1-Notizen zu verwenden."
+  - title: "Amethyst v1.14.0"
+    url: "https://github.com/vitorpamplona/amethyst/releases/tag/v1.14.0"
+    summary: "Ergänzt NIP-84-Highlights, die Feeds Pictures, Videos, Shorts und Torrents, das Löschen und Archivieren von NIP-29-Kanälen sowie NIP-73-Rich-Previews."
+published: true
+---
+
+Zwischen dem 18. und dem 24. August 2026 wurde ein Pull Request in [nostr-protocol/nips](https://github.com/nostr-protocol/nips) gemergt, und ein großer Client hat eine Version getaggt. Die Anzahl der Merges wurde gegen die Commit-Historie des Repositorys im selben Zeitfenster geprüft, die einen einzigen Commit auf `master` enthält.
+
+Die Änderung an der Spezifikation ist gering im Umfang und eindeutig in ihrer Wirkung. NIP-22 untersagt es nicht länger, einen Kommentar als Antwort auf eine kind-1-Notiz zu verwenden.
+
+## NIP-22: Die Zeile gegen Kommentare unter kind-1-Notizen ist weg
+
+[PR #2358](https://github.com/nostr-protocol/nips/pull/2358), eröffnet von zhoreeq und gemergt am 24. August 2026 um 16:54 UTC, löscht zwei Zeilen aus `22.md` und fügt keine hinzu. Der entfernte Satz lautete:
+
+> Kommentare DÜRFEN NICHT als Antwort auf kind-1-Notizen verwendet werden. Stattdessen sollte NIP-10 befolgt werden.
+
+Der Pull Request beschreibt sich selbst als Entfernung „der Zeile, die von der Verwendung von kind-1111-Antworten auf kind-1-Notizen abrät“. An seine Stelle wurde nichts geschrieben. Es gibt keine neue Erlaubnis, kein KANN und keine ersetzende Anweisung. Das Verbot fehlt in der Spezifikation nun schlicht.
+
+NIP-22 definiert `kind:1111`, ein Kommentar-Event, das immer an ein Wurzel-Event oder an ein `I`-Tag aus NIP-73 gebunden ist. Ein Kommentar verweist auf seinen Wurzelbereich mit Tags in Großbuchstaben (`E`, `A`, `I`, `K`, `P`) und auf sein unmittelbares Elternelement mit deren Entsprechungen in Kleinbuchstaben (`e`, `a`, `i`, `k`, `p`), wobei sowohl `K` als auch `k` vorhanden sein MÜSSEN, damit der Kind der Wurzel und der des Elternelements ausdrücklich benannt sind. Diese Struktur bleibt von diesem Merge unberührt. Der einzige Unterschied besteht darin, auf welche Wurzel-Kinds ein Kommentar verweisen darf.
+
+## Was die beiden Threading-NIPs jetzt sagen
+
+Vor dieser Änderung grenzten sich die beiden Threading-Spezifikationen in beide Richtungen gegeneinander ab. NIP-10 regelt kind-1-Textnotizen und deren Antworten, die selbst kind-1-Events sind und über `e`-Tags verknüpft werden. NIP-22 regelt kind-1111-Kommentare zu allem Übrigen. Jede wies Implementierende an, sich aus dem Gebiet der anderen herauszuhalten.
+
+Nur eine dieser beiden Aussagen bleibt bestehen. NIP-10 lautet weiterhin:
+
+> Kind-1-Events mit `e`-Tags sind Antworten auf andere kind-1-Events. Kind-1-Antworten DÜRFEN NICHT als Antwort auf andere Kinds verwendet werden, nutzen Sie stattdessen NIP-22.
+
+Eine kind-1-Antwort darf also nach wie vor kein Event eines anderen Kinds adressieren. Weggefallen ist die entsprechende Regel in der Gegenrichtung. Ein kind-1111-Kommentar, dessen `K`- und `k`-Tags den Wert `1` tragen, entspricht jetzt der Spezifikation.
+
+Die praktische Folge ist, dass ein Thread, der an einer kind-1-Notiz hängt, Events zweier verschiedener Kinds enthalten kann, die auf zwei verschiedene Weisen aufgebaut sind. Kind-1-Antworten tragen markierte `e`-Tags, wie in NIP-10 beschrieben. Kind-1111-Kommentare tragen einen Wurzelbereich in Großbuchstaben plus Eltern-Tags in Kleinbuchstaben, wie in NIP-22 beschrieben. Ein Client, der den Thread allein über die `e`-Tags aus NIP-10 zusammensetzt, wird die kind-1111-Kommentare unter einer Notiz nicht sehen, und ein Client, der nur die NIP-22-Tags liest, wird die kind-1-Antworten nicht sehen. Erst das Lesen beider zeigt den vollständigen Thread.
+
+Sowohl NIP-10 als auch NIP-22 sind weiterhin als `draft` `optional` gekennzeichnet.
+
+## Amethyst 1.14.0
+
+[Amethyst v1.14.0](https://github.com/vitorpamplona/amethyst/releases/tag/v1.14.0) wurde am 22. August 2026 getaggt. Die Release Notes führen für Nutzende sichtbare Ergänzungen auf, darunter die Unterstützung von NIP-84-Highlights im Editor, im Feed und im Share-Intent; neue Feed-Typen Pictures, Videos, Shorts und Torrents mitsamt den zugehörigen Zielen zum Teilen von Medien; das Löschen und Archivieren von NIP-29-Kanälen; sowie Rich Previews für NIP-73-Kommentare zu externen Inhalten. Die Version bringt außerdem eine lange Liste interner Korrekturen an der Verwaltung von Relay-Subscriptions, der Medienwiedergabe und dem Parsen von Metadaten.
+
+## Die Woche insgesamt
+
+Eine Spezifikationsänderung und eine Client-Version. Die NIP-22-Änderung entfernt zwei Zeilen und betrifft jeden Client, der einen Thread unter einer kind-1-Notiz darstellt, denn dieser Thread kann nun kind-1111-Kommentare neben kind-1-Antworten enthalten.

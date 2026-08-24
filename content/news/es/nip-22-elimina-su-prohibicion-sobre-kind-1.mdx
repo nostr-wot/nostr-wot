@@ -1,0 +1,68 @@
+---
+title: "Resumen semanal: el NIP-22 elimina su prohibición sobre las notas kind 1 y Amethyst publica la 1.14.0"
+description: "En la semana hasta el 24 de agosto de 2026 se fusionó un pull request en nostr-protocol/nips, que suprime la línea que impedía que los comentarios kind 1111 respondieran a notas kind 1, y Amethyst etiquetó la versión 1.14.0."
+excerpt: "Una eliminación de dos líneas en el NIP-22 retira la regla que decía que los comentarios NO DEBEN responder a notas kind 1, deja intacta la regla espejo del NIP-10 y permite que un hilo bajo una nota contenga dos tipos de evento distintos."
+date: "2026-08-24"
+publishedAt: "2026-08-24"
+backfilled: false
+type: "digest"
+tags:
+  - "Nostr"
+  - "NIP"
+  - "NIP-22"
+translationKey: "nip-22-drops-its-kind-1-prohibition"
+featuredImage: "/images/news/nip-22-drops-its-kind-1-prohibition.svg"
+sources:
+  - title: "Use kind 1111 replies to kind 1 notes (#2250)"
+    url: "https://github.com/nostr-protocol/nips/pull/2358"
+    publisher: "nostr-protocol/nips"
+    date: "2026-08-24"
+  - title: "Amethyst v1.14.0"
+    url: "https://github.com/vitorpamplona/amethyst/releases/tag/v1.14.0"
+    publisher: "vitorpamplona/amethyst"
+    date: "2026-08-22"
+items:
+  - title: "Use kind 1111 replies to kind 1 notes (#2250)"
+    url: "https://github.com/nostr-protocol/nips/pull/2358"
+    summary: "Suprime la línea que prohibía usar comentarios kind 1111 para responder a notas kind 1."
+  - title: "Amethyst v1.14.0"
+    url: "https://github.com/vitorpamplona/amethyst/releases/tag/v1.14.0"
+    summary: "Añade destacados NIP-84, feeds de Pictures, Videos, Shorts y Torrents, borrado y archivado de canales NIP-29, y vistas previas enriquecidas NIP-73."
+published: true
+---
+
+Entre el 18 y el 24 de agosto de 2026 se fusionó un pull request en [nostr-protocol/nips](https://github.com/nostr-protocol/nips) y un cliente importante etiquetó una versión. El recuento de fusiones se contrastó con el historial de commits del repositorio para esa misma ventana, que contiene un único commit en `master`.
+
+El cambio en la especificación es pequeño en tamaño y concreto en su efecto. El NIP-22 ya no prohíbe usar un comentario para responder a una nota kind 1.
+
+## NIP-22: desaparece la línea que vetaba los comentarios en notas kind 1
+
+La [PR #2358](https://github.com/nostr-protocol/nips/pull/2358), abierta por zhoreeq y fusionada el 24 de agosto de 2026 a las 16:54 UTC, elimina dos líneas de `22.md` y no añade ninguna. La frase suprimida decía:
+
+> Los comentarios NO DEBEN usarse para responder a notas kind 1. En su lugar debería seguirse el NIP-10.
+
+El pull request se describe a sí mismo como la eliminación de "la línea que desaconseja el uso de respuestas kind 1111 a notas kind 1". No se escribió nada en su lugar. No hay un permiso nuevo, ni un PUEDE, ni una guía de reemplazo. La prohibición sencillamente ya no está en la especificación.
+
+El NIP-22 define `kind:1111`, un evento de comentario siempre delimitado por un evento raíz o por una etiqueta `I` del NIP-73. Un comentario apunta a su ámbito raíz con etiquetas en mayúscula (`E`, `A`, `I`, `K`, `P`) y a su elemento padre inmediato con las equivalentes en minúscula (`e`, `a`, `i`, `k`, `p`), y tanto `K` como `k` DEBEN estar presentes para que el kind de la raíz y el del padre queden explícitos. Esa estructura no se ve alterada por esta fusión. La única diferencia está en a qué kinds raíz puede apuntar un comentario.
+
+## Qué dicen ahora los dos NIPs de hilos
+
+Antes de este cambio, las dos especificaciones de hilos se delimitaban mutuamente en ambas direcciones. El NIP-10 rige las notas de texto kind 1 y sus respuestas, que son a su vez eventos kind 1 enlazados mediante etiquetas `e`. El NIP-22 rige los comentarios kind 1111 sobre todo lo demás. Cada uno indicaba a los implementadores que se mantuvieran fuera del terreno del otro.
+
+Solo sobrevive una de esas dos afirmaciones. El NIP-10 sigue diciendo:
+
+> Los eventos kind 1 con etiquetas `e` son respuestas a otros eventos kind 1. Las respuestas kind 1 NO DEBEN usarse para responder a otros kinds; úsese el NIP-22 en su lugar.
+
+Por tanto, una respuesta kind 1 sigue sin poder apuntar a un evento de otro kind. Lo que ha desaparecido es la regla equivalente en el sentido contrario. Un comentario kind 1111 cuyas etiquetas `K` y `k` lleven el valor `1` está ahora dentro de la especificación.
+
+La consecuencia práctica es que un hilo que cuelga de una nota kind 1 puede contener eventos de dos kinds distintos, estructurados de dos maneras distintas. Las respuestas kind 1 llevan etiquetas `e` marcadas, tal como describe el NIP-10. Los comentarios kind 1111 llevan un ámbito raíz en mayúsculas más etiquetas de padre en minúsculas, tal como describe el NIP-22. Un cliente que arme el hilo leyendo únicamente las etiquetas `e` del NIP-10 no verá los comentarios kind 1111 situados bajo una nota, y un cliente que lea únicamente las etiquetas del NIP-22 no verá las respuestas kind 1. Leer ambas es lo que muestra el hilo completo.
+
+Tanto el NIP-10 como el NIP-22 siguen marcados como `draft` `optional`.
+
+## Amethyst 1.14.0
+
+[Amethyst v1.14.0](https://github.com/vitorpamplona/amethyst/releases/tag/v1.14.0) se etiquetó el 22 de agosto de 2026. Sus notas de versión enumeran añadidos visibles para el usuario, entre ellos soporte de destacados NIP-84 en el compositor, el feed y la acción de compartir; nuevos tipos de feed Pictures, Videos, Shorts y Torrents, con sus destinos de compartición de medios correspondientes; borrado y archivado de canales NIP-29; y vistas previas enriquecidas para comentarios NIP-73 sobre contenido externo. La versión incluye además una larga lista de correcciones internas que abarcan la gestión de suscripciones a relés, la reproducción de medios y el análisis de metadatos.
+
+## El total de la semana
+
+Un cambio de especificación y una versión de cliente. La edición del NIP-22 suprime dos líneas y alcanza a todo cliente que dibuje un hilo bajo una nota kind 1, porque ese hilo puede contener ahora comentarios kind 1111 junto a respuestas kind 1.
