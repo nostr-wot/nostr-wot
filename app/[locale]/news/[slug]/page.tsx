@@ -2,7 +2,7 @@ import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import Image from 'next/image';
 import { getTranslations } from 'next-intl/server';
-import { getNewsPost, getNewsSlugs, getRelatedNews } from '@/lib/news';
+import { getNewsPost, getNewsSlugs, getRelatedNews, getAllNews, getAllNewsTags } from '@/lib/news';
 import { formatDate } from '@/lib/blog';
 import { generateBlogAlternates, getFullUrl } from '@/lib/metadata';
 import { type Locale, locales } from '@/i18n/config';
@@ -13,7 +13,7 @@ import {
   newsArticleJsonLd,
 } from '@/lib/jsonld';
 import { BlogContent, BlogPostWrapper } from '@/components/blog';
-import { NewsCard, NewsMeta } from '@/components/news';
+import { NewsCard, NewsMeta, NewsSidebar } from '@/components/news';
 import { ScrollReveal, Section, LinkButton } from '@/components/ui';
 import { ArrowLeftIcon, ExternalLinkIcon } from '@/components/icons';
 import { NewsletterSection } from '@/components/layout/NewsletterSection';
@@ -95,6 +95,8 @@ export default async function NewsPostPage({ params }: Props) {
   }
 
   const relatedNews = getRelatedNews(slug, 3, locale as Locale);
+  const allTags = getAllNewsTags(locale as Locale);
+  const allPosts = getAllNews(locale as Locale);
   const url = getFullUrl(`/news/${slug}`, locale as Locale);
 
   const articleLd = newsArticleJsonLd({
@@ -175,7 +177,6 @@ export default async function NewsPostPage({ params }: Props) {
                     typeLabel={t(`types.${post.type}`)}
                     formattedDate={formatDate(post.date, locale)}
                     disclosure={t('disclosure')}
-                    backfilledNotice={t('backfilled')}
                   />
                   <p className="mt-3 text-sm text-gray-500 dark:text-gray-400">
                     <time dateTime={post.publishedAt}>
@@ -213,10 +214,11 @@ export default async function NewsPostPage({ params }: Props) {
             </div>
           </ScrollReveal>
 
-          {/* Content */}
+          {/* Content + Sidebar */}
           <div className="flex justify-center max-w-7xl mx-auto px-6 pb-16">
-            <div className="flex-1 min-w-0 max-w-prose">
-              <BlogContent content={post.content} />
+            <div className="min-w-0 lg:flex lg:gap-12">
+              <article className="flex-1 min-w-0 max-w-prose">
+                <BlogContent content={post.content} />
 
               {/* Digest items */}
               {post.type === 'digest' && post.items.length > 0 && (
@@ -285,6 +287,27 @@ export default async function NewsPostPage({ params }: Props) {
                   </section>
                 </ScrollReveal>
               )}
+              </article>
+
+              {/* Sidebar */}
+              <aside className="hidden lg:block w-80 flex-shrink-0">
+                <div className="sticky top-24">
+                  <NewsSidebar
+                    tags={allTags}
+                    relatedPosts={relatedNews.map((p) => ({
+                      slug: p.slug,
+                      title: p.title,
+                      date: p.date,
+                    }))}
+                    allPosts={allPosts.map((p) => ({
+                      slug: p.slug,
+                      title: p.title,
+                      excerpt: p.excerpt,
+                      tags: p.tags,
+                    }))}
+                  />
+                </div>
+              </aside>
             </div>
           </div>
         </article>

@@ -3,6 +3,7 @@ import { notFound } from 'next/navigation';
 import { getTranslations } from 'next-intl/server';
 import { Link } from '@/i18n/routing';
 import { getAllNews, getNewsArchiveMonths } from '@/lib/news';
+import type { NewsPostMeta } from '@/lib/news';
 import { generateOpenGraph, generateTwitter, getFullUrl } from '@/lib/metadata';
 import { type Locale, locales, defaultLocale } from '@/i18n/config';
 import { NewsCard } from '@/components/news';
@@ -77,12 +78,17 @@ function indexAlternates(page: number, currentLocale: Locale): Metadata['alterna
 
 export async function generateMetadata({ params, searchParams }: Props): Promise<Metadata> {
   const { locale } = await params;
-  const page = parsePage((await searchParams).page);
+  const sp = await searchParams;
+  // A search or tag filter renders its own view of `/news`, not one of the
+  // numbered index pages, so it always carries page one's metadata rather
+  // than being checked against `?page=`.
+  const isFiltered = typeof sp.q === 'string' || typeof sp.tag === 'string';
+  const page = isFiltered ? 1 : parsePage(sp.page);
   const t = await getTranslations('news.meta');
   const title = t('title');
   const description = t('description');
 
-  if (page === null || page > pageCount(getAllNews(locale as Locale).length)) {
+  if (!isFiltered && (page === null || page > pageCount(getAllNews(locale as Locale).length))) {
     return { title: 'Not Found' };
   }
 
@@ -90,7 +96,7 @@ export async function generateMetadata({ params, searchParams }: Props): Promise
     title,
     description,
     keywords: ['nostr news', 'nostr ecosystem news', 'nostr web of trust news'],
-    alternates: indexAlternates(page, locale as Locale),
+    alternates: indexAlternates(page ?? 1, locale as Locale),
     openGraph: generateOpenGraph({
       title,
       description,
@@ -114,18 +120,45 @@ export default async function NewsPage({ params, searchParams }: Props) {
   const allPosts = getAllNews(locale as Locale);
   const totalPages = pageCount(allPosts.length);
 
-  const page = parsePage((await searchParams).page);
-  if (page === null || page > totalPages) {
-    notFound();
+  const sp = await searchParams;
+  const searchQuery = typeof sp.q === 'string' ? sp.q : undefined;
+  const tagFilter = typeof sp.tag === 'string' ? sp.tag : undefined;
+  const isFiltered = !!(searchQuery || tagFilter);
+
+  let posts: NewsPostMeta[];
+  let page = 1;
+
+  if (isFiltered) {
+    // A search or tag filter shows every match at once, not a numbered slice
+    // of it — same as the blog's filtered view.
+    posts = allPosts.filter((post) => {
+      const matchesSearch =
+        !searchQuery ||
+        post.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        post.excerpt.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        post.tags.some((tag) => tag.toLowerCase().includes(searchQuery.toLowerCase()));
+
+      const matchesTag =
+        !tagFilter || post.tags.some((tag) => tag.toLowerCase() === tagFilter.toLowerCase());
+
+      return matchesSearch && matchesTag;
+    });
+  } else {
+    const parsedPage = parsePage(sp.page);
+    if (parsedPage === null || parsedPage > totalPages) {
+      notFound();
+    }
+    page = parsedPage;
+    posts = allPosts.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE);
   }
 
-  const posts = allPosts.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE);
   const archiveMonths = getNewsArchiveMonths(locale as Locale);
 
-  // Only the first page has a "latest" entry to lead with; deeper pages are a
-  // plain grid, so nothing further down the list is dressed up as the newest.
-  const featuredPost = page === 1 ? posts[0] : undefined;
-  const otherPosts = page === 1 ? posts.slice(1) : posts;
+  // Only the first, unfiltered page has a "latest" entry to lead with; deeper
+  // pages and filtered results are a plain grid, so nothing further down the
+  // list is dressed up as the newest.
+  const featuredPost = !isFiltered && page === 1 ? posts[0] : undefined;
+  const otherPosts = !isFiltered && page === 1 ? posts.slice(1) : posts;
 
   const pageUrl = `${getFullUrl('/news', locale as Locale)}${page > 1 ? `?page=${page}` : ''}`;
 
@@ -160,6 +193,33 @@ export default async function NewsPage({ params, searchParams }: Props) {
         </Section>
 
         <div className="max-w-7xl mx-auto px-6 pb-16">
+          {/* Filtered results header */}
+          {isFiltered && (
+            <ScrollReveal animation="fade-up">
+              <div className="flex items-center justify-between mb-8">
+                <h2 className="text-2xl font-bold text-gray-900 dark:text-white">
+                  {t('searchResults', { count: posts.length })}
+                </h2>
+                <Link href="/news" className="text-sm text-primary hover:underline">
+                  {t('clearFilters')}
+                </Link>
+              </div>
+            </ScrollReveal>
+          )}
+
+          {/* No results for the current search/tag filter */}
+          {isFiltered && posts.length === 0 && (
+            <div className="text-center py-20">
+              <h2 className="text-2xl font-semibold text-gray-900 dark:text-white mb-4">
+                {t('noResults.title')}
+              </h2>
+              <p className="text-gray-600 dark:text-gray-400 mb-4">{t('noResults.description')}</p>
+              <Link href="/news" className="text-primary hover:underline">
+                {t('clearFilters')}
+              </Link>
+            </div>
+          )}
+
           {/* Featured entry */}
           {featuredPost && (
             <section className="mb-12">
@@ -186,7 +246,7 @@ export default async function NewsPage({ params, searchParams }: Props) {
           )}
 
           {/* Pagination. Page one is reachable at plain /news, never /news?page=1. */}
-          {totalPages > 1 && (
+          {!isFiltered && totalPages > 1 && (
             <ScrollReveal animation="fade-up">
               <nav
                 className="mt-12 flex items-center justify-between gap-4 border-t border-gray-200 dark:border-gray-700 pt-6"

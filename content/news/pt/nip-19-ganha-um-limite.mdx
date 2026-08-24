@@ -1,0 +1,46 @@
+---
+title: "NIP-19 ganha um limite"
+description: "O NIP-19 agora recomenda um limite de 5000 caracteres para entidades codificadas em bech32, delimitando o que um decodificador deve aceitar."
+excerpt: "Uma adição de uma linha ao NIP-19 diz que strings no formato bech32, como npub e nprofile, deveriam ser limitadas a 5000 caracteres, dando aos decodificadores um limite definido para aplicar."
+date: "2026-03-12"
+publishedAt: "2026-08-22"
+backfilled: true
+type: "story"
+tags:
+  - "Nostr"
+  - "NIP-19"
+translationKey: "nip-19-gains-a-limit"
+featuredImage: "/images/news/nip-19-gains-a-limit.svg"
+sources:
+  - title: "Add limit to nip 19"
+    url: "https://github.com/nostr-protocol/nips/pull/2264"
+    publisher: "nostr-protocol/nips"
+    date: "2026-03-12"
+published: true
+---
+
+O NIP-19 define as entidades codificadas em bech32 que clientes Nostr usam para exibição: `npub` e `nsec` para chaves simples, `note` para ids de eventos, e as baseadas em TLV `nprofile`, `nevent` e `naddr` para chaves ou eventos empacotados com dados extras, como dicas de relay. Essas strings servem para copiar, colar, compartilhar e renderizar como códigos QR, não para uso dentro do protocolo central em si.
+
+A [PR #2264](https://github.com/nostr-protocol/nips/pull/2264), mesclada em 12 de março de 2026 e aberta por staab, adiciona uma única linha ao `19.md`:
+
+> Strings no formato bech32 DEVERIAM ser limitadas a 5000 caracteres.
+
+Essa é toda a mudança: uma linha adicionada, nenhuma removida, um arquivo alterado.
+
+## Por que um limite de tamanho
+
+As entidades TLV do NIP-19 são abertas por design. Um `nprofile` ou `nevent` pode carregar um número arbitrário de itens TLV, incluindo múltiplas dicas de relay, então nada na especificação anterior dizia o quão grande uma dessas strings poderia ficar antes de um decodificador parar de tentar processá-la. A especificação já instruía os decodificadores a ignorar tipos TLV não reconhecidos em vez de gerar erro. Combinado com a ausência de um limite superior de tamanho, um decodificador precisava estar preparado para percorrer uma string arbitrariamente longa só para descobrir que deveria ignorar a maior parte dela.
+
+Definir um teto recomendado dá a quem implementa a especificação um número concreto para checar antes de fazer qualquer trabalho de parsing. Um decodificador que vê uma string com mais de 5000 caracteres pode rejeitá-la de imediato, em vez de gastar tempo e memória percorrendo registros TLV que poderiam se estender indefinidamente. Esse é um padrão defensivo comum para qualquer formato que aceite entradas de tamanho variável influenciáveis por um atacante: limitar o tamanho da entrada antes de fazer qualquer coisa custosa com ela.
+
+## O que não muda
+
+O limite é um DEVERIA, não um DEVE, e não mexe na codificação em si. `npub`, `nsec`, `note`, `nprofile`, `nevent` e `naddr` mantêm a mesma estrutura bech32 e o mesmo layout TLV para as entidades que o usam. Nada muda em como entidades curtas já existentes, como um `npub` simples, são produzidas ou decodificadas, já que essas ficam bem abaixo do novo teto no uso normal. A linha só afeta os poucos casos em que uma entidade, tipicamente um `nprofile` ou `nevent` carregado com várias dicas de relay, de outra forma não teria um limite superior definido.
+
+## O panorama geral
+
+Strings do NIP-19 servem para serem coladas em chats, embutidas em links e codificadas em QR codes, contextos em que uma string sem limite é um problema prático, não apenas um incômodo de parsing. Um QR code tem limites físicos de tamanho, e um cliente que renderiza uma string arbitrariamente longa está fazendo um trabalho sem limite em resposta a uma entrada de usuário não autenticada. Uma recomendação de 5000 caracteres dá a cada implementação o mesmo número em torno do qual projetar, em vez de deixar cada cliente adivinhar onde está o corte seguro.
+
+É uma mudança de uma única linha em um NIP que já traz várias notas desse tipo. O NIP-19 também instrui os decodificadores a ignorar tipos TLV que não reconhecem, e restringe o uso de `npub` e `nsec` à exibição e à cópia, mantendo-os fora dos eventos NIP-01 e das respostas NIP-05. Cada uma dessas notas elimina um ponto em que uma implementação poderia, de outra forma, se deparar com uma entrada para a qual não estava preparada. Um limite de tamanho é a mesma ideia aplicada à string inteira em vez de a uma única parte de seu conteúdo.
+
+Nada disso muda a aparência de um `npub`, `nprofile`, `nevent` ou `naddr` típico e válido. Uma chave ou referência de evento comum, mesmo com um par de dicas de relay, fica na casa de poucas centenas de caracteres, no máximo. A linha dos 5000 caracteres é um respaldo para os casos fora dessa faixa, não uma mudança em como essas entidades são normalmente construídas ou lidas.

@@ -21,15 +21,15 @@ function InfoGlyph({ className = '' }: { className?: string }) {
  * The date rendered here is the EVENT date (`post.date`), which is what a
  * reader cares about. The real ship date (`publishedAt`) is what goes into
  * structured data as `datePublished` — see `lib/jsonld.tsx`. The two are
- * deliberately different for backfilled archive entries, which is exactly why
- * the backfilled notice below is not optional decoration.
+ * deliberately different for backfilled archive entries; the article page
+ * separately renders a "Published <date>" line so a reader can still see
+ * that, which is why no extra notice is rendered here.
  */
 export interface NewsMetaPost {
   type: 'digest' | 'story';
   /** Event date, ISO. */
   date: string;
   readingTime: string;
-  backfilled: boolean;
 }
 
 interface NewsMetaProps {
@@ -40,8 +40,6 @@ interface NewsMetaProps {
   formattedDate: string;
   /** Translated `news.disclosure`. Always rendered. */
   disclosure: string;
-  /** Translated `news.backfilled`. Rendered only when `post.backfilled`. */
-  backfilledNotice: string;
   className?: string;
 }
 
@@ -55,7 +53,6 @@ export function NewsMeta({
   typeLabel,
   formattedDate,
   disclosure,
-  backfilledNotice,
   className = '',
 }: NewsMetaProps) {
   return (
@@ -75,13 +72,6 @@ export function NewsMeta({
         <InfoGlyph className="w-4 h-4 mt-0.5 flex-shrink-0 text-gray-400 dark:text-gray-500" />
         <span>{disclosure}</span>
       </p>
-
-      {post.backfilled && (
-        <p className="mt-3 flex items-start gap-2 rounded-lg border border-amber-200 dark:border-amber-900/50 bg-amber-50 dark:bg-amber-900/20 px-4 py-3 text-sm font-medium text-amber-800 dark:text-amber-200">
-          <span aria-hidden="true">⏳</span>
-          <span>{backfilledNotice}</span>
-        </p>
-      )}
     </div>
   );
 }
