@@ -1,0 +1,65 @@
+---
+title: "NIP-30 Extends Custom Emoji to Kind 1111 Comments"
+description: "A one line edit to NIP-30 adds kind 1111 to the list of event kinds that may carry emoji tags, and a new subsection says comment content should be emojified."
+excerpt: "NIP-30 listed four kinds that may carry custom emoji. It now lists five. Kind 1111 comments, defined by NIP-22, join kinds 0, 1, 7 and 30315, with a worked example in the specification."
+date: "2026-08-25"
+publishedAt: "2026-08-25"
+backfilled: false
+type: "story"
+tags:
+  - "Nostr"
+  - "NIP"
+  - "NIP-30"
+translationKey: "nip-30-extends-custom-emoji-to-comments"
+featuredImage: "/images/news/nip-30-extends-custom-emoji-to-comments.svg"
+sources:
+  - title: "Add event kind 1111 (NIP-22) to NIP-30"
+    url: "https://github.com/nostr-protocol/nips/pull/2448"
+    publisher: "nostr-protocol/nips"
+    date: "2026-08-25"
+published: true
+---
+
+[NIP-30](https://github.com/nostr-protocol/nips/blob/master/30.md) defines custom emoji: a way to write `:shortcode:` in an event and have clients render an image in its place. Until today the specification named four event kinds that could carry those shortcodes. It now names five.
+
+[PR #2448](https://github.com/nostr-protocol/nips/pull/2448), opened by Sebastian Hagens and merged on 25 August 2026 at 10:58 UTC, touches one file, `30.md`, with 18 lines added and 2 removed. One of those removed lines is an indentation fix inside an existing JSON example. The rest is the substance of the change.
+
+## What the diff does
+
+The opening sentence of NIP-30 previously read that custom emoji may be added to kind 0, kind 1, kind 7 and kind 30315 events. It now reads:
+
+> Custom emoji may be added to **kind 0**, **kind 1**, **kind 1111** ([NIP-22](22.md)), **kind 7** ([NIP-25](25.md)) and **kind 30315** ([NIP-38](38.md)) events by including one or more `"emoji"` tags.
+
+The pull request also adds a new subsection, matching the ones already present for kinds 0, 1 and 7:
+
+> ### Kind 1111 events
+>
+> In kind 1111 events, the `content` should be emojified.
+
+It carries a worked example showing a kind 1111 event whose `content` is `"Let's party! :hyves_banaan:"` alongside a single `emoji` tag holding the shortcode, an image URL and an address pointer to a kind 30030 emoji set.
+
+Nothing else in NIP-30 changed. The tag form is unchanged:
+
+```
+["emoji", <shortcode>, <image-url>, <emoji-set-address>]
+```
+
+So are the rules around it. A shortcode MUST still be made only of alphanumeric characters, hyphens and underscores. The third element remains an optional `kind:pubkey:d-tag` pointer to a kind 30030 emoji set, the categorised emoji group defined in [NIP-51](https://github.com/nostr-protocol/nips/blob/master/51.md). NIP-30 remains marked `draft` `optional`.
+
+## Which events this reaches
+
+Kind 1111 is the comment event defined by [NIP-22](https://github.com/nostr-protocol/nips/blob/master/22.md). A comment is always scoped to a root event or to an `I`-tag from NIP-73, pointing at that root scope with uppercase tags and at its immediate parent with the lowercase equivalents. It is the threading primitive used for replies to events that are not kind 1 text notes: comments under long-form articles, under files, under external content identified by an `I`-tag.
+
+That reach grew yesterday. A separate merge, covered in the previous report, removed the line in NIP-22 that forbade using a comment to reply to a kind 1 note. A kind 1111 comment may now sit under a text note as well. Today's edit means shortcodes in any of those comments have specification backing rather than being an undocumented client behaviour.
+
+## Plaintext content and shortcodes
+
+NIP-22 states that kind 1111 uses "plaintext `.content` (no HTML, Markdown, or other formatting)". Custom emoji do not sit in tension with that rule, because of where NIP-30 puts the data. The `content` field holds only the literal characters `:hyves_banaan:`. The image URL and the emoji set pointer live in a tag. Nothing in the content field is markup, and a client that knows nothing of NIP-30 displays the shortcode as the plain text it is.
+
+That is also what makes the change cheap to implement for a client that already supports custom emoji elsewhere. The parsing step is identical to the one used for kind 1 notes: read the `emoji` tags, and replace each `:shortcode:` occurrence in `content` with the matching image. What was missing was not a mechanism but a line in the specification saying the mechanism applied here.
+
+## For implementers
+
+A client rendering comments should now expect `emoji` tags on kind 1111 events and emojify their content. A client composing comments may offer the same custom emoji picker it offers for notes, adding an `emoji` tag for each shortcode inserted. Relays are unaffected, since `emoji` is an ordinary tag and NIP-30 asks nothing of them.
+
+The verb in the specification is "should", not "must", for both the emojifying and the composing side. A comment with unresolved shortcodes is still a valid comment, and it reads as literal colons to anyone whose client has not implemented this.
