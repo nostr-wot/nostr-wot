@@ -1,0 +1,71 @@
+---
+title: "Le NIP-A3 ajoute les cibles de paiement payto: au dépôt des NIP"
+description: "Une nouvelle spécification définit le kind 10133, un événement remplaçable portant des tags payto que les clients assemblent en URI payto: de la RFC-8905 pour les invocations de paiement et de pourboire."
+excerpt: "Le NIP-A3 est un nouveau fichier du dépôt des NIP. Il définit un événement remplaçable de kind 10133 dont les tags payto nomment un type de paiement et une autorité, que les clients transforment en URI payto:// et affichent sous forme de boutons."
+date: "2026-08-27"
+publishedAt: "2026-08-27"
+backfilled: false
+type: "story"
+tags:
+  - "Nostr"
+  - "NIP"
+  - "NIP-A3"
+translationKey: "nip-a3-adds-payto-payment-targets"
+featuredImage: "/images/news/nip-a3-adds-payto-payment-targets.svg"
+sources:
+  - title: "NIP-A3 payto: Payment Targets (RFC-8905)"
+    url: "https://github.com/nostr-protocol/nips/pull/2119"
+    publisher: "nostr-protocol/nips"
+    date: "2026-08-26"
+  - title: "NIP-89: payto: Payment Targets"
+    url: "https://github.com/nostr-protocol/nips/pull/262"
+    publisher: "nostr-protocol/nips"
+    date: "2025-05-21"
+published: true
+---
+
+Le dépôt des NIP compte une nouvelle spécification. La [PR #2119](https://github.com/nostr-protocol/nips/pull/2119) a été fusionnée le 26 août 2026 à 18h33 UTC, ajoutant un nouveau fichier `A3.md` de 132 lignes ainsi que deux lignes au `README.md`. Ce fichier définit le NIP-A3, "payto: Payment Targets (RFC-8905)".
+
+La pull request avait été ouverte le 14 novembre 2025. Il s'agit d'une révision de la [PR #262](https://github.com/nostr-protocol/nips/pull/262), qui proposait la même idée sous le nom NIP-89 en février 2023 et qui a été close en mai 2025 sans être fusionnée.
+
+## L'événement
+
+Le NIP-A3 définit `kind:10133` et le marque comme remplaçable. Cela découle du [NIP-01](https://github.com/nostr-protocol/nips/blob/master/01.md), où tout kind `n` tel que `10000 <= n < 20000` est remplaçable : pour chaque combinaison de pubkey et de kind, un relais ne doit conserver que l'événement le plus récent et peut écarter les versions antérieures. Un utilisateur dispose donc d'une seule liste de cibles de paiement à la fois, et en publier une nouvelle remplace la précédente.
+
+Le champ `content` reste vide. Tout se trouve dans les tags :
+
+```
+["payto", "<type>", "<authority>", "<optional_extra_1>", "<optional_extra_2>", ...]
+```
+
+Le premier élément est la chaîne littérale `payto`. Le deuxième est le type de paiement, par exemple `bitcoin` ou `lightning`. Le troisième est l'autorité, une adresse ou un nom d'utilisateur, dont le format dépend du système de paiement. Tout ce qui suit est réservé à de futures fonctionnalités de la RFC-8905.
+
+La règle de compatibilité ascendante est écrite explicitement : les clients doivent comprendre les éléments 0 à 2, et peuvent ignorer tout élément supplémentaire.
+
+## Validation
+
+`type` se limite aux lettres minuscules, aux chiffres et aux traits d'union. Les types sont insensibles à la casse, et la spécification demande de les normaliser en minuscules. `authority` doit être sûr pour une URL, les caractères spéciaux étant encodés. Au-delà de cela, les clients peuvent appliquer une validation propre au système de paiement pour les types qu'ils reconnaissent.
+
+Du côté de l'écriture, la spécification demande aux clients d'accepter les types qu'ils ne connaissent pas. L'étape 3 de sa liste d'implémentation indique que le client peut avertir l'utilisateur lorsqu'un type n'est pas reconnu, tout en autorisant malgré tout la soumission. L'événement d'exemple de la spécification porte un tag de type `unknowntype` aux côtés de `bitcoin` et de `nano`.
+
+## Affichage
+
+Pour chaque tag `payto`, un client devrait assembler l'URI `payto://<type>/<authority>` et l'afficher sous forme de bouton ou de lien. Cette forme d'URI est l'objet du NIP. La RFC-8905 normalise déjà `payto:` comme schéma d'URI pour les invocations de cibles de paiement, si bien que le NIP-A3 n'en invente pas un nouveau ; il apporte les pièces nécessaires pour le construire.
+
+Les types reconnus s'affichent avec une icône et une stylisation. Le NIP-A3 fournit un tableau de huit types recommandés, chacun avec un nom long, un nom court, un symbole et un lien de référence vers le matériel de marque du système de paiement lui-même. Ces huit types sont `bitcoin`, `cashme` pour Cash App, `ethereum`, `lightning`, `monero`, `nano`, `revolut` et `venmo`.
+
+Les types non reconnus sont soit ignorés, soit dotés d'une stylisation générique, au choix du client. Lorsqu'un profil énumère plusieurs cibles, un client peut afficher la première, les afficher toutes, ou proposer un menu déroulant. La spécification ne tranche pas.
+
+## Rapport avec les zaps
+
+Les notes d'implémentation traitent du recouvrement avec le [NIP-57](https://github.com/nostr-protocol/nips/blob/master/57.md). Les paiements Lightning disposent déjà d'un chemin dans nostr : le champ `lud16` des métadonnées de profil de kind 0, décodé comme une requête de paiement lnurl. Le NIP-A3 précise que les clients peuvent utiliser un tag `payto` de type `lightning` comme solution de rechange à `lud16` ou comme complément, avec une adresse lightning ou une LNURL dans le champ autorité.
+
+L'exemple détaillé montre les deux ensemble : un événement kind 0 portant `lud16`, et un événement kind 10133 portant une cible `lightning` avec la même adresse, plus une cible `bitcoin`. Aucun ne remplace l'autre. Rien dans le diff ne rend `lud16` obsolète ni ne modifie le NIP-57.
+
+## Pour les implémenteurs
+
+Les relais n'ont besoin de rien de nouveau. Le kind 10133 se situe dans la plage remplaçable qu'ils traitent déjà, et `payto` est un tag ordinaire.
+
+Pour les clients, le travail de lecture est réduit : s'abonner au kind 10133 pour les pubkeys affichées, analyser les tags, construire les URI et afficher le résultat. Le travail d'écriture demande un formulaire avec un champ type et un champ autorité, les deux règles de validation ci-dessus, et une publication remplaçable.
+
+Le NIP-A3 est marqué `optional` et porte une ligne `author:atxmj`. Il ne comporte aucun marqueur `draft`. Rien n'oblige un client à l'implémenter, ce que le README des NIP énonce pour la liste dans son ensemble.

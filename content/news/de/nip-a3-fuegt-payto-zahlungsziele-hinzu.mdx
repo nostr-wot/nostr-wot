@@ -1,0 +1,71 @@
+---
+title: "NIP-A3 fügt dem NIP-Repository payto: Zahlungsziele hinzu"
+description: "Eine neue Spezifikation definiert Kind 10133, ein ersetzbares Event mit payto-Tags, aus denen Clients payto: URIs nach RFC-8905 für Zahlungs- und Trinkgeldaufrufe zusammensetzen."
+excerpt: "NIP-A3 ist eine neue Datei im NIP-Repository. Sie definiert ein ersetzbares Event vom Kind 10133, dessen payto-Tags einen Zahlungstyp und eine Autorität benennen, die Clients zu payto:// URIs zusammensetzen und als Schaltflächen anzeigen."
+date: "2026-08-27"
+publishedAt: "2026-08-27"
+backfilled: false
+type: "story"
+tags:
+  - "Nostr"
+  - "NIP"
+  - "NIP-A3"
+translationKey: "nip-a3-adds-payto-payment-targets"
+featuredImage: "/images/news/nip-a3-adds-payto-payment-targets.svg"
+sources:
+  - title: "NIP-A3 payto: Payment Targets (RFC-8905)"
+    url: "https://github.com/nostr-protocol/nips/pull/2119"
+    publisher: "nostr-protocol/nips"
+    date: "2026-08-26"
+  - title: "NIP-89: payto: Payment Targets"
+    url: "https://github.com/nostr-protocol/nips/pull/262"
+    publisher: "nostr-protocol/nips"
+    date: "2025-05-21"
+published: true
+---
+
+Das NIP-Repository hat eine neue Spezifikation. [PR #2119](https://github.com/nostr-protocol/nips/pull/2119) wurde am 26. August 2026 um 18:33 UTC gemergt und fügt eine neue Datei `A3.md` mit 132 Zeilen sowie zwei Zeilen in der `README.md` hinzu. Die Datei definiert NIP-A3, "payto: Payment Targets (RFC-8905)".
+
+Der Pull Request wurde am 14. November 2025 eröffnet. Er ist eine Überarbeitung von [PR #262](https://github.com/nostr-protocol/nips/pull/262), der dieselbe Idee im Februar 2023 unter dem Namen NIP-89 vorschlug und im Mai 2025 ohne Merge geschlossen wurde.
+
+## Das Event
+
+NIP-A3 definiert `kind:10133` und markiert es als ersetzbar. Das ergibt sich aus [NIP-01](https://github.com/nostr-protocol/nips/blob/master/01.md), wonach jedes Kind `n` mit `10000 <= n < 20000` ersetzbar ist: Für jede Kombination aus Pubkey und Kind muss ein Relay nur das jüngste Event speichern und darf ältere Fassungen verwerfen. Eine Nutzerin oder ein Nutzer hat somit jeweils nur eine Liste von Zahlungszielen, und eine neue Veröffentlichung löst die vorherige ab.
+
+Das Feld `content` bleibt leer. Alles steckt in den Tags:
+
+```
+["payto", "<type>", "<authority>", "<optional_extra_1>", "<optional_extra_2>", ...]
+```
+
+Das erste Element ist die wörtliche Zeichenkette `payto`. Das zweite ist der Zahlungstyp, etwa `bitcoin` oder `lightning`. Das dritte ist die Autorität, eine Adresse oder ein Benutzername, dessen Format vom Zahlungssystem abhängt. Alles Weitere ist für künftige Funktionen aus RFC-8905 reserviert.
+
+Die Regel zur Vorwärtskompatibilität steht ausdrücklich da: Clients müssen die Elemente 0 bis 2 verstehen und dürfen alle zusätzlichen Elemente ignorieren.
+
+## Validierung
+
+`type` ist auf Kleinbuchstaben, Ziffern und Bindestriche beschränkt. Typen unterscheiden nicht zwischen Groß- und Kleinschreibung, und die Spezifikation verlangt eine Normalisierung auf Kleinbuchstaben. `authority` muss URL-sicher sein, Sonderzeichen sind zu kodieren. Darüber hinaus dürfen Clients für die von ihnen erkannten Typen eine zahlungssystemspezifische Prüfung vornehmen.
+
+Auf der Schreibseite weist die Spezifikation Clients an, auch unbekannte Typen anzunehmen. Schritt 3 ihrer Implementierungsliste sagt, der Client dürfe bei einem nicht erkannten Typ warnen, das Absenden aber dennoch zulassen. Das Beispiel-Event der Spezifikation trägt neben `bitcoin` und `nano` ein Tag mit dem Typ `unknowntype`.
+
+## Darstellung
+
+Für jedes `payto`-Tag sollte ein Client die URI `payto://<type>/<authority>` zusammensetzen und als Schaltfläche oder Link anzeigen. Genau diese URI-Form ist der Zweck des NIP. RFC-8905 standardisiert `payto:` bereits als URI-Schema für den Aufruf von Zahlungszielen, NIP-A3 erfindet also kein neues; es liefert die Bausteine, aus denen sich eines zusammensetzen lässt.
+
+Erkannte Typen werden mit Symbol und Stilisierung dargestellt. NIP-A3 bringt eine Tabelle mit acht empfohlenen Typen mit, jeweils mit langem Namen, kurzem Namen, Zeichen und einem Verweis auf das Markenmaterial des jeweiligen Zahlungssystems. Die acht sind `bitcoin`, `cashme` für Cash App, `ethereum`, `lightning`, `monero`, `nano`, `revolut` und `venmo`.
+
+Nicht erkannte Typen werden entweder ignoriert oder generisch dargestellt, nach Wahl des Clients. Führt ein Profil mehrere Ziele, darf ein Client das erste anzeigen, alle anzeigen oder eine Auswahlliste anbieten. Die Spezifikation legt sich nicht fest.
+
+## Verhältnis zu Zaps
+
+Die Implementierungshinweise behandeln die Überschneidung mit [NIP-57](https://github.com/nostr-protocol/nips/blob/master/57.md). Für Lightning-Zahlungen gibt es in nostr bereits einen Weg: das Feld `lud16` in den Profil-Metadaten vom Kind 0, dekodiert als lnurl-Zahlungsanfrage. NIP-A3 sagt, Clients dürften ein `payto`-Tag vom Typ `lightning` als Alternative zu `lud16` oder als Ergänzung verwenden, mit einer Lightning-Adresse oder einer LNURL im Autoritätsfeld.
+
+Das ausgearbeitete Beispiel zeigt beides zusammen: ein Kind-0-Event mit `lud16` und ein Kind-10133-Event mit einem `lightning`-Ziel derselben Adresse sowie einem `bitcoin`-Ziel. Keines ersetzt das andere. Nichts im Diff erklärt `lud16` für veraltet oder ändert NIP-57.
+
+## Für Implementierende
+
+Relays brauchen nichts Neues. Kind 10133 liegt in dem ersetzbaren Bereich, den sie ohnehin behandeln, und `payto` ist ein gewöhnliches Tag.
+
+Für Clients ist die Leseseite klein: Kind 10133 für die auf dem Bildschirm sichtbaren Pubkeys abonnieren, die Tags auswerten, die URIs bauen, das Ergebnis anzeigen. Die Schreibseite braucht ein Formular mit einem Typfeld und einem Autoritätsfeld, die beiden obigen Validierungsregeln und eine ersetzbare Veröffentlichung.
+
+NIP-A3 ist als `optional` markiert und trägt eine Zeile `author:atxmj`. Eine `draft`-Markierung hat es nicht. Nichts zwingt einen Client zur Umsetzung, was die NIP-README über die Liste insgesamt sagt.
