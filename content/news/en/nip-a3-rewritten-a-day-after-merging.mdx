@@ -1,0 +1,91 @@
+---
+title: "NIP-A3 Rewritten a Day After Merging"
+description: "A direct commit cuts A3.md from 132 lines to 64, renames the third tag element to address, drops the validation section, and turns the RFC-8905 payto: URI into a fallback."
+excerpt: "One day after NIP-A3 entered the NIPs repository, a commit removed 101 of its lines. The kind number and the tag name survive. Most of the normative detail around them does not."
+date: "2026-08-28"
+publishedAt: "2026-08-28"
+backfilled: false
+type: "story"
+tags:
+  - "Nostr"
+  - "NIP"
+  - "NIP-A3"
+translationKey: "nip-a3-rewritten-a-day-after-merging"
+featuredImage: "/images/news/nip-a3-rewritten-a-day-after-merging.svg"
+sources:
+  - title: "Commit 24b2ae9: rewrite of NIP-A3"
+    url: "https://github.com/nostr-protocol/nips/commit/24b2ae9fdfeb4e5c0d3be854df5977b81afe1983"
+    publisher: "nostr-protocol/nips"
+    date: "2026-08-27"
+  - title: "NIP-A3 payto: Payment Targets (RFC-8905)"
+    url: "https://github.com/nostr-protocol/nips/pull/2119"
+    publisher: "nostr-protocol/nips"
+    date: "2026-08-26"
+  - title: "A3.md"
+    url: "https://github.com/nostr-protocol/nips/blob/master/A3.md"
+    publisher: "nostr-protocol/nips"
+    date: "2026-08-27"
+published: true
+---
+
+NIP-A3 was rewritten on 27 August 2026 at 15:14 UTC, one day after it entered the NIPs repository. [Commit 24b2ae9](https://github.com/nostr-protocol/nips/commit/24b2ae9fdfeb4e5c0d3be854df5977b81afe1983) removes 101 lines from `A3.md` and adds 33, taking the file from 132 lines to 64, and changes one line in `README.md`. The commit was pushed directly to `master`. The GitHub API reports no pull request associated with it.
+
+The specification had arrived through [PR #2119](https://github.com/nostr-protocol/nips/pull/2119), merged on 26 August at 18:33 UTC. The kind number and the tag name survive the rewrite. Most of the normative detail around them does not.
+
+## Title and status
+
+The heading drops the RFC reference. "payto: Payment Targets (RFC-8905)" becomes "payto: Payment Targets", and the `README.md` entry is updated to match.
+
+The status markers change as well. The merged version carried `optional` and an `author:atxmj` line. The current file carries `draft` and `optional`, with no author line.
+
+The "Event Kind" section is gone. It had stated that NIP-A3 defines `kind:10133` and that the kind is replaceable. The kind number still appears in the example event and in the rendering paragraph, and 10133 falls inside the range `10000 <= n < 20000` that [NIP-01](https://github.com/nostr-protocol/nips/blob/master/01.md) already defines as replaceable, so relay behaviour is unchanged. The specification simply no longer says so itself.
+
+## The tag
+
+The tag structure is now three elements, fixed:
+
+```text
+["payto", "<type>", "<address>"]
+```
+
+The merged version allowed more:
+
+```text
+["payto", "<type>", "<authority>", "<optional_extra_1>", "<optional_extra_2>", ...]
+```
+
+Two things change. The third element is renamed from `authority` to `address`. The trailing elements, described as reserved for future RFC-8905 features, are removed, and with them the forward compatibility rule that clients must understand elements 0 through 2 and may ignore anything after them.
+
+## Validation
+
+The `Validation` section is removed. It had required `type` to be lowercase letters, digits and hyphens, and `authority` to be URL-safe with special characters URL-encoded.
+
+What survives moves into the tag description: `type` is "always lowercase", and clients may perform additional network-specific or platform-specific validation for types they recognize. The character set rule and the encoding rule are no longer stated anywhere in the file.
+
+## Rendering
+
+This is the substantive change. The merged text told clients to assemble `payto://<type>/<authority>` for every tag and render it as a button or a link. RFC-8905 was the output format.
+
+The current text makes it the fallback. Clients may use a scheme-specific URI where one is available, such as `bitcoin:<address>` or `ethereum:<address>`, and otherwise fall back to `payto://<type>/<address>`. The worked list in the file shows the mix: the bitcoin tag renders as `bitcoin:bc1qxq66e0t8d7ugdecwnmv58e90tpry23nc84pg9k`, while the nano tag and a tag of type `unknowntype` render as `payto://` URIs.
+
+Two rendering instructions are removed without replacement: the direction to give recognized types an icon and a stylization, and the note that a client showing several targets may render the first, render all of them, or offer a dropdown selector.
+
+## The type list
+
+The table of recommended types is replaced by a flat list headed "Commonly Used Tags". The table had eight entries, each with a long name, a short name, a symbol and a link to the payment system's own brand material. The list has fourteen entries and no columns:
+
+`bip352` for silent payments, `bip353` for DNS addresses, `bitcoin`, `cashme`, `ethereum`, `lightning`, `litecoin`, `monero`, `nano`, `paypal`, `revolut`, `solana`, `venmo` and `zcash`.
+
+Six of those are new: `bip352`, `bip353`, `litecoin`, `paypal`, `solana` and `zcash`. None of the original eight are dropped. The file closes the list by saying that new widely deployed formats can be added to it later.
+
+## Zaps
+
+The "Implementation Notes" section is gone in full, including its subsection on [NIP-57](https://github.com/nostr-protocol/nips/blob/master/57.md) zaps. That text had said clients may use a `payto` tag of type `lightning` as an alternative to the `lud16` profile field or as a complement to it, with a worked example showing a kind 0 event and a kind 10133 event side by side.
+
+The current file does not mention `lud16`, NIP-57 or zaps anywhere.
+
+## For implementers
+
+Nothing already published becomes invalid. The kind number, the tag name and the positions of the type and the address are all unchanged, so an existing kind 10133 event parses the same way under either version.
+
+Code written against the merged text may now be doing more than the specification asks. Parsers that read elements past the third have nothing left to read. Validators enforcing the character set and URL-encoding rules are enforcing rules the file no longer carries. Renderers that always emit `payto://` stay correct, because that remains the fallback, but for types with a URI scheme of their own they are no longer taking the path the file now prefers.

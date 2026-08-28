@@ -1,8 +1,72 @@
 {
-  "generatedAt": "2026-08-27T13:09:37.581Z",
+  "generatedAt": "2026-08-28T13:08:35.432Z",
   "locales": {
     "en": {
       "posts": [
+        {
+          "slug": "nip-a3-rewritten-a-day-after-merging",
+          "title": "NIP-A3 Rewritten a Day After Merging",
+          "description": "A direct commit cuts A3.md from 132 lines to 64, renames the third tag element to address, drops the validation section, and turns the RFC-8905 payto: URI into a fallback.",
+          "excerpt": "One day after NIP-A3 entered the NIPs repository, a commit removed 101 of its lines. The kind number and the tag name survive. Most of the normative detail around them does not.",
+          "date": "2026-08-28T00:00:00.000Z",
+          "author": {
+            "name": "Nostr WoT Newsroom"
+          },
+          "featuredImage": "/images/news/nip-a3-rewritten-a-day-after-merging.svg",
+          "previewImage": "/images/news/nip-a3-rewritten-a-day-after-merging.svg",
+          "tags": [
+            "Nostr",
+            "NIP",
+            "NIP-A3"
+          ],
+          "published": true,
+          "readingTime": "4 min read",
+          "locale": "en",
+          "translationKey": "nip-a3-rewritten-a-day-after-merging",
+          "translations": {
+            "en": "nip-a3-rewritten-a-day-after-merging",
+            "es": "nip-a3-reescrito-un-dia-despues-de-fusionarse",
+            "pt": "nip-a3-reescrito-um-dia-apos-a-fusao",
+            "ru": "nip-a3-perepisan-cherez-den-posle-sliyaniya",
+            "it": "il-nip-a3-riscritto-un-giorno-dopo-il-merge",
+            "fr": "le-nip-a3-reecrit-un-jour-apres-sa-fusion",
+            "de": "nip-a3-einen-tag-nach-dem-merge-neu-geschrieben"
+          },
+          "availableLocales": [
+            "en",
+            "es",
+            "pt",
+            "ru",
+            "it",
+            "fr",
+            "de"
+          ],
+          "type": "story",
+          "sources": [
+            {
+              "title": "Commit 24b2ae9: rewrite of NIP-A3",
+              "url": "https://github.com/nostr-protocol/nips/commit/24b2ae9fdfeb4e5c0d3be854df5977b81afe1983",
+              "publisher": "nostr-protocol/nips",
+              "date": "2026-08-27"
+            },
+            {
+              "title": "NIP-A3 payto: Payment Targets (RFC-8905)",
+              "url": "https://github.com/nostr-protocol/nips/pull/2119",
+              "publisher": "nostr-protocol/nips",
+              "date": "2026-08-26"
+            },
+            {
+              "title": "A3.md",
+              "url": "https://github.com/nostr-protocol/nips/blob/master/A3.md",
+              "publisher": "nostr-protocol/nips",
+              "date": "2026-08-27"
+            }
+          ],
+          "publishedAt": "2026-08-28T00:00:00.000Z",
+          "backfilled": false,
+          "items": [],
+          "content": "\nNIP-A3 was rewritten on 27 August 2026 at 15:14 UTC, one day after it entered the NIPs repository. [Commit 24b2ae9](https://github.com/nostr-protocol/nips/commit/24b2ae9fdfeb4e5c0d3be854df5977b81afe1983) removes 101 lines from `A3.md` and adds 33, taking the file from 132 lines to 64, and changes one line in `README.md`. The commit was pushed directly to `master`. The GitHub API reports no pull request associated with it.\n\nThe specification had arrived through [PR #2119](https://github.com/nostr-protocol/nips/pull/2119), merged on 26 August at 18:33 UTC. The kind number and the tag name survive the rewrite. Most of the normative detail around them does not.\n\n## Title and status\n\nThe heading drops the RFC reference. \"payto: Payment Targets (RFC-8905)\" becomes \"payto: Payment Targets\", and the `README.md` entry is updated to match.\n\nThe status markers change as well. The merged version carried `optional` and an `author:atxmj` line. The current file carries `draft` and `optional`, with no author line.\n\nThe \"Event Kind\" section is gone. It had stated that NIP-A3 defines `kind:10133` and that the kind is replaceable. The kind number still appears in the example event and in the rendering paragraph, and 10133 falls inside the range `10000 <= n < 20000` that [NIP-01](https://github.com/nostr-protocol/nips/blob/master/01.md) already defines as replaceable, so relay behaviour is unchanged. The specification simply no longer says so itself.\n\n## The tag\n\nThe tag structure is now three elements, fixed:\n\n```text\n[\"payto\", \"<type>\", \"<address>\"]\n```\n\nThe merged version allowed more:\n\n```text\n[\"payto\", \"<type>\", \"<authority>\", \"<optional_extra_1>\", \"<optional_extra_2>\", ...]\n```\n\nTwo things change. The third element is renamed from `authority` to `address`. The trailing elements, described as reserved for future RFC-8905 features, are removed, and with them the forward compatibility rule that clients must understand elements 0 through 2 and may ignore anything after them.\n\n## Validation\n\nThe `Validation` section is removed. It had required `type` to be lowercase letters, digits and hyphens, and `authority` to be URL-safe with special characters URL-encoded.\n\nWhat survives moves into the tag description: `type` is \"always lowercase\", and clients may perform additional network-specific or platform-specific validation for types they recognize. The character set rule and the encoding rule are no longer stated anywhere in the file.\n\n## Rendering\n\nThis is the substantive change. The merged text told clients to assemble `payto://<type>/<authority>` for every tag and render it as a button or a link. RFC-8905 was the output format.\n\nThe current text makes it the fallback. Clients may use a scheme-specific URI where one is available, such as `bitcoin:<address>` or `ethereum:<address>`, and otherwise fall back to `payto://<type>/<address>`. The worked list in the file shows the mix: the bitcoin tag renders as `bitcoin:bc1qxq66e0t8d7ugdecwnmv58e90tpry23nc84pg9k`, while the nano tag and a tag of type `unknowntype` render as `payto://` URIs.\n\nTwo rendering instructions are removed without replacement: the direction to give recognized types an icon and a stylization, and the note that a client showing several targets may render the first, render all of them, or offer a dropdown selector.\n\n## The type list\n\nThe table of recommended types is replaced by a flat list headed \"Commonly Used Tags\". The table had eight entries, each with a long name, a short name, a symbol and a link to the payment system's own brand material. The list has fourteen entries and no columns:\n\n`bip352` for silent payments, `bip353` for DNS addresses, `bitcoin`, `cashme`, `ethereum`, `lightning`, `litecoin`, `monero`, `nano`, `paypal`, `revolut`, `solana`, `venmo` and `zcash`.\n\nSix of those are new: `bip352`, `bip353`, `litecoin`, `paypal`, `solana` and `zcash`. None of the original eight are dropped. The file closes the list by saying that new widely deployed formats can be added to it later.\n\n## Zaps\n\nThe \"Implementation Notes\" section is gone in full, including its subsection on [NIP-57](https://github.com/nostr-protocol/nips/blob/master/57.md) zaps. That text had said clients may use a `payto` tag of type `lightning` as an alternative to the `lud16` profile field or as a complement to it, with a worked example showing a kind 0 event and a kind 10133 event side by side.\n\nThe current file does not mention `lud16`, NIP-57 or zaps anywhere.\n\n## For implementers\n\nNothing already published becomes invalid. The kind number, the tag name and the positions of the type and the address are all unchanged, so an existing kind 10133 event parses the same way under either version.\n\nCode written against the merged text may now be doing more than the specification asks. Parsers that read elements past the third have nothing left to read. Validators enforcing the character set and URL-encoding rules are enforcing rules the file no longer carries. Renderers that always emit `payto://` stay correct, because that remains the fallback, but for types with a URI scheme of their own they are no longer taking the path the file now prefers.\n"
+        },
         {
           "slug": "nip-a3-adds-payto-payment-targets",
           "title": "NIP-A3 Adds payto: Payment Targets to the NIPs Repository",
@@ -921,6 +985,70 @@
     "es": {
       "posts": [
         {
+          "slug": "nip-a3-reescrito-un-dia-despues-de-fusionarse",
+          "title": "NIP-A3 reescrito un día después de fusionarse",
+          "description": "Un commit directo recorta A3.md de 132 líneas a 64, renombra el tercer elemento del tag a address, elimina la sección de validación y convierte el URI payto: de la RFC-8905 en un recurso de reserva.",
+          "excerpt": "Un día después de que NIP-A3 entrara en el repositorio de NIP, un commit eliminó 101 de sus líneas. El número de kind y el nombre del tag sobreviven. La mayor parte del detalle normativo que los rodeaba, no.",
+          "date": "2026-08-28T00:00:00.000Z",
+          "author": {
+            "name": "Nostr WoT Newsroom"
+          },
+          "featuredImage": "/images/news/nip-a3-rewritten-a-day-after-merging.svg",
+          "previewImage": "/images/news/nip-a3-rewritten-a-day-after-merging.svg",
+          "tags": [
+            "Nostr",
+            "NIP",
+            "NIP-A3"
+          ],
+          "published": true,
+          "readingTime": "5 min read",
+          "locale": "es",
+          "translationKey": "nip-a3-rewritten-a-day-after-merging",
+          "translations": {
+            "en": "nip-a3-rewritten-a-day-after-merging",
+            "es": "nip-a3-reescrito-un-dia-despues-de-fusionarse",
+            "pt": "nip-a3-reescrito-um-dia-apos-a-fusao",
+            "ru": "nip-a3-perepisan-cherez-den-posle-sliyaniya",
+            "it": "il-nip-a3-riscritto-un-giorno-dopo-il-merge",
+            "fr": "le-nip-a3-reecrit-un-jour-apres-sa-fusion",
+            "de": "nip-a3-einen-tag-nach-dem-merge-neu-geschrieben"
+          },
+          "availableLocales": [
+            "en",
+            "es",
+            "pt",
+            "ru",
+            "it",
+            "fr",
+            "de"
+          ],
+          "type": "story",
+          "sources": [
+            {
+              "title": "Commit 24b2ae9: reescritura de NIP-A3",
+              "url": "https://github.com/nostr-protocol/nips/commit/24b2ae9fdfeb4e5c0d3be854df5977b81afe1983",
+              "publisher": "nostr-protocol/nips",
+              "date": "2026-08-27"
+            },
+            {
+              "title": "NIP-A3 payto: Payment Targets (RFC-8905)",
+              "url": "https://github.com/nostr-protocol/nips/pull/2119",
+              "publisher": "nostr-protocol/nips",
+              "date": "2026-08-26"
+            },
+            {
+              "title": "A3.md",
+              "url": "https://github.com/nostr-protocol/nips/blob/master/A3.md",
+              "publisher": "nostr-protocol/nips",
+              "date": "2026-08-27"
+            }
+          ],
+          "publishedAt": "2026-08-28T00:00:00.000Z",
+          "backfilled": false,
+          "items": [],
+          "content": "\nNIP-A3 fue reescrito el 27 de agosto de 2026 a las 15:14 UTC, un día después de entrar en el repositorio de NIP. El [commit 24b2ae9](https://github.com/nostr-protocol/nips/commit/24b2ae9fdfeb4e5c0d3be854df5977b81afe1983) elimina 101 líneas de `A3.md` y añade 33, dejando el archivo de 132 líneas en 64, y cambia una línea de `README.md`. El commit se subió directamente a `master`. La API de GitHub no registra ninguna pull request asociada a él.\n\nLa especificación había llegado mediante la [PR #2119](https://github.com/nostr-protocol/nips/pull/2119), fusionada el 26 de agosto a las 18:33 UTC. El número de kind y el nombre del tag sobreviven a la reescritura. La mayor parte del detalle normativo que los rodeaba, no.\n\n## Título y estado\n\nEl encabezado abandona la referencia a la RFC. \"payto: Payment Targets (RFC-8905)\" pasa a ser \"payto: Payment Targets\", y la entrada del `README.md` se actualiza para coincidir.\n\nLos marcadores de estado también cambian. La versión fusionada llevaba `optional` y una línea `author:atxmj`. El archivo actual lleva `draft` y `optional`, sin línea de autor.\n\nLa sección \"Event Kind\" ha desaparecido. Indicaba que NIP-A3 define `kind:10133` y que ese kind es reemplazable. El número de kind sigue apareciendo en el evento de ejemplo y en el párrafo sobre representación, y 10133 cae dentro del rango `10000 <= n < 20000` que [NIP-01](https://github.com/nostr-protocol/nips/blob/master/01.md) ya define como reemplazable, así que el comportamiento de los relays no cambia. Simplemente, la especificación ya no lo dice por sí misma.\n\n## El tag\n\nLa estructura del tag es ahora de tres elementos, fija:\n\n```text\n[\"payto\", \"<type>\", \"<address>\"]\n```\n\nLa versión fusionada permitía más:\n\n```text\n[\"payto\", \"<type>\", \"<authority>\", \"<optional_extra_1>\", \"<optional_extra_2>\", ...]\n```\n\nCambian dos cosas. El tercer elemento pasa de llamarse `authority` a `address`. Y se eliminan los elementos finales, descritos como reservados para futuras funciones de la RFC-8905, junto con la regla de compatibilidad hacia adelante que obligaba a los clientes a entender los elementos 0 a 2 y les permitía ignorar cualquier cosa posterior.\n\n## Validación\n\nLa sección `Validation` desaparece. Exigía que `type` estuviera formado por letras minúsculas, dígitos y guiones, y que `authority` fuera seguro para URL, con los caracteres especiales codificados.\n\nLo que sobrevive se traslada a la descripción del tag: `type` es \"siempre en minúsculas\", y los clientes pueden aplicar validaciones adicionales propias de la red o de la plataforma para los tipos que reconozcan. La regla sobre el conjunto de caracteres y la de codificación ya no aparecen en ninguna parte del archivo.\n\n## Representación\n\nEste es el cambio de fondo. El texto fusionado indicaba a los clientes que construyeran `payto://<type>/<authority>` para cada tag y lo mostraran como botón o enlace. La RFC-8905 era el formato de salida.\n\nEl texto actual la convierte en la opción de reserva. Los clientes pueden usar un URI propio del esquema cuando exista, como `bitcoin:<address>` o `ethereum:<address>`, y recurrir en caso contrario a `payto://<type>/<address>`. La lista de ejemplo del archivo muestra la mezcla: el tag de bitcoin se representa como `bitcoin:bc1qxq66e0t8d7ugdecwnmv58e90tpry23nc84pg9k`, mientras que el tag de nano y uno de tipo `unknowntype` se representan como URI `payto://`.\n\nSe eliminan dos instrucciones de representación sin nada que las sustituya: la de dar a los tipos reconocidos un icono y una estilización, y la nota de que un cliente con varios destinos puede mostrar el primero, mostrarlos todos u ofrecer un desplegable.\n\n## La lista de tipos\n\nLa tabla de tipos recomendados se sustituye por una lista simple titulada \"Commonly Used Tags\". La tabla tenía ocho entradas, cada una con nombre largo, nombre corto, símbolo y enlace al material de marca del propio sistema de pago. La lista tiene catorce entradas y ninguna columna:\n\n`bip352` para pagos silenciosos, `bip353` para direcciones DNS, `bitcoin`, `cashme`, `ethereum`, `lightning`, `litecoin`, `monero`, `nano`, `paypal`, `revolut`, `solana`, `venmo` y `zcash`.\n\nSeis son nuevos: `bip352`, `bip353`, `litecoin`, `paypal`, `solana` y `zcash`. No se elimina ninguno de los ocho originales. El archivo cierra la lista diciendo que en el futuro pueden añadirse nuevos formatos de uso extendido.\n\n## Zaps\n\nLa sección \"Implementation Notes\" desaparece por completo, incluida su subsección sobre los zaps de [NIP-57](https://github.com/nostr-protocol/nips/blob/master/57.md). Ese texto decía que los clientes pueden usar un tag `payto` de tipo `lightning` como alternativa al campo de perfil `lud16` o como complemento suyo, con un ejemplo que mostraba un evento kind 0 y uno kind 10133 uno junto al otro.\n\nEl archivo actual no menciona `lud16`, NIP-57 ni los zaps en ningún punto.\n\n## Para quien implemente\n\nNada de lo ya publicado deja de ser válido. El número de kind, el nombre del tag y las posiciones del tipo y de la dirección no cambian, así que un evento kind 10133 existente se interpreta igual con cualquiera de las dos versiones.\n\nEl código escrito contra el texto fusionado puede estar haciendo ahora más de lo que pide la especificación. Los analizadores que leen elementos más allá del tercero ya no tienen nada que leer. Los validadores que aplican las reglas de conjunto de caracteres y de codificación de URL aplican reglas que el archivo ya no recoge. Los que siempre emiten `payto://` siguen siendo correctos, porque esa sigue siendo la opción de reserva, pero para los tipos que cuentan con esquema de URI propio ya no toman el camino que el archivo prefiere ahora.\n"
+        },
+        {
           "slug": "nip-a3-anade-los-objetivos-de-pago-payto",
           "title": "NIP-A3 añade los objetivos de pago payto: al repositorio de NIPs",
           "description": "Una nueva especificación define el kind 10133, un evento reemplazable con etiquetas payto que los clientes ensamblan en URIs payto: de RFC-8905 para invocaciones de pago y propinas.",
@@ -1837,6 +1965,70 @@
     },
     "pt": {
       "posts": [
+        {
+          "slug": "nip-a3-reescrito-um-dia-apos-a-fusao",
+          "title": "NIP-A3 reescrito um dia após a fusão",
+          "description": "Um commit direto corta o A3.md de 132 linhas para 64, renomeia o terceiro elemento da tag para address, remove a seção de validação e transforma a URI payto: da RFC-8905 em alternativa de reserva.",
+          "excerpt": "Um dia depois de o NIP-A3 entrar no repositório dos NIP, um commit removeu 101 de suas linhas. O número do kind e o nome da tag sobrevivem. A maior parte do detalhe normativo em volta deles, não.",
+          "date": "2026-08-28T00:00:00.000Z",
+          "author": {
+            "name": "Nostr WoT Newsroom"
+          },
+          "featuredImage": "/images/news/nip-a3-rewritten-a-day-after-merging.svg",
+          "previewImage": "/images/news/nip-a3-rewritten-a-day-after-merging.svg",
+          "tags": [
+            "Nostr",
+            "NIP",
+            "NIP-A3"
+          ],
+          "published": true,
+          "readingTime": "5 min read",
+          "locale": "pt",
+          "translationKey": "nip-a3-rewritten-a-day-after-merging",
+          "translations": {
+            "en": "nip-a3-rewritten-a-day-after-merging",
+            "es": "nip-a3-reescrito-un-dia-despues-de-fusionarse",
+            "pt": "nip-a3-reescrito-um-dia-apos-a-fusao",
+            "ru": "nip-a3-perepisan-cherez-den-posle-sliyaniya",
+            "it": "il-nip-a3-riscritto-un-giorno-dopo-il-merge",
+            "fr": "le-nip-a3-reecrit-un-jour-apres-sa-fusion",
+            "de": "nip-a3-einen-tag-nach-dem-merge-neu-geschrieben"
+          },
+          "availableLocales": [
+            "en",
+            "es",
+            "pt",
+            "ru",
+            "it",
+            "fr",
+            "de"
+          ],
+          "type": "story",
+          "sources": [
+            {
+              "title": "Commit 24b2ae9: reescrita do NIP-A3",
+              "url": "https://github.com/nostr-protocol/nips/commit/24b2ae9fdfeb4e5c0d3be854df5977b81afe1983",
+              "publisher": "nostr-protocol/nips",
+              "date": "2026-08-27"
+            },
+            {
+              "title": "NIP-A3 payto: Payment Targets (RFC-8905)",
+              "url": "https://github.com/nostr-protocol/nips/pull/2119",
+              "publisher": "nostr-protocol/nips",
+              "date": "2026-08-26"
+            },
+            {
+              "title": "A3.md",
+              "url": "https://github.com/nostr-protocol/nips/blob/master/A3.md",
+              "publisher": "nostr-protocol/nips",
+              "date": "2026-08-27"
+            }
+          ],
+          "publishedAt": "2026-08-28T00:00:00.000Z",
+          "backfilled": false,
+          "items": [],
+          "content": "\nO NIP-A3 foi reescrito em 27 de agosto de 2026, às 15h14 UTC, um dia depois de entrar no repositório dos NIP. O [commit 24b2ae9](https://github.com/nostr-protocol/nips/commit/24b2ae9fdfeb4e5c0d3be854df5977b81afe1983) remove 101 linhas do `A3.md` e acrescenta 33, levando o arquivo de 132 linhas para 64, e altera uma linha do `README.md`. O commit foi enviado direto para a `master`. A API do GitHub não registra nenhum pull request associado a ele.\n\nA especificação havia chegado pelo [PR #2119](https://github.com/nostr-protocol/nips/pull/2119), fundido em 26 de agosto às 18h33 UTC. O número do kind e o nome da tag sobrevivem à reescrita. A maior parte do detalhe normativo em volta deles, não.\n\n## Título e status\n\nO cabeçalho abandona a referência à RFC. \"payto: Payment Targets (RFC-8905)\" passa a ser \"payto: Payment Targets\", e a entrada do `README.md` é atualizada para acompanhar.\n\nOs marcadores de status também mudam. A versão fundida trazia `optional` e uma linha `author:atxmj`. O arquivo atual traz `draft` e `optional`, sem linha de autoria.\n\nA seção \"Event Kind\" desapareceu. Ela dizia que o NIP-A3 define `kind:10133` e que esse kind é substituível. O número do kind continua aparecendo no evento de exemplo e no parágrafo sobre exibição, e 10133 está dentro da faixa `10000 <= n < 20000` que o [NIP-01](https://github.com/nostr-protocol/nips/blob/master/01.md) já define como substituível, de modo que o comportamento dos relays não muda. A especificação apenas deixou de dizer isso por conta própria.\n\n## A tag\n\nA estrutura da tag agora tem três elementos, fixos:\n\n```text\n[\"payto\", \"<type>\", \"<address>\"]\n```\n\nA versão fundida permitia mais:\n\n```text\n[\"payto\", \"<type>\", \"<authority>\", \"<optional_extra_1>\", \"<optional_extra_2>\", ...]\n```\n\nDuas coisas mudam. O terceiro elemento deixa de se chamar `authority` e passa a `address`. E os elementos finais, descritos como reservados para recursos futuros da RFC-8905, são removidos, junto com a regra de compatibilidade futura que obrigava os clientes a entender os elementos 0 a 2 e lhes permitia ignorar qualquer coisa depois disso.\n\n## Validação\n\nA seção `Validation` sai. Ela exigia que `type` fosse formado por letras minúsculas, dígitos e hifens, e que `authority` fosse seguro para URL, com os caracteres especiais codificados.\n\nO que sobrevive migra para a descrição da tag: `type` é \"sempre em minúsculas\", e os clientes podem aplicar validações adicionais próprias da rede ou da plataforma para os tipos que reconhecerem. A regra do conjunto de caracteres e a de codificação não aparecem mais em nenhum ponto do arquivo.\n\n## Exibição\n\nEsta é a mudança de fundo. O texto fundido mandava os clientes montarem `payto://<type>/<authority>` para cada tag e exibirem o resultado como botão ou link. A RFC-8905 era o formato de saída.\n\nO texto atual a torna a alternativa de reserva. Os clientes podem usar uma URI de esquema específico quando houver uma, como `bitcoin:<address>` ou `ethereum:<address>`, e recorrer a `payto://<type>/<address>` nos demais casos. A lista de exemplo do arquivo mostra a mistura: a tag de bitcoin é exibida como `bitcoin:bc1qxq66e0t8d7ugdecwnmv58e90tpry23nc84pg9k`, enquanto a tag de nano e uma tag do tipo `unknowntype` viram URIs `payto://`.\n\nDuas instruções de exibição são removidas sem nada no lugar: a de dar aos tipos reconhecidos um ícone e uma estilização, e a nota de que um cliente com vários destinos pode exibir o primeiro, exibir todos ou oferecer um menu suspenso.\n\n## A lista de tipos\n\nA tabela de tipos recomendados dá lugar a uma lista simples intitulada \"Commonly Used Tags\". A tabela tinha oito entradas, cada uma com nome longo, nome curto, símbolo e link para o material de marca do próprio sistema de pagamento. A lista tem catorze entradas e nenhuma coluna:\n\n`bip352` para pagamentos silenciosos, `bip353` para endereços DNS, `bitcoin`, `cashme`, `ethereum`, `lightning`, `litecoin`, `monero`, `nano`, `paypal`, `revolut`, `solana`, `venmo` e `zcash`.\n\nSeis são novos: `bip352`, `bip353`, `litecoin`, `paypal`, `solana` e `zcash`. Nenhum dos oito originais foi retirado. O arquivo encerra a lista dizendo que novos formatos de uso amplo podem ser acrescentados a ela mais adiante.\n\n## Zaps\n\nA seção \"Implementation Notes\" sai por inteiro, inclusive sua subseção sobre os zaps do [NIP-57](https://github.com/nostr-protocol/nips/blob/master/57.md). Aquele texto dizia que os clientes podem usar uma tag `payto` do tipo `lightning` como alternativa ao campo de perfil `lud16` ou como complemento dele, com um exemplo mostrando um evento kind 0 e um kind 10133 lado a lado.\n\nO arquivo atual não menciona `lud16`, o NIP-57 nem os zaps em nenhum ponto.\n\n## Para quem implementa\n\nNada do que já foi publicado deixa de valer. O número do kind, o nome da tag e as posições do tipo e do endereço continuam iguais, então um evento kind 10133 existente é interpretado da mesma forma sob qualquer uma das versões.\n\nO código escrito com base no texto fundido pode estar fazendo agora mais do que a especificação pede. Analisadores que leem elementos além do terceiro não têm mais o que ler. Validadores que aplicam as regras de conjunto de caracteres e de codificação de URL aplicam regras que o arquivo não carrega mais. Quem sempre emite `payto://` continua correto, porque essa segue sendo a alternativa de reserva, mas para os tipos que têm esquema de URI próprio já não segue o caminho que o arquivo agora prefere.\n"
+        },
         {
           "slug": "nip-a3-adiciona-os-alvos-de-pagamento-payto",
           "title": "NIP-A3 adiciona os alvos de pagamento payto: ao repositório dos NIPs",
@@ -2755,6 +2947,70 @@
     "ru": {
       "posts": [
         {
+          "slug": "nip-a3-perepisan-cherez-den-posle-sliyaniya",
+          "title": "NIP-A3 переписан через день после слияния",
+          "description": "Прямой коммит сокращает A3.md со 132 строк до 64, переименовывает третий элемент тега в address, убирает раздел о валидации и превращает URI payto: из RFC-8905 в запасной вариант.",
+          "excerpt": "Через день после того, как NIP-A3 попал в репозиторий NIP, коммит удалил 101 его строку. Номер kind и имя тега сохранились. Большая часть нормативных подробностей вокруг них, нет.",
+          "date": "2026-08-28T00:00:00.000Z",
+          "author": {
+            "name": "Nostr WoT Newsroom"
+          },
+          "featuredImage": "/images/news/nip-a3-rewritten-a-day-after-merging.svg",
+          "previewImage": "/images/news/nip-a3-rewritten-a-day-after-merging.svg",
+          "tags": [
+            "Nostr",
+            "NIP",
+            "NIP-A3"
+          ],
+          "published": true,
+          "readingTime": "4 min read",
+          "locale": "ru",
+          "translationKey": "nip-a3-rewritten-a-day-after-merging",
+          "translations": {
+            "en": "nip-a3-rewritten-a-day-after-merging",
+            "es": "nip-a3-reescrito-un-dia-despues-de-fusionarse",
+            "pt": "nip-a3-reescrito-um-dia-apos-a-fusao",
+            "ru": "nip-a3-perepisan-cherez-den-posle-sliyaniya",
+            "it": "il-nip-a3-riscritto-un-giorno-dopo-il-merge",
+            "fr": "le-nip-a3-reecrit-un-jour-apres-sa-fusion",
+            "de": "nip-a3-einen-tag-nach-dem-merge-neu-geschrieben"
+          },
+          "availableLocales": [
+            "en",
+            "es",
+            "pt",
+            "ru",
+            "it",
+            "fr",
+            "de"
+          ],
+          "type": "story",
+          "sources": [
+            {
+              "title": "Коммит 24b2ae9: переписывание NIP-A3",
+              "url": "https://github.com/nostr-protocol/nips/commit/24b2ae9fdfeb4e5c0d3be854df5977b81afe1983",
+              "publisher": "nostr-protocol/nips",
+              "date": "2026-08-27"
+            },
+            {
+              "title": "NIP-A3 payto: Payment Targets (RFC-8905)",
+              "url": "https://github.com/nostr-protocol/nips/pull/2119",
+              "publisher": "nostr-protocol/nips",
+              "date": "2026-08-26"
+            },
+            {
+              "title": "A3.md",
+              "url": "https://github.com/nostr-protocol/nips/blob/master/A3.md",
+              "publisher": "nostr-protocol/nips",
+              "date": "2026-08-27"
+            }
+          ],
+          "publishedAt": "2026-08-28T00:00:00.000Z",
+          "backfilled": false,
+          "items": [],
+          "content": "\nNIP-A3 переписали 27 августа 2026 года в 15:14 UTC, через день после того, как он попал в репозиторий NIP. [Коммит 24b2ae9](https://github.com/nostr-protocol/nips/commit/24b2ae9fdfeb4e5c0d3be854df5977b81afe1983) удаляет 101 строку из `A3.md` и добавляет 33, сокращая файл со 132 строк до 64, и меняет одну строку в `README.md`. Коммит отправлен напрямую в `master`. API GitHub не показывает связанного с ним пул-реквеста.\n\nСпецификация появилась через [PR #2119](https://github.com/nostr-protocol/nips/pull/2119), слитый 26 августа в 18:33 UTC. Номер kind и имя тега пережили переписывание. Большая часть нормативных подробностей вокруг них, нет.\n\n## Заголовок и статус\n\nИз заголовка убрана ссылка на RFC. \"payto: Payment Targets (RFC-8905)\" стало \"payto: Payment Targets\", и запись в `README.md` приведена в соответствие.\n\nИзменились и отметки статуса. В слитой версии стояло `optional` и строка `author:atxmj`. В текущем файле стоят `draft` и `optional`, строки об авторе нет.\n\nРаздел \"Event Kind\" исчез. В нём говорилось, что NIP-A3 определяет `kind:10133` и что этот kind заменяемый. Номер kind по-прежнему встречается в примере события и в абзаце об отображении, а 10133 попадает в диапазон `10000 <= n < 20000`, который [NIP-01](https://github.com/nostr-protocol/nips/blob/master/01.md) уже определяет как заменяемый, так что поведение релеев не меняется. Просто сама спецификация больше об этом не говорит.\n\n## Тег\n\nСтруктура тега теперь фиксированная, из трёх элементов:\n\n```text\n[\"payto\", \"<type>\", \"<address>\"]\n```\n\nСлитая версия допускала больше:\n\n```text\n[\"payto\", \"<type>\", \"<authority>\", \"<optional_extra_1>\", \"<optional_extra_2>\", ...]\n```\n\nМеняются две вещи. Третий элемент переименован из `authority` в `address`. И убраны замыкающие элементы, описанные как зарезервированные под будущие возможности RFC-8905, а вместе с ними правило прямой совместимости, по которому клиенты обязаны понимать элементы с 0 по 2 и могут игнорировать всё, что идёт после.\n\n## Валидация\n\nРаздел `Validation` удалён. Он требовал, чтобы `type` состоял из строчных букв, цифр и дефисов, а `authority` был безопасным для URL, со специальными символами в процентном кодировании.\n\nТо, что осталось, перенесено в описание тега: `type` всегда в нижнем регистре, а клиенты могут применять дополнительную проверку, специфичную для сети или платформы, к тем типам, которые они распознают. Правила о наборе символов и о кодировании в файле больше нет нигде.\n\n## Отображение\n\nЭто содержательное изменение. Слитый текст предписывал клиентам собирать `payto://<type>/<authority>` для каждого тега и показывать результат кнопкой или ссылкой. RFC-8905 была форматом вывода.\n\nТекущий текст делает её запасным вариантом. Клиенты могут использовать URI конкретной схемы, когда такая есть, например `bitcoin:<address>` или `ethereum:<address>`, и прибегать к `payto://<type>/<address>` в остальных случаях. Разобранный список в файле показывает смесь: тег bitcoin отображается как `bitcoin:bc1qxq66e0t8d7ugdecwnmv58e90tpry23nc84pg9k`, а тег nano и тег типа `unknowntype` становятся URI `payto://`.\n\nДве инструкции по отображению убраны без замены: указание давать распознанным типам иконку и оформление, и замечание о том, что клиент с несколькими целями может показать первую, показать все или предложить выпадающий список.\n\n## Список типов\n\nТаблица рекомендованных типов заменена простым списком под заголовком \"Commonly Used Tags\". В таблице было восемь записей, каждая с длинным названием, коротким названием, символом и ссылкой на фирменные материалы самой платёжной системы. В списке четырнадцать записей и ни одной колонки:\n\n`bip352` для тихих платежей, `bip353` для DNS-адресов, `bitcoin`, `cashme`, `ethereum`, `lightning`, `litecoin`, `monero`, `nano`, `paypal`, `revolut`, `solana`, `venmo` и `zcash`.\n\nШесть из них новые: `bip352`, `bip353`, `litecoin`, `paypal`, `solana` и `zcash`. Ни один из восьми прежних не убран. В конце списка файл добавляет, что новые широко используемые форматы можно будет внести в него позже.\n\n## Запы\n\nРаздел \"Implementation Notes\" удалён целиком, включая подраздел о запах [NIP-57](https://github.com/nostr-protocol/nips/blob/master/57.md). Там говорилось, что клиенты могут использовать тег `payto` типа `lightning` как замену полю профиля `lud16` или как дополнение к нему, с разобранным примером, где событие kind 0 и событие kind 10133 показаны рядом.\n\nВ текущем файле нигде не упоминаются ни `lud16`, ни NIP-57, ни запы.\n\n## Тем, кто реализует\n\nНичто из уже опубликованного не становится недействительным. Номер kind, имя тега и позиции типа и адреса не изменились, так что существующее событие kind 10133 разбирается одинаково по обеим версиям.\n\nКод, написанный по слитому тексту, теперь может делать больше, чем требует спецификация. Парсерам, читающим элементы после третьего, читать больше нечего. Валидаторы, применяющие правила о наборе символов и о кодировании URL, применяют правила, которых в файле уже нет. Те, кто всегда выдаёт `payto://`, остаются корректными, потому что это по-прежнему запасной вариант, но для типов с собственной схемой URI они больше не идут тем путём, который файл теперь предпочитает.\n"
+        },
+        {
           "slug": "nip-a3-dobavlyaet-payto-tseli-platezhey",
           "title": "NIP-A3 добавляет цели платежей payto: в репозиторий NIP",
           "description": "Новая спецификация определяет kind 10133, заменяемое событие с тегами payto, из которых клиенты собирают URI payto: по RFC-8905 для вызова платежей и чаевых.",
@@ -3671,6 +3927,70 @@
     },
     "it": {
       "posts": [
+        {
+          "slug": "il-nip-a3-riscritto-un-giorno-dopo-il-merge",
+          "title": "Il NIP-A3 riscritto un giorno dopo il merge",
+          "description": "Un commit diretto riduce A3.md da 132 righe a 64, rinomina il terzo elemento del tag in address, elimina la sezione sulla validazione e trasforma l'URI payto: della RFC-8905 in un ripiego.",
+          "excerpt": "Un giorno dopo l'ingresso del NIP-A3 nel repository dei NIP, un commit ne ha rimosso 101 righe. Il numero di kind e il nome del tag sopravvivono. Gran parte del dettaglio normativo attorno a loro, no.",
+          "date": "2026-08-28T00:00:00.000Z",
+          "author": {
+            "name": "Nostr WoT Newsroom"
+          },
+          "featuredImage": "/images/news/nip-a3-rewritten-a-day-after-merging.svg",
+          "previewImage": "/images/news/nip-a3-rewritten-a-day-after-merging.svg",
+          "tags": [
+            "Nostr",
+            "NIP",
+            "NIP-A3"
+          ],
+          "published": true,
+          "readingTime": "5 min read",
+          "locale": "it",
+          "translationKey": "nip-a3-rewritten-a-day-after-merging",
+          "translations": {
+            "en": "nip-a3-rewritten-a-day-after-merging",
+            "es": "nip-a3-reescrito-un-dia-despues-de-fusionarse",
+            "pt": "nip-a3-reescrito-um-dia-apos-a-fusao",
+            "ru": "nip-a3-perepisan-cherez-den-posle-sliyaniya",
+            "it": "il-nip-a3-riscritto-un-giorno-dopo-il-merge",
+            "fr": "le-nip-a3-reecrit-un-jour-apres-sa-fusion",
+            "de": "nip-a3-einen-tag-nach-dem-merge-neu-geschrieben"
+          },
+          "availableLocales": [
+            "en",
+            "es",
+            "pt",
+            "ru",
+            "it",
+            "fr",
+            "de"
+          ],
+          "type": "story",
+          "sources": [
+            {
+              "title": "Commit 24b2ae9: riscrittura del NIP-A3",
+              "url": "https://github.com/nostr-protocol/nips/commit/24b2ae9fdfeb4e5c0d3be854df5977b81afe1983",
+              "publisher": "nostr-protocol/nips",
+              "date": "2026-08-27"
+            },
+            {
+              "title": "NIP-A3 payto: Payment Targets (RFC-8905)",
+              "url": "https://github.com/nostr-protocol/nips/pull/2119",
+              "publisher": "nostr-protocol/nips",
+              "date": "2026-08-26"
+            },
+            {
+              "title": "A3.md",
+              "url": "https://github.com/nostr-protocol/nips/blob/master/A3.md",
+              "publisher": "nostr-protocol/nips",
+              "date": "2026-08-27"
+            }
+          ],
+          "publishedAt": "2026-08-28T00:00:00.000Z",
+          "backfilled": false,
+          "items": [],
+          "content": "\nIl NIP-A3 è stato riscritto il 27 agosto 2026 alle 15:14 UTC, un giorno dopo il suo ingresso nel repository dei NIP. Il [commit 24b2ae9](https://github.com/nostr-protocol/nips/commit/24b2ae9fdfeb4e5c0d3be854df5977b81afe1983) rimuove 101 righe da `A3.md` e ne aggiunge 33, portando il file da 132 righe a 64, e modifica una riga del `README.md`. Il commit è stato inviato direttamente su `master`. L'API di GitHub non riporta alcuna pull request associata.\n\nLa specifica era arrivata con la [PR #2119](https://github.com/nostr-protocol/nips/pull/2119), integrata il 26 agosto alle 18:33 UTC. Il numero di kind e il nome del tag sopravvivono alla riscrittura. Gran parte del dettaglio normativo attorno a loro, no.\n\n## Titolo e stato\n\nL'intestazione abbandona il riferimento alla RFC. \"payto: Payment Targets (RFC-8905)\" diventa \"payto: Payment Targets\", e la voce del `README.md` viene aggiornata di conseguenza.\n\nCambiano anche i marcatori di stato. La versione integrata portava `optional` e una riga `author:atxmj`. Il file attuale porta `draft` e `optional`, senza riga di attribuzione.\n\nLa sezione \"Event Kind\" è sparita. Diceva che il NIP-A3 definisce `kind:10133` e che quel kind è sostituibile. Il numero di kind compare ancora nell'evento di esempio e nel paragrafo sulla resa, e 10133 ricade nell'intervallo `10000 <= n < 20000` che il [NIP-01](https://github.com/nostr-protocol/nips/blob/master/01.md) già definisce sostituibile, quindi il comportamento dei relay non cambia. Semplicemente, la specifica non lo dice più da sé.\n\n## Il tag\n\nLa struttura del tag ora è fissa, di tre elementi:\n\n```text\n[\"payto\", \"<type>\", \"<address>\"]\n```\n\nLa versione integrata ne consentiva di più:\n\n```text\n[\"payto\", \"<type>\", \"<authority>\", \"<optional_extra_1>\", \"<optional_extra_2>\", ...]\n```\n\nCambiano due cose. Il terzo elemento passa da `authority` ad `address`. E vengono rimossi gli elementi finali, descritti come riservati a future funzionalità della RFC-8905, insieme alla regola di compatibilità in avanti secondo cui i client devono comprendere gli elementi da 0 a 2 e possono ignorare tutto ciò che segue.\n\n## Validazione\n\nLa sezione `Validation` viene eliminata. Richiedeva che `type` fosse composto da lettere minuscole, cifre e trattini, e che `authority` fosse sicuro per gli URL, con i caratteri speciali codificati.\n\nCiò che resta si sposta nella descrizione del tag: `type` è \"sempre minuscolo\", e i client possono applicare validazioni aggiuntive specifiche della rete o della piattaforma ai tipi che riconoscono. La regola sull'insieme dei caratteri e quella sulla codifica non compaiono più in alcun punto del file.\n\n## Resa\n\nÈ questo il cambiamento sostanziale. Il testo integrato diceva ai client di comporre `payto://<type>/<authority>` per ogni tag e di mostrarlo come pulsante o collegamento. La RFC-8905 era il formato di uscita.\n\nIl testo attuale la rende il ripiego. I client possono usare un URI di schema specifico quando ne esiste uno, come `bitcoin:<address>` o `ethereum:<address>`, e ricorrere altrimenti a `payto://<type>/<address>`. L'elenco di esempio nel file mostra la combinazione: il tag bitcoin viene reso come `bitcoin:bc1qxq66e0t8d7ugdecwnmv58e90tpry23nc84pg9k`, mentre il tag nano e un tag di tipo `unknowntype` diventano URI `payto://`.\n\nDue istruzioni sulla resa spariscono senza sostituto: quella di dare ai tipi riconosciuti un'icona e uno stile, e la nota per cui un client con più destinazioni può mostrare la prima, mostrarle tutte oppure offrire un menu a tendina.\n\n## L'elenco dei tipi\n\nLa tabella dei tipi consigliati lascia il posto a un elenco semplice intitolato \"Commonly Used Tags\". La tabella aveva otto voci, ciascuna con nome esteso, nome breve, simbolo e collegamento al materiale di marchio del sistema di pagamento stesso. L'elenco ha quattordici voci e nessuna colonna:\n\n`bip352` per i pagamenti silenziosi, `bip353` per gli indirizzi DNS, `bitcoin`, `cashme`, `ethereum`, `lightning`, `litecoin`, `monero`, `nano`, `paypal`, `revolut`, `solana`, `venmo` e `zcash`.\n\nSei sono nuovi: `bip352`, `bip353`, `litecoin`, `paypal`, `solana` e `zcash`. Nessuno degli otto originari è stato tolto. Il file chiude l'elenco dicendo che nuovi formati di ampia diffusione potranno essere aggiunti in seguito.\n\n## Zap\n\nLa sezione \"Implementation Notes\" sparisce per intero, compresa la sottosezione sugli zap del [NIP-57](https://github.com/nostr-protocol/nips/blob/master/57.md). Quel testo diceva che i client possono usare un tag `payto` di tipo `lightning` come alternativa al campo di profilo `lud16` o come suo complemento, con un esempio che mostrava un evento kind 0 e uno kind 10133 affiancati.\n\nIl file attuale non menziona `lud16`, il NIP-57 o gli zap in alcun punto.\n\n## Per chi implementa\n\nNulla di già pubblicato perde validità. Il numero di kind, il nome del tag e le posizioni del tipo e dell'indirizzo restano invariati, quindi un evento kind 10133 esistente viene interpretato allo stesso modo con entrambe le versioni.\n\nIl codice scritto sul testo integrato potrebbe ora fare più di quanto la specifica chieda. I parser che leggono elementi oltre il terzo non hanno più nulla da leggere. I validatori che applicano le regole sull'insieme dei caratteri e sulla codifica degli URL applicano regole che il file non riporta più. Chi emette sempre `payto://` resta corretto, perché quello rimane il ripiego, ma per i tipi dotati di uno schema URI proprio non segue più la strada che il file ora preferisce.\n"
+        },
         {
           "slug": "il-nip-a3-aggiunge-i-target-di-pagamento-payto",
           "title": "Il NIP-A3 aggiunge i target di pagamento payto: al repository dei NIP",
@@ -4589,6 +4909,70 @@
     "fr": {
       "posts": [
         {
+          "slug": "le-nip-a3-reecrit-un-jour-apres-sa-fusion",
+          "title": "Le NIP-A3 réécrit un jour après sa fusion",
+          "description": "Un commit direct réduit A3.md de 132 lignes à 64, renomme le troisième élément du tag en address, supprime la section de validation et fait de l'URI payto: de la RFC-8905 une solution de repli.",
+          "excerpt": "Un jour après l'entrée du NIP-A3 dans le dépôt des NIP, un commit en a retiré 101 lignes. Le numéro de kind et le nom du tag survivent. L'essentiel du détail normatif qui les entourait, non.",
+          "date": "2026-08-28T00:00:00.000Z",
+          "author": {
+            "name": "Nostr WoT Newsroom"
+          },
+          "featuredImage": "/images/news/nip-a3-rewritten-a-day-after-merging.svg",
+          "previewImage": "/images/news/nip-a3-rewritten-a-day-after-merging.svg",
+          "tags": [
+            "Nostr",
+            "NIP",
+            "NIP-A3"
+          ],
+          "published": true,
+          "readingTime": "5 min read",
+          "locale": "fr",
+          "translationKey": "nip-a3-rewritten-a-day-after-merging",
+          "translations": {
+            "en": "nip-a3-rewritten-a-day-after-merging",
+            "es": "nip-a3-reescrito-un-dia-despues-de-fusionarse",
+            "pt": "nip-a3-reescrito-um-dia-apos-a-fusao",
+            "ru": "nip-a3-perepisan-cherez-den-posle-sliyaniya",
+            "it": "il-nip-a3-riscritto-un-giorno-dopo-il-merge",
+            "fr": "le-nip-a3-reecrit-un-jour-apres-sa-fusion",
+            "de": "nip-a3-einen-tag-nach-dem-merge-neu-geschrieben"
+          },
+          "availableLocales": [
+            "en",
+            "es",
+            "pt",
+            "ru",
+            "it",
+            "fr",
+            "de"
+          ],
+          "type": "story",
+          "sources": [
+            {
+              "title": "Commit 24b2ae9 : réécriture du NIP-A3",
+              "url": "https://github.com/nostr-protocol/nips/commit/24b2ae9fdfeb4e5c0d3be854df5977b81afe1983",
+              "publisher": "nostr-protocol/nips",
+              "date": "2026-08-27"
+            },
+            {
+              "title": "NIP-A3 payto: Payment Targets (RFC-8905)",
+              "url": "https://github.com/nostr-protocol/nips/pull/2119",
+              "publisher": "nostr-protocol/nips",
+              "date": "2026-08-26"
+            },
+            {
+              "title": "A3.md",
+              "url": "https://github.com/nostr-protocol/nips/blob/master/A3.md",
+              "publisher": "nostr-protocol/nips",
+              "date": "2026-08-27"
+            }
+          ],
+          "publishedAt": "2026-08-28T00:00:00.000Z",
+          "backfilled": false,
+          "items": [],
+          "content": "\nLe NIP-A3 a été réécrit le 27 août 2026 à 15h14 UTC, un jour après son entrée dans le dépôt des NIP. Le [commit 24b2ae9](https://github.com/nostr-protocol/nips/commit/24b2ae9fdfeb4e5c0d3be854df5977b81afe1983) retire 101 lignes de `A3.md` et en ajoute 33, faisant passer le fichier de 132 lignes à 64, et modifie une ligne du `README.md`. Le commit a été poussé directement sur `master`. L'API de GitHub ne signale aucune pull request associée.\n\nLa spécification était arrivée par la [PR #2119](https://github.com/nostr-protocol/nips/pull/2119), fusionnée le 26 août à 18h33 UTC. Le numéro de kind et le nom du tag survivent à la réécriture. L'essentiel du détail normatif qui les entourait, non.\n\n## Titre et statut\n\nL'en-tête abandonne la référence à la RFC. « payto: Payment Targets (RFC-8905) » devient « payto: Payment Targets », et l'entrée du `README.md` est mise à jour en conséquence.\n\nLes marqueurs de statut changent aussi. La version fusionnée portait `optional` et une ligne `author:atxmj`. Le fichier actuel porte `draft` et `optional`, sans ligne d'attribution.\n\nLa section « Event Kind » a disparu. Elle indiquait que le NIP-A3 définit `kind:10133` et que ce kind est remplaçable. Le numéro de kind figure toujours dans l'événement d'exemple et dans le paragraphe sur l'affichage, et 10133 tombe dans la plage `10000 <= n < 20000` que le [NIP-01](https://github.com/nostr-protocol/nips/blob/master/01.md) définit déjà comme remplaçable, si bien que le comportement des relais ne change pas. La spécification ne le dit simplement plus d'elle-même.\n\n## Le tag\n\nLa structure du tag compte désormais trois éléments, fixes :\n\n```text\n[\"payto\", \"<type>\", \"<address>\"]\n```\n\nLa version fusionnée en autorisait davantage :\n\n```text\n[\"payto\", \"<type>\", \"<authority>\", \"<optional_extra_1>\", \"<optional_extra_2>\", ...]\n```\n\nDeux choses changent. Le troisième élément passe de `authority` à `address`. Et les éléments de fin, décrits comme réservés à de futures fonctionnalités de la RFC-8905, sont supprimés, de même que la règle de compatibilité ascendante voulant que les clients comprennent les éléments 0 à 2 et puissent ignorer tout ce qui suit.\n\n## Validation\n\nLa section `Validation` est supprimée. Elle exigeait que `type` soit composé de lettres minuscules, de chiffres et de traits d'union, et que `authority` soit sûr pour les URL, les caractères spéciaux étant encodés.\n\nCe qui subsiste passe dans la description du tag : `type` est « toujours en minuscules », et les clients peuvent appliquer des validations supplémentaires propres au réseau ou à la plateforme pour les types qu'ils reconnaissent. La règle sur le jeu de caractères et celle sur l'encodage ne figurent plus nulle part dans le fichier.\n\n## Affichage\n\nC'est là le changement de fond. Le texte fusionné demandait aux clients d'assembler `payto://<type>/<authority>` pour chaque tag et de l'afficher comme bouton ou lien. La RFC-8905 était le format de sortie.\n\nLe texte actuel en fait la solution de repli. Les clients peuvent utiliser un URI de schéma spécifique lorsqu'il en existe un, comme `bitcoin:<address>` ou `ethereum:<address>`, et se rabattre sinon sur `payto://<type>/<address>`. La liste d'exemple du fichier montre le mélange : le tag bitcoin s'affiche en `bitcoin:bc1qxq66e0t8d7ugdecwnmv58e90tpry23nc84pg9k`, tandis que le tag nano et un tag de type `unknowntype` deviennent des URI `payto://`.\n\nDeux consignes d'affichage disparaissent sans remplacement : celle de donner aux types reconnus une icône et une stylisation, et la note selon laquelle un client affichant plusieurs cibles peut montrer la première, les montrer toutes ou proposer un menu déroulant.\n\n## La liste des types\n\nLe tableau des types recommandés cède la place à une liste simple intitulée « Commonly Used Tags ». Le tableau comptait huit entrées, chacune avec un nom long, un nom court, un symbole et un lien vers le matériel de marque du système de paiement lui-même. La liste compte quatorze entrées et aucune colonne :\n\n`bip352` pour les paiements silencieux, `bip353` pour les adresses DNS, `bitcoin`, `cashme`, `ethereum`, `lightning`, `litecoin`, `monero`, `nano`, `paypal`, `revolut`, `solana`, `venmo` et `zcash`.\n\nSix sont nouveaux : `bip352`, `bip353`, `litecoin`, `paypal`, `solana` et `zcash`. Aucun des huit d'origine n'est retiré. Le fichier clôt la liste en indiquant que de nouveaux formats largement déployés pourront y être ajoutés par la suite.\n\n## Les zaps\n\nLa section « Implementation Notes » disparaît entièrement, y compris sa sous-section sur les zaps du [NIP-57](https://github.com/nostr-protocol/nips/blob/master/57.md). Ce texte disait que les clients peuvent utiliser un tag `payto` de type `lightning` comme alternative au champ de profil `lud16` ou comme complément de celui-ci, avec un exemple montrant un événement kind 0 et un événement kind 10133 côte à côte.\n\nLe fichier actuel ne mentionne ni `lud16`, ni le NIP-57, ni les zaps.\n\n## Pour les implémenteurs\n\nRien de ce qui est déjà publié ne devient invalide. Le numéro de kind, le nom du tag et les positions du type et de l'adresse restent inchangés : un événement kind 10133 existant s'interprète de la même façon sous l'une ou l'autre version.\n\nLe code écrit d'après le texte fusionné peut désormais en faire plus que ce que demande la spécification. Les analyseurs qui lisent des éléments au-delà du troisième n'ont plus rien à lire. Les validateurs qui appliquent les règles de jeu de caractères et d'encodage d'URL appliquent des règles que le fichier ne porte plus. Ceux qui émettent toujours `payto://` restent corrects, puisque cela demeure la solution de repli, mais pour les types dotés de leur propre schéma d'URI, ils ne suivent plus la voie que le fichier privilégie désormais.\n"
+        },
+        {
           "slug": "le-nip-a3-ajoute-les-cibles-de-paiement-payto",
           "title": "Le NIP-A3 ajoute les cibles de paiement payto: au dépôt des NIP",
           "description": "Une nouvelle spécification définit le kind 10133, un événement remplaçable portant des tags payto que les clients assemblent en URI payto: de la RFC-8905 pour les invocations de paiement et de pourboire.",
@@ -5505,6 +5889,70 @@
     },
     "de": {
       "posts": [
+        {
+          "slug": "nip-a3-einen-tag-nach-dem-merge-neu-geschrieben",
+          "title": "NIP-A3 einen Tag nach dem Merge neu geschrieben",
+          "description": "Ein direkter Commit kürzt A3.md von 132 auf 64 Zeilen, benennt das dritte Tag-Element in address um, streicht den Abschnitt zur Validierung und macht die payto:-URI aus RFC-8905 zum Rückfall.",
+          "excerpt": "Einen Tag nachdem NIP-A3 in das NIP-Repository gelangt war, entfernte ein Commit 101 seiner Zeilen. Die Kind-Nummer und der Tag-Name bleiben. Der größte Teil der normativen Details darum herum nicht.",
+          "date": "2026-08-28T00:00:00.000Z",
+          "author": {
+            "name": "Nostr WoT Newsroom"
+          },
+          "featuredImage": "/images/news/nip-a3-rewritten-a-day-after-merging.svg",
+          "previewImage": "/images/news/nip-a3-rewritten-a-day-after-merging.svg",
+          "tags": [
+            "Nostr",
+            "NIP",
+            "NIP-A3"
+          ],
+          "published": true,
+          "readingTime": "4 min read",
+          "locale": "de",
+          "translationKey": "nip-a3-rewritten-a-day-after-merging",
+          "translations": {
+            "en": "nip-a3-rewritten-a-day-after-merging",
+            "es": "nip-a3-reescrito-un-dia-despues-de-fusionarse",
+            "pt": "nip-a3-reescrito-um-dia-apos-a-fusao",
+            "ru": "nip-a3-perepisan-cherez-den-posle-sliyaniya",
+            "it": "il-nip-a3-riscritto-un-giorno-dopo-il-merge",
+            "fr": "le-nip-a3-reecrit-un-jour-apres-sa-fusion",
+            "de": "nip-a3-einen-tag-nach-dem-merge-neu-geschrieben"
+          },
+          "availableLocales": [
+            "en",
+            "es",
+            "pt",
+            "ru",
+            "it",
+            "fr",
+            "de"
+          ],
+          "type": "story",
+          "sources": [
+            {
+              "title": "Commit 24b2ae9: Neufassung von NIP-A3",
+              "url": "https://github.com/nostr-protocol/nips/commit/24b2ae9fdfeb4e5c0d3be854df5977b81afe1983",
+              "publisher": "nostr-protocol/nips",
+              "date": "2026-08-27"
+            },
+            {
+              "title": "NIP-A3 payto: Payment Targets (RFC-8905)",
+              "url": "https://github.com/nostr-protocol/nips/pull/2119",
+              "publisher": "nostr-protocol/nips",
+              "date": "2026-08-26"
+            },
+            {
+              "title": "A3.md",
+              "url": "https://github.com/nostr-protocol/nips/blob/master/A3.md",
+              "publisher": "nostr-protocol/nips",
+              "date": "2026-08-27"
+            }
+          ],
+          "publishedAt": "2026-08-28T00:00:00.000Z",
+          "backfilled": false,
+          "items": [],
+          "content": "\nNIP-A3 wurde am 27. August 2026 um 15:14 UTC neu geschrieben, einen Tag nach seiner Aufnahme in das NIP-Repository. [Commit 24b2ae9](https://github.com/nostr-protocol/nips/commit/24b2ae9fdfeb4e5c0d3be854df5977b81afe1983) entfernt 101 Zeilen aus `A3.md` und fügt 33 hinzu, wodurch die Datei von 132 Zeilen auf 64 schrumpft, und ändert eine Zeile in `README.md`. Der Commit wurde direkt nach `master` gepusht. Die GitHub-API weist keinen zugehörigen Pull Request aus.\n\nDie Spezifikation war über [PR #2119](https://github.com/nostr-protocol/nips/pull/2119) gekommen, gemergt am 26. August um 18:33 UTC. Die Kind-Nummer und der Tag-Name überstehen die Neufassung. Der größte Teil der normativen Details darum herum nicht.\n\n## Titel und Status\n\nDie Überschrift lässt den RFC-Verweis fallen. Aus „payto: Payment Targets (RFC-8905)\" wird „payto: Payment Targets\", und der Eintrag in `README.md` wird entsprechend angepasst.\n\nAuch die Statusmarker ändern sich. Die gemergte Fassung trug `optional` und eine Zeile `author:atxmj`. Die aktuelle Datei trägt `draft` und `optional`, ohne Autorenzeile.\n\nDer Abschnitt „Event Kind\" ist verschwunden. Er hielt fest, dass NIP-A3 `kind:10133` definiert und dass dieses Kind ersetzbar ist. Die Kind-Nummer steht weiterhin im Beispielereignis und im Absatz zur Darstellung, und 10133 fällt in den Bereich `10000 <= n < 20000`, den [NIP-01](https://github.com/nostr-protocol/nips/blob/master/01.md) bereits als ersetzbar definiert. Das Verhalten der Relays ändert sich also nicht. Die Spezifikation sagt es nur nicht mehr selbst.\n\n## Das Tag\n\nDie Tag-Struktur besteht jetzt fest aus drei Elementen:\n\n```text\n[\"payto\", \"<type>\", \"<address>\"]\n```\n\nDie gemergte Fassung erlaubte mehr:\n\n```text\n[\"payto\", \"<type>\", \"<authority>\", \"<optional_extra_1>\", \"<optional_extra_2>\", ...]\n```\n\nZwei Dinge ändern sich. Das dritte Element heißt statt `authority` nun `address`. Und die hinteren Elemente, beschrieben als reserviert für künftige Funktionen aus RFC-8905, fallen weg, zusammen mit der Vorwärtskompatibilitätsregel, nach der Clients die Elemente 0 bis 2 verstehen müssen und alles Weitere ignorieren dürfen.\n\n## Validierung\n\nDer Abschnitt `Validation` entfällt. Er verlangte, dass `type` aus Kleinbuchstaben, Ziffern und Bindestrichen besteht und dass `authority` URL-sicher ist, mit kodierten Sonderzeichen.\n\nWas bleibt, wandert in die Tag-Beschreibung: `type` ist „immer klein geschrieben\", und Clients dürfen für Typen, die sie erkennen, zusätzliche netz- oder plattformspezifische Prüfungen vornehmen. Die Regel zum Zeichenvorrat und die zur Kodierung stehen nirgends mehr in der Datei.\n\n## Darstellung\n\nDas ist die inhaltliche Änderung. Der gemergte Text wies Clients an, für jedes Tag `payto://<type>/<authority>` zusammenzusetzen und als Schaltfläche oder Link anzuzeigen. RFC-8905 war das Ausgabeformat.\n\nDer aktuelle Text macht sie zum Rückfall. Clients können ein schemaspezifisches URI verwenden, sofern eines existiert, etwa `bitcoin:<address>` oder `ethereum:<address>`, und sonst auf `payto://<type>/<address>` zurückgreifen. Die durchgerechnete Liste in der Datei zeigt die Mischung: Das Bitcoin-Tag wird als `bitcoin:bc1qxq66e0t8d7ugdecwnmv58e90tpry23nc84pg9k` dargestellt, während das Nano-Tag und ein Tag vom Typ `unknowntype` zu `payto://`-URIs werden.\n\nZwei Darstellungsanweisungen fallen ersatzlos weg: die Vorgabe, erkannten Typen ein Symbol und eine Stilisierung zu geben, und der Hinweis, dass ein Client mit mehreren Zielen das erste anzeigen, alle anzeigen oder eine Auswahlliste anbieten kann.\n\n## Die Typenliste\n\nDie Tabelle empfohlener Typen weicht einer einfachen Liste mit der Überschrift „Commonly Used Tags\". Die Tabelle hatte acht Einträge, jeder mit langem Namen, kurzem Namen, Symbol und einem Link auf das Markenmaterial des jeweiligen Zahlungssystems. Die Liste hat vierzehn Einträge und keine Spalten:\n\n`bip352` für Silent Payments, `bip353` für DNS-Adressen, `bitcoin`, `cashme`, `ethereum`, `lightning`, `litecoin`, `monero`, `nano`, `paypal`, `revolut`, `solana`, `venmo` und `zcash`.\n\nSechs davon sind neu: `bip352`, `bip353`, `litecoin`, `paypal`, `solana` und `zcash`. Keiner der ursprünglichen acht fällt weg. Die Datei schließt die Liste mit dem Hinweis, dass neue, weit verbreitete Formate später aufgenommen werden können.\n\n## Zaps\n\nDer Abschnitt „Implementation Notes\" entfällt vollständig, samt seines Unterabschnitts zu den Zaps aus [NIP-57](https://github.com/nostr-protocol/nips/blob/master/57.md). Dort stand, dass Clients ein `payto`-Tag vom Typ `lightning` als Alternative zum Profilfeld `lud16` oder als dessen Ergänzung verwenden können, mit einem Beispiel, das ein Kind-0-Ereignis und ein Kind-10133-Ereignis nebeneinander zeigte.\n\nDie aktuelle Datei erwähnt weder `lud16` noch NIP-57 noch Zaps.\n\n## Für Implementierende\n\nNichts bereits Veröffentlichtes wird ungültig. Kind-Nummer, Tag-Name und die Positionen von Typ und Adresse bleiben unverändert, ein bestehendes Kind-10133-Ereignis wird unter beiden Fassungen gleich geparst.\n\nCode, der gegen den gemergten Text geschrieben wurde, tut jetzt womöglich mehr, als die Spezifikation verlangt. Parser, die Elemente jenseits des dritten lesen, finden nichts mehr vor. Validatoren, die die Regeln zu Zeichenvorrat und URL-Kodierung durchsetzen, setzen Regeln durch, die die Datei nicht mehr enthält. Wer immer `payto://` ausgibt, bleibt korrekt, denn das ist weiterhin der Rückfall, folgt für Typen mit eigenem URI-Schema aber nicht mehr dem Weg, den die Datei nun bevorzugt.\n"
+        },
         {
           "slug": "nip-a3-fuegt-payto-zahlungsziele-hinzu",
           "title": "NIP-A3 fügt dem NIP-Repository payto: Zahlungsziele hinzu",
