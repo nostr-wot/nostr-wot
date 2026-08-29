@@ -83,6 +83,7 @@ Projects currently using Nostr Web of Trust:
 | Project | Description |
 |---------|-------------|
 | [Mapping Bitcoin](https://mappingbitcoin.com) | Bitcoin merchant directory with WoT-based trust filtering |
+| [gittr](https://gittr.space) | Nostr-native Git hosting — viewer-relative trust badges on profiles, repo owners, issue authors ([docs](https://github.com/arbadacarbaYK/gittr/blob/main/docs/WOT.md)) |
 
 ## Supporters
 
