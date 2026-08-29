@@ -18,3 +18,4 @@ run at all, which is a different problem entirely.
 2026-08-26 18:06 UTC  skipped    nothing new since last run; considered: #2448 (covered 2026-08-25), #2358 (covered 2026-08-24), Amethyst v1.14.0 (already cited as a source)
 2026-08-27 13:10 UTC  published  nip-a3-adds-payto-payment-targets  (2 sources)
 2026-08-28 13:10 UTC  published  nip-a3-rewritten-a-day-after-merging  (3 sources)
+2026-08-29 13:03 UTC  skipped    nothing new since last run; nips master has no commit after 24b2ae9f (2026-08-27, covered 2026-08-28); no client or relay release since Amethyst v1.14.0 (2026-08-22, already cited)
