@@ -1,0 +1,67 @@
+---
+title: "Le NIP-67 ajoute un indice auth à EOSE"
+description: "Un relais peut désormais indiquer que s'authentifier renverrait davantage d'événements stockés, sans avoir à fermer l'abonnement pour le dire."
+excerpt: "Le tableau d'indices du NIP-67 gagne une troisième valeur. Un EOSE portant \"auth\" indique au client que d'autres événements stockés attendent derrière l'authentification du NIP-42, et le relais doit avoir envoyé le challenge avant de le dire."
+date: "2026-09-01"
+publishedAt: "2026-09-01"
+backfilled: false
+type: "story"
+tags:
+  - "Nostr"
+  - "NIP"
+  - "Relays"
+translationKey: "nip-67-adds-an-auth-hint"
+featuredImage: "/images/news/nip-67-adds-an-auth-hint.svg"
+sources:
+  - title: "NIP-67: \"auth\" hint"
+    url: "https://github.com/nostr-protocol/nips/pull/2371"
+    publisher: "nostr-protocol/nips"
+    date: "2026-09-01"
+  - title: "NIP-67: EOSE Completeness Hint"
+    url: "https://github.com/nostr-protocol/nips/pull/2317"
+    publisher: "nostr-protocol/nips"
+    date: "2026-06-06"
+  - title: "NIP-67 (67.md)"
+    url: "https://github.com/nostr-protocol/nips/blob/master/67.md"
+    publisher: "nostr-protocol/nips"
+    date: "2026-09-01"
+published: true
+---
+
+Le [NIP-67](https://github.com/nostr-protocol/nips/blob/master/67.md) ajoute au message `EOSE` un troisième élément facultatif : un tableau de chaînes d'indice décrivant l'ensemble d'événements stockés que le client vient de finir de recevoir. Depuis sa fusion en juin, il en définissait deux. La [pull request #2371](https://github.com/nostr-protocol/nips/pull/2371), ouverte par fiatjaf le 6 juin et fusionnée le 1er septembre 2026, en ajoute un troisième.
+
+Le changement est modeste sur le papier, 12 lignes ajoutées et 16 retirées dans deux fichiers, et il touche à la fois le [NIP-67](https://github.com/nostr-protocol/nips/blob/master/67.md) et le [NIP-42](https://github.com/nostr-protocol/nips/blob/master/42.md).
+
+## Le troisième indice
+
+Les deux indices existants répondent à une question sur le stockage du relais. `"finish"` indique que le relais a envoyé tous les événements stockés correspondant aux filtres de l'abonnement, et que le client devrait donc cesser de paginer. `"more"` indique que le relais retient des événements stockés correspondants qu'il n'a pas envoyés, et que le client devrait paginer pour les obtenir.
+
+La nouvelle valeur répond plutôt à une question sur le client :
+
+> `"auth"` : le relais peut détenir davantage d'événements stockés correspondant aux filtres de l'abonnement si l'utilisateur effectue `AUTH` ([NIP-42](42.md)).
+
+C'est un autre type d'incomplétude. `"more"` décrit un résultat tronqué par les limites propres au relais, que la pagination finira par épuiser. `"auth"` décrit un résultat tronqué par l'identité du client, ce que la pagination ne corrigera jamais. Avant l'existence de cet indice, les deux cas étaient indiscernables du côté du client : un abonnement non authentifié qui renvoyait une vue partielle des données d'un relais se terminait par le même `EOSE` qu'un abonnement qui renvoyait tout.
+
+## L'exigence d'ordre
+
+Le reste de la phrase constitue la partie normative. Les relais MUST garantir qu'un message `AUTH` contenant un challenge est envoyé avant l'`EOSE` qui porte l'indice `"auth"`.
+
+Cela découle du fonctionnement actuel du [NIP-42](https://github.com/nostr-protocol/nips/blob/master/42.md). Un client ne peut pas s'authentifier de sa propre initiative : il signe un challenge choisi par le relais. Le NIP-42 énonce clairement l'exigence pour ses flux existants : le client doit disposer d'un challenge stocké associé à ce relais pour pouvoir réagir à un signal d'authentification. Un relais qui enverrait l'indice sans avoir envoyé de challenge demanderait au client une action qu'il n'a aucun moyen d'accomplir.
+
+Le NIP-42 reçoit une section correspondante, `auth` hint in `EOSE`, qui reprend la même règle du côté de l'authentification et renvoie au NIP-67 pour la définition. Les relais MAY utiliser l'indice ; s'ils le font, le challenge `AUTH` passe en premier.
+
+## Sa place parmi les signaux existants
+
+Le NIP-42 offrait déjà deux façons pour un relais d'exiger une authentification, et toutes deux mettent fin à quelque chose. `auth-required` dans un message `CLOSED` met fin à l'abonnement et ne renvoie aucun événement. `auth-required` dans un message `OK` rejette une écriture.
+
+L'indice `"auth"` couvre le cas qu'aucune des deux ne traitait : rien n'a échoué. Le relais a accepté l'abonnement, a servi ce que le client non authentifié était en droit de voir, et a terminé normalement la phase des événements stockés. L'indice est une note attachée à une réponse réussie, signalant que la vue était partielle pour des raisons sur lesquelles le client peut agir. La diffusion en temps réel sur cet abonnement se poursuit selon les règles habituelles du NIP-01, comme pour tous les autres indices du NIP-67, qui ne concernent que les événements stockés.
+
+Les indices se combinent également. L'exemple ajouté à la spécification se termine par `["EOSE", "sub4", ["auth", "finish"]]`, les deux valeurs à la fois. Lus ensemble, ils signifient que le relais a envoyé tout ce qu'il enverra au niveau d'authentification actuel du client, et qu'un niveau supérieur pourrait en révéler davantage. `"finish"` est donc relatif au demandeur, et non une affirmation absolue sur le stockage du relais.
+
+## Des exemples élagués
+
+La pull request a aussi supprimé deux exemples de la spécification, tous deux montrant des relais n'implémentant pas le NIP-67 et renvoyant un `EOSE` à deux éléments, et les a remplacés par le cas de l'authentification. Le texte décrivant ce comportement hérité reste dans le corps de la spécification : rien de normatif n'a disparu avec eux.
+
+Un détail pour qui recopie le nouvel exemple : sa ligne `REQ` porte l'identifiant d'abonnement `sub2b`, comme l'exemple imprimé juste au-dessus, tandis que les lignes `EVENT` et `EOSE` utilisent `sub4`.
+
+Rien d'autre n'a changé dans le NIP-67. Il reste `draft` et `optional`, les relais qui l'implémentent continuent d'annoncer `67` dans leur document [NIP-11](https://github.com/nostr-protocol/nips/blob/master/11.md), et les clients qui ne l'implémentent pas continuent d'ignorer le troisième élément comme un élément final de tableau qu'ils ne lisent jamais.

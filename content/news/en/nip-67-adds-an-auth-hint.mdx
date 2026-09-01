@@ -1,0 +1,67 @@
+---
+title: "NIP-67 adds an auth hint to EOSE"
+description: "A relay can now say that authenticating would return more stored events, without ending the subscription to say it."
+excerpt: "NIP-67's hint array gains a third value. An EOSE carrying \"auth\" tells the client that more stored events are waiting behind NIP-42 authentication, and the relay must have sent the challenge before saying so."
+date: "2026-09-01"
+publishedAt: "2026-09-01"
+backfilled: false
+type: "story"
+tags:
+  - "Nostr"
+  - "NIP"
+  - "Relays"
+translationKey: "nip-67-adds-an-auth-hint"
+featuredImage: "/images/news/nip-67-adds-an-auth-hint.svg"
+sources:
+  - title: "NIP-67: \"auth\" hint"
+    url: "https://github.com/nostr-protocol/nips/pull/2371"
+    publisher: "nostr-protocol/nips"
+    date: "2026-09-01"
+  - title: "NIP-67: EOSE Completeness Hint"
+    url: "https://github.com/nostr-protocol/nips/pull/2317"
+    publisher: "nostr-protocol/nips"
+    date: "2026-06-06"
+  - title: "NIP-67 (67.md)"
+    url: "https://github.com/nostr-protocol/nips/blob/master/67.md"
+    publisher: "nostr-protocol/nips"
+    date: "2026-09-01"
+published: true
+---
+
+[NIP-67](https://github.com/nostr-protocol/nips/blob/master/67.md) attaches an optional third element to the `EOSE` message: an array of hint strings describing the stored-event result the client has just finished receiving. Since it merged in June it has defined two hints. [Pull request #2371](https://github.com/nostr-protocol/nips/pull/2371), opened by fiatjaf on 6 June and merged on 1 September 2026, adds a third.
+
+The change is small on paper, 12 lines added and 16 removed across two files, and it touches both [NIP-67](https://github.com/nostr-protocol/nips/blob/master/67.md) and [NIP-42](https://github.com/nostr-protocol/nips/blob/master/42.md).
+
+## The third hint
+
+The existing two hints answer a question about the relay's storage. `"finish"` says the relay has sent every stored event matching the subscription's filters, so the client should stop paginating. `"more"` says the relay is holding matching stored events it did not send, so the client should paginate to get them.
+
+The new value answers a question about the client instead:
+
+> `"auth"`: the relay may have more stored events matching the subscription's filters if the user performs `AUTH` ([NIP-42](42.md)).
+
+That is a different kind of incompleteness. `"more"` describes a result truncated by the relay's own limits, which paginating will eventually exhaust. `"auth"` describes a result truncated by who the client is, which paginating will never fix. Before this hint existed, the two were indistinguishable from the client side: an unauthenticated subscription that returned a partial view of a relay's data ended with the same `EOSE` as one that returned everything.
+
+## The ordering requirement
+
+The rest of the sentence is the normative part. Relays MUST ensure an `AUTH` message containing a challenge is sent before the `EOSE` that carries the `"auth"` hint.
+
+This follows from how [NIP-42](https://github.com/nostr-protocol/nips/blob/master/42.md) already works. A client cannot authenticate on its own initiative; it signs a challenge the relay chose. NIP-42 states the requirement plainly for its existing flows: the client must have a stored challenge associated with that relay in order to act on an authentication signal. A relay that sent the hint without having sent a challenge would be telling a client to do something it has no way to do.
+
+NIP-42 picks up a matching section, `auth` hint in `EOSE`, which restates the same rule from the authentication side and points at NIP-67 for the definition. Relays MAY use the hint; if they do, the `AUTH` challenge goes first.
+
+## Where it sits among the existing signals
+
+NIP-42 already had two ways for a relay to demand authentication, and both of them end something. `auth-required` in a `CLOSED` message terminates the subscription and returns no events. `auth-required` in an `OK` message rejects a write.
+
+The `"auth"` hint is the case neither of those covered: nothing failed. The relay accepted the subscription, served whatever the unauthenticated client was entitled to see, and finished the stored phase normally. The hint is a note attached to a successful response saying the view was partial for reasons the client can act on. Real-time delivery on that subscription continues under the usual NIP-01 rules, as it does for every other NIP-67 hint, which refer only to stored events.
+
+Hints also combine. The example added to the specification ends with `["EOSE", "sub4", ["auth", "finish"]]`, both values at once. Read together they say the relay has sent everything it will send at the client's current authentication level, and that a higher one may reveal more. `"finish"` is therefore relative to the requester, not an absolute statement about the relay's storage.
+
+## Examples pruned
+
+The pull request also removed two of the specification's examples, both of which showed relays that do not implement NIP-67 returning a two-element `EOSE`, and replaced them with the authentication case. The prose describing that legacy fallback stays in the body of the specification, so nothing normative was dropped with them.
+
+One detail for anyone copying the new example: its `REQ` line carries the subscription id `sub2b`, matching the example printed above it, while the `EVENT` and `EOSE` lines use `sub4`.
+
+Nothing else about NIP-67 changed. It remains `draft` and `optional`, relays that implement it still advertise `67` in their [NIP-11](https://github.com/nostr-protocol/nips/blob/master/11.md) document, and clients that do not implement it continue to ignore the third element as a trailing array item they never read.

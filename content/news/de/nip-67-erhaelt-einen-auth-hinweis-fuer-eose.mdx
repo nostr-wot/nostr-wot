@@ -1,0 +1,67 @@
+---
+title: "NIP-67 erhält einen auth-Hinweis für EOSE"
+description: "Ein Relay kann jetzt mitteilen, dass eine Authentifizierung weitere gespeicherte Events liefern würde, ohne dafür die Subscription zu beenden."
+excerpt: "Das Hinweis-Array von NIP-67 bekommt einen dritten Wert. Ein EOSE mit \"auth\" sagt dem Client, dass hinter der Authentifizierung nach NIP-42 weitere gespeicherte Events warten, und das Relay muss die Challenge vorher geschickt haben."
+date: "2026-09-01"
+publishedAt: "2026-09-01"
+backfilled: false
+type: "story"
+tags:
+  - "Nostr"
+  - "NIP"
+  - "Relays"
+translationKey: "nip-67-adds-an-auth-hint"
+featuredImage: "/images/news/nip-67-adds-an-auth-hint.svg"
+sources:
+  - title: "NIP-67: \"auth\" hint"
+    url: "https://github.com/nostr-protocol/nips/pull/2371"
+    publisher: "nostr-protocol/nips"
+    date: "2026-09-01"
+  - title: "NIP-67: EOSE Completeness Hint"
+    url: "https://github.com/nostr-protocol/nips/pull/2317"
+    publisher: "nostr-protocol/nips"
+    date: "2026-06-06"
+  - title: "NIP-67 (67.md)"
+    url: "https://github.com/nostr-protocol/nips/blob/master/67.md"
+    publisher: "nostr-protocol/nips"
+    date: "2026-09-01"
+published: true
+---
+
+[NIP-67](https://github.com/nostr-protocol/nips/blob/master/67.md) hängt an die `EOSE`-Nachricht ein optionales drittes Element: ein Array aus Hinweis-Strings, die das gerade zu Ende empfangene Ergebnis gespeicherter Events beschreiben. Seit dem Merge im Juni waren darin zwei Hinweise definiert. [Pull Request #2371](https://github.com/nostr-protocol/nips/pull/2371), am 6. Juni von fiatjaf geöffnet und am 1. September 2026 gemergt, fügt einen dritten hinzu.
+
+Auf dem Papier ist die Änderung klein, 12 hinzugefügte und 16 entfernte Zeilen in zwei Dateien, und sie betrifft sowohl [NIP-67](https://github.com/nostr-protocol/nips/blob/master/67.md) als auch [NIP-42](https://github.com/nostr-protocol/nips/blob/master/42.md).
+
+## Der dritte Hinweis
+
+Die beiden bestehenden Hinweise beantworten eine Frage über den Speicher des Relays. `"finish"` besagt, dass das Relay jedes gespeicherte Event gesendet hat, das auf die Filter der Subscription passt, der Client also nicht weiter paginieren sollte. `"more"` besagt, dass das Relay passende gespeicherte Events zurückhält, die es nicht gesendet hat, der Client sie also per Pagination holen sollte.
+
+Der neue Wert beantwortet stattdessen eine Frage über den Client:
+
+> `"auth"`: Das Relay hat möglicherweise weitere gespeicherte Events, die auf die Filter der Subscription passen, wenn die Nutzerin oder der Nutzer `AUTH` ausführt ([NIP-42](42.md)).
+
+Das ist eine andere Art von Unvollständigkeit. `"more"` beschreibt ein Ergebnis, das an den eigenen Limits des Relays abgeschnitten wurde und das Pagination irgendwann ausschöpft. `"auth"` beschreibt ein Ergebnis, das daran abgeschnitten wurde, wer der Client ist, und daran ändert Pagination nie etwas. Vor diesem Hinweis waren beide Fälle aus Sicht des Clients nicht zu unterscheiden: Eine nicht authentifizierte Subscription, die nur einen Teil der Daten eines Relays zurückgab, endete mit demselben `EOSE` wie eine, die alles zurückgab.
+
+## Die Anforderung an die Reihenfolge
+
+Der Rest des Satzes ist der normative Teil. Relays MUST sicherstellen, dass eine `AUTH`-Nachricht mit einer Challenge vor dem `EOSE` gesendet wird, das den Hinweis `"auth"` trägt.
+
+Das ergibt sich daraus, wie [NIP-42](https://github.com/nostr-protocol/nips/blob/master/42.md) ohnehin funktioniert. Ein Client kann sich nicht aus eigenem Antrieb authentifizieren, er signiert eine Challenge, die das Relay gewählt hat. NIP-42 formuliert die Anforderung für seine bestehenden Abläufe unmissverständlich: Der Client muss eine gespeicherte Challenge für dieses Relay haben, um auf ein Authentifizierungssignal reagieren zu können. Ein Relay, das den Hinweis ohne vorherige Challenge sendet, würde vom Client etwas verlangen, das er nicht tun kann.
+
+NIP-42 bekommt einen passenden Abschnitt, `auth` hint in `EOSE`, der dieselbe Regel von der Authentifizierungsseite wiederholt und für die Definition auf NIP-67 verweist. Relays MAY den Hinweis verwenden; wenn sie es tun, kommt die `AUTH`-Challenge zuerst.
+
+## Der Platz zwischen den bestehenden Signalen
+
+NIP-42 hatte bereits zwei Wege, mit denen ein Relay Authentifizierung verlangen konnte, und beide beenden etwas. `auth-required` in einer `CLOSED`-Nachricht beendet die Subscription und liefert keine Events. `auth-required` in einer `OK`-Nachricht weist einen Schreibvorgang zurück.
+
+Der Hinweis `"auth"` deckt den Fall ab, den keiner von beiden erfasste: Es ist nichts fehlgeschlagen. Das Relay hat die Subscription angenommen, geliefert, was der nicht authentifizierte Client sehen durfte, und die Phase der gespeicherten Events regulär beendet. Der Hinweis ist eine Notiz an einer erfolgreichen Antwort, die besagt, dass die Sicht aus Gründen unvollständig war, auf die der Client Einfluss hat. Die Echtzeit-Zustellung dieser Subscription läuft nach den üblichen Regeln von NIP-01 weiter, wie bei allen anderen NIP-67-Hinweisen, die sich nur auf gespeicherte Events beziehen.
+
+Hinweise lassen sich auch kombinieren. Das neu aufgenommene Beispiel endet mit `["EOSE", "sub4", ["auth", "finish"]]`, beide Werte zugleich. Zusammen gelesen besagen sie, dass das Relay alles gesendet hat, was es auf der aktuellen Authentifizierungsstufe des Clients senden wird, und dass eine höhere Stufe mehr offenlegen könnte. `"finish"` ist damit relativ zum Anfragenden und keine absolute Aussage über den Speicher des Relays.
+
+## Ausgedünnte Beispiele
+
+Der Pull Request hat außerdem zwei Beispiele aus der Spezifikation entfernt, die beide Relays ohne NIP-67 zeigten, die ein `EOSE` mit zwei Elementen zurückgeben, und sie durch den Authentifizierungsfall ersetzt. Der Text, der dieses ältere Verhalten beschreibt, bleibt im Hauptteil der Spezifikation, mit ihnen ist also nichts Normatives verloren gegangen.
+
+Ein Detail für alle, die das neue Beispiel übernehmen: Seine `REQ`-Zeile trägt die Subscription-ID `sub2b`, wie das direkt darüber abgedruckte Beispiel, während die Zeilen `EVENT` und `EOSE` `sub4` verwenden.
+
+Sonst hat sich an NIP-67 nichts geändert. Er bleibt `draft` und `optional`, Relays mit Unterstützung führen weiterhin `67` in ihrem [NIP-11](https://github.com/nostr-protocol/nips/blob/master/11.md)-Dokument, und Clients ohne Unterstützung ignorieren das dritte Element weiterhin als letztes Array-Element, das sie nie lesen.

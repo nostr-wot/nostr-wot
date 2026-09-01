@@ -1,0 +1,67 @@
+---
+title: "Il NIP-67 aggiunge un suggerimento auth a EOSE"
+description: "Un relay può ora dire che autenticarsi restituirebbe altri eventi memorizzati, senza dover chiudere la sottoscrizione per dirlo."
+excerpt: "L'array di suggerimenti del NIP-67 guadagna un terzo valore. Un EOSE che porta \"auth\" dice al client che altri eventi memorizzati attendono dietro l'autenticazione del NIP-42, e il relay deve avere inviato la challenge prima di dirlo."
+date: "2026-09-01"
+publishedAt: "2026-09-01"
+backfilled: false
+type: "story"
+tags:
+  - "Nostr"
+  - "NIP"
+  - "Relays"
+translationKey: "nip-67-adds-an-auth-hint"
+featuredImage: "/images/news/nip-67-adds-an-auth-hint.svg"
+sources:
+  - title: "NIP-67: \"auth\" hint"
+    url: "https://github.com/nostr-protocol/nips/pull/2371"
+    publisher: "nostr-protocol/nips"
+    date: "2026-09-01"
+  - title: "NIP-67: EOSE Completeness Hint"
+    url: "https://github.com/nostr-protocol/nips/pull/2317"
+    publisher: "nostr-protocol/nips"
+    date: "2026-06-06"
+  - title: "NIP-67 (67.md)"
+    url: "https://github.com/nostr-protocol/nips/blob/master/67.md"
+    publisher: "nostr-protocol/nips"
+    date: "2026-09-01"
+published: true
+---
+
+Il [NIP-67](https://github.com/nostr-protocol/nips/blob/master/67.md) aggiunge un terzo elemento opzionale al messaggio `EOSE`: un array di stringhe di suggerimento che descrivono l'insieme di eventi memorizzati che il client ha appena finito di ricevere. Da quando è stato integrato a giugno ne definiva due. La [pull request #2371](https://github.com/nostr-protocol/nips/pull/2371), aperta da fiatjaf il 6 giugno e integrata il 1 settembre 2026, ne aggiunge un terzo.
+
+La modifica è piccola sulla carta, 12 righe aggiunte e 16 rimosse in due file, e tocca sia il [NIP-67](https://github.com/nostr-protocol/nips/blob/master/67.md) sia il [NIP-42](https://github.com/nostr-protocol/nips/blob/master/42.md).
+
+## Il terzo suggerimento
+
+I due suggerimenti esistenti rispondono a una domanda sull'archivio del relay. `"finish"` dice che il relay ha inviato tutti gli eventi memorizzati che corrispondono ai filtri della sottoscrizione, quindi il client dovrebbe smettere di paginare. `"more"` dice che il relay trattiene eventi memorizzati corrispondenti che non ha inviato, quindi il client dovrebbe paginare per ottenerli.
+
+Il nuovo valore risponde invece a una domanda sul client:
+
+> `"auth"`: il relay potrebbe avere altri eventi memorizzati corrispondenti ai filtri della sottoscrizione se l'utente esegue `AUTH` ([NIP-42](42.md)).
+
+È un tipo diverso di incompletezza. `"more"` descrive un risultato troncato dai limiti del relay stesso, che la paginazione prima o poi esaurirà. `"auth"` descrive un risultato troncato da chi è il client, cosa che la paginazione non risolverà mai. Prima che questo suggerimento esistesse, i due casi erano indistinguibili dal lato del client: una sottoscrizione non autenticata che restituiva una vista parziale dei dati di un relay terminava con lo stesso `EOSE` di una che restituiva tutto.
+
+## Il requisito di ordine
+
+Il resto della frase è la parte normativa. I relay MUST garantire che un messaggio `AUTH` contenente una challenge sia inviato prima dell'`EOSE` che porta il suggerimento `"auth"`.
+
+Questo discende da come il [NIP-42](https://github.com/nostr-protocol/nips/blob/master/42.md) funziona già. Un client non può autenticarsi di propria iniziativa: firma una challenge scelta dal relay. Il NIP-42 enuncia il requisito con chiarezza per i suoi flussi esistenti: il client deve avere una challenge memorizzata associata a quel relay per poter agire su un segnale di autenticazione. Un relay che inviasse il suggerimento senza avere inviato una challenge chiederebbe al client qualcosa che non ha modo di fare.
+
+Il NIP-42 riceve una sezione corrispondente, `auth` hint in `EOSE`, che ripete la stessa regola dal lato dell'autenticazione e rimanda al NIP-67 per la definizione. I relay MAY usare il suggerimento; se lo fanno, la challenge `AUTH` viene per prima.
+
+## Dove si colloca tra i segnali esistenti
+
+Il NIP-42 aveva già due modi per un relay di richiedere l'autenticazione, ed entrambi chiudono qualcosa. `auth-required` in un messaggio `CLOSED` termina la sottoscrizione e non restituisce eventi. `auth-required` in un messaggio `OK` rifiuta una scrittura.
+
+Il suggerimento `"auth"` è il caso che nessuno dei due copriva: non è fallito nulla. Il relay ha accettato la sottoscrizione, ha servito ciò che il client non autenticato aveva diritto di vedere e ha concluso normalmente la fase degli eventi memorizzati. Il suggerimento è una nota allegata a una risposta riuscita che dice che la vista era parziale per motivi su cui il client può intervenire. La consegna in tempo reale su quella sottoscrizione prosegue secondo le regole abituali del NIP-01, come per tutti gli altri suggerimenti del NIP-67, che riguardano solo gli eventi memorizzati.
+
+I suggerimenti si combinano anche. L'esempio aggiunto alla specifica termina con `["EOSE", "sub4", ["auth", "finish"]]`, entrambi i valori insieme. Letti assieme dicono che il relay ha inviato tutto quello che invierà al livello di autenticazione attuale del client, e che un livello superiore potrebbe rivelare altro. `"finish"` è quindi relativo a chi chiede, non un'affermazione assoluta sull'archivio del relay.
+
+## Esempi sfoltiti
+
+La pull request ha anche rimosso due degli esempi della specifica, entrambi con relay che non implementano il NIP-67 e restituiscono un `EOSE` di due elementi, sostituendoli con il caso dell'autenticazione. Il testo che descrive quel comportamento preesistente resta nel corpo della specifica, quindi con essi non si è perso nulla di normativo.
+
+Un dettaglio per chi copia il nuovo esempio: la sua riga `REQ` porta l'id di sottoscrizione `sub2b`, come l'esempio stampato sopra, mentre le righe `EVENT` ed `EOSE` usano `sub4`.
+
+Nient'altro del NIP-67 è cambiato. Resta `draft` e `optional`, i relay che lo implementano continuano ad annunciare `67` nel loro documento [NIP-11](https://github.com/nostr-protocol/nips/blob/master/11.md), e i client che non lo implementano continuano a ignorare il terzo elemento come un elemento finale dell'array che non leggono mai.

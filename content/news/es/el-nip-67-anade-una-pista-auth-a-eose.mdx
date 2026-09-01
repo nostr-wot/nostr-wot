@@ -1,0 +1,67 @@
+---
+title: "El NIP-67 añade una pista auth a EOSE"
+description: "Un relay ya puede indicar que autenticarse devolvería más eventos almacenados, sin tener que cerrar la suscripción para decirlo."
+excerpt: "El array de pistas del NIP-67 gana un tercer valor. Un EOSE que lleva \"auth\" le dice al cliente que hay más eventos almacenados esperando detrás de la autenticación del NIP-42, y el relay debe haber enviado el desafío antes de decirlo."
+date: "2026-09-01"
+publishedAt: "2026-09-01"
+backfilled: false
+type: "story"
+tags:
+  - "Nostr"
+  - "NIP"
+  - "Relays"
+translationKey: "nip-67-adds-an-auth-hint"
+featuredImage: "/images/news/nip-67-adds-an-auth-hint.svg"
+sources:
+  - title: "NIP-67: \"auth\" hint"
+    url: "https://github.com/nostr-protocol/nips/pull/2371"
+    publisher: "nostr-protocol/nips"
+    date: "2026-09-01"
+  - title: "NIP-67: EOSE Completeness Hint"
+    url: "https://github.com/nostr-protocol/nips/pull/2317"
+    publisher: "nostr-protocol/nips"
+    date: "2026-06-06"
+  - title: "NIP-67 (67.md)"
+    url: "https://github.com/nostr-protocol/nips/blob/master/67.md"
+    publisher: "nostr-protocol/nips"
+    date: "2026-09-01"
+published: true
+---
+
+El [NIP-67](https://github.com/nostr-protocol/nips/blob/master/67.md) añade un tercer elemento opcional al mensaje `EOSE`: un array de cadenas de pista que describen el conjunto de eventos almacenados que el cliente acaba de terminar de recibir. Desde que se fusionó en junio definía dos pistas. El [pull request #2371](https://github.com/nostr-protocol/nips/pull/2371), abierto por fiatjaf el 6 de junio y fusionado el 1 de septiembre de 2026, añade una tercera.
+
+El cambio es pequeño sobre el papel, 12 líneas añadidas y 16 eliminadas en dos archivos, y toca tanto el [NIP-67](https://github.com/nostr-protocol/nips/blob/master/67.md) como el [NIP-42](https://github.com/nostr-protocol/nips/blob/master/42.md).
+
+## La tercera pista
+
+Las dos pistas existentes responden a una pregunta sobre el almacenamiento del relay. `"finish"` indica que el relay ha enviado todos los eventos almacenados que coinciden con los filtros de la suscripción, así que el cliente debe dejar de paginar. `"more"` indica que el relay retiene eventos almacenados coincidentes que no ha enviado, así que el cliente debe paginar para obtenerlos.
+
+El nuevo valor responde, en cambio, a una pregunta sobre el cliente:
+
+> `"auth"`: el relay puede tener más eventos almacenados que coinciden con los filtros de la suscripción si el usuario realiza `AUTH` ([NIP-42](42.md)).
+
+Ese es un tipo distinto de resultado incompleto. `"more"` describe un resultado truncado por los límites del propio relay, que la paginación acabará agotando. `"auth"` describe un resultado truncado por quién es el cliente, algo que la paginación no arreglará nunca. Antes de que existiera esta pista, ambos casos eran indistinguibles desde el lado del cliente: una suscripción sin autenticar que devolvía una vista parcial de los datos de un relay terminaba con el mismo `EOSE` que una que lo devolvía todo.
+
+## El requisito de orden
+
+El resto de la frase es la parte normativa. Los relays MUST asegurarse de que un mensaje `AUTH` con un desafío se envíe antes del `EOSE` que lleva la pista `"auth"`.
+
+Esto se deriva de cómo funciona ya el [NIP-42](https://github.com/nostr-protocol/nips/blob/master/42.md). Un cliente no puede autenticarse por iniciativa propia; firma un desafío elegido por el relay. El NIP-42 enuncia el requisito con claridad para sus flujos existentes: el cliente debe tener un desafío almacenado asociado a ese relay para poder actuar ante una señal de autenticación. Un relay que enviara la pista sin haber enviado un desafío le estaría pidiendo al cliente algo que no tiene forma de hacer.
+
+El NIP-42 recibe una sección equivalente, `auth` hint in `EOSE`, que repite la misma regla desde el lado de la autenticación y remite al NIP-67 para la definición. Los relays MAY usar la pista; si lo hacen, el desafío `AUTH` va primero.
+
+## Dónde encaja entre las señales existentes
+
+El NIP-42 ya tenía dos formas de que un relay exigiera autenticación, y ambas terminan algo. `auth-required` en un mensaje `CLOSED` cierra la suscripción y no devuelve eventos. `auth-required` en un mensaje `OK` rechaza una escritura.
+
+La pista `"auth"` es el caso que ninguna de las dos cubría: no falló nada. El relay aceptó la suscripción, sirvió lo que el cliente sin autenticar tenía derecho a ver y terminó la fase de eventos almacenados con normalidad. La pista es una nota adjunta a una respuesta correcta que dice que la vista fue parcial por motivos sobre los que el cliente puede actuar. La entrega en tiempo real de esa suscripción continúa bajo las reglas habituales del NIP-01, como ocurre con todas las pistas del NIP-67, que se refieren solo a eventos almacenados.
+
+Las pistas también se combinan. El ejemplo añadido a la especificación termina con `["EOSE", "sub4", ["auth", "finish"]]`, los dos valores a la vez. Leídos juntos indican que el relay ha enviado todo lo que va a enviar al nivel de autenticación actual del cliente, y que un nivel superior podría revelar más. `"finish"` es, por tanto, relativo a quien pregunta, no una afirmación absoluta sobre el almacenamiento del relay.
+
+## Ejemplos podados
+
+El pull request también eliminó dos de los ejemplos de la especificación, ambos con relays que no implementan el NIP-67 devolviendo un `EOSE` de dos elementos, y los sustituyó por el caso de autenticación. El texto que describe ese comportamiento heredado permanece en el cuerpo de la especificación, así que no se perdió nada normativo con ellos.
+
+Un detalle para quien copie el ejemplo nuevo: su línea `REQ` lleva el id de suscripción `sub2b`, igual que el ejemplo impreso justo encima, mientras que las líneas `EVENT` y `EOSE` usan `sub4`.
+
+Nada más del NIP-67 ha cambiado. Sigue siendo `draft` y `optional`, los relays que lo implementan siguen anunciando `67` en su documento [NIP-11](https://github.com/nostr-protocol/nips/blob/master/11.md), y los clientes que no lo implementan siguen ignorando el tercer elemento como un ítem final del array que nunca leen.
