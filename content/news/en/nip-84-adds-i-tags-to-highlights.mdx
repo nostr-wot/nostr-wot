@@ -1,0 +1,79 @@
+---
+title: "NIP-84 adds i tags to highlights and loosens r"
+description: "Highlights can now cite external content ids through NIP-73, and the r tag stops being defined as a URL."
+excerpt: "The reference section of NIP-84 becomes a three-way list. Nostr events keep a and e, structured sources move to i tags per NIP-73, and r becomes the catch-all that may hold a URL or plain text. The URL-cleaning recommendation was dropped with it."
+date: "2026-09-02"
+publishedAt: "2026-09-02"
+backfilled: false
+type: "story"
+tags:
+  - "Nostr"
+  - "NIP"
+  - "Clients"
+translationKey: "nip-84-adds-i-tags-to-highlights"
+featuredImage: "/images/news/nip-84-adds-i-tags-to-highlights.svg"
+sources:
+  - title: "Add i tags to highlights, clarify that r is whatever"
+    url: "https://github.com/nostr-protocol/nips/pull/2454"
+    publisher: "nostr-protocol/nips"
+    date: "2026-09-01"
+  - title: "NIP-84 (84.md)"
+    url: "https://github.com/nostr-protocol/nips/blob/master/84.md"
+    publisher: "nostr-protocol/nips"
+    date: "2026-09-01"
+  - title: "NIP-73: External Content IDs (73.md)"
+    url: "https://github.com/nostr-protocol/nips/blob/master/73.md"
+    publisher: "nostr-protocol/nips"
+    date: "2026-09-01"
+published: true
+---
+
+[NIP-84](https://github.com/nostr-protocol/nips/blob/master/84.md) defines `kind:9802`, the highlight event, whose `.content` holds the passage a user marked as worth keeping. The question the specification has always had to answer is where that passage came from. [Pull request #2454](https://github.com/nostr-protocol/nips/pull/2454) rewrites that answer. It was opened on 1 September 2026 and merged the same day, one file and six lines changed.
+
+## The reference section becomes a list
+
+The old text was two sentences and covered two cases:
+
+> `a` or `e` tags should be used for nostr events and `r` tags for URLs.
+
+The replacement is a three-item list:
+
+> - `a` and/or `e` tags for nostr events
+> - `i` tags for structured sources per [NIP 73](./73.md)
+> - `r` tags for anything else (may contain a URL or text)
+
+Two things happened at once there. A case was added, and an existing case was redefined.
+
+## What the i tag brings
+
+[NIP-73](https://github.com/nostr-protocol/nips/blob/master/73.md) is the external content id specification. It gives `i` tags a fixed vocabulary for identifiers that exist outside nostr: `isbn:` for books, `doi:` for papers, `isan:` for movies, `geo:` for geohashes, `iso3166:` for countries and subdivisions, `podcast:guid:` and its item and publisher variants, plus blockchain transaction and address forms and a normalized URL form under the `web` kind.
+
+A highlight from a book had no way to say so under the old wording. The only non-nostr slot was `r`, defined as a URL, and a printed book does not have one. Pointing `i` at NIP-73 gives that highlight an identifier other clients can query on, which is the point of the id registry: every event carrying `["i", "isbn:9780123456789"]` is findable as a group.
+
+One detail the new line leaves out. NIP-73 pairs each `i` tag with a `k` tag naming the id kind, and that is what makes the kind-wide query work. NIP-84 says `i` tags per NIP-73 without repeating the `k` requirement, so the pairing has to be read out of NIP-73 itself.
+
+## What the r tag loses
+
+`r` is no longer the URL tag. It is now the fallback, and the specification says outright that it may contain a URL or text. The pull request describes the situation that prompted it: highlights published with a non-URL source, which clients that assumed a valid URL failed to interpret.
+
+Reading it as a URL was never safe in practice, and the change stops implementations being wrong to keep parsing it that way. It also gives up something. A client can no longer treat an `r` value on a highlight as a link without checking it first.
+
+The same edit removed a recommendation that had ridden along with the old definition:
+
+> When tagging a URL, clients generating these events SHOULD do a best effort of cleaning the URL from trackers or obvious non-useful information from the query string.
+
+That was the only tracker-stripping guidance in NIP-84, and it is gone from the file. Nothing in the diff moved it elsewhere. Clients that strip tracking parameters from highlight sources are now doing so on their own judgement rather than on a `SHOULD` in the specification, and NIP-73's normalized URL form, which the `i` path now covers, drops the fragment but says nothing about query strings.
+
+There is also a leftover. The closing paragraph of NIP-84, untouched by this pull request, still reads that r-tag urls from the comment MUST have a `mention` attribute to distinguish them from the highlighted source url, and that the source url MUST have the `source` attribute. That language assumes `r` holds a URL, which the reference section above it no longer requires.
+
+## A MUST becomes a SHOULD
+
+The second normative change is in the quote highlight section. A `comment` tag turns a highlight into a quote highlight, and the rendering rule was absolute:
+
+> This MUST be rendered like a quote repost with the highlight as the quoted note.
+
+It now reads `SHOULD`. The reason given in the surrounding prose is unchanged: the construction exists so that one highlight action does not produce two notes, a highlight and a kind 1, appearing back to back in micro-blogging clients. A client that renders quote highlights some other way is no longer out of compliance.
+
+The remaining edit is a typo fix, `creation and multiple notes` to `creation of multiple notes`, in that same paragraph.
+
+Nothing else in NIP-84 changed. It is still `draft` and `optional`, the event is still `kind:9802`, and the `p`, `context` and `comment` tags keep the meanings they had.

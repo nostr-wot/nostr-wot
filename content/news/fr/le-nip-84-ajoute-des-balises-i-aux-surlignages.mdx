@@ -1,0 +1,79 @@
+---
+title: "Le NIP-84 ajoute des balises i aux surlignages et assouplit r"
+description: "Les surlignages peuvent désormais citer des identifiants de contenu externe via le NIP-73, et la balise r cesse d'être définie comme une URL."
+excerpt: "La section des références du NIP-84 devient une liste de trois cas. Les événements nostr conservent a et e, les sources structurées passent aux balises i selon le NIP-73, et r devient le cas générique, qui peut contenir une URL ou du texte. La recommandation de nettoyer les URL a disparu au passage."
+date: "2026-09-02"
+publishedAt: "2026-09-02"
+backfilled: false
+type: "story"
+tags:
+  - "Nostr"
+  - "NIP"
+  - "Clients"
+translationKey: "nip-84-adds-i-tags-to-highlights"
+featuredImage: "/images/news/nip-84-adds-i-tags-to-highlights.svg"
+sources:
+  - title: "Add i tags to highlights, clarify that r is whatever"
+    url: "https://github.com/nostr-protocol/nips/pull/2454"
+    publisher: "nostr-protocol/nips"
+    date: "2026-09-01"
+  - title: "NIP-84 (84.md)"
+    url: "https://github.com/nostr-protocol/nips/blob/master/84.md"
+    publisher: "nostr-protocol/nips"
+    date: "2026-09-01"
+  - title: "NIP-73: External Content IDs (73.md)"
+    url: "https://github.com/nostr-protocol/nips/blob/master/73.md"
+    publisher: "nostr-protocol/nips"
+    date: "2026-09-01"
+published: true
+---
+
+Le [NIP-84](https://github.com/nostr-protocol/nips/blob/master/84.md) définit `kind:9802`, l'événement de surlignage, dont le `.content` contient le passage qu'une personne a jugé bon de conserver. La question à laquelle la spécification a toujours dû répondre est de savoir d'où vient ce passage. La [pull request #2454](https://github.com/nostr-protocol/nips/pull/2454) en réécrit la réponse. Elle a été ouverte le 1er septembre 2026 et fusionnée le jour même, pour un fichier et six lignes modifiées.
+
+## La section des références devient une liste
+
+L'ancien texte tenait en deux phrases et couvrait deux cas :
+
+> `a` or `e` tags should be used for nostr events and `r` tags for URLs.
+
+Le texte qui le remplace est une liste de trois éléments :
+
+> - `a` and/or `e` tags for nostr events
+> - `i` tags for structured sources per [NIP 73](./73.md)
+> - `r` tags for anything else (may contain a URL or text)
+
+Deux choses se sont produites là en même temps. Un cas a été ajouté, et un cas existant a été redéfini.
+
+## Ce qu'apporte la balise i
+
+Le [NIP-73](https://github.com/nostr-protocol/nips/blob/master/73.md) est la spécification des identifiants de contenu externe. Il donne aux balises `i` un vocabulaire fixe pour les identifiants qui existent en dehors de nostr : `isbn:` pour les livres, `doi:` pour les articles scientifiques, `isan:` pour les films, `geo:` pour les geohashes, `iso3166:` pour les pays et leurs subdivisions, `podcast:guid:` avec ses variantes pour l'épisode et l'éditeur, ainsi que des formes pour les transactions et adresses blockchain et une forme d'URL normalisée sous le type `web`.
+
+Avec l'ancienne formulation, un surlignage tiré d'un livre n'avait aucun moyen de le dire. Le seul emplacement non nostr était `r`, défini comme une URL, et un livre imprimé n'en a pas. Renvoyer `i` au NIP-73 donne à ce surlignage un identifiant sur lequel d'autres clients peuvent interroger, ce qui est précisément l'objet du registre d'identifiants : tous les événements portant `["i", "isbn:9780123456789"]` se retrouvent comme un groupe.
+
+Un détail que la nouvelle ligne laisse de côté. Le NIP-73 associe chaque balise `i` à une balise `k` qui nomme le type d'identifiant, et c'est cela qui rend possible la requête par type. Le NIP-84 parle de balises `i` selon le NIP-73 sans reprendre l'exigence du `k`, si bien que cette association doit se lire dans le NIP-73 lui-même.
+
+## Ce que perd la balise r
+
+`r` n'est plus la balise des URL. Elle est désormais le cas de repli, et la spécification dit sans détour qu'elle peut contenir une URL ou du texte. La pull request décrit la situation qui l'a motivée : des surlignages publiés avec une source qui n'est pas une URL, et que les clients supposant une URL valide n'arrivaient pas à interpréter.
+
+La lire comme une URL n'a jamais été sûr en pratique, et le changement cesse de donner raison aux implémentations qui continuaient à l'analyser ainsi. Il renonce aussi à quelque chose. Un client ne peut plus traiter une valeur `r` d'un surlignage comme un lien sans la vérifier d'abord.
+
+La même modification a supprimé une recommandation qui accompagnait l'ancienne définition :
+
+> When tagging a URL, clients generating these events SHOULD do a best effort of cleaning the URL from trackers or obvious non-useful information from the query string.
+
+C'était la seule consigne sur les traceurs dans le NIP-84, et elle a disparu du fichier. Rien dans le diff ne la déplace ailleurs. Les clients qui retirent les paramètres de suivi des sources d'un surlignage le font maintenant de leur propre chef, et non en vertu d'un `SHOULD` de la spécification, et la forme d'URL normalisée du NIP-73, que la voie `i` couvre désormais, écarte le fragment mais ne dit rien de la chaîne de requête.
+
+Il reste aussi un vestige. Le paragraphe final du NIP-84, que cette pull request n'a pas touché, indique toujours que les URL des balises r issues du commentaire MUST porter un attribut `mention` pour les distinguer de l'URL de la source surlignée, et que l'URL de la source MUST porter l'attribut `source`. Ce texte suppose que `r` contient une URL, ce que la section des références au-dessus n'exige plus.
+
+## Un MUST devient un SHOULD
+
+Le second changement normatif se trouve dans la section des surlignages avec citation. Une balise `comment` transforme un surlignage en surlignage cité, et la règle d'affichage était absolue :
+
+> This MUST be rendered like a quote repost with the highlight as the quoted note.
+
+Elle dit maintenant `SHOULD`. La raison donnée dans le texte alentour n'a pas changé : cette construction existe pour qu'une seule action de surlignage ne produise pas deux notes, un surlignage et un kind 1, qui se suivent dans les clients de microblogage. Un client qui affiche les surlignages cités autrement n'est plus hors spécification.
+
+La modification restante est une correction de coquille, `creation and multiple notes` en `creation of multiple notes`, dans ce même paragraphe.
+
+Rien d'autre n'a changé dans le NIP-84. Il reste `draft` et `optional`, l'événement reste `kind:9802`, et les balises `p`, `context` et `comment` gardent le sens qu'elles avaient.

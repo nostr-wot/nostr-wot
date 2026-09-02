@@ -1,0 +1,79 @@
+---
+title: "Il NIP-84 aggiunge i tag i agli highlight e allenta r"
+description: "Gli highlight possono ora citare identificatori di contenuto esterno tramite il NIP-73, e il tag r smette di essere definito come una URL."
+excerpt: "La sezione dei riferimenti del NIP-84 diventa un elenco di tre casi. Gli eventi nostr mantengono a ed e, le fonti strutturate passano ai tag i secondo il NIP-73, e r resta il caso generico che può contenere una URL o del testo. La raccomandazione di ripulire le URL è stata rimossa insieme al resto."
+date: "2026-09-02"
+publishedAt: "2026-09-02"
+backfilled: false
+type: "story"
+tags:
+  - "Nostr"
+  - "NIP"
+  - "Clients"
+translationKey: "nip-84-adds-i-tags-to-highlights"
+featuredImage: "/images/news/nip-84-adds-i-tags-to-highlights.svg"
+sources:
+  - title: "Add i tags to highlights, clarify that r is whatever"
+    url: "https://github.com/nostr-protocol/nips/pull/2454"
+    publisher: "nostr-protocol/nips"
+    date: "2026-09-01"
+  - title: "NIP-84 (84.md)"
+    url: "https://github.com/nostr-protocol/nips/blob/master/84.md"
+    publisher: "nostr-protocol/nips"
+    date: "2026-09-01"
+  - title: "NIP-73: External Content IDs (73.md)"
+    url: "https://github.com/nostr-protocol/nips/blob/master/73.md"
+    publisher: "nostr-protocol/nips"
+    date: "2026-09-01"
+published: true
+---
+
+Il [NIP-84](https://github.com/nostr-protocol/nips/blob/master/84.md) definisce `kind:9802`, l'evento di highlight, il cui `.content` contiene il passaggio che una persona ha segnato come degno di essere conservato. La domanda a cui la specifica ha sempre dovuto rispondere è da dove venga quel passaggio. La [pull request #2454](https://github.com/nostr-protocol/nips/pull/2454) riscrive quella risposta. È stata aperta il 1 settembre 2026 e unita lo stesso giorno, con un file e sei righe modificate.
+
+## La sezione dei riferimenti diventa un elenco
+
+Il testo precedente era di due frasi e copriva due casi:
+
+> `a` or `e` tags should be used for nostr events and `r` tags for URLs.
+
+Il testo che lo sostituisce è un elenco di tre voci:
+
+> - `a` and/or `e` tags for nostr events
+> - `i` tags for structured sources per [NIP 73](./73.md)
+> - `r` tags for anything else (may contain a URL or text)
+
+Lì sono successe due cose insieme. È stato aggiunto un caso ed è stato ridefinito un caso già esistente.
+
+## Che cosa porta il tag i
+
+Il [NIP-73](https://github.com/nostr-protocol/nips/blob/master/73.md) è la specifica degli identificatori di contenuto esterno. Assegna ai tag `i` un vocabolario fisso per identificatori che esistono fuori da nostr: `isbn:` per i libri, `doi:` per gli articoli scientifici, `isan:` per i film, `geo:` per i geohash, `iso3166:` per paesi e suddivisioni, `podcast:guid:` con le sue varianti per episodio ed editore, oltre alle forme per transazioni e indirizzi blockchain e a una forma di URL normalizzata sotto il tipo `web`.
+
+Con la vecchia formulazione, un highlight preso da un libro non aveva modo di dirlo. L'unica casella non nostr era `r`, definita come URL, e un libro stampato non ne ha una. Puntare `i` al NIP-73 dà a quell'highlight un identificatore su cui altri client possono interrogare, che è poi lo scopo del registro degli identificatori: tutti gli eventi che portano `["i", "isbn:9780123456789"]` si trovano come gruppo.
+
+Un dettaglio che la nuova riga tralascia. Il NIP-73 accoppia ogni tag `i` con un tag `k` che ne indica il tipo, ed è questo a rendere possibile l'interrogazione per tipo. Il NIP-84 parla di tag `i` secondo il NIP-73 senza ripetere il requisito di `k`, quindi quell'accoppiamento va letto direttamente nel NIP-73.
+
+## Che cosa perde il tag r
+
+`r` non è più il tag delle URL. Ora è il ripiego, e la specifica dice apertamente che può contenere una URL o del testo. La pull request descrive la situazione che l'ha motivata: highlight pubblicati con una fonte che non è una URL, che i client i quali davano per scontata una URL valida non riuscivano a interpretare.
+
+Leggerlo come URL non è mai stato sicuro nella pratica, e la modifica smette di dare ragione alle implementazioni che continuavano ad analizzarlo così. Rinuncia però a qualcosa. Un client non può più trattare un valore `r` di un highlight come un collegamento senza prima verificarlo.
+
+La stessa modifica ha rimosso una raccomandazione che accompagnava la vecchia definizione:
+
+> When tagging a URL, clients generating these events SHOULD do a best effort of cleaning the URL from trackers or obvious non-useful information from the query string.
+
+Era l'unica indicazione sui tracker nel NIP-84, e dal file è sparita. Nulla nel diff la sposta altrove. I client che rimuovono i parametri di tracciamento dalle fonti di un highlight ora lo fanno per scelta propria e non per un `SHOULD` della specifica, e la forma di URL normalizzata del NIP-73, che ora copre la via `i`, scarta il frammento ma non dice nulla sulla query string.
+
+Resta anche un residuo. Il paragrafo finale del NIP-84, che questa pull request non ha toccato, continua a dire che le URL nei tag r provenienti dal commento MUST avere un attributo `mention` per distinguerle dalla URL della fonte evidenziata, e che la URL della fonte MUST avere l'attributo `source`. Quel testo presuppone che `r` contenga una URL, cosa che la sezione dei riferimenti sopra non richiede più.
+
+## Un MUST diventa SHOULD
+
+Il secondo cambiamento normativo è nella sezione degli highlight con citazione. Un tag `comment` trasforma un highlight in un highlight con citazione, e la regola di resa era assoluta:
+
+> This MUST be rendered like a quote repost with the highlight as the quoted note.
+
+Ora dice `SHOULD`. La ragione riportata nel testo circostante non cambia: la costruzione esiste perché una sola azione di evidenziazione non produca due note, un highlight e un kind 1, che compaiono una dopo l'altra nei client di microblogging. Un client che rende gli highlight con citazione in altro modo non è più fuori specifica.
+
+La modifica rimanente è la correzione di un refuso, `creation and multiple notes` in `creation of multiple notes`, nello stesso paragrafo.
+
+Nel NIP-84 non è cambiato altro. Resta `draft` e `optional`, l'evento resta `kind:9802`, e i tag `p`, `context` e `comment` mantengono il significato che avevano.
