@@ -22,3 +22,4 @@ run at all, which is a different problem entirely.
 2026-08-31 13:07 UTC  skipped    Monday digest window (2026-08-25..2026-08-31) holds no uncovered change; all of #2448, #2119 and commit 24b2ae9f already published as stories on 08-25, 08-27 and 08-28; nips master HEAD is still 24b2ae9f (2026-08-27) and no client or relay release since Amethyst v1.14.0 (2026-08-22, already cited)
 2026-09-01 13:09 UTC  published  nip-67-adds-an-auth-hint  (3 sources)
 2026-09-02 13:20 UTC  published  nip-84-adds-i-tags-to-highlights  (3 sources)
+2026-09-03 13:09 UTC  published  strfry-1-1-2-fixes-a-websocket-memory-dos  (4 sources)
