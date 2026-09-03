@@ -1,0 +1,80 @@
+---
+title: "strfry 1.1.2 fixes a WebSocket memory DoS"
+description: "The strfry relay tagged 1.1.2 with three fixes: an unbounded fragment buffer, a negentropy crash on a reused subscription id, and a reconnect that never recovered."
+excerpt: "A client could keep appending WebSocket continuation frames, each one under the payload limit, and watch the relay's buffer grow without a ceiling. The 1.1.2 tag adds the missing check, clears a stale negentropy session before starting a new one with the same id, and stops the reconnect delay from blocking the event loop."
+date: "2026-09-03"
+publishedAt: "2026-09-03"
+backfilled: false
+type: "story"
+tags:
+  - "Nostr"
+  - "Relays"
+published: true
+translationKey: "strfry-1-1-2-fixes-a-websocket-memory-dos"
+featuredImage: "/images/news/strfry-1-1-2-fixes-a-websocket-memory-dos.svg"
+sources:
+  - title: "strfry 1.1.2"
+    url: "https://github.com/hoytech/strfry/releases/tag/1.1.2"
+    publisher: "hoytech/strfry"
+    date: "2026-08-27"
+  - title: "Compare 1.1.1...1.1.2"
+    url: "https://github.com/hoytech/strfry/compare/1.1.1...1.1.2"
+    publisher: "hoytech/strfry"
+    date: "2026-08-27"
+  - title: "Prevent a memory DoS where attacker continues appending fragments under max payload limit"
+    url: "https://github.com/hoytech/uWebSockets/commit/1ef91686be0d1ceadf18a035616b96258e68fd1e"
+    publisher: "hoytech/uWebSockets"
+    date: "2026-08-19"
+  - title: "Fix WSConnection reconnect stall: don't block the event loop during the reconnect delay"
+    url: "https://github.com/hoytech/strfry/commit/80fc3b2800a09693dda6077ec9b61e083b80d191"
+    publisher: "hoytech/strfry"
+    date: "2026-08-19"
+---
+
+[strfry](https://github.com/hoytech/strfry) tagged [1.1.2](https://github.com/hoytech/strfry/releases/tag/1.1.2) on 27 August 2026. The relay ships by git tag rather than through GitHub releases, so the tag and its `CHANGES` entry are the whole announcement. [Five commits separate it from 1.1.1](https://github.com/hoytech/strfry/compare/1.1.1...1.1.2), touching four paths: `CHANGES`, the `golpe` submodule pointer, `src/WSConnection.h` and `src/apps/relay/RelayNegentropy.cpp`.
+
+Three fixes are listed. Two are crashes or resource exhaustion reachable from a connected client. The third stops a relay operator's stream or sync process from wedging after a dropped connection.
+
+## Fragments under the limit
+
+The first fix does not live in strfry at all. strfry vendors its WebSocket stack through `golpe`, and the tag bumps that submodule, which in turn bumps [uWebSockets](https://github.com/hoytech/uWebSockets/commit/1ef91686be0d1ceadf18a035616b96258e68fd1e). The commit there adds five lines to `handleFragment` in `src/WebSocket.cpp`:
+
+```cpp
+if (webSocket->fragmentBuffer.length() > group->maxPayload) {
+    forceClose(webSocketState, (char*)"payload size exceeded", 21);
+    return true;
+}
+```
+
+The WebSocket protocol lets a single logical message arrive as a first frame followed by any number of continuation frames, with a final frame carrying the FIN bit. Until it is complete, the pieces accumulate in `fragmentBuffer`. The payload limit was being applied to frames, not to the buffer they were being appended to, so a client that sent continuation frames and never set FIN could push the buffer up indefinitely while every individual frame stayed under the limit. The new check tests the accumulated length after each append and force-closes the connection with `payload size exceeded` once it passes `maxPayload`.
+
+This is the one worth acting on. It needs no authentication and no unusual protocol behaviour beyond declining to finish a message, and the cost falls on relay memory rather than on the sender.
+
+## A negentropy session with a familiar name
+
+The second fix is three lines in `RelayNegentropy.cpp`. Negentropy is the set reconciliation protocol strfry uses for syncing, and each session is keyed by the subscription id the client chose. When a client opened a new session reusing an id whose previous query was still being processed, the relay crashed.
+
+The fix clears the old state before the new session is registered:
+
+```cpp
+queries.removeSub(connId, subId);
+views.removeView(connId, subId);
+```
+
+Both calls sit immediately before the log line that records a new negentropy session, so a reused id now displaces whatever was under it instead of colliding with it. The subscription and the view are removed as a pair, which matches how they are created.
+
+## The reconnect that reconnected and then died
+
+The third fix is the largest diff of the five commits, and its explanation is in a comment the commit adds to `WSConnection.h`.
+
+The old code took a delay before retrying a failed connection and implemented it with `std::this_thread::sleep_for` on the hub thread. That thread also runs the uv event loop. Sleeping on it stalls the loop's cached clock for the length of the delay, and the `hub.connect()` call that follows then arms its 5000ms connection timeout against a clock that is already stale. The timer is expired the moment it is set, fires on the next loop tick, and tears down the socket that had just been opened, before the WebSocket handshake completes.
+
+The first connection attempt used a delay of zero and so never slept, which is why it worked. Every reconnect after a disconnect failed the same way, permanently. As the comment notes, the process keeps retrying and never exits, so a supervisor sees a running program and does not restart it.
+
+The replacement defers the retry with a non-blocking `uS::Timer` on the hub's loop, leaving the loop clock accurate, and splits the connect itself into `connectNow()`. A follow-up commit stores the pending timer on the connection so that `terminate()` can stop and close it rather than leaving it armed against an object that is going away.
+
+This path is the one used by strfry's stream and sync commands, per the comment on the fix, so the symptom was a router or sync process that survived a relay restart in name only.
+
+## Upgrading
+
+Nothing in the tag changes configuration, the database format or the protocol surface. The `golpe` bump means a rebuild has to pull the submodule rather than reuse a cached checkout, since the uWebSockets fix arrives through it and not through any file in the strfry tree.

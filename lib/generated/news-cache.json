@@ -1,8 +1,77 @@
 {
-  "generatedAt": "2026-09-02T13:07:34.946Z",
+  "generatedAt": "2026-09-03T13:08:24.369Z",
   "locales": {
     "en": {
       "posts": [
+        {
+          "slug": "strfry-1-1-2-fixes-a-websocket-memory-dos",
+          "title": "strfry 1.1.2 fixes a WebSocket memory DoS",
+          "description": "The strfry relay tagged 1.1.2 with three fixes: an unbounded fragment buffer, a negentropy crash on a reused subscription id, and a reconnect that never recovered.",
+          "excerpt": "A client could keep appending WebSocket continuation frames, each one under the payload limit, and watch the relay's buffer grow without a ceiling. The 1.1.2 tag adds the missing check, clears a stale negentropy session before starting a new one with the same id, and stops the reconnect delay from blocking the event loop.",
+          "date": "2026-09-03T00:00:00.000Z",
+          "author": {
+            "name": "Nostr WoT Newsroom"
+          },
+          "featuredImage": "/images/news/strfry-1-1-2-fixes-a-websocket-memory-dos.svg",
+          "previewImage": "/images/news/strfry-1-1-2-fixes-a-websocket-memory-dos.svg",
+          "tags": [
+            "Nostr",
+            "Relays"
+          ],
+          "published": true,
+          "readingTime": "4 min read",
+          "locale": "en",
+          "translationKey": "strfry-1-1-2-fixes-a-websocket-memory-dos",
+          "translations": {
+            "en": "strfry-1-1-2-fixes-a-websocket-memory-dos",
+            "es": "strfry-1-1-2-corrige-un-dos-de-memoria-en-websocket",
+            "pt": "strfry-1-1-2-corrige-um-dos-de-memoria-em-websocket",
+            "ru": "strfry-1-1-2-ispravlyaet-dos-po-pamyati-v-websocket",
+            "it": "strfry-1-1-2-corregge-un-dos-di-memoria-su-websocket",
+            "fr": "strfry-1-1-2-corrige-un-deni-de-service-memoire-websocket",
+            "de": "strfry-1-1-2-behebt-einen-websocket-speicher-dos"
+          },
+          "availableLocales": [
+            "en",
+            "es",
+            "pt",
+            "ru",
+            "it",
+            "fr",
+            "de"
+          ],
+          "type": "story",
+          "sources": [
+            {
+              "title": "strfry 1.1.2",
+              "url": "https://github.com/hoytech/strfry/releases/tag/1.1.2",
+              "publisher": "hoytech/strfry",
+              "date": "2026-08-27"
+            },
+            {
+              "title": "Compare 1.1.1...1.1.2",
+              "url": "https://github.com/hoytech/strfry/compare/1.1.1...1.1.2",
+              "publisher": "hoytech/strfry",
+              "date": "2026-08-27"
+            },
+            {
+              "title": "Prevent a memory DoS where attacker continues appending fragments under max payload limit",
+              "url": "https://github.com/hoytech/uWebSockets/commit/1ef91686be0d1ceadf18a035616b96258e68fd1e",
+              "publisher": "hoytech/uWebSockets",
+              "date": "2026-08-19"
+            },
+            {
+              "title": "Fix WSConnection reconnect stall: don't block the event loop during the reconnect delay",
+              "url": "https://github.com/hoytech/strfry/commit/80fc3b2800a09693dda6077ec9b61e083b80d191",
+              "publisher": "hoytech/strfry",
+              "date": "2026-08-19"
+            }
+          ],
+          "publishedAt": "2026-09-03T00:00:00.000Z",
+          "backfilled": false,
+          "items": [],
+          "content": "\n[strfry](https://github.com/hoytech/strfry) tagged [1.1.2](https://github.com/hoytech/strfry/releases/tag/1.1.2) on 27 August 2026. The relay ships by git tag rather than through GitHub releases, so the tag and its `CHANGES` entry are the whole announcement. [Five commits separate it from 1.1.1](https://github.com/hoytech/strfry/compare/1.1.1...1.1.2), touching four paths: `CHANGES`, the `golpe` submodule pointer, `src/WSConnection.h` and `src/apps/relay/RelayNegentropy.cpp`.\n\nThree fixes are listed. Two are crashes or resource exhaustion reachable from a connected client. The third stops a relay operator's stream or sync process from wedging after a dropped connection.\n\n## Fragments under the limit\n\nThe first fix does not live in strfry at all. strfry vendors its WebSocket stack through `golpe`, and the tag bumps that submodule, which in turn bumps [uWebSockets](https://github.com/hoytech/uWebSockets/commit/1ef91686be0d1ceadf18a035616b96258e68fd1e). The commit there adds five lines to `handleFragment` in `src/WebSocket.cpp`:\n\n```cpp\nif (webSocket->fragmentBuffer.length() > group->maxPayload) {\n    forceClose(webSocketState, (char*)\"payload size exceeded\", 21);\n    return true;\n}\n```\n\nThe WebSocket protocol lets a single logical message arrive as a first frame followed by any number of continuation frames, with a final frame carrying the FIN bit. Until it is complete, the pieces accumulate in `fragmentBuffer`. The payload limit was being applied to frames, not to the buffer they were being appended to, so a client that sent continuation frames and never set FIN could push the buffer up indefinitely while every individual frame stayed under the limit. The new check tests the accumulated length after each append and force-closes the connection with `payload size exceeded` once it passes `maxPayload`.\n\nThis is the one worth acting on. It needs no authentication and no unusual protocol behaviour beyond declining to finish a message, and the cost falls on relay memory rather than on the sender.\n\n## A negentropy session with a familiar name\n\nThe second fix is three lines in `RelayNegentropy.cpp`. Negentropy is the set reconciliation protocol strfry uses for syncing, and each session is keyed by the subscription id the client chose. When a client opened a new session reusing an id whose previous query was still being processed, the relay crashed.\n\nThe fix clears the old state before the new session is registered:\n\n```cpp\nqueries.removeSub(connId, subId);\nviews.removeView(connId, subId);\n```\n\nBoth calls sit immediately before the log line that records a new negentropy session, so a reused id now displaces whatever was under it instead of colliding with it. The subscription and the view are removed as a pair, which matches how they are created.\n\n## The reconnect that reconnected and then died\n\nThe third fix is the largest diff of the five commits, and its explanation is in a comment the commit adds to `WSConnection.h`.\n\nThe old code took a delay before retrying a failed connection and implemented it with `std::this_thread::sleep_for` on the hub thread. That thread also runs the uv event loop. Sleeping on it stalls the loop's cached clock for the length of the delay, and the `hub.connect()` call that follows then arms its 5000ms connection timeout against a clock that is already stale. The timer is expired the moment it is set, fires on the next loop tick, and tears down the socket that had just been opened, before the WebSocket handshake completes.\n\nThe first connection attempt used a delay of zero and so never slept, which is why it worked. Every reconnect after a disconnect failed the same way, permanently. As the comment notes, the process keeps retrying and never exits, so a supervisor sees a running program and does not restart it.\n\nThe replacement defers the retry with a non-blocking `uS::Timer` on the hub's loop, leaving the loop clock accurate, and splits the connect itself into `connectNow()`. A follow-up commit stores the pending timer on the connection so that `terminate()` can stop and close it rather than leaving it armed against an object that is going away.\n\nThis path is the one used by strfry's stream and sync commands, per the comment on the fix, so the symptom was a router or sync process that survived a relay restart in name only.\n\n## Upgrading\n\nNothing in the tag changes configuration, the database format or the protocol surface. The `golpe` bump means a rebuild has to pull the submodule rather than reuse a cached checkout, since the uWebSockets fix arrives through it and not through any file in the strfry tree.\n"
+        },
         {
           "slug": "nip-84-adds-i-tags-to-highlights",
           "title": "NIP-84 adds i tags to highlights and loosens r",
@@ -1114,6 +1183,75 @@
     "es": {
       "posts": [
         {
+          "slug": "strfry-1-1-2-corrige-un-dos-de-memoria-en-websocket",
+          "title": "strfry 1.1.2 corrige una denegación de servicio por memoria en WebSocket",
+          "description": "El relay strfry etiquetó la versión 1.1.2 con tres correcciones: un búfer de fragmentos sin límite, un fallo de negentropy al reutilizar un id de suscripción y una reconexión que nunca se recuperaba.",
+          "excerpt": "Un cliente podía seguir añadiendo tramas de continuación WebSocket, cada una por debajo del límite de carga útil, y ver crecer el búfer del relay sin techo. La etiqueta 1.1.2 añade la comprobación que faltaba, limpia la sesión de negentropy anterior antes de abrir otra con el mismo id y evita que el retardo de reconexión bloquee el bucle de eventos.",
+          "date": "2026-09-03T00:00:00.000Z",
+          "author": {
+            "name": "Nostr WoT Newsroom"
+          },
+          "featuredImage": "/images/news/strfry-1-1-2-fixes-a-websocket-memory-dos.svg",
+          "previewImage": "/images/news/strfry-1-1-2-fixes-a-websocket-memory-dos.svg",
+          "tags": [
+            "Nostr",
+            "Relays"
+          ],
+          "published": true,
+          "readingTime": "4 min read",
+          "locale": "es",
+          "translationKey": "strfry-1-1-2-fixes-a-websocket-memory-dos",
+          "translations": {
+            "en": "strfry-1-1-2-fixes-a-websocket-memory-dos",
+            "es": "strfry-1-1-2-corrige-un-dos-de-memoria-en-websocket",
+            "pt": "strfry-1-1-2-corrige-um-dos-de-memoria-em-websocket",
+            "ru": "strfry-1-1-2-ispravlyaet-dos-po-pamyati-v-websocket",
+            "it": "strfry-1-1-2-corregge-un-dos-di-memoria-su-websocket",
+            "fr": "strfry-1-1-2-corrige-un-deni-de-service-memoire-websocket",
+            "de": "strfry-1-1-2-behebt-einen-websocket-speicher-dos"
+          },
+          "availableLocales": [
+            "en",
+            "es",
+            "pt",
+            "ru",
+            "it",
+            "fr",
+            "de"
+          ],
+          "type": "story",
+          "sources": [
+            {
+              "title": "strfry 1.1.2",
+              "url": "https://github.com/hoytech/strfry/releases/tag/1.1.2",
+              "publisher": "hoytech/strfry",
+              "date": "2026-08-27"
+            },
+            {
+              "title": "Comparación 1.1.1...1.1.2",
+              "url": "https://github.com/hoytech/strfry/compare/1.1.1...1.1.2",
+              "publisher": "hoytech/strfry",
+              "date": "2026-08-27"
+            },
+            {
+              "title": "Prevent a memory DoS where attacker continues appending fragments under max payload limit",
+              "url": "https://github.com/hoytech/uWebSockets/commit/1ef91686be0d1ceadf18a035616b96258e68fd1e",
+              "publisher": "hoytech/uWebSockets",
+              "date": "2026-08-19"
+            },
+            {
+              "title": "Fix WSConnection reconnect stall: don't block the event loop during the reconnect delay",
+              "url": "https://github.com/hoytech/strfry/commit/80fc3b2800a09693dda6077ec9b61e083b80d191",
+              "publisher": "hoytech/strfry",
+              "date": "2026-08-19"
+            }
+          ],
+          "publishedAt": "2026-09-03T00:00:00.000Z",
+          "backfilled": false,
+          "items": [],
+          "content": "\n[strfry](https://github.com/hoytech/strfry) etiquetó [1.1.2](https://github.com/hoytech/strfry/releases/tag/1.1.2) el 27 de agosto de 2026. El relay publica mediante etiquetas de git y no a través de las releases de GitHub, así que la etiqueta y su entrada en `CHANGES` son todo el anuncio. [Cinco commits lo separan de 1.1.1](https://github.com/hoytech/strfry/compare/1.1.1...1.1.2), y tocan cuatro rutas: `CHANGES`, el puntero del submódulo `golpe`, `src/WSConnection.h` y `src/apps/relay/RelayNegentropy.cpp`.\n\nSe enumeran tres correcciones. Dos son fallos o agotamiento de recursos alcanzables desde un cliente conectado. La tercera evita que el proceso de stream o de sync de un operador se quede atascado tras una caída de conexión.\n\n## Fragmentos por debajo del límite\n\nLa primera corrección no vive en strfry. strfry incorpora su pila WebSocket a través de `golpe`, y la etiqueta actualiza ese submódulo, que a su vez actualiza [uWebSockets](https://github.com/hoytech/uWebSockets/commit/1ef91686be0d1ceadf18a035616b96258e68fd1e). Ese commit añade cinco líneas a `handleFragment` en `src/WebSocket.cpp`:\n\n```cpp\nif (webSocket->fragmentBuffer.length() > group->maxPayload) {\n    forceClose(webSocketState, (char*)\"payload size exceeded\", 21);\n    return true;\n}\n```\n\nEl protocolo WebSocket permite que un único mensaje lógico llegue como una primera trama seguida de cualquier número de tramas de continuación, con una trama final que lleva el bit FIN. Hasta que se completa, las piezas se acumulan en `fragmentBuffer`. El límite de carga útil se aplicaba a las tramas y no al búfer donde se iban acumulando, de modo que un cliente que enviara tramas de continuación sin marcar nunca FIN podía hacer crecer el búfer indefinidamente mientras cada trama individual seguía por debajo del límite. La nueva comprobación mide la longitud acumulada después de cada adición y cierra la conexión con `payload size exceeded` en cuanto supera `maxPayload`.\n\nEsta es la que conviene atender. No requiere autenticación ni ningún comportamiento de protocolo inusual más allá de no terminar un mensaje, y el coste recae en la memoria del relay y no en quien envía.\n\n## Una sesión de negentropy con un nombre conocido\n\nLa segunda corrección son tres líneas en `RelayNegentropy.cpp`. Negentropy es el protocolo de reconciliación de conjuntos que strfry usa para sincronizar, y cada sesión se identifica por el id de suscripción que eligió el cliente. Cuando un cliente abría una sesión nueva reutilizando un id cuya consulta anterior seguía procesándose, el relay fallaba.\n\nLa corrección limpia el estado antiguo antes de registrar la sesión nueva:\n\n```cpp\nqueries.removeSub(connId, subId);\nviews.removeView(connId, subId);\n```\n\nAmbas llamadas quedan justo antes de la línea de registro que anota una nueva sesión de negentropy, así que un id reutilizado ahora desplaza lo que hubiera debajo en lugar de colisionar con ello. La suscripción y la vista se eliminan como par, igual que se crean.\n\n## La reconexión que reconectaba y luego moría\n\nLa tercera corrección es el diff más grande de los cinco commits, y su explicación está en un comentario que el propio commit añade a `WSConnection.h`.\n\nEl código antiguo esperaba un retardo antes de reintentar una conexión fallida y lo implementaba con `std::this_thread::sleep_for` en el hilo del hub. Ese hilo también ejecuta el bucle de eventos de uv. Dormir en él detiene el reloj en caché del bucle durante el retardo, y la llamada `hub.connect()` que viene después arma su tiempo de espera de conexión de 5000 ms contra un reloj que ya está desfasado. El temporizador está vencido en el momento en que se fija, se dispara en el siguiente ciclo del bucle y derriba el socket recién abierto antes de que termine el handshake WebSocket.\n\nEl primer intento de conexión usaba un retardo de cero y por tanto nunca dormía, y por eso funcionaba. Todas las reconexiones posteriores a una desconexión fallaban del mismo modo, de forma permanente. Como señala el comentario, el proceso sigue reintentando y nunca termina, así que un supervisor ve un programa en ejecución y no lo reinicia.\n\nEl reemplazo aplaza el reintento con un `uS::Timer` no bloqueante sobre el bucle del hub, con lo que el reloj del bucle sigue siendo correcto, y separa la conexión en sí en `connectNow()`. Un commit posterior guarda el temporizador pendiente en la conexión para que `terminate()` pueda pararlo y cerrarlo en vez de dejarlo armado contra un objeto que va a desaparecer.\n\nEsta ruta es la que usan los comandos de stream y de sync de strfry, según el comentario de la corrección, así que el síntoma era un proceso de router o de sincronización que sobrevivía a un reinicio del relay solo de nombre.\n\n## Actualizar\n\nNada en la etiqueta cambia la configuración, el formato de la base de datos ni la superficie del protocolo. La actualización de `golpe` implica que una recompilación tiene que traer el submódulo en lugar de reutilizar una copia en caché, ya que la corrección de uWebSockets llega por ahí y no por ningún archivo del árbol de strfry.\n"
+        },
+        {
           "slug": "el-nip-84-anade-etiquetas-i-a-los-destacados",
           "title": "El NIP-84 añade etiquetas i a los destacados y relaja r",
           "description": "Los destacados ya pueden citar identificadores de contenido externo mediante el NIP-73, y la etiqueta r deja de definirse como una URL.",
@@ -2223,6 +2361,75 @@
     },
     "pt": {
       "posts": [
+        {
+          "slug": "strfry-1-1-2-corrige-um-dos-de-memoria-em-websocket",
+          "title": "strfry 1.1.2 corrige uma negação de serviço por memória em WebSocket",
+          "description": "O relay strfry marcou a versão 1.1.2 com três correções: um buffer de fragmentos sem limite, uma falha do negentropy ao reutilizar um id de assinatura e uma reconexão que nunca se recuperava.",
+          "excerpt": "Um cliente podia continuar anexando quadros de continuação WebSocket, cada um abaixo do limite de payload, e ver o buffer do relay crescer sem teto. A tag 1.1.2 acrescenta a verificação que faltava, limpa a sessão anterior do negentropy antes de abrir outra com o mesmo id e impede que o atraso de reconexão bloqueie o laço de eventos.",
+          "date": "2026-09-03T00:00:00.000Z",
+          "author": {
+            "name": "Nostr WoT Newsroom"
+          },
+          "featuredImage": "/images/news/strfry-1-1-2-fixes-a-websocket-memory-dos.svg",
+          "previewImage": "/images/news/strfry-1-1-2-fixes-a-websocket-memory-dos.svg",
+          "tags": [
+            "Nostr",
+            "Relays"
+          ],
+          "published": true,
+          "readingTime": "4 min read",
+          "locale": "pt",
+          "translationKey": "strfry-1-1-2-fixes-a-websocket-memory-dos",
+          "translations": {
+            "en": "strfry-1-1-2-fixes-a-websocket-memory-dos",
+            "es": "strfry-1-1-2-corrige-un-dos-de-memoria-en-websocket",
+            "pt": "strfry-1-1-2-corrige-um-dos-de-memoria-em-websocket",
+            "ru": "strfry-1-1-2-ispravlyaet-dos-po-pamyati-v-websocket",
+            "it": "strfry-1-1-2-corregge-un-dos-di-memoria-su-websocket",
+            "fr": "strfry-1-1-2-corrige-un-deni-de-service-memoire-websocket",
+            "de": "strfry-1-1-2-behebt-einen-websocket-speicher-dos"
+          },
+          "availableLocales": [
+            "en",
+            "es",
+            "pt",
+            "ru",
+            "it",
+            "fr",
+            "de"
+          ],
+          "type": "story",
+          "sources": [
+            {
+              "title": "strfry 1.1.2",
+              "url": "https://github.com/hoytech/strfry/releases/tag/1.1.2",
+              "publisher": "hoytech/strfry",
+              "date": "2026-08-27"
+            },
+            {
+              "title": "Comparação 1.1.1...1.1.2",
+              "url": "https://github.com/hoytech/strfry/compare/1.1.1...1.1.2",
+              "publisher": "hoytech/strfry",
+              "date": "2026-08-27"
+            },
+            {
+              "title": "Prevent a memory DoS where attacker continues appending fragments under max payload limit",
+              "url": "https://github.com/hoytech/uWebSockets/commit/1ef91686be0d1ceadf18a035616b96258e68fd1e",
+              "publisher": "hoytech/uWebSockets",
+              "date": "2026-08-19"
+            },
+            {
+              "title": "Fix WSConnection reconnect stall: don't block the event loop during the reconnect delay",
+              "url": "https://github.com/hoytech/strfry/commit/80fc3b2800a09693dda6077ec9b61e083b80d191",
+              "publisher": "hoytech/strfry",
+              "date": "2026-08-19"
+            }
+          ],
+          "publishedAt": "2026-09-03T00:00:00.000Z",
+          "backfilled": false,
+          "items": [],
+          "content": "\nO [strfry](https://github.com/hoytech/strfry) marcou a tag [1.1.2](https://github.com/hoytech/strfry/releases/tag/1.1.2) em 27 de agosto de 2026. O relay publica por tag do git e não pelas releases do GitHub, então a tag e sua entrada no `CHANGES` são todo o anúncio. [Cinco commits a separam da 1.1.1](https://github.com/hoytech/strfry/compare/1.1.1...1.1.2), tocando quatro caminhos: `CHANGES`, o ponteiro do submódulo `golpe`, `src/WSConnection.h` e `src/apps/relay/RelayNegentropy.cpp`.\n\nSão listadas três correções. Duas são falhas ou esgotamento de recursos alcançáveis a partir de um cliente conectado. A terceira impede que o processo de stream ou de sync de um operador trave depois de uma queda de conexão.\n\n## Fragmentos abaixo do limite\n\nA primeira correção não está no strfry. O strfry incorpora sua pilha WebSocket através do `golpe`, e a tag atualiza esse submódulo, que por sua vez atualiza o [uWebSockets](https://github.com/hoytech/uWebSockets/commit/1ef91686be0d1ceadf18a035616b96258e68fd1e). Esse commit acrescenta cinco linhas a `handleFragment`, em `src/WebSocket.cpp`:\n\n```cpp\nif (webSocket->fragmentBuffer.length() > group->maxPayload) {\n    forceClose(webSocketState, (char*)\"payload size exceeded\", 21);\n    return true;\n}\n```\n\nO protocolo WebSocket permite que uma única mensagem lógica chegue como um primeiro quadro seguido de qualquer número de quadros de continuação, com um quadro final carregando o bit FIN. Até estar completa, as partes se acumulam em `fragmentBuffer`. O limite de payload era aplicado aos quadros, e não ao buffer em que eles eram anexados, de modo que um cliente que enviasse quadros de continuação e nunca marcasse FIN podia empurrar o buffer para cima indefinidamente enquanto cada quadro individual permanecia abaixo do limite. A nova verificação mede o comprimento acumulado após cada anexação e força o fechamento da conexão com `payload size exceeded` assim que ele ultrapassa `maxPayload`.\n\nEssa é a que vale agir. Não exige autenticação nem qualquer comportamento incomum de protocolo além de não terminar uma mensagem, e o custo recai sobre a memória do relay, não sobre quem envia.\n\n## Uma sessão de negentropy com um nome conhecido\n\nA segunda correção são três linhas em `RelayNegentropy.cpp`. Negentropy é o protocolo de reconciliação de conjuntos que o strfry usa para sincronizar, e cada sessão é identificada pelo id de assinatura escolhido pelo cliente. Quando um cliente abria uma sessão nova reutilizando um id cuja consulta anterior ainda estava em processamento, o relay quebrava.\n\nA correção limpa o estado antigo antes de a nova sessão ser registrada:\n\n```cpp\nqueries.removeSub(connId, subId);\nviews.removeView(connId, subId);\n```\n\nAs duas chamadas ficam imediatamente antes da linha de log que registra uma nova sessão de negentropy, então um id reutilizado agora desloca o que estava embaixo em vez de colidir com ele. A assinatura e a view são removidas como par, do mesmo jeito que são criadas.\n\n## A reconexão que reconectava e depois morria\n\nA terceira correção é o maior diff dos cinco commits, e sua explicação está em um comentário que o próprio commit acrescenta ao `WSConnection.h`.\n\nO código antigo esperava um atraso antes de tentar de novo uma conexão que falhou, e implementava isso com `std::this_thread::sleep_for` na thread do hub. Essa thread também executa o laço de eventos do uv. Dormir nela paralisa o relógio em cache do laço pela duração do atraso, e a chamada `hub.connect()` seguinte arma seu tempo limite de conexão de 5000 ms contra um relógio já defasado. O temporizador está vencido no momento em que é definido, dispara no ciclo seguinte do laço e derruba o socket recém-aberto antes de o handshake WebSocket terminar.\n\nA primeira tentativa de conexão usava atraso zero e portanto nunca dormia, e é por isso que funcionava. Toda reconexão posterior a uma desconexão falhava do mesmo jeito, de forma permanente. Como o comentário observa, o processo continua tentando e nunca termina, então um supervisor vê um programa em execução e não o reinicia.\n\nA substituição adia a nova tentativa com um `uS::Timer` não bloqueante sobre o laço do hub, o que mantém o relógio do laço correto, e separa a conexão em si em `connectNow()`. Um commit seguinte guarda o temporizador pendente na conexão para que `terminate()` possa pará-lo e fechá-lo, em vez de deixá-lo armado contra um objeto que vai desaparecer.\n\nEsse caminho é o usado pelos comandos de stream e de sync do strfry, segundo o comentário da correção, então o sintoma era um processo de router ou de sincronização que sobrevivia a um reinício do relay apenas no nome.\n\n## Atualizar\n\nNada na tag muda a configuração, o formato do banco de dados ou a superfície do protocolo. A atualização do `golpe` significa que uma recompilação precisa buscar o submódulo em vez de reutilizar uma cópia em cache, já que a correção do uWebSockets chega por ali e não por algum arquivo da árvore do strfry.\n"
+        },
         {
           "slug": "nip-84-adiciona-tags-i-aos-destaques",
           "title": "NIP-84 adiciona tags i aos destaques e afrouxa r",
@@ -3334,6 +3541,75 @@
     "ru": {
       "posts": [
         {
+          "slug": "strfry-1-1-2-ispravlyaet-dos-po-pamyati-v-websocket",
+          "title": "strfry 1.1.2 исправляет DoS по памяти в WebSocket",
+          "description": "Релей strfry выпустил тег 1.1.2 с тремя исправлениями: буфер фрагментов без ограничения, падение negentropy при повторном использовании id подписки и переподключение, которое никогда не восстанавливалось.",
+          "excerpt": "Клиент мог бесконечно добавлять продолжающие кадры WebSocket, каждый из которых оставался ниже предела полезной нагрузки, и буфер релея рос без потолка. Тег 1.1.2 добавляет недостающую проверку, очищает прежнюю сессию negentropy перед открытием новой с тем же id и не даёт задержке переподключения блокировать цикл событий.",
+          "date": "2026-09-03T00:00:00.000Z",
+          "author": {
+            "name": "Nostr WoT Newsroom"
+          },
+          "featuredImage": "/images/news/strfry-1-1-2-fixes-a-websocket-memory-dos.svg",
+          "previewImage": "/images/news/strfry-1-1-2-fixes-a-websocket-memory-dos.svg",
+          "tags": [
+            "Nostr",
+            "Relays"
+          ],
+          "published": true,
+          "readingTime": "3 min read",
+          "locale": "ru",
+          "translationKey": "strfry-1-1-2-fixes-a-websocket-memory-dos",
+          "translations": {
+            "en": "strfry-1-1-2-fixes-a-websocket-memory-dos",
+            "es": "strfry-1-1-2-corrige-un-dos-de-memoria-en-websocket",
+            "pt": "strfry-1-1-2-corrige-um-dos-de-memoria-em-websocket",
+            "ru": "strfry-1-1-2-ispravlyaet-dos-po-pamyati-v-websocket",
+            "it": "strfry-1-1-2-corregge-un-dos-di-memoria-su-websocket",
+            "fr": "strfry-1-1-2-corrige-un-deni-de-service-memoire-websocket",
+            "de": "strfry-1-1-2-behebt-einen-websocket-speicher-dos"
+          },
+          "availableLocales": [
+            "en",
+            "es",
+            "pt",
+            "ru",
+            "it",
+            "fr",
+            "de"
+          ],
+          "type": "story",
+          "sources": [
+            {
+              "title": "strfry 1.1.2",
+              "url": "https://github.com/hoytech/strfry/releases/tag/1.1.2",
+              "publisher": "hoytech/strfry",
+              "date": "2026-08-27"
+            },
+            {
+              "title": "Сравнение 1.1.1...1.1.2",
+              "url": "https://github.com/hoytech/strfry/compare/1.1.1...1.1.2",
+              "publisher": "hoytech/strfry",
+              "date": "2026-08-27"
+            },
+            {
+              "title": "Prevent a memory DoS where attacker continues appending fragments under max payload limit",
+              "url": "https://github.com/hoytech/uWebSockets/commit/1ef91686be0d1ceadf18a035616b96258e68fd1e",
+              "publisher": "hoytech/uWebSockets",
+              "date": "2026-08-19"
+            },
+            {
+              "title": "Fix WSConnection reconnect stall: don't block the event loop during the reconnect delay",
+              "url": "https://github.com/hoytech/strfry/commit/80fc3b2800a09693dda6077ec9b61e083b80d191",
+              "publisher": "hoytech/strfry",
+              "date": "2026-08-19"
+            }
+          ],
+          "publishedAt": "2026-09-03T00:00:00.000Z",
+          "backfilled": false,
+          "items": [],
+          "content": "\n[strfry](https://github.com/hoytech/strfry) поставил тег [1.1.2](https://github.com/hoytech/strfry/releases/tag/1.1.2) 27 августа 2026 года. Релей выпускает версии через теги git, а не через релизы GitHub, поэтому тег и его запись в `CHANGES` и есть всё объявление. [От 1.1.1 его отделяют пять коммитов](https://github.com/hoytech/strfry/compare/1.1.1...1.1.2), затрагивающих четыре пути: `CHANGES`, указатель на подмодуль `golpe`, `src/WSConnection.h` и `src/apps/relay/RelayNegentropy.cpp`.\n\nПеречислены три исправления. Два касаются падений или исчерпания ресурсов, достижимых со стороны подключённого клиента. Третье не даёт процессу stream или sync у оператора зависнуть после обрыва связи.\n\n## Фрагменты ниже предела\n\nПервое исправление находится не в strfry. strfry подключает свой стек WebSocket через `golpe`, и тег поднимает этот подмодуль, который, в свою очередь, поднимает [uWebSockets](https://github.com/hoytech/uWebSockets/commit/1ef91686be0d1ceadf18a035616b96258e68fd1e). Тот коммит добавляет пять строк в `handleFragment` в `src/WebSocket.cpp`:\n\n```cpp\nif (webSocket->fragmentBuffer.length() > group->maxPayload) {\n    forceClose(webSocketState, (char*)\"payload size exceeded\", 21);\n    return true;\n}\n```\n\nПротокол WebSocket допускает, что одно логическое сообщение придёт в виде первого кадра и произвольного числа продолжающих кадров, а завершающий кадр несёт бит FIN. Пока сообщение не собрано, части накапливаются в `fragmentBuffer`. Предел полезной нагрузки применялся к кадрам, а не к буферу, в который они добавлялись, поэтому клиент, отправляющий продолжающие кадры и никогда не выставляющий FIN, мог наращивать буфер неограниченно, притом что каждый отдельный кадр оставался ниже предела. Новая проверка измеряет накопленную длину после каждого добавления и принудительно закрывает соединение с `payload size exceeded`, как только она превышает `maxPayload`.\n\nИменно на это стоит отреагировать. Здесь не нужны ни аутентификация, ни какое-либо необычное поведение протокола, кроме отказа завершить сообщение, а издержки ложатся на память релея, а не на отправителя.\n\n## Сессия negentropy со знакомым именем\n\nВторое исправление занимает три строки в `RelayNegentropy.cpp`. Negentropy это протокол сверки множеств, который strfry использует для синхронизации, и каждая сессия ведётся по id подписки, выбранному клиентом. Когда клиент открывал новую сессию, повторно используя id, чей предыдущий запрос ещё обрабатывался, релей падал.\n\nИсправление очищает старое состояние до регистрации новой сессии:\n\n```cpp\nqueries.removeSub(connId, subId);\nviews.removeView(connId, subId);\n```\n\nОба вызова стоят непосредственно перед строкой журнала, отмечающей новую сессию negentropy, так что повторно использованный id теперь вытесняет то, что было под ним, вместо конфликта с ним. Подписка и представление удаляются парой, так же как и создаются.\n\n## Переподключение, которое подключалось и умирало\n\nТретье исправление это самый большой diff из пяти коммитов, и его объяснение содержится в комментарии, который тот же коммит добавляет в `WSConnection.h`.\n\nПрежний код выдерживал задержку перед повторной попыткой соединения и реализовывал её через `std::this_thread::sleep_for` в потоке хаба. Этот же поток выполняет цикл событий uv. Сон в нём останавливает кешированные часы цикла на длительность задержки, и следующий вызов `hub.connect()` заводит свой таймаут соединения в 5000 мс по уже устаревшим часам. Таймер оказывается просроченным в момент установки, срабатывает на следующем витке цикла и рвёт только что открытый сокет до завершения рукопожатия WebSocket.\n\nПервая попытка соединения использовала нулевую задержку и потому никогда не спала, поэтому она работала. Любое переподключение после обрыва отказывало тем же образом, причём навсегда. Как отмечает комментарий, процесс продолжает попытки и никогда не завершается, поэтому супервизор видит работающую программу и не перезапускает её.\n\nЗамена откладывает повторную попытку неблокирующим `uS::Timer` на цикле хаба, благодаря чему часы цикла остаются точными, и выносит само подключение в `connectNow()`. Последующий коммит сохраняет ожидающий таймер в объекте соединения, чтобы `terminate()` мог остановить и закрыть его, а не оставлять взведённым на объект, который вот-вот исчезнет.\n\nЭтим путём, согласно комментарию к исправлению, пользуются команды stream и sync в strfry, так что симптомом был процесс маршрутизации или синхронизации, который переживал перезапуск релея лишь на словах.\n\n## Обновление\n\nНичто в этом теге не меняет конфигурацию, формат базы данных или поверхность протокола. Поднятие `golpe` означает, что при пересборке подмодуль нужно подтянуть заново, а не переиспользовать кешированную копию, поскольку исправление uWebSockets приходит именно оттуда, а не из какого-либо файла в дереве strfry.\n"
+        },
+        {
           "slug": "nip-84-dobavlyaet-tegi-i-v-vydeleniya",
           "title": "NIP-84 добавляет теги i в выделения и ослабляет r",
           "description": "Выделения теперь могут ссылаться на внешние идентификаторы контента через NIP-73, а тег r перестаёт определяться как URL.",
@@ -4443,6 +4719,75 @@
     },
     "it": {
       "posts": [
+        {
+          "slug": "strfry-1-1-2-corregge-un-dos-di-memoria-su-websocket",
+          "title": "strfry 1.1.2 corregge un DoS di memoria su WebSocket",
+          "description": "Il relay strfry ha taggato la 1.1.2 con tre correzioni: un buffer di frammenti senza limite, un crash di negentropy su un id di sottoscrizione riutilizzato e una riconnessione che non si ristabiliva mai.",
+          "excerpt": "Un client poteva continuare ad accodare frame di continuazione WebSocket, ognuno sotto il limite di payload, e far crescere il buffer del relay senza tetto. Il tag 1.1.2 aggiunge il controllo mancante, ripulisce la sessione negentropy precedente prima di aprirne un'altra con lo stesso id ed evita che il ritardo di riconnessione blocchi il ciclo di eventi.",
+          "date": "2026-09-03T00:00:00.000Z",
+          "author": {
+            "name": "Nostr WoT Newsroom"
+          },
+          "featuredImage": "/images/news/strfry-1-1-2-fixes-a-websocket-memory-dos.svg",
+          "previewImage": "/images/news/strfry-1-1-2-fixes-a-websocket-memory-dos.svg",
+          "tags": [
+            "Nostr",
+            "Relays"
+          ],
+          "published": true,
+          "readingTime": "4 min read",
+          "locale": "it",
+          "translationKey": "strfry-1-1-2-fixes-a-websocket-memory-dos",
+          "translations": {
+            "en": "strfry-1-1-2-fixes-a-websocket-memory-dos",
+            "es": "strfry-1-1-2-corrige-un-dos-de-memoria-en-websocket",
+            "pt": "strfry-1-1-2-corrige-um-dos-de-memoria-em-websocket",
+            "ru": "strfry-1-1-2-ispravlyaet-dos-po-pamyati-v-websocket",
+            "it": "strfry-1-1-2-corregge-un-dos-di-memoria-su-websocket",
+            "fr": "strfry-1-1-2-corrige-un-deni-de-service-memoire-websocket",
+            "de": "strfry-1-1-2-behebt-einen-websocket-speicher-dos"
+          },
+          "availableLocales": [
+            "en",
+            "es",
+            "pt",
+            "ru",
+            "it",
+            "fr",
+            "de"
+          ],
+          "type": "story",
+          "sources": [
+            {
+              "title": "strfry 1.1.2",
+              "url": "https://github.com/hoytech/strfry/releases/tag/1.1.2",
+              "publisher": "hoytech/strfry",
+              "date": "2026-08-27"
+            },
+            {
+              "title": "Confronto 1.1.1...1.1.2",
+              "url": "https://github.com/hoytech/strfry/compare/1.1.1...1.1.2",
+              "publisher": "hoytech/strfry",
+              "date": "2026-08-27"
+            },
+            {
+              "title": "Prevent a memory DoS where attacker continues appending fragments under max payload limit",
+              "url": "https://github.com/hoytech/uWebSockets/commit/1ef91686be0d1ceadf18a035616b96258e68fd1e",
+              "publisher": "hoytech/uWebSockets",
+              "date": "2026-08-19"
+            },
+            {
+              "title": "Fix WSConnection reconnect stall: don't block the event loop during the reconnect delay",
+              "url": "https://github.com/hoytech/strfry/commit/80fc3b2800a09693dda6077ec9b61e083b80d191",
+              "publisher": "hoytech/strfry",
+              "date": "2026-08-19"
+            }
+          ],
+          "publishedAt": "2026-09-03T00:00:00.000Z",
+          "backfilled": false,
+          "items": [],
+          "content": "\n[strfry](https://github.com/hoytech/strfry) ha taggato la [1.1.2](https://github.com/hoytech/strfry/releases/tag/1.1.2) il 27 agosto 2026. Il relay pubblica tramite tag git e non tramite le release di GitHub, quindi il tag e la sua voce in `CHANGES` sono tutto l'annuncio. [Cinque commit la separano dalla 1.1.1](https://github.com/hoytech/strfry/compare/1.1.1...1.1.2), toccando quattro percorsi: `CHANGES`, il puntatore al sottomodulo `golpe`, `src/WSConnection.h` e `src/apps/relay/RelayNegentropy.cpp`.\n\nLe correzioni elencate sono tre. Due riguardano crash o esaurimento di risorse raggiungibili da un client connesso. La terza evita che il processo di stream o di sync di un operatore resti bloccato dopo una caduta di connessione.\n\n## Frammenti sotto il limite\n\nLa prima correzione non si trova in strfry. strfry incorpora il proprio stack WebSocket tramite `golpe`, e il tag aggiorna quel sottomodulo, che a sua volta aggiorna [uWebSockets](https://github.com/hoytech/uWebSockets/commit/1ef91686be0d1ceadf18a035616b96258e68fd1e). Quel commit aggiunge cinque righe a `handleFragment`, in `src/WebSocket.cpp`:\n\n```cpp\nif (webSocket->fragmentBuffer.length() > group->maxPayload) {\n    forceClose(webSocketState, (char*)\"payload size exceeded\", 21);\n    return true;\n}\n```\n\nIl protocollo WebSocket consente che un singolo messaggio logico arrivi come un primo frame seguito da un numero qualsiasi di frame di continuazione, con un frame finale che porta il bit FIN. Finché non è completo, i pezzi si accumulano in `fragmentBuffer`. Il limite di payload veniva applicato ai frame e non al buffer in cui venivano accodati, quindi un client che inviasse frame di continuazione senza mai impostare FIN poteva far crescere il buffer indefinitamente mentre ogni singolo frame restava sotto il limite. Il nuovo controllo misura la lunghezza accumulata dopo ogni accodamento e chiude la connessione con `payload size exceeded` non appena supera `maxPayload`.\n\nÈ questa quella su cui vale la pena intervenire. Non richiede autenticazione né alcun comportamento di protocollo insolito oltre al non concludere un messaggio, e il costo ricade sulla memoria del relay, non su chi invia.\n\n## Una sessione negentropy con un nome già visto\n\nLa seconda correzione sono tre righe in `RelayNegentropy.cpp`. Negentropy è il protocollo di riconciliazione di insiemi che strfry usa per la sincronizzazione, e ogni sessione è identificata dall'id di sottoscrizione scelto dal client. Quando un client apriva una nuova sessione riutilizzando un id la cui query precedente era ancora in elaborazione, il relay andava in crash.\n\nLa correzione ripulisce lo stato vecchio prima che la nuova sessione venga registrata:\n\n```cpp\nqueries.removeSub(connId, subId);\nviews.removeView(connId, subId);\n```\n\nEntrambe le chiamate stanno subito prima della riga di log che registra una nuova sessione negentropy, così un id riutilizzato ora scalza quello che c'era sotto invece di collidere con esso. La sottoscrizione e la view vengono rimosse in coppia, allo stesso modo in cui vengono create.\n\n## La riconnessione che si riconnetteva e poi moriva\n\nLa terza correzione è il diff più esteso dei cinque commit, e la sua spiegazione sta in un commento che il commit stesso aggiunge a `WSConnection.h`.\n\nIl codice precedente attendeva un ritardo prima di ritentare una connessione fallita e lo realizzava con `std::this_thread::sleep_for` sul thread dell'hub. Quel thread esegue anche il ciclo di eventi di uv. Dormirci sopra congela l'orologio in cache del ciclo per tutta la durata del ritardo, e la successiva `hub.connect()` arma il proprio timeout di connessione da 5000 ms contro un orologio ormai vecchio. Il timer è già scaduto nel momento in cui viene impostato, scatta al giro di ciclo successivo e abbatte il socket appena aperto, prima che l'handshake WebSocket sia completo.\n\nIl primo tentativo di connessione usava un ritardo pari a zero e quindi non dormiva mai, ed è per questo che funzionava. Ogni riconnessione successiva a una disconnessione falliva allo stesso modo, in modo permanente. Come nota il commento, il processo continua a ritentare e non termina mai, così un supervisore vede un programma in esecuzione e non lo riavvia.\n\nLa sostituzione rimanda il nuovo tentativo con un `uS::Timer` non bloccante sul ciclo dell'hub, mantenendo corretto l'orologio del ciclo, e separa la connessione vera e propria in `connectNow()`. Un commit successivo conserva il timer in attesa sulla connessione, così che `terminate()` possa fermarlo e chiuderlo invece di lasciarlo armato su un oggetto che sta per sparire.\n\nQuesto è il percorso usato dai comandi stream e sync di strfry, stando al commento della correzione, quindi il sintomo era un processo di router o di sincronizzazione che sopravviveva al riavvio di un relay solo di nome.\n\n## Aggiornare\n\nNulla nel tag cambia la configurazione, il formato del database o la superficie del protocollo. L'aggiornamento di `golpe` implica che una ricompilazione debba scaricare il sottomodulo invece di riusare una copia in cache, dato che la correzione di uWebSockets arriva da lì e non da un file dell'albero di strfry.\n"
+        },
         {
           "slug": "il-nip-84-aggiunge-i-tag-i-agli-highlight",
           "title": "Il NIP-84 aggiunge i tag i agli highlight e allenta r",
@@ -5554,6 +5899,75 @@
     "fr": {
       "posts": [
         {
+          "slug": "strfry-1-1-2-corrige-un-deni-de-service-memoire-websocket",
+          "title": "strfry 1.1.2 corrige un déni de service mémoire sur WebSocket",
+          "description": "Le relais strfry a publié la version 1.1.2 avec trois correctifs : un tampon de fragments sans limite, un plantage de negentropy sur un identifiant d'abonnement réutilisé et une reconnexion qui ne se rétablissait jamais.",
+          "excerpt": "Un client pouvait continuer à ajouter des trames de continuation WebSocket, chacune sous la limite de charge utile, et voir le tampon du relais grandir sans plafond. La version 1.1.2 ajoute la vérification manquante, nettoie la session negentropy précédente avant d'en ouvrir une autre portant le même identifiant, et empêche le délai de reconnexion de bloquer la boucle d'événements.",
+          "date": "2026-09-03T00:00:00.000Z",
+          "author": {
+            "name": "Nostr WoT Newsroom"
+          },
+          "featuredImage": "/images/news/strfry-1-1-2-fixes-a-websocket-memory-dos.svg",
+          "previewImage": "/images/news/strfry-1-1-2-fixes-a-websocket-memory-dos.svg",
+          "tags": [
+            "Nostr",
+            "Relays"
+          ],
+          "published": true,
+          "readingTime": "4 min read",
+          "locale": "fr",
+          "translationKey": "strfry-1-1-2-fixes-a-websocket-memory-dos",
+          "translations": {
+            "en": "strfry-1-1-2-fixes-a-websocket-memory-dos",
+            "es": "strfry-1-1-2-corrige-un-dos-de-memoria-en-websocket",
+            "pt": "strfry-1-1-2-corrige-um-dos-de-memoria-em-websocket",
+            "ru": "strfry-1-1-2-ispravlyaet-dos-po-pamyati-v-websocket",
+            "it": "strfry-1-1-2-corregge-un-dos-di-memoria-su-websocket",
+            "fr": "strfry-1-1-2-corrige-un-deni-de-service-memoire-websocket",
+            "de": "strfry-1-1-2-behebt-einen-websocket-speicher-dos"
+          },
+          "availableLocales": [
+            "en",
+            "es",
+            "pt",
+            "ru",
+            "it",
+            "fr",
+            "de"
+          ],
+          "type": "story",
+          "sources": [
+            {
+              "title": "strfry 1.1.2",
+              "url": "https://github.com/hoytech/strfry/releases/tag/1.1.2",
+              "publisher": "hoytech/strfry",
+              "date": "2026-08-27"
+            },
+            {
+              "title": "Comparaison 1.1.1...1.1.2",
+              "url": "https://github.com/hoytech/strfry/compare/1.1.1...1.1.2",
+              "publisher": "hoytech/strfry",
+              "date": "2026-08-27"
+            },
+            {
+              "title": "Prevent a memory DoS where attacker continues appending fragments under max payload limit",
+              "url": "https://github.com/hoytech/uWebSockets/commit/1ef91686be0d1ceadf18a035616b96258e68fd1e",
+              "publisher": "hoytech/uWebSockets",
+              "date": "2026-08-19"
+            },
+            {
+              "title": "Fix WSConnection reconnect stall: don't block the event loop during the reconnect delay",
+              "url": "https://github.com/hoytech/strfry/commit/80fc3b2800a09693dda6077ec9b61e083b80d191",
+              "publisher": "hoytech/strfry",
+              "date": "2026-08-19"
+            }
+          ],
+          "publishedAt": "2026-09-03T00:00:00.000Z",
+          "backfilled": false,
+          "items": [],
+          "content": "\n[strfry](https://github.com/hoytech/strfry) a posé l'étiquette [1.1.2](https://github.com/hoytech/strfry/releases/tag/1.1.2) le 27 août 2026. Le relais publie par étiquette git plutôt que par les releases GitHub, si bien que l'étiquette et son entrée dans `CHANGES` constituent l'intégralité de l'annonce. [Cinq commits la séparent de la 1.1.1](https://github.com/hoytech/strfry/compare/1.1.1...1.1.2), touchant quatre chemins : `CHANGES`, le pointeur du sous-module `golpe`, `src/WSConnection.h` et `src/apps/relay/RelayNegentropy.cpp`.\n\nTrois correctifs sont listés. Deux concernent des plantages ou un épuisement de ressources atteignables depuis un client connecté. Le troisième évite que le processus de stream ou de sync d'un opérateur reste bloqué après une coupure de connexion.\n\n## Des fragments sous la limite\n\nLe premier correctif ne se trouve pas dans strfry. strfry intègre sa pile WebSocket via `golpe`, et l'étiquette met à jour ce sous-module, qui met lui-même à jour [uWebSockets](https://github.com/hoytech/uWebSockets/commit/1ef91686be0d1ceadf18a035616b96258e68fd1e). Ce commit ajoute cinq lignes à `handleFragment`, dans `src/WebSocket.cpp` :\n\n```cpp\nif (webSocket->fragmentBuffer.length() > group->maxPayload) {\n    forceClose(webSocketState, (char*)\"payload size exceeded\", 21);\n    return true;\n}\n```\n\nLe protocole WebSocket permet qu'un même message logique arrive sous la forme d'une première trame suivie d'un nombre quelconque de trames de continuation, une trame finale portant le bit FIN. Tant qu'il n'est pas complet, les morceaux s'accumulent dans `fragmentBuffer`. La limite de charge utile s'appliquait aux trames et non au tampon dans lequel elles étaient ajoutées, de sorte qu'un client envoyant des trames de continuation sans jamais poser FIN pouvait faire croître le tampon indéfiniment pendant que chaque trame individuelle restait sous la limite. La nouvelle vérification mesure la longueur cumulée après chaque ajout et ferme la connexion avec `payload size exceeded` dès qu'elle dépasse `maxPayload`.\n\nC'est celui sur lequel il faut agir. Il ne demande ni authentification ni comportement de protocole inhabituel au-delà du refus de terminer un message, et le coût pèse sur la mémoire du relais, pas sur l'émetteur.\n\n## Une session negentropy portant un nom déjà connu\n\nLe deuxième correctif tient en trois lignes dans `RelayNegentropy.cpp`. Negentropy est le protocole de réconciliation d'ensembles que strfry utilise pour la synchronisation, et chaque session est identifiée par l'identifiant d'abonnement choisi par le client. Lorsqu'un client ouvrait une nouvelle session en réutilisant un identifiant dont la requête précédente était encore en cours de traitement, le relais plantait.\n\nLe correctif nettoie l'ancien état avant l'enregistrement de la nouvelle session :\n\n```cpp\nqueries.removeSub(connId, subId);\nviews.removeView(connId, subId);\n```\n\nLes deux appels se placent juste avant la ligne de journal qui consigne une nouvelle session negentropy, si bien qu'un identifiant réutilisé remplace désormais ce qui se trouvait dessous au lieu d'entrer en collision avec lui. L'abonnement et la vue sont supprimés ensemble, comme ils sont créés.\n\n## La reconnexion qui se reconnectait puis mourait\n\nLe troisième correctif est le plus gros diff des cinq commits, et son explication figure dans un commentaire que le commit ajoute lui-même à `WSConnection.h`.\n\nL'ancien code attendait un délai avant de retenter une connexion échouée, et l'implémentait avec `std::this_thread::sleep_for` sur le fil du hub. Ce fil exécute aussi la boucle d'événements uv. Y dormir fige l'horloge en cache de la boucle pendant toute la durée du délai, et l'appel `hub.connect()` qui suit arme alors son délai d'expiration de connexion de 5000 ms sur une horloge déjà périmée. Le minuteur est expiré au moment même où il est armé, se déclenche au tour de boucle suivant et détruit la socket qui vient d'être ouverte, avant la fin de la poignée de main WebSocket.\n\nLa première tentative de connexion utilisait un délai nul et ne dormait donc jamais, ce qui explique qu'elle fonctionnait. Toutes les reconnexions consécutives à une déconnexion échouaient de la même façon, définitivement. Comme le note le commentaire, le processus continue de réessayer sans jamais se terminer, si bien qu'un superviseur voit un programme en cours d'exécution et ne le redémarre pas.\n\nLe remplacement diffère la nouvelle tentative avec un `uS::Timer` non bloquant sur la boucle du hub, ce qui garde l'horloge de la boucle exacte, et isole la connexion elle-même dans `connectNow()`. Un commit ultérieur conserve le minuteur en attente sur la connexion pour que `terminate()` puisse l'arrêter et le fermer plutôt que de le laisser armé sur un objet en train de disparaître.\n\nC'est le chemin qu'empruntent les commandes stream et sync de strfry, d'après le commentaire du correctif, et le symptôme était donc un processus de routage ou de synchronisation qui ne survivait au redémarrage d'un relais que de nom.\n\n## Mise à jour\n\nRien dans cette étiquette ne modifie la configuration, le format de la base de données ou la surface du protocole. La mise à jour de `golpe` implique qu'une recompilation doit récupérer le sous-module au lieu de réutiliser une copie en cache, puisque le correctif uWebSockets arrive par là et non par un fichier de l'arborescence strfry.\n"
+        },
+        {
           "slug": "le-nip-84-ajoute-des-balises-i-aux-surlignages",
           "title": "Le NIP-84 ajoute des balises i aux surlignages et assouplit r",
           "description": "Les surlignages peuvent désormais citer des identifiants de contenu externe via le NIP-73, et la balise r cesse d'être définie comme une URL.",
@@ -6663,6 +7077,75 @@
     },
     "de": {
       "posts": [
+        {
+          "slug": "strfry-1-1-2-behebt-einen-websocket-speicher-dos",
+          "title": "strfry 1.1.2 behebt einen WebSocket-Speicher-DoS",
+          "description": "Das Relay strfry hat 1.1.2 mit drei Korrekturen getaggt: ein Fragmentpuffer ohne Obergrenze, ein Absturz von negentropy bei wiederverwendeter Subscription-ID und eine Wiederverbindung, die sich nie erholte.",
+          "excerpt": "Ein Client konnte immer weitere WebSocket-Fortsetzungsframes anhängen, jedes einzelne unterhalb der Payload-Grenze, und den Puffer des Relays ohne Obergrenze wachsen lassen. Das Tag 1.1.2 ergänzt die fehlende Prüfung, räumt die alte negentropy-Sitzung ab, bevor eine neue mit derselben ID startet, und verhindert, dass die Wartezeit vor dem Reconnect die Ereignisschleife blockiert.",
+          "date": "2026-09-03T00:00:00.000Z",
+          "author": {
+            "name": "Nostr WoT Newsroom"
+          },
+          "featuredImage": "/images/news/strfry-1-1-2-fixes-a-websocket-memory-dos.svg",
+          "previewImage": "/images/news/strfry-1-1-2-fixes-a-websocket-memory-dos.svg",
+          "tags": [
+            "Nostr",
+            "Relays"
+          ],
+          "published": true,
+          "readingTime": "4 min read",
+          "locale": "de",
+          "translationKey": "strfry-1-1-2-fixes-a-websocket-memory-dos",
+          "translations": {
+            "en": "strfry-1-1-2-fixes-a-websocket-memory-dos",
+            "es": "strfry-1-1-2-corrige-un-dos-de-memoria-en-websocket",
+            "pt": "strfry-1-1-2-corrige-um-dos-de-memoria-em-websocket",
+            "ru": "strfry-1-1-2-ispravlyaet-dos-po-pamyati-v-websocket",
+            "it": "strfry-1-1-2-corregge-un-dos-di-memoria-su-websocket",
+            "fr": "strfry-1-1-2-corrige-un-deni-de-service-memoire-websocket",
+            "de": "strfry-1-1-2-behebt-einen-websocket-speicher-dos"
+          },
+          "availableLocales": [
+            "en",
+            "es",
+            "pt",
+            "ru",
+            "it",
+            "fr",
+            "de"
+          ],
+          "type": "story",
+          "sources": [
+            {
+              "title": "strfry 1.1.2",
+              "url": "https://github.com/hoytech/strfry/releases/tag/1.1.2",
+              "publisher": "hoytech/strfry",
+              "date": "2026-08-27"
+            },
+            {
+              "title": "Vergleich 1.1.1...1.1.2",
+              "url": "https://github.com/hoytech/strfry/compare/1.1.1...1.1.2",
+              "publisher": "hoytech/strfry",
+              "date": "2026-08-27"
+            },
+            {
+              "title": "Prevent a memory DoS where attacker continues appending fragments under max payload limit",
+              "url": "https://github.com/hoytech/uWebSockets/commit/1ef91686be0d1ceadf18a035616b96258e68fd1e",
+              "publisher": "hoytech/uWebSockets",
+              "date": "2026-08-19"
+            },
+            {
+              "title": "Fix WSConnection reconnect stall: don't block the event loop during the reconnect delay",
+              "url": "https://github.com/hoytech/strfry/commit/80fc3b2800a09693dda6077ec9b61e083b80d191",
+              "publisher": "hoytech/strfry",
+              "date": "2026-08-19"
+            }
+          ],
+          "publishedAt": "2026-09-03T00:00:00.000Z",
+          "backfilled": false,
+          "items": [],
+          "content": "\n[strfry](https://github.com/hoytech/strfry) hat am 27. August 2026 das Tag [1.1.2](https://github.com/hoytech/strfry/releases/tag/1.1.2) gesetzt. Das Relay veröffentlicht über Git-Tags statt über GitHub-Releases, deshalb sind das Tag und sein Eintrag in `CHANGES` die gesamte Ankündigung. [Fünf Commits trennen es von 1.1.1](https://github.com/hoytech/strfry/compare/1.1.1...1.1.2) und berühren vier Pfade: `CHANGES`, den Zeiger auf das Submodul `golpe`, `src/WSConnection.h` und `src/apps/relay/RelayNegentropy.cpp`.\n\nAufgeführt sind drei Korrekturen. Zwei betreffen Abstürze oder Ressourcenerschöpfung, die von einem verbundenen Client aus erreichbar sind. Die dritte verhindert, dass der Stream- oder Sync-Prozess eines Betreibers nach einem Verbindungsabbruch hängen bleibt.\n\n## Fragmente unterhalb der Grenze\n\nDie erste Korrektur liegt gar nicht in strfry. strfry bindet seinen WebSocket-Stack über `golpe` ein, und das Tag hebt dieses Submodul an, das wiederum [uWebSockets](https://github.com/hoytech/uWebSockets/commit/1ef91686be0d1ceadf18a035616b96258e68fd1e) anhebt. Jener Commit fügt `handleFragment` in `src/WebSocket.cpp` fünf Zeilen hinzu:\n\n```cpp\nif (webSocket->fragmentBuffer.length() > group->maxPayload) {\n    forceClose(webSocketState, (char*)\"payload size exceeded\", 21);\n    return true;\n}\n```\n\nDas WebSocket-Protokoll erlaubt es, dass eine einzelne logische Nachricht als erstes Frame gefolgt von beliebig vielen Fortsetzungsframes eintrifft, wobei ein Abschlussframe das FIN-Bit trägt. Bis sie vollständig ist, sammeln sich die Teile in `fragmentBuffer`. Die Payload-Grenze wurde auf die Frames angewendet, nicht auf den Puffer, an den sie angehängt wurden. Ein Client, der Fortsetzungsframes schickte und FIN nie setzte, konnte den Puffer daher unbegrenzt wachsen lassen, während jedes einzelne Frame unter der Grenze blieb. Die neue Prüfung misst die aufgelaufene Länge nach jedem Anhängen und schließt die Verbindung mit `payload size exceeded`, sobald sie `maxPayload` überschreitet.\n\nDas ist der Punkt, bei dem Handeln lohnt. Er verlangt weder Authentifizierung noch ungewöhnliches Protokollverhalten, abgesehen davon, eine Nachricht nicht zu beenden, und die Kosten trägt der Speicher des Relays, nicht der Absender.\n\n## Eine negentropy-Sitzung mit bekanntem Namen\n\nDie zweite Korrektur besteht aus drei Zeilen in `RelayNegentropy.cpp`. Negentropy ist das Mengenabgleichsprotokoll, das strfry zum Synchronisieren verwendet, und jede Sitzung wird über die vom Client gewählte Subscription-ID geführt. Öffnete ein Client eine neue Sitzung mit einer ID, deren vorherige Abfrage noch verarbeitet wurde, stürzte das Relay ab.\n\nDie Korrektur räumt den alten Zustand ab, bevor die neue Sitzung registriert wird:\n\n```cpp\nqueries.removeSub(connId, subId);\nviews.removeView(connId, subId);\n```\n\nBeide Aufrufe stehen unmittelbar vor der Logzeile, die eine neue negentropy-Sitzung vermerkt, sodass eine wiederverwendete ID nun verdrängt, was darunter lag, statt damit zu kollidieren. Subscription und View werden als Paar entfernt, so wie sie angelegt werden.\n\n## Die Wiederverbindung, die sich verband und dann starb\n\nDie dritte Korrektur ist der größte Diff der fünf Commits, und ihre Erklärung steht in einem Kommentar, den der Commit selbst in `WSConnection.h` einfügt.\n\nDer alte Code wartete vor einem erneuten Verbindungsversuch eine Verzögerung ab und setzte sie mit `std::this_thread::sleep_for` im Hub-Thread um. Dieser Thread führt auch die uv-Ereignisschleife aus. Dort zu schlafen hält die zwischengespeicherte Uhr der Schleife für die Dauer der Verzögerung an, und der anschließende Aufruf `hub.connect()` stellt seinen Verbindungs-Timeout von 5000 ms gegen eine bereits veraltete Uhr. Der Timer ist im Moment des Setzens schon abgelaufen, feuert beim nächsten Schleifendurchlauf und reißt den gerade geöffneten Socket ab, bevor der WebSocket-Handshake abgeschlossen ist.\n\nDer erste Verbindungsversuch nutzte eine Verzögerung von null und schlief daher nie, weshalb er funktionierte. Jede Wiederverbindung nach einem Abbruch scheiterte auf dieselbe Weise, und zwar dauerhaft. Wie der Kommentar festhält, versucht es der Prozess weiter und beendet sich nie, sodass ein Supervisor ein laufendes Programm sieht und es nicht neu startet.\n\nDer Ersatz verschiebt den erneuten Versuch mit einem nicht blockierenden `uS::Timer` auf der Schleife des Hubs, wodurch die Uhr der Schleife korrekt bleibt, und trennt den eigentlichen Verbindungsaufbau in `connectNow()` ab. Ein Folge-Commit hinterlegt den anstehenden Timer an der Verbindung, damit `terminate()` ihn stoppen und schließen kann, statt ihn scharf auf ein Objekt zeigen zu lassen, das gerade verschwindet.\n\nDiesen Pfad nutzen laut dem Kommentar zur Korrektur die Stream- und Sync-Befehle von strfry. Das Symptom war also ein Router- oder Synchronisationsprozess, der einen Relay-Neustart nur dem Namen nach überstand.\n\n## Aktualisieren\n\nNichts in diesem Tag ändert Konfiguration, Datenbankformat oder Protokolloberfläche. Die Anhebung von `golpe` bedeutet, dass ein Neubau das Submodul frisch holen muss, statt eine zwischengespeicherte Kopie wiederzuverwenden, denn die uWebSockets-Korrektur kommt darüber und nicht über eine Datei im strfry-Baum.\n"
+        },
         {
           "slug": "nip-84-ergaenzt-highlights-um-i-tags",
           "title": "NIP-84 ergänzt Highlights um i-Tags und lockert r",
