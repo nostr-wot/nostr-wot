@@ -23,3 +23,4 @@ run at all, which is a different problem entirely.
 2026-09-01 13:09 UTC  published  nip-67-adds-an-auth-hint  (3 sources)
 2026-09-02 13:20 UTC  published  nip-84-adds-i-tags-to-highlights  (3 sources)
 2026-09-03 13:09 UTC  published  strfry-1-1-2-fixes-a-websocket-memory-dos  (4 sources)
+2026-09-04 13:20 UTC  published  nip-78-puts-app-data-behind-auth  (4 sources); one story per day, so two other candidates were left uncovered and both remain in the 2026-09-07 Monday digest window: #2460 (NIP-01, limit zero now MUST skip stored events and still send EOSE, merged 04:19 UTC today) and Primal Android 3.5.27 (2026-09-03, rejects local signer requests with a mismatched signing identity and hardens incoming NWC request auth)
