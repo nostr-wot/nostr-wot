@@ -31,5 +31,13 @@ jobs:
       - name: Cache generator parity (fixture golden)
         run: npm run test:parity
 
+      # The last check between drafted social copy and a post that goes out
+      # under the project's name: .github/workflows/social.yml has no reviewer.
+      # This also runs on push to main, which is the only coverage the newsroom
+      # path gets, since that agent commits without a pull request.
+      # See docs/social-posting.md section 6.
+      - name: Social copy lint
+        run: npm run social:lint
+
       - name: Build
         run: npm run build
