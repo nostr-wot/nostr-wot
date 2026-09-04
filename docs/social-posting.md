@@ -248,13 +248,30 @@ commit. It is told, in substance:
 The routine never runs `social:post` and never touches
 `DLSOCIAL_NOSTRWOT_KEY`.
 
-## 9a. Node version
+## 9a. Node version, in two unrelated places
 
-`.nvmrc` is the single source of truth, and all three workflows read it with
-`node-version-file`. They previously carried the literal `20` in three separate
-places, which is how all three ended up on a version GitHub had started warning
-about: a bump has to be made three times to take effect, so in practice it was
-made zero times. Change `.nvmrc` and every workflow follows.
+These are separate things, and conflating them wastes an afternoon.
+
+**1. The Node that runs the build.** `.nvmrc` is the single source of truth, and
+all three workflows read it with `node-version-file`. They previously carried
+the literal `20` in three separate places, which is how all three drifted
+together: a bump has to be made three times to take effect, so in practice it
+was made zero times. Change `.nvmrc` and every workflow follows.
+
+**2. The Node that runs the actions themselves.** An action declares its own
+runtime in its `action.yml` (`runs.using`), and nothing in this repository
+controls it except the version pinned in `uses:`. `actions/checkout@v4` and
+`actions/setup-node@v4` declare `node20`, which is what produces
+
+> Node 20 is being deprecated. This workflow is running with Node 24 by default.
+
+on every run. That warning is about the action runtime and is **completely
+unaffected by `node-version`**. Setting `node-version: 22` does not silence it;
+only bumping the action does. The first-party actions here are pinned to
+majors that declare `node24`: `checkout@v7`, `setup-node@v7`, `cache@v6`.
+
+The `appleboy/*` actions in `deploy.yml` are composite actions, so they have no
+Node runtime of their own and need no bump for this.
 
 ## 10. Setup (one-time, by a human with repo admin)
 
