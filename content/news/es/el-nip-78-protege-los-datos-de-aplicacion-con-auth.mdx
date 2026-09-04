@@ -1,0 +1,78 @@
+---
+title: "El NIP-78 protege los datos de aplicación con AUTH"
+description: "Ahora se indica a los relés que exijan autenticación NIP-42 antes de aceptar o servir los kinds 78 y 30078, y que los sirvan únicamente a su autor."
+excerpt: "El NIP-78 incorporó una sección AUTH y la palabra clave relay. Los relés SHOULD ejecutar el flujo de NIP-42 antes de tocar los kinds 78 y 30078, y SHOULD devolverlos solo a un cliente autenticado con la misma pubkey que los escribió. Un segundo párrafo pide a las aplicaciones que dejen de usar estos kinds como formato de intercambio compartido."
+date: "2026-09-04"
+publishedAt: "2026-09-04"
+backfilled: false
+type: "story"
+tags:
+  - "Nostr"
+  - "NIP"
+  - "Relays"
+  - "Privacy"
+translationKey: "nip-78-puts-app-data-behind-auth"
+featuredImage: "/images/news/nip-78-puts-app-data-behind-auth.svg"
+sources:
+  - title: "NIP-78: require AUTH for kind 30078"
+    url: "https://github.com/nostr-protocol/nips/pull/2458"
+    publisher: "nostr-protocol/nips"
+    date: "2026-09-03"
+  - title: "NIP-78: Arbitrary custom app data (78.md)"
+    url: "https://github.com/nostr-protocol/nips/blob/master/78.md"
+    publisher: "nostr-protocol/nips"
+    date: "2026-09-03"
+  - title: "NIP-42: Authentication of clients to relays (42.md)"
+    url: "https://github.com/nostr-protocol/nips/blob/master/42.md"
+    publisher: "nostr-protocol/nips"
+    date: "2026-09-03"
+  - title: "NIP-17: Private Direct Messages (17.md)"
+    url: "https://github.com/nostr-protocol/nips/blob/master/17.md"
+    publisher: "nostr-protocol/nips"
+    date: "2026-09-03"
+published: true
+---
+
+El [NIP-78](https://github.com/nostr-protocol/nips/blob/master/78.md) es la especificación de datos de aplicación arbitrarios: un sitio donde un cliente guarda su configuración y demás estado por usuario en un relé elegido por ese usuario, con la forma que le convenga. Su primera línea siempre ha descrito el objetivo como capacidades al estilo de remoteStorage para aplicaciones a las que no les interesa la interoperabilidad.
+
+Hasta esta semana la especificación no decía nada sobre quién podía leer esos datos. La [pull request #2458](https://github.com/nostr-protocol/nips/pull/2458) cubre ese hueco. Se abrió el 2 de septiembre de 2026 y se fusionó el 3 de septiembre, con un archivo modificado, siete líneas añadidas y una eliminada.
+
+## La nueva sección
+
+Todo lo añadido son tres frases, bajo un nuevo encabezado `## AUTH`:
+
+> Because this data is private to the user, relays SHOULD require clients to perform the [NIP-42](https://github.com/nostr-protocol/nips/blob/master/42.md) `AUTH` flow before accepting or serving `kind 78` and `kind 30078` events, and SHOULD only serve these events to the authenticated owner, i.e. the client must authenticate with the same pubkey as the event author.
+
+Ahí conviven dos obligaciones, y no son la misma dicha dos veces. La primera es la puerta: ejecutar el saludo de autenticación antes de que el relé acepte uno de estos eventos o entregue alguno. La segunda es la coincidencia: una vez autenticado, el cliente solo recibe los eventos que él mismo escribió. Un relé que exigiera AUTH y luego sirviera la configuración de todos los usuarios a cualquiera que se molestara en identificarse cumpliría la primera y fallaría la segunda.
+
+La comparación de pubkeys se hace contra el autor del evento. Merece la pena señalarlo porque el precedente más cercano se apoya en otra cosa. El [NIP-17](https://github.com/nostr-protocol/nips/blob/master/17.md) lleva tiempo con una línea parecida para los mensajes directos privados:
+
+> Relays SHOULD protect message metadata by only serving `kind:1059` events to users p-tagged on the event (enforced using [NIP-42 AUTH](./42.md)).
+
+Allí el destinatario aparece en una etiqueta, porque un gift wrap va firmado por una clave desechable y su campo de autor no aporta nada útil. Los eventos del NIP-78 los firma el propio usuario, así que el campo de autor es el propietario y no hace falta ninguna etiqueta para localizarlos.
+
+## Los dos kinds, no uno
+
+La pull request se titula "require AUTH for kind 30078" y su descripción solo menciona ese kind. El texto que se fusionó cubre también el `kind 78`. Aquí conviene seguir el archivo antes que el título: la frase normativa nombra ambos.
+
+La distinción importa porque son tipos de evento distintos. `30078` es direccionable, se indexa con una etiqueta `d` y el relé guarda uno por autor y valor de `d`. `78` es un evento normal, incorporado a la especificación en [mayo de 2026](https://github.com/nostr-protocol/nips/pull/2292), pensado para aplicaciones que necesitan almacenar y consultar muchos registros del mismo tipo en lugar de un único bloque. Una implementación que protegiera solo el kind direccionable dejaría abierto el caso de múltiples registros, que es justamente el que tiene más probabilidades de acumular un volumen apreciable de datos del usuario.
+
+## El párrafo sobre el intercambio
+
+La otra mitad del cambio es un párrafo insertado cerca del principio, antes de las definiciones de los eventos:
+
+> These kinds are not meant to be used as a generic interchange format for data that should be public or exchanged between different applications. Applications that need such interoperability should use dedicated kinds instead.
+
+Es una recomendación y no una regla normativa, sin ningún MUST ni SHOULD, pero es la parte con consecuencias prácticas en cuanto los relés apliquen la sección de más abajo. Los datos escritos en `30078` dando por hecho que otras aplicaciones los leerían dejan de ser legibles para ellas en el momento en que un relé empieza a permitir lecturas solo al propietario. La especificación deja constancia por adelantado de que ese uso quedaba fuera de su alcance.
+
+## Ahora es un NIP que habla de relés
+
+La línea de palabras clave de la cabecera pasó de `draft` `optional` a `draft` `optional` `relay`. El NIP-78 describía antes solo lo que los clientes ponen dentro de un evento; ahora indica a los relés qué hacer con él, que es lo que marca esa palabra clave. Diecinueve de los archivos de la especificación la llevan actualmente, el NIP-78 incluido, junto al NIP-01, el NIP-42, el NIP-17 y los demás documentos de comportamiento de relé.
+
+## Qué ven los clientes
+
+El NIP-42 ya define qué envía un relé cuando falta la autenticación. Una consulta que no se puede servir produce un `CLOSED` con el prefijo `auth-required: `, y una escritura rechazada produce un `OK` con `false` y el mismo prefijo. Un cliente que ya contempla esos dos casos para los mensajes directos cifrados no necesita maquinaria nueva para los datos de aplicación, solo aplicar el mismo tratamiento a otro par de kinds.
+
+Existe además una señal más suave. El NIP-42 remite a la pista `auth` dentro de `EOSE`, [añadida al NIP-67 el 1 de septiembre](https://github.com/nostr-protocol/nips/pull/2371), que permite a un relé responder a una consulta, cerrarla con normalidad e indicar que autenticarse devolvería más resultados. Un relé que tomara ese camino no devolvería nada ante una consulta no autenticada de `30078`, en lugar de un error.
+
+Nada más se movió en el NIP-78. Sigue siendo `draft` y `optional`, los kinds y sus convenciones de etiqueta `d` no cambian, y los casos de uso listados al final son los mismos tres.

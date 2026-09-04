@@ -1,0 +1,78 @@
+---
+title: "NIP-78 stellt App-Daten hinter AUTH"
+description: "Relays sollen nun NIP-42-Authentifizierung verlangen, bevor sie die Kinds 78 und 30078 annehmen oder ausliefern, und sie ausschließlich an deren Autor ausliefern."
+excerpt: "NIP-78 hat einen AUTH-Abschnitt und das Schlüsselwort relay bekommen. Relays SHOULD den NIP-42-Ablauf durchführen, bevor sie Kind 78 und 30078 anfassen, und SHOULD sie nur an einen Client zurückgeben, der mit derselben Pubkey authentifiziert ist, die sie geschrieben hat. Ein zweiter Absatz fordert Anwendungen auf, diese Kinds nicht mehr als gemeinsames Austauschformat zu verwenden."
+date: "2026-09-04"
+publishedAt: "2026-09-04"
+backfilled: false
+type: "story"
+tags:
+  - "Nostr"
+  - "NIP"
+  - "Relays"
+  - "Privacy"
+translationKey: "nip-78-puts-app-data-behind-auth"
+featuredImage: "/images/news/nip-78-puts-app-data-behind-auth.svg"
+sources:
+  - title: "NIP-78: require AUTH for kind 30078"
+    url: "https://github.com/nostr-protocol/nips/pull/2458"
+    publisher: "nostr-protocol/nips"
+    date: "2026-09-03"
+  - title: "NIP-78: Arbitrary custom app data (78.md)"
+    url: "https://github.com/nostr-protocol/nips/blob/master/78.md"
+    publisher: "nostr-protocol/nips"
+    date: "2026-09-03"
+  - title: "NIP-42: Authentication of clients to relays (42.md)"
+    url: "https://github.com/nostr-protocol/nips/blob/master/42.md"
+    publisher: "nostr-protocol/nips"
+    date: "2026-09-03"
+  - title: "NIP-17: Private Direct Messages (17.md)"
+    url: "https://github.com/nostr-protocol/nips/blob/master/17.md"
+    publisher: "nostr-protocol/nips"
+    date: "2026-09-03"
+published: true
+---
+
+[NIP-78](https://github.com/nostr-protocol/nips/blob/master/78.md) ist die Spezifikation für beliebige App-Daten: ein Ort, an dem ein Client Einstellungen und sonstigen nutzerbezogenen Zustand auf einem vom Nutzer gewählten Relay ablegt, in beliebiger Form. Die erste Zeile beschreibt das Ziel seit jeher als remoteStorage-artige Fähigkeiten für Anwendungen, denen Interoperabilität gleichgültig ist.
+
+Bis zu dieser Woche sagte die Spezifikation nichts darüber, wer diese Daten lesen darf. [Pull Request #2458](https://github.com/nostr-protocol/nips/pull/2458) schließt die Lücke. Er wurde am 2. September 2026 eröffnet und am 3. September gemergt, eine Datei geändert, sieben Zeilen hinzugefügt und eine entfernt.
+
+## Der neue Abschnitt
+
+Die gesamte Ergänzung besteht aus drei Sätzen unter einer neuen Überschrift `## AUTH`:
+
+> Because this data is private to the user, relays SHOULD require clients to perform the [NIP-42](https://github.com/nostr-protocol/nips/blob/master/42.md) `AUTH` flow before accepting or serving `kind 78` and `kind 30078` events, and SHOULD only serve these events to the authenticated owner, i.e. the client must authenticate with the same pubkey as the event author.
+
+In diesem Satz stecken zwei Pflichten, und es ist nicht dieselbe zweimal gesagt. Die erste betrifft die Tür: den Authentifizierungs-Handshake ausführen, bevor das Relay eines dieser Events annimmt oder herausgibt. Die zweite betrifft die Übereinstimmung: nach der Authentifizierung bekommt der Client nur die Events, die er selbst geschrieben hat. Ein Relay, das AUTH verlangte und anschließend die Einstellungen aller Nutzer an jeden ausliefern würde, der sich die Mühe der Anmeldung macht, erfüllte die erste und verfehlte die zweite.
+
+Der Pubkey-Vergleich erfolgt gegen den Autor des Events. Das ist erwähnenswert, weil sich der nächstliegende bestehende Präzedenzfall auf etwas anderes stützt. [NIP-17](https://github.com/nostr-protocol/nips/blob/master/17.md) trägt seit Längerem eine vergleichbare Zeile für private Direktnachrichten:
+
+> Relays SHOULD protect message metadata by only serving `kind:1059` events to users p-tagged on the event (enforced using [NIP-42 AUTH](./42.md)).
+
+Dort steht der Empfänger in einem Tag, weil ein Gift Wrap von einem Wegwerfschlüssel signiert ist und sein Autorenfeld nichts Brauchbares aussagt. NIP-78-Events signiert der Nutzer selbst, das Autorenfeld ist also der Eigentümer, und es braucht kein Tag, um sie zu finden.
+
+## Beide Kinds, nicht eines
+
+Der Pull Request trägt den Titel „require AUTH for kind 30078“, und seine Beschreibung nennt nur dieses Kind. Der gemergte Text deckt auch `kind 78` ab. Hier gilt die Datei und nicht der Titel: der normative Satz nennt beide.
+
+Die Unterscheidung ist erheblich, denn es sind verschiedene Event-Typen. `30078` ist adressierbar, geschlüsselt über ein `d`-Tag, und das Relay hält eines pro Autor und `d`-Wert vor. `78` ist ein gewöhnliches Event, im [Mai 2026](https://github.com/nostr-protocol/nips/pull/2292) in die Spezifikation aufgenommen, für Anwendungen, die viele Datensätze desselben Typs speichern und abfragen müssen statt eines einzigen Blocks. Eine Implementierung, die nur das adressierbare Kind absichert, ließe den Mehrsatz-Fall offen, und gerade der dürfte am ehesten ein nennenswertes Volumen an Nutzerdaten ansammeln.
+
+## Der Absatz zum Austausch
+
+Die andere Hälfte der Änderung ist ein Absatz, der weiter oben eingefügt wurde, vor den Event-Definitionen:
+
+> These kinds are not meant to be used as a generic interchange format for data that should be public or exchanged between different applications. Applications that need such interoperability should use dedicated kinds instead.
+
+Das ist eine Empfehlung und keine normative Regel, ohne jedes MUST oder SHOULD, aber es ist der Teil mit praktischer Wirkung, sobald Relays den Abschnitt darunter umsetzen. Daten, die in `30078` geschrieben wurden in der Annahme, andere Anwendungen würden sie lesen, sind für diese in dem Moment nicht mehr lesbar, in dem ein Relay den Lesezugriff auf den Eigentümer beschränkt. Die Spezifikation hält vorab fest, dass diese Nutzung außerhalb ihres Rahmens lag.
+
+## Jetzt ein Relay-NIP
+
+Die Schlüsselwortzeile im Kopf wechselte von `draft` `optional` zu `draft` `optional` `relay`. NIP-78 beschrieb zuvor nur, was Clients in ein Event schreiben; jetzt sagt es Relays, was sie damit tun sollen, und genau das markiert dieses Schlüsselwort. Neunzehn der Spezifikationsdateien tragen es derzeit, NIP-78 eingeschlossen, neben NIP-01, NIP-42, NIP-17 und den übrigen Dokumenten zum Relay-Verhalten.
+
+## Was Clients sehen
+
+NIP-42 legt bereits fest, was ein Relay sendet, wenn die Authentifizierung fehlt. Eine Abfrage, die nicht bedient werden kann, ergibt ein `CLOSED` mit dem Präfix `auth-required: `, ein abgelehnter Schreibvorgang ein `OK` mit `false` und demselben Präfix. Ein Client, der diese beiden Fälle für verschlüsselte Direktnachrichten bereits behandelt, braucht für App-Daten keine neue Mechanik, nur dieselbe Behandlung ausgedehnt auf ein weiteres Paar Kinds.
+
+Es gibt außerdem ein leiseres Signal. NIP-42 verweist auf den `auth`-Hinweis in `EOSE`, [am 1. September zu NIP-67 hinzugefügt](https://github.com/nostr-protocol/nips/pull/2371), mit dem ein Relay eine Abfrage beantworten, sie regulär schließen und anzeigen kann, dass eine Authentifizierung mehr zurückgäbe. Ein Relay, das diesen Weg wählt, lieferte auf eine nicht authentifizierte `30078`-Abfrage nichts zurück statt eines Fehlers.
+
+Sonst hat sich in NIP-78 nichts bewegt. Es ist weiterhin `draft` und `optional`, die Kinds und die Konventionen ihres `d`-Tags sind unverändert, und die am Ende aufgeführten Anwendungsfälle sind dieselben drei.
