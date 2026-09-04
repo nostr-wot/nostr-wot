@@ -22,7 +22,8 @@
 import { readFileSync, writeFileSync, existsSync, mkdirSync } from "node:fs";
 import { join, dirname } from "node:path";
 import { fetchRetry } from "../fetch-retry.mjs";
-import { ROOT, CHANNEL_CONFIG, SUPPORTED_CHANNELS, withUrl, buildEntries } from "./entries.mjs";
+import { ROOT, CHANNEL_CONFIG, SUPPORTED_CHANNELS, withUrl } from "./entries.mjs";
+import { collectErrors } from "./checks.mjs";
 
 const LEDGER_FILE = join(ROOT, "data/social-posted.json");
 const API_BASE = process.env.DLSOCIAL_API_BASE || "https://socials.dandelionlabs.io";
@@ -75,9 +76,22 @@ function buildRequestPosts(entry) {
 }
 
 async function main() {
-  const { entries, errors } = buildEntries();
+  // The same checks `npm run social:lint` runs, re-run here on purpose.
+  //
+  // CI already lints on push to `main`, but a red build does not stop a
+  // scheduled workflow: the newsroom commits copy without a pull request, and
+  // this job would happily send it hours later. Enforcing the rules at the
+  // point of sending is what makes them a gate rather than a report.
+  //
+  // This covers every file, not just the ones due, so a broken copy file stops
+  // the run instead of quietly posting the entries either side of it.
+  const { entries, errors } = collectErrors();
   if (errors.length) {
     for (const e of errors) console.error(`error ${e}`);
+    console.error(
+      `\nRefusing to post: ${errors.length} lint error(s). ` +
+        `Nothing was sent and nothing was recorded. Fix the copy and re-run.`,
+    );
     process.exit(1);
   }
 

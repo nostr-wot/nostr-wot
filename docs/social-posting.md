@@ -68,7 +68,8 @@ added.
 |---|---|
 | `social/<slug>.json` | The copy: `{"linkedin": "...", "x": "...", "xThread": [...], "nostr": "..."}`. Only `linkedin` is required. |
 | `scripts/social/entries.mjs` | Reads entries, joins them to the article they name, derives URLs, builds request bodies. Shared by the scripts below. |
-| `scripts/social/lint-social.mjs` | `npm run social:lint`, wired into `.github/workflows/ci.yml` on every pull request. |
+| `scripts/social/checks.mjs` | The house rules, as `collectErrors()`. Used by the linter **and** by the poster, so the two cannot drift. |
+| `scripts/social/lint-social.mjs` | `npm run social:lint`, a CLI over `checks.mjs`. Wired into `.github/workflows/ci.yml` on pull requests and pushes to `main`. |
 | `scripts/social/post-social.mjs` | `npm run social:post`, with `--dry-run`. Run by `.github/workflows/social.yml`. |
 | `scripts/social/list-channels.mjs` | `npm run social:channels`. Worth running any time a channel id is suspected wrong. |
 | `scripts/fetch-retry.mjs` | `fetch()` with backoff, so a deploy window does not read as "not live". |
@@ -138,22 +139,30 @@ lint" step). It enforces:
 - No hard-coded links, no unknown fields, no copy file that cannot be joined to
   an article.
 
-**Read this next part before trusting the CI gate.** The newsroom path does not
-go through a pull request. An article and its copy file are committed straight
-to `main`, so `ci.yml`'s pull-request trigger never sees them before they
-exist. What does cover that path:
+**The rules live in `checks.mjs`, and both entry points use them.** This matters
+because the newsroom path does not go through a pull request: an article and its
+copy file are committed straight to `main`, so `ci.yml`'s pull-request trigger
+never sees them before they exist. Three things cover that path:
 
 - `ci.yml` also runs on `push` to `main`, so a bad copy file turns the branch
   red immediately after the newsroom commits it.
 - Nothing is posted until a scheduled `social.yml` run picks it up, and the
   soonest is hours away.
-- `post-social.mjs` does **not** re-run the linter. If a red `main` is ignored,
-  the copy still goes out.
+- **`post-social.mjs` re-runs the same checks before it sends anything**, and
+  exits non-zero without posting or recording if any fail. A red `main` that
+  nobody notices therefore cannot ship copy: CI reports, and the poster refuses.
 
-That last point is the residual risk, written down rather than papered over. The
-cheap mitigation is to keep the newsroom's own step honest: the playbook tells
-the agent to run `npm run social:lint` before committing, which is the same gate
-running earlier.
+That last point is why the rules were pulled out of `lint-social.mjs` into
+`checks.mjs`. Two copies of the rules would drift, and the copy that mattered
+would be the one nobody was reading. `lint-social.mjs` is now just a CLI over
+`collectErrors()`.
+
+The check covers **every** copy file, not only the ones due to post, so a broken
+file stops the run rather than letting the entries either side of it go out.
+
+The playbook still tells the newsroom agent to run `npm run social:lint` before
+committing. That is the same gate, earlier, where it can stop something before
+`main` goes red at all.
 
 Proven to bite, not just written: feeding it
 
@@ -208,6 +217,9 @@ unevenly; cron does not need to be randomised on top of that.
   not just the status.
 - **Nothing is recorded unless the request succeeded.** A `400` posts nothing at
   all, so a failed run is always safe to retry with the same copy next run.
+- **Lint failures stop the run before any network call.** No post, no ledger
+  write, non-zero exit, and the errors printed. Fix the copy and the next run
+  picks it up unchanged.
 - **The ledger records what the API says it published**, not what was requested.
   An `optional` channel that the board could not deliver comes back under
   `skipped` while the request still returns `200`; echoing the request would
@@ -235,6 +247,31 @@ commit. It is told, in substance:
 
 The routine never runs `social:post` and never touches
 `DLSOCIAL_NOSTRWOT_KEY`.
+
+## 9a. Node version, in two unrelated places
+
+These are separate things, and conflating them wastes an afternoon.
+
+**1. The Node that runs the build.** `.nvmrc` is the single source of truth, and
+all three workflows read it with `node-version-file`. They previously carried
+the literal `20` in three separate places, which is how all three drifted
+together: a bump has to be made three times to take effect, so in practice it
+was made zero times. Change `.nvmrc` and every workflow follows.
+
+**2. The Node that runs the actions themselves.** An action declares its own
+runtime in its `action.yml` (`runs.using`), and nothing in this repository
+controls it except the version pinned in `uses:`. `actions/checkout@v4` and
+`actions/setup-node@v4` declare `node20`, which is what produces
+
+> Node 20 is being deprecated. This workflow is running with Node 24 by default.
+
+on every run. That warning is about the action runtime and is **completely
+unaffected by `node-version`**. Setting `node-version: 22` does not silence it;
+only bumping the action does. The first-party actions here are pinned to
+majors that declare `node24`: `checkout@v7`, `setup-node@v7`, `cache@v6`.
+
+The `appleboy/*` actions in `deploy.yml` are composite actions, so they have no
+Node runtime of their own and need no bump for this.
 
 ## 10. Setup (one-time, by a human with repo admin)
 

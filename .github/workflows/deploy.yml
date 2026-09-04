@@ -11,14 +11,14 @@ jobs:
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
         with:
           fetch-depth: 0
 
       - name: Set up Node.js
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v7
         with:
-          node-version: 20
+          node-version-file: '.nvmrc'
           cache: 'npm'
 
       - name: Install dependencies
@@ -60,7 +60,7 @@ jobs:
         run: sleep 15
 
       - name: Cache IndexNow state
-        uses: actions/cache@v4
+        uses: actions/cache@v6
         with:
           path: scripts/.indexnow-cache.json
           key: indexnow-cache
