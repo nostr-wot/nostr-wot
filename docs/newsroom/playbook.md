@@ -158,6 +158,45 @@ English slug, so every translation of an article shares one image.
 If the generator fails, do not fall back to the default and publish anyway. Fix
 it, or skip the day and log why.
 
+## Social copy
+
+Write `social/<slug>.json` for whatever you just published, keyed on the **English
+slug**, in the **same commit** as the article. There is no pull request on this
+path and no reviewer, so nothing else gates it: a copy file written "later" is a
+copy file that does not exist.
+
+Skip this only when you published nothing. A skipped day gets a log line and no
+copy file.
+
+```json
+{
+  "linkedin": "The claim, alone on the first line.\n\nEvidence, with the kind numbers and dates.\n\n{url}\n\n#Nostr #NIP"
+}
+```
+
+- **Follow `docs/social-voice.md`.** It carries the anatomy, the mechanics and
+  the two deltas from quantakrypto's version, one of which matters here: first
+  person ("we track") is allowed in social copy and is **never** allowed in an
+  article body. That split is deliberate.
+- **English only**, even though the article ships in seven locales.
+- Only `linkedin` is required. `x`, `xThread` and `nostr` are optional.
+- **Never write a URL.** The canonical link is derived from
+  `content/news/en/<slug>.mdx` and appended automatically; a hard-coded
+  `http(s)://` link is a lint error. Use `{url}` to place it, and
+  `{url:/news/other-slug}` for a second link.
+- The same house rules apply as to the article: no em dash, no emoji, no hype,
+  no speculation about maintainer intent.
+
+**Run `npm run social:lint` before committing.** It is in CI, but CI only sees
+this commit after it is already on `main`, and the posting workflow does not
+re-run the linter. Running it here is the same gate, earlier, where it can still
+stop something.
+
+You never hold a posting credential and must never ask for one.
+`.github/workflows/social.yml` reads a repository secret and does the posting on
+its own schedule. You write text into the commit and nothing else. See
+`docs/social-posting.md`.
+
 ## Before pushing
 
 Run all four and do not push if any fails:

@@ -1,0 +1,96 @@
+# Posts drafted content to LinkedIn (and Nostr, once confirmed) via the
+# dandelionlabs socials API. See docs/social-posting.md for the full design
+# and the reasoning behind each guard below.
+#
+# The newsroom agent that drafts social/<slug>.json never holds
+# DLSOCIAL_NOSTRWOT_KEY and never calls this API itself: only this workflow
+# does. That agent commits straight to `main` with no pull request and no
+# reviewer, so a posting credential in its context would be a path to
+# publishing under the project's name with no diff anyone could reject.
+#
+# TODO (one-time, needs a human, cannot be settled from this repository):
+#   The repository secret DLSOCIAL_NOSTRWOT_KEY is set. What is NOT confirmed
+#   is that the channel ids in scripts/social/entries.mjs (`nostr-wot-li`,
+#   `nostr-wot-nostr`, `nostr-wot-x`) are the ids this key is actually bound
+#   to. They are named by convention, copied from quantakrypto's pattern, and
+#   never fetched from the API. A wrong id on an `optional` channel fails
+#   SILENTLY: the post is skipped, the request still returns 200, and nothing
+#   reports it. Before the first real post, run the workflow manually with
+#   dry_run left at its default (true). That runs `social:channels` and prints
+#   what the key reaches. Correct CHANNEL_CONFIG if the ids differ.
+#
+# Three scheduled runs a day, roughly eight hours apart, on odd minutes (GitHub
+# supplies more jitter than any cron expression could, and odd minutes at
+# least keep nothing landing on the hour). SOCIAL_MAX_PER_RUN (default 1, set
+# in post-social.mjs) shares at most one post per run, oldest first, so a
+# batch staggers across about a day instead of landing in one burst inside the
+# first eight-hour window. Do not promise precise timing: GitHub delivers
+# scheduled workflows late and unevenly.
+name: Social posting
+on:
+  schedule:
+    - cron: "13 3 * * *"
+    - cron: "41 11 * * *"
+    - cron: "7 19 * * *"
+  workflow_dispatch:
+    inputs:
+      dry_run:
+        description: "Print what would be sent; post nothing"
+        type: boolean
+        default: true
+
+# Two overlapping runs would both read the ledger, both see the same entry as
+# unshared, and both share it. Do not cancel an in-flight run either: a run
+# cancelled mid-POST could leave the ledger and the actual post disagreeing.
+concurrency:
+  group: social-posting
+  cancel-in-progress: false
+
+permissions:
+  contents: write
+
+jobs:
+  post:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+      - run: npm ci --legacy-peer-deps
+      # On a manual dispatch, print what the key can actually reach before
+      # doing anything with it. This is the confirmation step for the TODO at
+      # the top of this file, and it costs one GET.
+      - name: List channels the key reaches
+        if: github.event_name == 'workflow_dispatch'
+        continue-on-error: true
+        env:
+          DLSOCIAL_NOSTRWOT_KEY: ${{ secrets.DLSOCIAL_NOSTRWOT_KEY }}
+        run: npm run social:channels
+
+      - name: Post (or dry-run)
+        id: post
+        env:
+          DLSOCIAL_NOSTRWOT_KEY: ${{ secrets.DLSOCIAL_NOSTRWOT_KEY }}
+        run: |
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ] && [ "${{ inputs.dry_run }}" != "false" ]; then
+            npm run social:post -- --dry-run
+          else
+            npm run social:post
+          fi
+      # The ledger is the only thing that changes on a real, successful post.
+      # Committing it back is what stops the next run from reposting
+      # everything; give this job contents: write (above) for exactly this.
+      - name: Record what was posted
+        if: always()
+        run: |
+          if ! git diff --quiet -- data/social-posted.json; then
+            git config user.name "nostr-wot-bot"
+            git config user.email "bot@nostr-wot.com"
+            git add data/social-posted.json
+            git commit -m "chore(social): record posted entries"
+            git push
+          else
+            echo "Ledger unchanged, nothing to commit."
+          fi
