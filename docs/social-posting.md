@@ -320,26 +320,24 @@ Neither can be settled from the code:
    60 days and are held by the dandelionlabs board, not this repo. A `401` from
    the posting API means reconnect the account there, not a bug here.
 
-## Remote newsroom and deployment-triggered posting
+## Remote newsroom and scheduled posting
 
-A successful `Deploy to Prod` run on `main` also starts `social.yml`. The cloud
-writer only needs repository write access: it commits the article, all seven
-translations, illustration and social copy together. GitHub handles the social
-trigger; the cloud connector does not need a workflow-dispatch tool or posting
-credentials. The publishing workflow checks the article URL is live before sending.
+Social posting is scheduled at 03:13, 11:41 and 19:07 UTC, approximately eight
+hours apart (8h28, 7h26 and 8h06 gaps). These are fixed, uneven schedule windows,
+not a random-number scheduler. GitHub scheduling delays add variable timing. Deployments do not trigger additional social runs.
+The cloud newsroom writes an article every two days when relevant news clears
+the editorial bar, following the playbook, with all seven translations,
+illustration and social copy committed together. It does not need workflow
+dispatch access: the next scheduled social run checks whether the article is live.
 
 Every normal run selects the newest unposted live article, using `publishedAt`
 (falling back to the event `date`), at most one per run. If that article is already
-in the ledger, it considers the next newest. Deployment-triggered runs only
-consider copy present and unchanged in the deployed commit. Scheduled runs remain
-as a retry path. `content/news/PAUSE` stops social posting as well as the writer.
+in the ledger, it considers the next newest. `content/news/PAUSE` stops social
+posting as well as the writer. A run with nothing pending publishes nothing.
 
 For a controlled manual test, supply the optional `slug` workflow input. A typo
 fails instead of falling back to the queue; an already-posted slug is a no-op.
-Start with `dry_run=true`, then use `dry_run=false` to publish. A green no-op run
-verifies orchestration only: confirm the ledger and returned platform URLs to
-prove a real publication. Never remove a ledger entry just to test posting.
-
-The pipeline runs automatically only when the writer's authenticated repository
-write triggers `Deploy to Prod`; verify this in the first cloud test. A push made
-using a workflow's `GITHUB_TOKEN` does not itself trigger a push workflow.
+Start with `dry_run=true`, then use `dry_run=false` to publish. Manual tests are
+additional to the schedule. A green no-op verifies orchestration only: confirm
+the ledger and returned platform URLs to prove a real publication. Never remove
+a ledger entry just to test posting.

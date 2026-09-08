@@ -193,8 +193,8 @@ re-runs the linter. Running it here is the same gate, earlier, where it can stil
 stop something.
 
 You never hold a posting credential and must never ask for one.
-`.github/workflows/social.yml` reads a repository secret and does the posting after a successful deployment and on
-its retry schedule. You write text into the commit and nothing else. See
+`.github/workflows/social.yml` reads a repository secret and does the posting on
+its roughly eight-hour schedule. You write text into the commit and nothing else. See
 `docs/social-posting.md`.
 
 ## Before pushing
