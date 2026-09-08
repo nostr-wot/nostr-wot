@@ -1,8 +1,15 @@
 import type { Metadata } from "next";
 import { getTranslations } from "next-intl/server";
-import { ScrollReveal, LinkButton, Section, SectionHeader } from "@/components/ui";
-import { generateAlternates, generateOpenGraph, generateTwitter } from "@/lib/metadata";
+import { ScrollReveal, LinkButton, Section } from "@/components/ui";
+import { generateAlternates, generateOpenGraph, generateTwitter, getFullUrl } from "@/lib/metadata";
 import { type Locale } from "@/i18n/config";
+
+import EcosystemDirectory from "@/components/projects/EcosystemDirectory";
+import ecosystemData from "@/data/ecosystem-projects.json";
+import { ecosystemJsonLd, serializeJsonLd, type EcosystemData } from "@/lib/ecosystem-projects";
+
+// Curated data is maintained separately from the directory UI.
+const data = ecosystemData as EcosystemData;
 
 type Props = {
   params: Promise<{ locale: string }>;
@@ -17,7 +24,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   return {
     title,
     description,
-    keywords: ["nostr wot projects", "web of trust integrations", "mapping bitcoin", "obelisk nostr"],
+    keywords: ["nostr ecosystem", "nostr projects", "nostr project directory", "web of trust integrations"],
     alternates: generateAlternates("/projects", locale as Locale),
     openGraph: generateOpenGraph({
       title,
@@ -48,35 +55,17 @@ const PROJECTS = [
   },
 ] as const;
 
-export default async function ProjectsPage() {
+export default async function ProjectsPage({ params }: Props) {
+  const { locale } = await params;
   const t = await getTranslations("projects");
-
-  const jsonLd = {
-    "@context": "https://schema.org",
-    "@type": "CollectionPage",
-    "name": "Projects Built with Nostr Web of Trust",
-    "description": "Projects integrating Nostr Web of Trust for decentralized trust, reputation, and spam filtering.",
-    "url": "https://nostr-wot.com/projects",
-    "mainEntity": {
-      "@type": "ItemList",
-      "itemListElement": PROJECTS.map((project, i) => ({
-        "@type": "ListItem",
-        "position": i + 1,
-        "item": {
-          "@type": "WebApplication",
-          "name": t(`projects.${project.key}.name`),
-          "url": project.url,
-          "description": t(`projects.${project.key}.description`),
-        },
-      })),
-    },
-  };
+  const jsonLd = ecosystemJsonLd(data, getFullUrl("/projects", locale as Locale));
+  const localPath = (path: string) => locale === "en" ? path : `/${locale}${path}`;
 
   return (
     <>
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+        dangerouslySetInnerHTML={{ __html: serializeJsonLd(jsonLd) }}
       />
       <main>
         {/* Hero */}
@@ -91,8 +80,14 @@ export default async function ProjectsPage() {
           </div>
         </section>
 
-        {/* Projects Grid */}
+        <EcosystemDirectory data={data} blogHref={localPath("/blog")} newsHref={localPath("/news")} />
+
+        {/* Confirmed integrations remain distinct from the wider ecosystem. */}
         <Section padding="md">
+          <div className="mx-auto mb-8 max-w-3xl">
+            <h2 className="text-3xl font-bold">{t("integrations.title")}</h2>
+            <p className="mt-3 text-gray-600 dark:text-gray-300">{t("integrations.description")}</p>
+          </div>
           <div className="grid grid-cols-1 gap-8 max-w-3xl mx-auto">
             {PROJECTS.map((project) => (
               <ScrollReveal key={project.key} animation="fade-up">
@@ -110,9 +105,9 @@ export default async function ProjectsPage() {
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
                     </svg>
                   </div>
-                  <h2 className="text-2xl font-bold mb-3 group-hover:text-primary transition-colors">
+                  <h3 className="text-2xl font-bold mb-3 group-hover:text-primary transition-colors">
                     {t(`projects.${project.key}.name`)}
-                  </h2>
+                  </h3>
                   <p className="text-gray-600 dark:text-gray-400 leading-relaxed">
                     {t(`projects.${project.key}.description`)}
                   </p>
