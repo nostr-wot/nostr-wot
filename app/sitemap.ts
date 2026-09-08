@@ -5,6 +5,10 @@ import { getAllGuides } from "@/lib/guides";
 import { getAllNews, getNewsArchiveMonths, getNewsForMonth } from "@/lib/news";
 import { routes, resolveRouteLastModified } from "@/lib/sitemap-routes.mjs";
 import routeModified from "@/lib/generated/route-modified.json";
+import { listSentNewsletters } from "@/lib/newsletter-archive";
+
+// Sent editions are runtime records and can appear without a code deployment.
+export const dynamic = "force-dynamic";
 
 const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || "https://nostr-wot.com";
 
@@ -32,8 +36,18 @@ function getLocalizedUrl(path: string, locale: string): string {
 // scripts/generate-route-modified.mjs) to an ISO commit date.
 const routeModifiedDates: Record<string, string> = routeModified;
 
-export default function sitemap(): MetadataRoute.Sitemap {
+export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const sitemapEntries: MetadataRoute.Sitemap = [];
+
+  for (const issue of await listSentNewsletters()) {
+    const languages = Object.keys(issue.translations);
+    const alternates = Object.fromEntries(languages.map(locale => [locale, getLocalizedUrl(`/newsletters/${issue.id}`, locale)]));
+    for (const locale of languages) {
+      const edition = issue.translations[locale as keyof typeof issue.translations];
+      if (!edition) continue;
+      sitemapEntries.push({ url: alternates[locale], lastModified: edition.sentAt, changeFrequency: "never", priority: 0.6, alternates: { languages: alternates } });
+    }
+  }
 
   // Generate entries for each static route in each locale
   for (const route of routes) {

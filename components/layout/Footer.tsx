@@ -103,6 +103,11 @@ export default function Footer() {
             <h4 className="font-semibold text-gray-900 dark:text-white mb-4">{t("footer.resources")}</h4>
             <ul className="space-y-3">
               <li>
+                <Link href="/newsletters" className="text-gray-600 dark:text-gray-400 text-sm hover:text-primary transition-colors">
+                  {t("nav.newsletters")}
+                </Link>
+              </li>
+              <li>
                 <Link href="/docs" className="text-gray-600 dark:text-gray-400 text-sm hover:text-primary transition-colors">
                   {t("nav.docs")}
                 </Link>
