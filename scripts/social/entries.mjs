@@ -99,6 +99,7 @@ export function loadNewsIndex() {
     }
     index.set(slug, {
       date: toDateString(data.date),
+      publishedAt: toDateString(data.publishedAt) || toDateString(data.date),
       type: typeof data.type === "string" ? data.type : "",
       url: `${BASE_URL}/news/${slug}`,
     });
@@ -172,7 +173,7 @@ export function buildEntries() {
     }
     entries.push({ slug, path, data, ...article });
   }
-  // Oldest article first, so a batch shares in the order it was published.
+  // Stable source order; the posting selector prioritizes newest publication.
   entries.sort((a, b) => a.date.localeCompare(b.date) || a.slug.localeCompare(b.slug));
   return { entries, errors };
 }

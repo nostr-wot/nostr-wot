@@ -188,13 +188,13 @@ copy file.
   no speculation about maintainer intent.
 
 **Run `npm run social:lint` before committing.** It is in CI, but CI only sees
-this commit after it is already on `main`, and the posting workflow does not
-re-run the linter. Running it here is the same gate, earlier, where it can still
+this commit after it is already on `main`, and the posting workflow also
+re-runs the linter. Running it here is the same gate, earlier, where it can still
 stop something.
 
 You never hold a posting credential and must never ask for one.
-`.github/workflows/social.yml` reads a repository secret and does the posting on
-its own schedule. You write text into the commit and nothing else. See
+`.github/workflows/social.yml` reads a repository secret and does the posting after a successful deployment and on
+its retry schedule. You write text into the commit and nothing else. See
 `docs/social-posting.md`.
 
 ## Before pushing

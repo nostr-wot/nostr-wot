@@ -5,7 +5,7 @@
  * Reads social/<slug>.json entries not yet in the ledger (data/social-posted.json),
  * confirms each one is actually live (fetch the derived URL, require 200: "the
  * commit landed" and "the site is serving the page" are different claims), and
- * shares at most SOCIAL_MAX_PER_RUN (default 1) of them, oldest first, through
+ * shares at most SOCIAL_MAX_PER_RUN (default 1) of them, newest first, through
  * the dandelionlabs socials API.
  *
  * This script is the ONLY thing that holds DLSOCIAL_NOSTRWOT_KEY. It is invoked
@@ -21,9 +21,11 @@
  */
 import { readFileSync, writeFileSync, existsSync, mkdirSync } from "node:fs";
 import { join, dirname } from "node:path";
+import { execFileSync } from "node:child_process";
 import { fetchRetry } from "../fetch-retry.mjs";
 import { ROOT, CHANNEL_CONFIG, SUPPORTED_CHANNELS, withUrl } from "./entries.mjs";
 import { collectErrors } from "./checks.mjs";
+import { selectPending } from "./selection.mjs";
 
 const LEDGER_FILE = join(ROOT, "data/social-posted.json");
 const API_BASE = process.env.DLSOCIAL_API_BASE || "https://socials.dandelionlabs.io";
@@ -76,6 +78,10 @@ function buildRequestPosts(entry) {
 }
 
 async function main() {
+  if (existsSync(join(ROOT, 'content/news/PAUSE'))) {
+    console.log('Newsroom paused. Nothing posted.');
+    return;
+  }
   // The same checks `npm run social:lint` runs, re-run here on purpose.
   //
   // CI already lints on push to `main`, but a red build does not stop a
@@ -96,7 +102,25 @@ async function main() {
   }
 
   const ledger = loadLedger();
-  const pending = entries.filter((e) => !ledger[e.slug]);
+  const slug = process.env.SOCIAL_TARGET_SLUG || '';
+  const deployedSha = process.env.SOCIAL_DEPLOYED_SHA || '';
+  let deployedSlugs = null;
+  if (deployedSha) {
+    if (!/^[a-f0-9]{40}$/.test(deployedSha)) throw new Error('Invalid deployed commit SHA');
+    // Consider every queued entry included in this successful deployment.
+    // The shared selector chooses the newest unposted one, including backlog.
+    const git = (args) => execFileSync('git', args, { cwd: ROOT, encoding: 'utf8' });
+    const deployedFiles = git(['ls-tree', '-r', '--name-only', deployedSha, '--', 'social/']);
+    deployedSlugs = deployedFiles.trim().split('\n').flatMap((path) => {
+      const match = /^social\/([a-z0-9]+(?:-[a-z0-9]+)*)\.json$/.exec(path);
+      if (!match || !existsSync(join(ROOT, path))) return [];
+      // Checkout stays on main for a fresh ledger. Never post copy edited
+      // after the deployment that triggered this run.
+      if (git(['show', `${deployedSha}:${path}`]) !== readFileSync(join(ROOT, path), 'utf8')) return [];
+      return [match[1]];
+    });
+  }
+  const pending = selectPending(entries, ledger, { slug, deployedSlugs });
 
   if (!pending.length) {
     console.log("Nothing due. No entries pending, no secret required.");

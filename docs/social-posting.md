@@ -97,7 +97,7 @@ differences, both structural:
    page. If that routing rule ever changes, update `entries.mjs` with it.
 
 `date` and `type` are still read from the frontmatter, but neither one is part
-of the URL: `date` orders a batch oldest-first, and `type` (`story` or
+of the URL: `date` orders a batch newest-first, and `type` (`story` or
 `digest`) is carried for reporting.
 
 **Copy is English only**, even though every article ships in seven locales. The
@@ -192,7 +192,7 @@ on:
     - cron: "7 19 * * *"
 ```
 
-**And at most one post per run**, oldest first, via `SOCIAL_MAX_PER_RUN`
+**And at most one post per run**, newest first, via `SOCIAL_MAX_PER_RUN`
 (default 1, read in `post-social.mjs`).
 
 Both halves matter. The newsroom publishes at most one article a day, so in the
@@ -319,3 +319,27 @@ Neither can be settled from the code:
 2. **Is the underlying LinkedIn credential current?** These expire roughly every
    60 days and are held by the dandelionlabs board, not this repo. A `401` from
    the posting API means reconnect the account there, not a bug here.
+
+## Remote newsroom and deployment-triggered posting
+
+A successful `Deploy to Prod` run on `main` also starts `social.yml`. The cloud
+writer only needs repository write access: it commits the article, all seven
+translations, illustration and social copy together. GitHub handles the social
+trigger; the cloud connector does not need a workflow-dispatch tool or posting
+credentials. The publishing workflow checks the article URL is live before sending.
+
+Every normal run selects the newest unposted live article, using `publishedAt`
+(falling back to the event `date`), at most one per run. If that article is already
+in the ledger, it considers the next newest. Deployment-triggered runs only
+consider copy present and unchanged in the deployed commit. Scheduled runs remain
+as a retry path. `content/news/PAUSE` stops social posting as well as the writer.
+
+For a controlled manual test, supply the optional `slug` workflow input. A typo
+fails instead of falling back to the queue; an already-posted slug is a no-op.
+Start with `dry_run=true`, then use `dry_run=false` to publish. A green no-op run
+verifies orchestration only: confirm the ledger and returned platform URLs to
+prove a real publication. Never remove a ledger entry just to test posting.
+
+The pipeline runs automatically only when the writer's authenticated repository
+write triggers `Deploy to Prod`; verify this in the first cloud test. A push made
+using a workflow's `GITHUB_TOKEN` does not itself trigger a push workflow.
