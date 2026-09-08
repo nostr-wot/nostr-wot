@@ -1,13 +1,9 @@
 import { NextRequest, NextResponse } from "next/server";
 import { checkRateLimit, getClientIdentifier, RATE_LIMITS, validateOrigin } from "@/lib/rate-limit";
-import { emailService, emailTemplates } from "@/lib/email";
+import { parseSubscription, subscribe, SubscriptionValidationError } from "@/lib/newsletter-subscribers";
+import { sendNewsletterEmails } from "@/lib/newsletter-email";
 
-interface NewsletterData {
-  email: string;
-}
-
-// Max email length per RFC 5321
-const MAX_EMAIL_LENGTH = 254;
+export const runtime = "nodejs";
 
 export async function POST(request: NextRequest) {
   try {
@@ -38,74 +34,32 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const body: NewsletterData = await request.json();
-    const { email } = body;
-
-    // Validate email exists
-    if (!email) {
-      return NextResponse.json(
-        { error: "Email is required" },
-        { status: 400 }
-      );
+    let body: unknown;
+    try { body = await request.json(); }
+    catch {
+      return NextResponse.json({ error: "Invalid JSON body" }, { status: 400 });
     }
 
-    // Validate email length
-    if (email.length > MAX_EMAIL_LENGTH) {
-      return NextResponse.json(
-        { error: `Email must be ${MAX_EMAIL_LENGTH} characters or less` },
-        { status: 400 }
-      );
+    let subscription;
+    try { subscription = parseSubscription(body); }
+    catch (error) {
+      if (error instanceof SubscriptionValidationError) {
+        return NextResponse.json({ error: error.message }, { status: 400 });
+      }
+      throw error;
     }
 
-    // Validate email format (RFC 5321 simplified)
-    const emailRegex = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$/;
-    if (!emailRegex.test(email)) {
-      return NextResponse.json(
-        { error: "Invalid email format" },
-        { status: 400 }
-      );
+    // Commit opt-in before attempting either email. Explicit resubmission can
+    // update language, but an identical retry never creates another subscriber.
+    const result = await subscribe(subscription);
+    if (result.created || result.localeChanged) {
+      await sendNewsletterEmails(subscription.email, subscription.locale);
     }
-
-    const contactEmail = process.env.CONTACT_EMAIL || "contact@nostr-wot.com";
-
-    // Generate email templates
-    const notificationEmail = emailTemplates.newsletterNotification(email);
-    const welcomeEmail = emailTemplates.newsletterWelcome(email);
-
-    // Send notification to admin and welcome to subscriber in parallel
-    const [notificationResult, welcomeResult] = await emailService.sendMany([
-      {
-        to: contactEmail,
-        subject: notificationEmail.subject,
-        html: notificationEmail.html,
-        text: notificationEmail.text,
-      },
-      {
-        to: email,
-        subject: welcomeEmail.subject,
-        html: welcomeEmail.html,
-        text: welcomeEmail.text,
-      },
-    ]);
-
-    if (!notificationResult.success) {
-      console.error("Failed to send notification email:", notificationResult.error);
-      return NextResponse.json(
-        { error: "Failed to subscribe. Please try again later." },
-        { status: 500 }
-      );
-    }
-
-    // Log if welcome email failed but don't fail the request
-    if (!welcomeResult.success) {
-      console.error("Failed to send welcome email:", welcomeResult.error);
-    }
-
     return NextResponse.json({ success: true });
-  } catch (error) {
-    console.error("Newsletter error:", error);
+  } catch {
+    // No addresses, request bodies or filesystem/provider error payloads in logs.
     return NextResponse.json(
-      { error: "An error occurred. Please try again later." },
+      { error: "Unable to save your subscription. Please try again later." },
       { status: 500 }
     );
   }

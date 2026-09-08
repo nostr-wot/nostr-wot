@@ -38,7 +38,7 @@ jobs:
           host: ${{ secrets.SSH_HOST_PROD }}
           username: ${{ secrets.SSH_USER_PROD }}
           key: ${{ secrets.SSH_PRIVATE_KEY_PROD }}
-          source: ".next,public,next.config.ts,package.json,package-lock.json,.env"
+          source: ".next,public,scripts/newsletters,next.config.ts,package.json,package-lock.json,.env"
           target: /var/www/nostr-wot
           overwrite: true
 
@@ -49,7 +49,10 @@ jobs:
           username: ${{ secrets.SSH_USER_PROD }}
           key: ${{ secrets.SSH_PRIVATE_KEY_PROD }}
           script: |
+            set -e
             cd /var/www/nostr-wot
+            # Runtime subscriptions and delivery records must survive application deploys.
+            install -d -m 700 data/newsletter
             npm install
             export PORT=3000
             pm2 delete nostr-wot || true
