@@ -1,0 +1,46 @@
+---
+title: "relayer 2.2.19 corrige los conteos con filtros superpuestos"
+description: "relayer 2.2.19 puede contar varios filtros NIP-45 como una sola unión, evitando contar dos veces un evento que coincide con más de un filtro."
+excerpt: "NIP-45 indica que varios filtros COUNT se combinan con OR en un único resultado. relayer contaba cada filtro por separado y sumaba los totales, por lo que un evento que coincidía con dos filtros podía aparecer dos veces. La versión 2.2.19 añade una interfaz de almacenamiento para calcular la unión exacta."
+date: "2026-09-08"
+publishedAt: "2026-09-08"
+backfilled: false
+type: "story"
+tags: ["Nostr", "NIP-45", "Relays"]
+featuredImage: "/images/news/relayer-2-2-19-fixes-overlapping-count-filters.svg"
+translationKey: "relayer-2-2-19-fixes-overlapping-count-filters"
+sources:
+  - title: "relayer v2.2.19"
+    url: "https://github.com/fiatjaf/relayer/releases/tag/v2.2.19"
+    publisher: "fiatjaf/relayer"
+    date: "2026-09-08"
+  - title: "Comparación v2.2.18...v2.2.19"
+    url: "https://github.com/fiatjaf/relayer/compare/v2.2.18...v2.2.19"
+    publisher: "fiatjaf/relayer"
+    date: "2026-09-08"
+  - title: "NIP-45: Event Counts"
+    url: "https://github.com/nostr-protocol/nips/blob/master/45.md"
+    publisher: "nostr-protocol/nips"
+    date: "2026-09-08"
+published: true
+---
+
+NIP-45 permite que un cliente pregunte a un relay cuántos eventos coinciden con una consulta sin descargar todos los eventos. El cliente envía un mensaje `COUNT` con uno o más filtros y el relay devuelve un solo número entero. El detalle importante es cómo se combinan varios filtros: la especificación dice que se unen mediante OR y se agregan en un único resultado.
+
+[relayer 2.2.19](https://github.com/fiatjaf/relayer/releases/tag/v2.2.19) cambia su implementación para seguir esa regla cuando el backend de almacenamiento puede evaluar varios filtros como una unión. Antes de esta versión, relayer llamaba a `CountEvents` una vez por cada filtro y sumaba las respuestas. Eso es correcto si los filtros no pueden encontrar el mismo evento. Si se superponen, el resultado es demasiado alto.
+
+Pensemos en dos filtros dentro de una misma solicitud. El primero pide eventos kind 1. El segundo pide eventos kinds 1 y 7. Un evento kind 1 satisface ambos filtros, pero la regla OR de NIP-45 exige que aparezca una sola vez en el resultado. La suma de dos conteos independientes lo incluye dos veces.
+
+La [diferencia entre 2.2.18 y 2.2.19](https://github.com/fiatjaf/relayer/compare/v2.2.18...v2.2.19) introduce una interfaz `FiltersCounter` con un método, `CountEventsFilters`. Un almacén que la implemente recibe la lista completa de filtros y puede contar la unión directamente. El controlador de solicitudes usa esta ruta cuando hay más de un filtro. Para un solo filtro, sigue llamando al método existente `CountEvents`.
+
+Es una ampliación de interfaz, no una corrección universal para todos los backends. Si un almacén no implementa `FiltersCounter`, relayer todavía cuenta cada filtro por separado y suma los resultados. El comentario del código marca el límite: esa alternativa es exacta cuando los filtros no se superponen. Con filtros superpuestos, solo un backend compatible con la nueva operación de unión puede evitar duplicados.
+
+La versión también modifica el manejo de errores en la ruta de unión. Si `CountEventsFilters` falla, el relay devuelve `error: failed to count events` en lugar de continuar con un resultado parcial. La ruta anterior por filtro todavía registra el fallo de un conteo individual y continúa con los demás filtros.
+
+Tres pruebas nuevas fijan esta diferencia. Una comprueba que un almacén con el contador anterior recibe dos llamadas separadas. Otra envía filtros superpuestos a un almacén compatible con uniones y espera un conteo de 4 en vez del valor sumado de 6. La tercera confirma que una solicitud con un solo filtro conserva el método original y no invoca el contador de uniones.
+
+El cambio es pequeño, pero el resultado es visible. `COUNT` busca evitar que los clientes descarguen un conjunto potencialmente grande solo para medirlo. Los conteos de reacciones, respuestas, reposts o seguidores pueden usar filtros que se superponen. Inflar esas cifras porque un evento almacenado satisface más de un filtro cambia lo que muestra el cliente, aunque el conjunto real de eventos no haya cambiado.
+
+[NIP-45](https://github.com/nostr-protocol/nips/blob/master/45.md) también permite conteos probabilísticos y datos HyperLogLog, pero esta versión no modifica esas partes. Cambia cómo relayer combina conteos normales con varios filtros. El comportamiento exacto depende de que la implementación de almacenamiento adopte la nueva interfaz.
+
+La versión 2.2.19 fue etiquetada el 8 de septiembre de 2026. Contiene dos commits y modifica tres archivos: el controlador de solicitudes, la interfaz de almacenamiento y sus pruebas.

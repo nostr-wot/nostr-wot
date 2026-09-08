@@ -1,0 +1,46 @@
+---
+title: "relayer 2.2.19 fixes overlapping COUNT filters"
+description: "relayer 2.2.19 can now count multiple NIP-45 filters as one union, preventing the same event from being counted twice when filters overlap."
+excerpt: "NIP-45 says multiple COUNT filters are OR'd into one result. relayer previously counted each filter separately and added the totals, so one event matching two filters could appear twice. Version 2.2.19 adds a storage interface for an exact union count while preserving the old path for stores that do not implement it."
+date: "2026-09-08"
+publishedAt: "2026-09-08"
+backfilled: false
+type: "story"
+tags: ["Nostr", "NIP-45", "Relays"]
+featuredImage: "/images/news/relayer-2-2-19-fixes-overlapping-count-filters.svg"
+translationKey: "relayer-2-2-19-fixes-overlapping-count-filters"
+sources:
+  - title: "relayer v2.2.19"
+    url: "https://github.com/fiatjaf/relayer/releases/tag/v2.2.19"
+    publisher: "fiatjaf/relayer"
+    date: "2026-09-08"
+  - title: "Compare v2.2.18...v2.2.19"
+    url: "https://github.com/fiatjaf/relayer/compare/v2.2.18...v2.2.19"
+    publisher: "fiatjaf/relayer"
+    date: "2026-09-08"
+  - title: "NIP-45: Event Counts"
+    url: "https://github.com/nostr-protocol/nips/blob/master/45.md"
+    publisher: "nostr-protocol/nips"
+    date: "2026-09-08"
+published: true
+---
+
+NIP-45 gives clients a way to ask a relay how many events match a query without downloading every event. A client sends a `COUNT` message with one or more filters, and the relay returns a single integer. The detail that matters here is how several filters combine: the specification says they are OR'd together and aggregated into one result.
+
+[relayer 2.2.19](https://github.com/fiatjaf/relayer/releases/tag/v2.2.19) changes its implementation to follow that rule when the storage backend can evaluate several filters as a union. Before this release, relayer called `CountEvents` once for each filter and added the answers. That is correct when the filters cannot match the same event. It is too high when they overlap.
+
+Consider two filters in one request. The first asks for kind 1 events. The second asks for kinds 1 and 7. A kind 1 event satisfies both filters, but NIP-45's OR rule means it belongs in the result once. Adding two independent counts includes it twice.
+
+The [diff from 2.2.18 to 2.2.19](https://github.com/fiatjaf/relayer/compare/v2.2.18...v2.2.19) introduces a `FiltersCounter` interface with one method, `CountEventsFilters`. A store that implements it receives the complete filter list and can count the union directly. The request handler uses this path when there is more than one filter. For a single filter, it continues to call the existing `CountEvents` method.
+
+This is an interface addition rather than a universal correction for every backend. If a store does not implement `FiltersCounter`, relayer still counts each filter separately and sums the results. The code comment states the boundary plainly: that fallback is exact when filters do not overlap. With overlapping filters, only a backend that supports the new union operation can avoid duplicates.
+
+The release also changes error handling on the union path. If `CountEventsFilters` fails, the relay returns `error: failed to count events` instead of continuing with a partial result. The older per-filter fallback still logs a failed individual count and continues through the remaining filters.
+
+Three new tests pin down the distinction. One verifies that a store with only the older counter still receives two separate calls. Another sends overlapping filters to a union-aware store and expects a count of 4 instead of the summed value of 6. The third confirms that a request with one filter stays on the original method and does not invoke the union counter.
+
+The scope is narrow, but the observable result is not. `COUNT` is intended to save clients from retrieving a potentially large result set merely to measure it. Counts for reactions, replies, reposts or followers can be built from filters that overlap. Inflating those numbers because one stored event satisfies more than one filter changes the answer the client displays, even though the underlying event set has not changed.
+
+[NIP-45](https://github.com/nostr-protocol/nips/blob/master/45.md) also allows probabilistic counts and HyperLogLog data, but this release does not alter those parts of the protocol. It changes how relayer combines ordinary multiple-filter counts. Exact union behavior depends on the selected storage implementation adopting the new interface.
+
+Version 2.2.19 was tagged on 8 September 2026. The release contains two commits and changes three files: the request handler, the storage interface, and its tests.

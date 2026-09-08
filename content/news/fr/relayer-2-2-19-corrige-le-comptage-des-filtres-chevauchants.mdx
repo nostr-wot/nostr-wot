@@ -1,0 +1,46 @@
+---
+title: "relayer 2.2.19 corrige le comptage des filtres qui se chevauchent"
+description: "relayer 2.2.19 peut désormais compter plusieurs filtres NIP-45 comme une seule union et éviter de compter deux fois un événement correspondant à plusieurs filtres."
+excerpt: "NIP-45 impose de combiner plusieurs filtres COUNT avec OR dans un résultat unique. relayer comptait chaque filtre séparément puis additionnait les totaux, si bien qu'un événement correspondant à deux filtres pouvait apparaître deux fois. La version 2.2.19 ajoute une interface de stockage pour calculer l'union exacte."
+date: "2026-09-08"
+publishedAt: "2026-09-08"
+backfilled: false
+type: "story"
+tags: ["Nostr", "NIP-45", "Relays"]
+featuredImage: "/images/news/relayer-2-2-19-fixes-overlapping-count-filters.svg"
+translationKey: "relayer-2-2-19-fixes-overlapping-count-filters"
+sources:
+  - title: "relayer v2.2.19"
+    url: "https://github.com/fiatjaf/relayer/releases/tag/v2.2.19"
+    publisher: "fiatjaf/relayer"
+    date: "2026-09-08"
+  - title: "Comparaison v2.2.18...v2.2.19"
+    url: "https://github.com/fiatjaf/relayer/compare/v2.2.18...v2.2.19"
+    publisher: "fiatjaf/relayer"
+    date: "2026-09-08"
+  - title: "NIP-45: Event Counts"
+    url: "https://github.com/nostr-protocol/nips/blob/master/45.md"
+    publisher: "nostr-protocol/nips"
+    date: "2026-09-08"
+published: true
+---
+
+NIP-45 permet à un client de demander à un relay combien d'événements correspondent à une requête sans devoir tous les télécharger. Le client envoie un message `COUNT` contenant un ou plusieurs filtres, puis le relay renvoie un seul nombre entier. Le point important concerne la combinaison de plusieurs filtres : la spécification indique qu'ils sont réunis avec OR et agrégés dans un résultat unique.
+
+[relayer 2.2.19](https://github.com/fiatjaf/relayer/releases/tag/v2.2.19) modifie son implémentation pour respecter cette règle lorsque le backend de stockage peut évaluer plusieurs filtres comme une union. Avant cette version, relayer appelait `CountEvents` une fois pour chaque filtre, puis additionnait les réponses. Ce calcul est correct lorsque les filtres ne peuvent pas sélectionner le même événement. Lorsqu'ils se chevauchent, le total est trop élevé.
+
+Prenons deux filtres dans une même requête. Le premier demande les événements kind 1. Le second demande les événements kinds 1 et 7. Un événement kind 1 satisfait les deux filtres, mais la règle OR de NIP-45 impose qu'il ne figure qu'une fois dans le résultat. Additionner deux comptages indépendants l'inclut deux fois.
+
+Le [diff entre 2.2.18 et 2.2.19](https://github.com/fiatjaf/relayer/compare/v2.2.18...v2.2.19) introduit une interface `FiltersCounter` avec une méthode, `CountEventsFilters`. Un stockage qui l'implémente reçoit la liste complète des filtres et peut compter directement leur union. Le gestionnaire de requête choisit cette voie lorsqu'il y a plusieurs filtres. Avec un seul filtre, il continue d'appeler la méthode existante `CountEvents`.
+
+Il s'agit d'un ajout d'interface, pas d'une correction universelle pour tous les backends. Si un stockage n'implémente pas `FiltersCounter`, relayer continue de compter chaque filtre séparément et d'additionner les résultats. Le commentaire dans le code précise la limite : cette solution de repli est exacte tant que les filtres ne se chevauchent pas. En cas de chevauchement, seul un backend compatible avec la nouvelle opération d'union peut éviter les doublons.
+
+La version modifie aussi la gestion des erreurs sur le chemin de l'union. Si `CountEventsFilters` échoue, le relay renvoie `error: failed to count events` au lieu de poursuivre avec un résultat partiel. L'ancien chemin par filtre continue de journaliser l'échec d'un comptage individuel et de traiter les filtres restants.
+
+Trois nouveaux tests encadrent cette différence. Le premier vérifie qu'un stockage doté uniquement de l'ancien compteur reçoit encore deux appels distincts. Le deuxième envoie des filtres qui se chevauchent à un stockage capable de calculer l'union et attend un total de 4 au lieu de la somme 6. Le troisième confirme qu'une requête à filtre unique conserve la méthode d'origine et n'appelle pas le compteur d'union.
+
+La portée du changement est réduite, mais son résultat est visible par le client. `COUNT` évite aux clients de télécharger un ensemble potentiellement volumineux uniquement pour en connaître la taille. Les nombres de réactions, réponses, reposts ou abonnés peuvent reposer sur des filtres qui se chevauchent. Gonfler ces nombres parce qu'un événement stocké satisfait plusieurs filtres change la réponse affichée, même si l'ensemble réel des événements reste identique.
+
+[NIP-45](https://github.com/nostr-protocol/nips/blob/master/45.md) autorise aussi les comptages probabilistes et les données HyperLogLog, mais cette version ne modifie pas ces parties du protocole. Elle change la manière dont relayer combine les comptages ordinaires à plusieurs filtres. L'exactitude de l'union dépend de l'adoption de la nouvelle interface par le stockage choisi.
+
+La version 2.2.19 a été publiée le 8 septembre 2026. Elle contient deux commits et modifie trois fichiers : le gestionnaire de requête, l'interface de stockage et les tests.

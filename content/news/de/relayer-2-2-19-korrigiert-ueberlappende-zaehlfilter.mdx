@@ -1,0 +1,46 @@
+---
+title: "relayer 2.2.19 korrigiert überlappende COUNT-Filter"
+description: "relayer 2.2.19 kann mehrere NIP-45-Filter nun als eine Vereinigungsmenge zählen und verhindert doppelte Treffer bei überlappenden Filtern."
+excerpt: "NIP-45 verlangt, mehrere COUNT-Filter mit OR zu einem Ergebnis zu verbinden. relayer zählte bisher jeden Filter einzeln und addierte die Werte, sodass ein Ereignis bei zwei passenden Filtern doppelt erscheinen konnte. Version 2.2.19 ergänzt eine Speicherschnittstelle für die exakte Vereinigungsmenge."
+date: "2026-09-08"
+publishedAt: "2026-09-08"
+backfilled: false
+type: "story"
+tags: ["Nostr", "NIP-45", "Relays"]
+featuredImage: "/images/news/relayer-2-2-19-fixes-overlapping-count-filters.svg"
+translationKey: "relayer-2-2-19-fixes-overlapping-count-filters"
+sources:
+  - title: "relayer v2.2.19"
+    url: "https://github.com/fiatjaf/relayer/releases/tag/v2.2.19"
+    publisher: "fiatjaf/relayer"
+    date: "2026-09-08"
+  - title: "Vergleich v2.2.18...v2.2.19"
+    url: "https://github.com/fiatjaf/relayer/compare/v2.2.18...v2.2.19"
+    publisher: "fiatjaf/relayer"
+    date: "2026-09-08"
+  - title: "NIP-45: Event Counts"
+    url: "https://github.com/nostr-protocol/nips/blob/master/45.md"
+    publisher: "nostr-protocol/nips"
+    date: "2026-09-08"
+published: true
+---
+
+NIP-45 ermöglicht es einem Client, einen Relay nach der Anzahl passender Ereignisse zu fragen, ohne alle Ereignisse herunterzuladen. Der Client sendet eine `COUNT`-Nachricht mit einem oder mehreren Filtern, der Relay antwortet mit einer einzelnen Ganzzahl. Entscheidend ist die Kombination mehrerer Filter: Laut Spezifikation werden sie mit OR verknüpft und zu einem Ergebnis zusammengefasst.
+
+[relayer 2.2.19](https://github.com/fiatjaf/relayer/releases/tag/v2.2.19) setzt diese Regel nun um, wenn das Speicher-Backend mehrere Filter als Vereinigungsmenge auswerten kann. Vor dieser Version rief relayer `CountEvents` für jeden Filter einzeln auf und addierte die Antworten. Das ist korrekt, wenn kein Ereignis auf mehrere Filter passen kann. Bei Überschneidungen ist das Ergebnis zu hoch.
+
+Ein Beispiel mit zwei Filtern zeigt den Unterschied. Der erste fragt Ereignisse von kind 1 ab. Der zweite fragt kinds 1 und 7 ab. Ein Ereignis von kind 1 erfüllt beide Filter. Nach der OR-Regel von NIP-45 darf es im Ergebnis trotzdem nur einmal vorkommen. Die Addition zweier unabhängiger Zählungen erfasst es zweimal.
+
+Der [Diff von 2.2.18 zu 2.2.19](https://github.com/fiatjaf/relayer/compare/v2.2.18...v2.2.19) führt dafür die Schnittstelle `FiltersCounter` mit der Methode `CountEventsFilters` ein. Ein Speicher, der sie implementiert, erhält die vollständige Filterliste und kann deren Vereinigungsmenge direkt zählen. Der Request-Handler nutzt diesen Weg bei mehr als einem Filter. Bei einem einzelnen Filter ruft er weiterhin die bestehende Methode `CountEvents` auf.
+
+Das ist eine Erweiterung der Schnittstelle, keine automatische Korrektur für jedes Backend. Implementiert ein Speicher `FiltersCounter` nicht, zählt relayer weiterhin jeden Filter separat und addiert die Ergebnisse. Der Codekommentar nennt die Grenze: Dieser Fallback ist exakt, solange sich die Filter nicht überschneiden. Bei Überschneidungen kann nur ein Backend mit der neuen Vereinigungsoperation doppelte Treffer vermeiden.
+
+Die Version ändert außerdem die Fehlerbehandlung auf dem neuen Pfad. Schlägt `CountEventsFilters` fehl, antwortet der Relay mit `error: failed to count events`, statt mit einem Teilergebnis fortzufahren. Der ältere Pfad protokolliert den Fehler einer einzelnen Zählung weiterhin und arbeitet die übrigen Filter ab.
+
+Drei neue Tests halten den Unterschied fest. Einer prüft, dass ein Speicher mit ausschließlich dem alten Zähler weiterhin zwei getrennte Aufrufe erhält. Ein weiterer sendet überlappende Filter an einen unionsfähigen Speicher und erwartet einen Wert von 4 statt der addierten 6. Der dritte bestätigt, dass eine Anfrage mit einem Filter die ursprüngliche Methode verwendet und den Unionszähler nicht aufruft.
+
+Die Änderung ist eng begrenzt, doch das Ergebnis ist für Clients sichtbar. `COUNT` soll verhindern, dass Clients eine möglicherweise große Ergebnismenge nur zum Zählen herunterladen. Zahlen für Reaktionen, Antworten, Reposts oder Follower können aus überlappenden Filtern entstehen. Wird ein gespeichertes Ereignis wegen mehrerer Treffer doppelt gezählt, zeigt der Client eine andere Zahl an, obwohl sich die tatsächliche Ereignismenge nicht geändert hat.
+
+[NIP-45](https://github.com/nostr-protocol/nips/blob/master/45.md) erlaubt auch probabilistische Zählungen und HyperLogLog-Daten. Diese Teile des Protokolls ändert das Release nicht. Es ändert die Kombination gewöhnlicher Zählungen mit mehreren Filtern. Das exakte Verhalten hängt davon ab, ob die gewählte Speicherimplementierung die neue Schnittstelle übernimmt.
+
+Version 2.2.19 wurde am 8. September 2026 veröffentlicht. Sie enthält zwei Commits und ändert drei Dateien: den Request-Handler, die Speicherschnittstelle und die Tests.
