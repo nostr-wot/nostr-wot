@@ -100,3 +100,48 @@ test('security baseline preserves coverage, date basis and expandable source evi
   assert.match(html, /href="https:\/\/example.com\/commit"/);
   assert.match(html, /Summary &amp; evidence/);
 });
+
+test('Spanish UI translates controls, roles, dates and evidence without changing source URLs', async () => {
+  const { createElement } = await import('react');
+  const { renderToStaticMarkup } = await import('react-dom/server');
+  const { default: Directory } = await import('../components/projects/EcosystemDirectory');
+  const data = { checkedAt: '2026-09-08', projects: [{ ...project, category: 'social-client', status: 'unknown' as const,
+    summary: 'Un explorador de relés', statusNote: '',
+    people: [{ ...project.people[0], profiles: [{ label: 'Perfil', url: 'https://example.com/alice' }] }],
+  }], news: [], security: [{ title: 'Revisión de seguridad', date: '2026-09-07', summary: 'Fuentes seleccionadas',
+    url: 'https://example.com/report', type: 'baseline', dateBasis: 'tag commit date', coverage: 'Avisos del repositorio',
+    sources: [{ label: 'Commit etiquetado', url: 'https://example.com/commit' }],
+  }] };
+  const html = renderToStaticMarkup(createElement(Directory, { locale: 'es', data, blogHref: '/es/blog', newsHref: '/es/news' }));
+  for (const text of ['lang="es"', 'Buscar proyectos o personas', 'Todas las categorías', 'Todos los estados', 'Cliente social', 'Desconocido', 'Responsable de mantenimiento', 'Fundador: no verificado', 'Fuentes', 'Fecha del commit', 'Informes de seguridad', 'Revisión de referencia', '8 de septiembre de 2026']) assert.ok(html.includes(text), text);
+  for (const url of ['https://example.com/team', 'https://example.com/alice', 'https://example.com/commit', 'https://example.com/report']) assert.ok(html.includes(`href="${url}"`));
+  assert.doesNotMatch(html, /Curated content|Search projects|Founder: not verified|People, status|Commit date|link unavailable/);
+});
+
+test('Spanish empty state and JSON-LD declare Spanish while unsupported locales retain English', async () => {
+  const { createElement } = await import('react');
+  const { renderToStaticMarkup } = await import('react-dom/server');
+  const { default: Directory } = await import('../components/projects/EcosystemDirectory');
+  const data = { checkedAt: '2026-09-08', projects: [], news: [], security: [] };
+  const html = renderToStaticMarkup(createElement(Directory, { locale: 'es', data, blogHref: '/es/blog', newsHref: '/es/news' }));
+  assert.match(html, /El directorio está en preparación/);
+  assert.doesNotMatch(html, /English|inglés/);
+  const fallback = renderToStaticMarkup(createElement(Directory, { locale: 'fr', data, blogHref: '/fr/blog', newsHref: '/fr/news' }));
+  assert.match(fallback, /lang="en"/);
+  assert.match(fallback, /Curated content · English/);
+  assert.equal(ecosystemJsonLd(data, 'https://nostr-wot.com/es/projects', 'es').inLanguage, 'es');
+  assert.equal(ecosystemJsonLd(data, 'https://nostr-wot.com/fr/projects', 'fr').inLanguage, 'en');
+});
+
+test('Spanish dataset preserves the English source URLs and dated evidence', async () => {
+  const { readFile } = await import('node:fs/promises');
+  const english = JSON.parse(await readFile(new URL('../data/ecosystem-projects.json', import.meta.url), 'utf8'));
+  const spanish = JSON.parse(await readFile(new URL('../data/ecosystem-projects.es.json', import.meta.url), 'utf8'));
+  const evidenceKeys = new Set(['id', 'url', 'website', 'repository', 'sourceUrl', 'date', 'checkedAt', 'lastVerified', 'status', 'role', 'category', 'type', 'dateBasis']);
+  function evidence(value: unknown): unknown {
+    if (Array.isArray(value)) return value.map(evidence);
+    if (!value || typeof value !== 'object') return value;
+    return Object.fromEntries(Object.entries(value).filter(([key, item]) => evidenceKeys.has(key) || (item !== null && typeof item === 'object')).map(([key, item]) => [key, evidence(item)]));
+  }
+  assert.deepEqual(evidence(spanish), evidence(english));
+});

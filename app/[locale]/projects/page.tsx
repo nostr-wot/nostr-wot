@@ -6,10 +6,9 @@ import { type Locale } from "@/i18n/config";
 
 import EcosystemDirectory from "@/components/projects/EcosystemDirectory";
 import ecosystemData from "@/data/ecosystem-projects.json";
+import spanishEcosystemData from "@/data/ecosystem-projects.es.json";
 import { ecosystemJsonLd, serializeJsonLd, type EcosystemData } from "@/lib/ecosystem-projects";
 
-// Curated data is maintained separately from the directory UI.
-const data = ecosystemData as EcosystemData;
 
 type Props = {
   params: Promise<{ locale: string }>;
@@ -58,7 +57,8 @@ const PROJECTS = [
 export default async function ProjectsPage({ params }: Props) {
   const { locale } = await params;
   const t = await getTranslations("projects");
-  const jsonLd = ecosystemJsonLd(data, getFullUrl("/projects", locale as Locale));
+  const data = (locale === "es" ? spanishEcosystemData : ecosystemData) as EcosystemData;
+  const jsonLd = ecosystemJsonLd(data, getFullUrl("/projects", locale as Locale), locale);
   const localPath = (path: string) => locale === "en" ? path : `/${locale}${path}`;
 
   return (
@@ -80,7 +80,7 @@ export default async function ProjectsPage({ params }: Props) {
           </div>
         </section>
 
-        <EcosystemDirectory data={data} blogHref={localPath("/blog")} newsHref={localPath("/news")} />
+        <EcosystemDirectory locale={locale} data={data} blogHref={localPath("/blog")} newsHref={localPath("/news")} />
 
         {/* Confirmed integrations remain distinct from the wider ecosystem. */}
         <Section padding="md">

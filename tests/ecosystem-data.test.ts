@@ -41,3 +41,28 @@ test('news and security records retain dates and source links without future cla
     for (const source of item.sources ?? []) link(source.url);
   }
 });
+
+test('Spanish translation preserves record identities, roles, dates and evidence URLs', () => {
+  const es = JSON.parse(readFileSync(new URL('../data/ecosystem-projects.es.json', import.meta.url), 'utf8'));
+  const fixed = new Set(['id', 'name', 'status', 'role', 'category', 'date', 'lastVerified', 'url', 'website', 'repository', 'sourceUrl', 'checkedAt', 'type', 'coverage', 'dateBasis']);
+  function compare(en: any, translated: any, path = '') {
+    if (Array.isArray(en)) {
+      assert.ok(Array.isArray(translated), path);
+      assert.equal(translated.length, en.length, path);
+      en.forEach((entry, index) => compare(entry, translated[index], `${path}/${index}`));
+    } else if (en && typeof en === 'object') {
+      assert.deepEqual(Object.keys(translated).sort(), Object.keys(en).sort(), path);
+      for (const [key, value] of Object.entries(en)) {
+        if (fixed.has(key)) assert.deepEqual(translated[key], value, `${path}/${key}`);
+        else compare(value, translated[key], `${path}/${key}`);
+      }
+    } else {
+      assert.equal(typeof translated, typeof en, path);
+      if (typeof en === 'string') assert.ok(translated.trim(), path);
+    }
+  }
+  compare(data, es);
+  for (const section of ['projects', 'news', 'security']) {
+    data[section].forEach((entry: any, index: number) => assert.notEqual(es[section][index].summary, entry.summary));
+  }
+});
