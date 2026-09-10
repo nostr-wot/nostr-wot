@@ -341,3 +341,7 @@ Start with `dry_run=true`, then use `dry_run=false` to publish. Manual tests are
 additional to the schedule. A green no-op verifies orchestration only: confirm
 the ledger and returned platform URLs to prove a real publication. Never remove
 a ledger entry just to test posting.
+
+## Sharing guides and blog articles
+
+Social copy may set `"collection": "guides"` or `"collection": "blog"`. Omission keeps the existing `news` default. The publisher resolves the English article in that collection, excludes `published: false` drafts, and derives its canonical URL. Unsupported collections fail validation. Use the manual workflow’s `slug` input to publish only the approved article.

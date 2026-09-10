@@ -1,6 +1,6 @@
 # Custom identity paths: review record
 
-Prepared 11 September 2026. Seven matching editions in content/guides/{en,es,de,fr,it,pt,ru}/custom-identity-paths.mdx, all published: false pending editorial review. No social or newsletter send is attached.
+Prepared 11 September 2026. Seven matching editions in content/guides/{en,es,de,fr,it,pt,ru}/custom-identity-paths.mdx, all published: true following explicit user approval to publish the guide and post it to LinkedIn and Nostr. Social copy is in social/custom-identity-paths.json. No newsletter send is attached.
 
 ## Release evidence
 
@@ -13,4 +13,4 @@ Prepared 11 September 2026. Seven matching editions in content/guides/{en,es,de,
 
 ## Publication checklist
 
-Review all editions and verify current release availability before setting published: true. Guide collection indexes entries automatically. No links from already-published pages to these drafts were added. Images are explanatory diagrams, not screenshots.
+All editions reviewed and GitHub release availability verified. Guide collection indexes entries automatically. Images are explanatory diagrams, not screenshots.
