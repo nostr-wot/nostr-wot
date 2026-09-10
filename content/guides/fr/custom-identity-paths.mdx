@@ -1,0 +1,56 @@
+---
+title: "Nommer ses identités Nostr et choisir leur chemin"
+description: "Utilisez les noms facultatifs, les chemins de dérivation et les aperçus de clés de Nostr WoT. Sachez quoi conserver pour la récupération."
+excerpt: "Utilisez les noms facultatifs, les chemins de dérivation et les aperçus de clés de Nostr WoT. Sachez quoi conserver pour la récupération."
+date: "2026-09-11"
+author: {"name": "Leon Acosta", "avatar": "/authors/leon-profile.jpg", "npub": "npub1gxdhmu9swqduwhr6zptjy4ya693zp3ql28nemy4hd97kuufyrqdqwe5zfk"}
+featuredImage: "/images/guides/custom-identity-paths/fr.png"
+previewImage: "/images/guides/custom-identity-paths/fr.png"
+tags: ["Nostr", "NIP-06", "BIP-32"]
+published: true
+seoTitle: "Nommer ses identités Nostr et choisir leur chemin"
+seoDescription: "Utilisez les noms facultatifs, les chemins de dérivation et les aperçus de clés de Nostr WoT. Sachez quoi conserver pour la récupération."
+ogImage: "/images/guides/custom-identity-paths/fr.png"
+translationKey: "custom-identity-paths"
+difficulty: "advanced"
+order: 2.6
+---
+
+Une identité professionnelle, une identité de projet et une identité de test peuvent porter des noms locaux distincts. Nostr WoT permet de nommer une nouvelle identité dérivée de votre phrase de récupération et de choisir son chemin sous **Avancé**. Gardez le choix automatique si vous n’avez pas besoin d’un chemin précis.
+
+## Quelle version propose cette fonction ?
+
+Ce guide décrit l’extension **0.7.0**, disponible en [téléchargement sur GitHub](https://github.com/nostr-wot/nostr-wot-extension/releases/tag/v0.7.0). Lors de sa préparation, l’approbation de cette version dans les boutiques Chrome et Firefox n’était pas confirmée. Vérifiez votre version installée.
+
+## Le nom et le chemin ont des rôles différents
+
+| Réglage | Effet |
+|---|---|
+| Nom du compte | Libellé local facultatif. Ne modifie pas la clé et ne publie pas de nom de profil. |
+| Chemin de dérivation | Détermine la clé obtenue à partir de la graine. Un autre chemin produit normalement une autre identité. |
+| Aperçus npub et hex | Deux représentations de la clé publique, avant l’enregistrement. |
+
+## Créer l’identité
+
+1. Déverrouillez l’extension, ouvrez le sélecteur de comptes et ajoutez un **sous-compte HD**. Une phrase de récupération doit déjà se trouver dans le coffre ; un nsec importé seul ne suffit pas.
+2. Vérifiez la graine source affichée. L’extension propose le prochain chemin libre dans sa séquence existante.
+3. Saisissez éventuellement un nom, comme « Projet » ou « Tests ». Un champ vide conserve le nom proposé.
+4. Ouvrez **Avancé** pour choisir un autre chemin. Saisissez-le exactement et attendez l’actualisation de l’aperçu.
+5. Vérifiez le chemin et le npub. Un chemin invalide, une erreur ou un aperçu en cours empêchent de continuer.
+6. Cliquez sur **Continuer** pour enregistrer l’identité. Modifier l’aperçu ne crée pas encore de compte enregistré.
+
+## À quoi ressemble un chemin ?
+
+Le chemin Nostr initial est `m/44'/1237'/0'/0/0`. Un exemple suivant dans la séquence de l’extension est `m/44'/1237'/0'/0/1`. Ce sont des chemins, pas des clés privées. Conservez chaque barre oblique, chiffre et apostrophe.
+
+Ne supposez pas qu’un autre outil numérote les comptes de la même façon. [NIP-06](https://github.com/nostr-protocol/nips/blob/master/06.md) décrit l’incrément du composant de compte renforcé ; la séquence existante des comptes supplémentaires de l’extension incrémente le dernier composant. Le chemin exact et la clé publique doivent correspondre. NIP-06 est actuellement marqué facultatif et non recommandé par ses mainteneurs ; sa prise en charge entre clients n’est pas garantie.
+
+Les indications de préfixes réseau reconnaissent seulement une convention. Un chemin ressemblant à celui de Bitcoin crée toujours une identité Nostr, pas un portefeuille Bitcoin. Évitez un chemin déjà utilisé par un portefeuille.
+
+## Préparer la récupération
+
+Conservez en sécurité la phrase, le chemin exact et le npub attendu. Le nom local facilite l’organisation, mais ne restaure pas une clé. La graine seule n’indique pas à une autre application quel chemin personnalisé vous avez choisi.
+
+Plusieurs chemins organisent les identités, sans les protéger d’une compromission de leur graine commune ni garantir l’anonymat. Changer de chemin ne transfère ni publications, ni abonnés, ni profil. Les clés existantes restent inchangées.
+
+Pour simplement changer de compte, consultez la [gestion des identités](/fr/guides/managing-identity). Réservez les chemins personnalisés à un besoin précis d’organisation ou de récupération que vous pouvez documenter.

@@ -1,6 +1,6 @@
 /**
  * Shared logic for the social-posting scripts: read `social/<slug>.json` copy
- * files, join each one to the news article it names, and derive the canonical
+ * files, join each one to its selected content collection, and derive the canonical
  * URL from the SAME routing rule the site uses.
  *
  * Adapted from quantakrypto/website `scripts/social/entries.mjs`. Two things
@@ -80,28 +80,32 @@ function toDateString(value) {
 
 /**
  * slug -> { date, type, url }, built by reading the frontmatter of every
- * English news article. `date` is used only to order a batch, and `type`
+ * English article in the selected collection (news by default). Drafts are excluded.
+ * `date` is used only to order a batch, and `type`
  * (`story` or `digest`) is carried for reporting; the URL depends on neither,
  * because news does not live under a dated path here.
  */
-export function loadNewsIndex() {
+export function loadNewsIndex(collection = "news") {
+  if (!LINKABLE_COLLECTIONS.includes(collection)) throw new Error(`Unsupported social collection: ${collection}`);
+  const sourceDir = join(ROOT, "content", collection, "en");
   const index = new Map();
-  if (!existsSync(NEWS_DIR)) return index;
-  for (const name of readdirSync(NEWS_DIR).sort()) {
+  if (!existsSync(sourceDir)) return index;
+  for (const name of readdirSync(sourceDir).sort()) {
     if (!name.endsWith(".mdx") && !name.endsWith(".md")) continue;
     const slug = name.replace(/\.mdx?$/, "");
-    const raw = readFileSync(join(NEWS_DIR, name), "utf8");
+    const raw = readFileSync(join(sourceDir, name), "utf8");
     let data;
     try {
       ({ data } = matter(raw));
     } catch (e) {
-      throw new Error(`content/news/en/${name}: invalid frontmatter (${e.message})`);
+      throw new Error(`content/${collection}/en/${name}: invalid frontmatter (${e.message})`);
     }
+    if (data.published === false) continue;
     index.set(slug, {
       date: toDateString(data.date),
       publishedAt: toDateString(data.publishedAt) || toDateString(data.date),
       type: typeof data.type === "string" ? data.type : "",
-      url: `${BASE_URL}/news/${slug}`,
+      url: `${BASE_URL}/${collection}/${slug}`,
     });
   }
   return index;
@@ -159,14 +163,20 @@ export function withUrl(text, url) {
  * not (missing article, e.g.) so callers can report rather than throw.
  */
 export function buildEntries() {
-  const newsIndex = loadNewsIndex();
+  const indexes = new Map();
   const errors = [];
   const entries = [];
   for (const { slug, path, data } of listSocialFiles()) {
-    const article = newsIndex.get(slug);
+    const collection = data.collection ?? "news";
+    if (!LINKABLE_COLLECTIONS.includes(collection)) {
+      errors.push(`social/${slug}.json: unsupported collection ${collection}`);
+      continue;
+    }
+    if (!indexes.has(collection)) indexes.set(collection, loadNewsIndex(collection));
+    const article = indexes.get(collection).get(slug);
     if (!article) {
       errors.push(
-        `social/${slug}.json: no article at content/news/en/${slug}.mdx. ` +
+        `social/${slug}.json: no published article at content/${collection}/en/${slug}.mdx. ` +
           `The copy file must be named after the English slug.`,
       );
       continue;

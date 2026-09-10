@@ -1,0 +1,56 @@
+---
+title: "Dê nomes às identidades Nostr e escolha o caminho"
+description: "Use nomes opcionais, caminhos de derivação e prévias de chaves no Nostr WoT. Saiba o que guardar para recuperar as suas identidades."
+excerpt: "Use nomes opcionais, caminhos de derivação e prévias de chaves no Nostr WoT. Saiba o que guardar para recuperar as suas identidades."
+date: "2026-09-11"
+author: {"name": "Leon Acosta", "avatar": "/authors/leon-profile.jpg", "npub": "npub1gxdhmu9swqduwhr6zptjy4ya693zp3ql28nemy4hd97kuufyrqdqwe5zfk"}
+featuredImage: "/images/guides/custom-identity-paths/pt.png"
+previewImage: "/images/guides/custom-identity-paths/pt.png"
+tags: ["Nostr", "NIP-06", "BIP-32"]
+published: true
+seoTitle: "Dê nomes às identidades Nostr e escolha o caminho"
+seoDescription: "Use nomes opcionais, caminhos de derivação e prévias de chaves no Nostr WoT. Saiba o que guardar para recuperar as suas identidades."
+ogImage: "/images/guides/custom-identity-paths/pt.png"
+translationKey: "custom-identity-paths"
+difficulty: "advanced"
+order: 2.6
+---
+
+Uma identidade de trabalho, uma de projeto e outra de testes podem ter nomes locais fáceis de reconhecer. O Nostr WoT permite nomear uma nova identidade derivada da frase de recuperação e escolher o caminho em **Avançado**. Mantenha a escolha automática se não precisar de um caminho específico.
+
+## Qual versão inclui esta função?
+
+Este guia descreve a extensão **0.7.0**, disponível na [versão para download no GitHub](https://github.com/nostr-wot/nostr-wot-extension/releases/tag/v0.7.0). A aprovação desta versão nas lojas do Chrome e Firefox não estava confirmada quando o guia foi preparado. Verifique a versão instalada.
+
+## Nome e caminho têm funções diferentes
+
+| Configuração | Efeito |
+|---|---|
+| Nome da conta | Rótulo local opcional. Não muda a chave nem publica um nome de perfil. |
+| Caminho de derivação | Determina a chave obtida da semente. Outro caminho normalmente produz outra identidade. |
+| Prévia npub e hex | Duas representações da chave pública antes de guardar. |
+
+## Criar a identidade
+
+1. Desbloqueie a extensão, abra o seletor de contas e adicione uma **subconta HD**. É necessária uma frase de recuperação já existente no cofre; uma nsec importada sozinha não substitui essa frase.
+2. Confira a semente de origem apresentada. A extensão propõe o próximo caminho livre da sua sequência existente.
+3. Digite um nome opcional, como «Projeto» ou «Testes». Um campo vazio mantém o nome proposto.
+4. Abra **Avançado** se precisar de outro caminho. Digite-o exatamente e aguarde a atualização da prévia.
+5. Confira o caminho e a npub. Caminhos inválidos, erros ou uma prévia ainda em processamento impedem continuar.
+6. Selecione **Continuar** para guardar a identidade. Alterar a prévia por si só não guarda uma conta.
+
+## Como é um caminho?
+
+O caminho Nostr inicial é `m/44'/1237'/0'/0/0`. Um exemplo posterior na sequência da extensão é `m/44'/1237'/0'/0/1`. São caminhos, não chaves privadas. Preserve cada barra, número e apóstrofo.
+
+Não suponha que outra ferramenta numere as contas da mesma forma. O [NIP-06](https://github.com/nostr-protocol/nips/blob/master/06.md) descreve incrementar o componente de conta endurecido; a sequência existente de contas adicionais da extensão incrementa o componente final. O caminho exato e a chave pública devem coincidir. Os mantenedores classificam atualmente o NIP-06 como opcional e não recomendado; a compatibilidade entre clientes não é garantida.
+
+As indicações de prefixos de rede apenas reconhecem uma convenção. Um caminho parecido com o do Bitcoin continua a criar uma identidade Nostr, não uma carteira Bitcoin. Evite reutilizar caminhos que uma carteira já utiliza.
+
+## Prepare a recuperação
+
+Guarde em segurança a frase, o caminho exato e a npub esperada. O nome local ajuda na organização, mas não recupera a chave. A semente sozinha não indica a outra aplicação qual caminho personalizado foi escolhido.
+
+Caminhos diferentes organizam identidades, mas não as isolam de um comprometimento da semente comum nem garantem anonimato. Alterar o caminho não transfere publicações, seguidores ou o perfil. As chaves existentes permanecem iguais.
+
+Para apenas alternar contas, consulte a [gestão de identidades](/pt/guides/managing-identity). Use caminhos personalizados quando houver uma necessidade concreta de organização ou recuperação que consiga documentar.

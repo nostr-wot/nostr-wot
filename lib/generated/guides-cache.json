@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-09-08T12:52:43.910Z",
+  "generatedAt": "2026-09-10T23:08:20.797Z",
   "locales": {
     "en": {
       "posts": [
@@ -284,6 +284,53 @@
           "difficulty": "beginner",
           "order": 2.5,
           "content": "\nSooner or later you will want to clean up the list of accounts in the extension — maybe an old identity you no longer use, a test account, or one you imported by mistake. The extension lets you remove accounts from the accounts selector with a single click, and applies a stricter confirmation when removing a seed-based account that only exists inside the extension.\n\n## Before You Remove an Account\n\nRemoving an account only affects the extension on this browser. Your Nostr identity is a key pair, and the events you have published live on relays across the network. They will stay there whether or not this browser remembers you.\n\nWhat removal does:\n\n- Deletes the encrypted copy of the keys stored locally in the extension.\n- Removes the account from the accounts selector.\n- Clears the local trust graph, permissions, and wallet state tied to that account.\n\nWhat removal does **not** do:\n\n- It does not delete your posts, profile, or follow list from Nostr relays.\n- It does not affect the same identity on other devices or other NIP-07 signers.\n\n<Callout type=\"warning\">\nIf you generated your seed phrase inside the extension and never backed it up, removing the account is permanent. There is no recovery. Export or write down your 12-word seed before continuing.\n</Callout>\n\n![The Security screen lets you export your private key (nsec) or a password-protected encrypted backup (ncryptsec) before removing the account](/images/guides/removing-accounts/backup-security.jpg)\n\n## Removing an Account\n\n### 1. Open the Accounts Selector\n\nClick the extension icon and open the accounts selector at the top of the popup. You will see every account the extension is currently holding, with the active one highlighted.\n\n![The accounts selector lists every identity stored in the extension, with the active account highlighted at the top](/images/guides/removing-accounts/accounts-selector.jpg)\n\n### 2. Hover the Account and Click the Cross\n\nMove your cursor over the account you want to remove. A small cross (×) icon appears on the right side of the row. Click it.\n\n![Hovering an account row reveals a cross icon on the right — click it to start the removal flow](/images/guides/removing-accounts/hover-remove.jpg)\n\n### 3. Confirm the Removal\n\nA confirmation dialog opens. For an account you imported using an existing nsec, confirming here is enough — the extension assumes you still have the key somewhere else and can restore access later.\n\n![The simple confirmation dialog asks you to confirm you want to remove the account from this extension](/images/guides/removing-accounts/confirm-dialog.jpg)\n\n### 4. Seed-Based Accounts: Type REMOVE\n\nIf the account was generated inside the extension from a seed phrase, the confirmation is stricter. You are asked to type the word **REMOVE** (in capitals) before the button becomes active. This extra friction is there because losing the only copy of a seed is effectively losing the identity forever.\n\nOnce you confirm, the account disappears from the selector and, if it was the active one, the extension switches to another stored account or to the onboarding screen if no accounts are left.\n\n## Why Seed-Based Accounts Need a Stricter Confirmation\n\nWhen you generate a new identity inside the extension, the 12-word seed is created locally and shown to you once. The extension never sends it anywhere. If you did not copy it down, the encrypted copy in the extension is the only thing that links you to that identity. Removing it without a backup means losing the ability to sign as that npub ever again.\n\nImported accounts are different. If you added them using an existing nsec or seed, you already have that key material stored elsewhere — in another signer, a password manager, or on paper. Restoring is straightforward.\n\n## Restoring an Account You Removed\n\nTo bring back a removed account:\n\n1. Open the accounts selector and click **Add Account**.\n2. Choose **Import** and paste your nsec or 12-word seed phrase.\n3. The extension rebuilds the encrypted keystore, resyncs the trust graph, and the account is ready to use again.\n\nYour local history (permissions, auto-approve rules, wallet connections) is not restored — it was tied to the deleted keystore. Nostr data like your profile, follows, and notes re-syncs from relays automatically.\n\n## What's Next?\n\nNow that you know how to remove accounts safely, make sure the ones you keep are well protected. Review key security in [Managing Your Identity](/guides/managing-identity), or head back to [Getting Started](/guides/getting-started) if you are rebuilding from scratch.\n"
+        },
+        {
+          "slug": "custom-identity-paths",
+          "title": "Name your Nostr identities and choose a custom path",
+          "description": "Use optional identity names, advanced derivation paths and public-key previews in Nostr WoT. Learn what to keep for recovery.",
+          "excerpt": "Use optional identity names, advanced derivation paths and public-key previews in Nostr WoT. Learn what to keep for recovery.",
+          "date": "2026-09-11T00:00:00.000Z",
+          "author": {
+            "name": "Leon Acosta",
+            "avatar": "/authors/leon-profile.jpg",
+            "npub": "npub1gxdhmu9swqduwhr6zptjy4ya693zp3ql28nemy4hd97kuufyrqdqwe5zfk"
+          },
+          "featuredImage": "/images/guides/custom-identity-paths/en.png",
+          "previewImage": "/images/guides/custom-identity-paths/en.png",
+          "tags": [
+            "Nostr",
+            "NIP-06",
+            "BIP-32"
+          ],
+          "published": true,
+          "readingTime": "3 min read",
+          "locale": "en",
+          "translationKey": "custom-identity-paths",
+          "translations": {
+            "en": "custom-identity-paths",
+            "es": "custom-identity-paths",
+            "pt": "custom-identity-paths",
+            "ru": "custom-identity-paths",
+            "it": "custom-identity-paths",
+            "fr": "custom-identity-paths",
+            "de": "custom-identity-paths"
+          },
+          "availableLocales": [
+            "en",
+            "es",
+            "pt",
+            "ru",
+            "it",
+            "fr",
+            "de"
+          ],
+          "seoTitle": "Name your Nostr identities and choose a custom path",
+          "seoDescription": "Use optional identity names, advanced derivation paths and public-key previews in Nostr WoT. Learn what to keep for recovery.",
+          "ogImage": "/images/guides/custom-identity-paths/en.png",
+          "difficulty": "advanced",
+          "order": 2.6,
+          "content": "\nA work identity, a project identity and a testing identity do not have to look identical in your account list. Nostr WoT lets you give a new seed-derived identity a useful local name and, under **Advanced**, choose the derivation path yourself. Leave the path alone if the automatic choice suits you.\n\n## Which version includes this?\n\nThis guide describes extension **0.7.0**, available as a downloadable [GitHub release](https://github.com/nostr-wot/nostr-wot-extension/releases/tag/v0.7.0). Chrome and Firefox store approval of this version was not confirmed when this guide was prepared. Check your installed version before looking for these controls.\n\n## A name and a path do different jobs\n\n| Setting | What it changes |\n|---|---|\n| Account name | A local label that helps you recognize the identity. It is optional and does not change the key or publish a profile name. |\n| Derivation path | The route used to derive a key from your existing seed. A different path normally produces a different identity. |\n| npub and hex preview | Two representations of the resulting public key, shown before you save. |\n\n## Create the identity\n\n1. Unlock the extension and open the account selector. Start adding an account and choose **HD Sub-Account**. This requires an existing recovery phrase in the vault; an imported nsec alone is not that phrase.\n2. Check the source seed shown on **New Sub-Account**. The extension proposes the next unused path in its existing sequence.\n3. Optionally enter a name such as “Project” or “Testing”. Leaving it blank keeps the proposed name.\n4. Open **Advanced** only if you need a specific path. Enter the exact path and wait for the public-key preview to refresh.\n5. Check both the path and the displayed npub. An invalid path, failed preview or preview still loading prevents continuation.\n6. Select **Continue** to save the identity in the vault. Editing the preview alone does not save an account.\n\n## What does a path look like?\n\nThe initial Nostr path is `m/44'/1237'/0'/0/0`. An example later path in the extension’s sequence is `m/44'/1237'/0'/0/1`. These are paths, not private keys. Keep every slash, number and apostrophe when recording yours.\n\nFor recovery in another tool, never assume its account counter follows the same sequence. [NIP-06](https://github.com/nostr-protocol/nips/blob/master/06.md) describes incrementing the hardened account component; the extension’s existing additional-account sequence increments the final component. Matching the exact path and public key matters more than matching an account number. NIP-06 is currently marked optional and unrecommended by its maintainers, so support across clients is not guaranteed.\n\nRecognized network-prefix hints describe a convention only. Choosing a Bitcoin-looking path still creates a Nostr identity, not a Bitcoin wallet. Avoid reusing a path already used by a wallet.\n\n## Keep recovery practical\n\nStore your recovery phrase securely, together with the exact path and the public npub you expect to recover. A local name is useful for organization but cannot restore a key. A seed alone does not tell another application which custom path you selected.\n\nDifferent paths are useful for organizing identities, not for isolating them from compromise of their shared seed. They do not guarantee anonymity either. Changing the path does not transfer posts, followers or profile information to the new identity. Existing keys are not changed by this feature.\n\nStart with [identity management](/guides/managing-identity) if you only need account switching. Use custom paths when you have a recovery or organization requirement you can document.\n"
         },
         {
           "slug": "understanding-wot",
@@ -686,6 +733,7 @@
       "tags": [
         "Accounts",
         "Advanced",
+        "BIP-32",
         "Beginner",
         "Concepts",
         "Decentralization",
@@ -696,6 +744,7 @@
         "Keys",
         "Lightning",
         "Lightning Address",
+        "NIP-06",
         "NIP-07",
         "NWC",
         "Nostr",
@@ -997,6 +1046,53 @@
           "difficulty": "beginner",
           "order": 2.5,
           "content": "\nTarde o temprano querrás limpiar la lista de cuentas de la extensión: una identidad antigua, una cuenta de prueba o alguna que importaste por error. La extensión te permite eliminar cuentas desde el selector con un solo clic, y aplica una confirmación más estricta cuando la cuenta está basada en una semilla generada dentro de la propia extensión.\n\n## Antes de Eliminar una Cuenta\n\nEliminar una cuenta solo afecta a la extensión en este navegador. Tu identidad en Nostr es un par de claves, y los eventos que has publicado viven en los relays de la red. Seguirán ahí aunque este navegador deje de recordarte.\n\nQué hace la eliminación:\n\n- Borra la copia cifrada de las claves almacenada localmente en la extensión.\n- Retira la cuenta del selector de cuentas.\n- Limpia el grafo de confianza local, los permisos y el estado del monedero ligado a esa cuenta.\n\nQué **no** hace la eliminación:\n\n- No borra tus notas, tu perfil ni tu lista de contactos de los relays de Nostr.\n- No afecta a la misma identidad en otros dispositivos ni en otros firmantes NIP-07.\n\n<Callout type=\"warning\">\nSi generaste tu frase semilla dentro de la extensión y nunca la respaldaste, eliminar la cuenta es definitivo. No hay recuperación. Exporta o anota tus 12 palabras antes de continuar.\n</Callout>\n\n![La pantalla de Seguridad permite exportar tu clave privada (nsec) o una copia de seguridad cifrada con contraseña (ncryptsec) antes de eliminar la cuenta](/images/guides/removing-accounts/backup-security.jpg)\n\n## Cómo Eliminar una Cuenta\n\n### 1. Abre el Selector de Cuentas\n\nHaz clic en el icono de la extensión y abre el selector de cuentas en la parte superior del popup. Verás cada cuenta que la extensión está gestionando, con la activa resaltada.\n\n![El selector de cuentas muestra cada identidad almacenada en la extensión, con la cuenta activa destacada arriba](/images/guides/removing-accounts/accounts-selector.jpg)\n\n### 2. Pasa el Cursor y Haz Clic en la Cruz\n\nColoca el cursor sobre la cuenta que quieres eliminar. A la derecha de la fila aparece un pequeño icono de cruz (×). Haz clic en él.\n\n![Al pasar el cursor sobre una cuenta aparece un icono de cruz a la derecha — haz clic para iniciar la eliminación](/images/guides/removing-accounts/hover-remove.jpg)\n\n### 3. Confirma la Eliminación\n\nSe abre un diálogo de confirmación. Para una cuenta que importaste con una nsec existente, basta con confirmar aquí: la extensión asume que aún tienes la clave en otro sitio y podrás restaurar el acceso más tarde.\n\n![Un diálogo sencillo te pide confirmar que quieres eliminar la cuenta de esta extensión](/images/guides/removing-accounts/confirm-dialog.jpg)\n\n### 4. Cuentas con Semilla: Escribe REMOVE\n\nSi la cuenta fue generada dentro de la extensión a partir de una frase semilla, la confirmación es más estricta. Tendrás que escribir la palabra **REMOVE** (en mayúsculas) para que el botón se active. Esta fricción extra existe porque perder la única copia de una semilla equivale a perder la identidad para siempre.\n\nAl confirmar, la cuenta desaparece del selector. Si era la activa, la extensión cambia a otra cuenta guardada o muestra la pantalla de alta si no queda ninguna.\n\n## Por Qué las Cuentas con Semilla Piden Más\n\nCuando generas una identidad nueva dentro de la extensión, las 12 palabras se crean localmente y se te muestran una sola vez. La extensión no las envía a ningún lado. Si no las anotaste, la copia cifrada dentro de la extensión es lo único que te conecta con esa identidad. Eliminarla sin respaldo significa no poder volver a firmar como ese npub.\n\nLas cuentas importadas son distintas. Si las añadiste usando una nsec o semilla existente, ya tienes ese material de clave en otro lugar: otro firmante, un gestor de contraseñas o en papel. Restaurarlas es directo.\n\n## Restaurar una Cuenta Eliminada\n\nPara recuperar una cuenta eliminada:\n\n1. Abre el selector de cuentas y pulsa **Añadir Cuenta**.\n2. Elige **Importar** y pega tu nsec o tu frase semilla de 12 palabras.\n3. La extensión reconstruye el almacén cifrado, vuelve a sincronizar el grafo de confianza y la cuenta queda lista para usarse.\n\nTu historial local (permisos, reglas de aprobación automática, conexiones del monedero) no se restaura: estaba ligado al almacén eliminado. Los datos de Nostr, como tu perfil, tus seguidos y tus notas, se vuelven a sincronizar desde los relays automáticamente.\n\n## Siguientes Pasos\n\nAhora que sabes eliminar cuentas con seguridad, asegúrate de proteger bien las que conservas. Repasa la seguridad de tus claves en [Gestión de Identidad](/es/guides/gestion-de-identidad), o vuelve a [Primeros Pasos](/es/guides/primeros-pasos) si estás empezando de nuevo.\n"
+        },
+        {
+          "slug": "custom-identity-paths",
+          "title": "Pon nombre a tus identidades Nostr y elige una ruta",
+          "description": "Usa nombres opcionales, rutas de derivación avanzadas y vistas previas de claves en Nostr WoT. Aprende qué guardar para recuperar tu identidad.",
+          "excerpt": "Usa nombres opcionales, rutas de derivación avanzadas y vistas previas de claves en Nostr WoT. Aprende qué guardar para recuperar tu identidad.",
+          "date": "2026-09-11T00:00:00.000Z",
+          "author": {
+            "name": "Leon Acosta",
+            "avatar": "/authors/leon-profile.jpg",
+            "npub": "npub1gxdhmu9swqduwhr6zptjy4ya693zp3ql28nemy4hd97kuufyrqdqwe5zfk"
+          },
+          "featuredImage": "/images/guides/custom-identity-paths/es.png",
+          "previewImage": "/images/guides/custom-identity-paths/es.png",
+          "tags": [
+            "Nostr",
+            "NIP-06",
+            "BIP-32"
+          ],
+          "published": true,
+          "readingTime": "3 min read",
+          "locale": "es",
+          "translationKey": "custom-identity-paths",
+          "translations": {
+            "en": "custom-identity-paths",
+            "es": "custom-identity-paths",
+            "pt": "custom-identity-paths",
+            "ru": "custom-identity-paths",
+            "it": "custom-identity-paths",
+            "fr": "custom-identity-paths",
+            "de": "custom-identity-paths"
+          },
+          "availableLocales": [
+            "en",
+            "es",
+            "pt",
+            "ru",
+            "it",
+            "fr",
+            "de"
+          ],
+          "seoTitle": "Pon nombre a tus identidades Nostr y elige una ruta",
+          "seoDescription": "Usa nombres opcionales, rutas de derivación avanzadas y vistas previas de claves en Nostr WoT. Aprende qué guardar para recuperar tu identidad.",
+          "ogImage": "/images/guides/custom-identity-paths/es.png",
+          "difficulty": "advanced",
+          "order": 2.6,
+          "content": "\nUna identidad de trabajo, otra de un proyecto y otra de pruebas pueden tener etiquetas claras en tu lista. Nostr WoT permite dar un nombre local a una nueva identidad derivada de tu semilla y elegir su ruta en **Avanzado**. Conserva la ruta automática si no necesitas otra.\n\n## ¿Qué versión lo incluye?\n\nEsta guía describe la extensión **0.7.0**, disponible en la [versión descargable de GitHub](https://github.com/nostr-wot/nostr-wot-extension/releases/tag/v0.7.0). Al preparar la guía no se había confirmado su aprobación en las tiendas de Chrome y Firefox. Comprueba tu versión instalada.\n\n## El nombre y la ruta cumplen funciones distintas\n\n| Ajuste | Qué cambia |\n|---|---|\n| Nombre de cuenta | Etiqueta local opcional. No cambia la clave ni publica un nombre de perfil. |\n| Ruta de derivación | Determina cómo se obtiene la clave desde la semilla. Otra ruta normalmente produce otra identidad. |\n| Vista previa npub y hex | Dos representaciones de la clave pública antes de guardar. |\n\n## Crear la identidad\n\n1. Desbloquea la extensión, abre el selector de cuentas y añade una **subcuenta HD**. Necesitas una frase de recuperación existente en la bóveda; una nsec importada por sí sola no es esa frase.\n2. En la pantalla de nueva subcuenta, comprueba la semilla de origen. Se propone la siguiente ruta libre de la secuencia existente.\n3. Introduce un nombre opcional, como «Proyecto» o «Pruebas». Si lo dejas vacío, se conserva el nombre propuesto.\n4. Abre **Avanzado** si necesitas otra ruta. Escríbela exactamente y espera a que se actualice la vista previa.\n5. Comprueba la ruta y la npub. Una ruta inválida, un error o una vista previa pendiente impiden continuar.\n6. Pulsa **Continuar** para guardar. Editar la vista previa no guarda una cuenta.\n\n## Cómo es una ruta\n\nLa ruta Nostr inicial es `m/44'/1237'/0'/0/0`. Un ejemplo posterior en la secuencia de la extensión es `m/44'/1237'/0'/0/1`. Son rutas, no claves privadas. Conserva cada barra, número y apóstrofo.\n\nNo supongas que otra herramienta numera igual las cuentas. [NIP-06](https://github.com/nostr-protocol/nips/blob/master/06.md) describe incrementar el componente de cuenta endurecido; la secuencia adicional existente de la extensión incrementa el componente final. Para recuperar, deben coincidir la ruta exacta y la clave pública. Sus mantenedores marcan actualmente NIP-06 como opcional y no recomendado; la compatibilidad entre clientes no está garantizada.\n\nLas indicaciones de prefijos de red solo reconocen una convención. Una ruta que parece de Bitcoin sigue creando una identidad Nostr, no una cartera Bitcoin. Evita reutilizar rutas que ya emplee una cartera.\n\n## Qué guardar para recuperar\n\nGuarda de forma segura la frase, la ruta exacta y la npub esperada. El nombre ayuda a organizarte, pero no recupera una clave. La semilla por sí sola no indica a otra aplicación qué ruta personalizada elegiste.\n\nVarias rutas permiten organizar identidades, pero todas dependen de la seguridad de la misma semilla. Tampoco garantizan anonimato. Cambiar de ruta no transfiere publicaciones, seguidores ni el perfil. Esta función no modifica tus claves existentes.\n\nEmpieza por [gestionar identidades](/es/guides/managing-identity) si solo necesitas cambiar de cuenta. Usa rutas personalizadas cuando tengas una necesidad concreta de organización o recuperación que puedas documentar.\n"
         },
         {
           "slug": "entendiendo-web-of-trust",
@@ -1330,6 +1426,7 @@
       ],
       "tags": [
         "Avanzado",
+        "BIP-32",
         "Billetera",
         "Claves",
         "Conceptos",
@@ -1341,6 +1438,7 @@
         "Grafo de Confianza",
         "Identidad",
         "Lightning",
+        "NIP-06",
         "NIP-07",
         "NWC",
         "Nostr",
@@ -1638,6 +1736,53 @@
           "difficulty": "beginner",
           "order": 2.5,
           "content": "\nMais cedo ou mais tarde você vai querer limpar a lista de contas da extensão: uma identidade antiga, uma conta de teste ou alguma que importou sem querer. A extensão permite remover contas pelo seletor de contas com um único clique, e aplica uma confirmação mais rigorosa quando a conta foi gerada a partir de uma semente dentro da própria extensão.\n\n## Antes de Remover uma Conta\n\nRemover uma conta afeta apenas a extensão neste navegador. Sua identidade no Nostr é um par de chaves, e os eventos que você publicou ficam nos relays da rede. Eles continuam lá mesmo que este navegador pare de lembrar de você.\n\nO que a remoção faz:\n\n- Apaga a cópia cifrada das chaves guardada localmente na extensão.\n- Remove a conta do seletor de contas.\n- Limpa o grafo de confiança local, as permissões e o estado da carteira ligados a essa conta.\n\nO que a remoção **não** faz:\n\n- Não apaga suas notas, seu perfil ou sua lista de contatos dos relays do Nostr.\n- Não afeta a mesma identidade em outros dispositivos ou em outros assinadores NIP-07.\n\n<Callout type=\"warning\">\nSe você gerou a frase semente dentro da extensão e nunca fez backup, remover a conta é definitivo. Não há recuperação. Exporte ou anote suas 12 palavras antes de continuar.\n</Callout>\n\n![A tela de Segurança permite exportar sua chave privada (nsec) ou um backup criptografado com senha (ncryptsec) antes de remover a conta](/images/guides/removing-accounts/backup-security.jpg)\n\n## Como Remover uma Conta\n\n### 1. Abra o Seletor de Contas\n\nClique no ícone da extensão e abra o seletor de contas no topo do popup. Você verá cada conta que a extensão está guardando, com a ativa destacada.\n\n![O seletor de contas lista cada identidade armazenada na extensão, com a conta ativa destacada no topo](/images/guides/removing-accounts/accounts-selector.jpg)\n\n### 2. Passe o Cursor e Clique na Cruz\n\nColoque o cursor sobre a conta que quer remover. À direita da linha aparece um pequeno ícone de cruz (×). Clique nele.\n\n![Ao passar o cursor sobre uma conta aparece um ícone de cruz à direita — clique para iniciar a remoção](/images/guides/removing-accounts/hover-remove.jpg)\n\n### 3. Confirme a Remoção\n\nAbre-se um diálogo de confirmação. Para uma conta que você importou com uma nsec existente, basta confirmar aqui — a extensão entende que você ainda tem a chave em outro lugar e pode restaurar o acesso depois.\n\n![Um diálogo simples pede que você confirme que quer remover a conta desta extensão](/images/guides/removing-accounts/confirm-dialog.jpg)\n\n### 4. Contas com Semente: Digite REMOVE\n\nSe a conta foi gerada dentro da extensão a partir de uma frase semente, a confirmação é mais rigorosa. Você precisa digitar a palavra **REMOVE** (em maiúsculas) para que o botão fique ativo. Essa fricção extra existe porque perder a única cópia de uma semente é perder a identidade para sempre.\n\nAo confirmar, a conta some do seletor. Se era a ativa, a extensão muda para outra conta guardada ou mostra a tela de entrada se nenhuma restar.\n\n## Por Que Contas com Semente Exigem Mais\n\nQuando você gera uma nova identidade dentro da extensão, as 12 palavras são criadas localmente e mostradas uma única vez. A extensão não as envia a lugar nenhum. Se você não anotou, a cópia cifrada dentro da extensão é a única ligação com aquela identidade. Removê-la sem backup significa nunca mais conseguir assinar como aquele npub.\n\nContas importadas são diferentes. Se você as adicionou usando uma nsec ou semente existente, já tem esse material de chave em outro lugar: outro assinador, um gerenciador de senhas ou no papel. Restaurar é simples.\n\n## Restaurar uma Conta Removida\n\nPara recuperar uma conta removida:\n\n1. Abra o seletor de contas e clique em **Adicionar Conta**.\n2. Escolha **Importar** e cole sua nsec ou frase semente de 12 palavras.\n3. A extensão reconstrói o armazenamento cifrado, ressincroniza o grafo de confiança e a conta fica pronta para usar.\n\nSeu histórico local (permissões, regras de aprovação automática, conexões da carteira) não é restaurado — estava ligado ao armazenamento apagado. Os dados do Nostr, como perfil, seguidos e notas, voltam a sincronizar pelos relays automaticamente.\n\n## Próximos Passos\n\nAgora que você sabe remover contas com segurança, garanta que as que ficam estão bem protegidas. Revise a segurança das chaves em [Gerenciar Identidade](/pt/guides/gerenciar-identidade), ou volte para [Primeiros Passos](/pt/guides/primeiros-passos) se estiver começando do zero.\n"
+        },
+        {
+          "slug": "custom-identity-paths",
+          "title": "Dê nomes às identidades Nostr e escolha o caminho",
+          "description": "Use nomes opcionais, caminhos de derivação e prévias de chaves no Nostr WoT. Saiba o que guardar para recuperar as suas identidades.",
+          "excerpt": "Use nomes opcionais, caminhos de derivação e prévias de chaves no Nostr WoT. Saiba o que guardar para recuperar as suas identidades.",
+          "date": "2026-09-11T00:00:00.000Z",
+          "author": {
+            "name": "Leon Acosta",
+            "avatar": "/authors/leon-profile.jpg",
+            "npub": "npub1gxdhmu9swqduwhr6zptjy4ya693zp3ql28nemy4hd97kuufyrqdqwe5zfk"
+          },
+          "featuredImage": "/images/guides/custom-identity-paths/pt.png",
+          "previewImage": "/images/guides/custom-identity-paths/pt.png",
+          "tags": [
+            "Nostr",
+            "NIP-06",
+            "BIP-32"
+          ],
+          "published": true,
+          "readingTime": "3 min read",
+          "locale": "pt",
+          "translationKey": "custom-identity-paths",
+          "translations": {
+            "en": "custom-identity-paths",
+            "es": "custom-identity-paths",
+            "pt": "custom-identity-paths",
+            "ru": "custom-identity-paths",
+            "it": "custom-identity-paths",
+            "fr": "custom-identity-paths",
+            "de": "custom-identity-paths"
+          },
+          "availableLocales": [
+            "en",
+            "es",
+            "pt",
+            "ru",
+            "it",
+            "fr",
+            "de"
+          ],
+          "seoTitle": "Dê nomes às identidades Nostr e escolha o caminho",
+          "seoDescription": "Use nomes opcionais, caminhos de derivação e prévias de chaves no Nostr WoT. Saiba o que guardar para recuperar as suas identidades.",
+          "ogImage": "/images/guides/custom-identity-paths/pt.png",
+          "difficulty": "advanced",
+          "order": 2.6,
+          "content": "\nUma identidade de trabalho, uma de projeto e outra de testes podem ter nomes locais fáceis de reconhecer. O Nostr WoT permite nomear uma nova identidade derivada da frase de recuperação e escolher o caminho em **Avançado**. Mantenha a escolha automática se não precisar de um caminho específico.\n\n## Qual versão inclui esta função?\n\nEste guia descreve a extensão **0.7.0**, disponível na [versão para download no GitHub](https://github.com/nostr-wot/nostr-wot-extension/releases/tag/v0.7.0). A aprovação desta versão nas lojas do Chrome e Firefox não estava confirmada quando o guia foi preparado. Verifique a versão instalada.\n\n## Nome e caminho têm funções diferentes\n\n| Configuração | Efeito |\n|---|---|\n| Nome da conta | Rótulo local opcional. Não muda a chave nem publica um nome de perfil. |\n| Caminho de derivação | Determina a chave obtida da semente. Outro caminho normalmente produz outra identidade. |\n| Prévia npub e hex | Duas representações da chave pública antes de guardar. |\n\n## Criar a identidade\n\n1. Desbloqueie a extensão, abra o seletor de contas e adicione uma **subconta HD**. É necessária uma frase de recuperação já existente no cofre; uma nsec importada sozinha não substitui essa frase.\n2. Confira a semente de origem apresentada. A extensão propõe o próximo caminho livre da sua sequência existente.\n3. Digite um nome opcional, como «Projeto» ou «Testes». Um campo vazio mantém o nome proposto.\n4. Abra **Avançado** se precisar de outro caminho. Digite-o exatamente e aguarde a atualização da prévia.\n5. Confira o caminho e a npub. Caminhos inválidos, erros ou uma prévia ainda em processamento impedem continuar.\n6. Selecione **Continuar** para guardar a identidade. Alterar a prévia por si só não guarda uma conta.\n\n## Como é um caminho?\n\nO caminho Nostr inicial é `m/44'/1237'/0'/0/0`. Um exemplo posterior na sequência da extensão é `m/44'/1237'/0'/0/1`. São caminhos, não chaves privadas. Preserve cada barra, número e apóstrofo.\n\nNão suponha que outra ferramenta numere as contas da mesma forma. O [NIP-06](https://github.com/nostr-protocol/nips/blob/master/06.md) descreve incrementar o componente de conta endurecido; a sequência existente de contas adicionais da extensão incrementa o componente final. O caminho exato e a chave pública devem coincidir. Os mantenedores classificam atualmente o NIP-06 como opcional e não recomendado; a compatibilidade entre clientes não é garantida.\n\nAs indicações de prefixos de rede apenas reconhecem uma convenção. Um caminho parecido com o do Bitcoin continua a criar uma identidade Nostr, não uma carteira Bitcoin. Evite reutilizar caminhos que uma carteira já utiliza.\n\n## Prepare a recuperação\n\nGuarde em segurança a frase, o caminho exato e a npub esperada. O nome local ajuda na organização, mas não recupera a chave. A semente sozinha não indica a outra aplicação qual caminho personalizado foi escolhido.\n\nCaminhos diferentes organizam identidades, mas não as isolam de um comprometimento da semente comum nem garantem anonimato. Alterar o caminho não transfere publicações, seguidores ou o perfil. As chaves existentes permanecem iguais.\n\nPara apenas alternar contas, consulte a [gestão de identidades](/pt/guides/managing-identity). Use caminhos personalizados quando houver uma necessidade concreta de organização ou recuperação que consiga documentar.\n"
         },
         {
           "slug": "entendendo-web-of-trust",
@@ -1971,6 +2116,7 @@
       ],
       "tags": [
         "Avancado",
+        "BIP-32",
         "Carteira",
         "Chaves",
         "Conceitos",
@@ -1984,6 +2130,7 @@
         "Identidade",
         "Iniciante",
         "Lightning",
+        "NIP-06",
         "NIP-07",
         "NWC",
         "Nostr",
@@ -2282,6 +2429,53 @@
           "difficulty": "beginner",
           "order": 2.5,
           "content": "\nРано или поздно вам захочется навести порядок в списке аккаунтов расширения: старая личность, тестовый аккаунт или случайно импортированный. Расширение позволяет удалить аккаунт прямо из селектора одним кликом и применяет более строгое подтверждение, если аккаунт основан на seed-фразе, созданной внутри самого расширения.\n\n## Перед Удалением Аккаунта\n\nУдаление аккаунта затрагивает только расширение в этом браузере. Ваша личность в Nostr — это пара ключей, а опубликованные вами события живут на релеях сети. Они останутся там, даже если этот браузер больше вас не помнит.\n\nЧто делает удаление:\n\n- Стирает зашифрованную копию ключей, хранящуюся локально в расширении.\n- Убирает аккаунт из селектора аккаунтов.\n- Очищает локальный граф доверия, разрешения и состояние кошелька, связанные с этим аккаунтом.\n\nЧто удаление **не** делает:\n\n- Оно не удаляет ваши заметки, профиль и список подписок с релеев Nostr.\n- Оно не влияет на ту же личность на других устройствах и в других NIP-07 подписантах.\n\n<Callout type=\"warning\">\nЕсли вы сгенерировали seed-фразу внутри расширения и ни разу её не сохранили, удаление аккаунта необратимо. Восстановления не будет. Выгрузите или запишите ваши 12 слов, прежде чем продолжать.\n</Callout>\n\n![Экран «Безопасность» позволяет экспортировать ваш приватный ключ (nsec) или зашифрованную резервную копию с паролем (ncryptsec) перед удалением аккаунта](/images/guides/removing-accounts/backup-security.jpg)\n\n## Как Удалить Аккаунт\n\n### 1. Откройте Селектор Аккаунтов\n\nНажмите на иконку расширения и откройте селектор аккаунтов вверху попапа. Вы увидите каждый аккаунт, которым сейчас управляет расширение, причём активный будет выделен.\n\n![Селектор аккаунтов показывает каждую сохранённую в расширении личность, активный аккаунт выделен сверху](/images/guides/removing-accounts/accounts-selector.jpg)\n\n### 2. Наведите Курсор и Нажмите на Крестик\n\nНаведите курсор на аккаунт, который хотите удалить. Справа в строке появится маленький значок крестика (×). Нажмите на него.\n\n![При наведении на строку аккаунта справа появляется крестик — нажмите на него, чтобы запустить удаление](/images/guides/removing-accounts/hover-remove.jpg)\n\n### 3. Подтвердите Удаление\n\nОткрывается диалог подтверждения. Для аккаунта, импортированного с существующей nsec, достаточно подтвердить здесь: расширение исходит из того, что ключ у вас всё ещё есть где-то ещё и доступ можно будет восстановить позже.\n\n![Простой диалог просит подтвердить, что вы хотите удалить аккаунт из этого расширения](/images/guides/removing-accounts/confirm-dialog.jpg)\n\n### 4. Seed-Аккаунты: Введите REMOVE\n\nЕсли аккаунт был создан внутри расширения из seed-фразы, подтверждение строже. Нужно ввести слово **REMOVE** (заглавными буквами), чтобы кнопка стала активной. Это дополнительное трение существует потому, что потеря единственной копии seed равнозначна потере личности навсегда.\n\nПосле подтверждения аккаунт исчезает из селектора. Если он был активным, расширение переключается на другой сохранённый аккаунт или показывает экран первого запуска, если больше не осталось ни одного.\n\n## Почему Seed-Аккаунты Требуют Большего\n\nКогда вы создаёте новую личность внутри расширения, 12 слов генерируются локально и показываются вам один раз. Расширение не отправляет их никуда. Если вы их не записали, зашифрованная копия внутри расширения — единственное, что связывает вас с этой личностью. Удалить её без резервной копии значит никогда больше не иметь возможности подписывать от имени этого npub.\n\nС импортированными аккаунтами иначе. Если вы добавили их, используя существующую nsec или seed, у вас уже есть этот ключевой материал где-то ещё: в другом подписанте, в менеджере паролей или на бумаге. Восстановить их просто.\n\n## Восстановление Удалённого Аккаунта\n\nЧтобы вернуть удалённый аккаунт:\n\n1. Откройте селектор аккаунтов и нажмите **Добавить Аккаунт**.\n2. Выберите **Импорт** и вставьте вашу nsec или seed-фразу из 12 слов.\n3. Расширение пересоберёт зашифрованное хранилище, повторно синхронизирует граф доверия, и аккаунт снова готов к использованию.\n\nВаша локальная история (разрешения, правила авто-одобрения, подключения кошелька) не восстанавливается — она была привязана к удалённому хранилищу. Данные Nostr — профиль, подписки, заметки — автоматически синхронизируются с релеев.\n\n## Что Дальше?\n\nТеперь, когда вы знаете, как безопасно удалять аккаунты, убедитесь, что те, которые остаются, хорошо защищены. Пересмотрите безопасность ключей в разделе [Управление Идентификацией](/ru/guides/upravlenie-identichnostyu), или вернитесь к [Началу Работы](/ru/guides/nachalo-raboty), если начинаете с нуля.\n"
+        },
+        {
+          "slug": "custom-identity-paths",
+          "title": "Имена идентичностей Nostr и собственные пути",
+          "description": "Настройте имена, пути деривации и предпросмотр ключей в Nostr WoT. Узнайте, что сохранить для восстановления идентичности.",
+          "excerpt": "Настройте имена, пути деривации и предпросмотр ключей в Nostr WoT. Узнайте, что сохранить для восстановления идентичности.",
+          "date": "2026-09-11T00:00:00.000Z",
+          "author": {
+            "name": "Leon Acosta",
+            "avatar": "/authors/leon-profile.jpg",
+            "npub": "npub1gxdhmu9swqduwhr6zptjy4ya693zp3ql28nemy4hd97kuufyrqdqwe5zfk"
+          },
+          "featuredImage": "/images/guides/custom-identity-paths/ru.png",
+          "previewImage": "/images/guides/custom-identity-paths/ru.png",
+          "tags": [
+            "Nostr",
+            "NIP-06",
+            "BIP-32"
+          ],
+          "published": true,
+          "readingTime": "2 min read",
+          "locale": "ru",
+          "translationKey": "custom-identity-paths",
+          "translations": {
+            "en": "custom-identity-paths",
+            "es": "custom-identity-paths",
+            "pt": "custom-identity-paths",
+            "ru": "custom-identity-paths",
+            "it": "custom-identity-paths",
+            "fr": "custom-identity-paths",
+            "de": "custom-identity-paths"
+          },
+          "availableLocales": [
+            "en",
+            "es",
+            "pt",
+            "ru",
+            "it",
+            "fr",
+            "de"
+          ],
+          "seoTitle": "Имена идентичностей Nostr и собственные пути",
+          "seoDescription": "Настройте имена, пути деривации и предпросмотр ключей в Nostr WoT. Узнайте, что сохранить для восстановления идентичности.",
+          "ogImage": "/images/guides/custom-identity-paths/ru.png",
+          "difficulty": "advanced",
+          "order": 2.6,
+          "content": "\nРабочую идентичность, идентичность проекта и тестовую проще различать по локальным именам. Nostr WoT позволяет назвать новую идентичность, полученную из сид-фразы, и выбрать путь деривации в разделе **Дополнительно**. Если особый путь не нужен, оставьте автоматический вариант.\n\n## В какой версии это доступно?\n\nРуководство описывает расширение **0.7.0**, доступное для [скачивания на GitHub](https://github.com/nostr-wot/nostr-wot-extension/releases/tag/v0.7.0). При подготовке руководства одобрение этой версии в магазинах Chrome и Firefox не было подтверждено. Проверьте установленную версию.\n\n## Имя и путь решают разные задачи\n\n| Настройка | Что меняется |\n|---|---|\n| Имя аккаунта | Необязательная локальная метка. Не меняет ключ и не публикует имя профиля. |\n| Путь деривации | Определяет получение ключа из сида. Другой путь обычно даёт другую идентичность. |\n| Предпросмотр npub и hex | Два представления публичного ключа до сохранения. |\n\n## Создание идентичности\n\n1. Разблокируйте расширение, откройте список аккаунтов и добавьте **HD-субаккаунт**. В хранилище уже должна быть фраза восстановления; одного импортированного nsec недостаточно.\n2. Проверьте указанный исходный сид. Расширение предлагает следующий свободный путь в своей существующей последовательности.\n3. При желании укажите имя, например «Проект» или «Тесты». Пустое поле сохраняет предложенное имя.\n4. Если нужен другой путь, откройте **Дополнительно**. Введите его точно и дождитесь обновления предпросмотра.\n5. Проверьте путь и npub. Неверный путь, ошибка или незавершённый предпросмотр не позволяют продолжить.\n6. Нажмите **Продолжить**, чтобы сохранить идентичность. Изменение предпросмотра само по себе аккаунт не сохраняет.\n\n## Как выглядит путь?\n\nПервый путь Nostr: `m/44'/1237'/0'/0/0`. Пример следующего пути в последовательности расширения: `m/44'/1237'/0'/0/1`. Это пути, а не приватные ключи. Сохраняйте каждую косую черту, цифру и апостроф.\n\nНе предполагайте, что другое приложение нумерует аккаунты так же. [NIP-06](https://github.com/nostr-protocol/nips/blob/master/06.md) описывает увеличение усиленного компонента аккаунта; существующая последовательность дополнительных аккаунтов расширения увеличивает последний компонент. Должны совпасть точный путь и публичный ключ. Разработчики NIP-06 сейчас помечают его как необязательный и нерекомендуемый; поддержка разными клиентами не гарантируется.\n\nПодсказки о сетевых префиксах лишь распознают соглашение. Путь, похожий на Bitcoin, всё равно создаёт идентичность Nostr, а не Bitcoin-кошелёк. Не используйте повторно путь, уже занятый кошельком.\n\n## Подготовьте восстановление\n\nНадёжно сохраните фразу, точный путь и ожидаемый npub. Локальное имя помогает ориентироваться, но не восстанавливает ключ. Сам сид не сообщает другому приложению, какой собственный путь вы выбрали.\n\nРазные пути помогают организовать идентичности, но не защищают их от компрометации общего сида и не гарантируют анонимность. Смена пути не переносит публикации, подписчиков или профиль. Существующие ключи остаются прежними.\n\nЕсли нужно лишь переключать аккаунты, начните с [управления идентичностями](/ru/guides/managing-identity). Используйте собственные пути для конкретной задачи организации или восстановления, которую можете документировать.\n"
         },
         {
           "slug": "ponimanie-web-of-trust",
@@ -2614,8 +2808,10 @@
         }
       ],
       "tags": [
+        "BIP-32",
         "Lightning",
         "Lightning-адрес",
+        "NIP-06",
         "NIP-07",
         "NWC",
         "Nostr",
@@ -2928,6 +3124,53 @@
           "difficulty": "beginner",
           "order": 2.5,
           "content": "\nPrima o poi vorrai ripulire la lista degli account nell'estensione: una vecchia identità, un account di prova o uno importato per sbaglio. L'estensione ti permette di rimuovere gli account direttamente dal selettore con un singolo clic, e applica una conferma più rigida quando l'account è basato su un seed generato all'interno dell'estensione stessa.\n\n## Prima di Rimuovere un Account\n\nRimuovere un account riguarda solo l'estensione su questo browser. La tua identità su Nostr è una coppia di chiavi, e gli eventi che hai pubblicato vivono sui relay della rete. Restano lì anche se questo browser smette di ricordarti.\n\nCosa fa la rimozione:\n\n- Cancella la copia cifrata delle chiavi salvata localmente nell'estensione.\n- Rimuove l'account dal selettore degli account.\n- Pulisce il grafo di fiducia locale, i permessi e lo stato del wallet legati a quell'account.\n\nCosa la rimozione **non** fa:\n\n- Non cancella le tue note, il profilo o la lista dei seguiti dai relay di Nostr.\n- Non influisce sulla stessa identità su altri dispositivi o su altri signer NIP-07.\n\n<Callout type=\"warning\">\nSe hai generato la frase seed dentro l'estensione e non l'hai mai salvata, rimuovere l'account è definitivo. Non c'è recupero. Esporta o scrivi le tue 12 parole prima di continuare.\n</Callout>\n\n![La schermata Sicurezza permette di esportare la tua chiave privata (nsec) o un backup cifrato protetto da password (ncryptsec) prima di rimuovere l'account](/images/guides/removing-accounts/backup-security.jpg)\n\n## Come Rimuovere un Account\n\n### 1. Apri il Selettore degli Account\n\nClicca sull'icona dell'estensione e apri il selettore degli account in alto nel popup. Vedrai ogni account gestito dall'estensione, con quello attivo evidenziato.\n\n![Il selettore mostra ogni identità salvata nell'estensione, con l'account attivo evidenziato in cima](/images/guides/removing-accounts/accounts-selector.jpg)\n\n### 2. Passa Sopra l'Account e Clicca sulla Croce\n\nSposta il cursore sull'account che vuoi rimuovere. A destra della riga compare una piccola icona a croce (×). Cliccala.\n\n![Passando sopra un account compare un'icona a croce sulla destra — cliccala per avviare la rimozione](/images/guides/removing-accounts/hover-remove.jpg)\n\n### 3. Conferma la Rimozione\n\nSi apre una finestra di conferma. Per un account importato con una nsec esistente basta confermare qui: l'estensione assume che tu abbia ancora la chiave altrove e possa ripristinare l'accesso in seguito.\n\n![Una finestra semplice ti chiede di confermare che vuoi rimuovere l'account da questa estensione](/images/guides/removing-accounts/confirm-dialog.jpg)\n\n### 4. Account da Seed: Digita REMOVE\n\nSe l'account è stato generato dentro l'estensione a partire da una frase seed, la conferma è più rigida. Ti viene chiesto di digitare la parola **REMOVE** (in maiuscolo) prima che il pulsante si attivi. Questo attrito in più esiste perché perdere l'unica copia di un seed significa perdere l'identità per sempre.\n\nUna volta confermato, l'account sparisce dal selettore. Se era quello attivo, l'estensione passa a un altro account salvato o mostra la schermata iniziale se non ne resta nessuno.\n\n## Perché gli Account da Seed Richiedono di Più\n\nQuando generi una nuova identità dentro l'estensione, le 12 parole vengono create localmente e mostrate una sola volta. L'estensione non le manda da nessuna parte. Se non le hai annotate, la copia cifrata dentro l'estensione è l'unica cosa che ti collega a quell'identità. Rimuoverla senza backup significa non poter più firmare come quel npub.\n\nGli account importati sono diversi. Se li hai aggiunti usando una nsec o un seed esistente, hai già quel materiale da qualche altra parte: un altro signer, un password manager o su carta. Ripristinarli è semplice.\n\n## Ripristinare un Account Rimosso\n\nPer recuperare un account rimosso:\n\n1. Apri il selettore degli account e clicca **Aggiungi Account**.\n2. Scegli **Importa** e incolla la tua nsec o la frase seed da 12 parole.\n3. L'estensione ricostruisce l'archivio cifrato, risincronizza il grafo di fiducia e l'account torna pronto all'uso.\n\nLa cronologia locale (permessi, regole di auto-approvazione, connessioni del wallet) non viene ripristinata: era legata all'archivio cancellato. I dati Nostr come profilo, seguiti e note si risincronizzano dai relay automaticamente.\n\n## Prossimi Passi\n\nOra che sai come rimuovere gli account in sicurezza, assicurati che quelli che tieni siano ben protetti. Rivedi la sicurezza delle chiavi in [Gestione Identità](/it/guides/gestione-identita), o torna a [Guida Introduttiva](/it/guides/guida-introduttiva) se stai ripartendo da zero.\n"
+        },
+        {
+          "slug": "custom-identity-paths",
+          "title": "Dai un nome alle identità Nostr e scegli il percorso",
+          "description": "Usa nomi facoltativi, percorsi di derivazione e anteprime delle chiavi in Nostr WoT. Scopri cosa conservare per recuperare le identità.",
+          "excerpt": "Usa nomi facoltativi, percorsi di derivazione e anteprime delle chiavi in Nostr WoT. Scopri cosa conservare per recuperare le identità.",
+          "date": "2026-09-11T00:00:00.000Z",
+          "author": {
+            "name": "Leon Acosta",
+            "avatar": "/authors/leon-profile.jpg",
+            "npub": "npub1gxdhmu9swqduwhr6zptjy4ya693zp3ql28nemy4hd97kuufyrqdqwe5zfk"
+          },
+          "featuredImage": "/images/guides/custom-identity-paths/it.png",
+          "previewImage": "/images/guides/custom-identity-paths/it.png",
+          "tags": [
+            "Nostr",
+            "NIP-06",
+            "BIP-32"
+          ],
+          "published": true,
+          "readingTime": "3 min read",
+          "locale": "it",
+          "translationKey": "custom-identity-paths",
+          "translations": {
+            "en": "custom-identity-paths",
+            "es": "custom-identity-paths",
+            "pt": "custom-identity-paths",
+            "ru": "custom-identity-paths",
+            "it": "custom-identity-paths",
+            "fr": "custom-identity-paths",
+            "de": "custom-identity-paths"
+          },
+          "availableLocales": [
+            "en",
+            "es",
+            "pt",
+            "ru",
+            "it",
+            "fr",
+            "de"
+          ],
+          "seoTitle": "Dai un nome alle identità Nostr e scegli il percorso",
+          "seoDescription": "Usa nomi facoltativi, percorsi di derivazione e anteprime delle chiavi in Nostr WoT. Scopri cosa conservare per recuperare le identità.",
+          "ogImage": "/images/guides/custom-identity-paths/it.png",
+          "difficulty": "advanced",
+          "order": 2.6,
+          "content": "\nUn’identità per il lavoro, una per un progetto e una per le prove possono avere nomi locali riconoscibili. Nostr WoT permette di nominare una nuova identità derivata dalla frase di recupero e scegliere il percorso in **Avanzate**. Mantieni la scelta automatica se non hai bisogno di un percorso preciso.\n\n## Quale versione include la funzione?\n\nLa guida descrive l’estensione **0.7.0**, disponibile nella [release scaricabile su GitHub](https://github.com/nostr-wot/nostr-wot-extension/releases/tag/v0.7.0). Alla preparazione della guida non era confermata l’approvazione di questa versione negli store Chrome e Firefox. Controlla la versione installata.\n\n## Nome e percorso hanno funzioni diverse\n\n| Impostazione | Effetto |\n|---|---|\n| Nome account | Etichetta locale facoltativa. Non cambia la chiave e non pubblica un nome del profilo. |\n| Percorso di derivazione | Determina la chiave ricavata dal seed. Un altro percorso normalmente produce un’altra identità. |\n| Anteprima npub e hex | Due rappresentazioni della chiave pubblica prima del salvataggio. |\n\n## Crea l’identità\n\n1. Sblocca l’estensione, apri il selettore degli account e aggiungi un **sottoaccount HD**. Serve una frase di recupero già presente nel vault; una sola nsec importata non è sufficiente.\n2. Controlla il seed di origine mostrato. L’estensione propone il prossimo percorso libero della sequenza esistente.\n3. Inserisci un nome facoltativo, come «Progetto» o «Prove». Lasciando vuoto il campo si mantiene il nome proposto.\n4. Apri **Avanzate** per scegliere un altro percorso. Inseriscilo esattamente e attendi l’aggiornamento dell’anteprima.\n5. Controlla percorso e npub. Un percorso non valido, un errore o un’anteprima ancora in caricamento impediscono di continuare.\n6. Premi **Continua** per salvare l’identità. Modificare l’anteprima non salva ancora un account.\n\n## Come si presenta un percorso?\n\nIl percorso Nostr iniziale è `m/44'/1237'/0'/0/0`. Un esempio successivo nella sequenza dell’estensione è `m/44'/1237'/0'/0/1`. Sono percorsi, non chiavi private. Conserva ogni barra, numero e apostrofo.\n\nNon presumere che un altro strumento numeri gli account allo stesso modo. [NIP-06](https://github.com/nostr-protocol/nips/blob/master/06.md) descrive l’incremento del componente account hardened; la sequenza esistente degli account aggiuntivi dell’estensione incrementa l’ultimo componente. Devono coincidere il percorso esatto e la chiave pubblica. I manutentori indicano attualmente NIP-06 come facoltativo e non raccomandato; la compatibilità tra client non è garantita.\n\nGli indizi sui prefissi di rete riconoscono solo una convenzione. Un percorso simile a quello Bitcoin crea comunque un’identità Nostr, non un wallet Bitcoin. Evita di riutilizzare un percorso già usato da un wallet.\n\n## Prepara il recupero\n\nConserva al sicuro la frase, il percorso esatto e la npub attesa. Il nome locale aiuta a organizzarsi, ma non recupera una chiave. Il seed da solo non comunica a un’altra applicazione quale percorso personalizzato hai scelto.\n\nPercorsi diversi organizzano le identità, ma non le isolano dalla compromissione del seed comune e non garantiscono anonimato. Cambiare percorso non trasferisce post, follower o profilo. Le chiavi esistenti restano invariate.\n\nPer cambiare soltanto account, leggi la [gestione delle identità](/it/guides/managing-identity). Usa percorsi personalizzati per una necessità concreta e documentabile di organizzazione o recupero.\n"
         },
         {
           "slug": "comprendere-web-of-trust",
@@ -3262,6 +3505,7 @@
       "tags": [
         "Account",
         "Avanzato",
+        "BIP-32",
         "Chiavi",
         "Concetti",
         "Configurazione",
@@ -3273,6 +3517,7 @@
         "Impostazioni di Fiducia",
         "Lightning",
         "Lightning Address",
+        "NIP-06",
         "NIP-07",
         "NWC",
         "Nostr",
@@ -3571,6 +3816,53 @@
           "difficulty": "beginner",
           "order": 2.5,
           "content": "\nTôt ou tard, vous voudrez faire le ménage dans la liste des comptes de l'extension : une vieille identité, un compte de test ou un compte importé par erreur. L'extension permet de supprimer des comptes depuis le sélecteur en un seul clic, et applique une confirmation plus stricte quand le compte est basé sur une graine générée à l'intérieur de l'extension.\n\n## Avant de Supprimer un Compte\n\nSupprimer un compte n'affecte que l'extension sur ce navigateur. Votre identité Nostr est une paire de clés, et les événements que vous avez publiés vivent sur les relays du réseau. Ils y resteront même si ce navigateur ne se souvient plus de vous.\n\nCe que la suppression fait :\n\n- Efface la copie chiffrée des clés stockée localement dans l'extension.\n- Retire le compte du sélecteur de comptes.\n- Nettoie le graphe de confiance local, les permissions et l'état du portefeuille liés à ce compte.\n\nCe que la suppression **ne fait pas** :\n\n- Elle n'efface pas vos notes, votre profil ou votre liste d'abonnements sur les relays Nostr.\n- Elle n'affecte pas la même identité sur d'autres appareils ni sur d'autres signataires NIP-07.\n\n<Callout type=\"warning\">\nSi vous avez généré votre phrase de graine dans l'extension et ne l'avez jamais sauvegardée, supprimer le compte est définitif. Il n'y a pas de récupération. Exportez ou notez vos 12 mots avant de continuer.\n</Callout>\n\n![L'écran Sécurité permet d'exporter votre clé privée (nsec) ou une sauvegarde chiffrée protégée par mot de passe (ncryptsec) avant de supprimer le compte](/images/guides/removing-accounts/backup-security.jpg)\n\n## Comment Supprimer un Compte\n\n### 1. Ouvrez le Sélecteur de Comptes\n\nCliquez sur l'icône de l'extension et ouvrez le sélecteur de comptes en haut du popup. Vous verrez chaque compte géré par l'extension, avec le compte actif mis en évidence.\n\n![Le sélecteur de comptes liste chaque identité stockée dans l'extension, avec le compte actif en tête](/images/guides/removing-accounts/accounts-selector.jpg)\n\n### 2. Survolez le Compte et Cliquez sur la Croix\n\nPlacez le curseur sur le compte à supprimer. Une petite icône en croix (×) apparaît à droite de la ligne. Cliquez dessus.\n\n![Survoler une ligne de compte fait apparaître une icône en croix à droite — cliquez pour lancer la suppression](/images/guides/removing-accounts/hover-remove.jpg)\n\n### 3. Confirmez la Suppression\n\nUne fenêtre de confirmation s'ouvre. Pour un compte importé avec une nsec existante, il suffit de confirmer ici : l'extension part du principe que vous avez toujours la clé ailleurs et que vous pourrez restaurer l'accès plus tard.\n\n![Une fenêtre simple vous demande de confirmer que vous voulez retirer le compte de cette extension](/images/guides/removing-accounts/confirm-dialog.jpg)\n\n### 4. Comptes à Graine : Tapez REMOVE\n\nSi le compte a été généré dans l'extension à partir d'une phrase de graine, la confirmation est plus stricte. Vous devez taper le mot **REMOVE** (en majuscules) pour que le bouton s'active. Cette friction en plus existe parce que perdre la seule copie d'une graine, c'est perdre l'identité pour toujours.\n\nUne fois la confirmation faite, le compte disparaît du sélecteur. S'il était actif, l'extension bascule sur un autre compte enregistré, ou affiche l'écran d'accueil s'il n'en reste aucun.\n\n## Pourquoi les Comptes à Graine Demandent Plus\n\nQuand vous générez une nouvelle identité dans l'extension, les 12 mots sont créés localement et affichés une seule fois. L'extension ne les envoie nulle part. Si vous ne les avez pas notés, la copie chiffrée dans l'extension est la seule chose qui vous relie à cette identité. La supprimer sans sauvegarde, c'est perdre la capacité de signer en tant que ce npub à jamais.\n\nLes comptes importés sont différents. Si vous les avez ajoutés avec une nsec ou une graine existante, vous avez déjà ce matériel de clé ailleurs : un autre signataire, un gestionnaire de mots de passe ou sur papier. Les restaurer est simple.\n\n## Restaurer un Compte Supprimé\n\nPour récupérer un compte supprimé :\n\n1. Ouvrez le sélecteur de comptes et cliquez sur **Ajouter un Compte**.\n2. Choisissez **Importer** et collez votre nsec ou votre phrase de graine de 12 mots.\n3. L'extension reconstruit le coffre chiffré, resynchronise le graphe de confiance, et le compte est prêt à être utilisé.\n\nVotre historique local (permissions, règles d'auto-approbation, connexions du portefeuille) n'est pas restauré : il était lié au coffre supprimé. Les données Nostr comme votre profil, vos abonnements et vos notes se resynchronisent automatiquement depuis les relays.\n\n## Et Ensuite ?\n\nMaintenant que vous savez supprimer des comptes en toute sécurité, assurez-vous que ceux que vous gardez sont bien protégés. Revoyez la sécurité des clés dans [Gestion de l'Identité](/fr/guides/gestion-identite), ou revenez au [Guide de Démarrage](/fr/guides/guide-de-demarrage) si vous repartez de zéro.\n"
+        },
+        {
+          "slug": "custom-identity-paths",
+          "title": "Nommer ses identités Nostr et choisir leur chemin",
+          "description": "Utilisez les noms facultatifs, les chemins de dérivation et les aperçus de clés de Nostr WoT. Sachez quoi conserver pour la récupération.",
+          "excerpt": "Utilisez les noms facultatifs, les chemins de dérivation et les aperçus de clés de Nostr WoT. Sachez quoi conserver pour la récupération.",
+          "date": "2026-09-11T00:00:00.000Z",
+          "author": {
+            "name": "Leon Acosta",
+            "avatar": "/authors/leon-profile.jpg",
+            "npub": "npub1gxdhmu9swqduwhr6zptjy4ya693zp3ql28nemy4hd97kuufyrqdqwe5zfk"
+          },
+          "featuredImage": "/images/guides/custom-identity-paths/fr.png",
+          "previewImage": "/images/guides/custom-identity-paths/fr.png",
+          "tags": [
+            "Nostr",
+            "NIP-06",
+            "BIP-32"
+          ],
+          "published": true,
+          "readingTime": "3 min read",
+          "locale": "fr",
+          "translationKey": "custom-identity-paths",
+          "translations": {
+            "en": "custom-identity-paths",
+            "es": "custom-identity-paths",
+            "pt": "custom-identity-paths",
+            "ru": "custom-identity-paths",
+            "it": "custom-identity-paths",
+            "fr": "custom-identity-paths",
+            "de": "custom-identity-paths"
+          },
+          "availableLocales": [
+            "en",
+            "es",
+            "pt",
+            "ru",
+            "it",
+            "fr",
+            "de"
+          ],
+          "seoTitle": "Nommer ses identités Nostr et choisir leur chemin",
+          "seoDescription": "Utilisez les noms facultatifs, les chemins de dérivation et les aperçus de clés de Nostr WoT. Sachez quoi conserver pour la récupération.",
+          "ogImage": "/images/guides/custom-identity-paths/fr.png",
+          "difficulty": "advanced",
+          "order": 2.6,
+          "content": "\nUne identité professionnelle, une identité de projet et une identité de test peuvent porter des noms locaux distincts. Nostr WoT permet de nommer une nouvelle identité dérivée de votre phrase de récupération et de choisir son chemin sous **Avancé**. Gardez le choix automatique si vous n’avez pas besoin d’un chemin précis.\n\n## Quelle version propose cette fonction ?\n\nCe guide décrit l’extension **0.7.0**, disponible en [téléchargement sur GitHub](https://github.com/nostr-wot/nostr-wot-extension/releases/tag/v0.7.0). Lors de sa préparation, l’approbation de cette version dans les boutiques Chrome et Firefox n’était pas confirmée. Vérifiez votre version installée.\n\n## Le nom et le chemin ont des rôles différents\n\n| Réglage | Effet |\n|---|---|\n| Nom du compte | Libellé local facultatif. Ne modifie pas la clé et ne publie pas de nom de profil. |\n| Chemin de dérivation | Détermine la clé obtenue à partir de la graine. Un autre chemin produit normalement une autre identité. |\n| Aperçus npub et hex | Deux représentations de la clé publique, avant l’enregistrement. |\n\n## Créer l’identité\n\n1. Déverrouillez l’extension, ouvrez le sélecteur de comptes et ajoutez un **sous-compte HD**. Une phrase de récupération doit déjà se trouver dans le coffre ; un nsec importé seul ne suffit pas.\n2. Vérifiez la graine source affichée. L’extension propose le prochain chemin libre dans sa séquence existante.\n3. Saisissez éventuellement un nom, comme « Projet » ou « Tests ». Un champ vide conserve le nom proposé.\n4. Ouvrez **Avancé** pour choisir un autre chemin. Saisissez-le exactement et attendez l’actualisation de l’aperçu.\n5. Vérifiez le chemin et le npub. Un chemin invalide, une erreur ou un aperçu en cours empêchent de continuer.\n6. Cliquez sur **Continuer** pour enregistrer l’identité. Modifier l’aperçu ne crée pas encore de compte enregistré.\n\n## À quoi ressemble un chemin ?\n\nLe chemin Nostr initial est `m/44'/1237'/0'/0/0`. Un exemple suivant dans la séquence de l’extension est `m/44'/1237'/0'/0/1`. Ce sont des chemins, pas des clés privées. Conservez chaque barre oblique, chiffre et apostrophe.\n\nNe supposez pas qu’un autre outil numérote les comptes de la même façon. [NIP-06](https://github.com/nostr-protocol/nips/blob/master/06.md) décrit l’incrément du composant de compte renforcé ; la séquence existante des comptes supplémentaires de l’extension incrémente le dernier composant. Le chemin exact et la clé publique doivent correspondre. NIP-06 est actuellement marqué facultatif et non recommandé par ses mainteneurs ; sa prise en charge entre clients n’est pas garantie.\n\nLes indications de préfixes réseau reconnaissent seulement une convention. Un chemin ressemblant à celui de Bitcoin crée toujours une identité Nostr, pas un portefeuille Bitcoin. Évitez un chemin déjà utilisé par un portefeuille.\n\n## Préparer la récupération\n\nConservez en sécurité la phrase, le chemin exact et le npub attendu. Le nom local facilite l’organisation, mais ne restaure pas une clé. La graine seule n’indique pas à une autre application quel chemin personnalisé vous avez choisi.\n\nPlusieurs chemins organisent les identités, sans les protéger d’une compromission de leur graine commune ni garantir l’anonymat. Changer de chemin ne transfère ni publications, ni abonnés, ni profil. Les clés existantes restent inchangées.\n\nPour simplement changer de compte, consultez la [gestion des identités](/fr/guides/managing-identity). Réservez les chemins personnalisés à un besoin précis d’organisation ou de récupération que vous pouvez documenter.\n"
         },
         {
           "slug": "comprendre-web-of-trust",
@@ -3905,6 +4197,7 @@
       "tags": [
         "Adresse Lightning",
         "Avance",
+        "BIP-32",
         "Cles",
         "Comptes",
         "Concepts",
@@ -3916,6 +4209,7 @@
         "Identité",
         "Installation",
         "Lightning",
+        "NIP-06",
         "NIP-07",
         "NWC",
         "Nostr",
@@ -4214,6 +4508,53 @@
           "difficulty": "beginner",
           "order": 2.5,
           "content": "\nFrüher oder später willst du die Kontoliste der Erweiterung aufräumen: eine alte Identität, ein Testkonto oder eines, das du versehentlich importiert hast. Die Erweiterung erlaubt dir, Konten direkt aus dem Kontoauswahl-Menü mit einem einzigen Klick zu entfernen, und verlangt eine strengere Bestätigung, wenn das Konto auf einem Seed basiert, der innerhalb der Erweiterung selbst erzeugt wurde.\n\n## Bevor du ein Konto Entfernst\n\nEin Konto zu entfernen betrifft nur die Erweiterung in diesem Browser. Deine Nostr-Identität ist ein Schlüsselpaar, und die Ereignisse, die du veröffentlicht hast, leben auf den Relays im Netzwerk. Sie bleiben dort, auch wenn dich dieser Browser nicht mehr kennt.\n\nWas das Entfernen tut:\n\n- Löscht die verschlüsselte Kopie der Schlüssel, die lokal in der Erweiterung gespeichert ist.\n- Entfernt das Konto aus der Kontoauswahl.\n- Löscht den lokalen Trust-Graph, die Berechtigungen und den Wallet-Zustand, die an dieses Konto gebunden sind.\n\nWas das Entfernen **nicht** tut:\n\n- Es löscht nicht deine Notizen, dein Profil oder deine Follow-Liste von den Nostr-Relays.\n- Es beeinflusst nicht dieselbe Identität auf anderen Geräten oder in anderen NIP-07-Signern.\n\n<Callout type=\"warning\">\nWenn du deine Seed-Phrase innerhalb der Erweiterung erzeugt und nie gesichert hast, ist das Entfernen des Kontos endgültig. Es gibt keine Wiederherstellung. Exportiere oder notiere deine 12 Wörter, bevor du fortfährst.\n</Callout>\n\n![Der Sicherheit-Bildschirm erlaubt dir, deinen privaten Schlüssel (nsec) oder ein passwortgeschütztes verschlüsseltes Backup (ncryptsec) vor dem Entfernen des Kontos zu exportieren](/images/guides/removing-accounts/backup-security.jpg)\n\n## So Entfernst du ein Konto\n\n### 1. Öffne die Kontoauswahl\n\nKlicke auf das Erweiterungssymbol und öffne die Kontoauswahl oben im Popup. Du siehst jedes Konto, das die Erweiterung gerade verwaltet, wobei das aktive hervorgehoben ist.\n\n![Die Kontoauswahl listet jede in der Erweiterung gespeicherte Identität auf, das aktive Konto ist oben hervorgehoben](/images/guides/removing-accounts/accounts-selector.jpg)\n\n### 2. Fahre über das Konto und Klicke auf das Kreuz\n\nBewege den Cursor über das Konto, das du entfernen möchtest. Am rechten Rand der Zeile erscheint ein kleines Kreuz-Symbol (×). Klicke darauf.\n\n![Beim Überfahren einer Kontozeile erscheint rechts ein Kreuz — klicke darauf, um das Entfernen zu starten](/images/guides/removing-accounts/hover-remove.jpg)\n\n### 3. Bestätige das Entfernen\n\nEin Bestätigungsdialog öffnet sich. Für ein Konto, das du mit einer bestehenden nsec importiert hast, reicht hier die Bestätigung — die Erweiterung geht davon aus, dass du den Schlüssel weiterhin an anderer Stelle hast und den Zugang später wiederherstellen kannst.\n\n![Ein einfacher Dialog bittet dich zu bestätigen, dass du das Konto aus dieser Erweiterung entfernen willst](/images/guides/removing-accounts/confirm-dialog.jpg)\n\n### 4. Seed-Konten: Tippe REMOVE\n\nWurde das Konto in der Erweiterung aus einer Seed-Phrase erzeugt, ist die Bestätigung strenger. Du musst das Wort **REMOVE** (in Großbuchstaben) tippen, bevor der Button aktiv wird. Dieser zusätzliche Widerstand besteht, weil das Verlieren der einzigen Kopie eines Seeds effektiv bedeutet, die Identität für immer zu verlieren.\n\nNach der Bestätigung verschwindet das Konto aus der Auswahl. War es das aktive, wechselt die Erweiterung zu einem anderen gespeicherten Konto oder zeigt den Einrichtungsbildschirm, wenn keines mehr übrig ist.\n\n## Warum Seed-Konten Mehr Verlangen\n\nWenn du eine neue Identität innerhalb der Erweiterung erzeugst, werden die 12 Wörter lokal erstellt und dir genau einmal angezeigt. Die Erweiterung sendet sie nirgendwohin. Hast du sie nicht notiert, ist die verschlüsselte Kopie in der Erweiterung das Einzige, was dich mit dieser Identität verbindet. Sie ohne Backup zu entfernen bedeutet, nie wieder als dieses npub signieren zu können.\n\nImportierte Konten sind anders. Wenn du sie mit einer bestehenden nsec oder einem Seed hinzugefügt hast, liegt dieses Schlüsselmaterial bereits woanders: in einem anderen Signer, einem Passwort-Manager oder auf Papier. Die Wiederherstellung ist einfach.\n\n## Ein Entferntes Konto Wiederherstellen\n\nUm ein entferntes Konto zurückzuholen:\n\n1. Öffne die Kontoauswahl und klicke auf **Konto Hinzufügen**.\n2. Wähle **Importieren** und füge deine nsec oder deine 12-Wörter-Seed-Phrase ein.\n3. Die Erweiterung baut den verschlüsselten Speicher neu auf, synchronisiert den Trust-Graph erneut, und das Konto ist wieder einsatzbereit.\n\nDein lokaler Verlauf (Berechtigungen, Auto-Freigabe-Regeln, Wallet-Verbindungen) wird nicht wiederhergestellt — er war an den gelöschten Speicher gebunden. Nostr-Daten wie Profil, Follows und Notizen synchronisieren sich automatisch wieder von den Relays.\n\n## Wie geht es weiter?\n\nJetzt, da du weißt, wie man Konten sicher entfernt, stelle sicher, dass die verbleibenden gut geschützt sind. Überprüfe die Schlüsselsicherheit in [Identität Verwalten](/de/guides/identitaet-verwalten), oder kehre zu den [Ersten Schritten](/de/guides/erste-schritte) zurück, wenn du neu anfängst.\n"
+        },
+        {
+          "slug": "custom-identity-paths",
+          "title": "Nostr-Identitäten benennen und eigene Pfade wählen",
+          "description": "Optionale Namen, eigene Ableitungspfade und eine Schlüsselvorschau in Nostr WoT nutzen. Was du für die Wiederherstellung aufbewahren musst.",
+          "excerpt": "Optionale Namen, eigene Ableitungspfade und eine Schlüsselvorschau in Nostr WoT nutzen. Was du für die Wiederherstellung aufbewahren musst.",
+          "date": "2026-09-11T00:00:00.000Z",
+          "author": {
+            "name": "Leon Acosta",
+            "avatar": "/authors/leon-profile.jpg",
+            "npub": "npub1gxdhmu9swqduwhr6zptjy4ya693zp3ql28nemy4hd97kuufyrqdqwe5zfk"
+          },
+          "featuredImage": "/images/guides/custom-identity-paths/de.png",
+          "previewImage": "/images/guides/custom-identity-paths/de.png",
+          "tags": [
+            "Nostr",
+            "NIP-06",
+            "BIP-32"
+          ],
+          "published": true,
+          "readingTime": "3 min read",
+          "locale": "de",
+          "translationKey": "custom-identity-paths",
+          "translations": {
+            "en": "custom-identity-paths",
+            "es": "custom-identity-paths",
+            "pt": "custom-identity-paths",
+            "ru": "custom-identity-paths",
+            "it": "custom-identity-paths",
+            "fr": "custom-identity-paths",
+            "de": "custom-identity-paths"
+          },
+          "availableLocales": [
+            "en",
+            "es",
+            "pt",
+            "ru",
+            "it",
+            "fr",
+            "de"
+          ],
+          "seoTitle": "Nostr-Identitäten benennen und eigene Pfade wählen",
+          "seoDescription": "Optionale Namen, eigene Ableitungspfade und eine Schlüsselvorschau in Nostr WoT nutzen. Was du für die Wiederherstellung aufbewahren musst.",
+          "ogImage": "/images/guides/custom-identity-paths/de.png",
+          "difficulty": "advanced",
+          "order": 2.6,
+          "content": "\nEine Identität für die Arbeit, eine für ein Projekt und eine für Tests lassen sich durch lokale Namen leichter unterscheiden. Nostr WoT erlaubt beim Erstellen einer Identität aus deiner Seed-Phrase einen eigenen Namen und unter **Erweitert** einen eigenen Ableitungspfad. Die automatische Auswahl reicht aus, wenn du keinen bestimmten Pfad benötigst.\n\n## Welche Version unterstützt das?\n\nDiese Anleitung beschreibt Version **0.7.0**, verfügbar als [GitHub-Download](https://github.com/nostr-wot/nostr-wot-extension/releases/tag/v0.7.0). Die Freigabe dieser Version in den Chrome- und Firefox-Stores war bei der Vorbereitung nicht bestätigt. Prüfe deine installierte Version.\n\n## Name und Pfad sind unterschiedliche Einstellungen\n\n| Einstellung | Bedeutung |\n|---|---|\n| Kontoname | Optionale lokale Bezeichnung. Ändert keinen Schlüssel und veröffentlicht keinen Profilnamen. |\n| Ableitungspfad | Bestimmt die Ableitung aus dem Seed. Ein anderer Pfad ergibt normalerweise eine andere Identität. |\n| npub- und Hex-Vorschau | Zwei Darstellungen desselben öffentlichen Schlüssels vor dem Speichern. |\n\n## Identität erstellen\n\n1. Entsperre die Erweiterung, öffne die Kontenauswahl und füge ein **HD-Unterkonto** hinzu. Dafür muss eine Wiederherstellungsphrase im Tresor vorhanden sein. Ein einzelner importierter nsec reicht nicht aus.\n2. Prüfe den angezeigten Quell-Seed. Die Erweiterung schlägt den nächsten freien Pfad ihrer bisherigen Folge vor.\n3. Vergib optional einen Namen wie „Projekt“ oder „Tests“. Ein leeres Feld behält den vorgeschlagenen Namen.\n4. Öffne **Erweitert**, wenn du einen bestimmten Pfad brauchst. Gib ihn exakt ein und warte auf die aktualisierte Vorschau.\n5. Prüfe Pfad und npub. Bei ungültigen Pfaden, Fehlern oder einer noch laufenden Vorschau ist das Fortfahren gesperrt.\n6. Wähle **Weiter**, um die Identität zu speichern. Eine Änderung der Vorschau allein speichert kein Konto.\n\n## Wie sieht ein Pfad aus?\n\nDer erste Nostr-Pfad lautet `m/44'/1237'/0'/0/0`. Ein späteres Beispiel aus der Folge der Erweiterung ist `m/44'/1237'/0'/0/1`. Das sind Pfade, keine privaten Schlüssel. Bewahre alle Schrägstriche, Zahlen und Apostrophe exakt auf.\n\nAndere Werkzeuge zählen Konten möglicherweise anders. [NIP-06](https://github.com/nostr-protocol/nips/blob/master/06.md) beschreibt das Erhöhen der gehärteten Kontokomponente; die bisherige Folge zusätzlicher Konten dieser Erweiterung erhöht die letzte Komponente. Entscheidend sind der genaue Pfad und der öffentliche Schlüssel. Die NIP-06-Maintainer kennzeichnen das Verfahren derzeit als optional und nicht empfohlen. Clientübergreifende Unterstützung ist nicht garantiert.\n\nHinweise auf Netzwerkpräfixe erkennen lediglich eine Konvention. Ein Bitcoin-ähnlicher Pfad erstellt weiterhin eine Nostr-Identität, keine Bitcoin-Wallet. Verwende keinen Pfad erneut, den eine Wallet bereits nutzt.\n\n## Wiederherstellung vorbereiten\n\nSichere die Wiederherstellungsphrase zusammen mit dem exakten Pfad und der erwarteten npub. Der lokale Name hilft bei der Zuordnung, stellt aber keinen Schlüssel wieder her. Der Seed allein verrät einer anderen Anwendung nicht deinen gewählten Pfad.\n\nMehrere Pfade helfen bei der Organisation. Sie schützen die Identitäten nicht vor einer Kompromittierung des gemeinsamen Seeds und garantieren keine Anonymität. Ein anderer Pfad überträgt weder Beiträge noch Follower oder Profildaten. Bestehende Schlüssel bleiben unverändert.\n\nFür den reinen Kontowechsel genügt die [Identitätsverwaltung](/de/guides/managing-identity). Nutze eigene Pfade für einen konkreten, dokumentierten Organisations- oder Wiederherstellungsbedarf.\n"
         },
         {
           "slug": "web-of-trust-verstehen",
@@ -4547,6 +4888,7 @@
       ],
       "tags": [
         "Anfänger",
+        "BIP-32",
         "Berechtigungen",
         "Datenschutz",
         "Einrichtung",
@@ -4558,6 +4900,7 @@
         "Konzepte",
         "Lightning",
         "Lightning-Adresse",
+        "NIP-06",
         "NIP-07",
         "NWC",
         "Nostr",

@@ -181,10 +181,10 @@ export function collectErrors() {
   for (const { path, data, url } of entries) {
     const rel = relative(ROOT, path);
 
-    const unknown = Object.keys(data).filter((k) => !KNOWN_CHANNELS.includes(k));
+    const unknown = Object.keys(data).filter((k) => k !== "collection" && !KNOWN_CHANNELS.includes(k));
     if (unknown.length) {
       errors.push(
-        `${rel}: unknown field(s) ${unknown.join(", ")}. Known fields: ${KNOWN_CHANNELS.join(", ")}.`,
+        `${rel}: unknown field(s) ${unknown.join(", ")}. Known fields: collection, ${KNOWN_CHANNELS.join(", ")}.`,
       );
     }
 
