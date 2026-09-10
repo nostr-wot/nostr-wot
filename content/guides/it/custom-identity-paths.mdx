@@ -1,0 +1,56 @@
+---
+title: "Dai un nome alle identità Nostr e scegli il percorso"
+description: "Usa nomi facoltativi, percorsi di derivazione e anteprime delle chiavi in Nostr WoT. Scopri cosa conservare per recuperare le identità."
+excerpt: "Usa nomi facoltativi, percorsi di derivazione e anteprime delle chiavi in Nostr WoT. Scopri cosa conservare per recuperare le identità."
+date: "2026-09-11"
+author: {"name": "Leon Acosta", "avatar": "/authors/leon-profile.jpg", "npub": "npub1gxdhmu9swqduwhr6zptjy4ya693zp3ql28nemy4hd97kuufyrqdqwe5zfk"}
+featuredImage: "/images/guides/custom-identity-paths/it.png"
+previewImage: "/images/guides/custom-identity-paths/it.png"
+tags: ["Nostr", "NIP-06", "BIP-32"]
+published: false
+seoTitle: "Dai un nome alle identità Nostr e scegli il percorso"
+seoDescription: "Usa nomi facoltativi, percorsi di derivazione e anteprime delle chiavi in Nostr WoT. Scopri cosa conservare per recuperare le identità."
+ogImage: "/images/guides/custom-identity-paths/it.png"
+translationKey: "custom-identity-paths"
+difficulty: "advanced"
+order: 2.6
+---
+
+Un’identità per il lavoro, una per un progetto e una per le prove possono avere nomi locali riconoscibili. Nostr WoT permette di nominare una nuova identità derivata dalla frase di recupero e scegliere il percorso in **Avanzate**. Mantieni la scelta automatica se non hai bisogno di un percorso preciso.
+
+## Quale versione include la funzione?
+
+La guida descrive l’estensione **0.7.0**, disponibile nella [release scaricabile su GitHub](https://github.com/nostr-wot/nostr-wot-extension/releases/tag/v0.7.0). Alla preparazione della guida non era confermata l’approvazione di questa versione negli store Chrome e Firefox. Controlla la versione installata.
+
+## Nome e percorso hanno funzioni diverse
+
+| Impostazione | Effetto |
+|---|---|
+| Nome account | Etichetta locale facoltativa. Non cambia la chiave e non pubblica un nome del profilo. |
+| Percorso di derivazione | Determina la chiave ricavata dal seed. Un altro percorso normalmente produce un’altra identità. |
+| Anteprima npub e hex | Due rappresentazioni della chiave pubblica prima del salvataggio. |
+
+## Crea l’identità
+
+1. Sblocca l’estensione, apri il selettore degli account e aggiungi un **sottoaccount HD**. Serve una frase di recupero già presente nel vault; una sola nsec importata non è sufficiente.
+2. Controlla il seed di origine mostrato. L’estensione propone il prossimo percorso libero della sequenza esistente.
+3. Inserisci un nome facoltativo, come «Progetto» o «Prove». Lasciando vuoto il campo si mantiene il nome proposto.
+4. Apri **Avanzate** per scegliere un altro percorso. Inseriscilo esattamente e attendi l’aggiornamento dell’anteprima.
+5. Controlla percorso e npub. Un percorso non valido, un errore o un’anteprima ancora in caricamento impediscono di continuare.
+6. Premi **Continua** per salvare l’identità. Modificare l’anteprima non salva ancora un account.
+
+## Come si presenta un percorso?
+
+Il percorso Nostr iniziale è `m/44'/1237'/0'/0/0`. Un esempio successivo nella sequenza dell’estensione è `m/44'/1237'/0'/0/1`. Sono percorsi, non chiavi private. Conserva ogni barra, numero e apostrofo.
+
+Non presumere che un altro strumento numeri gli account allo stesso modo. [NIP-06](https://github.com/nostr-protocol/nips/blob/master/06.md) descrive l’incremento del componente account hardened; la sequenza esistente degli account aggiuntivi dell’estensione incrementa l’ultimo componente. Devono coincidere il percorso esatto e la chiave pubblica. I manutentori indicano attualmente NIP-06 come facoltativo e non raccomandato; la compatibilità tra client non è garantita.
+
+Gli indizi sui prefissi di rete riconoscono solo una convenzione. Un percorso simile a quello Bitcoin crea comunque un’identità Nostr, non un wallet Bitcoin. Evita di riutilizzare un percorso già usato da un wallet.
+
+## Prepara il recupero
+
+Conserva al sicuro la frase, il percorso esatto e la npub attesa. Il nome locale aiuta a organizzarsi, ma non recupera una chiave. Il seed da solo non comunica a un’altra applicazione quale percorso personalizzato hai scelto.
+
+Percorsi diversi organizzano le identità, ma non le isolano dalla compromissione del seed comune e non garantiscono anonimato. Cambiare percorso non trasferisce post, follower o profilo. Le chiavi esistenti restano invariate.
+
+Per cambiare soltanto account, leggi la [gestione delle identità](/it/guides/managing-identity). Usa percorsi personalizzati per una necessità concreta e documentabile di organizzazione o recupero.
