@@ -51,3 +51,9 @@ The public `/newsletters` archive already exists in all seven locales. It displa
 Retain every send attempt privately in `data/newsletter/deliveries/<issue-id>/<sha256-email>.json`. The record contains the recipient email, issue/version, locale, exact outbound message, attempt timestamps, pending/failed/uncertain/accepted outcomes and Resend message IDs when supplied. History is cumulative: retries append events instead of replacing earlier attempts. Accepted is provider acceptance, not proof of inbox delivery, opening or reading. These records survive deployment and must be included in private operational backups; never expose them in the public archive or commit them.
 
 The `newsletter.yml` workflow's `audit=true` option enriches older checkpoints with their recipient from retained subscriber/message evidence, without sending. It preserves original receipt times and explicitly labels unknown earlier attempts. No guessed recipients or fabricated historical events. Do not combine audit=true with send=true.
+
+## Reader-facing editorial tone
+
+Lead with the actual change and its benefit. Use "Security improvements" or a specific heading such as "Safer account switching". Explain, for example, that pending operations are cancelled when the user locks the extension or changes accounts.
+
+Do not add unsolicited contrasts such as "hardening, not a reported hack". Mentioning a hack, breach or victims without a relevant incident creates confusion. Research must distinguish fixes from exploitation, but that classification belongs in the evidence record unless it is needed to understand the story. Carry this rule across all translations. Existing sent editions remain immutable; use the corrected approach in subsequent issues.
