@@ -5,9 +5,8 @@ import { createHash, createHmac, randomUUID } from 'node:crypto';
 import { pathToFileURL } from 'node:url';
 import { setTimeout as delay } from 'node:timers/promises';
 import { recordSentReceipt, validateReceipt } from './record-sent.mjs';
-import { editorialHtml, escapeHtml } from './format.mjs';
+import { newsletterTemplate, TEMPLATE_VERSION } from './template.mjs';
 const locales=['en','es','pt','ru','it','fr','de'];
-const footers={en:'Unsubscribe',es:'Cancelar suscripción',pt:'Cancelar inscrição',ru:'Отписаться',it:'Annulla iscrizione',fr:'Se désabonner',de:'Abbestellen'};
 const digest=s=>createHash('sha256').update(s).digest('hex');
 async function json(path, fallback) { try { return JSON.parse(await readFile(path,'utf8')); } catch(e) { if(e.code==='ENOENT' && fallback!==undefined)return fallback;throw e; } }
 async function save(path,value) { const temp=path+'.'+randomUUID()+'.tmp'; const h=await open(temp,'wx',0o600);try{await h.writeFile(JSON.stringify(value)+'\n');await h.sync();}finally{await h.close();}await rename(temp,path);const d=await open(dirname(path),'r');try{await d.sync();}finally{await d.close();} }
@@ -74,15 +73,15 @@ export async function sendIssue({issue,dataDir,apiKey,unsubscribeSecret=apiKey,s
    const payload=Buffer.from(current.email).toString('base64url');
    const signature=createHmac('sha256',unsubscribeSecret).update('newsletter-unsubscribe:'+payload).digest('base64url');
    const url='https://nostr-wot.com/api/newsletter/unsubscribe?token='+payload+'.'+signature+'&lang='+locale;
-   const footer=footers[locale];
-   const message={from:'Nostr WoT <noreply@nostr-wot.com>',to:[current.email],subject:e.subject,text:e.preheader+'\n\n'+e.body+'\n\n'+footer+': '+url,html:`<!doctype html><html lang="${locale}"><body><div style="max-width:640px;margin:auto;font-family:Arial,sans-serif;line-height:1.7;color:#172033"><p>${escapeHtml(e.preheader)}</p><h1>${escapeHtml(e.subject)}</h1>${editorialHtml(e.body)}<hr><p><a href="${escapeHtml(url)}">${footer}</a></p></div></body></html>`,headers:{'List-Unsubscribe':`<${url}>`,'List-Unsubscribe-Post':'List-Unsubscribe=One-Click'}};
+   const rendered=newsletterTemplate({edition:e,locale,issueId:issue.id,date:issue.coverageEnd,unsubscribeUrl:url});
+   const message={from:'Nostr WoT <noreply@nostr-wot.com>',to:[current.email],subject:e.subject,text:rendered.text,html:rendered.html,headers:{'List-Unsubscribe':`<${url}>`,'List-Unsubscribe-Post':'List-Unsubscribe=One-Click'}};
    const idempotencyKey=`newsletter-${issue.id}-${key}`;
    // Pin the exact payload for safe provider retries, including secret rotation.
    const envelope=record?.message || message;
    const attemptId=randomUUID(),attemptedAt=new Date().toISOString();
    const previousHistory=record?.history || (record?[{status:record.status,at:record.receipt?.acceptedAt || record.attemptedAt || null,source:'legacy-checkpoint',note:'Earlier attempts are unknown.'}]:[]);
    const history=[...previousHistory,{attemptId,status:'pending',at:attemptedAt}];
-   const base={issueId:issue.id,version:issue.version,recipient:current.email,locale,message:envelope,attemptedAt,history};
+   const base={templateVersion:record?.templateVersion || (record?.message?"legacy":TEMPLATE_VERSION),issueId:issue.id,version:issue.version,recipient:current.email,locale,message:envelope,attemptedAt,history};
    await save(path,{...base,status:'pending'});
    let response,result;
    try{response=await transport('https://api.resend.com/emails',{method:'POST',headers:{Authorization:`Bearer ${apiKey}`,'Content-Type':'application/json','Idempotency-Key':idempotencyKey},body:JSON.stringify(envelope),signal:AbortSignal.timeout(30000)});result=await response.json();}

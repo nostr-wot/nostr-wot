@@ -35,3 +35,16 @@ test('legacy audit recovers recipient without sending or inventing past attempts
  const restored=JSON.parse(await readFile(join(dir,f),'utf8'));assert.equal(restored.recipient,'one@example.org');assert.equal(restored.history.length,1);assert.equal(restored.history[0].at,r.receipt.acceptedAt);assert.equal(restored.history[0].source,'legacy-checkpoint');
  assert.equal((await auditDeliveryRecords({dataDir,issueId:'weekly-test-v1'})).enriched,0);
 });
+
+test('branded template has real logo, social links, localized footer and escaped copy',async()=>{
+ const {newsletterTemplate}=await import('../scripts/newsletters/template.mjs');
+ const rendered=newsletterTemplate({edition:{subject:'<script>test</script>',preheader:'Preview',body:'## Heading\n\nContent'},locale:'es',issueId:'weekly-test-v1',date:'2026-01-08T00:00:00Z',unsubscribeUrl:'https://nostr-wot.com/api/newsletter/unsubscribe?token=test'});
+ assert.ok(rendered.html.includes('https://nostr-wot.com/icon-192.png'));assert.ok(rendered.html.includes('#6366f1'));assert.ok(rendered.html.includes('Cancelar suscripción'));assert.ok(rendered.html.includes('https://github.com/nostr-wot'));assert.ok(rendered.html.includes('https://www.linkedin.com/company/nostr-wot'));assert.ok(!rendered.html.includes('<script>'));assert.ok(rendered.html.includes('role="presentation"'));assert.ok(rendered.text.includes('Cancelar suscripción'));
+});
+
+test('template preview sends only to Leon, keeps private history and never archives',async t=>{
+ const {sendPreview}=await import('../scripts/newsletters/preview.mjs');const dataDir=await fixture(t);let calls=0;
+ const options={preview:{id:'preview-test',locale:'en',date:'2026-01-08T00:00:00Z',edition:issue().editions.en},dataDir,apiKey:'test',transport:async(_u:any,o:any)=>{calls++;const message=JSON.parse(o.body);assert.deepEqual(message.to,['leon@dandelionlabs.io']);assert.ok(message.subject.startsWith('[Preview]'));return new Response(JSON.stringify({id:'preview-provider-123'}));}};
+ assert.equal((await sendPreview(options)).accepted,1);assert.equal((await sendPreview(options)).alreadyAccepted,1);assert.equal(calls,1);assert.ok(!(await readdir(dataDir)).includes('sent'));
+ const dir=join(dataDir,'previews/brand-v1/preview-test'),files=await readdir(dir);const record=JSON.parse(await readFile(join(dir,files[0]),'utf8'));assert.equal(record.recipient,'leon@dandelionlabs.io');assert.deepEqual(record.history.map((e:any)=>e.status),['pending','accepted']);
+});

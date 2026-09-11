@@ -19,3 +19,10 @@
 - No em dashes, invented first-person experience or unsupported claims in new editorial copy.
 - Newsletter subscribers retain their page locale in private durable runtime storage. Keep all seven supported locales valid and never silently switch a recipient to English. Never expose or commit subscriber records.
 - `/newsletters` is a sent-edition archive, not a draft list. An authorized sender must record the exact subject, preheader and editorial body only after provider acceptance, using `scripts/newsletters/record-sent.mjs`. Keep recipients, personalization and provider IDs private. Sent versions are immutable; corrections require a new issue/version. Preserve `data/newsletter` across deployments and include it in private operational backups.
+
+## Newsletter language
+
+- Describe what changed and how it affects readers directly. For example: "Security improvements" or "Safer account switching", followed by the specific change.
+- Do not introduce an unprompted threat or denial, such as "hardening, not a reported hack", "not a breach", or "no victims". These raise questions the story did not require. Use incident language only when reporting a relevant, verified incident or correcting a specific claim readers actually encountered.
+- Keep evidence classifications and research limitations in the research manifest. Include a limitation in reader-facing copy only when it materially changes their understanding or action; do not turn internal fact-checking notes into headings or routine disclaimers.
+- Apply this to every language and future issue. Preserve immutable editions already sent.

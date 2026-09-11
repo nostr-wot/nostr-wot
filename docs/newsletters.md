@@ -51,3 +51,15 @@ The public `/newsletters` archive already exists in all seven locales. It displa
 Retain every send attempt privately in `data/newsletter/deliveries/<issue-id>/<sha256-email>.json`. The record contains the recipient email, issue/version, locale, exact outbound message, attempt timestamps, pending/failed/uncertain/accepted outcomes and Resend message IDs when supplied. History is cumulative: retries append events instead of replacing earlier attempts. Accepted is provider acceptance, not proof of inbox delivery, opening or reading. These records survive deployment and must be included in private operational backups; never expose them in the public archive or commit them.
 
 The `newsletter.yml` workflow's `audit=true` option enriches older checkpoints with their recipient from retained subscriber/message evidence, without sending. It preserves original receipt times and explicitly labels unknown earlier attempts. No guessed recipients or fabricated historical events. Do not combine audit=true with send=true.
+
+## Reader-facing editorial tone
+
+Lead with the actual change and its benefit. Use "Security improvements" or a specific heading such as "Safer account switching". Explain, for example, that pending operations are cancelled when the user locks the extension or changes accounts.
+
+Do not add unsolicited contrasts such as "hardening, not a reported hack". Mentioning a hack, breach or victims without a relevant incident creates confusion. Research must distinguish fixes from exploitation, but that classification belongs in the evidence record unless it is needed to understand the story. Carry this rule across all translations. Existing sent editions remain immutable; use the corrected approach in subsequent issues.
+
+## Branded email template and private previews
+
+All new newsletter sends use `scripts/newsletters/template.mjs`: the existing Nostr WoT PNG mark, indigo/violet brand colors, readable inline-styled sections, a browser link, localized subscription/unsubscribe copy and the social links from the website footer. Tables and inline CSS provide the baseline email layout; responsive CSS improves small screens. Both HTML and plain text are retained with each recipient’s private delivery record, including the template version.
+
+Use `newsletter-preview.yml` to send a template preview only to `leon@dandelionlabs.io`. It uses authored `newsletters/previews/brand-vN.json`, marks the subject as a preview, does not read or send to the subscriber list, and never creates a sent-newsletter archive entry. Private preview history and provider acceptance are recorded under `data/newsletter/previews/`. Repeated accepted previews are idempotent; a changed preview requires a new version or ID. Do not resend a subscriber issue to demonstrate a template change. Already-sent editorial editions remain immutable.
