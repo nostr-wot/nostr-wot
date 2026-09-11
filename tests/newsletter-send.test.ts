@@ -16,3 +16,22 @@ test('uncertain transport is not blindly retried or archived',async t=>{const da
 test('changed issue fails before another send',async t=>{const dataDir=await fixture(t);const opts={issue:issue(),dataDir,apiKey:'test',send:true,transport:async()=>new Response(JSON.stringify({id:'provider-test-123'})),pause:async()=>{}};await sendIssue(opts);opts.issue.editions.es.body='Changed';await assert.rejects(sendIssue(opts),/changed/);});
 test('formatter escapes HTML and rejects executable Markdown links',()=>{const rendered=editorialHtml('## Title\n\n<script>alert(1)</script> [bad](javascript:alert) [ok](https://example.org) **bold**');assert.ok(!rendered.includes('<script>'));assert.ok(!rendered.includes('href="javascript:'));assert.ok(rendered.includes('<h2>Title</h2>'));assert.ok(rendered.includes('<strong>bold</strong>'));});
 test('unsubscribe requires an authentic token',()=>{const before=process.env.NEWSLETTER_UNSUBSCRIBE_SECRET;process.env.NEWSLETTER_UNSUBSCRIBE_SECRET='test-secret';try{const p=Buffer.from('one@example.org').toString('base64url');const s=createHmac('sha256','test-secret').update('newsletter-unsubscribe:'+p).digest('base64url');assert.equal(unsubscribeEmail(p+'.'+s),'one@example.org');assert.equal(unsubscribeEmail(p+'.'+s.slice(1)),null);}finally{if(before===undefined)delete process.env.NEWSLETTER_UNSUBSCRIBE_SECRET;else process.env.NEWSLETTER_UNSUBSCRIBE_SECRET=before;}});
+
+test('failed attempt history survives a later accepted retry with recipient retained',async t=>{
+ const dataDir=await fixture(t);let calls=0;
+ const options={issue:issue(),dataDir,apiKey:'test',send:true,pause:async()=>{},transport:async()=>{calls++;return calls===1?new Response(JSON.stringify({error:'rate limited'}),{status:429}):new Response(JSON.stringify({id:'accepted-retry-123'}));}};
+ assert.equal((await sendIssue(options)).failed,1);assert.equal((await sendIssue(options)).accepted,1);
+ const dir=join(dataDir,'deliveries/weekly-test-v1');const f=(await readdir(dir)).find(f=>/^[a-f0-9]{64}\.json$/.test(f))!;
+ const r=JSON.parse(await readFile(join(dir,f),'utf8'));
+ assert.equal(r.recipient,'one@example.org');assert.deepEqual(r.history.map((e:any)=>e.status),['pending','failed','pending','accepted']);assert.notEqual(r.history[0].attemptId,r.history[2].attemptId);assert.equal(r.history[3].providerMessageId,'accepted-retry-123');
+});
+
+test('legacy audit recovers recipient without sending or inventing past attempts',async t=>{
+ const {auditDeliveryRecords}=await import('../scripts/newsletters/send.mjs');
+ const dataDir=await fixture(t);await sendIssue({issue:issue(),dataDir,apiKey:'test',send:true,pause:async()=>{},transport:async()=>new Response(JSON.stringify({id:'legacy-provider-123'}))});
+ const dir=join(dataDir,'deliveries/weekly-test-v1');const f=(await readdir(dir)).find(f=>/^[a-f0-9]{64}\.json$/.test(f))!;
+ const r=JSON.parse(await readFile(join(dir,f),'utf8'));await writeFile(join(dir,f),JSON.stringify({status:'accepted',locale:r.locale,receipt:r.receipt}),{mode:0o600});
+ assert.equal((await auditDeliveryRecords({dataDir,issueId:'weekly-test-v1'})).enriched,1);
+ const restored=JSON.parse(await readFile(join(dir,f),'utf8'));assert.equal(restored.recipient,'one@example.org');assert.equal(restored.history.length,1);assert.equal(restored.history[0].at,r.receipt.acceptedAt);assert.equal(restored.history[0].source,'legacy-checkpoint');
+ assert.equal((await auditDeliveryRecords({dataDir,issueId:'weekly-test-v1'})).enriched,0);
+});

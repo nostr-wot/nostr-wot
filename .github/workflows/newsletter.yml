@@ -9,6 +9,10 @@ on:
         description: 'Send to active subscribers (false only reports counts)'
         type: boolean
         default: false
+      audit:
+        description: 'Enrich historical recipient records without sending'
+        type: boolean
+        default: false
 permissions:
   contents: read
 concurrency:
@@ -27,14 +31,17 @@ jobs:
         env:
           ISSUE: ${{ inputs.issue }}
           SEND: ${{ inputs.send }}
+          AUDIT: ${{ inputs.audit }}
         with:
           host: ${{ secrets.SSH_HOST_PROD }}
           username: ${{ secrets.SSH_USER_PROD }}
           key: ${{ secrets.SSH_PRIVATE_KEY_PROD }}
-          envs: ISSUE,SEND
+          envs: ISSUE,SEND,AUDIT
           script: |
             set -eu
             cd /var/www/nostr-wot
             mode=--dry-run
+            if [ "$SEND" = "true" ] && [ "$AUDIT" = "true" ]; then exit 1; fi
             if [ "$SEND" = "true" ]; then mode=--send; fi
+            if [ "$AUDIT" = "true" ]; then mode=--audit; fi
             node --env-file=.env scripts/newsletters/send.mjs "newsletters/$ISSUE/issue.json" "$mode"

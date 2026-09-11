@@ -27,6 +27,25 @@ function subscribers(data) {
  for(const r of data.subscribers){if(typeof r.email!=='string'||r.email!==r.email.trim().toLowerCase()||r.email.length>254||!/^\S+@[^\s@]+\.[^\s@]+$/.test(r.email)||seen.has(r.email)||!locales.includes(r.locale)||!['active','inactive'].includes(r.status)||r.consent?.source!=='newsletter-form')throw Error('Invalid subscriber record');seen.add(r.email);}
  return data.subscribers.filter(r=>r.status==='active');
 }
+/** Enrich legacy delivery receipts from retained recipient evidence, without sending. */
+export async function auditDeliveryRecords({dataDir,issueId}) {
+ if(!/^[a-z0-9]+(?:-[a-z0-9]+)*-v[1-9][0-9]*$/.test(issueId)||issueId.length>100)throw Error('Invalid issue ID');
+ const store=await json(join(dataDir,'subscribers.json'),{version:1,subscribers:[]});subscribers(store);
+ const addresses=new Map(store.subscribers.map(r=>[digest(r.email),r.email]));
+ const dir=join(dataDir,'deliveries',issueId);let files;try{files=await readdir(dir);}catch(e){if(e.code==='ENOENT')return {issue:issueId,records:0,enriched:0,unresolved:0};throw e;}
+ const lock=join(dir,'send.lock');await mkdir(lock,{mode:0o700});
+ const result={issue:issueId,records:0,enriched:0,unresolved:0};
+ try{for(const f of files){
+  if(!/^[a-f0-9]{64}\.json$/.test(f))continue;
+  const path=join(dir,f),r=await json(path);result.records++;
+  const candidate=r.recipient || r.message?.to?.[0] || addresses.get(f.slice(0,-5));
+  const recipient=typeof candidate==='string' && digest(candidate)===f.slice(0,-5)?candidate:null;
+  if(!recipient)result.unresolved++;
+  if(r.history && r.recipient===recipient)continue;
+  const history=r.history || [{status:r.status,at:r.receipt?.acceptedAt || r.attemptedAt || null,providerMessageId:r.receipt?.providerMessageId || null,source:'legacy-checkpoint',note:'Recovered existing evidence; earlier attempts are unknown.'}];
+  await save(path,{...r,issueId,recipient,history});result.enriched++;
+ }return result;}finally{await rmdir(lock);}
+}
 export async function sendIssue({issue,dataDir,apiKey,unsubscribeSecret=apiKey,send=false,transport=fetch,pause=async ms=>{await delay(ms);}}) {
  validateIssue(issue);
  const audience=subscribers(await json(join(dataDir,'subscribers.json'),{version:1,subscribers:[]}));
@@ -60,16 +79,22 @@ export async function sendIssue({issue,dataDir,apiKey,unsubscribeSecret=apiKey,s
    const idempotencyKey=`newsletter-${issue.id}-${key}`;
    // Pin the exact payload for safe provider retries, including secret rotation.
    const envelope=record?.message || message;
-   await save(path,{status:'pending',locale,message:envelope,attemptedAt:new Date().toISOString()});
+   const attemptId=randomUUID(),attemptedAt=new Date().toISOString();
+   const previousHistory=record?.history || (record?[{status:record.status,at:record.receipt?.acceptedAt || record.attemptedAt || null,source:'legacy-checkpoint',note:'Earlier attempts are unknown.'}]:[]);
+   const history=[...previousHistory,{attemptId,status:'pending',at:attemptedAt}];
+   const base={issueId:issue.id,version:issue.version,recipient:current.email,locale,message:envelope,attemptedAt,history};
+   await save(path,{...base,status:'pending'});
    let response,result;
    try{response=await transport('https://api.resend.com/emails',{method:'POST',headers:{Authorization:`Bearer ${apiKey}`,'Content-Type':'application/json','Idempotency-Key':idempotencyKey},body:JSON.stringify(envelope),signal:AbortSignal.timeout(30000)});result=await response.json();}
-   catch{await save(path,{status:'uncertain',locale,message:envelope});summary.uncertain++;continue;}
+   catch{history.push({attemptId,status:'uncertain',at:new Date().toISOString(),reason:'transport-or-response-error'});await save(path,{...base,status:'uncertain'});summary.uncertain++;continue;}
    if(!response.ok || typeof result.id!=='string' || !result.id.trim()){
     const uncertain=response.status>=500 || response.ok || response.status===409;
-    await save(path,{status:uncertain?'uncertain':'failed',locale,message:envelope,httpStatus:response.status});summary[uncertain?'uncertain':'failed']++;await pause(600);continue;
+    history.push({attemptId,status:uncertain?'uncertain':'failed',at:new Date().toISOString(),httpStatus:response.status});
+    await save(path,{...base,status:uncertain?'uncertain':'failed',httpStatus:response.status});summary[uncertain?'uncertain':'failed']++;await pause(600);continue;
    }
    const receipt={issueId:issue.id,version:issue.version,locale,acceptedAt:new Date().toISOString(),providerMessageId:result.id,subject:e.subject,preheader:e.preheader,body:e.body,coverageStart:issue.coverageStart,coverageEnd:issue.coverageEnd};
-   await save(path,{status:'accepted',locale,receipt});
+   history.push({attemptId,status:'accepted',at:receipt.acceptedAt,providerMessageId:result.id});
+   await save(path,{...base,status:'accepted',receipt});
    await recordSentReceipt(receipt,{dataDir});summary.accepted++;await pause(600);
   }
   return summary;
@@ -77,7 +102,8 @@ export async function sendIssue({issue,dataDir,apiKey,unsubscribeSecret=apiKey,s
 }
 async function main(){
  try{
-  const [file,mode,...extra]=process.argv.slice(2);if(!file||!['--dry-run','--send'].includes(mode)||extra.length)throw Error('Usage: send.mjs <issue.json> --dry-run|--send');
+  const [file,mode,...extra]=process.argv.slice(2);if(!file||!['--dry-run','--send','--audit'].includes(mode)||extra.length)throw Error('Usage: send.mjs <issue.json> --dry-run|--send|--audit');
+  if(mode==='--audit'){const issue=validateIssue(await json(resolve(file)));console.log(JSON.stringify(await auditDeliveryRecords({issueId:issue.id,dataDir:process.env.NEWSLETTER_DATA_DIR||resolve('data/newsletter')})));return;}
   const result=await sendIssue({issue:await json(resolve(file)),dataDir:process.env.NEWSLETTER_DATA_DIR || resolve('data/newsletter'),apiKey:process.env.RESEND_API_KEY,unsubscribeSecret:process.env.NEWSLETTER_UNSUBSCRIBE_SECRET||process.env.RESEND_API_KEY,send:mode==='--send'});
   console.log(JSON.stringify(result));if(result.failed||result.uncertain)process.exitCode=1;
  }catch{console.error('Newsletter operation failed. Inspect private state; do not blindly resend.');process.exitCode=1;}
