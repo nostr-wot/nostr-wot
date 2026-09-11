@@ -45,3 +45,9 @@ After green CI and deployment, run `newsletter.yml` with `issue=YYYY-MM-DD` and 
 Every message includes a signed localized unsubscribe link and one-click headers. GET only presents confirmation; POST deactivates the subscription under the same lock as registration. Set a stable `NEWSLETTER_UNSUBSCRIBE_SECRET` if desired; the default uses the existing Resend key, so rotating that key also invalidates old links unless the dedicated secret is retained.
 
 The public `/newsletters` archive already exists in all seven locales. It displays the exact editorial Markdown using a restricted escaped formatter. Only language editions with actual accepted recipients appear as sent. Empty audiences do not create fake archive entries. Prepared editions with no audience remain in the repository and can be sent later without an English fallback.
+
+## Per-recipient send history
+
+Retain every send attempt privately in `data/newsletter/deliveries/<issue-id>/<sha256-email>.json`. The record contains the recipient email, issue/version, locale, exact outbound message, attempt timestamps, pending/failed/uncertain/accepted outcomes and Resend message IDs when supplied. History is cumulative: retries append events instead of replacing earlier attempts. Accepted is provider acceptance, not proof of inbox delivery, opening or reading. These records survive deployment and must be included in private operational backups; never expose them in the public archive or commit them.
+
+The `newsletter.yml` workflow's `audit=true` option enriches older checkpoints with their recipient from retained subscriber/message evidence, without sending. It preserves original receipt times and explicitly labels unknown earlier attempts. No guessed recipients or fabricated historical events. Do not combine audit=true with send=true.
