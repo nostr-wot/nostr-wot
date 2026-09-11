@@ -1,0 +1,34 @@
+name: Newsletter email preview
+on:
+  workflow_dispatch:
+    inputs:
+      template:
+        description: 'Preview file version; recipient is fixed to Leon'
+        default: brand-v1
+        required: true
+permissions:
+  contents: read
+concurrency:
+  group: newsletter-preview
+  cancel-in-progress: false
+jobs:
+  preview:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Validate template
+        env:
+          TEMPLATE: ${{ inputs.template }}
+        run: '[[ "$TEMPLATE" =~ ^brand-v[1-9][0-9]*$ ]]'
+      - name: Send preview to Leon
+        uses: appleboy/ssh-action@v1.0.0
+        env:
+          TEMPLATE: ${{ inputs.template }}
+        with:
+          host: ${{ secrets.SSH_HOST_PROD }}
+          username: ${{ secrets.SSH_USER_PROD }}
+          key: ${{ secrets.SSH_PRIVATE_KEY_PROD }}
+          envs: TEMPLATE
+          script: |
+            set -eu
+            cd /var/www/nostr-wot
+            node --env-file=.env scripts/newsletters/preview.mjs "newsletters/previews/$TEMPLATE.json"
