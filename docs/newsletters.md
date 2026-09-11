@@ -6,7 +6,7 @@ The form sends the current next-intl page locale with the email address. The API
 
 Private server-side senders can use `listActiveSubscribers()` from `lib/newsletter-subscribers.ts`. There is no public subscriber-list endpoint. Select the matching authored edition for each recipient; do not silently substitute English. A missing edition is held for translation. Subscription storage is authoritative even if a welcome email cannot be delivered.
 
-This change does not reconstruct old subscribers from notification emails or infer their languages. It also does not start sending weekly newsletters. The existing editorial calendar prepares drafts separately.
+The weekly editorial calendar prepares and sends validated issues in this repository. It does not reconstruct old subscribers from notification emails or infer missing languages.
 
 ## Public archive
 
@@ -31,3 +31,17 @@ The GitHub deployment creates the private directory but does not upload, delete 
 After a crash, a stale writer lock can block writes. Stop all relevant writers and inspect the lock before removing it; do not steal a lock merely because it is old. Preserve the last valid JSON file and receipt evidence when diagnosing a failure.
 
 For local checks, point `NEWSLETTER_DATA_DIR` at a temporary directory and use fake provider receipts there. Do not call the production subscription route with test addresses, because that route sends welcome and admin emails.
+
+## Weekly preparation and delivery
+
+The user authorized the weekly newsletter to all active subscribers on 11 September 2026. The website repository owns `newsletters/YYYY-MM-DD/{en,es,pt,ru,it,fr,de}.md`, the research manifest and `issue.json`. The JSON file is the exact approved delivery input; authored Markdown files must match it. Keep source evidence and the explicit preceding seven-day UTC interval. Read the previous issue before selecting news. Lead with verified extension/SDK releases, distinguish browser-store availability, and never relabel old news as new. Prepare all seven translations before sending.
+
+Use the existing Friday 10:00 Europe/Zurich editorial calendar; it now prepares, validates, deploys and sends. Do not add a second scheduler. Preserve the Tuesday ecosystem routine and its separate publication rules. Update the issue manifest with aggregate delivery outcome only; recipients, provider IDs and per-recipient state remain private on the server.
+
+After green CI and deployment, run `newsletter.yml` with `issue=YYYY-MM-DD` and `send=false`. This reports active subscriber counts by locale and whether mail is configured, without exposing addresses. Then dispatch with `send=true`. The workflow uses the production SSH configuration and server `.env`, not credentials copied into a prompt or local content file.
+
+`scripts/newsletters/send.mjs` sends separate emails through Resend, with a persistent per-issue/per-recipient ledger, an immutable input snapshot and provider idempotency keys. Known failures are reported; uncertain or interrupted requests are held for reconciliation, never blindly retried. Saved acceptances repair the archive without sending again. A stale sender lock requires inspection, never age-based deletion. Provider acceptance is not confirmed inbox delivery.
+
+Every message includes a signed localized unsubscribe link and one-click headers. GET only presents confirmation; POST deactivates the subscription under the same lock as registration. Set a stable `NEWSLETTER_UNSUBSCRIBE_SECRET` if desired; the default uses the existing Resend key, so rotating that key also invalidates old links unless the dedicated secret is retained.
+
+The public `/newsletters` archive already exists in all seven locales. It displays the exact editorial Markdown using a restricted escaped formatter. Only language editions with actual accepted recipients appear as sent. Empty audiences do not create fake archive entries. Prepared editions with no audience remain in the repository and can be sent later without an English fallback.

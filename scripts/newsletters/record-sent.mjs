@@ -60,7 +60,7 @@ function coverage(record, acceptedMs) {
   }
   if (own(record, 'coverageStart') && own(record, 'coverageEnd')) requireThat(Date.parse(record.coverageStart) <= Date.parse(record.coverageEnd), 'Coverage dates are reversed.');
 }
-function validateReceipt(record, now = Date.now()) {
+export function validateReceipt(record, now = Date.now()) {
   objectWithKeys(record, RECEIPT_KEYS, RECEIPT_KEYS.filter(k => !COVERAGE_KEYS.includes(k)));
   requireThat(typeof record.issueId === 'string' && /^[a-z0-9]+(?:-[a-z0-9]+)*-v([1-9][0-9]*)$/.test(record.issueId)
     && record.issueId.length <= 100, 'Invalid issueId.');
