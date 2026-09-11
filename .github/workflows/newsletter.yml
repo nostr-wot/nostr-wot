@@ -1,0 +1,40 @@
+name: Send newsletter
+on:
+  workflow_dispatch:
+    inputs:
+      issue:
+        description: 'Issue directory (YYYY-MM-DD)'
+        required: true
+      send:
+        description: 'Send to active subscribers (false only reports counts)'
+        type: boolean
+        default: false
+permissions:
+  contents: read
+concurrency:
+  group: newsletter-delivery
+  cancel-in-progress: false
+jobs:
+  send:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Validate issue input
+        env:
+          ISSUE: ${{ inputs.issue }}
+        run: '[[ "$ISSUE" =~ ^[0-9]{4}-[0-9]{2}-[0-9]{2}$ ]]'
+      - name: Run deployed sender
+        uses: appleboy/ssh-action@v1.0.0
+        env:
+          ISSUE: ${{ inputs.issue }}
+          SEND: ${{ inputs.send }}
+        with:
+          host: ${{ secrets.SSH_HOST_PROD }}
+          username: ${{ secrets.SSH_USER_PROD }}
+          key: ${{ secrets.SSH_PRIVATE_KEY_PROD }}
+          envs: ISSUE,SEND
+          script: |
+            set -eu
+            cd /var/www/nostr-wot
+            mode=--dry-run
+            if [ "$SEND" = "true" ]; then mode=--send; fi
+            node --env-file=.env scripts/newsletters/send.mjs "newsletters/$ISSUE/issue.json" "$mode"

@@ -136,3 +136,18 @@ export async function listActiveSubscribers(): Promise<Array<{ email: string; lo
   return (await readStore(directory())).subscribers
     .filter(row => row.status === 'active').map(({ email, locale }) => ({ email, locale }));
 }
+
+/** Signed unsubscribe links deactivate an existing opt-in under the subscription lock. */
+export async function unsubscribe(email: string): Promise<void> {
+  const dir = directory();
+  await mkdir(dir, { recursive: true, mode: 0o700 });
+  const release = await acquireLock(dir);
+  try {
+    const store = await readStore(dir);
+    const row = store.subscribers.find(r => r.email === email);
+    if (row && row.status === 'active') {
+      row.status = 'inactive'; row.updatedAt = new Date().toISOString();
+      await writeStore(dir, store);
+    }
+  } finally { await release(); }
+}
