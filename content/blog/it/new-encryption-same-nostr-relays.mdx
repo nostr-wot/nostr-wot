@@ -1,0 +1,58 @@
+---
+{
+  "title": "Nuova cifratura, gli stessi relay Nostr",
+  "description": "Come aggiungere metodi di cifratura a Nostr con identificatori compatti, capacità esplicite e regole verificabili per i relay.",
+  "excerpt": "Come aggiungere metodi di cifratura a Nostr con identificatori compatti, capacità esplicite e regole verificabili per i relay.",
+  "date": "2026-09-12",
+  "author": {
+    "name": "Nostr WoT"
+  },
+  "tags": [
+    "Nostr",
+    "Post-Quantum",
+    "Cryptography"
+  ],
+  "published": true,
+  "translationKey": "new-encryption-same-nostr-relays",
+  "featuredImage": "/images/blog/crypto-agility/preview.png",
+  "previewImage": "/images/blog/crypto-agility/preview.png",
+  "seoTitle": "Nuova cifratura, gli stessi relay Nostr",
+  "seoDescription": "Come aggiungere metodi di cifratura a Nostr con identificatori compatti, capacità esplicite e regole verificabili per i relay."
+}
+---
+
+Un nuovo metodo di cifratura non dovrebbe richiedere la sostituzione della rete che trasporta una conversazione. Due persone possono aggiornare i client mentre il relay continua ad accettare eventi validi, applicare le proprie regole e consegnare contenuti cifrati.
+
+È la direzione delle proposte Nostr WoT raccolte in [nostr-pqc/nip-drafts](https://github.com/nostr-wot/nostr-pqc/tree/main/nip-drafts). La nuova guida illustrata spiega come aggiungere una suite crittografica e trovare un percorso compatibile.
+
+## Tre responsabilità
+
+I partecipanti devono avere una cifratura compatibile. Il relay decide cosa accettare e verificare. Nella composizione ibrida esistente, il messaggio viene cifrato dentro un sigillo e trasportato da un involucro esterno standard. Il relay controlla firma visibile, dimensioni e accesso. Non gli servono la chiave segreta del destinatario né la conoscenza del metodo interno.
+
+![Ruoli di mittente, relay e destinatario; diagramma in inglese](/images/blog/crypto-agility/validation-boundaries.svg)
+
+La compatibilità del trasporto non rende i vecchi client capaci di decifrare il nuovo formato. Entrambe le estremità devono supportarlo.
+
+## Due byte e una specifica completa
+
+L’involucro locale inizia già con un byte di versione e uno di suite. La suite definisce algoritmi, chiavi, combinazione dei segreti, campi autenticati, padding e codifica. Una nuova assegnazione richiede revisione e vettori di test. Prima di abilitare gli invii devono essere pronti i lettori. Gli eventi ordinari non ricevono un nuovo campo universale.
+
+Alice supporta A e B; Bob soltanto A. Possono usare A se la politica lo consente. Se Alice richiede B, l’invio si ferma. Dopo l’aggiornamento di Bob e la pubblicazione di un legame autenticato tra capacità e chiavi, possono usare B sullo stesso relay, rispettandone i limiti. Un errore non deve provocare un reinvio silenzioso con cifratura più debole.
+
+## Cosa può dichiarare un relay
+
+La proposta usa NIP-11 per descrivere limiti, tipi di eventi ammessi e prove pubbliche richieste. Un operatore potrebbe accettare messaggi avvolti e richiedere una firma ibrida soltanto per i post pubblici.
+
+L’involucro abituale usa una chiave effimera. Esporre all’esterno una prova stabile del mittente ne rivelerebbe l’identità. La conferma del relay indica accettazione, non decifratura o lettura.
+
+## Il costo effettivo
+
+Nel modello riproducibile, un testo di 280 byte produce un involucro classico di 2567 byte o uno ibrido di 5295. La firma pubblica proposta aggiunge 6275 byte a un evento prima privo di tag. Il padding rende variabile la differenza finale.
+
+I due byte del selettore sono piccoli rispetto ai testi cifrati del KEM e alle firme. I gruppi richiedono copie per destinatario; la replica sui relay moltiplica il traffico. Il client deve misurare l’evento completo prima dell’invio.
+
+## Stato dei lavori
+
+L’involucro e l’integrazione con il firmatario esistono. Le politiche dei relay e l’autenticazione pubblica ibrida restano proposte. Servono ancora regole complete per rotazione delle chiavi e riferimenti agli eventi, oltre a revisione indipendente. L’involucro esterno classico non protegge tutti i metadati da un avversario quantistico.
+
+La [guida illustrata](https://github.com/nostr-wot/nostr-pqc/blob/main/nip-drafts/07-suite-evolution-and-relay-flows.md) descrive i flussi. L’[audit](https://github.com/nostr-wot/nostr-pqc/blob/main/nip-drafts/AUDIT.md) documenta dimensioni, interoperabilità e lavoro restante.
