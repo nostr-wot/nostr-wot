@@ -1,0 +1,58 @@
+---
+{
+  "title": "Nuevo cifrado, los mismos relés de Nostr",
+  "description": "Cómo añadir métodos de cifrado a Nostr sin exigir que cada relé los entienda: capacidades explícitas, identificadores compactos y tamaños reales.",
+  "excerpt": "Cómo añadir métodos de cifrado a Nostr sin exigir que cada relé los entienda: capacidades explícitas, identificadores compactos y tamaños reales.",
+  "date": "2026-09-12",
+  "author": {
+    "name": "Nostr WoT"
+  },
+  "tags": [
+    "Nostr",
+    "Post-Quantum",
+    "Cryptography"
+  ],
+  "published": true,
+  "translationKey": "new-encryption-same-nostr-relays",
+  "featuredImage": "/images/blog/crypto-agility/preview.png",
+  "previewImage": "/images/blog/crypto-agility/preview.png",
+  "seoTitle": "Nuevo cifrado, los mismos relés de Nostr",
+  "seoDescription": "Cómo añadir métodos de cifrado a Nostr sin exigir que cada relé los entienda: capacidades explícitas, identificadores compactos y tamaños reales."
+}
+---
+
+Un nuevo método de cifrado no debería obligar a sustituir la red que transporta una conversación. Dos personas pueden actualizar sus clientes mientras el relé sigue aceptando eventos válidos, aplicando sus reglas y entregando contenido cifrado.
+
+Esa es la dirección de los borradores de Nostr WoT, ahora en [nostr-pqc/nip-drafts](https://github.com/nostr-wot/nostr-pqc/tree/main/nip-drafts). La nueva guía ilustrada explica cómo incorporar una suite de cifrado y determinar qué relés pueden transportar el mensaje.
+
+## Tres responsabilidades
+
+Los participantes necesitan un cifrado compatible. El relé decide qué acepta y qué puede validar. En la composición híbrida existente, el mensaje se cifra dentro de un sello y viaja en una envoltura exterior estándar. El relé comprueba su firma visible, tamaño y reglas de acceso. No necesita la clave secreta del destinatario ni entender el cifrado interior.
+
+![Responsabilidades del emisor, el relé y el destinatario; diagrama en inglés](/images/blog/crypto-agility/validation-boundaries.svg)
+
+Esto conserva el transporte, pero un cliente antiguo no puede descifrar automáticamente el nuevo formato. Ambos extremos necesitan soporte compatible.
+
+## Un identificador pequeño, una definición completa
+
+La envoltura local existente comienza con un byte de versión y otro de suite. La suite define algoritmos, tamaños de claves, combinación de secretos, campos autenticados, relleno y codificación. Antes de asignar un nuevo valor hacen falta revisión y vectores de prueba. Conviene implementar primero los lectores. No se añade un campo de cifrado a todos los eventos.
+
+Alice admite A y B; Bob solo A. Pueden usar A si su política lo permite. Si Alice exige B, el envío se detiene. Cuando Bob actualice y publique una vinculación válida entre capacidades y claves, podrán usar B a través del mismo relé si el evento cumple sus límites. Un fallo nunca debe provocar un reenvío silencioso con cifrado más débil.
+
+## Qué puede declarar un relé
+
+La propuesta amplía la información de NIP-11 con reglas sobre tipos de eventos admitidos y pruebas públicas exigidas. Un operador podría aceptar mensajes envueltos y exigir por separado una firma híbrida para publicaciones públicas.
+
+La envoltura habitual usa una clave efímera. Exponer fuera la prueba estable del emisor revelaría la identidad que se pretende ocultar. La confirmación del relé indica aceptación, no que el destinatario haya descifrado o leído el mensaje.
+
+## El coste real
+
+En el modelo reproducible, un texto de 280 bytes genera una envoltura clásica de 2567 bytes o una híbrida de 5295. La firma pública propuesta añade 6275 bytes a un evento que antes no tenía etiquetas. El relleno hace variar la diferencia final.
+
+Los dos bytes del selector pesan poco frente a los textos cifrados del KEM y las firmas. Los grupos necesitan copias por destinatario y la replicación entre relés multiplica el tráfico. Hay que medir el evento completo antes de enviarlo.
+
+## Implementación y próximos pasos
+
+La envoltura y la integración con el firmante existen. Las nuevas reglas para relés y la autenticación híbrida pública siguen siendo propuestas. Faltan reglas completas de rotación de claves y referencias a eventos, además de revisión independiente. La envoltura exterior clásica tampoco protege todos los metadatos frente a un adversario cuántico.
+
+La [guía ilustrada](https://github.com/nostr-wot/nostr-pqc/blob/main/nip-drafts/07-suite-evolution-and-relay-flows.md) muestra los flujos y sus fallos. La [auditoría](https://github.com/nostr-wot/nostr-pqc/blob/main/nip-drafts/AUDIT.md) detalla tamaños, compatibilidad y trabajo pendiente.

@@ -1,8 +1,50 @@
 {
-  "generatedAt": "2026-09-08T12:52:43.683Z",
+  "generatedAt": "2026-09-12T12:37:28.661Z",
   "locales": {
     "en": {
       "posts": [
+        {
+          "slug": "new-encryption-same-nostr-relays",
+          "title": "New encryption, the same Nostr relays",
+          "description": "How Nostr can add encryption methods without making every relay understand them: compact suite identifiers, explicit capabilities and the real cost of larger messages.",
+          "excerpt": "How Nostr can add encryption methods without making every relay understand them: compact suite identifiers, explicit capabilities and the real cost of larger messages.",
+          "date": "2026-09-12T00:00:00.000Z",
+          "author": {
+            "name": "Nostr WoT"
+          },
+          "featuredImage": "/images/blog/crypto-agility/preview.png",
+          "previewImage": "/images/blog/crypto-agility/preview.png",
+          "tags": [
+            "Nostr",
+            "Post-Quantum",
+            "Cryptography"
+          ],
+          "published": true,
+          "readingTime": "4 min read",
+          "locale": "en",
+          "translationKey": "new-encryption-same-nostr-relays",
+          "translations": {
+            "en": "new-encryption-same-nostr-relays",
+            "es": "new-encryption-same-nostr-relays",
+            "pt": "new-encryption-same-nostr-relays",
+            "ru": "new-encryption-same-nostr-relays",
+            "it": "new-encryption-same-nostr-relays",
+            "fr": "new-encryption-same-nostr-relays",
+            "de": "new-encryption-same-nostr-relays"
+          },
+          "availableLocales": [
+            "en",
+            "es",
+            "pt",
+            "ru",
+            "it",
+            "fr",
+            "de"
+          ],
+          "seoTitle": "New encryption, the same Nostr relays",
+          "seoDescription": "How Nostr can add encryption methods without making every relay understand them: compact suite identifiers, explicit capabilities and the real cost of larger messages.",
+          "content": "\nA new encryption method should not require replacing the network that carries the conversation. Two people can upgrade their clients while the relay between them continues doing a familiar job: accepting a valid event, applying its rules and delivering encrypted content.\n\nThat is the direction of the expanded Nostr WoT protocol drafts, now maintained in [nostr-pqc/nip-drafts](https://github.com/nostr-wot/nostr-pqc/tree/main/nip-drafts). The new illustrated guide walks through adding an encryption suite, declaring relay admission rules and deciding whether a message has a usable route.\n\n## Three different jobs\n\nThe sender and recipient need to agree on encryption. The relay needs to decide what it can accept and what it can validate. Those decisions overlap at the event boundary, but they are not the same capability.\n\nIn the existing hybrid-DM composition, the message is encrypted inside a seal and carried by a standard outer gift wrap. A relay sees that outer event. It does not need the recipient's secret key or an implementation of the inner encryption method to transport it. It still checks the visible signature, size, access rules and the event handling required by the protocol.\n\n![Sender, relay and recipient responsibilities](/images/blog/crypto-agility/validation-boundaries.svg)\n\nThis makes the relay content-agnostic within its policy. It does not make an old recipient able to decrypt a new format. Both endpoints need compatible support.\n\n## A small selector, a complete specification\n\nThe existing local envelope already starts with one version byte and one suite byte. A suite defines the whole construction: algorithms, key sizes, the key combiner, authenticated fields, padding and encoding. A number alone is not a cryptographic design.\n\nA future suite needs review, exact byte definitions and test vectors before that number is assigned. Readers should be implemented before writers start choosing it by default. The readable capability information lives in discovery; the repeated message carries the compact selector. Ordinary events gain no universal encryption field.\n\nConsider Alice and Bob. Alice has suites A and B; Bob supports only A. They can choose A if their policy permits it. If Alice requires B, sending stops. Once Bob upgrades and publishes a valid capability/key binding, they can use B through the same relay, provided the larger event fits its rules. A failed attempt must not silently resend the message with weaker encryption.\n\n## What relays could advertise\n\nThe proposal builds on NIP-11 relay information. Existing size limits remain useful; proposed fields describe admitted event kinds and public proof requirements. For example, an operator could accept encrypted gift wraps and separately require a hybrid signature on public posts.\n\nThat distinction matters for privacy. An ordinary gift wrap is signed by an ephemeral key. Requiring the hidden sender's stable proof on the outside would expose the identity the wrapping is intended to hide.\n\nA relay acknowledgment confirms acceptance under its rules. The recipient still needs to authenticate the message, decrypt it and validate the application content. No acknowledgment proves that a person has read it.\n\n## The bytes are in the cryptography\n\nIn the reproducible audit fixture, a 280-byte chat message produces a 2567-byte classical gift wrap or a 5295-byte hybrid one. The proposed public signature adds 6275 bytes to an otherwise tagless event. Padding makes the final difference vary with message length; it is not a fixed multiplier.\n\nThe two selector bytes are a small part of that cost. KEM ciphertexts and signatures dominate. Group conversations also need separate recipient copies, and relay replication adds more traffic. A client should measure the complete wrapped event before sending, rather than compare the original text with a relay's limit.\n\n## What is ready, and what needs more work\n\nThe envelope and signer integration exist. The new relay policy vocabulary and public hybrid-authentication format are proposals, not newly released relay features. Authentication still needs complete key-rotation and event-reference rules, plus independent cryptographic and interoperability review. The classical outer wrap also means the existing design does not provide post-quantum protection for all metadata.\n\nThe practical direction is incremental: let capable peers protect content, keep relay requirements explicit, and introduce new suites without changing what old suite identifiers mean. The [illustrated flow guide](https://github.com/nostr-wot/nostr-pqc/blob/main/nip-drafts/07-suite-evolution-and-relay-flows.md) includes rollout examples and failure paths; the [audit](https://github.com/nostr-wot/nostr-pqc/blob/main/nip-drafts/AUDIT.md) includes the size model and remaining work.\n"
+        },
         {
           "slug": "opt-in-quantum-resistant-direct-messages",
           "title": "Post-quantum direct messages should not be opt-in",
@@ -520,6 +562,48 @@
     "es": {
       "posts": [
         {
+          "slug": "new-encryption-same-nostr-relays",
+          "title": "Nuevo cifrado, los mismos relés de Nostr",
+          "description": "Cómo añadir métodos de cifrado a Nostr sin exigir que cada relé los entienda: capacidades explícitas, identificadores compactos y tamaños reales.",
+          "excerpt": "Cómo añadir métodos de cifrado a Nostr sin exigir que cada relé los entienda: capacidades explícitas, identificadores compactos y tamaños reales.",
+          "date": "2026-09-12T00:00:00.000Z",
+          "author": {
+            "name": "Nostr WoT"
+          },
+          "featuredImage": "/images/blog/crypto-agility/preview.png",
+          "previewImage": "/images/blog/crypto-agility/preview.png",
+          "tags": [
+            "Nostr",
+            "Post-Quantum",
+            "Cryptography"
+          ],
+          "published": true,
+          "readingTime": "3 min read",
+          "locale": "es",
+          "translationKey": "new-encryption-same-nostr-relays",
+          "translations": {
+            "en": "new-encryption-same-nostr-relays",
+            "es": "new-encryption-same-nostr-relays",
+            "pt": "new-encryption-same-nostr-relays",
+            "ru": "new-encryption-same-nostr-relays",
+            "it": "new-encryption-same-nostr-relays",
+            "fr": "new-encryption-same-nostr-relays",
+            "de": "new-encryption-same-nostr-relays"
+          },
+          "availableLocales": [
+            "en",
+            "es",
+            "pt",
+            "ru",
+            "it",
+            "fr",
+            "de"
+          ],
+          "seoTitle": "Nuevo cifrado, los mismos relés de Nostr",
+          "seoDescription": "Cómo añadir métodos de cifrado a Nostr sin exigir que cada relé los entienda: capacidades explícitas, identificadores compactos y tamaños reales.",
+          "content": "\nUn nuevo método de cifrado no debería obligar a sustituir la red que transporta una conversación. Dos personas pueden actualizar sus clientes mientras el relé sigue aceptando eventos válidos, aplicando sus reglas y entregando contenido cifrado.\n\nEsa es la dirección de los borradores de Nostr WoT, ahora en [nostr-pqc/nip-drafts](https://github.com/nostr-wot/nostr-pqc/tree/main/nip-drafts). La nueva guía ilustrada explica cómo incorporar una suite de cifrado y determinar qué relés pueden transportar el mensaje.\n\n## Tres responsabilidades\n\nLos participantes necesitan un cifrado compatible. El relé decide qué acepta y qué puede validar. En la composición híbrida existente, el mensaje se cifra dentro de un sello y viaja en una envoltura exterior estándar. El relé comprueba su firma visible, tamaño y reglas de acceso. No necesita la clave secreta del destinatario ni entender el cifrado interior.\n\n![Responsabilidades del emisor, el relé y el destinatario; diagrama en inglés](/images/blog/crypto-agility/validation-boundaries.svg)\n\nEsto conserva el transporte, pero un cliente antiguo no puede descifrar automáticamente el nuevo formato. Ambos extremos necesitan soporte compatible.\n\n## Un identificador pequeño, una definición completa\n\nLa envoltura local existente comienza con un byte de versión y otro de suite. La suite define algoritmos, tamaños de claves, combinación de secretos, campos autenticados, relleno y codificación. Antes de asignar un nuevo valor hacen falta revisión y vectores de prueba. Conviene implementar primero los lectores. No se añade un campo de cifrado a todos los eventos.\n\nAlice admite A y B; Bob solo A. Pueden usar A si su política lo permite. Si Alice exige B, el envío se detiene. Cuando Bob actualice y publique una vinculación válida entre capacidades y claves, podrán usar B a través del mismo relé si el evento cumple sus límites. Un fallo nunca debe provocar un reenvío silencioso con cifrado más débil.\n\n## Qué puede declarar un relé\n\nLa propuesta amplía la información de NIP-11 con reglas sobre tipos de eventos admitidos y pruebas públicas exigidas. Un operador podría aceptar mensajes envueltos y exigir por separado una firma híbrida para publicaciones públicas.\n\nLa envoltura habitual usa una clave efímera. Exponer fuera la prueba estable del emisor revelaría la identidad que se pretende ocultar. La confirmación del relé indica aceptación, no que el destinatario haya descifrado o leído el mensaje.\n\n## El coste real\n\nEn el modelo reproducible, un texto de 280 bytes genera una envoltura clásica de 2567 bytes o una híbrida de 5295. La firma pública propuesta añade 6275 bytes a un evento que antes no tenía etiquetas. El relleno hace variar la diferencia final.\n\nLos dos bytes del selector pesan poco frente a los textos cifrados del KEM y las firmas. Los grupos necesitan copias por destinatario y la replicación entre relés multiplica el tráfico. Hay que medir el evento completo antes de enviarlo.\n\n## Implementación y próximos pasos\n\nLa envoltura y la integración con el firmante existen. Las nuevas reglas para relés y la autenticación híbrida pública siguen siendo propuestas. Faltan reglas completas de rotación de claves y referencias a eventos, además de revisión independiente. La envoltura exterior clásica tampoco protege todos los metadatos frente a un adversario cuántico.\n\nLa [guía ilustrada](https://github.com/nostr-wot/nostr-pqc/blob/main/nip-drafts/07-suite-evolution-and-relay-flows.md) muestra los flujos y sus fallos. La [auditoría](https://github.com/nostr-wot/nostr-pqc/blob/main/nip-drafts/AUDIT.md) detalla tamaños, compatibilidad y trabajo pendiente.\n"
+        },
+        {
           "slug": "presentamos-los-widgets",
           "title": "Presentamos Nostr Widgets",
           "description": "Embebé un perfil de Nostr, un botón de seguir o un feed reciente en cualquier sitio web con una sola línea de HTML. Sin JavaScript, sin iframes, sin tracking — solo un SVG renderizado en el servidor que funciona donde sea.",
@@ -934,6 +1018,7 @@
       ],
       "tags": [
         "Anuncio",
+        "Cryptography",
         "Educación",
         "Education",
         "Embebibles",
@@ -942,6 +1027,7 @@
         "Lightning",
         "Nostr",
         "Playground",
+        "Post-Quantum",
         "SEO",
         "Trust Score",
         "Visualización",
@@ -952,6 +1038,48 @@
     },
     "pt": {
       "posts": [
+        {
+          "slug": "new-encryption-same-nostr-relays",
+          "title": "Nova criptografia, os mesmos relés Nostr",
+          "description": "Como adicionar métodos de criptografia ao Nostr com identificadores compactos, capacidades explícitas e limites claros para os relés.",
+          "excerpt": "Como adicionar métodos de criptografia ao Nostr com identificadores compactos, capacidades explícitas e limites claros para os relés.",
+          "date": "2026-09-12T00:00:00.000Z",
+          "author": {
+            "name": "Nostr WoT"
+          },
+          "featuredImage": "/images/blog/crypto-agility/preview.png",
+          "previewImage": "/images/blog/crypto-agility/preview.png",
+          "tags": [
+            "Nostr",
+            "Post-Quantum",
+            "Cryptography"
+          ],
+          "published": true,
+          "readingTime": "3 min read",
+          "locale": "pt",
+          "translationKey": "new-encryption-same-nostr-relays",
+          "translations": {
+            "en": "new-encryption-same-nostr-relays",
+            "es": "new-encryption-same-nostr-relays",
+            "pt": "new-encryption-same-nostr-relays",
+            "ru": "new-encryption-same-nostr-relays",
+            "it": "new-encryption-same-nostr-relays",
+            "fr": "new-encryption-same-nostr-relays",
+            "de": "new-encryption-same-nostr-relays"
+          },
+          "availableLocales": [
+            "en",
+            "es",
+            "pt",
+            "ru",
+            "it",
+            "fr",
+            "de"
+          ],
+          "seoTitle": "Nova criptografia, os mesmos relés Nostr",
+          "seoDescription": "Como adicionar métodos de criptografia ao Nostr com identificadores compactos, capacidades explícitas e limites claros para os relés.",
+          "content": "\nUm novo método de criptografia não deveria exigir a substituição da rede que transporta uma conversa. Duas pessoas podem atualizar os clientes enquanto o relé continua a aceitar eventos válidos, aplicar regras e entregar conteúdo cifrado.\n\nEssa é a direção dos rascunhos do Nostr WoT em [nostr-pqc/nip-drafts](https://github.com/nostr-wot/nostr-pqc/tree/main/nip-drafts). A nova explicação ilustrada mostra como acrescentar uma suíte criptográfica e escolher uma rota compatível.\n\n## Responsabilidades distintas\n\nOs participantes precisam de criptografia compatível. O relé decide o que aceita e valida. Na composição híbrida existente, a mensagem é cifrada dentro de um selo, transportado por um invólucro externo padrão. O relé verifica assinatura visível, tamanho e regras de acesso; não precisa da chave secreta do destinatário nem de compreender a criptografia interna.\n\n![Responsabilidades do remetente, relé e destinatário; diagrama em inglês](/images/blog/crypto-agility/validation-boundaries.svg)\n\nO transporte continua compatível, mas clientes antigos não passam a decifrar o novo formato. As duas pontas precisam de suporte adequado.\n\n## Dois bytes e uma especificação\n\nO envelope local já começa com um byte de versão e um de suíte. A suíte define algoritmos, chaves, combinação dos segredos, campos autenticados, preenchimento e codificação. Uma nova atribuição exige revisão e vetores de teste. Os leitores devem chegar antes da adoção pelos emissores. Nenhum campo universal é acrescentado aos eventos comuns.\n\nAlice suporta A e B; Bob apenas A. Podem escolher A se a política permitir. Se Alice exigir B, o envio para. Depois da atualização de Bob e da publicação de um vínculo autenticado entre capacidades e chaves, podem usar B pelo mesmo relé, respeitando seus limites. Uma falha não pode provocar reenvio silencioso com criptografia mais fraca.\n\n## Regras declaradas pelo relé\n\nA proposta usa NIP-11 para descrever limites, tipos de eventos admitidos e provas públicas exigidas. Um relé poderia aceitar mensagens encapsuladas e exigir assinatura híbrida apenas nas publicações públicas.\n\nO invólucro habitual tem uma chave efêmera. Exigir a prova estável do remetente do lado de fora revelaria a identidade que se procura ocultar. A confirmação do relé significa aceitação, não leitura ou decifragem pelo destinatário.\n\n## O custo em bytes\n\nNo modelo reproduzível, uma mensagem de 280 bytes ocupa 2567 bytes no invólucro clássico e 5295 no híbrido. A assinatura pública proposta acrescenta 6275 bytes a um evento originalmente sem etiquetas. O preenchimento faz a diferença variar.\n\nOs dois bytes do seletor são pequenos perante o texto cifrado do KEM e as assinaturas. Grupos exigem cópias por destinatário, multiplicadas pela replicação nos relés. O cliente deve medir o evento completo antes de publicar.\n\n## O que existe e o que falta\n\nO envelope e a integração com o assinador existem. As novas políticas de relé e a autenticação pública híbrida são propostas. Ainda precisam de regras completas para rotação de chaves e referências a eventos, além de revisão independente. O invólucro externo clássico também não protege todos os metadados contra ataques quânticos.\n\nA [explicação ilustrada](https://github.com/nostr-wot/nostr-pqc/blob/main/nip-drafts/07-suite-evolution-and-relay-flows.md) detalha os fluxos. A [auditoria](https://github.com/nostr-wot/nostr-pqc/blob/main/nip-drafts/AUDIT.md) registra tamanhos, interoperabilidade e trabalho pendente.\n"
+        },
         {
           "slug": "apresentando-os-widgets",
           "title": "Apresentando os Nostr Widgets",
@@ -1369,6 +1497,7 @@
         "Anuncio",
         "Anúncio",
         "Carteira",
+        "Cryptography",
         "Education",
         "Educação",
         "Funcionalidade",
@@ -1377,6 +1506,7 @@
         "Lightning",
         "Nostr",
         "Playground",
+        "Post-Quantum",
         "SEO",
         "Trust Score",
         "Visualização",
@@ -1386,6 +1516,48 @@
     },
     "ru": {
       "posts": [
+        {
+          "slug": "new-encryption-same-nostr-relays",
+          "title": "Новое шифрование, те же реле Nostr",
+          "description": "Как добавлять методы шифрования в Nostr: компактные идентификаторы, явные возможности клиентов и проверяемые правила реле.",
+          "excerpt": "Как добавлять методы шифрования в Nostr: компактные идентификаторы, явные возможности клиентов и проверяемые правила реле.",
+          "date": "2026-09-12T00:00:00.000Z",
+          "author": {
+            "name": "Nostr WoT"
+          },
+          "featuredImage": "/images/blog/crypto-agility/preview.png",
+          "previewImage": "/images/blog/crypto-agility/preview.png",
+          "tags": [
+            "Nostr",
+            "Post-Quantum",
+            "Cryptography"
+          ],
+          "published": true,
+          "readingTime": "2 min read",
+          "locale": "ru",
+          "translationKey": "new-encryption-same-nostr-relays",
+          "translations": {
+            "en": "new-encryption-same-nostr-relays",
+            "es": "new-encryption-same-nostr-relays",
+            "pt": "new-encryption-same-nostr-relays",
+            "ru": "new-encryption-same-nostr-relays",
+            "it": "new-encryption-same-nostr-relays",
+            "fr": "new-encryption-same-nostr-relays",
+            "de": "new-encryption-same-nostr-relays"
+          },
+          "availableLocales": [
+            "en",
+            "es",
+            "pt",
+            "ru",
+            "it",
+            "fr",
+            "de"
+          ],
+          "seoTitle": "Новое шифрование, те же реле Nostr",
+          "seoDescription": "Как добавлять методы шифрования в Nostr: компактные идентификаторы, явные возможности клиентов и проверяемые правила реле.",
+          "content": "\nНовый метод шифрования не должен требовать замены сети, передающей разговор. Два человека могут обновить клиенты, пока реле продолжает принимать корректные события, применять правила и передавать зашифрованное содержимое.\n\nТаково направление проектов Nostr WoT в [nostr-pqc/nip-drafts](https://github.com/nostr-wot/nostr-pqc/tree/main/nip-drafts). Новое иллюстрированное руководство объясняет добавление криптографического набора и выбор совместимого маршрута.\n\n## Три задачи\n\nУчастникам нужно совместимое шифрование. Реле определяет, что оно принимает и проверяет. В существующей гибридной схеме сообщение шифруется внутри печати и передаётся в стандартной внешней оболочке. Реле проверяет видимую подпись, размер и правила доступа. Ему не нужен секретный ключ получателя или реализация внутреннего шифрования.\n\n![Задачи отправителя, реле и получателя; схема на английском](/images/blog/crypto-agility/validation-boundaries.svg)\n\nСовместимость транспорта не означает, что старые клиенты смогут расшифровать новый формат. Поддержка нужна обоим участникам.\n\n## Маленький идентификатор, полная спецификация\n\nЛокальная оболочка уже начинается с байта версии и байта криптографического набора. Набор определяет алгоритмы, ключи, объединение секретов, аутентифицируемые поля, дополнение и кодирование. Новое значение требует анализа и тестовых векторов. Сначала следует внедрять чтение, затем отправку. Обычным событиям не добавляется универсальное поле.\n\nAlice поддерживает A и B, Bob только A. Они могут выбрать A, если политика разрешает. Если Alice требует B, отправка останавливается. После обновления Bob и публикации аутентифицированной привязки возможностей к ключам они смогут использовать B через то же реле, соблюдая его ограничения. Ошибка не должна приводить к незаметной повторной отправке со слабым шифрованием.\n\n## Что объявляет реле\n\nПредложение использует NIP-11 для описания ограничений, разрешённых видов событий и обязательных публичных доказательств. Оператор может принимать обёрнутые сообщения и отдельно требовать гибридную подпись для публичных публикаций.\n\nОбычная оболочка подписывается временным ключом. Стабильное доказательство отправителя снаружи раскрыло бы его личность. Подтверждение реле означает принятие события, а не расшифровку или прочтение.\n\n## Реальный размер\n\nВ воспроизводимой модели текст из 280 байт превращается в классическую оболочку размером 2567 байт или гибридную размером 5295 байт. Предложенная публичная подпись добавляет 6275 байт к событию, изначально не имевшему тегов. Дополнение делает итоговую разницу переменной.\n\nДва байта идентификатора малы по сравнению с шифротекстами KEM и подписями. Для групп нужны отдельные копии получателям, а репликация на реле увеличивает трафик. Перед отправкой нужно измерять полностью сформированное событие.\n\n## Что уже есть\n\nОболочка и интеграция с подписывающим компонентом существуют. Новые правила реле и гибридная публичная аутентификация остаются предложениями. Нужны полные правила ротации ключей и ссылок на события, а также независимая проверка. Классическая внешняя оболочка не защищает все метаданные от квантового противника.\n\n[Иллюстрированное руководство](https://github.com/nostr-wot/nostr-pqc/blob/main/nip-drafts/07-suite-evolution-and-relay-flows.md) показывает потоки сообщений. [Аудит](https://github.com/nostr-wot/nostr-pqc/blob/main/nip-drafts/AUDIT.md) содержит размеры, вопросы совместимости и оставшуюся работу.\n"
+        },
         {
           "slug": "predstavlyaem-vidzhety",
           "title": "Представляем Nostr-виджеты",
@@ -1800,9 +1972,11 @@
         }
       ],
       "tags": [
+        "Cryptography",
         "Lightning",
         "Nostr",
         "Playground",
+        "Post-Quantum",
         "SEO",
         "Web of Trust",
         "Анонс",
@@ -1818,6 +1992,48 @@
     },
     "it": {
       "posts": [
+        {
+          "slug": "new-encryption-same-nostr-relays",
+          "title": "Nuova cifratura, gli stessi relay Nostr",
+          "description": "Come aggiungere metodi di cifratura a Nostr con identificatori compatti, capacità esplicite e regole verificabili per i relay.",
+          "excerpt": "Come aggiungere metodi di cifratura a Nostr con identificatori compatti, capacità esplicite e regole verificabili per i relay.",
+          "date": "2026-09-12T00:00:00.000Z",
+          "author": {
+            "name": "Nostr WoT"
+          },
+          "featuredImage": "/images/blog/crypto-agility/preview.png",
+          "previewImage": "/images/blog/crypto-agility/preview.png",
+          "tags": [
+            "Nostr",
+            "Post-Quantum",
+            "Cryptography"
+          ],
+          "published": true,
+          "readingTime": "3 min read",
+          "locale": "it",
+          "translationKey": "new-encryption-same-nostr-relays",
+          "translations": {
+            "en": "new-encryption-same-nostr-relays",
+            "es": "new-encryption-same-nostr-relays",
+            "pt": "new-encryption-same-nostr-relays",
+            "ru": "new-encryption-same-nostr-relays",
+            "it": "new-encryption-same-nostr-relays",
+            "fr": "new-encryption-same-nostr-relays",
+            "de": "new-encryption-same-nostr-relays"
+          },
+          "availableLocales": [
+            "en",
+            "es",
+            "pt",
+            "ru",
+            "it",
+            "fr",
+            "de"
+          ],
+          "seoTitle": "Nuova cifratura, gli stessi relay Nostr",
+          "seoDescription": "Come aggiungere metodi di cifratura a Nostr con identificatori compatti, capacità esplicite e regole verificabili per i relay.",
+          "content": "\nUn nuovo metodo di cifratura non dovrebbe richiedere la sostituzione della rete che trasporta una conversazione. Due persone possono aggiornare i client mentre il relay continua ad accettare eventi validi, applicare le proprie regole e consegnare contenuti cifrati.\n\nÈ la direzione delle proposte Nostr WoT raccolte in [nostr-pqc/nip-drafts](https://github.com/nostr-wot/nostr-pqc/tree/main/nip-drafts). La nuova guida illustrata spiega come aggiungere una suite crittografica e trovare un percorso compatibile.\n\n## Tre responsabilità\n\nI partecipanti devono avere una cifratura compatibile. Il relay decide cosa accettare e verificare. Nella composizione ibrida esistente, il messaggio viene cifrato dentro un sigillo e trasportato da un involucro esterno standard. Il relay controlla firma visibile, dimensioni e accesso. Non gli servono la chiave segreta del destinatario né la conoscenza del metodo interno.\n\n![Ruoli di mittente, relay e destinatario; diagramma in inglese](/images/blog/crypto-agility/validation-boundaries.svg)\n\nLa compatibilità del trasporto non rende i vecchi client capaci di decifrare il nuovo formato. Entrambe le estremità devono supportarlo.\n\n## Due byte e una specifica completa\n\nL’involucro locale inizia già con un byte di versione e uno di suite. La suite definisce algoritmi, chiavi, combinazione dei segreti, campi autenticati, padding e codifica. Una nuova assegnazione richiede revisione e vettori di test. Prima di abilitare gli invii devono essere pronti i lettori. Gli eventi ordinari non ricevono un nuovo campo universale.\n\nAlice supporta A e B; Bob soltanto A. Possono usare A se la politica lo consente. Se Alice richiede B, l’invio si ferma. Dopo l’aggiornamento di Bob e la pubblicazione di un legame autenticato tra capacità e chiavi, possono usare B sullo stesso relay, rispettandone i limiti. Un errore non deve provocare un reinvio silenzioso con cifratura più debole.\n\n## Cosa può dichiarare un relay\n\nLa proposta usa NIP-11 per descrivere limiti, tipi di eventi ammessi e prove pubbliche richieste. Un operatore potrebbe accettare messaggi avvolti e richiedere una firma ibrida soltanto per i post pubblici.\n\nL’involucro abituale usa una chiave effimera. Esporre all’esterno una prova stabile del mittente ne rivelerebbe l’identità. La conferma del relay indica accettazione, non decifratura o lettura.\n\n## Il costo effettivo\n\nNel modello riproducibile, un testo di 280 byte produce un involucro classico di 2567 byte o uno ibrido di 5295. La firma pubblica proposta aggiunge 6275 byte a un evento prima privo di tag. Il padding rende variabile la differenza finale.\n\nI due byte del selettore sono piccoli rispetto ai testi cifrati del KEM e alle firme. I gruppi richiedono copie per destinatario; la replica sui relay moltiplica il traffico. Il client deve misurare l’evento completo prima dell’invio.\n\n## Stato dei lavori\n\nL’involucro e l’integrazione con il firmatario esistono. Le politiche dei relay e l’autenticazione pubblica ibrida restano proposte. Servono ancora regole complete per rotazione delle chiavi e riferimenti agli eventi, oltre a revisione indipendente. L’involucro esterno classico non protegge tutti i metadati da un avversario quantistico.\n\nLa [guida illustrata](https://github.com/nostr-wot/nostr-pqc/blob/main/nip-drafts/07-suite-evolution-and-relay-flows.md) descrive i flussi. L’[audit](https://github.com/nostr-wot/nostr-pqc/blob/main/nip-drafts/AUDIT.md) documenta dimensioni, interoperabilità e lavoro restante.\n"
+        },
         {
           "slug": "presentazione-dei-widget",
           "title": "Presentiamo i Nostr Widget",
@@ -2233,6 +2449,7 @@
       ],
       "tags": [
         "Annuncio",
+        "Cryptography",
         "Educazione",
         "Funzionalità",
         "Identità",
@@ -2241,6 +2458,7 @@
         "Lightning",
         "Nostr",
         "Playground",
+        "Post-Quantum",
         "SEO",
         "Trust Score",
         "Visualizzazione",
@@ -2251,6 +2469,48 @@
     },
     "fr": {
       "posts": [
+        {
+          "slug": "new-encryption-same-nostr-relays",
+          "title": "Un nouveau chiffrement, les mêmes relais Nostr",
+          "description": "Faire évoluer le chiffrement de Nostr grâce à des identifiants compacts, des capacités explicites et des règles de relais vérifiables.",
+          "excerpt": "Faire évoluer le chiffrement de Nostr grâce à des identifiants compacts, des capacités explicites et des règles de relais vérifiables.",
+          "date": "2026-09-12T00:00:00.000Z",
+          "author": {
+            "name": "Nostr WoT"
+          },
+          "featuredImage": "/images/blog/crypto-agility/preview.png",
+          "previewImage": "/images/blog/crypto-agility/preview.png",
+          "tags": [
+            "Nostr",
+            "Post-Quantum",
+            "Cryptography"
+          ],
+          "published": true,
+          "readingTime": "3 min read",
+          "locale": "fr",
+          "translationKey": "new-encryption-same-nostr-relays",
+          "translations": {
+            "en": "new-encryption-same-nostr-relays",
+            "es": "new-encryption-same-nostr-relays",
+            "pt": "new-encryption-same-nostr-relays",
+            "ru": "new-encryption-same-nostr-relays",
+            "it": "new-encryption-same-nostr-relays",
+            "fr": "new-encryption-same-nostr-relays",
+            "de": "new-encryption-same-nostr-relays"
+          },
+          "availableLocales": [
+            "en",
+            "es",
+            "pt",
+            "ru",
+            "it",
+            "fr",
+            "de"
+          ],
+          "seoTitle": "Un nouveau chiffrement, les mêmes relais Nostr",
+          "seoDescription": "Faire évoluer le chiffrement de Nostr grâce à des identifiants compacts, des capacités explicites et des règles de relais vérifiables.",
+          "content": "\nChanger de méthode de chiffrement ne devrait pas imposer de remplacer le réseau qui transporte une conversation. Deux personnes peuvent mettre à jour leurs clients pendant que le relais continue à accepter des événements valides, appliquer ses règles et transmettre du contenu chiffré.\n\nC’est la direction des propositions Nostr WoT, regroupées dans [nostr-pqc/nip-drafts](https://github.com/nostr-wot/nostr-pqc/tree/main/nip-drafts). Le nouveau guide illustré explique comment ajouter une suite cryptographique et trouver une route compatible.\n\n## Trois responsabilités\n\nLes participants doivent disposer d’un chiffrement compatible. Le relais détermine ce qu’il accepte et valide. Dans la composition hybride existante, le message est chiffré dans un sceau transporté par une enveloppe externe standard. Le relais contrôle la signature visible, la taille et les règles d’accès, sans avoir besoin de la clé secrète du destinataire ni de comprendre le chiffrement interne.\n\n![Rôles de l’émetteur, du relais et du destinataire ; schéma en anglais](/images/blog/crypto-agility/validation-boundaries.svg)\n\nLe transport reste compatible, mais les anciens clients ne savent pas automatiquement déchiffrer le nouveau format. Les deux extrémités doivent le prendre en charge.\n\n## Un petit identifiant, une définition complète\n\nL’enveloppe locale commence déjà par un octet de version et un octet de suite. La suite définit les algorithmes, les clés, la combinaison des secrets, les champs authentifiés, le remplissage et l’encodage. Une nouvelle attribution exige une revue et des vecteurs de test. Les lecteurs doivent être prêts avant les émetteurs. Aucun champ universel n’est ajouté aux événements ordinaires.\n\nAlice prend en charge A et B ; Bob seulement A. Ils peuvent choisir A si leur politique le permet. Si Alice exige B, l’envoi s’arrête. Après la mise à jour de Bob et la publication d’un lien authentifié entre capacités et clés, ils peuvent utiliser B sur le même relais si ses limites sont respectées. Un échec ne doit jamais déclencher un renvoi silencieux avec un chiffrement plus faible.\n\n## Ce que le relais peut annoncer\n\nLa proposition s’appuie sur NIP-11 pour décrire les limites, les types d’événements admis et les preuves publiques requises. Un opérateur pourrait accepter les messages enveloppés tout en exigeant une signature hybride pour les publications publiques.\n\nL’enveloppe habituelle utilise une clé éphémère. Afficher à l’extérieur une preuve stable de l’émetteur révélerait son identité. L’accusé du relais confirme l’acceptation, pas le déchiffrement ou la lecture.\n\n## Le coût réel\n\nDans le modèle reproductible, un texte de 280 octets produit une enveloppe classique de 2567 octets ou hybride de 5295. La signature publique proposée ajoute 6275 octets à un événement auparavant sans tags. Le remplissage fait varier l’écart final.\n\nLes deux octets du sélecteur pèsent peu face aux chiffrés du KEM et aux signatures. Les groupes exigent des copies par destinataire et la réplication sur les relais augmente le trafic. Il faut mesurer l’événement complet avant de l’envoyer.\n\n## État des travaux\n\nL’enveloppe et l’intégration au signataire existent. Les politiques de relais et l’authentification publique hybride restent des propositions. La rotation des clés et les références aux événements nécessitent encore des règles complètes et une revue indépendante. L’enveloppe externe classique ne protège pas non plus toutes les métadonnées contre un adversaire quantique.\n\nLe [guide illustré](https://github.com/nostr-wot/nostr-pqc/blob/main/nip-drafts/07-suite-evolution-and-relay-flows.md) présente les flux. L’[audit](https://github.com/nostr-wot/nostr-pqc/blob/main/nip-drafts/AUDIT.md) détaille les tailles, l’interopérabilité et les questions ouvertes.\n"
+        },
         {
           "slug": "presentation-des-widgets",
           "title": "Présentation des Nostr Widgets",
@@ -2666,6 +2926,7 @@
       ],
       "tags": [
         "Annonce",
+        "Cryptography",
         "Education",
         "Fonctionnalite",
         "Identite",
@@ -2674,6 +2935,7 @@
         "Nostr",
         "Playground",
         "Portefeuille",
+        "Post-Quantum",
         "SEO",
         "Trust Score",
         "Visualisation",
@@ -2684,6 +2946,48 @@
     },
     "de": {
       "posts": [
+        {
+          "slug": "new-encryption-same-nostr-relays",
+          "title": "Neue Verschlüsselung, dieselben Nostr-Relays",
+          "description": "Wie Nostr neue Verschlüsselungsverfahren mit kompakten Kennungen, klaren Fähigkeiten und überprüfbaren Relay-Regeln aufnehmen kann.",
+          "excerpt": "Wie Nostr neue Verschlüsselungsverfahren mit kompakten Kennungen, klaren Fähigkeiten und überprüfbaren Relay-Regeln aufnehmen kann.",
+          "date": "2026-09-12T00:00:00.000Z",
+          "author": {
+            "name": "Nostr WoT"
+          },
+          "featuredImage": "/images/blog/crypto-agility/preview.png",
+          "previewImage": "/images/blog/crypto-agility/preview.png",
+          "tags": [
+            "Nostr",
+            "Post-Quantum",
+            "Cryptography"
+          ],
+          "published": true,
+          "readingTime": "3 min read",
+          "locale": "de",
+          "translationKey": "new-encryption-same-nostr-relays",
+          "translations": {
+            "en": "new-encryption-same-nostr-relays",
+            "es": "new-encryption-same-nostr-relays",
+            "pt": "new-encryption-same-nostr-relays",
+            "ru": "new-encryption-same-nostr-relays",
+            "it": "new-encryption-same-nostr-relays",
+            "fr": "new-encryption-same-nostr-relays",
+            "de": "new-encryption-same-nostr-relays"
+          },
+          "availableLocales": [
+            "en",
+            "es",
+            "pt",
+            "ru",
+            "it",
+            "fr",
+            "de"
+          ],
+          "seoTitle": "Neue Verschlüsselung, dieselben Nostr-Relays",
+          "seoDescription": "Wie Nostr neue Verschlüsselungsverfahren mit kompakten Kennungen, klaren Fähigkeiten und überprüfbaren Relay-Regeln aufnehmen kann.",
+          "content": "\nEin neues Verschlüsselungsverfahren sollte nicht den Austausch des Netzes erfordern, das ein Gespräch überträgt. Zwei Menschen können ihre Clients aktualisieren, während das Relay weiterhin gültige Events annimmt, Regeln anwendet und verschlüsselte Inhalte weitergibt.\n\nDas ist die Richtung der Nostr-WoT-Entwürfe in [nostr-pqc/nip-drafts](https://github.com/nostr-wot/nostr-pqc/tree/main/nip-drafts). Die neue bebilderte Anleitung erklärt, wie eine Kryptografie-Suite ergänzt und ein passender Übertragungsweg gefunden wird.\n\n## Drei Aufgaben\n\nDie Beteiligten brauchen kompatible Verschlüsselung. Das Relay entscheidet, was es annimmt und prüfen kann. Beim bestehenden hybriden Aufbau wird die Nachricht in einem Siegel verschlüsselt und in einer standardmäßigen äußeren Hülle transportiert. Das Relay prüft sichtbare Signatur, Größe und Zugriffsregeln. Es braucht weder den geheimen Schlüssel des Empfängers noch Kenntnis des inneren Verfahrens.\n\n![Aufgaben von Sender, Relay und Empfänger; englisches Diagramm](/images/blog/crypto-agility/validation-boundaries.svg)\n\nKompatibler Transport bedeutet nicht, dass alte Clients das neue Format entschlüsseln können. Beide Endpunkte brauchen passende Unterstützung.\n\n## Kleine Kennung, vollständige Spezifikation\n\nDas lokale Format beginnt bereits mit einem Versionsbyte und einem Suite-Byte. Eine Suite definiert Algorithmen, Schlüssel, Geheimniskombination, authentifizierte Felder, Padding und Kodierung. Neue Zuordnungen brauchen Prüfung und Testvektoren. Leser sollten vor den neuen Schreibern verfügbar sein. Gewöhnliche Events erhalten kein universelles Zusatzfeld.\n\nAlice unterstützt A und B, Bob nur A. Sie können A nutzen, wenn ihre Richtlinie es erlaubt. Verlangt Alice B, stoppt der Versand. Nach Bobs Aktualisierung und einer authentifizierten Bindung von Fähigkeiten und Schlüsseln können sie B über dasselbe Relay nutzen, sofern dessen Grenzen eingehalten werden. Ein Fehler darf keinen stillen erneuten Versand mit schwächerer Verschlüsselung auslösen.\n\n## Deklarierte Relay-Regeln\n\nDer Vorschlag nutzt NIP-11 für Größenlimits, erlaubte Event-Typen und verlangte öffentliche Nachweise. Ein Betreiber könnte verschlüsselte Hüllen akzeptieren und nur für öffentliche Beiträge eine hybride Signatur verlangen.\n\nDie normale Hülle verwendet einen kurzlebigen Schlüssel. Ein außen sichtbarer stabiler Sendernachweis würde die Identität offenlegen. Die Relay-Bestätigung besagt nur, dass das Event angenommen wurde, nicht dass jemand es entschlüsselt oder gelesen hat.\n\n## Die tatsächlichen Größen\n\nIm reproduzierbaren Modell wird aus 280 Byte Text eine klassische Hülle mit 2567 Byte oder eine hybride mit 5295 Byte. Die vorgeschlagene öffentliche Signatur ergänzt ein zuvor tagloses Event um 6275 Byte. Padding lässt den endgültigen Unterschied variieren.\n\nDie beiden Kennungsbytes fallen gegenüber KEM-Chiffretexten und Signaturen kaum ins Gewicht. Gruppen benötigen Kopien je Empfänger; Relay-Replikation vervielfacht den Verkehr. Clients müssen das vollständig verpackte Event vor dem Versand messen.\n\n## Stand und offene Arbeit\n\nDas Verschlüsselungsformat und die Signer-Integration existieren. Neue Relay-Richtlinien und hybride öffentliche Authentifizierung sind Vorschläge. Vollständige Regeln für Schlüsselwechsel und Event-Referenzen sowie unabhängige Prüfung fehlen noch. Die klassische äußere Hülle schützt zudem nicht sämtliche Metadaten gegen einen Quantenangreifer.\n\nDie [bebilderte Anleitung](https://github.com/nostr-wot/nostr-pqc/blob/main/nip-drafts/07-suite-evolution-and-relay-flows.md) beschreibt Abläufe. Das [Audit](https://github.com/nostr-wot/nostr-pqc/blob/main/nip-drafts/AUDIT.md) enthält Größen, Interoperabilität und offene Fragen.\n"
+        },
         {
           "slug": "vorstellung-der-widgets",
           "title": "Vorstellung der Nostr Widgets",
@@ -3100,12 +3404,14 @@
       "tags": [
         "Ankündigung",
         "Bildung",
+        "Cryptography",
         "Einbettbar",
         "Funktion",
         "Identität",
         "Lightning",
         "Nostr",
         "Playground",
+        "Post-Quantum",
         "SEO",
         "Trust Score",
         "Visualisierung",

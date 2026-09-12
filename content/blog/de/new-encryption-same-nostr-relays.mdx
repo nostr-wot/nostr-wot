@@ -1,0 +1,58 @@
+---
+{
+  "title": "Neue Verschlüsselung, dieselben Nostr-Relays",
+  "description": "Wie Nostr neue Verschlüsselungsverfahren mit kompakten Kennungen, klaren Fähigkeiten und überprüfbaren Relay-Regeln aufnehmen kann.",
+  "excerpt": "Wie Nostr neue Verschlüsselungsverfahren mit kompakten Kennungen, klaren Fähigkeiten und überprüfbaren Relay-Regeln aufnehmen kann.",
+  "date": "2026-09-12",
+  "author": {
+    "name": "Nostr WoT"
+  },
+  "tags": [
+    "Nostr",
+    "Post-Quantum",
+    "Cryptography"
+  ],
+  "published": true,
+  "translationKey": "new-encryption-same-nostr-relays",
+  "featuredImage": "/images/blog/crypto-agility/preview.png",
+  "previewImage": "/images/blog/crypto-agility/preview.png",
+  "seoTitle": "Neue Verschlüsselung, dieselben Nostr-Relays",
+  "seoDescription": "Wie Nostr neue Verschlüsselungsverfahren mit kompakten Kennungen, klaren Fähigkeiten und überprüfbaren Relay-Regeln aufnehmen kann."
+}
+---
+
+Ein neues Verschlüsselungsverfahren sollte nicht den Austausch des Netzes erfordern, das ein Gespräch überträgt. Zwei Menschen können ihre Clients aktualisieren, während das Relay weiterhin gültige Events annimmt, Regeln anwendet und verschlüsselte Inhalte weitergibt.
+
+Das ist die Richtung der Nostr-WoT-Entwürfe in [nostr-pqc/nip-drafts](https://github.com/nostr-wot/nostr-pqc/tree/main/nip-drafts). Die neue bebilderte Anleitung erklärt, wie eine Kryptografie-Suite ergänzt und ein passender Übertragungsweg gefunden wird.
+
+## Drei Aufgaben
+
+Die Beteiligten brauchen kompatible Verschlüsselung. Das Relay entscheidet, was es annimmt und prüfen kann. Beim bestehenden hybriden Aufbau wird die Nachricht in einem Siegel verschlüsselt und in einer standardmäßigen äußeren Hülle transportiert. Das Relay prüft sichtbare Signatur, Größe und Zugriffsregeln. Es braucht weder den geheimen Schlüssel des Empfängers noch Kenntnis des inneren Verfahrens.
+
+![Aufgaben von Sender, Relay und Empfänger; englisches Diagramm](/images/blog/crypto-agility/validation-boundaries.svg)
+
+Kompatibler Transport bedeutet nicht, dass alte Clients das neue Format entschlüsseln können. Beide Endpunkte brauchen passende Unterstützung.
+
+## Kleine Kennung, vollständige Spezifikation
+
+Das lokale Format beginnt bereits mit einem Versionsbyte und einem Suite-Byte. Eine Suite definiert Algorithmen, Schlüssel, Geheimniskombination, authentifizierte Felder, Padding und Kodierung. Neue Zuordnungen brauchen Prüfung und Testvektoren. Leser sollten vor den neuen Schreibern verfügbar sein. Gewöhnliche Events erhalten kein universelles Zusatzfeld.
+
+Alice unterstützt A und B, Bob nur A. Sie können A nutzen, wenn ihre Richtlinie es erlaubt. Verlangt Alice B, stoppt der Versand. Nach Bobs Aktualisierung und einer authentifizierten Bindung von Fähigkeiten und Schlüsseln können sie B über dasselbe Relay nutzen, sofern dessen Grenzen eingehalten werden. Ein Fehler darf keinen stillen erneuten Versand mit schwächerer Verschlüsselung auslösen.
+
+## Deklarierte Relay-Regeln
+
+Der Vorschlag nutzt NIP-11 für Größenlimits, erlaubte Event-Typen und verlangte öffentliche Nachweise. Ein Betreiber könnte verschlüsselte Hüllen akzeptieren und nur für öffentliche Beiträge eine hybride Signatur verlangen.
+
+Die normale Hülle verwendet einen kurzlebigen Schlüssel. Ein außen sichtbarer stabiler Sendernachweis würde die Identität offenlegen. Die Relay-Bestätigung besagt nur, dass das Event angenommen wurde, nicht dass jemand es entschlüsselt oder gelesen hat.
+
+## Die tatsächlichen Größen
+
+Im reproduzierbaren Modell wird aus 280 Byte Text eine klassische Hülle mit 2567 Byte oder eine hybride mit 5295 Byte. Die vorgeschlagene öffentliche Signatur ergänzt ein zuvor tagloses Event um 6275 Byte. Padding lässt den endgültigen Unterschied variieren.
+
+Die beiden Kennungsbytes fallen gegenüber KEM-Chiffretexten und Signaturen kaum ins Gewicht. Gruppen benötigen Kopien je Empfänger; Relay-Replikation vervielfacht den Verkehr. Clients müssen das vollständig verpackte Event vor dem Versand messen.
+
+## Stand und offene Arbeit
+
+Das Verschlüsselungsformat und die Signer-Integration existieren. Neue Relay-Richtlinien und hybride öffentliche Authentifizierung sind Vorschläge. Vollständige Regeln für Schlüsselwechsel und Event-Referenzen sowie unabhängige Prüfung fehlen noch. Die klassische äußere Hülle schützt zudem nicht sämtliche Metadaten gegen einen Quantenangreifer.
+
+Die [bebilderte Anleitung](https://github.com/nostr-wot/nostr-pqc/blob/main/nip-drafts/07-suite-evolution-and-relay-flows.md) beschreibt Abläufe. Das [Audit](https://github.com/nostr-wot/nostr-pqc/blob/main/nip-drafts/AUDIT.md) enthält Größen, Interoperabilität und offene Fragen.

@@ -1,0 +1,58 @@
+---
+{
+  "title": "Un nouveau chiffrement, les mêmes relais Nostr",
+  "description": "Faire évoluer le chiffrement de Nostr grâce à des identifiants compacts, des capacités explicites et des règles de relais vérifiables.",
+  "excerpt": "Faire évoluer le chiffrement de Nostr grâce à des identifiants compacts, des capacités explicites et des règles de relais vérifiables.",
+  "date": "2026-09-12",
+  "author": {
+    "name": "Nostr WoT"
+  },
+  "tags": [
+    "Nostr",
+    "Post-Quantum",
+    "Cryptography"
+  ],
+  "published": true,
+  "translationKey": "new-encryption-same-nostr-relays",
+  "featuredImage": "/images/blog/crypto-agility/preview.png",
+  "previewImage": "/images/blog/crypto-agility/preview.png",
+  "seoTitle": "Un nouveau chiffrement, les mêmes relais Nostr",
+  "seoDescription": "Faire évoluer le chiffrement de Nostr grâce à des identifiants compacts, des capacités explicites et des règles de relais vérifiables."
+}
+---
+
+Changer de méthode de chiffrement ne devrait pas imposer de remplacer le réseau qui transporte une conversation. Deux personnes peuvent mettre à jour leurs clients pendant que le relais continue à accepter des événements valides, appliquer ses règles et transmettre du contenu chiffré.
+
+C’est la direction des propositions Nostr WoT, regroupées dans [nostr-pqc/nip-drafts](https://github.com/nostr-wot/nostr-pqc/tree/main/nip-drafts). Le nouveau guide illustré explique comment ajouter une suite cryptographique et trouver une route compatible.
+
+## Trois responsabilités
+
+Les participants doivent disposer d’un chiffrement compatible. Le relais détermine ce qu’il accepte et valide. Dans la composition hybride existante, le message est chiffré dans un sceau transporté par une enveloppe externe standard. Le relais contrôle la signature visible, la taille et les règles d’accès, sans avoir besoin de la clé secrète du destinataire ni de comprendre le chiffrement interne.
+
+![Rôles de l’émetteur, du relais et du destinataire ; schéma en anglais](/images/blog/crypto-agility/validation-boundaries.svg)
+
+Le transport reste compatible, mais les anciens clients ne savent pas automatiquement déchiffrer le nouveau format. Les deux extrémités doivent le prendre en charge.
+
+## Un petit identifiant, une définition complète
+
+L’enveloppe locale commence déjà par un octet de version et un octet de suite. La suite définit les algorithmes, les clés, la combinaison des secrets, les champs authentifiés, le remplissage et l’encodage. Une nouvelle attribution exige une revue et des vecteurs de test. Les lecteurs doivent être prêts avant les émetteurs. Aucun champ universel n’est ajouté aux événements ordinaires.
+
+Alice prend en charge A et B ; Bob seulement A. Ils peuvent choisir A si leur politique le permet. Si Alice exige B, l’envoi s’arrête. Après la mise à jour de Bob et la publication d’un lien authentifié entre capacités et clés, ils peuvent utiliser B sur le même relais si ses limites sont respectées. Un échec ne doit jamais déclencher un renvoi silencieux avec un chiffrement plus faible.
+
+## Ce que le relais peut annoncer
+
+La proposition s’appuie sur NIP-11 pour décrire les limites, les types d’événements admis et les preuves publiques requises. Un opérateur pourrait accepter les messages enveloppés tout en exigeant une signature hybride pour les publications publiques.
+
+L’enveloppe habituelle utilise une clé éphémère. Afficher à l’extérieur une preuve stable de l’émetteur révélerait son identité. L’accusé du relais confirme l’acceptation, pas le déchiffrement ou la lecture.
+
+## Le coût réel
+
+Dans le modèle reproductible, un texte de 280 octets produit une enveloppe classique de 2567 octets ou hybride de 5295. La signature publique proposée ajoute 6275 octets à un événement auparavant sans tags. Le remplissage fait varier l’écart final.
+
+Les deux octets du sélecteur pèsent peu face aux chiffrés du KEM et aux signatures. Les groupes exigent des copies par destinataire et la réplication sur les relais augmente le trafic. Il faut mesurer l’événement complet avant de l’envoyer.
+
+## État des travaux
+
+L’enveloppe et l’intégration au signataire existent. Les politiques de relais et l’authentification publique hybride restent des propositions. La rotation des clés et les références aux événements nécessitent encore des règles complètes et une revue indépendante. L’enveloppe externe classique ne protège pas non plus toutes les métadonnées contre un adversaire quantique.
+
+Le [guide illustré](https://github.com/nostr-wot/nostr-pqc/blob/main/nip-drafts/07-suite-evolution-and-relay-flows.md) présente les flux. L’[audit](https://github.com/nostr-wot/nostr-pqc/blob/main/nip-drafts/AUDIT.md) détaille les tailles, l’interopérabilité et les questions ouvertes.
