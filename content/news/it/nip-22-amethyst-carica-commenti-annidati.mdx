@@ -1,0 +1,45 @@
+---
+title: "Amethyst 1.15.2 carica prima i commenti annidati NIP-22"
+description: "Amethyst 1.15.2 aggiunge filtri sulla radice per i commenti annidati NIP-22 e corregge la ricerca degli aggiornamenti delle pull request NIP-34."
+seoDescription: "Amethyst 1.15.2 aggiunge filtri sulla radice per i commenti annidati NIP-22 e corregge la ricerca degli aggiornamenti delle pull request NIP-34."
+excerpt: "Amethyst 1.15.2 aggiunge filtri sulla radice per i commenti annidati NIP-22 e corregge la ricerca degli aggiornamenti delle pull request NIP-34."
+date: "2026-09-16"
+publishedAt: "2026-09-16"
+backfilled: false
+type: "story"
+tags: ["Nostr","NIP-22","NIP-34","Clients"]
+featuredImage: "/images/news/nip-22-amethyst-loads-nested-comments.svg"
+translationKey: "nip-22-amethyst-loads-nested-comments"
+sources: [{"title":"Amethyst v1.15.2","url":"https://github.com/vitorpamplona/amethyst/releases/tag/v1.15.2","publisher":"vitorpamplona/amethyst","date":"2026-09-12"},{"title":"PR #4095: Separate NIP-22 root filters","url":"https://github.com/vitorpamplona/amethyst/pull/4095","publisher":"vitorpamplona/amethyst","date":"2026-09-12"},{"title":"NIP-22","url":"https://github.com/nostr-protocol/nips/blob/master/22.md","publisher":"nostr-protocol/nips","date":"2026-09-16"},{"title":"NIP-01","url":"https://github.com/nostr-protocol/nips/blob/master/01.md","publisher":"nostr-protocol/nips","date":"2026-09-16"},{"title":"NIP-34","url":"https://github.com/nostr-protocol/nips/blob/master/34.md","publisher":"nostr-protocol/nips","date":"2026-09-16"}]
+published: true
+---
+
+Amethyst 1.15.2 cambia il modo in cui il client trova le risposte ai contenuti visibili. La [PR #4095](https://github.com/vitorpamplona/amethyst/pull/4095), integrata il 12 settembre 2026, aggiunge filtri per la radice di una conversazione NIP-22 accanto ai filtri esistenti per le risposte dirette. I commenti annidati che le vecchie query non trovavano possono ora arrivare senza aspettare che il lettore apra la schermata del thread.
+
+La modifica è inclusa nella [release v1.15.2 su GitHub](https://github.com/vitorpamplona/amethyst/releases/tag/v1.15.2), pubblicata lo stesso giorno con download per Android e desktop. Corregge anche il filtro usato per trovare gli aggiornamenti delle pull request NIP-34. Entrambe le correzioni dipendono da una distinzione facile da trascurare: i nomi dei tag maiuscoli e minuscoli svolgono funzioni diverse.
+
+## La radice non è il genitore diretto
+
+[NIP-22](https://github.com/nostr-protocol/nips/blob/master/22.md) definisce i commenti come eventi kind 1111. I tag maiuscoli identificano la radice della conversazione. Quelli minuscoli identificano l'elemento a cui si risponde. Per un evento identificato dal suo ID, i tag sono `E` ed `e`; per una radice indirizzabile, il tag di radice corrispondente è `A`.
+
+Consideriamo un evento che descrive un file, un commento sul file e una risposta al commento. Il primo commento indica il file sia come radice sia come genitore. La risposta annidata mantiene l'ID del file in `E`, ma il suo `e` indica il primo commento. Una query con `#e` uguale all'ID del file trova quindi il commento diretto, ma non quella risposta annidata attraverso il riferimento al genitore.
+
+Le query di interazione esistenti usavano tag minuscoli. La schermata del thread aveva già una propria sottoscrizione per la radice maiuscola. Questo spiega perché aprire una conversazione poteva mostrare risposte che non erano arrivate con la query precedente. La release introduce questa ricerca anche nei filtri di interazione.
+
+## Filtri separati per conservare il significato della query
+
+La patch aggiunge un filtro `E` per gli ID degli eventi e un filtro `A` per i contenuti indirizzabili. Ogni nuovo filtro di radice usa un limite di 1000 e mantiene il valore `since` esistente per ciascun relay. I filtri delle risposte dirette rimangono.
+
+Inserire entrambe le condizioni in un solo filtro non risolverebbe il problema. [NIP-01](https://github.com/nostr-protocol/nips/blob/master/01.md) richiede che tutte le condizioni di un filtro siano soddisfatte. Chiedere che sia `#e` sia `#E` contengano l'ID della radice continuerebbe a escludere un commento annidato il cui genitore diretto è un altro commento. Filtri separati consentono di cercare le due relazioni in modo indipendente.
+
+Il limite è un parametro della query, non una promessa di caricare tutti i commenti di ogni thread. La disponibilità dei relays, quelli selezionati e i limiti temporali continuano a determinare quali eventi riceve il client. La correzione riguarda ciò che il client chiede ai relays di restituire.
+
+## Lo stesso problema nelle revisioni delle pull request
+
+Il nuovo filtro di radice per gli ID include anche kind 1619, l'evento di aggiornamento delle pull request di NIP-34. L'[esempio di NIP-34](https://github.com/nostr-protocol/nips/blob/master/34.md) identifica la pull request modificata con un tag `E` maiuscolo.
+
+Prima, Amethyst elencava quel kind in un filtro con `e` minuscolo. Il kind corretto associato al tag sbagliato non trovava gli aggiornamenti conformi all'esempio. La patch sposta kind 1619 in `RootScopedRepliesKinds`. Le risposte Git e gli eventi di stato conservano il filtro minuscolo.
+
+I test aggiunti verificano che vengano generati filtri di radice per ID e indirizzi e che le condizioni maiuscole e minuscole non siano combinate. Altre verifiche mantengono kind 1619 nella lista maiuscola e fuori da quella minuscola.
+
+È una correzione delle query del client. Non cambia il formato degli eventi NIP-22 e non richiede agli autori di ripubblicare i commenti. La distribuzione verificata è la release GitHub: i file scaricabili ne confermano la disponibilità lì, senza stabilire lo stato della pubblicazione negli app store.

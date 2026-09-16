@@ -1,0 +1,47 @@
+---
+title: "Amethyst 1.15.2 lädt verschachtelte NIP-22-Kommentare früher"
+description: "Amethyst 1.15.2 ergänzt eigene Wurzelfilter für verschachtelte NIP-22-Kommentare und korrigiert die Suche nach NIP-34-Pull-Request-Updates."
+seoDescription: "Amethyst 1.15.2 ergänzt eigene Wurzelfilter für verschachtelte NIP-22-Kommentare und korrigiert die Suche nach NIP-34-Pull-Request-Updates."
+excerpt: "Amethyst 1.15.2 ergänzt eigene Wurzelfilter für verschachtelte NIP-22-Kommentare und korrigiert die Suche nach NIP-34-Pull-Request-Updates."
+date: "2026-09-16"
+publishedAt: "2026-09-16"
+backfilled: false
+type: "story"
+tags: ["Nostr","NIP-22","NIP-34","Clients"]
+featuredImage: "/images/news/nip-22-amethyst-loads-nested-comments.svg"
+translationKey: "nip-22-amethyst-loads-nested-comments"
+sources: [{"title":"Amethyst v1.15.2","url":"https://github.com/vitorpamplona/amethyst/releases/tag/v1.15.2","publisher":"vitorpamplona/amethyst","date":"2026-09-12"},{"title":"PR #4095: Separate NIP-22 root filters","url":"https://github.com/vitorpamplona/amethyst/pull/4095","publisher":"vitorpamplona/amethyst","date":"2026-09-12"},{"title":"NIP-22","url":"https://github.com/nostr-protocol/nips/blob/master/22.md","publisher":"nostr-protocol/nips","date":"2026-09-16"},{"title":"NIP-01","url":"https://github.com/nostr-protocol/nips/blob/master/01.md","publisher":"nostr-protocol/nips","date":"2026-09-16"},{"title":"NIP-34","url":"https://github.com/nostr-protocol/nips/blob/master/34.md","publisher":"nostr-protocol/nips","date":"2026-09-16"}]
+published: true
+---
+
+Amethyst 1.15.2 ändert, wie der Client Antworten auf sichtbare Inhalte findet. [PR #4095](https://github.com/vitorpamplona/amethyst/pull/4095), am 12. September 2026 integriert, ergänzt Filter für die Wurzel einer NIP-22-Unterhaltung neben den bestehenden Filtern für direkte Antworten. Verschachtelte Kommentare, die den bisherigen Abfragen entgingen, können dadurch ankommen, bevor der Leser die Threadansicht öffnet.
+
+Die Änderung ist im [GitHub-Release v1.15.2](https://github.com/vitorpamplona/amethyst/releases/tag/v1.15.2) enthalten, das am selben Tag mit Downloads für Android und Desktop erschien. Sie korrigiert außerdem den Filter für Updates von Pull Requests nach NIP-34. Beide Korrekturen beruhen auf einer leicht übersehenen Unterscheidung: Großgeschriebene und kleingeschriebene Tagnamen erfüllen verschiedene Aufgaben.
+
+## Die Wurzel ist nicht das direkte Elternelement
+
+[NIP-22](https://github.com/nostr-protocol/nips/blob/master/22.md) definiert Kommentare als Ereignisse mit kind 1111. Großgeschriebene Tags kennzeichnen die Wurzel der Unterhaltung. Kleingeschriebene Tags kennzeichnen das Element, auf das geantwortet wird. Bei einem durch seine ID bezeichneten Ereignis sind das `E` und `e`; bei einer adressierbaren Wurzel lautet der entsprechende Wurzeltag `A`.
+
+Ein Beispiel besteht aus einem Dateiereignis, einem Kommentar dazu und einer Antwort auf diesen Kommentar. Der erste Kommentar verweist sowohl für die Wurzel als auch für das Elternelement auf die Datei. Die verschachtelte Antwort behält die Datei-ID in `E`, während ihr `e` auf den ersten Kommentar zeigt. Eine Abfrage nach `#e` mit der Datei-ID findet daher den direkten Kommentar, aber nicht die verschachtelte Antwort über deren Elternverweis.
+
+Die bestehenden Interaktionsabfragen verwendeten kleingeschriebene Tags. Die Threadansicht hatte bereits eine eigene Subscription für die großgeschriebene Wurzel. Deshalb konnten beim Öffnen einer Unterhaltung Antworten erscheinen, die über die frühere Abfrage nicht angekommen waren. Das Release ergänzt diese Suche nun auch in den Interaktionsfiltern.
+
+## Getrennte Filter erhalten die gewünschte Abfrage
+
+Der Patch fügt einen `E`-Filter für Ereignis-IDs und einen `A`-Filter für adressierbare Inhalte hinzu. Jeder neue Wurzelfilter verwendet ein Limit von 1000 und übernimmt den bestehenden `since`-Wert des jeweiligen Relays. Die Filter für direkte Antworten bleiben erhalten.
+
+Beide Tagbedingungen in einem einzigen Filter würden das Problem nicht lösen. [NIP-01](https://github.com/nostr-protocol/nips/blob/master/01.md) verlangt, dass sämtliche Bedingungen eines Filters zutreffen. Ein Filter, der die Wurzel-ID zugleich in `#e` und `#E` fordert, würde einen verschachtelten Kommentar weiterhin ausschließen, wenn dessen direktes Elternelement ein anderer Kommentar ist. Getrennte Filter erlauben unabhängige Abfragen der beiden Beziehungen.
+
+Das Limit ist ein Abfrageparameter, keine Zusage, dass sämtliche Kommentare jedes Threads geladen werden. Die Erreichbarkeit und Auswahl der Relays sowie die Zeitgrenzen bestimmen weiterhin, welche Ereignisse der Client erhält. Korrigiert wird, welche Ereignisse er bei diesen Relays anfordert.
+
+## Derselbe Fehler betraf Revisionen von Pull Requests
+
+Der neue Wurzelfilter für IDs enthält außerdem kind 1619, das Ereignis für Updates von Pull Requests nach NIP-34. Das [NIP-34-Beispiel](https://github.com/nostr-protocol/nips/blob/master/34.md) bezeichnet den überarbeiteten Pull Request mit einem großgeschriebenen `E`-Tag.
+
+Zuvor führte Amethyst diesen kind in einem Filter mit kleingeschriebenem `e`. Der richtige kind unter dem falschen Tag fand keine Updates, die dem Beispiel entsprachen. Der Patch verschiebt kind 1619 nach `RootScopedRepliesKinds`. Git-Antworten und Statusereignisse behalten ihren bisherigen Filter mit kleingeschriebenem Tag.
+
+Die ergänzten Tests prüfen Wurzelfilter für Ereignis-IDs und Adressen sowie die Trennung der großgeschriebenen und kleingeschriebenen Bedingungen. Weitere Prüfungen halten kind 1619 in der Liste für Großbuchstaben und außerhalb der Liste für Kleinbuchstaben.
+
+Für Leser betrifft die Änderung den Zeitpunkt, zu dem passende Antworten über die allgemeinen Interaktionsabfragen eintreffen können. Sie beseitigt die Abhängigkeit von der zusätzlichen Suche der Threadansicht für diese Fälle. Ein vollständiger Verlauf bleibt trotzdem von den tatsächlich erreichbaren und abgefragten Ereignissen abhängig.
+
+Dies ist eine Korrektur der Clientabfragen. Sie ändert weder das Ereignisformat von NIP-22 noch verlangt sie eine erneute Veröffentlichung der Kommentare. Verifiziert ist das GitHub-Release: Die angebotenen Downloads belegen die Verfügbarkeit dort, jedoch nicht den Stand einer Veröffentlichung in App-Stores.
