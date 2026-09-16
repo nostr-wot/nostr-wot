@@ -1,0 +1,45 @@
+---
+title: "Amethyst 1.15.2 loads nested NIP-22 comments earlier"
+description: "Amethyst 1.15.2 adds separate root filters for nested NIP-22 comments and fixes discovery of NIP-34 pull request updates."
+seoDescription: "Amethyst 1.15.2 adds separate root filters for nested NIP-22 comments and fixes discovery of NIP-34 pull request updates."
+excerpt: "Amethyst 1.15.2 adds separate root filters for nested NIP-22 comments and fixes discovery of NIP-34 pull request updates."
+date: "2026-09-16"
+publishedAt: "2026-09-16"
+backfilled: false
+type: "story"
+tags: ["Nostr","NIP-22","NIP-34","Clients"]
+featuredImage: "/images/news/nip-22-amethyst-loads-nested-comments.svg"
+translationKey: "nip-22-amethyst-loads-nested-comments"
+sources: [{"title":"Amethyst v1.15.2","url":"https://github.com/vitorpamplona/amethyst/releases/tag/v1.15.2","publisher":"vitorpamplona/amethyst","date":"2026-09-12"},{"title":"PR #4095: Separate NIP-22 root filters","url":"https://github.com/vitorpamplona/amethyst/pull/4095","publisher":"vitorpamplona/amethyst","date":"2026-09-12"},{"title":"NIP-22","url":"https://github.com/nostr-protocol/nips/blob/master/22.md","publisher":"nostr-protocol/nips","date":"2026-09-16"},{"title":"NIP-01","url":"https://github.com/nostr-protocol/nips/blob/master/01.md","publisher":"nostr-protocol/nips","date":"2026-09-16"},{"title":"NIP-34","url":"https://github.com/nostr-protocol/nips/blob/master/34.md","publisher":"nostr-protocol/nips","date":"2026-09-16"}]
+published: true
+---
+
+Amethyst 1.15.2 changes how the client discovers replies to visible content. [PR #4095](https://github.com/vitorpamplona/amethyst/pull/4095), merged on 12 September 2026, adds filters for the root of a NIP-22 conversation alongside the existing filters for direct replies. Nested comments that the old engagement queries missed can now arrive without waiting for the reader to open the thread screen.
+
+The change is included in the [v1.15.2 GitHub release](https://github.com/vitorpamplona/amethyst/releases/tag/v1.15.2), published later that day with Android and desktop downloads. It also corrects the filter used to discover NIP-34 pull request updates. Both fixes turn on a distinction that is easy to overlook: uppercase and lowercase tag names have different jobs.
+
+## A root is not the direct parent
+
+[NIP-22](https://github.com/nostr-protocol/nips/blob/master/22.md) defines comments as kind 1111 events. Uppercase tags identify the conversation's root. Lowercase tags identify the item being answered. For an event identified by its ID, those tags are `E` and `e`; for an addressable root, the corresponding root tag is `A`.
+
+Consider a file event, a comment on that file, and a reply to the comment. The first comment points both its root and its parent at the file. The nested reply keeps the file ID in `E`, but its `e` points at the first comment. A query for `#e` equal to the file ID therefore finds the direct comment but does not find that nested reply through its parent reference.
+
+The existing engagement queries used lowercase tags. The thread screen already had its own subscription for the uppercase root, explaining why opening a conversation could reveal replies that had not arrived through the earlier query. The release moves that discovery into the engagement filters too.
+
+## Separate filters preserve the intended query
+
+The patch adds an `E` filter for event IDs and an `A` filter for addressable content. Each new root filter uses a limit of 1000 and carries the existing per-relay `since` value. The direct-reply filters remain.
+
+Putting both tag conditions into one filter would not solve the problem. [NIP-01](https://github.com/nostr-protocol/nips/blob/master/01.md) requires every condition within a filter to match. A filter asking for both `#e` and `#E` to contain the root ID would still exclude a nested comment whose direct parent is another comment. Separate filters allow the client to ask for the two relationships independently.
+
+The limit is a query parameter, not a promise that every comment in every thread will load. Relay availability, the selected relays and the time bounds still determine which events the client receives. The correction concerns what the client asks those relays to return.
+
+## Pull request revisions had the same mismatch
+
+The new root filter for event IDs also includes kind 1619, the NIP-34 pull request update event. The [NIP-34 example](https://github.com/nostr-protocol/nips/blob/master/34.md) identifies the revised pull request with an uppercase `E` tag.
+
+Previously, Amethyst listed that kind in a filter using lowercase `e`. Listing the right kind under the wrong tag did not discover updates following that example. The patch moves kind 1619 into `RootScopedRepliesKinds`. Git replies and status events keep their existing lowercase filter.
+
+The added tests check that root filters are generated for both event IDs and addresses, and that uppercase and lowercase conditions are not combined. Separate assertions keep kind 1619 in the uppercase list and out of the lowercase list.
+
+This is a client query correction. It does not change the NIP-22 event format or require authors to republish comments. The verified distribution is the GitHub release; its downloadable builds establish availability there, without establishing the status of any app store rollout.

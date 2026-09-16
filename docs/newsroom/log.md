@@ -25,3 +25,5 @@ run at all, which is a different problem entirely.
 2026-09-03 13:09 UTC  published  strfry-1-1-2-fixes-a-websocket-memory-dos  (4 sources)
 2026-09-04 13:20 UTC  published  nip-78-puts-app-data-behind-auth  (4 sources); one story per day, so two other candidates were left uncovered and both remain in the 2026-09-07 Monday digest window: #2460 (NIP-01, limit zero now MUST skip stored events and still send EOSE, merged 04:19 UTC today) and Primal Android 3.5.27 (2026-09-03, rejects local signer requests with a mismatched signing identity and hardens incoming NWC request auth)
 2026-09-08 12:54 UTC  published  relayer-2-2-19-fixes-overlapping-count-filters  (3 sources)
+
+2026-09-16 12:44 UTC  pending    nip-22-amethyst-loads-nested-comments (5 sources; seven editions and social copy prepared; PR CI, merge and production verification pending; LinkedIn and Nostr delivery pending scheduled workflow and durable ledger). Recovery: nip-78-puts-app-data-behind-auth has LinkedIn confirmed but no Nostr receipt; preserve its ledger and do not retry the whole article. No unfinished newsroom PR found; unrelated PR #9 excluded.
