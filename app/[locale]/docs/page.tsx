@@ -106,7 +106,7 @@ export default async function DocsOverviewPage() {
             <div>
               <h4 className="font-semibold mb-1">Browser Extension</h4>
               <p className="text-sm text-gray-600 dark:text-gray-400 mb-2">
-                For client-side web apps. Users need the WoT extension installed.
+                Browser identity, event signing and encryption through window.nostr.
               </p>
               <Link href="/docs/extension" className="text-sm text-primary hover:underline">
                 Extension API Docs →
@@ -140,7 +140,7 @@ export default async function DocsOverviewPage() {
             <div>
               <h4 className="font-semibold mb-1">JavaScript SDK</h4>
               <p className="text-sm text-gray-600 dark:text-gray-400 mb-2">
-                TypeScript SDK for the Oracle API with React hooks and error handling.
+                TypeScript packages for Nostr data, relays, login and local graph queries. Check the API compatibility notes before using remote WoT queries.
               </p>
               <Link href="/docs/sdk" className="text-sm text-primary hover:underline">
                 SDK Docs →
@@ -153,23 +153,23 @@ export default async function DocsOverviewPage() {
         <ScrollReveal animation="fade-up" delay={250}>
         <h2>Quick Example</h2>
 
-        <p>Here&apos;s a simple example using the SDK&apos;s Web of Trust module:</p>
+        <p>Query the Oracle v0.3.0 API directly. Replace these example keys with your own 64-character hexadecimal pubkeys:</p>
 
         <CodeBlock
           language="typescript"
-          code={`import { WoT } from "@nostr-wot/wot";
-
-const wot = new WoT({ rootPubkey: "hex-your-pubkey", maxHops: 2 });
-
-// Get hop distance to a target pubkey
-const result = await wot.getDistance("hex-target-pubkey");
-
-if (result && result.hops <= 2) {
-  console.log(\`Trusted: \${result.hops} hops away\`);
-} else {
-  console.log("Not in your web of trust");
-}`}
+          code={`const from = "a".repeat(64); // Replace with your public key
+const to = "b".repeat(64); // Replace with the target public key
+const query = new URLSearchParams({ from, to, max_hops: "2" });
+const response = await fetch(
+  "https://wot-oracle.mappingbitcoin.com/distance?" + query
+);
+if (!response.ok) throw new Error("Oracle HTTP " + response.status);
+const { hops } = await response.json();
+console.log(hops === null ? "No indexed path within 2 hops" : hops);
+// Follow distance is evidence of a connection, not a trust score.
+// Use /trust for separate public mute evidence.`}
         />
+        <p><Link href="/docs/sdk#wot">SDK compatibility and local graph queries</Link></p>
         </ScrollReveal>
 
         <ScrollReveal animation="fade-up" delay={300}>

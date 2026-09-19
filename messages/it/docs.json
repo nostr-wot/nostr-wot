@@ -45,7 +45,7 @@
   },
   "overview": {
     "title": "Panoramica",
-    "description": "Nostr Web of Trust fornisce due strumenti complementari per il filtraggio dello spam e il punteggio di fiducia:",
+    "description": "Nostr Web of Trust combina identità nel browser, pacchetti SDK Nostr e un Oracle per interrogare relazioni di seguito e silenziamenti pubblici.",
     "extension": {
       "title": "Estensione WoT",
       "description": "Estensione per il browser che espone",
@@ -54,10 +54,10 @@
     },
     "oracle": {
       "title": "WoT Oracle",
-      "description": "API REST per query lato server su larga scala"
+      "description": "API REST per la distanza di seguito e le osservazioni separate dei silenziamenti pubblici"
     },
-    "fundamentalQuestion": "Entrambi rispondono alla stessa domanda fondamentale:",
-    "question": "\"Qual è la distanza sociale tra due pubkey?\""
+    "fundamentalQuestion": "L’Oracle risponde a una domanda sul grafo:",
+    "question": "Qual è la distanza di seguito indicizzata tra due chiavi pubbliche?"
   },
   "quickStart": {
     "title": "Avvio Rapido",
@@ -218,68 +218,32 @@
     "example": "Esempio"
   },
   "sdk": {
-    "title": "Integrazione SDK",
-    "description": "Il nostr-wot-sdk fornisce un SDK JavaScript/TypeScript per interrogare Nostr Web of Trust direttamente nella tua applicazione.",
-    "install": {
-      "title": "Installazione",
-      "npm": "npm install nostr-wot-sdk",
-      "yarn": "yarn add nostr-wot-sdk",
-      "pnpm": "pnpm add nostr-wot-sdk"
-    },
-    "setup": {
-      "title": "Configurazione",
-      "extensionFirst": "Extension-First (Consigliato)",
-      "extensionFirstDesc": "Utilizza automaticamente l'estensione del browser quando disponibile, con fallback sull'Oracle:",
-      "oracleOnly": "Solo Oracle",
-      "oracleOnlyDesc": "Usa l'Oracle direttamente senza rilevamento dell'estensione:",
-      "localMode": "Modalità Locale (Lato Server)",
-      "localModeDesc": "Costruisci e sincronizza il tuo grafo dei follow per ambienti Node.js:"
-    },
-    "options": {
-      "title": "Opzioni del Costruttore",
-      "useExtension": "Sfrutta l'estensione del browser quando presente",
-      "oracle": "Endpoint API di fallback",
-      "myPubkey": "La tua chiave pubblica Nostr",
-      "maxHops": "Profondità di ricerca predefinita",
-      "timeout": "Timeout della richiesta in millisecondi",
-      "scoring": "Parametri personalizzati di ponderazione della fiducia"
-    },
-    "methods": {
-      "title": "Metodi dell'SDK",
-      "getDistance": "Restituisce la lunghezza del percorso più breve verso il target (numero o null)",
-      "isInMyWoT": "Verifica booleana se la pubkey è entro i salti specificati",
-      "getTrustScore": "Calcola la metrica di fiducia normalizzata (intervallo 0-1)",
-      "getDistanceBetween": "Misura la lunghezza del percorso tra due pubkey qualsiasi",
-      "batchCheck": "Valuta efficientemente più target simultaneamente",
-      "getDetails": "Recupera metriche complete inclusi percorsi e connessioni reciproche",
-      "getMyPubkey": "Recupera la pubkey attiva dall'estensione o dalla configurazione",
-      "isUsingExtension": "Conferma se l'estensione è attivamente in uso",
-      "getExtensionConfig": "Accede alla configurazione fornita dall'estensione"
-    },
-    "scoring": {
-      "title": "Punteggio Personalizzato",
-      "description": "Personalizza come vengono calcolate le metriche di fiducia:",
-      "distanceWeights": "Pesi per distanza (salti 1-4+)",
-      "mutualBonus": "+50% per follow reciproci",
-      "pathBonus": "+10% per percorso aggiuntivo",
-      "maxPathBonus": "Limite bonus percorso totale al 50%"
-    },
-    "react": {
-      "title": "Integrazione React",
-      "description": "Usa l'SDK con hook e contesto React:",
-      "provider": "Avvolgi la tua app con WoTProvider",
-      "hook": "Usa l'hook useWoT nei componenti"
-    },
-    "errors": {
-      "title": "Gestione Errori",
-      "networkError": "NetworkError - Servizio Oracle non raggiungibile",
-      "notFoundError": "NotFoundError - Pubkey assente dal grafo",
-      "wotError": "WoTError - Errori generali del framework"
-    },
-    "links": {
-      "npm": "Vedi su npm",
-      "github": "Vedi su GitHub"
-    }
+    "title": "Riferimento SDK",
+    "description": "Crea applicazioni Nostr con funzioni per i dati, strumenti per i relay, interfaccia di accesso e query opzionali sulla distanza nel grafo dei follow.",
+    "packagesTitle": "Pacchetti pubblicati",
+    "packagesDescription": "Versioni verificate su npm il 20 settembre 2026. Il metapacchetto esporta WoT dalla radice e gli altri moduli tramite sottopercorsi. Puoi anche installare direttamente i pacchetti con ambito; @nostr-wot/pq è un pacchetto separato.",
+    "package": "Pacchetto",
+    "version": "Versione",
+    "installTitle": "Installazione",
+    "setupTitle": "Configurazione del provider",
+    "setupDescription": "NostrSdkProvider combina configurazione dei dati, stato della sessione e contesto WoT opzionale. Specifica myPubkey per le query Oracle; l’accesso non imposta automaticamente la radice delle query WoT.",
+    "dataTitle": "Livello dati",
+    "dataDescription": "Le funzioni autonome recuperano profili, note, discussioni, follow e interazioni. Gli hook React aggiungono una cache che restituisce i dati memorizzati mentre li aggiorna. Le funzioni dati condividono un proprio pool di connessioni.",
+    "relayTitle": "Gestione dei relay",
+    "relayDescription": "RelayPool incapsula un trasporto PoolLike compatibile fornito dalla tua app. Configura urls, usa subscribe con onEvent/onEose e chiudi le sottoscrizioni al termine. Un wrapper relay creato separatamente non si collega automaticamente al provider dei dati.",
+    "uiTitle": "Interfaccia di accesso",
+    "uiDescription": "LoginButton e useSession condividono la sessione di NostrSdkProvider. I metodi supportati includono NIP-07, NIP-46, generazione e importazione delle chiavi. Installa direttamente il pacchetto UI per importarne componenti e stili.",
+    "wotTitle": "Distanze della rete di fiducia",
+    "wotDescription": "WoT interroga l’Oracle per impostazione predefinita. getDistance restituisce un numero o null; isInMyWoT restituisce un booleano. getDetails fornisce i salti, un numero di percorsi e informazioni opzionali sui collegamenti intermedi e sui follow reciproci. Usa chiavi pubbliche esadecimali valide di 64 caratteri.",
+    "migrationTitle": "Migrazione a @nostr-wot/wot 1.0.0",
+    "migrationDescription": "La versione 1.0.0 ha rimosso il rilevamento dell’estensione, i metodi di punteggio di fiducia e useTrustScore. Usa useWoT o useIsInWoT e leggi i loro oggetti risultato. Per query locali, passa una WoTLocalSource, come WotGraph.asWoTSource() di @nostr-wot/graph. Solo getDistance, isInMyWoT e filterByWoT usano questa fonte; gli altri metodi interrogano ancora l’Oracle.",
+    "oracleLink": "Riferimento API Oracle",
+    "previous": "API dell’estensione",
+    "next": "API Oracle",
+    "compatibilityTitle": "Compatibilità con Oracle",
+    "compatibilityDescription": "La versione pubblicata @nostr-wot/wot 1.0.0 usa il vecchio contratto /api/distance/FROM/TO?maxHops= e attende il campo distance. Oracle 0.3.0 usa /distance?from=&to=&max_hops= e restituisce hops. Cambiare solo l’URL di base non li rende compatibili. Usa fetch direttamente con Oracle 0.3.0 o la fonte del grafo locale mostrata sotto.",
+    "localTitle": "Esempio di grafo locale",
+    "localDescription": "Carica ed esplora un grafo locale prima di passarne la fonte a WoT. L’esempio React riceve questo grafo preparato e usa useIsInWoT; useWoT richiede anche getDetails all’Oracle. @nostr-wot/graph ha una propria API getScore, distinta dall’API di punteggio rimossa da WoT."
   },
   "rateLimits": {
     "title": "Limiti di Richiesta",
@@ -306,5 +270,40 @@
       "rateLimited": "// 429 - Limite richieste raggiunto",
       "serverError": "// 500 - Errore del server"
     }
+  },
+  "extensionApi": {
+    "title": "API dell’estensione",
+    "metaDescription": "Riferimento dell’API di firma NIP-07 di Nostr WoT: identità, firma, relay, crittografia ed errori delle richieste.",
+    "intro": "L’estensione espone <api>window.nostr</api> per identità, firma degli eventi e crittografia dei messaggi NIP-04/NIP-44.",
+    "prerequisite": "Installa l’<download>estensione</download>, seleziona un account e collega il sito quando richiesto. Firma e crittografia richiedono un account in grado di firmare e possono richiedere lo sblocco del vault. Leggere una chiave pubblica nota non richiede lo sblocco.",
+    "setup": "Configurazione",
+    "setupDescription": "Verifica che il metodo necessario esista prima di chiamarlo. La presenza del provider non significa che il sito sia collegato o che una richiesta sia autorizzata.",
+    "name": "Nome",
+    "type": "Tipo",
+    "default": "Valore predefinito",
+    "description": "Descrizione",
+    "parameters": "Parametri",
+    "returns": "Restituisce",
+    "example": "Esempio",
+    "nip07Title": "API di firma NIP-07",
+    "standard": "L’estensione implementa l’<standard>API di firma NIP-07</standard> tramite <api>window.nostr</api>.",
+    "getPublicKey": "Restituisce la chiave pubblica esadecimale dell’account attivo. Richiede il collegamento del sito e l’accesso all’identità.",
+    "signEvent": "Firma l’evento e aggiunge id, pubkey e sig. Fornisci created_at; il firmatario conserva quel timestamp. Se fornisci pubkey, deve corrispondere all’account attivo. La firma non pubblica l’evento.",
+    "event": "Evento contenente kind, content, tags e created_at (tempo Unix in secondi)",
+    "nip04Encrypt": "Cifra un messaggio con NIP-04, il precedente formato di crittografia dei messaggi diretti.",
+    "nip04Decrypt": "Decifra un messaggio NIP-04.",
+    "nip44Encrypt": "Cifra un messaggio con NIP-44. Questo esempio usa la chiamata standard con due argomenti.",
+    "nip44Decrypt": "Decifra un messaggio NIP-44.",
+    "recipient": "Chiave pubblica del destinatario con 64 caratteri esadecimali",
+    "sender": "Chiave pubblica del mittente con 64 caratteri esadecimali",
+    "plaintext": "Messaggio da cifrare",
+    "ciphertext": "Stringa del messaggio cifrato",
+    "getRelays": "Restituisce gli URL dei relay configurati nell’estensione. Ogni voce contiene read: true e write: true. Questo metodo non recupera le politiche dei relay NIP-65 dell’account e può restituire un oggetto vuoto.",
+    "errorsTitle": "Collegamento, autorizzazioni ed errori",
+    "errorsDescription": "Le chiamate restituiscono promesse e possono fallire se l’utente rifiuta, il sito è scollegato, l’accesso all’identità è disabilitato o scade il tempo. Gli account di sola lettura non possono firmare né cifrare.",
+    "errorsDetails": "Un cambio di account può invalidare una richiesta in attesa. Le chiamate dalla pagina scadono dopo 120 secondi, inclusa l’attesa di collegamento, autorizzazione o sblocco. Gestisci gli errori e consenti di riprovare; i messaggi di errore non sono codici stabili per l’elaborazione automatica.",
+    "trustRedirect": "Usa l’<sdk>SDK</sdk> per interrogare il grafo dei follow e l’<oracle>API WoT Oracle</oracle> per consultare i silenziamenti pubblici. Queste informazioni sono separate dalla distanza nel grafo e non producono un punteggio di fiducia combinato. L’estensione fornisce identità e firma.",
+    "gettingStarted": "Primi passi",
+    "sdkReference": "Riferimento SDK"
   }
 }

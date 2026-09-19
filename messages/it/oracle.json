@@ -1,27 +1,27 @@
 {
   "meta": {
     "title": "WoT Oracle",
-    "description": "API backend ad alte prestazioni per query Nostr Web of Trust. Indicizza il grafo dei follow e interroga la distanza sociale su larga scala."
+    "description": "API Nostr ospitabile autonomamente per distanze dei follow diretti e osservazioni separate delle liste pubbliche di silenziamento. Oracle v0.3.0."
   },
   "hero": {
     "badge": "API Backend",
     "title": "WoT Oracle",
-    "subtitle": "Indicizzatore ad alte prestazioni per il grafo dei follow di Nostr. Query sotto il millisecondo per rispondere a \"quanti salti separano questi due utenti?\"",
+    "subtitle": "Interroga distanze dei follow diretti e osservazioni pubbliche di silenziamento via HTTP. Versione 0.3.0, senza estensione.",
     "viewOnGitHub": "Vedi su GitHub",
     "apiDocs": "Documentazione API"
   },
   "whatItDoes": {
     "title": "Cosa Fa",
-    "description": "WoT Oracle sincronizza continuamente le liste dei follow (eventi Kind 3) dai relay Nostr, costruendo un grafo in memoria dell'intera rete sociale. Fornisce poi un'API REST per interrogare la distanza sociale tra due pubkey qualsiasi.",
+    "description": "L’Oracle indicizza follow kind-3 e chiavi pubbliche delle liste di silenziamento kind-10000 ricevuti dai relay configurati. La copertura si limita a questi eventi. Distanza e silenziamenti restano segnali separati; l’API non li combina in un punteggio di fiducia.",
     "example": "Esempio:",
     "exampleText": "Se Alice segue Bob e Bob segue Carol, la distanza da Alice a Carol è di 2 salti."
   },
   "performance": {
-    "title": "Prestazioni",
-    "cachedLatency": "Latenza query in cache",
-    "uncachedLatency": "Latenza query senza cache",
-    "queriesPerSecond": "Query al secondo",
-    "bidirectionalBfs": "BFS bidirezionale"
+    "title": "Funzioni della versione",
+    "release": "Versione",
+    "maxHops": "Profondità massima (salti)",
+    "batchTargets": "Destinatari per lotto",
+    "eventKinds": "Tipi di eventi indicizzati"
   },
   "apiEndpoints": {
     "title": "Endpoint API",
@@ -41,19 +41,20 @@
     },
     "health": {
       "title": "GET /health",
-      "description": "Endpoint di controllo dello stato per il monitoraggio."
-    }
+      "description": "Stato del processo e versione. Usa /ready per verificare la disponibilità dell’acquisizione."
+    },
+    "subtitle": "Risposte illustrative con chiavi pubbliche esadecimali sintetiche di 64 caratteri. I risultati dipendono dagli eventi indicizzati. Consulta il riferimento API per tutti gli endpoint, inclusi /mutes, /trust e /ready."
   },
   "selfHosting": {
     "title": "Self-Hosting",
-    "subtitle": "Esegui la tua istanza di WoT Oracle. Pieno controllo sulla tua infrastruttura di fiducia.",
+    "subtitle": "Gli esempi usano v0.3.0. Docker e Compose espongono localhost:8080. Le installazioni pubbliche richiedono un reverse proxy che sostituisca le intestazioni IP del client. La compilazione nativa richiede Rust 1.93, pkg-config e le librerie di sviluppo OpenSSL.",
     "docker": "Docker (Consigliato)",
     "dockerCompose": "Docker Compose",
-    "fromSource": "Da Sorgente (Rust 1.75+)"
+    "fromSource": "Dal codice sorgente (Rust 1.93)"
   },
   "configuration": {
     "title": "Configurazione",
-    "subtitle": "Configura tramite variabili d'ambiente:",
+    "subtitle": "I valori seguenti sono quelli predefiniti del binario nativo. L’immagine Docker usa /app/data/wot.db; Compose espone solo l’interfaccia locale per impostazione predefinita. La cache ammette 100–100000 voci, il TTL 10–3600 secondi e il limite 1–1000 richieste/minuto.",
     "table": {
       "variable": "Variabile",
       "default": "Predefinito",
@@ -72,7 +73,7 @@
       "description": "Limite query per IP"
     },
     "cacheSize": {
-      "description": "Voci della cache LRU"
+      "description": "Numero massimo di voci nella cache Moka"
     },
     "cacheTtl": {
       "description": "Scadenza della cache (5 min)"
@@ -86,11 +87,11 @@
     },
     "pathfinding": {
       "title": "Ricerca del Percorso",
-      "description": "Ricerca in ampiezza bidirezionale (BFS) da entrambi gli estremi simultaneamente, incontrandosi al centro per una complessità O(b^(d/2))."
+      "description": "La ricerca in ampiezza bidirezionale calcola i percorsi diretti più brevi. Il tempo dipende da dimensioni del grafo, ramificazioni e profondità."
     },
     "caching": {
       "title": "Cache",
-      "description": "Cache LRU con dimensione e TTL configurabili. La maggior parte delle query colpisce la cache per tempi di risposta sotto il millisecondo."
+      "description": "Cache Moka con capacità e TTL configurabili. Le voci vengono invalidate quando cambia la revisione del grafo. La latenza dipende dall’installazione e dal carico."
     },
     "rateLimiting": {
       "title": "Limitazione delle Richieste",
@@ -100,7 +101,7 @@
   "publicInstance": {
     "title": "Istanza Pubblica",
     "subtitle": "Un'istanza pubblica è disponibile per sviluppo e test:",
-    "rateLimit": "Limitata a 100 richieste/minuto per IP. Per uso in produzione, considera il self-hosting."
+    "rateLimit": "I limiti dipendono dall’installazione. Gestisci HTTP 429 con attese crescenti. La saturazione delle query restituisce 503; /health e /ready non sono soggetti al limite degli endpoint dati."
   },
   "cta": {
     "title": "Open Source",

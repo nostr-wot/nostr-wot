@@ -21,13 +21,16 @@ export default async function DocsLayout({ children }: DocsLayoutProps) {
     {
       title: t("sidebar.extensionSigner"),
       links: [
-        { href: "/docs/extension#nip07", label: "NIP-07 Overview" },
+        { href: "/docs/extension#setup", label: t("extensionApi.setup") },
+        { href: "/docs/extension#nip07", label: t("extensionApi.nip07Title") },
         { href: "/docs/extension#getpublickey", label: "getPublicKey" },
         { href: "/docs/extension#signevent", label: "signEvent" },
         { href: "/docs/extension#nip04encrypt", label: "nip04.encrypt" },
         { href: "/docs/extension#nip04decrypt", label: "nip04.decrypt" },
         { href: "/docs/extension#nip44encrypt", label: "nip44.encrypt" },
         { href: "/docs/extension#nip44decrypt", label: "nip44.decrypt" },
+        { href: "/docs/extension#getrelays", label: "getRelays" },
+        { href: "/docs/extension#errors", label: t("extensionApi.errorsTitle") },
       ],
     },
     {
@@ -46,8 +49,11 @@ export default async function DocsLayout({ children }: DocsLayoutProps) {
       links: [
         { href: "/docs/oracle", label: t("sidebar.publicServersOverview") },
         { href: "/docs/oracle#health", label: "GET /health" },
+        { href: "/docs/oracle#ready", label: "GET /ready" },
         { href: "/docs/oracle#stats", label: "GET /stats" },
         { href: "/docs/oracle#follows", label: "GET /follows" },
+        { href: "/docs/oracle#mutes", label: "GET /mutes" },
+        { href: "/docs/oracle#trust", label: "GET /trust" },
         { href: "/docs/oracle#common-follows", label: "GET /common-follows" },
         { href: "/docs/oracle#path", label: "GET /path" },
         { href: "/docs/oracle#distance", label: "GET /distance" },
