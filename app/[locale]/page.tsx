@@ -580,7 +580,7 @@ export default async function Home({ params }: Props) {
                 <h3 className="text-2xl font-bold mb-3">{t("developers.sdk.title")}</h3>
                 <p className="text-gray-600 dark:text-gray-400 mb-6">{t("developers.sdk.description")}</p>
                 <div className="flex flex-col sm:flex-row gap-3">
-                  <LinkButton href="/docs#sdk-setup" variant="secondary" className="hover-lift">{t("developers.sdk.viewDocsButton")}</LinkButton>
+                  <LinkButton href="/docs/sdk#setup" variant="secondary" className="hover-lift">{t("developers.sdk.viewDocsButton")}</LinkButton>
                   <ExternalLinkButton href="https://www.npmjs.com/package/nostr-wot-sdk" variant="secondary" className="hover-lift">
                     {t("developers.sdk.npmButton")}
                   </ExternalLinkButton>

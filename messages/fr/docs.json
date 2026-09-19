@@ -45,7 +45,7 @@
   },
   "overview": {
     "title": "Vue d'ensemble",
-    "description": "Nostr Web of Trust fournit deux outils complémentaires pour le filtrage du spam et le scoring de confiance :",
+    "description": "Nostr Web of Trust réunit une identité dans le navigateur, des paquets SDK Nostr et un Oracle pour consulter les abonnements et les mises en sourdine publiques.",
     "extension": {
       "title": "Extension WoT",
       "description": "Extension de navigateur exposant",
@@ -54,10 +54,10 @@
     },
     "oracle": {
       "title": "WoT Oracle",
-      "description": "API REST pour les requêtes côté serveur à grande échelle"
+      "description": "API REST pour la distance d’abonnement et les observations distinctes de mises en sourdine publiques"
     },
-    "fundamentalQuestion": "Les deux répondent à la même question fondamentale :",
-    "question": "« Quelle est la distance sociale entre deux pubkeys ? »"
+    "fundamentalQuestion": "L’Oracle répond à une question sur le graphe :",
+    "question": "Quelle est la distance d’abonnement indexée entre deux clés publiques ?"
   },
   "quickStart": {
     "title": "Démarrage rapide",
@@ -218,68 +218,32 @@
     "example": "Exemple"
   },
   "sdk": {
-    "title": "Intégration SDK",
-    "description": "Le nostr-wot-sdk fournit un SDK JavaScript/TypeScript pour interroger Nostr Web of Trust directement dans votre application.",
-    "install": {
-      "title": "Installation",
-      "npm": "npm install nostr-wot-sdk",
-      "yarn": "yarn add nostr-wot-sdk",
-      "pnpm": "pnpm add nostr-wot-sdk"
-    },
-    "setup": {
-      "title": "Configuration",
-      "extensionFirst": "Extension-First (recommandé)",
-      "extensionFirstDesc": "Utilise automatiquement l'extension de navigateur lorsqu'elle est disponible, avec repli sur l'Oracle :",
-      "oracleOnly": "Oracle uniquement",
-      "oracleOnlyDesc": "Utilisez l'Oracle directement sans détection d'extension :",
-      "localMode": "Mode local (côté serveur)",
-      "localModeDesc": "Construisez et synchronisez votre propre graphe social pour les environnements Node.js :"
-    },
-    "options": {
-      "title": "Options du constructeur",
-      "useExtension": "Utiliser l'extension de navigateur lorsqu'elle est présente",
-      "oracle": "Point d'accès API de repli",
-      "myPubkey": "Votre clé publique Nostr",
-      "maxHops": "Profondeur de recherche par défaut",
-      "timeout": "Délai d'attente des requêtes en millisecondes",
-      "scoring": "Paramètres de pondération de confiance personnalisés"
-    },
-    "methods": {
-      "title": "Méthodes du SDK",
-      "getDistance": "Retourne la longueur du chemin le plus court vers la cible (nombre ou null)",
-      "isInMyWoT": "Vérification booléenne si la pubkey est dans le nombre de sauts spécifié",
-      "getTrustScore": "Calcule une métrique de confiance normalisée (plage 0-1)",
-      "getDistanceBetween": "Mesure la longueur du chemin entre deux pubkeys quelconques",
-      "batchCheck": "Évalue efficacement plusieurs cibles simultanément",
-      "getDetails": "Récupère des métriques complètes incluant les chemins et les connexions mutuelles",
-      "getMyPubkey": "Récupère la pubkey active depuis l'extension ou la configuration",
-      "isUsingExtension": "Confirme si l'extension est activement utilisée",
-      "getExtensionConfig": "Accède à la configuration fournie par l'extension"
-    },
-    "scoring": {
-      "title": "Scoring personnalisé",
-      "description": "Personnalisez le calcul des métriques de confiance :",
-      "distanceWeights": "Poids de la distance (1 à 4+ sauts)",
-      "mutualBonus": "+50% pour les abonnements réciproques",
-      "pathBonus": "+10% par chemin supplémentaire",
-      "maxPathBonus": "Plafonner le bonus total de chemin à 50%"
-    },
-    "react": {
-      "title": "Intégration React",
-      "description": "Utilisez le SDK avec les hooks et le contexte React :",
-      "provider": "Enveloppez votre application avec WoTProvider",
-      "hook": "Utilisez le hook useWoT dans les composants"
-    },
-    "errors": {
-      "title": "Gestion des erreurs",
-      "networkError": "NetworkError - Service Oracle inaccessible",
-      "notFoundError": "NotFoundError - Pubkey absente du graphe",
-      "wotError": "WoTError - Erreurs générales du framework"
-    },
-    "links": {
-      "npm": "Voir sur npm",
-      "github": "Voir sur GitHub"
-    }
+    "title": "Référence du SDK",
+    "description": "Créez des applications Nostr avec des fonctions de récupération de données, des outils de relais, une interface de connexion et des requêtes optionnelles de distance dans le graphe des abonnements.",
+    "packagesTitle": "Paquets publiés",
+    "packagesDescription": "Versions vérifiées sur npm le 20 septembre 2026. Le métapaquet exporte WoT à sa racine et les autres modules via des sous-chemins. Vous pouvez aussi installer directement les paquets avec portée ; @nostr-wot/pq est un paquet distinct.",
+    "package": "Paquet",
+    "version": "Version",
+    "installTitle": "Installation",
+    "setupTitle": "Configuration du fournisseur",
+    "setupDescription": "NostrSdkProvider combine la configuration des données, la session et le contexte WoT optionnel. Fournissez explicitement myPubkey pour les requêtes Oracle ; la connexion ne définit pas automatiquement la racine des requêtes WoT.",
+    "dataTitle": "Couche de données",
+    "dataDescription": "Les fonctions autonomes récupèrent profils, notes, fils, abonnements et interactions. Les hooks React ajoutent un cache qui renvoie les données stockées tout en les revalidant. Les fonctions de données partagent leur propre pool de connexions.",
+    "relayTitle": "Gestion des relais",
+    "relayDescription": "RelayPool encapsule un transport PoolLike compatible fourni par votre application. Configurez urls, utilisez subscribe avec onEvent/onEose et fermez les abonnements une fois terminé. Un adaptateur de relais créé séparément ne se connecte pas automatiquement au fournisseur de données.",
+    "uiTitle": "Interface de connexion",
+    "uiDescription": "LoginButton et useSession partagent la session de NostrSdkProvider. Les méthodes incluent NIP-07, NIP-46, la génération et l’importation de clés. Installez directement le paquet UI pour importer ses composants et ses styles.",
+    "wotTitle": "Distances du réseau de confiance",
+    "wotDescription": "WoT interroge l’Oracle par défaut. getDistance renvoie un nombre ou null ; isInMyWoT renvoie un booléen. getDetails fournit les sauts, un nombre de chemins et des informations optionnelles sur les intermédiaires et les abonnements mutuels. Utilisez des clés publiques hexadécimales valides de 64 caractères.",
+    "migrationTitle": "Migration vers @nostr-wot/wot 1.0.0",
+    "migrationDescription": "La version 1.0.0 a supprimé la détection d’extension, les méthodes de score de confiance et useTrustScore. Utilisez useWoT ou useIsInWoT et lisez leurs objets de résultat. Pour les requêtes locales, fournissez un WoTLocalSource, par exemple WotGraph.asWoTSource() de @nostr-wot/graph. Seuls getDistance, isInMyWoT et filterByWoT utilisent cette source ; les autres méthodes interrogent toujours l’Oracle.",
+    "oracleLink": "Référence de l’API Oracle",
+    "previous": "API de l’extension",
+    "next": "API Oracle",
+    "compatibilityTitle": "Compatibilité avec Oracle",
+    "compatibilityDescription": "La version publiée @nostr-wot/wot 1.0.0 utilise l’ancien contrat /api/distance/FROM/TO?maxHops= et attend un champ distance. Oracle 0.3.0 utilise /distance?from=&to=&max_hops= et renvoie hops. Changer uniquement l’URL de base ne les rend pas compatibles. Utilisez fetch directement avec Oracle 0.3.0 ou la source du graphe local ci-dessous.",
+    "localTitle": "Exemple de graphe local",
+    "localDescription": "Chargez et parcourez un graphe local avant de transmettre sa source à WoT. L’exemple React reçoit ce graphe préparé et utilise useIsInWoT ; useWoT demande aussi getDetails à l’Oracle. @nostr-wot/graph possède sa propre API getScore, distincte de l’API de score supprimée de WoT."
   },
   "rateLimits": {
     "title": "Limites de débit",
@@ -306,5 +270,40 @@
       "rateLimited": "// 429 - Débit limité",
       "serverError": "// 500 - Erreur serveur"
     }
+  },
+  "extensionApi": {
+    "title": "API de l’extension",
+    "metaDescription": "Référence de l’API de signature NIP-07 de Nostr WoT : identité, signature, relais, chiffrement et erreurs de requête.",
+    "intro": "L’extension expose <api>window.nostr</api> pour l’identité, la signature d’événements et le chiffrement des messages NIP-04/NIP-44.",
+    "prerequisite": "Installez l’<download>extension</download>, sélectionnez un compte et connectez votre site à l’invite. La signature et le chiffrement nécessitent un compte capable de signer et peuvent demander le déverrouillage du coffre. Lire une clé publique connue ne nécessite pas de le déverrouiller.",
+    "setup": "Configuration",
+    "setupDescription": "Vérifiez la présence de la méthode voulue avant de l’appeler. La présence du fournisseur ne signifie pas que le site est connecté ou qu’une requête est autorisée.",
+    "name": "Nom",
+    "type": "Type",
+    "default": "Valeur par défaut",
+    "description": "Description",
+    "parameters": "Paramètres",
+    "returns": "Retour",
+    "example": "Exemple",
+    "nip07Title": "API de signature NIP-07",
+    "standard": "L’extension implémente l’<standard>API de signature NIP-07</standard> via <api>window.nostr</api>.",
+    "getPublicKey": "Renvoie la clé publique hexadécimale du compte actif. Nécessite la connexion du site et l’accès à l’identité.",
+    "signEvent": "Signe l’événement et ajoute id, pubkey et sig. Fournissez created_at ; le signataire conserve cet horodatage. Si vous fournissez pubkey, elle doit correspondre au compte actif. Signer ne publie pas l’événement.",
+    "event": "Événement contenant kind, content, tags et created_at (temps Unix en secondes)",
+    "nip04Encrypt": "Chiffre un message avec NIP-04, l’ancien format de chiffrement des messages directs.",
+    "nip04Decrypt": "Déchiffre un message NIP-04.",
+    "nip44Encrypt": "Chiffre un message avec NIP-44. Cet exemple utilise l’appel standard à deux arguments.",
+    "nip44Decrypt": "Déchiffre un message NIP-44.",
+    "recipient": "Clé publique du destinataire, composée de 64 caractères hexadécimaux",
+    "sender": "Clé publique de l’expéditeur, composée de 64 caractères hexadécimaux",
+    "plaintext": "Message à chiffrer",
+    "ciphertext": "Chaîne du message chiffré",
+    "getRelays": "Renvoie les URL des relais configurés dans l’extension. Chaque entrée contient read: true et write: true. Cette méthode ne récupère pas les politiques de relais NIP-65 du compte et peut renvoyer un objet vide.",
+    "errorsTitle": "Connexion, permissions et erreurs",
+    "errorsDescription": "Les appels renvoient des promesses et peuvent échouer si l’utilisateur refuse, si le site est déconnecté, si l’accès à l’identité est désactivé ou si le délai expire. Les comptes en lecture seule ne peuvent ni signer ni chiffrer.",
+    "errorsDetails": "Un changement de compte peut invalider une requête en attente. Les appels depuis la page expirent après 120 secondes, attente de connexion, de permission ou de déverrouillage comprise. Interceptez les erreurs et permettez de réessayer ; les messages d’erreur ne sont pas des codes stables destinés au traitement automatique.",
+    "trustRedirect": "Utilisez le <sdk>SDK</sdk> pour interroger le graphe des abonnements et l’<oracle>API WoT Oracle</oracle> pour consulter les mises en sourdine publiques. Ces informations sont distinctes de la distance dans le graphe et ne produisent pas de score de confiance combiné. L’extension fournit l’identité et la signature.",
+    "gettingStarted": "Premiers pas",
+    "sdkReference": "Référence du SDK"
   }
 }

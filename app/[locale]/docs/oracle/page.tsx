@@ -13,7 +13,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { locale } = await params;
   const t = await getTranslations("docs");
   const title = `Oracle API | ${t("meta.title")}`;
-  const description = "REST API reference for the Nostr Web of Trust Oracle server. Endpoints for distance queries, batch operations, and graph data.";
+  const description = "REST API reference for the Nostr Web of Trust Oracle server. Version 0.3.0: follow distance, public mute evidence, readiness, batch operations and graph data.";
 
   return {
     title,
@@ -30,361 +30,253 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   };
 }
 
-function Endpoint({ method, path, description, children }: {
+const source = "a".repeat(64);
+const target = "b".repeat(64);
+const bridge = "c".repeat(64);
+const baseUrl = "https://wot-oracle.mappingbitcoin.com";
+const json = (value: unknown) => JSON.stringify(value, null, 2);
+const distanceExample = {
+  from: source, to: target, hops: 2, path_count: 1, mutual_follow: false,
+};
+const syncExample = {
+  running: true, ready: false, last_event_received_at: 0, last_persisted_at: 0,
+  persisted_events: 0, lagged_notifications: 0, persistence_errors: 0,
+  coverage: "configured_relays_only",
+};
+
+function Endpoint({ id, method, path, description, children }: {
+  id: string;
   method: "GET" | "POST";
   path: string;
   description: string;
   children: React.ReactNode;
 }) {
   return (
-    <section className="mb-12 scroll-mt-24 pb-8 border-b border-gray-200 dark:border-gray-800">
-      <div className="flex items-center gap-3 mb-3">
-        <span className={`px-2 py-1 text-xs font-bold rounded ${
-          method === "GET"
-            ? "bg-green-100 text-green-700 dark:bg-green-900 dark:text-green-300"
-            : "bg-blue-100 text-blue-700 dark:bg-blue-900 dark:text-blue-300"
-        }`}>
+    <section id={id} className="mb-12 scroll-mt-24 pb-8 border-b border-gray-200 dark:border-gray-800">
+      <h3 className="flex items-center gap-3 mb-3">
+        <span className={`px-2 py-1 text-xs font-bold rounded ${method === "GET"
+          ? "bg-green-100 text-green-700 dark:bg-green-900 dark:text-green-300"
+          : "bg-blue-100 text-blue-700 dark:bg-blue-900 dark:text-blue-300"}`}>
           {method}
         </span>
         <code className="text-lg font-semibold">{path}</code>
-      </div>
+      </h3>
       <p className="text-gray-600 dark:text-gray-400 mb-4">{description}</p>
       {children}
     </section>
   );
 }
 
-export default async function OracleDocsPage() {
+function DistanceParameters() {
+  return (
+    <ul>
+      <li><InlineCode>from</InlineCode> and <InlineCode>to</InlineCode>: required source and target pubkeys.</li>
+      <li><InlineCode>max_hops</InlineCode>: 1–5, default 3.</li>
+      <li><InlineCode>include_bridges</InlineCode>: boolean, default false. Includes search meeting nodes when available.</li>
+      <li><InlineCode>bypass_cache</InlineCode>: boolean, default false. Recomputes from the current indexed graph; does not fetch new relay data.</li>
+    </ul>
+  );
+}
 
+function PaginationParameters() {
+  return (
+    <p>
+      Required <InlineCode>pubkey</InlineCode>; optional <InlineCode>offset</InlineCode> (default 0)
+      and <InlineCode>limit</InlineCode> (default 500, capped at 5000).
+      <InlineCode>total</InlineCode> is the full indexed list size, independent of the page size.
+    </p>
+  );
+}
+
+export default async function OracleDocsPage() {
   return (
     <article className="prose prose-gray dark:prose-invert max-w-none">
       <ScrollReveal animation="fade-up">
         <h1>Oracle API</h1>
-
         <p className="lead text-xl text-gray-600 dark:text-gray-400">
-          REST API for server-side Web of Trust queries. No extension required.
+          Version 0.3.0: directed follow distance and separate public mute evidence over HTTP. No extension required.
         </p>
       </ScrollReveal>
 
-      {/* Public Servers */}
       <section id="servers" className="scroll-mt-24">
-        <h2>Public Servers</h2>
-
-        <div className="not-prose overflow-x-auto mb-6">
-          <table className="w-full text-sm border border-gray-200 dark:border-gray-700 rounded-lg">
-            <thead className="bg-gray-50 dark:bg-gray-800">
-              <tr>
-                <th className="text-left p-3 font-semibold">Server</th>
-                <th className="text-left p-3 font-semibold">URL</th>
-                <th className="text-left p-3 font-semibold">Rate Limit</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td className="p-3 border-t border-gray-200 dark:border-gray-700">Primary</td>
-                <td className="p-3 border-t border-gray-200 dark:border-gray-700"><code>https://wot-oracle.mappingbitcoin.com</code></td>
-                <td className="p-3 border-t border-gray-200 dark:border-gray-700 text-gray-600 dark:text-gray-400">60 req/min</td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-
+        <h2>Public server and request format</h2>
+        <p>Base URL: <a href={baseUrl}>{baseUrl}</a>. No API key is required by the Oracle.</p>
         <p>
-          For higher rate limits or custom deployments, <Link href="/oracle">self-host the Oracle server</Link>.
+          Send pubkeys as full 64-character lowercase hexadecimal strings, not npubs.
+          The examples use synthetic pubkeys to illustrate response shapes; your graph results will differ.
+          POST requests use <InlineCode>Content-Type: application/json</InlineCode>.
+        </p>
+        <p>
+          The root endpoint <InlineCode>GET /</InlineCode> lists the service version, documentation and available endpoints.
+          For your own instance, see the <Link href="/oracle">self-hosting guide</Link>.
+        </p>
+        <p>
+          Distances use directed kind-3 follow edges. Public kind-10000 mute lists are separate observations.
+          The Oracle does not combine them into a trust score or remove muted accounts from follow paths.
         </p>
       </section>
 
-      {/* Endpoints */}
-      <h2 className="text-2xl font-bold mt-12 mb-6">Endpoints</h2>
-
-      <Endpoint
-        method="GET"
-        path="/health"
-        description="Check if the server is running and healthy."
-      >
-        <h4 className="font-semibold mb-2">Response</h4>
-        <CodeBlock
-          language="json"
-          code={`{
-  "status": "ok",
-  "version": "1.0.0"
-}`}
-        />
-        <h4 className="font-semibold mt-4 mb-2">Example</h4>
-        <TerminalBlock commands={['curl "https://wot-oracle.mappingbitcoin.com/health"']} />
+      <h2>Endpoints</h2>
+      <Endpoint id="health" method="GET" path="/health" description="Process liveness and release version.">
+        <CodeBlock language="json" code={json({ status: "healthy", version: "0.3.0" })} />
+        <TerminalBlock commands={[`curl "${baseUrl}/health"`]} />
+        <p>A healthy process can still be waiting for relay events or unable to persist updates. Use <InlineCode>/ready</InlineCode> for ingestion readiness.</p>
       </Endpoint>
 
-      <Endpoint
-        method="GET"
-        path="/stats"
-        description="Get server statistics about the social graph."
-      >
-        <h4 className="font-semibold mb-2">Response</h4>
-        <CodeBlock
-          language="json"
-          code={`{
-  "total_users": 125000,
-  "total_follows": 2500000,
-  "last_updated": "2024-01-15T12:00:00Z",
-  "uptime": "5d 12h 30m"
-}`}
-        />
+      <Endpoint id="ready" method="GET" path="/ready" description="Ingestion snapshot: HTTP 200 when ready, HTTP 503 otherwise.">
+        <p>
+          Readiness requires running ingestion, no current database failure and a follow or mute event received within five minutes.
+          A quiet private relay can therefore yield 503 even while the process is operational.
+          Example while waiting for the first event:
+        </p>
+        <CodeBlock language="json" code={json(syncExample)} />
+        <p>
+          Timestamps are Unix seconds, with zero meaning not yet observed.
+          <InlineCode>persisted_events</InlineCode> counts accepted author updates written to storage after batch coalescing.
+          <InlineCode>lagged_notifications</InlineCode> and <InlineCode>persistence_errors</InlineCode> expose ingestion problems.
+        </p>
       </Endpoint>
 
-      <Endpoint
-        method="GET"
-        path="/follows"
-        description="Get the follow list for a pubkey."
-      >
-        <h4 className="font-semibold mb-2">Query Parameters</h4>
-        <div className="not-prose overflow-x-auto mb-4">
-          <table className="w-full text-sm border border-gray-200 dark:border-gray-700 rounded-lg">
-            <thead className="bg-gray-50 dark:bg-gray-800">
-              <tr>
-                <th className="text-left p-3 font-semibold">Parameter</th>
-                <th className="text-left p-3 font-semibold">Required</th>
-                <th className="text-left p-3 font-semibold">Description</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr><td className="p-3 border-t border-gray-200 dark:border-gray-700"><code>pubkey</code></td><td className="p-3 border-t border-gray-200 dark:border-gray-700">Yes</td><td className="p-3 border-t border-gray-200 dark:border-gray-700 text-gray-600 dark:text-gray-400">64-character hex pubkey</td></tr>
-            </tbody>
-          </table>
-        </div>
-        <h4 className="font-semibold mb-2">Response</h4>
-        <CodeBlock
-          language="json"
-          code={`{
-  "pubkey": "82341f...",
-  "follows": ["3bf0c6...", "fa984b...", "..."],
-  "count": 150
-}`}
-        />
-        <h4 className="font-semibold mt-4 mb-2">Example</h4>
-        <TerminalBlock commands={['curl "https://wot-oracle.mappingbitcoin.com/follows?pubkey=82341f..."']} />
+      <Endpoint id="stats" method="GET" path="/stats" description="Indexed graph counts, cache settings, lock metrics and ingestion status.">
+        <CodeBlock language="json" code={json({
+          node_count: 3, edge_count: 2, nodes_with_follows: 2,
+          mute_edge_count: 0, nodes_with_mute_lists: 1,
+          sync: syncExample,
+          cache: { size: 0, capacity: 100000, ttl_secs: 300 },
+          locks: { write_lock_count: 0, write_lock_avg_us: 0, write_lock_max_us: 0,
+            read_lock_count: 0, read_lock_avg_us: 0, read_lock_max_us: 0 },
+        })} />
+        <p>
+          Counts and settings above are illustrative. <InlineCode>edge_count</InlineCode> counts follow edges;
+          <InlineCode>mute_edge_count</InlineCode> counts public pubkey mute edges.
+          <InlineCode>nodes_with_mute_lists</InlineCode> includes known lists with no public pubkey entries.
+          Lock timings are in microseconds. The <InlineCode>sync</InlineCode> object has the same fields as <InlineCode>/ready</InlineCode>.
+        </p>
       </Endpoint>
 
-      <Endpoint
-        method="GET"
-        path="/common-follows"
-        description="Get accounts that both pubkeys follow."
-      >
-        <h4 className="font-semibold mb-2">Query Parameters</h4>
-        <div className="not-prose overflow-x-auto mb-4">
-          <table className="w-full text-sm border border-gray-200 dark:border-gray-700 rounded-lg">
-            <thead className="bg-gray-50 dark:bg-gray-800">
-              <tr>
-                <th className="text-left p-3 font-semibold">Parameter</th>
-                <th className="text-left p-3 font-semibold">Required</th>
-                <th className="text-left p-3 font-semibold">Description</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr><td className="p-3 border-t border-gray-200 dark:border-gray-700"><code>pubkey1</code></td><td className="p-3 border-t border-gray-200 dark:border-gray-700">Yes</td><td className="p-3 border-t border-gray-200 dark:border-gray-700 text-gray-600 dark:text-gray-400">First pubkey</td></tr>
-              <tr><td className="p-3 border-t border-gray-200 dark:border-gray-700"><code>pubkey2</code></td><td className="p-3 border-t border-gray-200 dark:border-gray-700">Yes</td><td className="p-3 border-t border-gray-200 dark:border-gray-700 text-gray-600 dark:text-gray-400">Second pubkey</td></tr>
-            </tbody>
-          </table>
-        </div>
-        <h4 className="font-semibold mb-2">Response</h4>
-        <CodeBlock
-          language="json"
-          code={`{
-  "pubkey1": "82341f...",
-  "pubkey2": "3bf0c6...",
-  "common": ["fa984b...", "..."],
-  "count": 25
-}`}
-        />
+      <Endpoint id="distance" method="GET" path="/distance" description="Shortest directed follow distance from one pubkey to another.">
+        <DistanceParameters />
+        <CodeBlock language="json" code={json(distanceExample)} />
+        <p>
+          <InlineCode>hops</InlineCode> is zero for self-distance and one for a direct follow.
+          A null value means no route was found within the requested depth in the indexed graph.
+          It does not prove that no connection exists elsewhere on Nostr.
+        </p>
+        <p>
+          <InlineCode>path_count</InlineCode> counts shortest directed paths, including when bridges are omitted;
+          counts saturate at the maximum unsigned 64-bit integer.
+          <InlineCode>mutual_follow</InlineCode> indicates a direct follow in both directions.
+          Optional <InlineCode>bridges</InlineCode> contains search meeting nodes, not a full path or proof of disjoint paths.
+        </p>
+        <TerminalBlock commands={[`curl "${baseUrl}/distance?from=${source}&to=${target}&max_hops=3"`]} />
       </Endpoint>
 
-      <Endpoint
-        method="GET"
-        path="/path"
-        description="Get the shortest path between two pubkeys."
-      >
-        <h4 className="font-semibold mb-2">Query Parameters</h4>
-        <div className="not-prose overflow-x-auto mb-4">
-          <table className="w-full text-sm border border-gray-200 dark:border-gray-700 rounded-lg">
-            <thead className="bg-gray-50 dark:bg-gray-800">
-              <tr>
-                <th className="text-left p-3 font-semibold">Parameter</th>
-                <th className="text-left p-3 font-semibold">Required</th>
-                <th className="text-left p-3 font-semibold">Description</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr><td className="p-3 border-t border-gray-200 dark:border-gray-700"><code>from</code></td><td className="p-3 border-t border-gray-200 dark:border-gray-700">Yes</td><td className="p-3 border-t border-gray-200 dark:border-gray-700 text-gray-600 dark:text-gray-400">Source pubkey</td></tr>
-              <tr><td className="p-3 border-t border-gray-200 dark:border-gray-700"><code>to</code></td><td className="p-3 border-t border-gray-200 dark:border-gray-700">Yes</td><td className="p-3 border-t border-gray-200 dark:border-gray-700 text-gray-600 dark:text-gray-400">Target pubkey</td></tr>
-            </tbody>
-          </table>
-        </div>
-        <h4 className="font-semibold mb-2">Response</h4>
-        <CodeBlock
-          language="json"
-          code={`{
-  "from": "82341f...",
-  "to": "3bf0c6...",
-  "path": ["82341f...", "fa984b...", "3bf0c6..."],
-  "hops": 2
-}`}
-        />
+      <Endpoint id="batch" method="POST" path="/distance/batch" description="Query up to 100 targets from one source, preserving target order and duplicates.">
+        <p>
+          Required JSON fields: <InlineCode>from</InlineCode> and <InlineCode>targets</InlineCode>.
+          Optional <InlineCode>max_hops</InlineCode>, <InlineCode>include_bridges</InlineCode> and <InlineCode>bypass_cache</InlineCode>
+          use the same defaults as <InlineCode>/distance</InlineCode>.
+        </p>
+        <h4>Request</h4>
+        <CodeBlock language="json" code={json({ from: source, targets: [target], max_hops: 3 })} />
+        <h4>Response</h4>
+        <CodeBlock language="json" code={json({ from: source, results: [distanceExample] })} />
+        <p>Each result includes both <InlineCode>from</InlineCode> and <InlineCode>to</InlineCode>.</p>
       </Endpoint>
 
-      <Endpoint
-        method="GET"
-        path="/distance"
-        description="Get the hop distance between two pubkeys."
-      >
-        <h4 className="font-semibold mb-2">Query Parameters</h4>
-        <div className="not-prose overflow-x-auto mb-4">
-          <table className="w-full text-sm border border-gray-200 dark:border-gray-700 rounded-lg">
-            <thead className="bg-gray-50 dark:bg-gray-800">
-              <tr>
-                <th className="text-left p-3 font-semibold">Parameter</th>
-                <th className="text-left p-3 font-semibold">Required</th>
-                <th className="text-left p-3 font-semibold">Description</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr><td className="p-3 border-t border-gray-200 dark:border-gray-700"><code>from</code></td><td className="p-3 border-t border-gray-200 dark:border-gray-700">Yes</td><td className="p-3 border-t border-gray-200 dark:border-gray-700 text-gray-600 dark:text-gray-400">Source pubkey</td></tr>
-              <tr><td className="p-3 border-t border-gray-200 dark:border-gray-700"><code>to</code></td><td className="p-3 border-t border-gray-200 dark:border-gray-700">Yes</td><td className="p-3 border-t border-gray-200 dark:border-gray-700 text-gray-600 dark:text-gray-400">Target pubkey</td></tr>
-              <tr><td className="p-3 border-t border-gray-200 dark:border-gray-700"><code>max_hops</code></td><td className="p-3 border-t border-gray-200 dark:border-gray-700">No</td><td className="p-3 border-t border-gray-200 dark:border-gray-700 text-gray-600 dark:text-gray-400">Max hops to search (1-10, default: 4)</td></tr>
-            </tbody>
-          </table>
-        </div>
-        <h4 className="font-semibold mb-2">Response</h4>
-        <CodeBlock
-          language="json"
-          code={`{
-  "from": "82341f...",
-  "to": "3bf0c6...",
-  "distance": 2,
-  "paths": 3,
-  "mutual": false
-}`}
-        />
-        <h4 className="font-semibold mt-4 mb-2">Example</h4>
-        <TerminalBlock commands={['curl "https://wot-oracle.mappingbitcoin.com/distance?from=82341f...&to=3bf0c6..."']} />
+      <Endpoint id="path" method="GET" path="/path" description="Return intermediate pubkeys on one shortest directed follow path.">
+        <p>Required <InlineCode>from</InlineCode> and <InlineCode>to</InlineCode>; optional <InlineCode>max_hops</InlineCode> (1–5, default 3).</p>
+        <CodeBlock language="json" code={json({ from: source, to: target, path: [bridge] })} />
+        <p>
+          The example represents two follow edges, from source to bridge to target.
+          Source and target are excluded from <InlineCode>path</InlineCode>.
+          Self and direct-follow paths return an empty array; no route within the requested depth returns null.
+          This response has no <InlineCode>hops</InlineCode> field.
+        </p>
       </Endpoint>
 
-      <Endpoint
-        method="POST"
-        path="/distance/batch"
-        description="Get distances to multiple targets in a single request."
-      >
-        <h4 className="font-semibold mb-2">Request Body</h4>
-        <CodeBlock
-          language="json"
-          code={`{
-  "from": "82341f882b6eabcd2ba7f1ef90aad961cf074af15b9ef44a09f9d2a8fbfbe6a2",
-  "targets": ["3bf0c6...", "fa984b...", "..."]
-}`}
-        />
-        <h4 className="font-semibold mt-4 mb-2">Response</h4>
-        <CodeBlock
-          language="json"
-          code={`{
-  "from": "82341f...",
-  "results": [
-    {
-      "to": "3bf0c6...",
-      "distance": 2,
-      "paths": 1,
-      "mutual": false
-    },
-    {
-      "to": "fa984b...",
-      "distance": 1,
-      "paths": 1,
-      "mutual": true
-    }
-  ]
-}`}
-        />
-        <div className="not-prose my-4 p-4 bg-amber-50 dark:bg-amber-950/30 rounded-lg border border-amber-200 dark:border-amber-900">
-          <p className="text-sm text-amber-800 dark:text-amber-200">
-            <strong>Limit:</strong> Maximum 100 targets per request.
-          </p>
-        </div>
-        <h4 className="font-semibold mb-2">Example</h4>
-        <TerminalBlock
-          commands={[
-            'curl -X POST "https://wot-oracle.mappingbitcoin.com/distance/batch" \\',
-            '  -H "Content-Type: application/json" \\',
-            '  -d \'{"from": "82341f...", "targets": ["3bf0c6...", "fa984b..."]}\''
-          ]}
-        />
+      <Endpoint id="follows" method="GET" path="/follows" description="Paginate the currently indexed follow list for a pubkey.">
+        <PaginationParameters />
+        <CodeBlock language="json" code={json({ pubkey: source, follows: [bridge], total: 1 })} />
+        <p>An unknown pubkey returns an empty list and <InlineCode>total: 0</InlineCode>.</p>
       </Endpoint>
 
-      {/* Error Handling */}
-      <section id="errors" className="scroll-mt-24">
-        <h2>Error Handling</h2>
+      <Endpoint id="common-follows" method="GET" path="/common-follows" description="Return pubkeys directly followed by both accounts.">
+        <p>Required parameters: <InlineCode>from</InlineCode> and <InlineCode>to</InlineCode>.</p>
+        <CodeBlock language="json" code={json({ from: source, to: target, common_follows: [bridge] })} />
+        <TerminalBlock commands={[`curl "${baseUrl}/common-follows?from=${source}&to=${target}"`]} />
+      </Endpoint>
 
-        <p>All endpoints return errors in a consistent format:</p>
-        <CodeBlock
-          language="json"
-          code={`{
-  "error": "Invalid pubkey length: expected 64, got 32",
-  "code": "INVALID_PUBKEY_LENGTH"
-}`}
-        />
+      <Endpoint id="mutes" method="GET" path="/mutes" description="Paginate public pubkey entries from an indexed kind-10000 mute list.">
+        <PaginationParameters />
+        <CodeBlock language="json" code={json({ pubkey: source, mutes: [], total: 0, public_list_known: true })} />
+        <p>
+          <InlineCode>public_list_known: false</InlineCode> means no mute-list event was indexed for this pubkey.
+          A known event can have no public pubkey entries, as shown above.
+          Encrypted mute entries are unavailable to the Oracle, and a known empty public list may still contain encrypted entries.
+          Word, hashtag and thread mute tags are excluded from pubkey evidence.
+        </p>
+      </Endpoint>
 
-        <h3>Error Codes</h3>
-        <div className="not-prose overflow-x-auto mb-6">
-          <table className="w-full text-sm border border-gray-200 dark:border-gray-700 rounded-lg">
-            <thead className="bg-gray-50 dark:bg-gray-800">
-              <tr>
-                <th className="text-left p-3 font-semibold">Code</th>
-                <th className="text-left p-3 font-semibold">Description</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr><td className="p-3 border-t border-gray-200 dark:border-gray-700"><code>INVALID_PUBKEY_LENGTH</code></td><td className="p-3 border-t border-gray-200 dark:border-gray-700 text-gray-600 dark:text-gray-400">Pubkey must be 64 characters</td></tr>
-              <tr><td className="p-3 border-t border-gray-200 dark:border-gray-700"><code>INVALID_PUBKEY_FORMAT</code></td><td className="p-3 border-t border-gray-200 dark:border-gray-700 text-gray-600 dark:text-gray-400">Pubkey must be hexadecimal</td></tr>
-              <tr><td className="p-3 border-t border-gray-200 dark:border-gray-700"><code>INVALID_MAX_HOPS</code></td><td className="p-3 border-t border-gray-200 dark:border-gray-700 text-gray-600 dark:text-gray-400">max_hops must be 1-10</td></tr>
-              <tr><td className="p-3 border-t border-gray-200 dark:border-gray-700"><code>TOO_MANY_TARGETS</code></td><td className="p-3 border-t border-gray-200 dark:border-gray-700 text-gray-600 dark:text-gray-400">Max 100 targets in batch</td></tr>
-              <tr><td className="p-3 border-t border-gray-200 dark:border-gray-700"><code>INTERNAL_ERROR</code></td><td className="p-3 border-t border-gray-200 dark:border-gray-700 text-gray-600 dark:text-gray-400">Server error</td></tr>
-            </tbody>
-          </table>
-        </div>
+      <Endpoint id="trust" method="GET" path="/trust" description="Return follow distance alongside separate public mute observations.">
+        <DistanceParameters />
+        <CodeBlock language="json" code={json({
+          follow_distance: distanceExample,
+          public_mute_evidence: {
+            source_mutes_target: false, target_mutes_source: false,
+            followed_muters: [bridge], source_mute_list_known: true, target_mute_list_known: false,
+          },
+        })} />
+        <p>
+          <InlineCode>followed_muters</InlineCode> lists accounts directly followed by the source whose indexed public mute lists contain the target.
+          The two direct-mute booleans describe the source and target relationship;
+          the known-list flags distinguish missing lists from known public lists.
+        </p>
+        <p>
+          Mutes can express personal preference. Missing public evidence is not an endorsement.
+          Clients decide how to use these observations: the response applies no weight, aggregate score or automatic exclusion.
+          Follow distance and mute evidence may be read at slightly different instants during ingestion.
+        </p>
+      </Endpoint>
 
-        <h3>HTTP Status Codes</h3>
-        <ul>
-          <li><strong>200</strong> - Success</li>
-          <li><strong>400</strong> - Validation errors (invalid pubkey, parameters)</li>
-          <li><strong>429</strong> - Rate limited (check <InlineCode>Retry-After</InlineCode> header)</li>
-          <li><strong>500</strong> - Internal server error</li>
-        </ul>
-
-        <h3>Rate Limit Headers</h3>
-        <p>All responses include rate limit information:</p>
-        <ul>
-          <li><InlineCode>X-RateLimit-Limit</InlineCode> - Requests per window</li>
-          <li><InlineCode>X-RateLimit-Remaining</InlineCode> - Remaining requests</li>
-          <li><InlineCode>X-RateLimit-Reset</InlineCode> - Seconds until reset</li>
-        </ul>
+      <section id="freshness" className="scroll-mt-24">
+        <h2>Coverage and freshness</h2>
+        <p>
+          <InlineCode>sync.coverage</InlineCode> is <InlineCode>configured_relays_only</InlineCode>.
+          Results describe events indexed from the server&apos;s configured relays, with no guarantee of global or complete coverage.
+          Cache entries become invalid when the graph revision changes.
+          Neither readiness nor bypassing the cache guarantees that relays have returned the latest event.
+        </p>
+        <p>Kind-0 profile caching, <InlineCode>/profiles</InlineCode> and <InlineCode>include_profiles</InlineCode> are not implemented in v0.3.0.</p>
       </section>
 
-      {/* Navigation */}
+      <section id="errors" className="scroll-mt-24">
+        <h2>Limits and errors</h2>
+        <p>
+          Data endpoints use a per-IP token bucket configured by <InlineCode>RATE_LIMIT_PER_MINUTE</InlineCode>.
+          Limits depend on the deployment; requests can be rejected after a burst even before a minute has elapsed.
+          The root, <InlineCode>/health</InlineCode> and <InlineCode>/ready</InlineCode> routes are exempt from this limiter.
+          Request bodies are capped at 1 MiB. Do not assume rate-limit headers are present on every response.
+        </p>
+        <p>Application validation and computation errors return JSON with <InlineCode>error</InlineCode> and <InlineCode>code</InlineCode>:</p>
+        <CodeBlock language="json" code={json({ error: "Invalid pubkey format", code: "INVALID_PUBKEY" })} />
+        <ul>
+          <li><strong>400:</strong> <InlineCode>INVALID_PUBKEY</InlineCode>, <InlineCode>INVALID_MAX_HOPS</InlineCode> or <InlineCode>TOO_MANY_TARGETS</InlineCode>.</li>
+          <li><strong>413:</strong> request body exceeds the size limit.</li>
+          <li><strong>429:</strong> per-IP rate limit exceeded. Back off before retrying; honor retry timing if provided.</li>
+          <li><strong>500:</strong> <InlineCode>INTERNAL_ERROR</InlineCode>.</li>
+          <li><strong>503:</strong> <InlineCode>QUERY_BUSY</InlineCode> when query capacity is exhausted, or a readiness snapshot with <InlineCode>ready: false</InlineCode> from <InlineCode>/ready</InlineCode>.</li>
+        </ul>
+        <p>
+          Malformed query strings, malformed JSON and middleware rejections may use a different body format.
+          Check the HTTP status before parsing a successful response. Use bounded retries with backoff for temporary overload.
+        </p>
+      </section>
+
       <div className="not-prose mt-12 flex justify-between items-center pt-8 border-t border-gray-200 dark:border-gray-800">
-        <Link
-          href="/docs/sdk"
-          className="flex items-center gap-2 text-gray-600 dark:text-gray-400 hover:text-primary"
-        >
-          <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
-          </svg>
-          SDK Reference
-        </Link>
-        <Link
-          href="/oracle"
-          className="flex items-center gap-2 text-gray-600 dark:text-gray-400 hover:text-primary"
-        >
-          Self-Host Guide
-          <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-          </svg>
-        </Link>
+        <Link href="/docs/sdk" className="text-gray-600 dark:text-gray-400 hover:text-primary">SDK Reference</Link>
+        <a href="https://github.com/nostr-wot/nostr-wot-oracle/blob/v0.3.0/docs/API.md" className="text-gray-600 dark:text-gray-400 hover:text-primary">v0.3.0 API source</a>
+        <Link href="/oracle" className="text-gray-600 dark:text-gray-400 hover:text-primary">Self-Host Guide</Link>
       </div>
     </article>
   );

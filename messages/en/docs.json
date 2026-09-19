@@ -45,7 +45,7 @@
   },
   "overview": {
     "title": "Overview",
-    "description": "Nostr Web of Trust provides two complementary tools for spam filtering and trust scoring:",
+    "description": "Nostr Web of Trust combines browser identity, Nostr SDK packages and an Oracle for follow-graph and public-mute queries.",
     "extension": {
       "title": "WoT Extension",
       "description": "Browser extension exposing",
@@ -54,10 +54,10 @@
     },
     "oracle": {
       "title": "WoT Oracle",
-      "description": "REST API for server-side queries at scale"
+      "description": "REST API for follow distance and separate public mute evidence"
     },
-    "fundamentalQuestion": "Both answer the same fundamental question:",
-    "question": "\"What is the social distance between two pubkeys?\""
+    "fundamentalQuestion": "The Oracle answers a graph question:",
+    "question": "What is the indexed follow distance between two pubkeys?"
   },
   "quickStart": {
     "title": "Quick Start",
@@ -218,68 +218,32 @@
     "example": "Example"
   },
   "sdk": {
-    "title": "SDK Integration",
-    "description": "The nostr-wot-sdk provides a JavaScript/TypeScript SDK for querying Nostr Web of Trust directly in your application.",
-    "install": {
-      "title": "Installation",
-      "npm": "npm install nostr-wot-sdk",
-      "yarn": "yarn add nostr-wot-sdk",
-      "pnpm": "pnpm add nostr-wot-sdk"
-    },
-    "setup": {
-      "title": "Setup",
-      "extensionFirst": "Extension-First (Recommended)",
-      "extensionFirstDesc": "Automatically uses the browser extension when available, with oracle fallback:",
-      "oracleOnly": "Oracle Only",
-      "oracleOnlyDesc": "Use the oracle directly without extension detection:",
-      "localMode": "Local Mode (Server-Side)",
-      "localModeDesc": "Build and sync your own follow graph for Node.js environments:"
-    },
-    "options": {
-      "title": "Constructor Options",
-      "useExtension": "Leverage browser extension when present",
-      "oracle": "Fallback API endpoint",
-      "myPubkey": "Your Nostr public key",
-      "maxHops": "Default search depth",
-      "timeout": "Request timeout in milliseconds",
-      "scoring": "Custom trust weighting parameters"
-    },
-    "methods": {
-      "title": "SDK Methods",
-      "getDistance": "Returns shortest path length to target (number or null)",
-      "isInMyWoT": "Boolean check if pubkey is within specified hops",
-      "getTrustScore": "Computes normalized trust metric (0-1 range)",
-      "getDistanceBetween": "Measures path length between any two pubkeys",
-      "batchCheck": "Efficiently evaluates multiple targets simultaneously",
-      "getDetails": "Retrieves comprehensive metrics including paths and mutual connections",
-      "getMyPubkey": "Retrieves active pubkey from extension or config",
-      "isUsingExtension": "Confirms whether extension is actively engaged",
-      "getExtensionConfig": "Accesses extension-provided configuration"
-    },
-    "scoring": {
-      "title": "Custom Scoring",
-      "description": "Customize how trust metrics are calculated:",
-      "distanceWeights": "Distance weights (1-4+ hops)",
-      "mutualBonus": "+50% for reciprocal follows",
-      "pathBonus": "+10% per additional route",
-      "maxPathBonus": "Cap total path bonus at 50%"
-    },
-    "react": {
-      "title": "React Integration",
-      "description": "Use the SDK with React hooks and context:",
-      "provider": "Wrap your app with WoTProvider",
-      "hook": "Use the useWoT hook in components"
-    },
-    "errors": {
-      "title": "Error Handling",
-      "networkError": "NetworkError - Oracle service unreachable",
-      "notFoundError": "NotFoundError - Pubkey absent from graph",
-      "wotError": "WoTError - General framework errors"
-    },
-    "links": {
-      "npm": "View on npm",
-      "github": "View on GitHub"
-    }
+    "title": "SDK Reference",
+    "description": "Build Nostr apps with data fetchers, relay utilities, login UI, and optional follow-graph distance queries.",
+    "packagesTitle": "Published packages",
+    "packagesDescription": "Versions verified on npm on 20 September 2026. The meta-package exposes WoT at its root and other modules through subpaths. You can also install scoped packages directly; @nostr-wot/pq is a separate package.",
+    "package": "Package",
+    "version": "Version",
+    "installTitle": "Installation",
+    "setupTitle": "Provider setup",
+    "setupDescription": "NostrSdkProvider composes data configuration, session state, and optional WoT context. Supply myPubkey explicitly for Oracle queries; signing in does not set the WoT query root automatically.",
+    "dataTitle": "Data layer",
+    "dataDescription": "Standalone fetchers retrieve profiles, notes, threads, follows, and engagement. React hooks add a cache with stale-while-revalidate behavior. Data fetchers share their own connection pool.",
+    "relayTitle": "Relay management",
+    "relayDescription": "RelayPool wraps a compatible PoolLike transport supplied by your app. Configure urls, use subscribe with onEvent/onEose, and close subscriptions when finished. A separately created relay wrapper is not automatically connected to the data provider.",
+    "uiTitle": "Login UI",
+    "uiDescription": "LoginButton and useSession share the session provided by NostrSdkProvider. Supported methods include NIP-07, NIP-46, key generation, and key import. Install the UI package directly when importing its components and styles.",
+    "wotTitle": "Web of Trust distances",
+    "wotDescription": "WoT queries the Oracle by default. getDistance returns a number or null; isInMyWoT returns a boolean. getDetails provides hops, a numeric path count, and optional bridges and mutual-follow information. Pass valid 64-character hexadecimal public keys.",
+    "migrationTitle": "Migrating to @nostr-wot/wot 1.0.0",
+    "migrationDescription": "Version 1.0.0 removed browser-extension detection, trust-score methods, and useTrustScore. Use useWoT or useIsInWoT and read their result objects. For local queries, pass a WoTLocalSource, such as WotGraph.asWoTSource() from @nostr-wot/graph. Only getDistance, isInMyWoT, and filterByWoT use that source; other methods still query the Oracle.",
+    "oracleLink": "Oracle API reference",
+    "previous": "Extension API",
+    "next": "Oracle API",
+    "compatibilityTitle": "Oracle compatibility",
+    "compatibilityDescription": "Published @nostr-wot/wot 1.0.0 uses the older /api/distance/FROM/TO?maxHops= contract and expects a distance field. Oracle 0.3.0 uses /distance?from=&to=&max_hops= and returns hops. Changing the base URL alone does not make them compatible. Use direct fetch for Oracle 0.3.0, or the local graph source shown below.",
+    "localTitle": "Local graph example",
+    "localDescription": "Load and crawl a local graph before passing its source to WoT. The React example receives this prepared graph and uses useIsInWoT; useWoT also requests getDetails from the Oracle. @nostr-wot/graph has its own getScore API, separate from the removed WoT score API."
   },
   "rateLimits": {
     "title": "Rate Limits",
@@ -306,5 +270,40 @@
       "rateLimited": "// 429 - Rate limited",
       "serverError": "// 500 - Server error"
     }
+  },
+  "extensionApi": {
+    "title": "Extension API",
+    "metaDescription": "NIP-07 signer API reference for the Nostr WoT browser extension: identity, event signing, relay settings, encryption and request failures.",
+    "intro": "The extension exposes <api>window.nostr</api> for identity, event signing, and NIP-04/NIP-44 message encryption.",
+    "prerequisite": "Install the <download>extension</download>, select an account, and connect your site when prompted. Signing and encryption require a signing-capable account and may prompt you to unlock the vault. Reading a known public key does not require unlocking it.",
+    "setup": "Setup",
+    "setupDescription": "Check for the method you need before calling it. An injected provider does not mean the site is connected or a request has been approved.",
+    "name": "Name",
+    "type": "Type",
+    "default": "Default",
+    "description": "Description",
+    "parameters": "Parameters",
+    "returns": "Returns",
+    "example": "Example",
+    "nip07Title": "NIP-07 Signer API",
+    "standard": "The extension implements the <standard>NIP-07 signer API</standard> exposed through <api>window.nostr</api>.",
+    "getPublicKey": "Returns the active account's hex-encoded public key. Requires site connection and identity access.",
+    "signEvent": "Signs the event and adds id, pubkey and sig. Supply created_at yourself; the signer preserves your timestamp. If you supply pubkey, it must match the active account. Signing does not publish the event.",
+    "event": "Event containing kind, content, tags and created_at (Unix time in seconds)",
+    "nip04Encrypt": "Encrypts a message using NIP-04, the legacy direct-message encryption format.",
+    "nip04Decrypt": "Decrypts a NIP-04 message.",
+    "nip44Encrypt": "Encrypts a message using NIP-44. This example uses the standard two-argument call.",
+    "nip44Decrypt": "Decrypts a NIP-44 message.",
+    "recipient": "Recipient's 64-character hexadecimal public key",
+    "sender": "Sender's 64-character hexadecimal public key",
+    "plaintext": "Message to encrypt",
+    "ciphertext": "Encrypted message string",
+    "getRelays": "Returns the relay URLs configured in the extension. Each entry has read: true and write: true. This method does not fetch the account's NIP-65 relay policies and may return an empty object.",
+    "errorsTitle": "Connection, permissions and errors",
+    "errorsDescription": "Calls return Promises and can reject if the user declines, the site is disconnected, identity access is disabled, or the request times out. Signing and encryption are unavailable for read-only accounts.",
+    "errorsDetails": "An account switch can invalidate a pending request. Page calls time out after 120 seconds, including time spent waiting for connection, permission or unlock. Catch errors and let the user retry; error messages are not stable machine-readable codes.",
+    "trustRedirect": "Use the <sdk>SDK</sdk> for follow-graph queries and the <oracle>WoT Oracle API</oracle> for public mute evidence. Mute evidence is separate from follow distance; it does not produce a combined trust score. The extension provides identity and signing.",
+    "gettingStarted": "Getting Started",
+    "sdkReference": "SDK Reference"
   }
 }
