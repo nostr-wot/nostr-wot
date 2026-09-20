@@ -40,13 +40,13 @@ export async function fetchDistances(from: string, targets: string[], signal: Ab
     const batch = targets.slice(index, index + 100);
     const data = await request("/distance/batch", signal, {
       method: "POST", headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ from, targets: batch, max_hops: 6 }),
+      body: JSON.stringify({ from, targets: batch, max_hops: 4 }),
     }) as Record<string, unknown>;
     if (!data || data.from !== from || !Array.isArray(data.results)) throw new Error("Invalid distance response");
     const expected = new Set(batch);
     for (const row of data.results) {
       if (!row || row.from !== from || !expected.has(row.to) || result.has(row.to) ||
-          !(row.hops === null || (Number.isInteger(row.hops) && row.hops >= 0 && row.hops <= 6)) ||
+          !(row.hops === null || (Number.isInteger(row.hops) && row.hops >= 0 && row.hops <= 4)) ||
           !Number.isSafeInteger(row.path_count) || row.path_count < 0 || typeof row.mutual_follow !== "boolean") {
         throw new Error("Invalid distance response");
       }

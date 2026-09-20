@@ -43,7 +43,7 @@ test("follows supports continuation and propagates HTTP errors", async t => {
 
 test("distance request is root-scoped and preserves unknown distances", async t => {
   t.mock.method(globalThis, "fetch", async (_url: string, init: RequestInit) => {
-    assert.deepEqual(JSON.parse(init.body as string), { from: root, targets: [target], max_hops: 6 });
+    assert.deepEqual(JSON.parse(init.body as string), { from: root, targets: [target], max_hops: 4 });
     return response({ from: root, results: [{ from: root, to: target, hops: null, path_count: 0, mutual_follow: false }] });
   });
   assert.deepEqual((await fetchDistances(root, [target], signal())).get(target), {
