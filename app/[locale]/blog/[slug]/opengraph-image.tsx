@@ -1,4 +1,6 @@
 import { ImageResponse } from "next/og";
+import { readFile } from "node:fs/promises";
+import path from "node:path";
 import { getBlogPost } from "@/lib/blog";
 import { type Locale } from "@/i18n/config";
 
@@ -14,6 +16,21 @@ export default async function OgImage({ params }: Props) {
   const { locale, slug } = await params;
   const post = getBlogPost(slug, locale as Locale);
   const title = post?.title || "Nostr WoT Blog";
+
+  // Use the article's raster artwork for sharing; retain the title card as fallback.
+  if (post?.ogImage?.startsWith("/images/blog/") && /\.(jpe?g|png)$/.test(post.ogImage)) {
+    try {
+      const bytes = await readFile(path.join(process.cwd(), "public", post.ogImage));
+      const mime = post.ogImage.endsWith(".png") ? "image/png" : "image/jpeg";
+      return new ImageResponse(
+        <img src={`data:${mime};base64,${bytes.toString("base64")}`} width={1200} height={630} alt={title} style={{ objectFit: "cover" }} />,
+        size,
+      );
+    } catch {
+      // A missing image must not break the share card.
+    }
+  }
+
 
   return new ImageResponse(
     (
