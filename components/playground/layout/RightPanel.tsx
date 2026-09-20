@@ -15,7 +15,7 @@ interface RightPanelProps {
 
 export default function RightPanel({ isOpen, onClose, onViewProfile }: RightPanelProps) {
   const t = useTranslations("playground");
-  const { selectedNode, selectedProfile, selectedNeighbors, clearSelection } =
+  const { selectedNode, selectedProfile, selectedNeighbors, select, clearSelection } =
     useNodeSelection();
   const { expandNodeFollows, collapseNodeFollows } = useGraphData();
 
@@ -40,7 +40,7 @@ export default function RightPanel({ isOpen, onClose, onViewProfile }: RightPane
   };
 
   return (
-    <div className="absolute right-0 top-0 bottom-0 w-80 bg-gray-800/95 backdrop-blur border-l border-gray-700 z-20 transform transition-transform duration-300">
+    <div className="absolute right-0 top-0 bottom-0 w-80 max-w-full bg-gray-800/95 backdrop-blur border-l border-gray-700 z-20 transform transition-transform duration-300">
       <div className="h-full flex flex-col">
         {/* Header */}
         <div className="flex items-center justify-between p-4 border-b border-gray-700">
@@ -48,7 +48,7 @@ export default function RightPanel({ isOpen, onClose, onViewProfile }: RightPane
           <button
             onClick={onClose}
             className="p-1 hover:bg-gray-700 rounded transition-colors"
-            aria-label="Close details panel"
+            aria-label={t("graph.close")}
           >
             <svg
               className="w-5 h-5 text-gray-400"
@@ -98,9 +98,7 @@ export default function RightPanel({ isOpen, onClose, onViewProfile }: RightPane
                 {selectedNeighbors.slice(0, 10).map((neighbor) => (
                   <button
                     key={neighbor.id}
-                    onClick={() => {
-                      /* Navigate to neighbor */
-                    }}
+                    onClick={() => select(neighbor)}
                     className="w-full flex items-center gap-2 p-2 rounded-lg hover:bg-gray-700 transition-colors"
                   >
                     {neighbor.picture ? (

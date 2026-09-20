@@ -58,6 +58,8 @@ export default function ViewModeToggle() {
       {modes.map((mode) => (
         <button
           key={mode.value}
+          aria-label={mode.label}
+          aria-pressed={state.viewMode === mode.value}
           onClick={() => setViewMode(mode.value)}
           className={`flex items-center gap-2 px-3 py-1.5 rounded-md text-sm font-medium transition-colors ${
             state.viewMode === mode.value
