@@ -1,0 +1,56 @@
+---
+title: "NIP-02 da rutas resolubles a los apodos"
+description: "NIP-02 define rutas relativas y absolutas de apodos que se resuelven mediante listas de seguidos, con adopción y reglas de escape aún abiertas."
+seoDescription: "NIP-02 define rutas relativas y absolutas de apodos que se resuelven mediante listas de seguidos, con adopción y reglas de escape aún abiertas."
+excerpt: "NIP-02 define rutas relativas y absolutas de apodos que se resuelven mediante listas de seguidos, con adopción y reglas de escape aún abiertas."
+date: "2026-09-20"
+publishedAt: "2026-09-20"
+backfilled: false
+type: "story"
+tags: ["Nostr","NIP-02","Web of Trust","Identity"]
+featuredImage: "/images/news/nip-02-gives-petnames-resolvable-paths.svg"
+translationKey: "nip-02-gives-petnames-resolvable-paths"
+sources: [{"title":"PR #2472: nip02: make petnames great again","url":"https://github.com/nostr-protocol/nips/pull/2472","publisher":"nostr-protocol/nips","date":"2026-09-19"},{"title":"NIP-02 at merge commit 11cca8f","url":"https://github.com/nostr-protocol/nips/blob/11cca8f6cf0b65ef4fa6ab97deb2c68db4900847/02.md","publisher":"nostr-protocol/nips","date":"2026-09-19"},{"title":"Merge commit 11cca8f","url":"https://github.com/nostr-protocol/nips/commit/11cca8f6cf0b65ef4fa6ab97deb2c68db4900847","publisher":"nostr-protocol/nips","date":"2026-09-19"}]
+published: true
+---
+
+NIP-02 ahora da una notación de ruta explícita a su esquema de apodos. La [PR #2472](https://github.com/nostr-protocol/nips/pull/2472), fusionada el 19 de septiembre de 2026, sustituye el antiguo ejemplo de varios saltos por reglas para mostrar y resolver nombres como `~/erin/charlie` mediante listas de seguidos de Nostr.
+
+El cambio no añade un tipo de evento ni modifica la estructura de una lista kind 3. Precisa un campo opcional que ya existía. El cuarto valor de una etiqueta `p` puede contener un nombre local elegido por quien publica la lista:
+
+```json
+["p", "21df6d143fb96c2ec9d63726bf9edc7121df6d143fb96c2ec9d63726bf9edc71", "", "erin"]
+```
+
+En el contexto del usuario actual, un cliente puede mostrar esa clave pública conocida como `erin`. El nombre pertenece a la vista de ese usuario sobre el grafo. No es un nombre de usuario global ni obliga a otras personas a aceptarlo.
+
+## Cada componente sigue la lista de una persona
+
+El [texto fusionado de NIP-02](https://github.com/nostr-protocol/nips/blob/11cca8f6cf0b65ef4fa6ab97deb2c68db4900847/02.md) define la resolución componente por componente. Si la lista del usuario asigna `erin` a una clave pública y la lista de Erin asigna `charlie` a otra, un cliente puede resolver `~/erin/charlie`: primero busca `erin` en el contexto local, obtiene el evento kind 3 más reciente de Erin y busca allí `charlie`.
+
+La versión anterior mostraba nombres derivados como `frank.david.erin`, pero no fijaba una gramática de ruta ni un procedimiento de búsqueda. La nueva versión ordena la relación como la recorre un resolutor: comienza en una raíz, encuentra el primer nombre y usa la lista de ese perfil para el siguiente.
+
+La forma `~` usa al usuario conectado como raíz relativa. NIP-02 también ofrece dos ejemplos de raíz absoluta cuando no hay sesión o su contexto no es relevante:
+
+```text
+~npub1.../erin/charlie
+~carol@names.com/erin/charlie
+```
+
+Los ejemplos indican qué contexto de nombres inicia la ruta. No crean un registro global. Cada componente posterior depende del apodo elegido en la lista del perfil anterior.
+
+## Una cadena legible no es una prueba de confianza
+
+Las rutas pueden mostrar contexto social sin pedir a una única autoridad que asigne todos los nombres. En una interfaz de web of trust, `~/erin/charlie` puede resultar más informativo que una clave desnuda porque expresa cómo llega el usuario a Charlie a través de Erin.
+
+No debe tratarse como prueba criptográfica de identidad. Un evento kind 3 está firmado y permite verificar quién publicó cada correspondencia, pero su autor puede elegir un apodo engañoso, cambiarlo o apuntarlo a otra clave. NIP-02 también establece que una nueva lista sustituye a la anterior. El resolutor necesita el evento válido más reciente de cada paso.
+
+La disponibilidad impone otro límite. Una ruta larga puede exigir varias listas almacenadas en relays. Un evento ausente o antiguo puede detener la resolución aunque las claves sigan siendo válidas. Conviene que los clientes muestren la clave resuelta, la raíz y cualquier paso fallido, en vez de presentar la ruta como un nombre incuestionable.
+
+## Quedan detalles de análisis abiertos
+
+La fusión modifica un solo archivo, con diez líneas añadidas y veinte eliminadas. Define ejemplos relativos y absolutos, pero no especifica cómo escapar apodos que contengan `/`, espacios u otros caracteres especiales. Esos casos se plantearon en comentarios posteriores a la fusión y el NIP actual todavía no los resuelve.
+
+La pull request tampoco aporta evidencia de una implementación publicada. Es una aclaración de la especificación, no una prueba de que un cliente concreto ya pueda introducir, mostrar o resolver la notación. La interoperabilidad dependerá de que los clientes acuerden el análisis y la forma de informar rutas incompletas.
+
+El límite útil queda claro: NIP-02 describe una cadena de nombres asignados localmente. No los convierte en identificadores únicos globales, no sustituye la verificación de claves públicas y no establece una puntuación de confianza.

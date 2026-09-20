@@ -1,0 +1,56 @@
+---
+title: "NIP-02 gives petnames resolvable paths"
+description: "NIP-02 now defines relative and absolute petname paths that resolve through Nostr follow lists, while leaving adoption and escaping rules open."
+seoDescription: "NIP-02 now defines relative and absolute petname paths that resolve through Nostr follow lists, while leaving adoption and escaping rules open."
+excerpt: "NIP-02 now defines relative and absolute petname paths that resolve through Nostr follow lists, while leaving adoption and escaping rules open."
+date: "2026-09-20"
+publishedAt: "2026-09-20"
+backfilled: false
+type: "story"
+tags: ["Nostr","NIP-02","Web of Trust","Identity"]
+featuredImage: "/images/news/nip-02-gives-petnames-resolvable-paths.svg"
+translationKey: "nip-02-gives-petnames-resolvable-paths"
+sources: [{"title":"PR #2472: nip02: make petnames great again","url":"https://github.com/nostr-protocol/nips/pull/2472","publisher":"nostr-protocol/nips","date":"2026-09-19"},{"title":"NIP-02 at merge commit 11cca8f","url":"https://github.com/nostr-protocol/nips/blob/11cca8f6cf0b65ef4fa6ab97deb2c68db4900847/02.md","publisher":"nostr-protocol/nips","date":"2026-09-19"},{"title":"Merge commit 11cca8f","url":"https://github.com/nostr-protocol/nips/commit/11cca8f6cf0b65ef4fa6ab97deb2c68db4900847","publisher":"nostr-protocol/nips","date":"2026-09-19"}]
+published: true
+---
+
+NIP-02 now gives its petname scheme an explicit path notation. [PR #2472](https://github.com/nostr-protocol/nips/pull/2472), merged on 19 September 2026, replaces the old multi-hop example with rules for displaying and resolving names such as `~/erin/charlie` through Nostr follow lists.
+
+The change does not add an event kind or alter the structure of a kind 3 follow list. It makes an existing optional field more precise. The fourth value of a `p` tag can hold a local name chosen by the author of that follow list:
+
+```json
+["p", "21df6d143fb96c2ec9d63726bf9edc7121df6d143fb96c2ec9d63726bf9edc71", "", "erin"]
+```
+
+In the current user's context, a client can display that known public key as `erin`. The name belongs to that user's view of the graph. It is not a global username and does not make a claim that every other user must accept.
+
+## Each path component follows one person's list
+
+The merged [NIP-02 text](https://github.com/nostr-protocol/nips/blob/11cca8f6cf0b65ef4fa6ab97deb2c68db4900847/02.md) defines resolution one component at a time. Suppose the current user's follow list assigns `erin` to one public key. Erin's follow list assigns `charlie` to another. A client can then resolve `~/erin/charlie` by looking up `erin` locally, fetching Erin's latest kind 3 event, and looking up `charlie` there.
+
+This direction matters. The previous text showed derived names such as `frank.david.erin`, but did not specify a path grammar or a step-by-step lookup procedure. The new version uses the same relationship in the order a resolver actually traverses it: start at a root, find the first name, then use that profile's follow list for the next name.
+
+The `~` form uses the logged-in user as the relative root. NIP-02 also gives two absolute-root examples for situations where no logged-in context is available or relevant:
+
+```text
+~npub1.../erin/charlie
+~carol@names.com/erin/charlie
+```
+
+These examples let an interface say whose naming context begins the path. They do not create a global registry. Every later component still depends on the petname chosen in the previous profile's follow list.
+
+## A readable chain is not a trust proof
+
+Petname paths can expose useful social context without asking one naming authority to allocate every name. For a web-of-trust interface, `~/erin/charlie` can be more informative than a bare public key because it records how the current user reaches Charlie through Erin.
+
+That path should not be treated as cryptographic proof of identity. A kind 3 event is signed by its author, so a client can verify who published each mapping. The author can still choose a misleading petname, change it in a later follow list, or point it at a different key. NIP-02 also says a new follow list replaces the previous one, which means a resolver needs the latest valid event from each step to reproduce the current path.
+
+Availability is another limit. Resolving a long path may require retrieving several profiles' follow lists from relays. A missing or stale event can stop the lookup even when the public keys themselves remain valid. Clients may want to show the resolved key, the path's root and any failed step instead of presenting the readable path as an unquestionable account name.
+
+## Parsing details remain open
+
+The merge changes one file, adding ten lines and removing twenty. It defines relative and absolute examples, but it does not specify escaping for petnames containing `/`, spaces or other characters that a parser may treat specially. Participants raised those cases in comments after the merge. The committed NIP does not yet resolve them.
+
+There is also no implementation or release evidence in the pull request. The change is a specification clarification, not proof that a particular client can already enter, display or resolve the new notation. Interoperability will depend on clients agreeing on parsing details and on how they report incomplete paths.
+
+For now, the useful boundary is clear: NIP-02 supplies a compact way to describe a chain of locally assigned names. It does not turn those names into globally unique identifiers, replace public-key verification or establish a trust score.

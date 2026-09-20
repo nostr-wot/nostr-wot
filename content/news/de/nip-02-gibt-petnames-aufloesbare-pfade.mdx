@@ -1,0 +1,56 @@
+---
+title: "NIP-02 gibt Petnames auflösbare Pfade"
+description: "NIP-02 definiert relative und absolute Petname-Pfade über Follow-Listen, während Einführung und Escape-Regeln offenbleiben."
+seoDescription: "NIP-02 definiert relative und absolute Petname-Pfade über Follow-Listen, während Einführung und Escape-Regeln offenbleiben."
+excerpt: "NIP-02 definiert relative und absolute Petname-Pfade über Follow-Listen, während Einführung und Escape-Regeln offenbleiben."
+date: "2026-09-20"
+publishedAt: "2026-09-20"
+backfilled: false
+type: "story"
+tags: ["Nostr","NIP-02","Web of Trust","Identity"]
+featuredImage: "/images/news/nip-02-gives-petnames-resolvable-paths.svg"
+translationKey: "nip-02-gives-petnames-resolvable-paths"
+sources: [{"title":"PR #2472: nip02: make petnames great again","url":"https://github.com/nostr-protocol/nips/pull/2472","publisher":"nostr-protocol/nips","date":"2026-09-19"},{"title":"NIP-02 at merge commit 11cca8f","url":"https://github.com/nostr-protocol/nips/blob/11cca8f6cf0b65ef4fa6ab97deb2c68db4900847/02.md","publisher":"nostr-protocol/nips","date":"2026-09-19"},{"title":"Merge commit 11cca8f","url":"https://github.com/nostr-protocol/nips/commit/11cca8f6cf0b65ef4fa6ab97deb2c68db4900847","publisher":"nostr-protocol/nips","date":"2026-09-19"}]
+published: true
+---
+
+NIP-02 gibt seinem Petname-Schema jetzt eine ausdrückliche Pfadnotation. [PR #2472](https://github.com/nostr-protocol/nips/pull/2472), am 19. September 2026 zusammengeführt, ersetzt das alte Beispiel über mehrere Stationen durch Regeln zum Anzeigen und Auflösen von Namen wie `~/erin/charlie` anhand von Nostr-Follow-Listen.
+
+Die Änderung fügt weder einen Event-Typ hinzu noch ändert sie die Struktur einer kind-3-Liste. Sie präzisiert ein vorhandenes optionales Feld. Der vierte Wert eines `p`-Tags kann einen lokalen Namen enthalten, den der Autor der Liste festlegt:
+
+```json
+["p", "21df6d143fb96c2ec9d63726bf9edc7121df6d143fb96c2ec9d63726bf9edc71", "", "erin"]
+```
+
+Im Kontext des aktuellen Benutzers kann ein Client diesen bekannten öffentlichen Schlüssel als `erin` anzeigen. Der Name gehört zur Sicht dieses Benutzers auf den Graphen. Er ist kein globaler Benutzername und verpflichtet niemanden, ihn zu übernehmen.
+
+## Jede Pfadkomponente folgt der Liste einer Person
+
+Der [zusammengeführte NIP-02-Text](https://github.com/nostr-protocol/nips/blob/11cca8f6cf0b65ef4fa6ab97deb2c68db4900847/02.md) definiert die Auflösung Schritt für Schritt. Ordnet die Liste des Benutzers `erin` einem Schlüssel zu und Erins Liste `charlie` einem anderen, kann ein Client `~/erin/charlie` auflösen: zuerst `erin` lokal suchen, Erins neuestes kind-3-Event laden und darin `charlie` nachschlagen.
+
+Der frühere Text zeigte abgeleitete Namen wie `frank.david.erin`, legte aber weder eine Pfadgrammatik noch einen Suchablauf fest. Die neue Fassung folgt der tatsächlichen Richtung: an einer Wurzel beginnen, den ersten Namen finden und für den nächsten die Liste dieses Profils verwenden.
+
+Die Form `~` verwendet den angemeldeten Benutzer als relative Wurzel. NIP-02 nennt auch zwei absolute Wurzeln, wenn niemand angemeldet oder der aktuelle Kontext nicht passend ist:
+
+```text
+~npub1.../erin/charlie
+~carol@names.com/erin/charlie
+```
+
+Die Beispiele zeigen, wessen Namenskontext den Pfad eröffnet. Sie schaffen kein globales Register. Jede weitere Komponente hängt vom Petname in der Liste des vorherigen Profils ab.
+
+## Ein lesbarer Pfad ist kein Vertrauensbeweis
+
+Petname-Pfade können sozialen Kontext zeigen, ohne einer einzigen Stelle die Vergabe aller Namen zu überlassen. In einer Web-of-Trust-Oberfläche kann `~/erin/charlie` aussagekräftiger sein als ein nackter Schlüssel, weil der Pfad erklärt, wie der Benutzer Charlie über Erin erreicht.
+
+Das ist kein kryptografischer Identitätsbeweis. Ein kind-3-Event ist signiert, sodass ein Client den Herausgeber jeder Zuordnung prüfen kann. Dieser Autor kann dennoch einen irreführenden Petname wählen, ihn ändern oder auf einen anderen Schlüssel zeigen lassen. NIP-02 sagt außerdem, dass eine neue Follow-Liste die vorige ersetzt. Der Resolver benötigt daher bei jedem Schritt das neueste gültige Event.
+
+Auch Verfügbarkeit begrenzt die Auflösung. Ein langer Pfad kann mehrere bei Relays gespeicherte Follow-Listen erfordern. Ein fehlendes oder veraltetes Event stoppt die Suche, selbst wenn die Schlüssel gültig bleiben. Clients sollten den aufgelösten Schlüssel, die Wurzel und einen fehlgeschlagenen Schritt anzeigen, statt den lesbaren Pfad als unbestreitbaren Kontonamen darzustellen.
+
+## Parsing-Details bleiben offen
+
+Der Merge ändert eine Datei, fügt zehn Zeilen hinzu und entfernt zwanzig. Relative und absolute Beispiele sind definiert, aber keine Escape-Regeln für Petnames mit `/`, Leerzeichen oder anderen Sonderzeichen. Diese Fälle wurden nach dem Merge in Kommentaren angesprochen. Der aktuelle NIP beantwortet sie noch nicht.
+
+Der Pull Request belegt auch keine veröffentlichte Implementierung. Die Änderung erläutert die Spezifikation, beweist aber nicht, dass ein bestimmter Client die neue Notation bereits eingeben, anzeigen oder auflösen kann. Interoperabilität erfordert gemeinsame Parsing-Regeln und eine verständliche Anzeige unvollständiger Pfade.
+
+Die Grenze ist damit klar: NIP-02 beschreibt eine Kette lokal zugewiesener Namen. Es macht daraus keine global eindeutigen Kennungen, ersetzt nicht die Prüfung öffentlicher Schlüssel und liefert keinen Vertrauenswert.
