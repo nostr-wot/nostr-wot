@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict';
 import { test } from 'node:test';
-import { mergeGraphData, displayedPath } from '../lib/graph/merge';
+import { mergeGraphData, displayedPath, applyGraphProfiles } from '../lib/graph/merge';
 import type { GraphNode, GraphEdge } from '../lib/graph/types';
 const node = (id: string): GraphNode => ({ id, distance: 2, pathCount: 3, trustScore: 0.7, isRoot: false });
 const edge = (source: string | GraphNode, target: string | GraphNode): GraphEdge => ({ source, target, type: 'follow', strength: 0.5, bidirectional: false });
@@ -25,4 +25,14 @@ test('displayed paths follow actual directed edges, never stale discovery parent
   const a={...node('a'),expandedFrom:'root'}, b=node('b');
   assert.deepEqual(displayedPath({nodes:[root,a,b],links:[edge('a','root')]},'a'),[]);
   assert.deepEqual(displayedPath({nodes:[root,a,b],links:[edge('root','b'),edge('b','a')]},'a').map(n=>n.id),['root','b','a']);
+});
+
+
+test('verified profile names and avatars reach rendered nodes without changing graph metrics', () => {
+  const before = { ...node('a'), x: 12, label: 'npub…', picture: 'https://old.example/avatar' };
+  const updated = applyGraphProfiles({ nodes: [before], links: [] }, new Map([['a', { pubkey: 'a', displayName: 'Alice' }]]));
+  assert.equal(updated.nodes[0].label, 'Alice');
+  assert.equal(updated.nodes[0].picture, undefined);
+  assert.equal(updated.nodes[0].x, 12);
+  assert.equal(updated.nodes[0].trustScore, before.trustScore);
 });
