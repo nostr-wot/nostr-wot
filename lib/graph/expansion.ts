@@ -1,11 +1,11 @@
 import type { GraphData, GraphNode } from "./types";
-import type { OracleDistance } from "./oracle";
+import type { GraphMetric } from "./sources";
 import { calculateTrustScore } from "./colors";
 import { formatPubkey } from "./transformers";
 
 /** Only reachable oracle results become nodes; unknown distance never implies a score. */
 export function buildExpansion(parent: GraphNode, root: string, targets: string[],
-  distances: Map<string, OracleDistance>, existingNodes: GraphNode[]): GraphData {
+  distances: Map<string, GraphMetric>, existingNodes: GraphNode[]): GraphData {
   const existing = new Map(existingNodes.map(node => [node.id, node]));
   const nodes: GraphNode[] = [];
   const links: GraphData["links"] = [];
@@ -19,7 +19,7 @@ export function buildExpansion(parent: GraphNode, root: string, targets: string[
     if (key === root || key === parent.id || !metric || metric.hops === null) continue;
     const old = existing.get(key);
     const angle = Math.random() * 2 * Math.PI;
-    const score = calculateTrustScore(metric.hops, metric.pathCount);
+    const score = metric.score ?? calculateTrustScore(metric.hops, metric.pathCount);
     nodes.push({ ...old, id: key, label: old?.label ?? formatPubkey(key),
       distance: metric.hops, pathCount: metric.pathCount, trustScore: score,
       isRoot: false, isMutual: metric.mutual, expandedFrom: old?.expandedFrom ?? parent.id,

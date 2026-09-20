@@ -1,17 +1,31 @@
 "use client";
 
-import { useRef, useState, type FormEvent } from "react";
+import { useEffect, useRef, useState, type FormEvent } from "react";
 import { useTranslations } from "next-intl";
-import { useSession } from "@nostr-wot/data/react";
+import { connectGraphExtension, type GraphExtension } from "@/lib/graph/extension";
+import { closeSavedGraph } from "@/lib/graph/sources";
+import { deleteSavedGraph } from "@/lib/graph/databases";
+import SavedGraphs from "@/components/playground/SavedGraphs";
 import { Badge, Button } from "@/components/ui";
 import { GraphPlayground } from "@/components/playground";
 import { parseGraphPubkey } from "@/lib/graph/parsePubkey";
 
 export default function PlaygroundContent() {
   const t = useTranslations("playground");
-  const { pubkey } = useSession();
+
   const inputRef = useRef<HTMLInputElement>(null);
-  const [rootPubkey, setRootPubkey] = useState<string | null>(null);
+  const [selection, setSelection] = useState<{ pubkey: string; kind: "local" | "extension"; extension?: GraphExtension; id: number } | null>(null);
+  const rootPubkey = selection?.pubkey;
+  const attempt = useRef(0);
+  const [connecting, setConnecting] = useState(false);
+  const [connectionError, setConnectionError] = useState<string | null>(null);
+  useEffect(() => () => { attempt.current++; }, []);
+  function openLocal(pubkey: string) {
+    const id = ++attempt.current;
+    setConnecting(false); setConnectionError(null); setHasError(false);
+    if (inputRef.current) inputRef.current.value = pubkey;
+    setSelection({ pubkey, kind: "local", id });
+  }
   const [hasError, setHasError] = useState(false);
 
   function explore(event: FormEvent<HTMLFormElement>) {
@@ -25,15 +39,28 @@ export default function PlaygroundContent() {
       return;
     }
     setHasError(false);
-    setRootPubkey(parsed);
+    openLocal(parsed);
   }
 
-  function exploreIdentity() {
-    const parsed = parseGraphPubkey(pubkey ?? "");
-    if (!parsed) return;
-    if (inputRef.current) inputRef.current.value = parsed;
-    setHasError(false);
-    setRootPubkey(parsed);
+  async function connect() {
+    const id = ++attempt.current;
+    setConnecting(true); setConnectionError(null);
+    try {
+      const provider = window.nostr as GraphExtension | undefined;
+      const pubkey = await connectGraphExtension(provider);
+      if (id !== attempt.current) return;
+      if (inputRef.current) inputRef.current.value = pubkey;
+      setHasError(false);
+      setSelection({ pubkey, kind: "extension", extension: provider, id });
+    } catch (error) {
+      if (id === attempt.current) setConnectionError(error instanceof Error && error.message === "extensionMissing" ? t("entry.extensionMissing") : t("entry.extensionFailed"));
+    } finally { if (id === attempt.current) setConnecting(false); }
+  }
+  async function removeGraphs(keys: string[]) {
+    if (selection?.kind === "local" && keys.includes(selection.pubkey)) {
+      attempt.current++; setSelection(null);
+    }
+    for (const key of keys) { await closeSavedGraph(key); await deleteSavedGraph(key); }
   }
 
   return (
@@ -67,14 +94,16 @@ export default function PlaygroundContent() {
                 className="w-full min-w-0 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-900 px-4 py-3 text-sm text-gray-900 dark:text-white placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-primary"
               />
               <Button type="submit" className="shrink-0">{t("entry.explore")}</Button>
-              {pubkey && <Button type="button" variant="outline" className="shrink-0" onClick={exploreIdentity}>{t("entry.useIdentity")}</Button>}
+              <Button type="button" variant="outline" disabled={connecting} className="shrink-0" onClick={connect}>{t(connecting ? "entry.connecting" : "entry.connectExtension")}</Button>
             </div>
             <p id="graph-root-help" className="mt-2 text-sm text-gray-500 dark:text-gray-400">{t("entry.help")}</p>
+            {connectionError && <p role="alert" className="mt-2 text-sm text-red-600">{connectionError}</p>}
             {hasError && <p id="graph-root-error" role="alert" className="mt-2 text-sm text-red-600 dark:text-red-400">{t("entry.invalid")}</p>}
           </form>
 
-          {rootPubkey ? (
-            <GraphPlayground key={rootPubkey} rootPubkey={rootPubkey} />
+          <SavedGraphs onOpen={openLocal} onRemove={removeGraphs} />
+          {selection ? (
+            <GraphPlayground key={selection.id} rootPubkey={selection.pubkey} sourceKind={selection.kind} extension={selection.extension} />
           ) : (
             <div className="text-center rounded-xl border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800/50 px-6 py-12">
               <div className="w-16 h-16 mx-auto mb-6 bg-primary/10 rounded-2xl flex items-center justify-center">

@@ -7,6 +7,7 @@ import { useNodeSelection } from "@/hooks/useNodeSelection";
 import { useGraphData } from "@/hooks/useGraphData";
 import { GraphNode } from "@/lib/graph/types";
 import { GraphCanvas, GraphCanvas3D, GraphLegend } from "../graph";
+import GraphSyncControls from "../GraphSyncControls";
 import SearchBar from "./SearchBar";
 import FilterDropdown from "./FilterDropdown";
 import RightPanel from "./RightPanel";
@@ -20,7 +21,7 @@ export default function GraphLayout() {
   const t = useTranslations("playground");
   const { state, getProfile } = useGraph();
   const { selectedNode, selectedProfile, clearSelection } = useNodeSelection();
-  const { expandNodeFollows, resetGraph, hasMoreFollows, loadMoreFollows, nodeLimitReached } = useGraphData();
+  const { expandNodeFollows, resetGraph, hasMoreFollows, loadMoreFollows, nodeLimitReached, rootFollowCount, sourceKind } = useGraphData();
 
   const [dimensions, setDimensions] = useState({ width: 800, height: 600 });
   const [graphMode, setGraphMode] = useState<"2d" | "3d">("2d");
@@ -76,6 +77,7 @@ export default function GraphLayout() {
 
   return (
     <div className="flex flex-col h-full overflow-hidden">
+      <GraphSyncControls />
       {/* Top bar with search, filters, and view toggle */}
       <div className="flex flex-wrap items-center gap-2 p-3 border-b border-gray-200 dark:border-gray-700">
         <div className="flex-1 max-w-md">
@@ -208,13 +210,14 @@ export default function GraphLayout() {
       </div>
 
       <div className="flex flex-wrap items-center justify-between gap-2 border-t border-gray-200 dark:border-gray-700 px-3 py-2 text-xs text-gray-600 dark:text-gray-400">
-        <p>{t("graph.sourceHint")}</p>
+        <p>{t(sourceKind === "local" ? "graph.localSourceHint" : "graph.extensionSourceHint")}</p>
+        {rootFollowCount !== null && <span>{t("graph.following")}: {rootFollowCount}</span>}
         {nodeLimitReached ? <p role="status">{t("graph.nodeLimit", { count: state.data.nodes.length })}</p> :
           state.rootPubkey && hasMoreFollows(selectedNode?.id ?? state.rootPubkey) && (
             <button className="rounded bg-primary px-3 py-1.5 text-white disabled:opacity-50" disabled={state.isLoading}
               onClick={() => loadMoreFollows(selectedNode?.id ?? state.rootPubkey!)}>{t("graph.loadMoreFollows")}</button>
           )}
-        {!state.isLoading && !state.error && state.rootPubkey && state.expandedNodes.has(state.rootPubkey) && state.data.nodes.length === 1 && <p role="status">{t("graph.emptyFollows")}</p>}
+        {!state.isLoading && !state.error && state.rootPubkey && state.expandedNodes.has(state.rootPubkey) && rootFollowCount === 0 && <p role="status">{t("graph.emptyFollows")}</p>}
       </div>
       {/* Bottom stats bar — outside the graph container so legend never overlaps it */}
       <BottomStatsBar />
