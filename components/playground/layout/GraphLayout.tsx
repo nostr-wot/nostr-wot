@@ -18,9 +18,9 @@ import { NodeProfileModal } from "../profile";
 
 export default function GraphLayout() {
   const t = useTranslations("playground");
-  const { state, getProfile, resetGraph } = useGraph();
+  const { state, getProfile } = useGraph();
   const { selectedNode, selectedProfile, clearSelection } = useNodeSelection();
-  const { expandNodeFollows } = useGraphData();
+  const { expandNodeFollows, resetGraph, hasMoreFollows, loadMoreFollows, nodeLimitReached } = useGraphData();
 
   const [dimensions, setDimensions] = useState({ width: 800, height: 600 });
   const [graphMode, setGraphMode] = useState<"2d" | "3d">("2d");
@@ -43,8 +43,9 @@ export default function GraphLayout() {
     };
 
     updateDimensions();
-    window.addEventListener("resize", updateDimensions);
-    return () => window.removeEventListener("resize", updateDimensions);
+    const observer = new ResizeObserver(updateDimensions);
+    if (containerRef.current) observer.observe(containerRef.current);
+    return () => observer.disconnect();
   }, []);
 
   // Close right panel
@@ -71,12 +72,12 @@ export default function GraphLayout() {
 
   // Calculate canvas dimensions (accounting for panels)
   const canvasWidth = dimensions.width;
-  const canvasHeight = dimensions.height - 44; // Account for stats bar
+  const canvasHeight = dimensions.height;
 
   return (
     <div className="flex flex-col h-full overflow-hidden">
       {/* Top bar with search, filters, and view toggle */}
-      <div className="flex items-center gap-4 p-4 border-b border-gray-200 dark:border-gray-700">
+      <div className="flex flex-wrap items-center gap-2 p-3 border-b border-gray-200 dark:border-gray-700">
         <div className="flex-1 max-w-md">
           <SearchBar />
         </div>
@@ -113,14 +114,14 @@ export default function GraphLayout() {
         {/* Reset graph button */}
         <button
           onClick={resetGraph}
-          title="Reset graph"
+          title={t("graph.resetGraph")}
           className="flex items-center gap-1.5 px-3 py-2 rounded-lg bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-400 hover:bg-red-500/20 hover:text-red-400 transition-colors text-sm font-medium"
         >
           <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
               d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
           </svg>
-          Reset Graph
+          {t("graph.resetGraph")}
         </button>
       </div>
 
@@ -171,7 +172,8 @@ export default function GraphLayout() {
               <h3 className="text-lg font-medium text-white mb-2">
                 {t("graph.errorTitle")}
               </h3>
-              <p className="text-gray-400 text-sm">{state.error}</p>
+              <p className="text-gray-400 text-sm" role="alert">{state.error}</p>
+              <button onClick={resetGraph} className="mt-4 rounded-lg bg-primary px-4 py-2 text-white">{t("graph.retry")}</button>
             </div>
           </div>
         )}
@@ -205,6 +207,15 @@ export default function GraphLayout() {
         )}
       </div>
 
+      <div className="flex flex-wrap items-center justify-between gap-2 border-t border-gray-200 dark:border-gray-700 px-3 py-2 text-xs text-gray-600 dark:text-gray-400">
+        <p>{t("graph.sourceHint")}</p>
+        {nodeLimitReached ? <p role="status">{t("graph.nodeLimit", { count: state.data.nodes.length })}</p> :
+          state.rootPubkey && hasMoreFollows(selectedNode?.id ?? state.rootPubkey) && (
+            <button className="rounded bg-primary px-3 py-1.5 text-white disabled:opacity-50" disabled={state.isLoading}
+              onClick={() => loadMoreFollows(selectedNode?.id ?? state.rootPubkey!)}>{t("graph.loadMoreFollows")}</button>
+          )}
+        {!state.isLoading && !state.error && state.rootPubkey && state.expandedNodes.has(state.rootPubkey) && state.data.nodes.length === 1 && <p role="status">{t("graph.emptyFollows")}</p>}
+      </div>
       {/* Bottom stats bar — outside the graph container so legend never overlaps it */}
       <BottomStatsBar />
 
