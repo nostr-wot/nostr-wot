@@ -1,0 +1,56 @@
+---
+title: "NIP-02 dá caminhos resolúveis aos apelidos"
+description: "NIP-02 define caminhos relativos e absolutos de apelidos resolvidos por listas de contatos, enquanto adoção e regras de escape seguem em aberto."
+seoDescription: "NIP-02 define caminhos relativos e absolutos de apelidos resolvidos por listas de contatos, enquanto adoção e regras de escape seguem em aberto."
+excerpt: "NIP-02 define caminhos relativos e absolutos de apelidos resolvidos por listas de contatos, enquanto adoção e regras de escape seguem em aberto."
+date: "2026-09-20"
+publishedAt: "2026-09-20"
+backfilled: false
+type: "story"
+tags: ["Nostr","NIP-02","Web of Trust","Identity"]
+featuredImage: "/images/news/nip-02-gives-petnames-resolvable-paths.svg"
+translationKey: "nip-02-gives-petnames-resolvable-paths"
+sources: [{"title":"PR #2472: nip02: make petnames great again","url":"https://github.com/nostr-protocol/nips/pull/2472","publisher":"nostr-protocol/nips","date":"2026-09-19"},{"title":"NIP-02 at merge commit 11cca8f","url":"https://github.com/nostr-protocol/nips/blob/11cca8f6cf0b65ef4fa6ab97deb2c68db4900847/02.md","publisher":"nostr-protocol/nips","date":"2026-09-19"},{"title":"Merge commit 11cca8f","url":"https://github.com/nostr-protocol/nips/commit/11cca8f6cf0b65ef4fa6ab97deb2c68db4900847","publisher":"nostr-protocol/nips","date":"2026-09-19"}]
+published: true
+---
+
+A NIP-02 agora dá uma notação de caminho explícita ao seu esquema de apelidos. A [PR #2472](https://github.com/nostr-protocol/nips/pull/2472), incorporada em 19 de setembro de 2026, substitui o antigo exemplo de vários saltos por regras para exibir e resolver nomes como `~/erin/charlie` usando listas de contatos do Nostr.
+
+A mudança não adiciona um tipo de evento nem altera a estrutura de uma lista kind 3. Ela torna mais preciso um campo opcional já existente. O quarto valor de uma tag `p` pode guardar um nome local escolhido por quem publica a lista:
+
+```json
+["p", "21df6d143fb96c2ec9d63726bf9edc7121df6d143fb96c2ec9d63726bf9edc71", "", "erin"]
+```
+
+No contexto do usuário atual, um cliente pode mostrar essa chave pública conhecida como `erin`. O nome pertence à visão desse usuário sobre o grafo. Não é um nome global e não obriga outras pessoas a aceitá-lo.
+
+## Cada componente segue a lista de uma pessoa
+
+O [texto incorporado da NIP-02](https://github.com/nostr-protocol/nips/blob/11cca8f6cf0b65ef4fa6ab97deb2c68db4900847/02.md) define a resolução um componente por vez. Se a lista do usuário atribui `erin` a uma chave e a lista de Erin atribui `charlie` a outra, um cliente resolve `~/erin/charlie` procurando `erin` localmente, obtendo o evento kind 3 mais recente de Erin e procurando `charlie` nele.
+
+O texto anterior mostrava nomes derivados como `frank.david.erin`, mas não definia uma gramática de caminho nem um procedimento de busca. A nova versão ordena a relação como um resolvedor a percorre: começa numa raiz, encontra o primeiro nome e usa a lista desse perfil para o próximo.
+
+A forma `~` usa o usuário conectado como raiz relativa. A NIP-02 também apresenta duas raízes absolutas para situações sem login ou quando o contexto atual não é relevante:
+
+```text
+~npub1.../erin/charlie
+~carol@names.com/erin/charlie
+```
+
+Os exemplos mostram qual contexto de nomes inicia o caminho. Não criam um registro global. Cada componente seguinte depende do apelido escolhido na lista do perfil anterior.
+
+## Um caminho legível não é prova de confiança
+
+Os caminhos podem expor contexto social sem uma única autoridade distribuindo todos os nomes. Em uma interface de web of trust, `~/erin/charlie` pode informar mais do que uma chave isolada porque registra como o usuário chega a Charlie por meio de Erin.
+
+Isso não deve ser tratado como prova criptográfica de identidade. Um evento kind 3 é assinado, então o cliente verifica quem publicou cada associação. Mesmo assim, o autor pode escolher um apelido enganoso, alterá-lo ou apontá-lo para outra chave. Uma nova lista também substitui a anterior, segundo a NIP-02. O resolvedor precisa do evento válido mais recente em cada etapa.
+
+A disponibilidade é outro limite. Um caminho longo pode exigir várias listas guardadas em relays. Um evento ausente ou desatualizado pode interromper a resolução mesmo que as chaves continuem válidas. Clientes podem mostrar a chave resolvida, a raiz e o ponto da falha em vez de apresentar o caminho como um nome incontestável.
+
+## Detalhes de análise continuam em aberto
+
+O merge altera um arquivo, com dez linhas adicionadas e vinte removidas. Ele define exemplos relativos e absolutos, mas não especifica como escapar apelidos com `/`, espaços ou outros caracteres especiais. Esses casos foram levantados em comentários após o merge e o texto atual ainda não os resolve.
+
+A pull request também não traz evidência de uma implementação publicada. A mudança esclarece a especificação, mas não prova que um cliente específico já insira, mostre ou resolva a nova notação. A interoperabilidade depende de consenso sobre a análise e sobre como relatar caminhos incompletos.
+
+O limite útil está claro: a NIP-02 fornece uma maneira compacta de descrever uma cadeia de nomes atribuídos localmente. Ela não cria identificadores globais únicos, não substitui a verificação de chaves públicas e não estabelece uma pontuação de confiança.
