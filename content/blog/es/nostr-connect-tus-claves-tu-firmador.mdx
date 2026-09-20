@@ -1,0 +1,33 @@
+---
+title: "Nostr Connect: tus claves, tu firmador"
+description: "Usa Nostr WoT con un firmador remoto sin importar tu clave privada de Nostr a la extensión."
+excerpt: "Usa Nostr WoT con un firmador remoto sin importar tu clave privada de Nostr a la extensión."
+date: "2026-09-20"
+author: {"name": "Nostr WoT Team"}
+tags: ["Nostr Connect", "NIP-46", "Nostr WoT"]
+published: true
+translationKey: "nostr-connect-your-keys-your-signer"
+---
+
+Nostr Connect ya funciona en Nostr WoT. Puedes conectar un firmador remoto y usar sitios Nostr compatibles a través de la extensión sin importar tu clave privada.
+
+La extensión conecta el navegador con tu firmador. Tu clave de identidad permanece en el firmador, que gestiona las solicitudes de firma y los permisos que concedas.
+
+## Cómo conectarlo
+
+1. Abre la configuración de cuentas de la extensión y elige **Nostr Connect**.
+2. Escanea el código QR con un firmador compatible o pega su enlace `bunker://` en la pestaña Bunker.
+3. Autoriza la conexión en el firmador y comprueba tu identidad en la extensión.
+4. Visita un sitio Nostr compatible con extensiones, conecta Nostr WoT y gestiona las solicitudes desde tu firmador.
+
+La extensión ofrece la interfaz de navegador NIP-07 y envía las solicitudes al firmador mediante [NIP-46](https://github.com/nostr-protocol/nips/blob/master/46.md). Guarda las credenciales de conexión, pero tu clave privada de Nostr permanece en el firmador.
+
+[Amber](https://github.com/greenart7c3/Amber) ofrece Nostr Connect en Android. Para esta configuración, usa su conexión NIP-46. Otros firmadores compatibles pueden utilizar el mismo protocolo; la compatibilidad depende de cada implementación. La interfaz nativa de Android de Amber es otro método de conexión.
+
+## Tú decides dónde guardar tu clave
+
+Puedes aprovechar la extensión sin confiarle tu clave privada. Revisa lo que autorizas y los permisos recordados en tu firmador: la extensión sigue gestionando solicitudes de los sitios. El firmador debe estar disponible para responder.
+
+La [versión 0.7.2 publicada en GitHub](https://github.com/nostr-wot/nostr-wot-extension/releases/tag/v0.7.2) incluye las correcciones de identidad remota de 0.7.1 y muestra los nombres y las imágenes de perfil. Si una conexión anterior mostraba otra identidad, vuelve a conectarla. Las notas aún indican que la entrega de solicitudes de firma en Amber no está verificada; no afirmamos haber probado todas las combinaciones de firmador y dispositivo.
+
+[Descarga Nostr WoT](/es/download) y elige dónde mantener tu clave.

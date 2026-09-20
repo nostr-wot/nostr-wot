@@ -1,0 +1,33 @@
+---
+title: "Nostr Connect: deine Schlüssel, dein Signer"
+description: "Nutze Nostr WoT mit einem Remote-Signer, ohne deinen privaten Nostr-Schlüssel in die Erweiterung zu importieren."
+excerpt: "Nutze Nostr WoT mit einem Remote-Signer, ohne deinen privaten Nostr-Schlüssel in die Erweiterung zu importieren."
+date: "2026-09-20"
+author: {"name": "Nostr WoT Team"}
+tags: ["Nostr Connect", "NIP-46", "Nostr WoT"]
+published: true
+translationKey: "nostr-connect-your-keys-your-signer"
+---
+
+Nostr Connect funktioniert jetzt in Nostr WoT. Du kannst einen Remote-Signer verbinden und kompatible Nostr-Websites über die Erweiterung nutzen, ohne deinen privaten Schlüssel zu importieren.
+
+Die Erweiterung verbindet den Browser mit deinem Signer. Dein Identitätsschlüssel bleibt im Signer, der Signaturanfragen und erteilte Berechtigungen verwaltet.
+
+## Signer verbinden
+
+1. Öffne die Kontoeinrichtung der Erweiterung und wähle **Nostr Connect**.
+2. Scanne den QR-Code mit einem kompatiblen Signer oder füge dessen `bunker://`-Link im Bunker-Tab ein.
+3. Bestätige die Verbindung im Signer und prüfe deine Identität in der Erweiterung.
+4. Öffne eine Nostr-Website mit Unterstützung für Browser-Erweiterungen, verbinde Nostr WoT und verwalte die Anfragen in deinem Signer.
+
+Die Erweiterung stellt die NIP-07-Browserschnittstelle bereit und leitet Anfragen über [NIP-46](https://github.com/nostr-protocol/nips/blob/master/46.md) weiter. Sie speichert Verbindungsdaten; dein privater Nostr-Schlüssel bleibt beim Signer.
+
+[Amber](https://github.com/greenart7c3/Amber) bietet Nostr Connect auf Android. Verwende dafür die NIP-46-Verbindung. Andere kompatible Signer können dasselbe Protokoll nutzen, abhängig von ihrer Implementierung. Ambers native Android-Schnittstelle ist ein anderer Verbindungsweg.
+
+## Entscheide, wo dein Schlüssel bleibt
+
+Du kannst die Erweiterung nutzen, ohne ihr deinen privaten Schlüssel anzuvertrauen. Prüfe Anfragen und gespeicherte Berechtigungen im Signer: Die Erweiterung vermittelt weiterhin die Anfragen der Websites. Der Signer muss erreichbar sein, um zu antworten.
+
+Die [auf GitHub veröffentlichte Version 0.7.2](https://github.com/nostr-wot/nostr-wot-extension/releases/tag/v0.7.2) enthält die Identitätskorrekturen aus 0.7.1 und zeigt Profilnamen und Bilder an. Verbinde ältere Konten erneut, wenn sie eine falsche Identität angezeigt haben. Laut Versionshinweisen ist die Zustellung von Signaturanfragen in Amber weiterhin nicht verifiziert; wir behaupten nicht, jede Kombination aus Signer und Gerät getestet zu haben.
+
+[Installiere Nostr WoT](/de/download) und wähle deinen Signer.

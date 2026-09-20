@@ -1,0 +1,39 @@
+---
+title: "Nostr Connect: your keys, your signer"
+description: "Use Nostr WoT with a remote signer and keep your Nostr private key out of the extension."
+excerpt: "Use Nostr WoT with a remote signer and keep your Nostr private key out of the extension."
+date: "2026-09-20"
+author: {"name": "Nostr WoT Team"}
+tags: ["Nostr Connect", "NIP-46", "Nostr WoT"]
+published: true
+translationKey: "nostr-connect-your-keys-your-signer"
+---
+
+Nostr Connect is working in Nostr WoT. You can connect a remote signer and use compatible Nostr websites through the extension without importing your Nostr private key into it.
+
+If you prefer to keep your identity in your own signer, this gives you another way to use the extension. Nostr WoT handles the browser connection; your signer holds the identity key and handles signing requests.
+
+## How it works
+
+The extension connects websites through the familiar Nostr browser interface, NIP-07. It forwards signing requests to your remote signer using [Nostr Connect, or NIP-46](https://github.com/nostr-protocol/nips/blob/master/46.md), then returns the response to the website.
+
+Your Nostr private key stays with the signer. The extension stores connection credentials so it can communicate with that signer. You control approvals and any remembered permissions in the signer.
+
+This is useful if you want the convenience of a browser extension while keeping your signing key on another device or in a signer you already use.
+
+## Connect your signer
+
+1. Open the extension's account setup and choose **Nostr Connect**.
+2. Scan the generated QR code with a compatible signer, or paste the signer's `bunker://` connection link into the Bunker tab.
+3. Approve the connection in your signer and check that the extension shows your identity.
+4. Open a Nostr website that supports browser extensions, connect Nostr WoT, and approve signing requests according to your signer's settings.
+
+[Amber](https://github.com/greenart7c3/Amber) offers a Nostr Connect interface on Android. Use its NIP-46 connection flow for this setup. Other compatible NIP-46 signers can use the same protocol; support depends on the signer's implementation. Amber's native Android app interface is a separate connection method.
+
+## Choose where your key lives
+
+Remote signing means you do not have to entrust the extension with your Nostr private key. The extension still handles requests from websites, so review what you authorize in your signer and grant permissions deliberately. Your signer must be reachable when a request needs its response.
+
+The published [0.7.2 GitHub release](https://github.com/nostr-wot/nostr-wot-extension/releases/tag/v0.7.2) includes the remote-account identity fixes from 0.7.1 and displays profile names and images for connected accounts. If an older connection showed the wrong identity, reconnect it. The release notes still list native Amber signing delivery as unverified; we are not claiming that every signer or device combination has been tested.
+
+[Get Nostr WoT](/download) and choose the signing setup that suits you.
