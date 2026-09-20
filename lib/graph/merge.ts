@@ -1,4 +1,4 @@
-import type { GraphData, GraphEdge, GraphNode } from './types';
+import type { GraphData, GraphEdge, GraphNode, NodeProfile } from './types';
 
 const endpoint = (value: string | GraphNode) => typeof value === 'string' ? value : value.id;
 
@@ -41,4 +41,13 @@ export function displayedPath(data: GraphData, target: string): GraphNode[] {
   const path: GraphNode[] = [];
   for (let id: string | null = target; id !== null; id = parents.get(id) ?? null) path.push(nodes.get(id)!);
   return path.reverse();
+}
+
+
+/** Apply verified profile metadata to the nodes rendered and searched by the canvas. */
+export function applyGraphProfiles(data: GraphData, profiles: Map<string, NodeProfile>): GraphData {
+  return { ...data, nodes: data.nodes.map(node => {
+    const profile = profiles.get(node.id);
+    return profile ? { ...node, label: profile.displayName || profile.name || node.label, picture: profile.picture } : node;
+  }) };
 }

@@ -21,7 +21,7 @@ import {
   DEFAULT_STATS,
 } from "@/lib/graph/types";
 import { filterGraphData, calculateStats } from "@/lib/graph/transformers";
-import { mergeGraphData } from "@/lib/graph/merge";
+import { mergeGraphData, applyGraphProfiles } from "@/lib/graph/merge";
 import {
   cacheProfiles as cacheProfilesToStorage,
 } from "@/lib/cache/profileCache";
@@ -124,7 +124,7 @@ function graphReducer(state: GraphState, action: GraphAction): GraphState {
       if (profilesToCache.length > 0) {
         cacheProfilesToStorage(profilesToCache);
       }
-      return { ...state, profiles: newProfiles };
+      return { ...state, profiles: newProfiles, data: applyGraphProfiles(state.data, action.payload) };
     }
 
     case "EXPAND_NODE": {
