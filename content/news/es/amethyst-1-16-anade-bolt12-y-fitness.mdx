@@ -1,0 +1,43 @@
+---
+title: "Amethyst 1.16 añade pagos BOLT12 y un panel de actividad física"
+description: "Amethyst 1.16 muestra ofertas BOLT12, añade un retorno BOLT11 limitado, estrena My Fitness y aligera su núcleo compartido."
+seoDescription: "Amethyst 1.16 muestra ofertas BOLT12, añade un retorno BOLT11 limitado, estrena My Fitness y aligera su núcleo compartido."
+excerpt: "Amethyst 1.16 muestra ofertas BOLT12, añade un retorno BOLT11 limitado, estrena My Fitness y aligera su núcleo compartido."
+date: "2026-09-22"
+publishedAt: "2026-09-22"
+backfilled: false
+type: "story"
+tags: ["Nostr","Amethyst","BOLT12","NWC","Health Connect"]
+featuredImage: "/images/news/amethyst-1-16-adds-bolt12-and-fitness.svg"
+translationKey: "amethyst-1-16-adds-bolt12-and-fitness"
+sources: [{"title":"Lanzamiento Amethyst v1.16.0","url":"https://github.com/vitorpamplona/amethyst/releases/tag/v1.16.0","publisher":"vitorpamplona/amethyst","date":"2026-09-17"},{"title":"PR #4112: ofertas BOLT12 y retorno BOLT11 limitado","url":"https://github.com/vitorpamplona/amethyst/pull/4112","publisher":"vitorpamplona/amethyst","date":"2026-09-13"},{"title":"PR #4129: panel My Fitness","url":"https://github.com/vitorpamplona/amethyst/pull/4129","publisher":"vitorpamplona/amethyst","date":"2026-09-17"},{"title":"PR #4111: separación del núcleo sin interfaz y correcciones","url":"https://github.com/vitorpamplona/amethyst/pull/4111","publisher":"vitorpamplona/amethyst","date":"2026-09-13"}]
+published: true
+---
+
+[Amethyst 1.16.0](https://github.com/vitorpamplona/amethyst/releases/tag/v1.16.0), publicado el 17 de septiembre de 2026, lleva las ofertas BOLT12 a la interfaz habitual de pagos, incorpora un panel local de actividad física y separa más código compartido de la interfaz. La página del lanzamiento ofrece paquetes Android para las variantes F-Droid y Google Play, además de compilaciones de escritorio para Linux, macOS y Windows.
+
+Esos archivos demuestran que la versión 1.16.0 está disponible en GitHub. No demuestran que una tienda móvil haya terminado su propia revisión ni que entregue la misma versión a todos los usuarios.
+
+## BOLT12 entra en el flujo habitual de pagos
+
+El [cambio de pagos](https://github.com/vitorpamplona/amethyst/pull/4112) fusionado muestra en la banda de pagos del perfil las ofertas BOLT12 publicadas en eventos de tipo `10058`. Un destinatario que publica una oferta también puede aparecer como pagable desde el selector de zaps cuando la cartera Nostr Wallet Connect predeterminada del remitente anuncia la capacidad `pay`.
+
+La interfaz conserva una sola acción Lightning en lugar de pedir al remitente que elija primero un protocolo. Amethyst decide la ruta al enviar. Si la cartera rechaza una oferta BOLT12 y el destinatario también tiene una dirección Lightning, el cliente puede probar la ruta normal de zaps BOLT11.
+
+Ese retorno es deliberadamente limitado. Amethyst solo reintenta errores que indican una instrucción inutilizable, entre ellos `EXPIRED`, `NOT_FOUND`, `BAD_REQUEST`, `NOT_IMPLEMENTED`, `UNSUPPORTED_PAYMENT_INSTRUCTION` y `UNSUPPORTED_NETWORK`. No reintenta ante un tiempo de espera agotado, `PAYMENT_FAILED`, un error desconocido ni un pago sin recibo. Esos casos pueden ser ambiguos, por lo que un segundo intento automático podría duplicar el pago.
+
+Las pruebas del pull request cubren las reglas de reintento, pero su autor dejó constancia de que el recorrido completo desde el rechazo hasta BOLT11 no se probó de extremo a extremo con una cartera NWC real. La disponibilidad de la versión no prueba que todas las combinaciones de cartera y oferta se comporten igual.
+
+## My Fitness mantiene el panel en el dispositivo
+
+El nuevo panel [My Fitness](https://github.com/vitorpamplona/amethyst/pull/4129) resume el entrenamiento reciente del propio usuario. Compara esta semana con la anterior, calcula un promedio de cuatro semanas, agrupa el tiempo por actividad y muestra mejores esfuerzos, días activos y una racha de días consecutivos.
+
+El panel combina registros de Android Health Connect con los eventos de entrenamiento de tipo `1301` del usuario. Elimina coincidencias probables por tipo de actividad y hora de inicio, y prefiere el registro de Health Connect cuando ambas fuentes describen la misma sesión. Los cálculos se hacen en el dispositivo y publicar un entrenamiento sigue siendo una acción opcional para cada sesión.
+
+El cambio fusionado tiene un límite importante. La pantalla My Fitness no hace su propia petición a los relays para eventos `1301`. Tras un inicio en frío, puede mostrar solo entrenamientos cargados antes por otra pantalla, de modo que el historial publicado puede parecer incompleto hasta que el cliente obtenga esos eventos en otro lugar. El panel también depende de Health Connect, específico de Android, como fuente local de datos de salud.
+
+## Un límite más pequeño para el código compartido
+
+La versión 1.16 también incluye una [separación entre el código compartido sin interfaz y la capa Compose](https://github.com/vitorpamplona/amethyst/pull/4111). El proyecto afirma que esto elimina unos 40 MB de dependencias Compose y Skiko de las distribuciones de línea de comandos. El mismo cambio informa de 34 correcciones de funcionamiento y rendimiento en relays, cachés, análisis de texto, almacenamiento cifrado y feeds.
+
+Para los usuarios, la historia visible va más allá de una sola función. Los pagos descubren ofertas BOLT12 en más lugares, los datos de actividad obtienen un panel privado antes de cualquier publicación opcional y el núcleo compartido carga con menos interfaz. Los límites documentados siguen importando: la interoperabilidad de carteras necesita confirmación real, las tiendas pueden ir por detrás del lanzamiento de GitHub y My Fitness puede omitir entrenamientos de relays tras un inicio en frío.
