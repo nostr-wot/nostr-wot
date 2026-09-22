@@ -12,13 +12,14 @@ import { getTrustColorHex } from "@/lib/graph/colors";
 import NodeContextMenu from "./NodeContextMenu";
 
 // Dynamic import for 3D graph (WebGL-based)
+function GraphLoading() {
+  const g = useTranslations("playground");
+  return <div className="flex items-center justify-center h-full bg-gray-900"><div className="text-gray-500">{g("graph.loadingGraph")}</div></div>;
+}
+
 const ForceGraph3D = dynamic(() => import("react-force-graph-3d"), {
   ssr: false,
-  loading: () => (
-    <div className="flex items-center justify-center h-full bg-gray-900">
-      <div className="text-gray-500">Loading 3D graph...</div>
-    </div>
-  ),
+  loading: GraphLoading,
 });
 
 interface GraphCanvas3DProps {
@@ -31,6 +32,8 @@ const MAX_VISIBLE_NODES_3D = 5000;
 const MAX_VISIBLE_LINKS_3D = 10000;
 
 export default function GraphCanvas3D({ width, height }: GraphCanvas3DProps) {
+  const g = useTranslations("playground");
+  const u = useTranslations("ui");
   const t = useTranslations("playground");
   const { filteredData, state } = useGraph();
   const { select, setHovered, activeNode } = useNodeSelection();
@@ -330,7 +333,7 @@ export default function GraphCanvas3D({ width, height }: GraphCanvas3DProps) {
   if (typeof window === "undefined") {
     return (
       <div className="flex items-center justify-center bg-gray-900" style={{ width, height }}>
-        <div className="text-gray-500">Loading 3D graph...</div>
+        <div className="text-gray-500">{g("graph.loadingGraph")}</div>
       </div>
     );
   }
@@ -377,27 +380,27 @@ export default function GraphCanvas3D({ width, height }: GraphCanvas3DProps) {
             <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
             <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
           </svg>
-          Expanding...
+          {u("expanding")}
         </div>
       )}
 
       {/* Node count indicator */}
       <div className="absolute top-4 right-4 bg-gray-800/80 backdrop-blur-sm rounded-lg px-3 py-2 text-xs">
         <span className="text-blue-400 mr-2">3D</span>
-        <span className="text-gray-400">Nodes: </span>
+        <span className="text-gray-400">{g("graph.nodes")}: </span>
         <span className="text-white font-medium">{visibleData.nodes.length.toLocaleString()}</span>
         {isTruncated && (
           <span className="text-yellow-500 ml-1">
             / {filteredData.nodes.length.toLocaleString()}
           </span>
         )}
-        <span className="text-gray-400 ml-3">Links: </span>
+        <span className="text-gray-400 ml-3">{u("links")}: </span>
         <span className="text-white font-medium">{visibleData.links.length.toLocaleString()}</span>
       </div>
 
       {/* Controls hint */}
       <div className="absolute bottom-4 right-4 bg-gray-800/80 backdrop-blur-sm rounded-lg px-3 py-2 text-xs text-gray-400">
-        <div>Left-drag to rotate • Right-drag to pan • Scroll to zoom • Click node to select • Right-click for menu</div>
+        <div>{u("graphHint")}</div>
       </div>
 
       {/* Tooltip */}
@@ -407,11 +410,11 @@ export default function GraphCanvas3D({ width, height }: GraphCanvas3DProps) {
             {activeNode.label || activeNode.id.slice(0, 16)}
           </div>
           <div className="text-xs text-gray-400 mt-1">
-            <span>{activeNode.distance} hop{activeNode.distance !== 1 ? "s" : ""}</span>
+            <span>{g("sync.hops", { count: activeNode.distance })}</span>
             <span className="mx-1">·</span>
-            <span>{activeNode.pathCount || 1} path{(activeNode.pathCount || 1) !== 1 ? "s" : ""}</span>
+            <span>{u("paths", { count: activeNode.pathCount || 1 })}</span>
             <span className="mx-1">·</span>
-            <span className="text-trust-green">{Math.round(activeNode.trustScore * 100)}% trust</span>
+            <span className="text-trust-green">{u("trustPercent", { count: Math.round(activeNode.trustScore * 100) })}</span>
           </div>
           <div className="text-xs text-gray-500 mt-1 font-mono truncate">
             {activeNode.id.slice(0, 16)}...

@@ -1,3 +1,4 @@
+import { useTranslations } from "next-intl";
 import Image from 'next/image';
 
 /**
@@ -5,13 +6,14 @@ import Image from 'next/image';
  * Usage in MDX: <Citation id={1} />
  */
 export function Citation({ id }: { id: number }) {
+  const u = useTranslations("ui");
   return (
     <sup className="inline-flex">
       <a
         href={`#ref-${id}`}
         id={`cite-${id}`}
         className="text-primary hover:underline text-xs font-medium ml-0.5"
-        aria-label={`Citation ${id}`}
+        aria-label={u("citation", { id })}
       >
         [{id}]
       </a>
@@ -39,13 +41,14 @@ export function BibEntry({
   year?: string;
   url?: string;
 }) {
+  const u = useTranslations("ui");
   return (
     <li
       id={`ref-${id}`}
       className="flex gap-3 text-sm text-gray-600 dark:text-gray-400 py-2"
     >
       <span className="flex-shrink-0 font-medium text-gray-500 dark:text-gray-500">
-        <a href={`#cite-${id}`} className="hover:text-primary" aria-label={`Back to citation ${id}`}>
+        <a href={`#cite-${id}`} className="hover:text-primary" aria-label={u("backCitation", { id })}>
           [{id}]
         </a>
       </span>
@@ -81,10 +84,11 @@ export function BibEntry({
  * </Bibliography>
  */
 export function Bibliography({ children }: { children: React.ReactNode }) {
+  const u = useTranslations("ui");
   return (
     <section className="mt-12 pt-8 border-t border-gray-200 dark:border-gray-700">
       <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">
-        References
+        {u("references")}
       </h3>
       <ol className="space-y-1 list-none pl-0">
         {children}
@@ -109,6 +113,7 @@ export function Statistic({
   source?: string;
   sourceUrl?: string;
 }) {
+  const u = useTranslations("ui");
   return (
     <div className="my-6 p-6 bg-gradient-to-br from-primary/5 to-primary/10 dark:from-primary/10 dark:to-primary/20 rounded-xl border border-primary/20">
       <div className="text-3xl md:text-4xl font-bold text-primary mb-1">
@@ -119,7 +124,7 @@ export function Statistic({
       </div>
       {source && (
         <div className="mt-2 text-xs text-gray-500 dark:text-gray-400">
-          Source:{' '}
+          {u("source")}{' '}
           {sourceUrl ? (
             <a
               href={sourceUrl}

@@ -1,3 +1,4 @@
+import { getTranslations } from "next-intl/server";
 import { ImageResponse } from "next/og";
 import { readFile } from "node:fs/promises";
 import path from "node:path";
@@ -14,6 +15,7 @@ type Props = {
 
 export default async function OgImage({ params }: Props) {
   const { locale, slug } = await params;
+  const u = await getTranslations({ locale, namespace: "ui" });
   const post = getBlogPost(slug, locale as Locale);
   const title = post?.title || "Nostr WoT Blog";
 
@@ -94,7 +96,7 @@ export default async function OgImage({ params }: Props) {
               fontWeight: 700,
             }}
           >
-            Blog
+            {u("blog")}
           </div>
         </div>
 

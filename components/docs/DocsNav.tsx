@@ -1,5 +1,7 @@
 "use client";
 
+import { useTranslations } from "next-intl";
+
 import { Link, usePathname } from "@/i18n/routing";
 import { useState } from "react";
 
@@ -18,14 +20,15 @@ interface DocsNavProps {
 }
 
 export function DocsNav({ sections }: DocsNavProps) {
+  const t = useTranslations("docs");
   const pathname = usePathname();
   const [isMobileOpen, setIsMobileOpen] = useState(false);
 
   // Check if a link is active (matches current path, ignoring hash)
   const isActive = (href: string) => {
     const hrefPath = href.split("#")[0];
-    // Remove locale prefix for comparison
-    const currentPath = pathname.replace(/^\/(en|es|pt)/, "");
+    // The locale-aware router already returns the unprefixed pathname.
+    const currentPath = pathname;
     return currentPath === hrefPath || currentPath === hrefPath + "/";
   };
 
@@ -75,7 +78,7 @@ export function DocsNav({ sections }: DocsNavProps) {
         <button
           onClick={() => setIsMobileOpen(!isMobileOpen)}
           className="flex items-center justify-center w-14 h-14 bg-primary text-white rounded-full shadow-lg hover:bg-primary/90 transition-colors"
-          aria-label="Toggle navigation"
+          aria-label={t("labels.toggleNavigation")}
         >
           {isMobileOpen ? (
             <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">

@@ -1,5 +1,7 @@
 "use client";
 
+import { useTranslations } from "next-intl";
+
 import { useGraph } from "@/contexts/GraphContext";
 import { GraphNode } from "@/lib/graph/types";
 import { getTrustClass, getTrustLabel } from "@/lib/graph/colors";
@@ -12,11 +14,13 @@ interface NodeTooltipProps {
 }
 
 export default function NodeTooltip({ node, x, y }: NodeTooltipProps) {
+  const g = useTranslations("playground");
+  const u = useTranslations("ui");
   const { getProfile } = useGraph();
   const profile = getProfile(node.id);
 
   const trustClass = getTrustClass(node.trustScore);
-  const trustLabel = getTrustLabel(node.trustScore);
+  const trustLabel = u(getTrustLabel(node.trustScore).toLowerCase());
 
   // Position tooltip to avoid edges
   const tooltipStyle: React.CSSProperties = {
@@ -38,7 +42,7 @@ export default function NodeTooltip({ node, x, y }: NodeTooltipProps) {
         {node.picture || profile?.picture ? (
           <img
             src={node.picture || profile?.picture}
-            alt={`${profile?.displayName || profile?.name || node.label || "User"} avatar`}
+            alt={u("avatar", { name: profile?.displayName || profile?.name || node.label || u("user") })}
             className="w-10 h-10 rounded-full object-cover flex-shrink-0"
           />
         ) : (
@@ -52,7 +56,7 @@ export default function NodeTooltip({ node, x, y }: NodeTooltipProps) {
         <div className="flex-1 min-w-0">
           {/* Name */}
           <p className="font-medium text-white truncate">
-            {profile?.displayName || profile?.name || node.label || "Unknown"}
+            {profile?.displayName || profile?.name || node.label || u("unknown")}
           </p>
 
           {/* Pubkey */}
@@ -71,20 +75,20 @@ export default function NodeTooltip({ node, x, y }: NodeTooltipProps) {
 
         {/* Distance */}
         <span className="px-2 py-0.5 rounded text-xs font-medium bg-gray-700 text-gray-300">
-          {node.isRoot ? "You" : `${node.distance} hop${node.distance !== 1 ? "s" : ""}`}
+          {node.isRoot ? u("you") : g("sync.hops", { count: node.distance })}
         </span>
 
         {/* Path count */}
         {!node.isRoot && node.pathCount > 1 && (
           <span className="px-2 py-0.5 rounded text-xs font-medium bg-gray-700 text-gray-300">
-            {node.pathCount} path{node.pathCount !== 1 ? "s" : ""}
+            {u("paths", { count: node.pathCount })}
           </span>
         )}
 
         {/* Mutual indicator */}
         {node.isMutual && (
           <span className="px-2 py-0.5 rounded text-xs font-medium bg-trust-green/20 text-trust-green">
-            Mutual
+            {g("graph.mutual")}
           </span>
         )}
       </div>
@@ -98,7 +102,7 @@ export default function NodeTooltip({ node, x, y }: NodeTooltipProps) {
 
       {/* Hint */}
       <p className="mt-2 text-xs text-gray-500 italic">
-        Click to view details
+        {u("detailsHint")}
       </p>
     </div>
   );

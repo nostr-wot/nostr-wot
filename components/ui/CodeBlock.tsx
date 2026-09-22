@@ -1,5 +1,7 @@
 "use client";
 
+import { useTranslations } from "next-intl";
+
 import { HTMLAttributes, useState, useMemo } from "react";
 
 interface CodeBlockProps extends HTMLAttributes<HTMLDivElement> {
@@ -210,6 +212,7 @@ export function CodeBlock({
   className = "",
   ...props
 }: CodeBlockProps) {
+  const u = useTranslations("ui");
   const [copied, setCopied] = useState(false);
 
   const handleCopy = async () => {
@@ -245,17 +248,17 @@ export function CodeBlock({
           <button
             onClick={handleCopy}
             className="flex items-center gap-1.5 px-3 py-1.5 text-xs text-gray-400 hover:text-white bg-gray-800/50 hover:bg-gray-700/50 rounded-lg transition-all opacity-0 group-hover:opacity-100 focus:opacity-100 border border-gray-700/50"
-            aria-label="Copy code"
+            aria-label={u("copyCode")}
           >
             {copied ? (
               <>
                 <CheckIcon className="w-3.5 h-3.5 text-emerald-400" />
-                <span className="text-emerald-400">Copied!</span>
+                <span className="text-emerald-400">{u("copied")}</span>
               </>
             ) : (
               <>
                 <CopyIcon className="w-3.5 h-3.5" />
-                <span>Copy</span>
+                <span>{u("copy")}</span>
               </>
             )}
           </button>
@@ -332,6 +335,7 @@ export function TerminalBlock({
   className = "",
   ...props
 }: TerminalBlockProps) {
+  const u = useTranslations("ui");
   const [copied, setCopied] = useState(false);
 
   const handleCopy = async () => {
@@ -360,23 +364,23 @@ export function TerminalBlock({
             <div className="w-3 h-3 rounded-full bg-yellow-500/80 shadow-lg shadow-yellow-500/20" />
             <div className="w-3 h-3 rounded-full bg-green-500/80 shadow-lg shadow-green-500/20" />
           </div>
-          <span className="text-xs text-gray-500 font-mono uppercase tracking-wider">terminal</span>
+          <span className="text-xs text-gray-500 font-mono uppercase tracking-wider">{u("terminal")}</span>
         </div>
         {showCopy && (
           <button
             onClick={handleCopy}
             className="flex items-center gap-1.5 px-3 py-1.5 text-xs text-gray-400 hover:text-white bg-gray-800/50 hover:bg-gray-700/50 rounded-lg transition-all opacity-0 group-hover:opacity-100 focus:opacity-100 border border-gray-700/50"
-            aria-label="Copy commands"
+            aria-label={u("copyCommands")}
           >
             {copied ? (
               <>
                 <CheckIcon className="w-3.5 h-3.5 text-emerald-400" />
-                <span className="text-emerald-400">Copied!</span>
+                <span className="text-emerald-400">{u("copied")}</span>
               </>
             ) : (
               <>
                 <CopyIcon className="w-3.5 h-3.5" />
-                <span>Copy</span>
+                <span>{u("copy")}</span>
               </>
             )}
           </button>

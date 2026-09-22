@@ -1,27 +1,31 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { NextIntlClientProvider } from "next-intl";
-import { getMessages, setRequestLocale } from "next-intl/server";
+import { getMessages, getTranslations, setRequestLocale } from "next-intl/server";
 import { GoogleAnalytics } from "@next/third-parties/google";
 import { Header, Footer, PageTransition } from "@/components/layout";
 import { ThemeProvider } from "@/components/providers";
 import { WotProvider } from "@/components/providers/WotProvider";
 import { BlogTranslationsProvider } from "@/contexts/BlogTranslationsContext";
 import { locales, type Locale } from "@/i18n/config";
-import { getFullUrl } from "@/lib/metadata";
+import { getFullUrl, generateOpenGraph, generateTwitter } from "@/lib/metadata";
 import "../globals.css";
 import "@nostr-wot/ui/styles.css";
 
 const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || 'https://nostr-wot.com';
 
-export const metadata: Metadata = {
+export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }): Promise<Metadata> {
+  const { locale } = await params;
+  const t = await getTranslations({ locale, namespace: "home.meta" });
+  const title = t("title");
+  const description = t("description");
+  return {
   metadataBase: new URL(BASE_URL),
   title: {
-    default: "Nostr Web of Trust",
+    default: title,
     template: "%s | Nostr WoT",
   },
-  description:
-    "The all-in-one Nostr browser extension — identity provider, NIP-07 signer, encrypted key vault, and Lightning wallet. Manage your profile, relays, and mute list with granular per-site permissions.",
+  description,
   keywords: ["nostr wot", "nostr web of trust", "web of trust"],
   manifest: "/manifest.json",
   icons: {
@@ -33,22 +37,10 @@ export const metadata: Metadata = {
     ],
     apple: [{ url: "/apple-icon.png", sizes: "180x180", type: "image/png" }],
   },
-  openGraph: {
-    title: "Nostr Web of Trust",
-    description:
-      "The all-in-one Nostr browser extension — identity provider, NIP-07 signer, encrypted key vault, and Lightning wallet. Manage your profile, relays, and mute list with granular per-site permissions.",
-    url: "https://nostr-wot.com",
-    siteName: "Nostr WoT",
-    locale: "en_US",
-    type: "website",
-  },
-  twitter: {
-    card: "summary_large_image",
-    title: "Nostr Web of Trust",
-    description:
-      "The all-in-one Nostr browser extension — identity provider, NIP-07 signer, encrypted key vault, and Lightning wallet with profile, relay, and mute-list management.",
-  },
-};
+  openGraph: generateOpenGraph({ title, description, path: "/", locale: locale as Locale }),
+  twitter: generateTwitter({ title, description }),
+  };
+}
 
 export function generateStaticParams() {
   return locales.map((locale) => ({ locale }));
@@ -72,6 +64,7 @@ export default async function LocaleLayout({ children, params }: Props) {
 
   // Get messages for the current locale
   const messages = await getMessages();
+  const news = await getTranslations("news.meta");
 
   const gaId = process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID;
 
@@ -98,13 +91,13 @@ export default async function LocaleLayout({ children, params }: Props) {
         <link
           rel="alternate"
           type="application/rss+xml"
-          title="Nostr WoT News"
+          title={news("title")}
           href={getFullUrl('/news/feed.xml', locale as Locale)}
         />
         <link
           rel="alternate"
           type="application/feed+json"
-          title="Nostr WoT News"
+          title={news("title")}
           href={getFullUrl('/news/feed.json', locale as Locale)}
         />
       </head>

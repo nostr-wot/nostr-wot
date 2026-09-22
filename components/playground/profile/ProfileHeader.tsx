@@ -24,6 +24,7 @@ export default function ProfileHeader({
   isLoadingProfile,
   isLoadingFollowing,
 }: ProfileHeaderProps) {
+  const u = useTranslations("ui");
   const t = useTranslations("playground");
   const [copied, setCopied] = useState(false);
 
@@ -39,7 +40,7 @@ export default function ProfileHeader({
 
   const displayName = useMemo(
     () =>
-      profile?.displayName || profile?.name || node.label || "Unknown",
+      profile?.displayName || profile?.name || node.label || u("unknown"),
     [profile, node.label]
   );
 
@@ -52,7 +53,7 @@ export default function ProfileHeader({
         {avatarUrl ? (
           <img
             src={avatarUrl}
-            alt={`${displayName} avatar`}
+            alt={u("avatar", { name: displayName })}
             className="w-20 h-20 rounded-full object-cover flex-shrink-0 ring-2 ring-gray-700"
           />
         ) : (

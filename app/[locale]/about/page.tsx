@@ -79,8 +79,8 @@ export default async function AboutPage() {
   const jsonLd = {
     "@context": "https://schema.org",
     "@type": "AboutPage",
-    "name": "About Nostr Web of Trust",
-    "description": "Learn how Web of Trust uses social distance to filter spam and verify reputation on Nostr without central authorities.",
+    "name": t("meta.title"),
+    "description": t("meta.description"),
     "url": "https://nostr-wot.com/about",
     "mainEntity": {
       "@type": "Organization",

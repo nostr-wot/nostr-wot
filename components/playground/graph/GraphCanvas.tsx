@@ -12,14 +12,15 @@ import { getTrustColorHex } from "@/lib/graph/colors";
 import { formatPubkey } from "@/lib/graph/transformers";
 import NodeContextMenu from "./NodeContextMenu";
 
+function GraphLoading() {
+  const g = useTranslations("playground");
+  return <div className="flex items-center justify-center h-full bg-gray-900"><div className="text-gray-500">{g("graph.loadingGraph")}</div></div>;
+}
+
 // Use 2D graph for much better performance (canvas-based, not WebGL meshes)
 const ForceGraph2D = dynamic(() => import("react-force-graph-2d"), {
   ssr: false,
-  loading: () => (
-    <div className="flex items-center justify-center h-full bg-gray-900">
-      <div className="text-gray-500">Loading graph...</div>
-    </div>
-  ),
+  loading: GraphLoading,
 });
 
 interface GraphCanvasProps {
@@ -33,6 +34,8 @@ const MAX_VISIBLE_LINKS = 20000;
 const DISABLE_SIMULATION_THRESHOLD = 2000; // Disable physics above this
 
 export default function GraphCanvas({ width, height }: GraphCanvasProps) {
+  const g = useTranslations("playground");
+  const u = useTranslations("ui");
   const t = useTranslations("playground");
   const { filteredData, state } = useGraph();
   const { settings } = state;
@@ -412,7 +415,7 @@ export default function GraphCanvas({ width, height }: GraphCanvasProps) {
         className="flex items-center justify-center bg-gray-900"
         style={{ width, height }}
       >
-        <div className="text-gray-500">Loading graph...</div>
+        <div className="text-gray-500">{g("graph.loadingGraph")}</div>
       </div>
     );
   }
@@ -461,18 +464,18 @@ export default function GraphCanvas({ width, height }: GraphCanvasProps) {
 
       {/* Node count indicator */}
       <div className="absolute top-4 right-4 bg-gray-800/80 backdrop-blur-sm rounded-lg px-3 py-2 text-xs">
-        <span className="text-gray-400">Nodes: </span>
+        <span className="text-gray-400">{g("graph.nodes")}: </span>
         <span className="text-white font-medium">{visibleData.nodes.length.toLocaleString()}</span>
         {isTruncated && (
           <span className="text-yellow-500 ml-1">
             / {filteredData.nodes.length.toLocaleString()}
           </span>
         )}
-        <span className="text-gray-400 ml-3">Links: </span>
+        <span className="text-gray-400 ml-3">{u("links")}: </span>
         <span className="text-white font-medium">{visibleData.links.length.toLocaleString()}</span>
         {useStaticLayout && (
-          <span className="text-blue-400 ml-3" title="Physics disabled for performance">
-            Static
+          <span className="text-blue-400 ml-3" title={u("physicsDisabled")}>
+            {u("static")}
           </span>
         )}
       </div>
@@ -484,11 +487,11 @@ export default function GraphCanvas({ width, height }: GraphCanvasProps) {
             {activeNode.label || formatPubkey(activeNode.id)}
           </div>
           <div className="text-xs text-gray-400 mt-1">
-            <span>{activeNode.distance} hop{activeNode.distance !== 1 ? 's' : ''}</span>
+            <span>{g("sync.hops", { count: activeNode.distance })}</span>
             <span className="mx-1">·</span>
-            <span>{activeNode.pathCount || 1} path{(activeNode.pathCount || 1) !== 1 ? 's' : ''}</span>
+            <span>{u("paths", { count: activeNode.pathCount || 1 })}</span>
             <span className="mx-1">·</span>
-            <span className="text-trust-green">{Math.round(activeNode.trustScore * 100)}% trust</span>
+            <span className="text-trust-green">{u("trustPercent", { count: Math.round(activeNode.trustScore * 100) })}</span>
           </div>
           <div className="text-xs text-gray-500 mt-1 font-mono truncate">
             {formatPubkey(activeNode.id)}
@@ -504,7 +507,7 @@ export default function GraphCanvas({ width, height }: GraphCanvasProps) {
             <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
             <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
           </svg>
-          Expanding...
+          {u("expanding")}
         </div>
       )}
 

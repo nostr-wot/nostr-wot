@@ -1,3 +1,4 @@
+import ui from './ui.json';
 import common from './common.json';
 import home from './home.json';
 import features from './features.json';
@@ -23,6 +24,7 @@ import pqcChat from './pqcChat.json';
 import news from './news.json';
 
 const messages = {
+  ui,
   common,
   home,
   features,

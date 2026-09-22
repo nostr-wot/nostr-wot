@@ -1,3 +1,4 @@
+import { useTranslations } from "next-intl";
 import { ReactNode } from "react";
 import ScrollReveal from "./ScrollReveal";
 
@@ -211,6 +212,7 @@ export function ModeCard({
   iconBg = "bg-gradient-to-br from-blue-500/10 to-cyan-500/10",
   className = "",
 }: ModeCardProps) {
+  const u = useTranslations("ui");
   const baseClass = recommended
     ? "relative bg-gradient-to-br from-primary/5 via-purple-500/5 to-indigo-500/5 rounded-2xl p-8 border-2 border-primary/30 h-full hover:shadow-xl hover:border-primary/50 transition-all duration-300"
     : "group bg-white dark:bg-gray-800/50 rounded-2xl p-8 shadow-sm border border-gray-200 dark:border-gray-700/50 h-full hover:shadow-lg hover:border-primary/30 transition-all duration-300";
@@ -242,7 +244,7 @@ export function ModeCard({
       {bestFor && (
         <div className="pt-4 border-t border-gray-100 dark:border-gray-700/50">
           <p className="text-sm">
-            <span className="text-gray-500">Best for:</span>{" "}
+            <span className="text-gray-500">{u("bestFor")}</span>{" "}
             <span className="text-gray-700 dark:text-gray-300 font-medium">{bestFor}</span>
           </p>
         </div>

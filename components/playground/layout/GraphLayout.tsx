@@ -2,6 +2,7 @@
 
 import { useState, useRef, useEffect, useCallback } from "react";
 import { useTranslations } from "next-intl";
+import { formatGraphError } from "@/lib/graph/error-messages";
 import { useGraph } from "@/contexts/GraphContext";
 import { useNodeSelection } from "@/hooks/useNodeSelection";
 import { useGraphData } from "@/hooks/useGraphData";
@@ -19,6 +20,7 @@ import { NodeProfileModal } from "../profile";
 
 export default function GraphLayout() {
   const t = useTranslations("playground");
+  const errors = useTranslations("playground.sourceErrors");
   const { state, getProfile } = useGraph();
   const { selectedNode, selectedProfile, clearSelection } = useNodeSelection();
   const { expandNodeFollows, resetGraph, hasMoreFollows, loadMoreFollows, nodeLimitReached, rootFollowCount, sourceKind } = useGraphData();
@@ -174,7 +176,7 @@ export default function GraphLayout() {
               <h3 className="text-lg font-medium text-white mb-2">
                 {t("graph.errorTitle")}
               </h3>
-              <p className="text-gray-400 text-sm" role="alert">{state.error}</p>
+              <p className="text-gray-400 text-sm" role="alert">{formatGraphError(state.error, errors, errors("loadFailed"))}</p>
               <button onClick={resetGraph} className="mt-4 rounded-lg bg-primary px-4 py-2 text-white">{t("graph.retry")}</button>
             </div>
           </div>

@@ -1,16 +1,311 @@
 {
-  "meta": { "title": "Funktionen", "description": "Nostr WoT: NIP-07-Signer, Multi-Konten-Tresor, NIP-46-Remote-Signer, Lightning-Wallet und private Profil- und Relay-Verwaltung." },
-  "hero": { "badge": "Erweiterungsfunktionen", "title": "Identität & Wallet,", "titleHighlight": "Überall", "description": "Ein vollständiger Nostr-Identitätsanbieter und Lightning-Wallet. Verwalte mehrere Konten, signiere Events, verschlüssele Nachrichten, sende Zaps und halte dein Profil, deine Relays und deine Mute-Liste synchron — mit granularen Berechtigungen pro Website." },
-  "extensionOverview": { "badge": "Was du bekommst", "title": "Identität, Wallet und Profil — eine Erweiterung", "description": "Alles, was du für Nostr brauchst, in einer einzigen Installation. Kein Jonglieren mit mehreren Erweiterungen.", "signer": { "title": "NIP-07-Signer", "description": "Signiere Events und verschlüssele Nachrichten (NIP-04 & NIP-44) in jedem Nostr-Client" }, "vault": { "title": "Verschlüsselter Vault", "description": "AES-256-GCM-verschlüsselte Schlüsselspeicherung mit Auto-Lock und sicherem Backup" }, "multiAccount": { "title": "Multi-Konto", "description": "HD-Ableitung, Watch-only, NIP-46-Remote-Signer — wechsle Identitäten sofort" }, "wallet": { "title": "Lightning-Wallet", "description": "Integrierte Wallet für Zaps mit NWC, LNbits oder Ein-Klick-Schnelleinrichtung" }, "badges": { "title": "Profil & Relays", "description": "Bearbeite dein kind:0-Profil und verwalte NIP-65-Relays sowie deine NIP-51-Mute-Liste" }, "permissions": { "title": "Granulare Berechtigungen", "description": "Steuerung pro Konto, pro Domain und pro Methode mit Aktivitätsprotokoll" }, "webln": { "title": "WebLN-Anbieter", "description": "Websites können Zahlungen über window.webln mit deiner Zustimmung anfordern" }, "i18n": { "title": "6 Sprachen", "description": "Englisch, Spanisch, Portugiesisch, Deutsch, Französisch und Italienisch" } },
-  "universalApi": { "badge": "NIP-07-Signer-API", "title": "Ein Signer, verfügbar auf jeder Nostr-Website", "description": "Nach der Installation kann jede Nostr-App window.nostr aufrufen, um deinen öffentlichen Schlüssel zu erhalten, Events zu signieren und Nachrichten zu verschlüsseln — ohne jemals deinen privaten Schlüssel zu berühren. Web-of-Trust-Abfragen leben im nostr-wot SDK und Oracle, nicht in der Erweiterung.", "compatibleApps": "+ jede NIP-07-App" },
-  "chooseSource": { "badge": "Richte dein Konto ein", "title": "Drei Wege, deine Identität mitzubringen", "description": "Wähle, was zu deinen Bedürfnissen passt", "remote": { "title": "Neue Schlüssel erstellen", "description": "Erzeuge in Sekunden ein frisches Schlüsselpaar. Von Anfang an HD-abgeleitet und im Vault verschlüsselt.", "features": { "instant": "Sofortiges Onboarding", "noStorage": "HD-abgeleitete (BIP-32) Schlüssel", "default": "Verschlüsselt gespeichert", "selfHosted": "Sichere deinen Seed jederzeit" }, "bestFor": "Neue Nutzer, die frisch auf Nostr starten" }, "local": { "title": "nsec importieren", "description": "Hast du schon Schlüssel? Füge deinen nsec oder Seed ein und die Erweiterung übernimmt das Signieren lokal.", "features": { "privacy": "Schlüssel verlassen nie dein Gerät", "relays": "Bringe deine bestehende Identität mit", "offline": "Signiert vollständig offline", "export": "Jederzeit exportieren/reimportieren" }, "bestFor": "Bestehende Nostr-Nutzer, die migrieren" }, "hybrid": { "title": "NIP-46-Remote-Signer", "description": "Behalte deine Schlüssel auf einem Bunker oder Remote-Signer. Die Erweiterung leitet Signieranfragen weiter, ohne den Schlüssel zu halten.", "features": { "fast": "Schlüssel bleiben auf dem Bunker", "privacy": "Nichts Sensibles lokal gespeichert", "coverage": "Funktioniert mit jedem NIP-46-Signer", "fallback": "Füge auch Watch-only-Konten hinzu" }, "recommended": "Fortgeschritten" } },
-  "trustScoring": { "badge": "Berechtigungen pro Website", "title": "Nicht jede Website erhält denselben Zugriff", "description": "Lege fest, was jede App tun darf", "formula": "Berechtigung = Konto × Domain × Methode", "distance": { "title": "Berechtigungsbereiche", "description": "Freigaben sind so eng gefasst, wie du möchtest:", "headers": { "hops": "Bereich", "default": "Gilt für", "custom": "Bedeutung" }, "rows": { "hop1": "Konto", "hop1Weight": "1 Identität", "hop1Meaning": "Welcher Schlüssel signieren darf", "hop2": "Domain", "hop2Weight": "1 Website", "hop2Meaning": "Welche App anfragt", "hop3": "Methode", "hop3Weight": "1 Aufruf", "hop3Meaning": "signEvent, nip44 usw.", "hop4": "Kind", "hop4Weight": "1 Event-Kind", "hop4Meaning": "signEvent nach Kind begrenzen" } }, "bonuses": { "title": "Genehmigungsmodi", "description": "Entscheide, wie oft du gefragt wirst:", "headers": { "signal": "Modus", "multiplier": "Verhalten" }, "rows": { "hop2Paths": "Jedes Mal fragen", "hop2Bonus": "Nachfrage", "hop3Paths": "Für Sitzung merken", "hop3Bonus": "Auto", "hop4Paths": "Immer erlauben", "hop4Bonus": "Still", "maxBonus": "Jede Freigabe sofort widerrufen" } }, "thresholds": { "title": "Zugriffsstufen", "description": "Setze Grenzen pro Website:", "trusted": { "label": "Erlaubt", "range": "Vertrauenswürdige Website", "meaning": "Ohne Nachfrage signieren" }, "neutral": { "label": "Fragen", "range": "Neue Website", "meaning": "Nachfrage zur Genehmigung" }, "untrusted": { "label": "Blockiert", "range": "Abgelehnte Website", "meaning": "Alle Anfragen ablehnen" } } },
-  "formula": { "badge": "Verschlüsselter Vault", "title": "Deine Schlüssel. Verschlüsselt. Lokal.", "example": { "title": "Beispiel:", "description": "Deine privaten Schlüssel werden mit AES-256-GCM und einem aus deinem Passwort per PBKDF2 (210.000 Iterationen) abgeleiteten Schlüssel versiegelt.", "note": "Nichts verlässt deinen Browser." } },
-  "settings": { "badge": "Profil & Relays", "title": "Verwalte deine Nostr-Präsenz", "relays": { "title": "Relay-Liste (NIP-65)", "description": "Wähle deine Lese- und Schreib-Relays:" }, "syncDepth": { "title": "Profil (kind:0)", "description": "Bearbeite die Metadaten, die Clients anzeigen:", "headers": { "depth": "Feld", "nodes": "Beispiel", "storage": "Kind", "time": "Typ" } }, "cache": { "title": "Auto-Lock", "ttl": "Timer:", "ttlDesc": "Vault nach Inaktivität sperren", "ttlDefault": "Standard: 15 Min.", "maxEntries": "Passwort:", "maxEntriesDesc": "Zum Entsperren und Signieren erforderlich", "maxEntriesDefault": "min. 8 Zeichen" }, "lists": { "title": "Mute-Liste (NIP-51)", "blocklist": { "title": "Stummgeschaltete Pubkeys", "description": "Verstecke Konten in kompatiblen Clients, indem du eine NIP-51-Mute-Liste veröffentlichst.", "add": "+ Pubkey zum Stummschalten hinzufügen" }, "trustlist": { "title": "Stummgeschaltete Wörter", "description": "Filtere Themen und Ausdrücke heraus, die du lieber nicht sehen möchtest.", "add": "+ Stummgeschaltetes Wort oder Hashtag hinzufügen" } } },
-  "dashboard": { "badge": "Konten", "title": "Wechsle Identitäten mit einem Klick", "nodes": "Konten", "edges": "Genehmigte Websites", "cacheHitRate": "Vault-Status", "avgQueryTime": "Signier-Latenz", "lastSync": "Aktives Konto: {time}", "visualize": { "title": "Konten-Umschalter", "comingSoon": "", "description": "Halte mehrere Identitäten und wechsle den aktiven Signer sofort" } },
-  "wallet": { "badge": "Lightning-Wallet", "title": "Zaps integriert. Keine zusätzlichen Apps nötig.", "description": "Sende Sats, empfange Zaps und verwalte dein Guthaben, ohne die Erweiterung zu verlassen. Drei Verbindungswege:", "quickSetup": { "title": "Schnelleinrichtung", "description": "Erhalte eine Wallet mit einem Klick — keine manuelle Konfiguration. Ideal, um schnell mit Zaps zu starten." }, "nwc": { "title": "Nostr Wallet Connect", "description": "Füge deine NWC-URI ein, um jede externe Lightning-Wallet zu verbinden, die du bereits nutzt." }, "lnbits": { "title": "LNbits", "description": "Verbinde deine LNbits-Instanz mit einem Admin-Schlüssel für direkten API-Zugriff." }, "webln": { "title": "WebLN-Anbieter", "description": "Die Erweiterung injiziert window.webln, sodass Nostr-Apps Zahlungen automatisch anfordern können — mit deiner Zustimmung." }, "autoApprove": { "title": "Kleine Zahlungen automatisch genehmigen", "description": "Lege eine Schwelle in Sats fest. Zahlungen darunter werden automatisch genehmigt — kein Popup für jeden Zap." } },
-  "privacy": { "badge": "Privatsphäre", "title": "Deine Daten, deine Regeln", "remote": { "title": "Lokale Verwahrung", "description": "Private Schlüssel sind verschlüsselt und werden nirgendwohin gesendet", "features": { "noContent": "Kein Schlüssel verlässt jemals den Vault", "onlyPubkey": "Nur Signaturen werden geteilt" } }, "local": { "title": "Kein Tracking", "description": "Die Erweiterung sendet keine Daten nach Hause", "features": { "noExternal": "Keine externen Anfragen", "noTracking": "Kein Tracking", "noAnalytics": "Keine Analyse", "export": "Exportiere deine Daten jederzeit" } } },
-  "getStarted": { "badge": "Loslegen", "title": "In wenigen Minuten einsatzbereit", "steps": { "install": { "title": "Erweiterung installieren", "description": "Zu Chrome, Firefox oder Brave hinzufügen" }, "pubkey": { "title": "Richte dein Konto ein", "description": "Neue Schlüssel erstellen, nsec importieren, Watch-only hinzufügen oder über NIP-46 verbinden" }, "mode": { "title": "Sichere deinen Vault", "description": "Setze ein Passwort und einen Auto-Lock-Timer" }, "scoring": { "title": "Website-Berechtigungen festlegen", "description": "Wähle, was jede App signieren darf, und genehmige Anfragen" }, "browse": { "title": "Nostr durchstöbern", "description": "Deine Identität und Wallet folgen dir überallhin" } } },
-  "api": { "badge": "API für Entwickler", "title": "Baue Nostr-Apps auf window.nostr", "viewDocs": "Vollständige API-Dokumentation ansehen" },
-  "pricing": { "title": "Kostenlos. Für immer. Open Source.", "description": "Forke die Erweiterung, nutze das SDK oder hoste das Oracle selbst — mach, was du willst." }
+  "meta": {
+    "title": "Funktionen",
+    "description": "Nostr WoT: NIP-07-Signer, Multi-Konten-Tresor, NIP-46-Remote-Signer, Lightning-Wallet und private Profil- und Relay-Verwaltung."
+  },
+  "hero": {
+    "badge": "Erweiterungsfunktionen",
+    "title": "Identität & Wallet,",
+    "titleHighlight": "Überall",
+    "description": "Ein vollständiger Nostr-Identitätsanbieter und Lightning-Wallet. Verwalte mehrere Konten, signiere Events, verschlüssele Nachrichten, sende Zaps und halte dein Profil, deine Relays und deine Mute-Liste synchron — mit granularen Berechtigungen pro Website."
+  },
+  "extensionOverview": {
+    "badge": "Was du bekommst",
+    "title": "Identität, Wallet und Profil — eine Erweiterung",
+    "description": "Alles, was du für Nostr brauchst, in einer einzigen Installation. Kein Jonglieren mit mehreren Erweiterungen.",
+    "signer": {
+      "title": "NIP-07-Signer",
+      "description": "Signiere Events und verschlüssele Nachrichten (NIP-04 & NIP-44) in jedem Nostr-Client"
+    },
+    "vault": {
+      "title": "Verschlüsselter Vault",
+      "description": "AES-256-GCM-verschlüsselte Schlüsselspeicherung mit Auto-Lock und sicherem Backup"
+    },
+    "multiAccount": {
+      "title": "Multi-Konto",
+      "description": "HD-Ableitung, Watch-only, NIP-46-Remote-Signer — wechsle Identitäten sofort"
+    },
+    "wallet": {
+      "title": "Lightning-Wallet",
+      "description": "Integrierte Wallet für Zaps mit NWC, LNbits oder Ein-Klick-Schnelleinrichtung"
+    },
+    "badges": {
+      "title": "Profil & Relays",
+      "description": "Bearbeite dein kind:0-Profil und verwalte NIP-65-Relays sowie deine NIP-51-Mute-Liste"
+    },
+    "permissions": {
+      "title": "Granulare Berechtigungen",
+      "description": "Steuerung pro Konto, pro Domain und pro Methode mit Aktivitätsprotokoll"
+    },
+    "webln": {
+      "title": "WebLN-Anbieter",
+      "description": "Websites können Zahlungen über window.webln mit deiner Zustimmung anfordern"
+    },
+    "i18n": {
+      "title": "6 Sprachen",
+      "description": "Englisch, Spanisch, Portugiesisch, Deutsch, Französisch und Italienisch"
+    }
+  },
+  "universalApi": {
+    "badge": "NIP-07-Signer-API",
+    "title": "Ein Signer, verfügbar auf jeder Nostr-Website",
+    "description": "Nach der Installation kann jede Nostr-App window.nostr aufrufen, um deinen öffentlichen Schlüssel zu erhalten, Events zu signieren und Nachrichten zu verschlüsseln — ohne jemals deinen privaten Schlüssel zu berühren. Web-of-Trust-Abfragen leben im nostr-wot SDK und Oracle, nicht in der Erweiterung.",
+    "compatibleApps": "+ jede NIP-07-App"
+  },
+  "chooseSource": {
+    "badge": "Richte dein Konto ein",
+    "title": "Drei Wege, deine Identität mitzubringen",
+    "description": "Wähle, was zu deinen Bedürfnissen passt",
+    "remote": {
+      "title": "Neue Schlüssel erstellen",
+      "description": "Erzeuge in Sekunden ein frisches Schlüsselpaar. Von Anfang an HD-abgeleitet und im Vault verschlüsselt.",
+      "features": {
+        "instant": "Sofortiges Onboarding",
+        "noStorage": "HD-abgeleitete (BIP-32) Schlüssel",
+        "default": "Verschlüsselt gespeichert",
+        "selfHosted": "Sichere deinen Seed jederzeit"
+      },
+      "bestFor": "Neue Nutzer, die frisch auf Nostr starten"
+    },
+    "local": {
+      "title": "nsec importieren",
+      "description": "Hast du schon Schlüssel? Füge deinen nsec oder Seed ein und die Erweiterung übernimmt das Signieren lokal.",
+      "features": {
+        "privacy": "Schlüssel verlassen nie dein Gerät",
+        "relays": "Bringe deine bestehende Identität mit",
+        "offline": "Signiert vollständig offline",
+        "export": "Jederzeit exportieren/reimportieren"
+      },
+      "bestFor": "Bestehende Nostr-Nutzer, die migrieren"
+    },
+    "hybrid": {
+      "title": "NIP-46-Remote-Signer",
+      "description": "Behalte deine Schlüssel auf einem Bunker oder Remote-Signer. Die Erweiterung leitet Signieranfragen weiter, ohne den Schlüssel zu halten.",
+      "features": {
+        "fast": "Schlüssel bleiben auf dem Bunker",
+        "privacy": "Nichts Sensibles lokal gespeichert",
+        "coverage": "Funktioniert mit jedem NIP-46-Signer",
+        "fallback": "Füge auch Watch-only-Konten hinzu"
+      },
+      "recommended": "Fortgeschritten"
+    }
+  },
+  "trustScoring": {
+    "badge": "Berechtigungen pro Website",
+    "title": "Nicht jede Website erhält denselben Zugriff",
+    "description": "Lege fest, was jede App tun darf",
+    "formula": "Berechtigung = Konto × Domain × Methode",
+    "distance": {
+      "title": "Berechtigungsbereiche",
+      "description": "Freigaben sind so eng gefasst, wie du möchtest:",
+      "headers": {
+        "hops": "Bereich",
+        "default": "Gilt für",
+        "custom": "Bedeutung"
+      },
+      "rows": {
+        "hop1": "Konto",
+        "hop1Weight": "1 Identität",
+        "hop1Meaning": "Welcher Schlüssel signieren darf",
+        "hop2": "Domain",
+        "hop2Weight": "1 Website",
+        "hop2Meaning": "Welche App anfragt",
+        "hop3": "Methode",
+        "hop3Weight": "1 Aufruf",
+        "hop3Meaning": "signEvent, nip44 usw.",
+        "hop4": "Ereignistyp",
+        "hop4Weight": "1 Event-Kind",
+        "hop4Meaning": "signEvent nach Kind begrenzen"
+      }
+    },
+    "bonuses": {
+      "title": "Genehmigungsmodi",
+      "description": "Entscheide, wie oft du gefragt wirst:",
+      "headers": {
+        "signal": "Modus",
+        "multiplier": "Verhalten"
+      },
+      "rows": {
+        "hop2Paths": "Jedes Mal fragen",
+        "hop2Bonus": "Nachfrage",
+        "hop3Paths": "Für Sitzung merken",
+        "hop3Bonus": "Auto",
+        "hop4Paths": "Immer erlauben",
+        "hop4Bonus": "Still",
+        "maxBonus": "Jede Freigabe sofort widerrufen"
+      }
+    },
+    "thresholds": {
+      "title": "Zugriffsstufen",
+      "description": "Setze Grenzen pro Website:",
+      "trusted": {
+        "label": "Erlaubt",
+        "range": "Vertrauenswürdige Website",
+        "meaning": "Ohne Nachfrage signieren"
+      },
+      "neutral": {
+        "label": "Fragen",
+        "range": "Neue Website",
+        "meaning": "Nachfrage zur Genehmigung"
+      },
+      "untrusted": {
+        "label": "Blockiert",
+        "range": "Abgelehnte Website",
+        "meaning": "Alle Anfragen ablehnen"
+      }
+    }
+  },
+  "formula": {
+    "badge": "Verschlüsselter Vault",
+    "title": "Deine Schlüssel. Verschlüsselt. Lokal.",
+    "example": {
+      "title": "Beispiel:",
+      "description": "Deine privaten Schlüssel werden mit AES-256-GCM und einem aus deinem Passwort per PBKDF2 (210.000 Iterationen) abgeleiteten Schlüssel versiegelt.",
+      "note": "Nichts verlässt deinen Browser."
+    }
+  },
+  "settings": {
+    "badge": "Profil & Relays",
+    "title": "Verwalte deine Nostr-Präsenz",
+    "relays": {
+      "title": "Relay-Liste (NIP-65)",
+      "description": "Wähle deine Lese- und Schreib-Relays:"
+    },
+    "syncDepth": {
+      "title": "Profil (kind:0)",
+      "description": "Bearbeite die Metadaten, die Clients anzeigen:",
+      "headers": {
+        "depth": "Feld",
+        "nodes": "Beispiel",
+        "storage": "Ereignistyp",
+        "time": "Typ"
+      }
+    },
+    "cache": {
+      "title": "Automatische Sperre",
+      "ttl": "Timer:",
+      "ttlDesc": "Vault nach Inaktivität sperren",
+      "ttlDefault": "Standard: 15 Min.",
+      "maxEntries": "Passwort:",
+      "maxEntriesDesc": "Zum Entsperren und Signieren erforderlich",
+      "maxEntriesDefault": "min. 8 Zeichen"
+    },
+    "lists": {
+      "title": "Mute-Liste (NIP-51)",
+      "blocklist": {
+        "title": "Stummgeschaltete Pubkeys",
+        "description": "Verstecke Konten in kompatiblen Clients, indem du eine NIP-51-Mute-Liste veröffentlichst.",
+        "add": "+ Pubkey zum Stummschalten hinzufügen"
+      },
+      "trustlist": {
+        "title": "Stummgeschaltete Wörter",
+        "description": "Filtere Themen und Ausdrücke heraus, die du lieber nicht sehen möchtest.",
+        "add": "+ Stummgeschaltetes Wort oder Hashtag hinzufügen"
+      }
+    }
+  },
+  "dashboard": {
+    "badge": "Konten",
+    "title": "Wechsle Identitäten mit einem Klick",
+    "nodes": "Konten",
+    "edges": "Genehmigte Websites",
+    "cacheHitRate": "Vault-Status",
+    "avgQueryTime": "Signier-Latenz",
+    "lastSync": "Aktives Konto: {time}",
+    "visualize": {
+      "title": "Konten-Umschalter",
+      "comingSoon": "",
+      "description": "Halte mehrere Identitäten und wechsle den aktiven Signer sofort"
+    }
+  },
+  "wallet": {
+    "badge": "Lightning-Wallet",
+    "title": "Zaps integriert. Keine zusätzlichen Apps nötig.",
+    "description": "Sende Sats, empfange Zaps und verwalte dein Guthaben, ohne die Erweiterung zu verlassen. Drei Verbindungswege:",
+    "quickSetup": {
+      "title": "Schnelleinrichtung",
+      "description": "Erhalte eine Wallet mit einem Klick — keine manuelle Konfiguration. Ideal, um schnell mit Zaps zu starten."
+    },
+    "nwc": {
+      "title": "Nostr Wallet Connect",
+      "description": "Füge deine NWC-URI ein, um jede externe Lightning-Wallet zu verbinden, die du bereits nutzt."
+    },
+    "lnbits": {
+      "title": "LNbits",
+      "description": "Verbinde deine LNbits-Instanz mit einem Admin-Schlüssel für direkten API-Zugriff."
+    },
+    "webln": {
+      "title": "WebLN-Anbieter",
+      "description": "Die Erweiterung injiziert window.webln, sodass Nostr-Apps Zahlungen automatisch anfordern können — mit deiner Zustimmung."
+    },
+    "autoApprove": {
+      "title": "Kleine Zahlungen automatisch genehmigen",
+      "description": "Lege eine Schwelle in Sats fest. Zahlungen darunter werden automatisch genehmigt — kein Popup für jeden Zap."
+    }
+  },
+  "privacy": {
+    "badge": "Privatsphäre",
+    "title": "Deine Daten, deine Regeln",
+    "remote": {
+      "title": "Lokale Verwahrung",
+      "description": "Private Schlüssel sind verschlüsselt und werden nirgendwohin gesendet",
+      "features": {
+        "noContent": "Kein Schlüssel verlässt jemals den Vault",
+        "onlyPubkey": "Nur Signaturen werden geteilt"
+      }
+    },
+    "local": {
+      "title": "Kein Tracking",
+      "description": "Die Erweiterung sendet keine Daten nach Hause",
+      "features": {
+        "noExternal": "Keine externen Anfragen",
+        "noTracking": "Kein Tracking",
+        "noAnalytics": "Keine Analyse",
+        "export": "Exportiere deine Daten jederzeit"
+      }
+    }
+  },
+  "getStarted": {
+    "badge": "Loslegen",
+    "title": "In wenigen Minuten einsatzbereit",
+    "steps": {
+      "install": {
+        "title": "Erweiterung installieren",
+        "description": "Zu Chrome, Firefox oder Brave hinzufügen"
+      },
+      "pubkey": {
+        "title": "Richte dein Konto ein",
+        "description": "Neue Schlüssel erstellen, nsec importieren, Watch-only hinzufügen oder über NIP-46 verbinden"
+      },
+      "mode": {
+        "title": "Sichere deinen Vault",
+        "description": "Setze ein Passwort und einen Auto-Lock-Timer"
+      },
+      "scoring": {
+        "title": "Website-Berechtigungen festlegen",
+        "description": "Wähle, was jede App signieren darf, und genehmige Anfragen"
+      },
+      "browse": {
+        "title": "Nostr durchstöbern",
+        "description": "Deine Identität und Wallet folgen dir überallhin"
+      }
+    }
+  },
+  "api": {
+    "badge": "API für Entwickler",
+    "title": "Baue Nostr-Apps auf window.nostr",
+    "viewDocs": "Vollständige API-Dokumentation ansehen"
+  },
+  "pricing": {
+    "title": "Kostenlos. Für immer. Open Source.",
+    "description": "Forke die Erweiterung, nutze das SDK oder hoste das Oracle selbst — mach, was du willst."
+  },
+  "pageDetails": {
+    "installDescription": "Zu Chrome, Brave, Edge, Opera oder Firefox hinzufügen",
+    "vaultDescription": "Lege ein Passwort und einen Timer zur automatischen Sperre deiner verschlüsselten Schlüssel fest",
+    "approveRequest": "Du genehmigst jede Anfrage",
+    "noTrackingAnalytics": "Kein Tracking und keine Analysen",
+    "offline": "Funktioniert vollständig offline",
+    "maximumPrivacy": "Maximaler Datenschutz"
+  }
 }

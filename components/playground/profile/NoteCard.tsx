@@ -1,8 +1,10 @@
 "use client";
 
+import { formatRelativeTime } from "@/lib/relative-time";
+
 import { useMemo } from "react";
 import { Link } from "@/i18n/routing";
-import { useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import { nip19 } from "nostr-tools";
 import { NostrNote } from "@/lib/graph/types";
 import type { ParentRef } from "@/lib/client/noteEnrichments";
@@ -21,18 +23,6 @@ function formatSats(n: number): string {
   return `${(n / 1_000_000).toFixed(1).replace(/\.0$/, "")}M`;
 }
 
-function formatRelativeTime(timestamp: number): string {
-  const now = Math.floor(Date.now() / 1000);
-  const diff = now - timestamp;
-  if (diff < 60) return "just now";
-  if (diff < 3600) return `${Math.floor(diff / 60)}m`;
-  if (diff < 86400) return `${Math.floor(diff / 3600)}h`;
-  if (diff < 604800) return `${Math.floor(diff / 86400)}d`;
-  return new Date(timestamp * 1000).toLocaleDateString(undefined, {
-    month: "short",
-    day: "numeric",
-  });
-}
 
 const IMAGE_EXTENSIONS = /\.(jpg|jpeg|png|gif|webp|svg)(\?.*)?$/i;
 const URL_REGEX = /(https?:\/\/[^\s]+)/g;
@@ -61,10 +51,12 @@ function neventOf(note: NostrNote): string {
 }
 
 export default function NoteCard({ note, parent, reactionCount }: NoteCardProps) {
+  const u = useTranslations("ui");
+  const locale = useLocale();
   const t = useTranslations("notes");
   const relativeTime = useMemo(
-    () => formatRelativeTime(note.created_at),
-    [note.created_at],
+    () => formatRelativeTime(note.created_at, locale),
+    [note.created_at, locale],
   );
   const { text, images } = useMemo(() => parseContent(note.content), [note.content]);
   const nevent = useMemo(() => neventOf(note), [note]);
@@ -114,7 +106,7 @@ export default function NoteCard({ note, parent, reactionCount }: NoteCardProps)
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img
                   src={src}
-                  alt="note media"
+                  alt={u("noteMedia")}
                   className="w-full h-40 object-cover rounded-lg bg-gray-200 dark:bg-gray-700"
                   loading="lazy"
                   onError={(e) => {

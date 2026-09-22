@@ -102,62 +102,65 @@ const MODE_CARDS = [
   { key: "hybrid", icon: NetworkIcon, iconColor: "text-primary", iconBg: "bg-gradient-to-br from-primary/20 to-purple-500/20", recommended: true },
 ];
 
-const GET_STARTED_STEPS = [
-  { title: "Install the extension", description: "Add to Chrome, Brave, Edge, Opera, or Firefox" },
-  { title: "Set up your account", description: "Create new keys, import nsec, add watch-only, or connect via NIP-46" },
-  { title: "Secure your vault", description: "Set a password and an auto-lock timer for your encrypted keys" },
-  { title: "Set site permissions", description: "Choose what each app can sign and approve requests" },
-  { title: "Browse Nostr", description: "Your identity and wallet now follow you everywhere" },
-];
-
-const PRIVACY_MODES = [
-  {
-    icon: ServerIcon,
-    iconColor: "text-blue-500",
-    iconBg: "bg-blue-500/10",
-    title: "Local Custody",
-    description: "Private keys are encrypted and never sent anywhere",
-    features: ["No key ever leaves the vault", "Only signatures are shared", "You approve every request"],
-  },
-  {
-    icon: LockIcon,
-    iconColor: "text-primary",
-    iconBg: "bg-primary/10",
-    title: "No Tracking",
-    description: "The extension phones home to no one",
-    features: ["Zero external requests", "No tracking or analytics", "Export your data anytime", "Works completely offline"],
-    featured: true,
-    badge: "Maximum Privacy",
-  },
-];
-
 export default async function FeaturesPage() {
   const t = await getTranslations("features");
+  const c = await getTranslations("common.buttons");
+  const u = await getTranslations("ui");
+
+  const GET_STARTED_STEPS = [
+    { title: t("getStarted.steps.install.title"), description: t("pageDetails.installDescription") },
+    { title: t("getStarted.steps.pubkey.title"), description: t("getStarted.steps.pubkey.description") },
+    { title: t("getStarted.steps.mode.title"), description: t("pageDetails.vaultDescription") },
+    { title: t("getStarted.steps.scoring.title"), description: t("getStarted.steps.scoring.description") },
+    { title: t("getStarted.steps.browse.title"), description: t("getStarted.steps.browse.description") },
+  ];
+
+  const PRIVACY_MODES = [
+    {
+      icon: ServerIcon,
+      iconColor: "text-blue-500",
+      iconBg: "bg-blue-500/10",
+      title: t("privacy.remote.title"),
+      description: t("privacy.remote.description"),
+      features: [t("privacy.remote.features.noContent"), t("privacy.remote.features.onlyPubkey"), t("pageDetails.approveRequest")],
+    },
+    {
+      icon: LockIcon,
+      iconColor: "text-primary",
+      iconBg: "bg-primary/10",
+      title: t("privacy.local.title"),
+      description: t("privacy.local.description"),
+      features: [t("privacy.local.features.noExternal"), t("pageDetails.noTrackingAnalytics"), t("privacy.local.features.export"), t("pageDetails.offline")],
+      featured: true,
+      badge: t("pageDetails.maximumPrivacy"),
+    },
+  ];
+
 
   // JSON-LD structured data
   const jsonLd = {
     "@context": "https://schema.org",
     "@type": "WebPage",
-    "name": "Nostr WoT Extension Features",
-    "description": "Explore Nostr WoT extension features: NIP-07 signer, multi-account vault, NIP-46 remote signer, Lightning wallet, profile/relay/mute management, granular per-site permissions, and privacy-first design.",
+    "name": `${t("hero.badge")} | Nostr WoT`,
+    "description": t("meta.description"),
     "url": "https://nostr-wot.com/features",
     "mainEntity": {
       "@type": "SoftwareApplication",
-      "name": "Nostr WoT Extension",
+      "name": u("extension"),
       "applicationCategory": "DeveloperApplication",
       "operatingSystem": "Chrome, Brave, Edge, Opera, Firefox",
       "featureList": [
-        "NIP-07 signer and identity provider",
-        "Multi-account management with HD derivation",
-        "NIP-46 remote signer support",
-        "Encrypted vault with auto-lock",
-        "Granular per-site signing permissions",
-        "window.nostr signEvent, nip04 and nip44 API",
-        "Profile (kind:0), NIP-65 relays, and NIP-51 mute list management",
-        "Watch-only accounts",
-        "6 languages supported",
-        "Built-in Lightning wallet with NWC and LNbits support",
-        "WebLN provider for seamless zap payments",
+        t("universalApi.description"),
+        t("extensionOverview.multiAccount.description"),
+        t("chooseSource.hybrid.description"),
+        t("extensionOverview.vault.description"),
+        t("extensionOverview.permissions.description"),
+        "window.nostr signEvent, nip04, nip44 API",
+        t("extensionOverview.badges.description"),
+        t("chooseSource.hybrid.features.fallback"),
+        t("extensionOverview.i18n.title"),
+        t("extensionOverview.wallet.description"),
+        t("wallet.webln.description"),
       ],
       "offers": {
         "@type": "Offer",
@@ -472,7 +475,7 @@ export default async function FeaturesPage() {
         <ScrollReveal animation="fade-up" delay={200}>
           <div className="text-center mt-12">
             <LinkButton href="/download" size="lg" className="hover-lift shadow-lg shadow-primary/30">
-              Download Extension
+              {c("downloadExtension")}
             </LinkButton>
           </div>
         </ScrollReveal>
@@ -511,10 +514,10 @@ export default async function FeaturesPage() {
             <p className="text-xl text-gray-600 dark:text-gray-400 mb-10 max-w-2xl mx-auto">{t("pricing.description")}</p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <LinkButton href="/download" size="lg" className="hover-lift shadow-lg shadow-primary/30">
-                Get the Extension
+                {c("getExtension")}
               </LinkButton>
               <ExternalLinkButton href="https://github.com/nostr-wot/nostr-wot" variant="secondary" size="lg" className="hover-lift">
-                View on GitHub
+                {c("viewOnGitHub")}
               </ExternalLinkButton>
             </div>
           </div>

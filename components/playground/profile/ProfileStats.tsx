@@ -14,10 +14,11 @@ interface ProfileStatsProps {
  * Trust stats section for profile modal
  */
 export default function ProfileStats({ node }: ProfileStatsProps) {
+  const u = useTranslations("ui");
   const t = useTranslations("playground");
 
   const trustClass = getTrustClass(node.trustScore);
-  const trustLabel = getTrustLabel(node.trustScore);
+  const trustLabel = u(getTrustLabel(node.trustScore).toLowerCase());
 
   return (
     <div className="border-b border-gray-700">

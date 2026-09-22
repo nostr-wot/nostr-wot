@@ -14,6 +14,8 @@ interface RightPanelProps {
 }
 
 export default function RightPanel({ isOpen, onClose, onViewProfile }: RightPanelProps) {
+  const m = useTranslations("profile");
+  const u = useTranslations("ui");
   const t = useTranslations("playground");
   const { selectedNode, selectedProfile, selectedNeighbors, select, clearSelection } =
     useNodeSelection();
@@ -104,7 +106,7 @@ export default function RightPanel({ isOpen, onClose, onViewProfile }: RightPane
                     {neighbor.picture ? (
                       <img
                         src={neighbor.picture}
-                        alt={`${neighbor.label || "User"} avatar`}
+                        alt={u("avatar", { name: neighbor.label || u("user") })}
                         className="w-6 h-6 rounded-full object-cover"
                       />
                     ) : (
@@ -124,7 +126,7 @@ export default function RightPanel({ isOpen, onClose, onViewProfile }: RightPane
                 ))}
                 {selectedNeighbors.length > 10 && (
                   <p className="text-xs text-gray-500 text-center py-2">
-                    +{selectedNeighbors.length - 10} more
+                    +{selectedNeighbors.length - 10} {m("more")}
                   </p>
                 )}
               </div>
