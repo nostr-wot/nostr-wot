@@ -32,4 +32,4 @@ run at all, which is a different problem entirely.
 
 2026-09-20 08:20 UTC  pending    nip-02-gives-petnames-resolvable-paths (3 sources; seven editions, deterministic illustration and social copy prepared; PR CI, merge, production and scheduled social delivery verification pending)
 2026-09-22 08:15 UTC  published  nip-02-gives-petnames-resolvable-paths (reconciled: PR #45, production and both scheduled social channels confirmed; durable LinkedIn and Nostr receipts present)
-2026-09-22 08:15 UTC  published  amethyst-1-16-adds-bolt12-and-fitness (4 sources)
+2026-09-22 08:25 UTC  pending    amethyst-1-16-adds-bolt12-and-fitness (4 sources; draft PR #53 preserved after concurrent PR #52 supplied the September 22 newsroom publication; refresh publishedAt and rebase before a later merge)
