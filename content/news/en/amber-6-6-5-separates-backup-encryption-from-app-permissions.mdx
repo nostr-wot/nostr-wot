@@ -1,0 +1,52 @@
+---
+title: "Amber 6.6.5 separates backup encryption from app permissions"
+description: "Amber 6.6.5 changes how signer backups are encrypted after 6.6.4 closed a Tor startup leak. The releases are security fixes, not evidence of exploitation."
+excerpt: "Amber now derives a dedicated backup key outside the NIP-44 derive-key namespace, preventing remembered app permissions from decrypting signer backups."
+date: "2026-09-21"
+publishedAt: "2026-09-22"
+backfilled: false
+type: "story"
+tags: ["Nostr", "Security", "Privacy", "Signer"]
+featuredImage: "/images/news/amber-6-6-5-separates-backup-encryption-from-app-permissions.svg"
+translationKey: "amber-6-6-5-separates-backup-encryption-from-app-permissions"
+sources:
+  - title: "Amber v6.6.5 release"
+    url: "https://github.com/greenart7c3/Amber/releases/tag/v6.6.5"
+    publisher: "greenart7c3/Amber"
+    date: "2026-09-21"
+  - title: "Amber v6.6.4 release"
+    url: "https://github.com/greenart7c3/Amber/releases/tag/v6.6.4"
+    publisher: "greenart7c3/Amber"
+    date: "2026-09-14"
+published: true
+---
+
+[Amber 6.6.5](https://github.com/greenart7c3/Amber/releases/tag/v6.6.5) changes the cryptographic boundary around application backups. Backups published as `kind 30078` events are now encrypted with a dedicated key derived from the account key through HKDF, outside the NIP-44 derive-key namespace. The release notes say this prevents an application with a remembered `nip44_decrypt` permission from fetching and decrypting the backup.
+
+That distinction matters because Amber is a signer. An application can ask it to decrypt NIP-44 content without receiving the user's identity key. Before 6.6.5, the same permission could also reach an identity-key-encrypted backup. According to the release notes, that backup can contain per-application NIP-46 secrets and local keys. A permission intended for message decryption therefore crossed into backup recovery data.
+
+The new design does not remove backups from relays or introduce a new event kind. It changes the key used for the payload. The backup key is derived from the account key with a separate HKDF context, so it is not one of the keys an application receives through the remembered NIP-44 permission.
+
+## A migration, not an abrupt cutoff
+
+Existing backups may still use the old identity-key encryption. Amber 6.6.5 retains a restore fallback for those records. The next successful backup publication overwrites them in the new format, according to the release notes.
+
+This is a compatibility choice with a limited transition period. A user who upgrades but never publishes another backup can still have a legacy backup on a relay. The release does not claim that the old record is deleted immediately, and a successful application update is not proof that every remote copy has been replaced.
+
+The same release fixes a separate restore-flow bug. When backup publication was disabled, logging out and back in could prevent the restore prompt from appearing. Version 6.6.5 restores that prompt for the case in which it is needed.
+
+## The Tor startup race fixed in 6.6.4
+
+The previous release, [Amber 6.6.4](https://github.com/greenart7c3/Amber/releases/tag/v6.6.4), addressed a different privacy boundary. Its notes say profile fetches and startup network callbacks could contact relays over clearnet before the Tor setting had finished loading. For a user who had selected Tor, the initial connection could therefore bypass that choice during startup.
+
+Version 6.6.4 also changed the built-in Tor daemon's retry behavior. A bounded bootstrap window replaces indefinite restarts, and relay connections recover when the daemon returns, including after a manual restart. Those changes concern availability and connection handling. The clearnet race is the security-relevant part.
+
+Neither release note reports an exploited incident, affected user count or stolen key. The supported statement is narrower: the project identified two paths where the implemented boundary did not match the configured or intended one, then shipped release artifacts with fixes.
+
+## What the release artifacts establish
+
+Both versions are published GitHub releases with Android APK assets and signed checksum manifests. Version 6.6.5 was published on 21 September 2026; version 6.6.4 on 14 September. The 6.6.5 universal APK, for example, has the SHA-256 digest `447dd52d6be8c8f01df1fdc1c105b30be0ea391bdb988d8f35fee68e01481578` in GitHub's release metadata.
+
+That establishes that downloadable artifacts exist and identifies the bytes GitHub serves. It does not independently prove how every distribution channel updates, that a particular phone installed the new version, or that the described behavior was reproduced outside the project. Users relying on Amber's Tor mode or relay backup should check the version actually installed and follow the release's manifest verification instructions when installing a direct APK.
+
+The two fixes share one lesson: signer permissions and transport settings are useful only when they hold across startup, backup and recovery paths. Amber 6.6.4 and 6.6.5 narrow those gaps, but they should be read as documented fixes rather than evidence that exploitation occurred.
