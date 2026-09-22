@@ -1,0 +1,52 @@
+---
+title: "Amber 6.6.5 sépare le chiffrement des sauvegardes des autorisations"
+description: "Amber 6.6.5 change le chiffrement des sauvegardes du signataire après la correction, dans 6.6.4, d'une fuite clearnet au démarrage de Tor. Ce sont des correctifs, pas une preuve d'exploitation."
+excerpt: "Amber dérive désormais une clé de sauvegarde dédiée hors de l'espace de dérivation de NIP-44, empêchant les autorisations mémorisées de déchiffrer les sauvegardes."
+date: "2026-09-21"
+publishedAt: "2026-09-22"
+backfilled: false
+type: "story"
+tags: ["Nostr", "Sécurité", "Confidentialité", "Signataire"]
+featuredImage: "/images/news/amber-6-6-5-separates-backup-encryption-from-app-permissions.svg"
+translationKey: "amber-6-6-5-separates-backup-encryption-from-app-permissions"
+sources:
+  - title: "Version Amber v6.6.5"
+    url: "https://github.com/greenart7c3/Amber/releases/tag/v6.6.5"
+    publisher: "greenart7c3/Amber"
+    date: "2026-09-21"
+  - title: "Version Amber v6.6.4"
+    url: "https://github.com/greenart7c3/Amber/releases/tag/v6.6.4"
+    publisher: "greenart7c3/Amber"
+    date: "2026-09-14"
+published: true
+---
+
+[Amber 6.6.5](https://github.com/greenart7c3/Amber/releases/tag/v6.6.5) modifie la frontière cryptographique des sauvegardes d'applications. Les sauvegardes publiées sous forme d'événements `kind 30078` sont maintenant chiffrées avec une clé dédiée, dérivée de la clé du compte par HKDF hors de l'espace de dérivation de NIP-44. Selon les notes de version, une application disposant d'une autorisation `nip44_decrypt` mémorisée ne peut plus récupérer et déchiffrer la sauvegarde.
+
+La différence est importante car Amber est un signataire. Une application peut lui demander de déchiffrer du contenu NIP-44 sans recevoir la clé d'identité de l'utilisateur. Avant 6.6.5, la même autorisation pouvait atteindre une sauvegarde chiffrée avec cette clé d'identité. Les notes indiquent qu'elle peut contenir des secrets NIP-46 propres à chaque application et des clés locales. Une autorisation destinée aux messages atteignait donc des données de récupération.
+
+La nouvelle conception ne retire pas les sauvegardes des relais et ne crée pas un nouveau type d'événement. Elle change la clé du contenu. Un contexte HKDF distinct place la clé de sauvegarde hors des clés accessibles par l'autorisation NIP-44 mémorisée.
+
+## Une migration, pas une coupure brutale
+
+Les sauvegardes existantes peuvent encore utiliser l'ancien chiffrement. Amber 6.6.5 conserve une solution de repli pour les restaurer. La prochaine publication réussie remplace l'enregistrement par le nouveau format, selon les notes.
+
+Ce choix maintient la compatibilité pendant la transition. Une personne qui met l'application à jour sans publier une nouvelle sauvegarde peut conserver un ancien enregistrement sur un relais. La version ne prétend pas que celui-ci soit supprimé immédiatement, et la mise à jour ne prouve pas que toutes les copies distantes ont été remplacées.
+
+La même version corrige un autre défaut de restauration. Quand la publication des sauvegardes était désactivée, une déconnexion suivie d'une reconnexion pouvait empêcher l'affichage de l'invite de restauration. La version 6.6.5 rétablit cette invite.
+
+## La condition de course Tor corrigée dans 6.6.4
+
+La version précédente, [Amber 6.6.4](https://github.com/greenart7c3/Amber/releases/tag/v6.6.4), concernait une autre frontière de confidentialité. Ses notes indiquent que les chargements de profils et les appels réseau au démarrage pouvaient contacter directement des relais avant la fin du chargement du réglage Tor. La première connexion pouvait donc contourner temporairement le choix de l'utilisateur.
+
+La version 6.6.4 limite aussi la fenêtre d'initialisation du daemon Tor intégré et rétablit les connexions quand Tor revient, y compris après un redémarrage manuel. Ces changements concernent la disponibilité et les connexions. La condition de course avec une connexion directe est la partie liée à la sécurité.
+
+Aucune des deux notes ne signale d'exploitation, de nombre d'utilisateurs touchés ou de vol de clé. L'affirmation étayée est plus précise : le projet a trouvé deux chemins où la frontière appliquée ne correspondait pas à celle prévue, puis a publié des artefacts corrigés.
+
+## Ce que prouvent les artefacts
+
+Les deux versions sont publiées sur GitHub avec des APK Android et des manifestes de sommes signés. La 6.6.5 a été publiée le 21 septembre 2026 et la 6.6.4 le 14 septembre. Par exemple, les métadonnées GitHub donnent à l'APK universel 6.6.5 le SHA-256 `447dd52d6be8c8f01df1fdc1c105b30be0ea391bdb988d8f35fee68e01481578`.
+
+Cela établit l'existence d'artefacts téléchargeables et identifie les octets servis par GitHub. Cela ne prouve pas le calendrier de chaque canal de distribution, l'installation sur un téléphone précis ni une reproduction indépendante du comportement. Les personnes qui dépendent du mode Tor ou des sauvegardes sur relais devraient vérifier la version installée et suivre les instructions du manifeste pour un APK direct.
+
+Les deux correctifs rappellent le même point : les autorisations du signataire et les réglages de transport ne sont utiles que s'ils tiennent au démarrage, pendant la sauvegarde et lors de la restauration. Amber 6.6.4 et 6.6.5 réduisent ces écarts, mais restent des correctifs documentés, pas une preuve d'exploitation.
