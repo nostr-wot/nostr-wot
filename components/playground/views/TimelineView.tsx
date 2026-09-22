@@ -8,6 +8,9 @@ import { formatPubkey } from "@/lib/graph/transformers";
 import { getTrustClass } from "@/lib/graph/colors";
 
 export default function TimelineView() {
+  const m = useTranslations("profile");
+  const g = useTranslations("playground");
+  const u = useTranslations("ui");
   const t = useTranslations("playground");
   const { filteredData, getProfile } = useGraph();
   const { select } = useNodeSelection();
@@ -95,7 +98,7 @@ export default function TimelineView() {
                       {node.picture || profile?.picture ? (
                         <img
                           src={node.picture || profile?.picture}
-                          alt={`${profile?.displayName || profile?.name || node.label || "User"} avatar`}
+                          alt={u("avatar", { name: profile?.displayName || profile?.name || node.label || u("user") })}
                           className="w-10 h-10 rounded-full object-cover flex-shrink-0"
                         />
                       ) : (
@@ -116,13 +119,13 @@ export default function TimelineView() {
                         <span
                           className={`text-xs font-medium ${trustClass}`}
                         >
-                          {Math.round(node.trustScore * 100)}% trust
+                          {u("trustPercent", { count: Math.round(node.trustScore * 100) })}
                         </span>
                       </div>
 
                       {/* Mutual badge */}
                       {node.isMutual && (
-                        <span className="text-xs text-trust-green" aria-label="Mutual follow">
+                        <span className="text-xs text-trust-green" aria-label={g("graph.mutual")}>
                           <svg
                             className="w-4 h-4"
                             fill="currentColor"
@@ -145,7 +148,7 @@ export default function TimelineView() {
               {/* Show more indicator */}
               {nodes.length > 12 && (
                 <p className="ml-14 mt-3 text-sm text-gray-500">
-                  +{nodes.length - 12} more
+                  +{nodes.length - 12} {m("more")}
                 </p>
               )}
             </div>

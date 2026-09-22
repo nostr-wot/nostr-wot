@@ -26,6 +26,8 @@ export default function NodeContextMenu({
   onViewProfile,
   onClose,
 }: NodeContextMenuProps) {
+  const g = useTranslations("playground");
+  const u = useTranslations("ui");
   const t = useTranslations("playground");
   const menuRef = useRef<HTMLDivElement>(null);
 
@@ -74,9 +76,9 @@ export default function NodeContextMenu({
           {formatPubkey(node.id)}
         </div>
         <div className="flex items-center gap-2 mt-1 text-xs text-gray-400">
-          <span>{node.distance} hop{node.distance !== 1 ? "s" : ""}</span>
+          <span>{g("sync.hops", { count: node.distance })}</span>
           <span>·</span>
-          <span>{node.pathCount || 1} path{(node.pathCount || 1) !== 1 ? "s" : ""}</span>
+          <span>{u("paths", { count: node.pathCount || 1 })}</span>
           <span>·</span>
           <span className="text-trust-green">{Math.round(trustScore * 100)}%</span>
         </div>
@@ -116,7 +118,7 @@ export default function NodeContextMenu({
               <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
               <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
             </svg>
-            <span>Expanding...</span>
+            <span>{u("expanding")}</span>
           </div>
         )}
 

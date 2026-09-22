@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useRef } from 'react';
 import { Link, useRouter } from '@/i18n/routing';
-import { useTranslations } from 'next-intl';
+import { useLocale, useTranslations } from 'next-intl';
 
 interface SearchableNewsPost {
   slug: string;
@@ -36,6 +36,7 @@ export function NewsSidebar({
   currentTag,
   allPosts = []
 }: NewsSidebarProps) {
+  const locale = useLocale();
   const t = useTranslations('news.sidebar');
   const tRelated = useTranslations('news');
   const router = useRouter();
@@ -212,7 +213,7 @@ export function NewsSidebar({
                   {post.title}
                 </h4>
                 <time className="text-xs text-gray-500 dark:text-gray-400 mt-1 block">
-                  {new Date(post.date).toLocaleDateString('en-US', {
+                  {new Date(post.date).toLocaleDateString(locale, {
                     year: 'numeric',
                     month: 'short',
                     day: 'numeric',

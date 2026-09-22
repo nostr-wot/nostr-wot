@@ -1,6 +1,9 @@
 "use client";
 
+import { useTranslations } from "next-intl";
+
 export function ExtensionPopupIllustration({ className }: { className?: string }) {
+  const u = useTranslations("ui");
   return (
     <svg viewBox="0 0 400 300" className={className || "w-full h-auto"} fill="none" xmlns="http://www.w3.org/2000/svg">
       <style>
@@ -59,7 +62,7 @@ export function ExtensionPopupIllustration({ className }: { className?: string }
           {/* Key icon */}
           <rect x="96" y="116" width="28" height="28" rx="6" fill="#8B5CF6" fillOpacity="0.1" />
           <path d="M114 126 a4 4 0 1 0 -4 4 l0 6 l2 0 l0-2 l2 0 l0-2 l-2 0 l0-2 a4 4 0 0 0 2-4z" fill="#8B5CF6" strokeWidth="0" />
-          <text x="132" y="134" className="fill-gray-700 dark:fill-gray-300" fontSize="11" fontFamily="system-ui, sans-serif">Identity access</text>
+          <text x="132" y="134" className="fill-gray-700 dark:fill-gray-300" fontSize="11" fontFamily="system-ui, sans-serif">{u("identityAccess")}</text>
           {/* Toggle ON */}
           <g className="toggle-green">
             <rect x="274" y="124" width="30" height="16" rx="8" fill="#10B981" />
@@ -73,7 +76,7 @@ export function ExtensionPopupIllustration({ className }: { className?: string }
           <rect x="96" y="152" width="28" height="28" rx="6" fill="#8B5CF6" fillOpacity="0.1" />
           <path d="M110 158 l-6 3 l0 6 c0 5 3 8 6 10 c3-2 6-5 6-10 l0-6 z" fill="none" stroke="#8B5CF6" strokeWidth="1.5" strokeLinejoin="round" />
           <path d="M107 167 l2 2 l4-4" fill="none" stroke="#8B5CF6" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-          <text x="132" y="170" className="fill-gray-700 dark:fill-gray-300" fontSize="11" fontFamily="system-ui, sans-serif">Mutes &amp; relays</text>
+          <text x="132" y="170" className="fill-gray-700 dark:fill-gray-300" fontSize="11" fontFamily="system-ui, sans-serif">{u("mutesRelays")}</text>
           {/* Toggle ON */}
           <g className="toggle-green">
             <rect x="274" y="160" width="30" height="16" rx="8" fill="#10B981" />
@@ -87,7 +90,7 @@ export function ExtensionPopupIllustration({ className }: { className?: string }
           <rect x="96" y="188" width="28" height="28" rx="6" fill="#8B5CF6" fillOpacity="0.1" />
           <rect x="105" y="198" width="10" height="8" rx="2" fill="none" stroke="#8B5CF6" strokeWidth="1.5" />
           <path d="M107 198 l0-3 a3 3 0 0 1 6 0 l0 3" fill="none" stroke="#8B5CF6" strokeWidth="1.5" />
-          <text x="132" y="206" className="fill-gray-700 dark:fill-gray-300" fontSize="11" fontFamily="system-ui, sans-serif">Permissions</text>
+          <text x="132" y="206" className="fill-gray-700 dark:fill-gray-300" fontSize="11" fontFamily="system-ui, sans-serif">{u("permissions")}</text>
           {/* Chevron */}
           <path d="M298 200 l4 4 l-4 4" fill="none" className="stroke-gray-400 dark:stroke-gray-500" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
         </g>
@@ -100,7 +103,7 @@ export function ExtensionPopupIllustration({ className }: { className?: string }
           <g className="badge-dot">
             <circle cx="110" cy="248" r="5" fill="#10B981" />
           </g>
-          <text x="122" y="252" className="fill-gray-600 dark:fill-gray-400" fontSize="11" fontFamily="system-ui, sans-serif">2 hops — Trusted</text>
+          <text x="122" y="252" className="fill-gray-600 dark:fill-gray-400" fontSize="11" fontFamily="system-ui, sans-serif">{u("trustedHops")}</text>
         </g>
       </g>
     </svg>

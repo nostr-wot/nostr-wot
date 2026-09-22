@@ -1,5 +1,7 @@
 "use client";
 
+import { useTranslations } from "next-intl";
+
 import { ReactNode, useEffect, useState } from "react";
 import { DocsSidebar } from "./DocsSidebar";
 import { TableOfContents } from "./TableOfContents";
@@ -33,8 +35,9 @@ export function DocsClientWrapper({
   children,
   sidebarSections,
   tocItems,
-  tocTitle = "On this page",
+  tocTitle,
 }: DocsClientWrapperProps) {
+  const t = useTranslations("docs");
   const [activeSection, setActiveSection] = useState<string>("");
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
@@ -91,7 +94,7 @@ export function DocsClientWrapper({
           <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
           </svg>
-          Documentation Menu
+          {t("labels.documentationMenu")}
         </button>
       </div>
 
@@ -110,8 +113,9 @@ export function DocsClientWrapper({
         }`}
       >
         <div className="flex items-center justify-between p-4 border-b border-gray-200 dark:border-gray-800">
-          <span className="font-semibold">Navigation</span>
+          <span className="font-semibold">{t("labels.navigation")}</span>
           <button
+            aria-label={t("labels.closeNavigation")}
             onClick={() => setIsMobileMenuOpen(false)}
             className="p-2 text-gray-500 hover:text-gray-700 dark:hover:text-gray-300"
           >
@@ -143,7 +147,7 @@ export function DocsClientWrapper({
         {/* Right sidebar - table of contents */}
         <aside className="hidden xl:block w-52 flex-shrink-0">
           <div className="sticky top-24 max-h-[calc(100vh-8rem)] overflow-hidden">
-            <TableOfContents items={tocItems} title={tocTitle} />
+            <TableOfContents items={tocItems} title={tocTitle ?? t("sidebar.onThisPage")} />
           </div>
         </aside>
       </div>

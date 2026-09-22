@@ -1,3 +1,4 @@
+import { getTranslations } from "next-intl/server";
 import { ImageResponse } from "next/og";
 import { getNewsPost } from "@/lib/news";
 import { type Locale } from "@/i18n/config";
@@ -12,6 +13,7 @@ type Props = {
 
 export default async function OgImage({ params }: Props) {
   const { locale, slug } = await params;
+  const u = await getTranslations({ locale, namespace: "ui" });
   const post = getNewsPost(slug, locale as Locale);
   const title = post?.title || "Nostr WoT News";
 
@@ -77,7 +79,7 @@ export default async function OgImage({ params }: Props) {
               fontWeight: 700,
             }}
           >
-            News
+            {u("news")}
           </div>
         </div>
 

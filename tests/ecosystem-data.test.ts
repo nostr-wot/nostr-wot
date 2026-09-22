@@ -42,8 +42,8 @@ test('news and security records retain dates and source links without future cla
   }
 });
 
-test('Spanish translation preserves record identities, roles, dates and evidence URLs', () => {
-  const es = JSON.parse(readFileSync(new URL('../data/ecosystem-projects.es.json', import.meta.url), 'utf8'));
+for (const locale of ['es', 'de', 'fr', 'it', 'pt', 'ru']) test(`${locale} translation preserves record identities, roles, dates and evidence URLs`, () => {
+  const es = JSON.parse(readFileSync(new URL(`../data/ecosystem-projects.${locale}.json`, import.meta.url), 'utf8'));
   const fixed = new Set(['id', 'name', 'status', 'role', 'category', 'date', 'lastVerified', 'url', 'website', 'repository', 'sourceUrl', 'checkedAt', 'type', 'coverage', 'dateBasis']);
   function compare(en: any, translated: any, path = '') {
     if (Array.isArray(en)) {
@@ -64,5 +64,15 @@ test('Spanish translation preserves record identities, roles, dates and evidence
   compare(data, es);
   for (const section of ['projects', 'news', 'security']) {
     data[section].forEach((entry: any, index: number) => assert.notEqual(es[section][index].summary, entry.summary));
+  }
+});
+
+test('every published category and report type has an explicit label in every language', () => {
+  for (const locale of ['en', 'es', 'de', 'fr', 'it', 'pt', 'ru']) {
+    const { directory } = JSON.parse(readFileSync(new URL(`../messages/${locale}/projects.json`, import.meta.url), 'utf8'));
+    for (const project of data.projects) assert.ok(directory.categories[project.category], `${locale}: ${project.category}`);
+    for (const report of [...data.news, ...data.security]) {
+      if (report.type) assert.ok(directory.reportTypes[report.type], `${locale}: ${report.type}`);
+    }
   }
 });

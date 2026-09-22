@@ -1,3 +1,4 @@
+import { getTranslations } from "next-intl/server";
 import { ImageResponse } from "next/og";
 
 export const runtime = "edge";
@@ -5,7 +6,9 @@ export const alt = "Nostr Web of Trust — Pitch";
 export const size = { width: 1200, height: 630 };
 export const contentType = "image/jpeg";
 
-export default function OgImage() {
+export default async function OgImage({ params }: { params: Promise<{ locale: string }> }) {
+  const { locale } = await params;
+  const t = await getTranslations({ locale, namespace: "pitch.slide0" });
   return new ImageResponse(
     (
       <div
@@ -82,8 +85,7 @@ export default function OgImage() {
               gap: 16,
             }}
           >
-            <span>Web of</span>
-            <span style={{ color: "#7c3aed" }}>Trust</span>
+            {t.rich("titleLine1", { highlight: chunks => <span style={{ color: "#7c3aed" }}>{chunks}</span> })}
           </div>
           <div
             style={{
@@ -94,16 +96,7 @@ export default function OgImage() {
               gap: 16,
             }}
           >
-            <span>for</span>
-            <span
-              style={{
-                background: "#fafafa",
-                color: "#0a0a0a",
-                padding: "2px 18px",
-              }}
-            >
-              Nostr.
-            </span>
+            {t.rich("titleLine2", { brand: chunks => <span style={{ color: "#7c3aed" }}>{chunks}</span> })}
           </div>
         </div>
 
@@ -117,7 +110,7 @@ export default function OgImage() {
             letterSpacing: "0.02em",
           }}
         >
-          Spam-free decentralized networks. No central authority.
+          {t("subtitle")}
         </div>
       </div>
     ),

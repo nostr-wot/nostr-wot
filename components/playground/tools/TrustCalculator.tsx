@@ -8,6 +8,8 @@ import { formatPubkey, npubToHex } from "@/lib/graph/transformers";
 import { getTrustClass } from "@/lib/graph/colors";
 
 export default function TrustCalculator() {
+  const g = useTranslations("playground");
+  const u = useTranslations("ui");
   const t = useTranslations("playground");
   const { filteredData, getProfile } = useGraph();
 
@@ -91,7 +93,7 @@ export default function TrustCalculator() {
                   {result.node.picture || result.profile?.picture ? (
                     <img
                       src={result.node.picture || result.profile?.picture}
-                      alt={`${result.profile?.displayName || result.profile?.name || result.node.label || "User"} avatar`}
+                      alt={u("avatar", { name: result.profile?.displayName || result.profile?.name || result.node.label || u("user") })}
                       className="w-10 h-10 rounded-full object-cover"
                     />
                   ) : (
@@ -106,7 +108,7 @@ export default function TrustCalculator() {
                       {result.profile?.displayName ||
                         result.profile?.name ||
                         result.node.label ||
-                        "Unknown"}
+                        u("unknown")}
                     </p>
                     <p className="text-xs text-gray-500 font-mono">
                       {formatPubkey(result.node.id)}
@@ -120,14 +122,14 @@ export default function TrustCalculator() {
                       result.node.trustScore
                     )}`}
                   >
-                    {Math.round(result.node.trustScore * 100)}% trust
+                    {u("trustPercent", { count: Math.round(result.node.trustScore * 100) })}
                   </span>
                   <span className="px-2 py-1 rounded text-xs font-medium bg-gray-700 text-gray-300">
-                    {result.node.distance} hop{result.node.distance !== 1 ? "s" : ""}
+                    {g("sync.hops", { count: result.node.distance })}
                   </span>
                   {result.node.isMutual && (
                     <span className="px-2 py-1 rounded text-xs font-medium bg-trust-green/20 text-trust-green">
-                      Mutual
+                      {g("graph.mutual")}
                     </span>
                   )}
                 </div>

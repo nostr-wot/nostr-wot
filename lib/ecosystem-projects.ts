@@ -1,4 +1,12 @@
-import spanishMessages from '@/messages/es/projects.json';
+import enMessages from '@/messages/en/projects.json';
+import esMessages from '@/messages/es/projects.json';
+import deMessages from '@/messages/de/projects.json';
+import frMessages from '@/messages/fr/projects.json';
+import itMessages from '@/messages/it/projects.json';
+import ptMessages from '@/messages/pt/projects.json';
+import ruMessages from '@/messages/ru/projects.json';
+
+const projectMessages = { en: enMessages, es: esMessages, de: deMessages, fr: frMessages, it: itMessages, pt: ptMessages, ru: ruMessages };
 
 export const PROJECT_STATUSES = ['active', 'beta', 'archived', 'unknown'] as const;
 export type ProjectStatus = typeof PROJECT_STATUSES[number];
@@ -34,42 +42,51 @@ export type EcosystemNews = {
 };
 
 export function categoryLabel(category: string, locale = 'en'): string {
-  if (locale === 'es') {
-    const labels: Record<string, string> = spanishMessages.directory.categories;
-    return labels[category.toLowerCase().replace(/_/g, '-')] ?? (category || labels.uncategorized);
-  }
-  const label = category.replace(/[-_]+/g, ' ').trim();
-  return label ? label[0].toUpperCase() + label.slice(1) : 'Uncategorized';
+  const labels: Record<string, string> = ecosystemCopy(locale).categories;
+  const key = category.toLowerCase().replace(/_/g, '-');
+  return labels[key] ?? (category ? category.replace(/[-_]+/g, ' ').replace(/^./, letter => letter.toUpperCase()) : labels.uncategorized);
 }
 
 export function isCommitDate(dateBasis?: string): boolean {
   return !!dateBasis && /commit|tag|etiquet/i.test(dateBasis);
 }
 
+const dateCopy = {
+  en: ['Commit date', 'Date', 'Tagged commit', 'Publication date', 'Publication'],
+  es: ['Fecha del commit', 'Fecha', 'Commit etiquetado', 'Fecha de publicación', 'Publicación'],
+  de: ['Commit-Datum', 'Datum', 'Getaggter Commit', 'Veröffentlichungsdatum', 'Veröffentlichung'],
+  fr: ['Date du commit', 'Date', 'Commit étiqueté', 'Date de publication', 'Publication'],
+  it: ['Data del commit', 'Data', 'Commit con tag', 'Data di pubblicazione', 'Pubblicazione'],
+  pt: ['Data do commit', 'Data', 'Commit com tag', 'Data de publicação', 'Publicação'],
+  ru: ['Дата коммита', 'Дата', 'Коммит с тегом', 'Дата публикации', 'Публикация'],
+};
+
 export function newsDateLabel(dateBasis?: string, locale = 'en'): string {
-  return locale === 'es'
-    ? (isCommitDate(dateBasis) ? 'Fecha del commit' : 'Fecha')
-    : (isCommitDate(dateBasis) ? 'Commit date' : 'Date');
+  const labels = dateCopy[locale as keyof typeof dateCopy] ?? dateCopy.en;
+  return labels[isCommitDate(dateBasis) ? 0 : 1];
 }
 
 export function reportTypeLabel(type: string, locale = 'en'): string {
-  const labels: Record<string, string> = spanishMessages.directory.reportTypes;
-  return locale === 'es' ? labels[type] ?? type : categoryLabel(type);
+  const labels: Record<string, string> = ecosystemCopy(locale).reportTypes;
+  return labels[type] ?? categoryLabel(type, locale);
 }
 
 export function dateBasisLabel(basis: string, locale = 'en'): string {
-  if (locale !== 'es') return basis;
-  const labels: Record<string, string> = {
-    'tagged-commit': 'Commit etiquetado', 'tag commit date': 'Fecha del commit etiquetado',
-    'commit': 'Commit', 'publication date': 'Fecha de publicación', 'published': 'Publicación',
-  };
-  return labels[basis] ?? basis;
+  const labels = dateCopy[locale as keyof typeof dateCopy] ?? dateCopy.en;
+  const index = { 'tagged-commit': 2, 'tag commit date': 2, 'commit': 0, 'publication date': 3, 'published': 4 }[basis];
+  return index === undefined ? basis : labels[index];
+}
+
+export function coverageLabel(coverage: string, locale = 'en'): string {
+  if (coverage === 'baseline') return reportTypeLabel('baseline', locale);
+  const current: Record<string, string> = { en: 'Current', es: 'Actual', de: 'Aktuell', fr: 'Actuelle', it: 'Attuale', pt: 'Atual', ru: 'Текущий' };
+  return coverage === 'current' ? current[locale] ?? current.en : coverage;
 }
 
 export function ecosystemDate(value: string, locale = 'en'): string {
-  if (locale !== 'es' || !/^\d{4}-\d{2}-\d{2}$/.test(value)) return value;
+  if (locale === 'en' || !/^\d{4}-\d{2}-\d{2}$/.test(value)) return value;
   const date = new Date(`${value}T00:00:00Z`);
-  return Number.isNaN(date.getTime()) ? value : new Intl.DateTimeFormat('es', {
+  return Number.isNaN(date.getTime()) ? value : new Intl.DateTimeFormat(locale, {
     day: 'numeric', month: 'long', year: 'numeric', timeZone: 'UTC',
   }).format(date);
 }
@@ -103,10 +120,10 @@ export function ecosystemJsonLd(data: EcosystemData, url: string, locale = 'en')
   return {
     '@context': 'https://schema.org',
     '@type': 'CollectionPage',
-    name: locale === 'es' ? 'Directorio del ecosistema Nostr' : 'Nostr ecosystem directory',
-    description: locale === 'es' ? 'Un directorio de proyectos Nostr, su estado, personas y fuentes. La inclusión no implica una integración con Web of Trust.' : 'A curated directory of Nostr projects, status, people and sources. Listing does not imply a Web of Trust integration.',
+    name: ecosystemCopy(locale).heading,
+    description: ecosystemCopy(locale).intro,
     url,
-    inLanguage: locale === 'es' ? 'es' : 'en',
+    inLanguage: locale,
     dateModified: data.checkedAt,
     mainEntity: {
       '@type': 'ItemList',
@@ -129,66 +146,6 @@ export function serializeJsonLd(value: unknown): string {
   return JSON.stringify(value).replace(/</g, '\\u003c');
 }
 
-const englishCopy = {
-  "linkUnavailable": "link unavailable",
-  "website": "Website",
-  "repository": "Repository",
-  "for": "for",
-  "cardDetails": "People, status & sources",
-  "statusEvidence": "Status evidence:",
-  "notVerified": "Not verified.",
-  "people": "People",
-  "unknownFounder": "Founder: not verified.",
-  "roleEvidence": "Role evidence",
-  "latestUpdate": "Latest recorded update:",
-  "sources": "Sources",
-  "noSources": "Sources not yet recorded.",
-  "lastChecked": "Last checked:",
-  "unverified": "not verified",
-  "statusNotice": "Status reflects the cited evidence at that time.",
-  "reportsNotice": "Selected reports from cited sources; this is not a complete incident or industry record.",
-  "summaryEvidence": "Summary & evidence",
-  "coverage": "Coverage:",
-  "dateBasis": "Date basis:",
-  "commitNotice": "; a commit date, not a verified release date.",
-  "languageNotice": "Curated content · English",
-  "heading": "Explore the Nostr ecosystem",
-  "intro": "Discover projects, their current status and the people behind them. Inclusion in this directory does not imply a Nostr WoT integration or endorsement.",
-  "directoryChecked": "Directory checked:",
-  "directoryNotice": "Expand a project to inspect its evidence. Unknown means status could not be verified.",
-  "roundup": "Fortnightly new-project roundup",
-  "roundupStart": "The planned editorial cadence is every two weeks, covering new projects and notable updates. Browse the",
-  "blog": "blog",
-  "roundupMiddle": "for published articles and the",
-  "newsroom": "newsroom",
-  "roundupEnd": "for industry reporting.",
-  "searchRegion": "Search ecosystem projects",
-  "search": "Search projects or people",
-  "placeholder": "Name, description or person",
-  "category": "Category",
-  "allCategories": "All categories",
-  "status": "Status",
-  "allStatuses": "All statuses",
-  "of": "of",
-  "projects": "projects",
-  "clear": "Clear filters",
-  "noMatches": "No projects match these filters. Try another search or clear the filters.",
-  "empty": "The researched directory is being prepared. Project entries will appear here once their sources have been checked.",
-  "newsTitle": "Recent ecosystem news",
-  "securityTitle": "Security reports",
-  "statuses": {
-    "active": "Active",
-    "beta": "Beta",
-    "archived": "Archived",
-    "unknown": "Unknown"
-  },
-  "roles": {
-    "founder": "founder",
-    "maintainer": "maintainer",
-    "creator": "creator"
-  }
-};
-
-export function ecosystemCopy(locale = "en"): typeof englishCopy {
-  return locale === "es" ? spanishMessages.directory : englishCopy;
+export function ecosystemCopy(locale = "en") {
+  return projectMessages[locale as keyof typeof projectMessages]?.directory ?? enMessages.directory;
 }

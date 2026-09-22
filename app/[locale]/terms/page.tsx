@@ -37,8 +37,8 @@ export default async function TermsPage() {
   const jsonLd = {
     "@context": "https://schema.org",
     "@type": "WebPage",
-    "name": "Terms of Service - Nostr Web of Trust",
-    "description": "Terms of service for using Nostr Web of Trust website, browser extension, and Oracle server.",
+    "name": t("meta.title"),
+    "description": t("meta.description"),
     "url": "https://nostr-wot.com/terms",
     "publisher": {
       "@type": "Organization",

@@ -5,6 +5,7 @@ import { Link } from "@/i18n/routing";
 import { LogoIcon, GitHubIcon, NostrIcon, XTwitterIcon, LinkedInIcon, FacebookIcon } from "@/components/icons";
 
 export default function Footer() {
+  const u = useTranslations("ui");
   const t = useTranslations("common");
   const currentYear = new Date().getFullYear();
 
@@ -77,7 +78,7 @@ export default function Footer() {
             <ul className="space-y-3">
               <li>
                 <Link href="/download" className="text-gray-600 dark:text-gray-400 text-sm hover:text-primary transition-colors">
-                  WoT Extension
+                  {u("extension")}
                 </Link>
               </li>
               <li>
@@ -114,7 +115,7 @@ export default function Footer() {
               </li>
               <li>
                 <Link href="/blog" className="text-gray-600 dark:text-gray-400 text-sm hover:text-primary transition-colors">
-                  Blog
+                  {u("blog")}
                 </Link>
               </li>
               <li>
