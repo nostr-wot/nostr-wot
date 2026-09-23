@@ -13,6 +13,7 @@ type SortField = "trust" | "distance" | "name";
 type SortDirection = "asc" | "desc";
 
 export default function ListView() {
+  const u = useTranslations("ui");
   const t = useTranslations("playground");
   const { filteredData, getProfile } = useGraph();
   const { select } = useNodeSelection();
@@ -107,7 +108,7 @@ export default function ListView() {
                     {node.picture || profile?.picture ? (
                       <img
                         src={node.picture || profile?.picture}
-                        alt={`${profile?.displayName || profile?.name || node.label || "User"} avatar`}
+                        alt={u("avatar", { name: profile?.displayName || profile?.name || node.label || u("user") })}
                         className="w-10 h-10 rounded-full object-cover"
                       />
                     ) : (
@@ -122,7 +123,7 @@ export default function ListView() {
                         {profile?.displayName ||
                           profile?.name ||
                           node.label ||
-                          "Unknown"}
+                          u("unknown")}
                       </p>
                       <p className="text-xs text-gray-500 font-mono">
                         {formatPubkey(node.id)}
@@ -178,7 +179,7 @@ export default function ListView() {
                     target="_blank"
                     onClick={(e) => e.stopPropagation()}
                     className="text-primary hover:text-primary-dark transition-colors"
-                    aria-label="Open full profile in new tab"
+                    aria-label={u("openProfile")}
                   >
                     <svg
                       className="w-5 h-5"

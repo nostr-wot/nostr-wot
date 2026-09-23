@@ -1,27 +1,27 @@
 {
   "meta": {
     "title": "WoT Oracle",
-    "description": "High-performance backend API for Nostr Web of Trust queries. Index the follow graph and query social distance at scale."
+    "description": "Self-hostable Nostr API for directed follow distance and separate public mute-list evidence. Oracle v0.3.0."
   },
   "hero": {
     "badge": "Backend API",
     "title": "WoT Oracle",
-    "subtitle": "High-performance indexer for the Nostr follow graph. Sub-millisecond queries answering \"how many hops separate these two users?\"",
+    "subtitle": "Query directed follow distance and public mute evidence over HTTP. Version 0.3.0, with no extension required.",
     "viewOnGitHub": "View on GitHub",
     "apiDocs": "API Documentation"
   },
   "whatItDoes": {
     "title": "What It Does",
-    "description": "WoT Oracle continuously syncs follow lists (Kind 3 events) from Nostr relays, building an in-memory graph of the entire social network. It then provides a REST API to query social distance between any two pubkeys.",
+    "description": "The Oracle indexes kind-3 follows and public pubkey entries from kind-10000 mute lists received through configured relays. Coverage is limited to those indexed events. Follow distance and mute evidence remain separate; the API does not combine them into a trust score.",
     "example": "Example:",
     "exampleText": "If Alice follows Bob, and Bob follows Carol, then the distance from Alice to Carol is 2 hops."
   },
   "performance": {
-    "title": "Performance",
-    "cachedLatency": "Cached query latency",
-    "uncachedLatency": "Uncached query latency",
-    "queriesPerSecond": "Queries per second",
-    "bidirectionalBfs": "Bidirectional BFS"
+    "title": "Release capabilities",
+    "release": "Release",
+    "maxHops": "Maximum search depth (hops)",
+    "batchTargets": "Targets per batch",
+    "eventKinds": "Indexed event kinds"
   },
   "apiEndpoints": {
     "title": "API Endpoints",
@@ -41,19 +41,20 @@
     },
     "health": {
       "title": "GET /health",
-      "description": "Health check endpoint for monitoring."
-    }
+      "description": "Process liveness and release version. Use /ready to check ingestion readiness."
+    },
+    "subtitle": "Illustrative responses using synthetic 64-character hexadecimal pubkeys. Actual results depend on indexed events. See the API reference for all endpoints, including /mutes, /trust and /ready."
   },
   "selfHosting": {
     "title": "Self-Hosting",
-    "subtitle": "Run your own WoT Oracle instance. Full control over your trust infrastructure.",
+    "subtitle": "Examples use v0.3.0. Docker and Compose publish on localhost:8080. Public deployments need a reverse proxy that replaces client-IP headers. Native builds need Rust 1.93, pkg-config and OpenSSL development libraries.",
     "docker": "Docker (Recommended)",
     "dockerCompose": "Docker Compose",
-    "fromSource": "From Source (Rust 1.75+)"
+    "fromSource": "From source (Rust 1.93)"
   },
   "configuration": {
     "title": "Configuration",
-    "subtitle": "Configure via environment variables:",
+    "subtitle": "Environment variables below show native binary defaults. The Docker image uses /app/data/wot.db; Compose publishes to loopback by default. Cache size is bounded to 100–100000, TTL to 10–3600 seconds, and the rate limit to 1–1000 requests/minute.",
     "table": {
       "variable": "Variable",
       "default": "Default",
@@ -72,7 +73,7 @@
       "description": "Query throttle per IP"
     },
     "cacheSize": {
-      "description": "LRU cache entries"
+      "description": "Maximum entries in the Moka query cache"
     },
     "cacheTtl": {
       "description": "Cache expiration (5 min)"
@@ -86,11 +87,11 @@
     },
     "pathfinding": {
       "title": "Pathfinding",
-      "description": "Bidirectional breadth-first search (BFS) from both endpoints simultaneously, meeting in the middle for O(b^(d/2)) complexity."
+      "description": "Bidirectional breadth-first search computes shortest directed follow paths. Runtime depends on graph size, branching and search depth."
     },
     "caching": {
       "title": "Caching",
-      "description": "LRU cache with configurable size and TTL. Most queries hit cache for sub-millisecond response times."
+      "description": "Moka query cache with configurable capacity and TTL. Entries are invalidated when the graph revision changes. Latency depends on the deployment and workload."
     },
     "rateLimiting": {
       "title": "Rate Limiting",
@@ -100,7 +101,7 @@
   "publicInstance": {
     "title": "Public Instance",
     "subtitle": "A public instance is available for development and testing:",
-    "rateLimit": "Rate limited to 100 requests/minute per IP. For production use, consider self-hosting."
+    "rateLimit": "Limits depend on deployment settings. Handle HTTP 429 with backoff. Graph-query saturation returns 503; /health and /ready remain available outside the data-endpoint limiter."
   },
   "cta": {
     "title": "Open Source",

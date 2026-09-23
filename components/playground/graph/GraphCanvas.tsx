@@ -12,14 +12,15 @@ import { getTrustColorHex } from "@/lib/graph/colors";
 import { formatPubkey } from "@/lib/graph/transformers";
 import NodeContextMenu from "./NodeContextMenu";
 
+function GraphLoading() {
+  const g = useTranslations("playground");
+  return <div className="flex items-center justify-center h-full bg-gray-900"><div className="text-gray-500">{g("graph.loadingGraph")}</div></div>;
+}
+
 // Use 2D graph for much better performance (canvas-based, not WebGL meshes)
 const ForceGraph2D = dynamic(() => import("react-force-graph-2d"), {
   ssr: false,
-  loading: () => (
-    <div className="flex items-center justify-center h-full bg-gray-900">
-      <div className="text-gray-500">Loading graph...</div>
-    </div>
-  ),
+  loading: GraphLoading,
 });
 
 interface GraphCanvasProps {
@@ -33,6 +34,8 @@ const MAX_VISIBLE_LINKS = 20000;
 const DISABLE_SIMULATION_THRESHOLD = 2000; // Disable physics above this
 
 export default function GraphCanvas({ width, height }: GraphCanvasProps) {
+  const g = useTranslations("playground");
+  const u = useTranslations("ui");
   const t = useTranslations("playground");
   const { filteredData, state } = useGraph();
   const { settings } = state;
@@ -41,7 +44,6 @@ export default function GraphCanvas({ width, height }: GraphCanvasProps) {
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const graphRef = useRef<any>(null);
-  const [showStartPrompt, setShowStartPrompt] = useState(true);
   const [contextMenu, setContextMenu] = useState<{
     node: GraphNode;
     position: { x: number; y: number };
@@ -112,29 +114,25 @@ export default function GraphCanvas({ width, height }: GraphCanvasProps) {
     return { nodes, links };
   }, [filteredData, useStaticLayout]);
 
-  // Pre-compute colors for performance - use SDK-provided trustScore directly
+  // Pre-compute colors for performance - use calculated trustScore directly
   const nodeColors = useMemo(() => {
     const colors = new Map<string, string>();
     for (const node of visibleData.nodes) {
       if (node.isRoot) {
         colors.set(node.id, "#6366f1");
       } else {
-        // Use the SDK-provided trustScore from the node directly
+        // Use the calculated trustScore from the node directly
         colors.set(node.id, getTrustColorHex(node.trustScore));
       }
     }
     return colors;
   }, [visibleData.nodes]);
 
-  // Hide prompt when graph has more than just the root node
+  // Clear simulation positions on reset
   useEffect(() => {
-    if (filteredData.nodes.length > 1) {
-      setShowStartPrompt(false);
-    }
-    // When graph is reset (empty), clear pinned positions and show prompt again
+    // Clear pinned positions when resetting
     if (filteredData.nodes.length === 0) {
       prevNodePositions.current.clear();
-      setShowStartPrompt(true);
     }
   }, [filteredData.nodes.length]);
 
@@ -154,7 +152,6 @@ export default function GraphCanvas({ width, height }: GraphCanvasProps) {
       // Auto-expand root node on click if not yet expanded
       if (graphNode.isRoot && !state.expandedNodes.has(graphNode.id)) {
         expandNodeFollows(graphNode.id);
-        setShowStartPrompt(false);
         return;
       }
 
@@ -199,7 +196,6 @@ export default function GraphCanvas({ width, height }: GraphCanvasProps) {
   const handleExpandFromMenu = useCallback(() => {
     if (contextMenu?.node) {
       expandNodeFollows(contextMenu.node.id);
-      setShowStartPrompt(false);
     }
   }, [contextMenu, expandNodeFollows]);
 
@@ -338,7 +334,7 @@ export default function GraphCanvas({ width, height }: GraphCanvasProps) {
           : (graphLink.target as GraphNode);
 
       if (targetNode) {
-        // Use the SDK-provided trustScore from the node directly
+        // Use the calculated trustScore from the node directly
         const hex = getTrustColorHex(targetNode.trustScore);
         return hex + "40"; // 25% opacity
       }
@@ -419,7 +415,7 @@ export default function GraphCanvas({ width, height }: GraphCanvasProps) {
         className="flex items-center justify-center bg-gray-900"
         style={{ width, height }}
       >
-        <div className="text-gray-500">Loading graph...</div>
+        <div className="text-gray-500">{g("graph.loadingGraph")}</div>
       </div>
     );
   }
@@ -468,18 +464,18 @@ export default function GraphCanvas({ width, height }: GraphCanvasProps) {
 
       {/* Node count indicator */}
       <div className="absolute top-4 right-4 bg-gray-800/80 backdrop-blur-sm rounded-lg px-3 py-2 text-xs">
-        <span className="text-gray-400">Nodes: </span>
+        <span className="text-gray-400">{g("graph.nodes")}: </span>
         <span className="text-white font-medium">{visibleData.nodes.length.toLocaleString()}</span>
         {isTruncated && (
           <span className="text-yellow-500 ml-1">
             / {filteredData.nodes.length.toLocaleString()}
           </span>
         )}
-        <span className="text-gray-400 ml-3">Links: </span>
+        <span className="text-gray-400 ml-3">{u("links")}: </span>
         <span className="text-white font-medium">{visibleData.links.length.toLocaleString()}</span>
         {useStaticLayout && (
-          <span className="text-blue-400 ml-3" title="Physics disabled for performance">
-            Static
+          <span className="text-blue-400 ml-3" title={u("physicsDisabled")}>
+            {u("static")}
           </span>
         )}
       </div>
@@ -491,43 +487,14 @@ export default function GraphCanvas({ width, height }: GraphCanvasProps) {
             {activeNode.label || formatPubkey(activeNode.id)}
           </div>
           <div className="text-xs text-gray-400 mt-1">
-            <span>{activeNode.distance} hop{activeNode.distance !== 1 ? 's' : ''}</span>
+            <span>{g("sync.hops", { count: activeNode.distance })}</span>
             <span className="mx-1">·</span>
-            <span>{activeNode.pathCount || 1} path{(activeNode.pathCount || 1) !== 1 ? 's' : ''}</span>
+            <span>{u("paths", { count: activeNode.pathCount || 1 })}</span>
             <span className="mx-1">·</span>
-            <span className="text-trust-green">{Math.round(activeNode.trustScore * 100)}% trust</span>
+            <span className="text-trust-green">{u("trustPercent", { count: Math.round(activeNode.trustScore * 100) })}</span>
           </div>
           <div className="text-xs text-gray-500 mt-1 font-mono truncate">
             {formatPubkey(activeNode.id)}
-          </div>
-        </div>
-      )}
-
-      {/* Initial prompt to click root node */}
-      {showStartPrompt && filteredData.nodes.length === 1 && (
-        <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-          <div className="bg-gray-800/90 backdrop-blur-sm border border-primary/50 rounded-xl px-6 py-4 shadow-2xl animate-pulse">
-            <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-full bg-primary/20 flex items-center justify-center">
-                <svg
-                  className="w-5 h-5 text-primary"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M15 15l-2 5L9 9l11 4-5 2zm0 0l5 5M7.188 2.239l.777 2.897M5.136 7.965l-2.898-.777M13.95 4.05l-2.122 2.122m-5.657 5.656l-2.12 2.122"
-                  />
-                </svg>
-              </div>
-              <div>
-                <p className="text-white font-medium">{t("graph.clickToExplore")}</p>
-                <p className="text-gray-400 text-sm">{t("graph.clickToExploreDesc")}</p>
-              </div>
-            </div>
           </div>
         </div>
       )}
@@ -540,7 +507,7 @@ export default function GraphCanvas({ width, height }: GraphCanvasProps) {
             <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
             <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
           </svg>
-          Expanding...
+          {u("expanding")}
         </div>
       )}
 

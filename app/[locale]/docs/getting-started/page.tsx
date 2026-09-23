@@ -13,7 +13,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { locale } = await params;
   const t = await getTranslations("docs");
   const title = `${t("quickStart.title")} | ${t("meta.title")}`;
-  const description = "Get started with Nostr Web of Trust in minutes. Quick start guide for browser extension and Oracle API.";
+  const description = t("labels.startDescription");
 
   return {
     title,
@@ -37,111 +37,77 @@ export default async function GettingStartedPage() {
       <ScrollReveal animation="fade-up">
         <h1>{t("quickStart.title")}</h1>
 
-        <p className="lead text-xl text-gray-600 dark:text-gray-400">
-          Get up and running with Web of Trust in just a few minutes.
-        </p>
+        <p className="lead text-xl text-gray-600 dark:text-gray-400">{t("start.intro")}</p>
       </ScrollReveal>
 
       <ScrollReveal animation="fade-up" delay={100}>
-        <h2>Client-side (with the SDK)</h2>
+        <h2>{t("start.queryTitle")}</h2>
 
-      <p>
-        For client-side applications, use the SDK&apos;s Web of Trust module. Install{" "}
-        <InlineCode>nostr-wot-sdk</InlineCode> and query hop distance right in the browser.
-      </p>
+      <p>{t("start.queryDescription")}</p>
 
-      <h3>1. Install</h3>
-
-      <TerminalBlock commands={["npm install nostr-wot-sdk"]} />
-
-      <h3>2. Query Trust Distance</h3>
+      <h3>{t("start.distanceTitle")}</h3>
 
       <CodeBlock
         language="typescript"
-        code={`import { WoT } from "@nostr-wot/wot";
+        code={`async function getFollowDistance(from: string, to: string) {
+  const query = new URLSearchParams({ from, to, max_hops: "2" });
+  const response = await fetch(
+    "https://wot-oracle.mappingbitcoin.com/distance?" + query
+  );
+  if (!response.ok) throw new Error("Oracle HTTP " + response.status);
+  const data = await response.json();
+  return data.hops as number | null;
+}
 
-const wot = new WoT({ rootPubkey: "hex-your-pubkey", maxHops: 2 });
-
-// Get hop distance to a target pubkey
-const result = await wot.getDistance("hex-target-pubkey");
-
-if (result && result.hops <= 2) {
-  // Within web of trust
-  console.log(\`Trusted: \${result.hops} hops away\`);
-} else {
-  // Outside web of trust or not connected
-  console.log("Not in your web of trust");
-}`}
+// Replace with real public keys before querying.
+const hops = await getFollowDistance("a".repeat(64), "b".repeat(64));
+console.log(hops === null ? "No indexed path within 2 hops" : hops);`}
       />
 
       <div className="not-prose my-6 p-4 bg-blue-50 dark:bg-blue-950/30 rounded-lg border border-blue-200 dark:border-blue-900">
-        <p className="text-sm text-blue-800 dark:text-blue-200">
-          <strong>Tip:</strong> Hop values: 0 = yourself, 1 = direct follow, 2 = follow of follow, null = not connected. If the{" "}
-          <Link href="/download">WoT extension</Link> is installed, the module answers queries from its locally-cached follow graph automatically.
-        </p>
+        <p className="text-sm text-blue-800 dark:text-blue-200">{t.rich("start.hopsDescription", { strong: chunks => <strong>{chunks}</strong> })}</p>
       </div>
       </ScrollReveal>
 
       <ScrollReveal animation="fade-up" delay={150}>
         <h2>{t("quickStart.server")}</h2>
 
-      <p>
-        For server-side applications, use the Oracle REST API. No extension required.
-      </p>
+      <p>{t("start.serverDescription")}</p>
 
-      <h3>Using fetch</h3>
+      <h3>{t("start.mutesTitle")}</h3>
 
       <CodeBlock
         language="javascript"
-        code={`const response = await fetch(
-  \`https://wot-oracle.mappingbitcoin.com/distance?\` +
-  \`from=\${fromPubkey}&to=\${toPubkey}\`
+        code={`const from = "a".repeat(64); // Replace with source pubkey
+const to = "b".repeat(64); // Replace with target pubkey
+const query = new URLSearchParams({ from, to, max_hops: "3" });
+const response = await fetch(
+  "https://wot-oracle.mappingbitcoin.com/trust?" + query
 );
-const data = await response.json();
-
-console.log(\`Distance: \${data.distance}\`);
-console.log(\`Paths: \${data.paths}\`);
-console.log(\`Mutual follow: \${data.mutual}\`);`}
+if (!response.ok) throw new Error("Oracle HTTP " + response.status);
+const { follow_distance, public_mute_evidence } = await response.json();
+console.log(follow_distance.hops, follow_distance.path_count);
+console.log(public_mute_evidence.source_mutes_target);
+console.log(public_mute_evidence.source_mute_list_known);`}
       />
+      <p>{t("start.mutesDescription")}</p>
 
-      <h3>Using cURL</h3>
+      <h3>{t("start.curlTitle")}</h3>
 
       <TerminalBlock
         commands={[
-          'curl "https://wot-oracle.mappingbitcoin.com/distance?from=82341f...&to=3bf0c6..."',
+          'curl --fail-with-body "https://wot-oracle.mappingbitcoin.com/health"',
+          'curl --fail-with-body "https://wot-oracle.mappingbitcoin.com/ready"',
         ]}
       />
       </ScrollReveal>
 
       <ScrollReveal animation="fade-up" delay={200}>
-        <h2>Using the SDK in React</h2>
+        <h2>{t("start.compatibilityTitle")}</h2>
 
-      <p>
-        For React apps, wrap your tree in <InlineCode>{"<NostrSdkProvider>"}</InlineCode> — it wires up the
-        data layer (profiles, notes, threads, engagement) and enables the Web of Trust module when you opt in.
-        Trust hooks are then available anywhere.
-      </p>
+      <p>{t.rich("start.compatibilityDescription", { code: chunks => <InlineCode>{chunks}</InlineCode> })}</p>
 
-      <CodeBlock
-        language="tsx"
-        code={`import { NostrSdkProvider, useTrustScore } from "nostr-wot-sdk/react";
-
-function App() {
-  return (
-    <NostrSdkProvider
-      relays={["wss://relay.damus.io", "wss://nos.lol"]}
-      wot={{ enabled: true, options: { maxHops: 2 } }}
-    >
-      <Feed />
-    </NostrSdkProvider>
-  );
-}
-
-function TrustBadge({ pubkey }: { pubkey: string }) {
-  const score = useTrustScore(pubkey); // 0..1 or null
-  return score !== null ? <span>Trusted</span> : null;
-}`}
-      />
+      <p>{t.rich("start.sdkDescription", { link0: chunks => <Link href="/docs/sdk#wot">{chunks}</Link>, code: chunks => <InlineCode>{chunks}</InlineCode> })}</p>
       </ScrollReveal>
 
       <ScrollReveal animation="fade-up" delay={250}>
@@ -158,37 +124,31 @@ function TrustBadge({ pubkey }: { pubkey: string }) {
       </ScrollReveal>
 
       <ScrollReveal animation="fade-up" delay={300}>
-        <h2>Next Steps</h2>
+        <h2>{t("start.nextSteps")}</h2>
 
         <div className="not-prose grid md:grid-cols-3 gap-4 my-6">
         <Link
           href="/docs/extension"
           className="block p-4 bg-gray-50 dark:bg-gray-900 rounded-lg border border-gray-200 dark:border-gray-800 hover:border-primary transition-colors"
         >
-          <h4 className="font-semibold mb-1">Extension API</h4>
-          <p className="text-sm text-gray-600 dark:text-gray-400">
-            Full browser extension reference
-          </p>
+          <h4 className="font-semibold mb-1">{t("start.extensionTitle")}</h4>
+          <p className="text-sm text-gray-600 dark:text-gray-400">{t("start.extensionDescription")}</p>
         </Link>
 
         <Link
           href="/docs/sdk"
           className="block p-4 bg-gray-50 dark:bg-gray-900 rounded-lg border border-gray-200 dark:border-gray-800 hover:border-primary transition-colors"
         >
-          <h4 className="font-semibold mb-1">SDK Reference</h4>
-          <p className="text-sm text-gray-600 dark:text-gray-400">
-            TypeScript SDK documentation
-          </p>
+          <h4 className="font-semibold mb-1">{t("start.sdkTitle")}</h4>
+          <p className="text-sm text-gray-600 dark:text-gray-400">{t("start.sdkReferenceDescription")}</p>
         </Link>
 
         <Link
           href="/docs/oracle"
           className="block p-4 bg-gray-50 dark:bg-gray-900 rounded-lg border border-gray-200 dark:border-gray-800 hover:border-primary transition-colors"
         >
-          <h4 className="font-semibold mb-1">Oracle API</h4>
-          <p className="text-sm text-gray-600 dark:text-gray-400">
-            REST API endpoints reference
-          </p>
+          <h4 className="font-semibold mb-1">{t("start.oracleTitle")}</h4>
+          <p className="text-sm text-gray-600 dark:text-gray-400">{t("start.oracleReferenceDescription")}</p>
         </Link>
         </div>
       </ScrollReveal>

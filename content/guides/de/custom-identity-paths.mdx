@@ -1,0 +1,56 @@
+---
+title: "Nostr-Identitäten benennen und eigene Pfade wählen"
+description: "Optionale Namen, eigene Ableitungspfade und eine Schlüsselvorschau in Nostr WoT nutzen. Was du für die Wiederherstellung aufbewahren musst."
+excerpt: "Optionale Namen, eigene Ableitungspfade und eine Schlüsselvorschau in Nostr WoT nutzen. Was du für die Wiederherstellung aufbewahren musst."
+date: "2026-09-11"
+author: {"name": "Leon Acosta", "avatar": "/authors/leon-profile.jpg", "npub": "npub1gxdhmu9swqduwhr6zptjy4ya693zp3ql28nemy4hd97kuufyrqdqwe5zfk"}
+featuredImage: "/images/guides/custom-identity-paths/de.png"
+previewImage: "/images/guides/custom-identity-paths/de.png"
+tags: ["Nostr", "NIP-06", "BIP-32"]
+published: true
+seoTitle: "Nostr-Identitäten benennen und eigene Pfade wählen"
+seoDescription: "Optionale Namen, eigene Ableitungspfade und eine Schlüsselvorschau in Nostr WoT nutzen. Was du für die Wiederherstellung aufbewahren musst."
+ogImage: "/images/guides/custom-identity-paths/de.png"
+translationKey: "custom-identity-paths"
+difficulty: "advanced"
+order: 2.6
+---
+
+Eine Identität für die Arbeit, eine für ein Projekt und eine für Tests lassen sich durch lokale Namen leichter unterscheiden. Nostr WoT erlaubt beim Erstellen einer Identität aus deiner Seed-Phrase einen eigenen Namen und unter **Erweitert** einen eigenen Ableitungspfad. Die automatische Auswahl reicht aus, wenn du keinen bestimmten Pfad benötigst.
+
+## Welche Version unterstützt das?
+
+Diese Anleitung beschreibt Version **0.7.0**, verfügbar als [GitHub-Download](https://github.com/nostr-wot/nostr-wot-extension/releases/tag/v0.7.0). Die Freigabe dieser Version in den Chrome- und Firefox-Stores war bei der Vorbereitung nicht bestätigt. Prüfe deine installierte Version.
+
+## Name und Pfad sind unterschiedliche Einstellungen
+
+| Einstellung | Bedeutung |
+|---|---|
+| Kontoname | Optionale lokale Bezeichnung. Ändert keinen Schlüssel und veröffentlicht keinen Profilnamen. |
+| Ableitungspfad | Bestimmt die Ableitung aus dem Seed. Ein anderer Pfad ergibt normalerweise eine andere Identität. |
+| npub- und Hex-Vorschau | Zwei Darstellungen desselben öffentlichen Schlüssels vor dem Speichern. |
+
+## Identität erstellen
+
+1. Entsperre die Erweiterung, öffne die Kontenauswahl und füge ein **HD-Unterkonto** hinzu. Dafür muss eine Wiederherstellungsphrase im Tresor vorhanden sein. Ein einzelner importierter nsec reicht nicht aus.
+2. Prüfe den angezeigten Quell-Seed. Die Erweiterung schlägt den nächsten freien Pfad ihrer bisherigen Folge vor.
+3. Vergib optional einen Namen wie „Projekt“ oder „Tests“. Ein leeres Feld behält den vorgeschlagenen Namen.
+4. Öffne **Erweitert**, wenn du einen bestimmten Pfad brauchst. Gib ihn exakt ein und warte auf die aktualisierte Vorschau.
+5. Prüfe Pfad und npub. Bei ungültigen Pfaden, Fehlern oder einer noch laufenden Vorschau ist das Fortfahren gesperrt.
+6. Wähle **Weiter**, um die Identität zu speichern. Eine Änderung der Vorschau allein speichert kein Konto.
+
+## Wie sieht ein Pfad aus?
+
+Der erste Nostr-Pfad lautet `m/44'/1237'/0'/0/0`. Ein späteres Beispiel aus der Folge der Erweiterung ist `m/44'/1237'/0'/0/1`. Das sind Pfade, keine privaten Schlüssel. Bewahre alle Schrägstriche, Zahlen und Apostrophe exakt auf.
+
+Andere Werkzeuge zählen Konten möglicherweise anders. [NIP-06](https://github.com/nostr-protocol/nips/blob/master/06.md) beschreibt das Erhöhen der gehärteten Kontokomponente; die bisherige Folge zusätzlicher Konten dieser Erweiterung erhöht die letzte Komponente. Entscheidend sind der genaue Pfad und der öffentliche Schlüssel. Die NIP-06-Maintainer kennzeichnen das Verfahren derzeit als optional und nicht empfohlen. Clientübergreifende Unterstützung ist nicht garantiert.
+
+Hinweise auf Netzwerkpräfixe erkennen lediglich eine Konvention. Ein Bitcoin-ähnlicher Pfad erstellt weiterhin eine Nostr-Identität, keine Bitcoin-Wallet. Verwende keinen Pfad erneut, den eine Wallet bereits nutzt.
+
+## Wiederherstellung vorbereiten
+
+Sichere die Wiederherstellungsphrase zusammen mit dem exakten Pfad und der erwarteten npub. Der lokale Name hilft bei der Zuordnung, stellt aber keinen Schlüssel wieder her. Der Seed allein verrät einer anderen Anwendung nicht deinen gewählten Pfad.
+
+Mehrere Pfade helfen bei der Organisation. Sie schützen die Identitäten nicht vor einer Kompromittierung des gemeinsamen Seeds und garantieren keine Anonymität. Ein anderer Pfad überträgt weder Beiträge noch Follower oder Profildaten. Bestehende Schlüssel bleiben unverändert.
+
+Für den reinen Kontowechsel genügt die [Identitätsverwaltung](/de/guides/managing-identity). Nutze eigene Pfade für einen konkreten, dokumentierten Organisations- oder Wiederherstellungsbedarf.

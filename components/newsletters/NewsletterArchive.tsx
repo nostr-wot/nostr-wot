@@ -1,38 +1,13 @@
-import type { ReactNode } from 'react';
+import { editorialHtml } from '@/scripts/newsletters/format.mjs';
 import { localeNames, type Locale } from '@/i18n/config';
 import type { SentNewsletter } from '@/lib/newsletter-archive';
 import { newsletterCopy, newsletterDate, newsletterLanguages, newsletterPath } from '@/lib/newsletter-copy';
 
 const linkStyle = 'rounded underline underline-offset-4 hover:text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-violet-500';
 
-function linkedText(text: string): ReactNode[] {
-  const parts: ReactNode[] = [];
-  const pattern = /https?:\/\/[^\s<>"']+/g;
-  let start = 0;
-  for (const match of text.matchAll(pattern)) {
-    const index = match.index!;
-    parts.push(text.slice(start, index));
-    let url = match[0].replace(/[.,;:!?]+$/, '');
-    // Leave sentence punctuation outside the link, but retain balanced URL parentheses.
-    while (url.endsWith(')') && (url.match(/\)/g)?.length ?? 0) > (url.match(/\(/g)?.length ?? 0)) url = url.slice(0, -1);
-    let safe = false;
-    try {
-      const parsed = new URL(url);
-      safe = ['http:', 'https:'].includes(parsed.protocol) && !parsed.username && !parsed.password;
-    } catch { /* Invalid URLs remain ordinary text. */ }
-    parts.push(safe ? <a key={index} href={url} rel="noreferrer" className={linkStyle}>{url}</a> : url);
-    parts.push(match[0].slice(url.length));
-    start = index + match[0].length;
-  }
-  parts.push(text.slice(start));
-  return parts;
-}
-
-/** React escapes every string. No HTML parsing, markdown execution or raw injection. */
+/** Restricted formatter escapes all source text and only emits safe editorial markup. */
 export function NewsletterBody({ body }: { body: string }) {
-  return <div className="space-y-6 text-base leading-8 [overflow-wrap:anywhere]">
-    {body.replace(/\r\n?/g, '\n').split(/\n[\t ]*\n+/).map((paragraph, index) => <p key={index} className="whitespace-pre-wrap">{linkedText(paragraph)}</p>)}
-  </div>;
+  return <div className="space-y-6 text-base leading-8 [overflow-wrap:anywhere] [&_h2]:mt-10 [&_h2]:text-2xl [&_h2]:font-semibold [&_a]:text-primary [&_a]:underline" dangerouslySetInnerHTML={{__html: editorialHtml(body)}} />;
 }
 
 export function NewsletterLanguages({ record, locale }: { record: SentNewsletter; locale: Locale }) {

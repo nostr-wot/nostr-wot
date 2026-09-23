@@ -1,0 +1,56 @@
+---
+title: "Pon nombre a tus identidades Nostr y elige una ruta"
+description: "Usa nombres opcionales, rutas de derivación avanzadas y vistas previas de claves en Nostr WoT. Aprende qué guardar para recuperar tu identidad."
+excerpt: "Usa nombres opcionales, rutas de derivación avanzadas y vistas previas de claves en Nostr WoT. Aprende qué guardar para recuperar tu identidad."
+date: "2026-09-11"
+author: {"name": "Leon Acosta", "avatar": "/authors/leon-profile.jpg", "npub": "npub1gxdhmu9swqduwhr6zptjy4ya693zp3ql28nemy4hd97kuufyrqdqwe5zfk"}
+featuredImage: "/images/guides/custom-identity-paths/es.png"
+previewImage: "/images/guides/custom-identity-paths/es.png"
+tags: ["Nostr", "NIP-06", "BIP-32"]
+published: true
+seoTitle: "Pon nombre a tus identidades Nostr y elige una ruta"
+seoDescription: "Usa nombres opcionales, rutas de derivación avanzadas y vistas previas de claves en Nostr WoT. Aprende qué guardar para recuperar tu identidad."
+ogImage: "/images/guides/custom-identity-paths/es.png"
+translationKey: "custom-identity-paths"
+difficulty: "advanced"
+order: 2.6
+---
+
+Una identidad de trabajo, otra de un proyecto y otra de pruebas pueden tener etiquetas claras en tu lista. Nostr WoT permite dar un nombre local a una nueva identidad derivada de tu semilla y elegir su ruta en **Avanzado**. Conserva la ruta automática si no necesitas otra.
+
+## ¿Qué versión lo incluye?
+
+Esta guía describe la extensión **0.7.0**, disponible en la [versión descargable de GitHub](https://github.com/nostr-wot/nostr-wot-extension/releases/tag/v0.7.0). Al preparar la guía no se había confirmado su aprobación en las tiendas de Chrome y Firefox. Comprueba tu versión instalada.
+
+## El nombre y la ruta cumplen funciones distintas
+
+| Ajuste | Qué cambia |
+|---|---|
+| Nombre de cuenta | Etiqueta local opcional. No cambia la clave ni publica un nombre de perfil. |
+| Ruta de derivación | Determina cómo se obtiene la clave desde la semilla. Otra ruta normalmente produce otra identidad. |
+| Vista previa npub y hex | Dos representaciones de la clave pública antes de guardar. |
+
+## Crear la identidad
+
+1. Desbloquea la extensión, abre el selector de cuentas y añade una **subcuenta HD**. Necesitas una frase de recuperación existente en la bóveda; una nsec importada por sí sola no es esa frase.
+2. En la pantalla de nueva subcuenta, comprueba la semilla de origen. Se propone la siguiente ruta libre de la secuencia existente.
+3. Introduce un nombre opcional, como «Proyecto» o «Pruebas». Si lo dejas vacío, se conserva el nombre propuesto.
+4. Abre **Avanzado** si necesitas otra ruta. Escríbela exactamente y espera a que se actualice la vista previa.
+5. Comprueba la ruta y la npub. Una ruta inválida, un error o una vista previa pendiente impiden continuar.
+6. Pulsa **Continuar** para guardar. Editar la vista previa no guarda una cuenta.
+
+## Cómo es una ruta
+
+La ruta Nostr inicial es `m/44'/1237'/0'/0/0`. Un ejemplo posterior en la secuencia de la extensión es `m/44'/1237'/0'/0/1`. Son rutas, no claves privadas. Conserva cada barra, número y apóstrofo.
+
+No supongas que otra herramienta numera igual las cuentas. [NIP-06](https://github.com/nostr-protocol/nips/blob/master/06.md) describe incrementar el componente de cuenta endurecido; la secuencia adicional existente de la extensión incrementa el componente final. Para recuperar, deben coincidir la ruta exacta y la clave pública. Sus mantenedores marcan actualmente NIP-06 como opcional y no recomendado; la compatibilidad entre clientes no está garantizada.
+
+Las indicaciones de prefijos de red solo reconocen una convención. Una ruta que parece de Bitcoin sigue creando una identidad Nostr, no una cartera Bitcoin. Evita reutilizar rutas que ya emplee una cartera.
+
+## Qué guardar para recuperar
+
+Guarda de forma segura la frase, la ruta exacta y la npub esperada. El nombre ayuda a organizarte, pero no recupera una clave. La semilla por sí sola no indica a otra aplicación qué ruta personalizada elegiste.
+
+Varias rutas permiten organizar identidades, pero todas dependen de la seguridad de la misma semilla. Tampoco garantizan anonimato. Cambiar de ruta no transfiere publicaciones, seguidores ni el perfil. Esta función no modifica tus claves existentes.
+
+Empieza por [gestionar identidades](/es/guides/managing-identity) si solo necesitas cambiar de cuenta. Usa rutas personalizadas cuando tengas una necesidad concreta de organización o recuperación que puedas documentar.

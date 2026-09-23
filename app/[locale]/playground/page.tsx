@@ -47,10 +47,9 @@ export default async function PlaygroundPage() {
       "priceCurrency": "USD",
     },
     "featureList": [
-      "Test Web of Trust API in real-time",
-      "Query trust distances between Nostr users",
-      "Explore social graph connections",
-      "Interactive API playground",
+      "Explore public Nostr follows",
+      "Interactive 2D and 3D social graph",
+      "Graph, list and timeline views",
     ],
     "provider": {
       "@type": "Organization",

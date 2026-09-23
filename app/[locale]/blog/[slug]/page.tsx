@@ -1,3 +1,4 @@
+import ReadingTime from '@/components/ui/ReadingTime';
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import Image from 'next/image';
@@ -178,7 +179,7 @@ export default async function BlogPostPage({ params }: Props) {
                     <div className="flex items-center gap-3 text-sm text-gray-500 dark:text-gray-400">
                       <time dateTime={post.date}>{formatDate(post.date, locale)}</time>
                       <span>·</span>
-                      <span>{post.readingTime}</span>
+                      <ReadingTime value={post.readingTime} />
                     </div>
                   </div>
                 </div>

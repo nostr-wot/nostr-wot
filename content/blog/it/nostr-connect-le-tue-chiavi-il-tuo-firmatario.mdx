@@ -1,0 +1,36 @@
+---
+featuredImage: "/images/blog/nostr-connect/featured.svg"
+previewImage: "/images/blog/nostr-connect/preview.jpg"
+ogImage: "/images/blog/nostr-connect/og.jpg"
+title: "Nostr Connect: le tue chiavi, il tuo firmatario"
+description: "Usa Nostr WoT con un firmatario remoto senza importare la tua chiave privata Nostr nell’estensione."
+excerpt: "Usa Nostr WoT con un firmatario remoto senza importare la tua chiave privata Nostr nell’estensione."
+date: "2026-09-20"
+author: {"name": "Nostr WoT Team"}
+tags: ["Nostr Connect", "NIP-46", "Nostr WoT"]
+published: true
+translationKey: "nostr-connect-your-keys-your-signer"
+---
+
+Nostr Connect funziona ora in Nostr WoT. Puoi collegare un firmatario remoto e usare i siti Nostr compatibili tramite l’estensione senza importare la tua chiave privata.
+
+L’estensione collega il browser al firmatario. La chiave della tua identità rimane nel firmatario, che gestisce le richieste di firma e le autorizzazioni concesse.
+
+## Come collegarlo
+
+1. Apri la configurazione degli account dell’estensione e scegli **Nostr Connect**.
+2. Scansiona il codice QR con un firmatario compatibile oppure incolla il suo link `bunker://` nella scheda Bunker.
+3. Approva la connessione nel firmatario e verifica la tua identità nell’estensione.
+4. Apri un sito Nostr compatibile con le estensioni, collega Nostr WoT e gestisci le richieste dal firmatario.
+
+L’estensione offre l’interfaccia browser NIP-07 e inoltra le richieste tramite [NIP-46](https://github.com/nostr-protocol/nips/blob/master/46.md). Memorizza le credenziali di connessione; la chiave privata Nostr resta nel firmatario.
+
+[Amber](https://github.com/greenart7c3/Amber) offre Nostr Connect su Android. Per questa configurazione usa la connessione NIP-46. Altri firmatari compatibili possono usare lo stesso protocollo, a seconda della loro implementazione. L’interfaccia nativa Android di Amber è un metodo di connessione distinto.
+
+## Scegli dove conservare la chiave
+
+Puoi usare l’estensione senza affidarle la tua chiave privata. Controlla le richieste e i permessi memorizzati nel firmatario: l’estensione continua a inoltrare le richieste dei siti. Il firmatario deve essere raggiungibile per rispondere.
+
+La [versione 0.7.2 pubblicata su GitHub](https://github.com/nostr-wot/nostr-wot-extension/releases/tag/v0.7.2) include le correzioni dell’identità remota della 0.7.1 e mostra nomi e immagini dei profili. Ricollega gli account precedenti se mostravano un’identità errata. La firma con Amber è ora confermata in Nostr WoT tramite Nostr Connect. Gli altri firmatari devono offrire un supporto compatibile con NIP-46.
+
+[Scarica Nostr WoT](/it/download) e scegli dove tenere la tua chiave.

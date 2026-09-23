@@ -5,40 +5,18 @@ import { useTranslations } from "next-intl";
 import { useGraph } from "@/contexts/GraphContext";
 import { GraphNode } from "@/lib/graph/types";
 import { formatPubkey } from "@/lib/graph/transformers";
+import { displayedPath } from "@/lib/graph/merge";
 
 interface TrustPathDisplayProps {
   node: GraphNode;
 }
 
 export default function TrustPathDisplay({ node }: TrustPathDisplayProps) {
+  const u = useTranslations("ui");
   const t = useTranslations("playground");
   const { state, getProfile } = useGraph();
 
-  // Build the actual path by following expandedFrom chain back to root
-  const path = useMemo(() => {
-    if (node.isRoot) return [];
-
-    const nodeMap = new Map(state.data.nodes.map((n) => [n.id, n]));
-    const rootNode = state.data.nodes.find((n) => n.isRoot);
-    if (!rootNode) return [];
-
-    // Trace back through expandedFrom to build the path
-    const pathNodes: GraphNode[] = [];
-    let current: GraphNode | undefined = node;
-
-    // Walk up the chain (max depth guard to prevent infinite loops)
-    let guard = 0;
-    while (current && !current.isRoot && guard < 10) {
-      pathNodes.unshift(current);
-      const parentId: string | undefined = current.expandedFrom;
-      current = parentId ? nodeMap.get(parentId) : undefined;
-      guard++;
-    }
-
-    // Always prepend root
-    pathNodes.unshift(rootNode);
-    return pathNodes;
-  }, [node, state.data.nodes]);
+  const path = useMemo(() => displayedPath(state.data, node.id), [state.data, node.id]);
 
   if (path.length === 0) {
     return (
@@ -59,7 +37,7 @@ export default function TrustPathDisplay({ node }: TrustPathDisplayProps) {
               {pathNode.picture || profile?.picture ? (
                 <img
                   src={pathNode.picture || profile?.picture}
-                  alt={`${profile?.displayName || profile?.name || pathNode.label || "User"} avatar`}
+                  alt={u("avatar", { name: profile?.displayName || profile?.name || pathNode.label || u("user") })}
                   className="w-6 h-6 rounded-full object-cover flex-shrink-0"
                 />
               ) : (

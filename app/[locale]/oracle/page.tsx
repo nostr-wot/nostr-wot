@@ -30,17 +30,17 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   };
 }
 
-const PERFORMANCE_STATS = [
-  { key: "cachedLatency", value: "<1ms" },
-  { key: "uncachedLatency", value: "<50ms" },
-  { key: "queriesPerSecond", value: "10,000+" },
-  { key: "bidirectionalBfs", value: "O(b^d/2)" },
+const RELEASE_FACTS = [
+  { key: "release", value: "0.3.0" },
+  { key: "maxHops", value: "1–5" },
+  { key: "batchTargets", value: "100" },
+  { key: "eventKinds", value: "3 / 10000" },
 ];
 
 const ARCHITECTURE_CARDS = ["graphStorage", "pathfinding", "caching", "rateLimiting"];
 
 const CONFIG_ROWS = [
-  { variable: "RELAYS", default: "damus, nos.lol, nostr.band", key: "relays" },
+  { variable: "RELAYS", default: "wss://relay.damus.io,wss://nos.lol,wss://relay.primal.net/,wss://relay.mostr.pub/", key: "relays" },
   { variable: "HTTP_PORT", default: "8080", key: "httpPort" },
   { variable: "DB_PATH", default: "wot.db", key: "dbPath" },
   { variable: "RATE_LIMIT_PER_MINUTE", default: "100", key: "rateLimit" },
@@ -51,72 +51,65 @@ const CONFIG_ROWS = [
 const SELF_HOSTING_BLOCKS = [
   {
     key: "docker",
-    code: `# Pull and run the image
-docker pull ghcr.io/nostr-wot/nostr-wot-oracle:v1.0.0
+    code: `docker pull ghcr.io/nostr-wot/nostr-wot-oracle:0.3.0
 
-docker run -d \\
-  -p 8080:8080 \\
+docker run -d --name nostr-wot-oracle \\
+  -p 127.0.0.1:8080:8080 \\
   -v wot-data:/app/data \\
-  ghcr.io/nostr-wot/nostr-wot-oracle:v1.0.0`,
+  ghcr.io/nostr-wot/nostr-wot-oracle:0.3.0`,
   },
   {
     key: "dockerCompose",
-    code: `git clone https://github.com/nostr-wot/nostr-wot-oracle.git
-cd wot-oracle
-docker-compose up -d`,
+    code: `git clone --branch v0.3.0 --depth 1 https://github.com/nostr-wot/nostr-wot-oracle.git
+cd nostr-wot-oracle
+docker compose up -d`,
   },
   {
     key: "fromSource",
-    code: `git clone https://github.com/nostr-wot/nostr-wot-oracle.git
-cd wot-oracle
-cargo build --release
-./target/release/nostr-wot-oracle`,
+    code: `git clone --branch v0.3.0 --depth 1 https://github.com/nostr-wot/nostr-wot-oracle.git
+cd nostr-wot-oracle
+rustup toolchain install 1.93.0
+cargo +1.93.0 build --locked --release
+./target/release/wot-oracle`,
   },
 ];
 
+const source = "a".repeat(64);
+const target = "b".repeat(64);
+const json = (value: unknown) => JSON.stringify(value, null, 2);
+const distance = { from: source, to: target, hops: 2, path_count: 1, mutual_follow: false };
 const API_ENDPOINTS = [
   {
     key: "distance",
-    request: "GET /distance?from=PUBKEY1&to=PUBKEY2",
-    response: `{
-  "from": "PUBKEY1",
-  "to": "PUBKEY2",
-  "distance": 2,
-  "paths": 5,
-  "mutual": false,
-  "bridging_nodes": ["PUBKEY3", "PUBKEY4"]
-}`,
+    request: `GET /distance?from=${source}&to=${target}&max_hops=3`,
+    response: json(distance),
   },
   {
     key: "batch",
     request: `POST /distance/batch
 Content-Type: application/json
 
-{
-  "from": "PUBKEY1",
-  "targets": ["PUBKEY2", "PUBKEY3", "PUBKEY4"]
-}`,
-    response: `{
-  "from": "PUBKEY1",
-  "results": [
-    { "to": "PUBKEY2", "distance": 1 },
-    { "to": "PUBKEY3", "distance": 2 },
-    { "to": "PUBKEY4", "distance": null }
-  ]
-}`,
+${json({ from: source, targets: [target], max_hops: 3 })}`,
+    response: json({ from: source, results: [distance] }),
   },
   {
     key: "stats",
-    response: `{
-  "total_pubkeys": 1250000,
-  "total_follows": 8500000,
-  "last_sync": "2024-01-15T10:30:00Z",
-  "cache_hit_rate": 0.85
-}`,
+    request: "GET /stats",
+    response: json({
+      node_count: 3, edge_count: 2, nodes_with_follows: 2,
+      mute_edge_count: 0, nodes_with_mute_lists: 1,
+      sync: { running: true, ready: false, last_event_received_at: 0,
+        last_persisted_at: 0, persisted_events: 0, lagged_notifications: 0,
+        persistence_errors: 0, coverage: "configured_relays_only" },
+      cache: { size: 0, capacity: 10000, ttl_secs: 300 },
+      locks: { write_lock_count: 0, write_lock_avg_us: 0, write_lock_max_us: 0,
+        read_lock_count: 0, read_lock_avg_us: 0, read_lock_max_us: 0 },
+    }),
   },
   {
     key: "health",
-    response: `{ "status": "healthy", "uptime": 864000 }`,
+    request: "GET /health",
+    response: json({ status: "healthy", version: "0.3.0" }),
   },
 ];
 
@@ -132,26 +125,19 @@ export default async function OraclePage() {
     "applicationCategory": "DeveloperApplication",
     "applicationSubCategory": "API Server",
     "operatingSystem": "Linux, Docker",
-    "description": "Self-hostable REST API server for Web of Trust social graph queries. Query social distance, find paths, and analyze follow relationships on Nostr.",
+    "description": t("meta.description"),
     "url": "https://nostr-wot.com/oracle",
     "downloadUrl": "https://github.com/nostr-wot/nostr-wot-oracle/releases",
-    "softwareVersion": "1.0.0",
+    "softwareVersion": "0.3.0",
     "offers": {
       "@type": "Offer",
       "price": "0",
       "priceCurrency": "USD",
     },
-    "aggregateRating": {
-      "@type": "AggregateRating",
-      "ratingValue": "5",
-      "ratingCount": "2",
-      "bestRating": "5",
-      "worstRating": "1",
-    },
     "featureList": [
-      "Sub-millisecond cached queries",
-      "Bidirectional BFS pathfinding",
-      "10,000+ queries per second",
+      "Directed follow distance",
+      "Public mute-list evidence",
+      "Graph revision-aware query caching",
       "Self-hostable with Docker",
       "REST API with batch support",
     ],
@@ -177,7 +163,7 @@ export default async function OraclePage() {
           <p className="text-xl text-gray-600 dark:text-gray-400 mb-8 max-w-2xl mx-auto">{t("hero.subtitle")}</p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <ExternalLinkButton href="https://github.com/nostr-wot/nostr-wot-oracle">{t("hero.viewOnGitHub")}</ExternalLinkButton>
-            <LinkButton href="/docs" variant="secondary">{t("hero.apiDocs")}</LinkButton>
+            <LinkButton href="/docs/oracle" variant="secondary">{t("hero.apiDocs")}</LinkButton>
           </div>
         </div>
       </section>
@@ -195,7 +181,7 @@ export default async function OraclePage() {
       <Section background="gray" padding="md">
         <SectionHeader title={t("performance.title")} />
         <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
-          {PERFORMANCE_STATS.map((stat, i) => (
+          {RELEASE_FACTS.map((stat, i) => (
             <ScrollReveal key={stat.key} animation="fade-up" delay={i * 100}>
               <div className="bg-white dark:bg-gray-800 rounded-xl p-6 text-center border border-gray-200 dark:border-gray-700">
                 <span className="block text-4xl font-bold text-primary mb-2">{stat.value}</span>
@@ -208,7 +194,7 @@ export default async function OraclePage() {
 
       {/* API Endpoints */}
       <Section padding="md">
-        <SectionHeader title={t("apiEndpoints.title")} />
+        <SectionHeader title={t("apiEndpoints.title")} description={t("apiEndpoints.subtitle")} />
         <div className="space-y-8">
           {API_ENDPOINTS.map((endpoint) => (
             <div key={endpoint.key} className="bg-white dark:bg-gray-800 rounded-xl p-6 border border-gray-200 dark:border-gray-700">
@@ -258,7 +244,7 @@ export default async function OraclePage() {
                   <td className="p-4">
                     <InlineCode>{row.variable}</InlineCode>
                   </td>
-                  <td className="p-4 text-gray-600 dark:text-gray-400">{row.default}</td>
+                  <td className="p-4 text-gray-600 dark:text-gray-400 break-all">{row.default}</td>
                   <td className="p-4 text-gray-600 dark:text-gray-400">{t(`configuration.${row.key}.description`)}</td>
                 </tr>
               ))}

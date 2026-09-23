@@ -1,5 +1,7 @@
 "use client";
 
+import { useTranslations } from "next-intl";
+
 import { useEffect, useState } from "react";
 
 interface Node {
@@ -102,6 +104,8 @@ function getNodeSize(distance: number): number {
 }
 
 export function WotGraphIllustration({ className = "" }: { className?: string }) {
+  const g = useTranslations("playground");
+  const u = useTranslations("ui");
   const [isVisible, setIsVisible] = useState(false);
 
   useEffect(() => {
@@ -335,7 +339,7 @@ export function WotGraphIllustration({ className = "" }: { className?: string })
                     transition: "opacity 0.5s ease 0.5s",
                   }}
                 >
-                  You
+                  {u("you")}
                 </text>
               )}
             </g>
@@ -353,15 +357,15 @@ export function WotGraphIllustration({ className = "" }: { className?: string })
       >
         <div className="flex items-center gap-2">
           <div className="w-3 h-3 rounded-full bg-trust-green" />
-          <span className="text-gray-600 dark:text-gray-400">1 hop</span>
+          <span className="text-gray-600 dark:text-gray-400">{g("sync.hops", { count: 1 })}</span>
         </div>
         <div className="flex items-center gap-2">
           <div className="w-3 h-3 rounded-full bg-trust-yellow" />
-          <span className="text-gray-600 dark:text-gray-400">2 hops</span>
+          <span className="text-gray-600 dark:text-gray-400">{g("sync.hops", { count: 2 })}</span>
         </div>
         <div className="flex items-center gap-2">
           <div className="w-3 h-3 rounded-full bg-trust-red" />
-          <span className="text-gray-600 dark:text-gray-400">3+ hops</span>
+          <span className="text-gray-600 dark:text-gray-400">{u("distantHops")}</span>
         </div>
       </div>
     </div>

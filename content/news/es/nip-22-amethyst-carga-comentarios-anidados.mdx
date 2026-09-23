@@ -1,0 +1,45 @@
+---
+title: "Amethyst 1.15.2 carga antes los comentarios anidados de NIP-22"
+description: "Amethyst 1.15.2 añade filtros de raíz para comentarios anidados de NIP-22 y corrige la búsqueda de actualizaciones de pull requests de NIP-34."
+seoDescription: "Amethyst 1.15.2 añade filtros de raíz para comentarios anidados de NIP-22 y corrige la búsqueda de actualizaciones de pull requests de NIP-34."
+excerpt: "Amethyst 1.15.2 añade filtros de raíz para comentarios anidados de NIP-22 y corrige la búsqueda de actualizaciones de pull requests de NIP-34."
+date: "2026-09-16"
+publishedAt: "2026-09-16"
+backfilled: false
+type: "story"
+tags: ["Nostr","NIP-22","NIP-34","Clients"]
+featuredImage: "/images/news/nip-22-amethyst-loads-nested-comments.svg"
+translationKey: "nip-22-amethyst-loads-nested-comments"
+sources: [{"title":"Amethyst v1.15.2","url":"https://github.com/vitorpamplona/amethyst/releases/tag/v1.15.2","publisher":"vitorpamplona/amethyst","date":"2026-09-12"},{"title":"PR #4095: Separate NIP-22 root filters","url":"https://github.com/vitorpamplona/amethyst/pull/4095","publisher":"vitorpamplona/amethyst","date":"2026-09-12"},{"title":"NIP-22","url":"https://github.com/nostr-protocol/nips/blob/master/22.md","publisher":"nostr-protocol/nips","date":"2026-09-16"},{"title":"NIP-01","url":"https://github.com/nostr-protocol/nips/blob/master/01.md","publisher":"nostr-protocol/nips","date":"2026-09-16"},{"title":"NIP-34","url":"https://github.com/nostr-protocol/nips/blob/master/34.md","publisher":"nostr-protocol/nips","date":"2026-09-16"}]
+published: true
+---
+
+Amethyst 1.15.2 cambia cómo el cliente descubre respuestas al contenido visible. La [PR #4095](https://github.com/vitorpamplona/amethyst/pull/4095), integrada el 12 de septiembre de 2026, añade filtros para la raíz de una conversación NIP-22 junto a los filtros existentes para respuestas directas. Los comentarios anidados que las consultas anteriores no encontraban ahora pueden llegar sin esperar a que el lector abra la pantalla del hilo.
+
+El cambio está incluido en la [versión v1.15.2 de GitHub](https://github.com/vitorpamplona/amethyst/releases/tag/v1.15.2), publicada ese mismo día con descargas para Android y escritorio. También corrige el filtro que descubre actualizaciones de pull requests de NIP-34. Ambas correcciones dependen de una distinción fácil de pasar por alto: las etiquetas en mayúsculas y minúsculas cumplen funciones diferentes.
+
+## La raíz no es el elemento padre directo
+
+[NIP-22](https://github.com/nostr-protocol/nips/blob/master/22.md) define los comentarios como eventos kind 1111. Las etiquetas en mayúsculas identifican la raíz de la conversación. Las minúsculas identifican el elemento al que se responde. Para un evento identificado por su ID, esas etiquetas son `E` y `e`; para una raíz direccionable, la etiqueta de raíz correspondiente es `A`.
+
+Consideremos un evento de archivo, un comentario sobre ese archivo y una respuesta al comentario. El primer comentario apunta tanto su raíz como su padre al archivo. La respuesta anidada conserva el ID del archivo en `E`, pero su `e` apunta al primer comentario. Por eso, una consulta que busca `#e` igual al ID del archivo encuentra el comentario directo, pero no esa respuesta anidada mediante su referencia al padre.
+
+Las consultas de interacción existentes utilizaban etiquetas minúsculas. La pantalla del hilo ya tenía una suscripción propia para la raíz en mayúsculas. Eso explica que abrir una conversación pudiera mostrar respuestas que no habían llegado con la consulta anterior. Esta versión incorpora esa búsqueda también a los filtros de interacción.
+
+## Filtros separados para relaciones diferentes
+
+El cambio añade un filtro `E` para IDs de eventos y uno `A` para contenido direccionable. Cada nuevo filtro de raíz utiliza un límite de 1000 y conserva el valor `since` existente para cada relay. Los filtros de respuestas directas permanecen.
+
+Incluir ambas condiciones en un solo filtro no resolvería el problema. [NIP-01](https://github.com/nostr-protocol/nips/blob/master/01.md) exige que se cumplan todas las condiciones de un filtro. Si este pidiera que tanto `#e` como `#E` contuvieran el ID de la raíz, seguiría excluyendo un comentario anidado cuyo padre directo fuera otro comentario. Los filtros separados permiten consultar cada relación de forma independiente.
+
+El límite es un parámetro de consulta, no una promesa de cargar todos los comentarios de todos los hilos. La disponibilidad de los relays, los relays seleccionados y los límites temporales siguen determinando qué eventos recibe el cliente. La corrección afecta a lo que el cliente les pide.
+
+## Las revisiones de pull requests tenían el mismo problema
+
+El nuevo filtro de raíz para IDs también incluye kind 1619, el evento de actualización de pull request de NIP-34. El [ejemplo de NIP-34](https://github.com/nostr-protocol/nips/blob/master/34.md) identifica la pull request revisada mediante una etiqueta `E` mayúscula.
+
+Antes, Amethyst incluía ese kind en un filtro con `e` minúscula. El kind correcto bajo la etiqueta equivocada no encontraba las actualizaciones que seguían ese ejemplo. El cambio mueve kind 1619 a `RootScopedRepliesKinds`. Las respuestas de Git y los eventos de estado conservan su filtro en minúsculas.
+
+Las pruebas añadidas comprueban que se generan filtros de raíz para IDs y direcciones, y que no se combinan condiciones mayúsculas y minúsculas. Otras verificaciones mantienen kind 1619 en la lista de mayúsculas y fuera de la de minúsculas.
+
+Es una corrección de las consultas del cliente. No cambia el formato de eventos de NIP-22 ni exige volver a publicar comentarios. La distribución verificada es la versión de GitHub: sus archivos descargables confirman la disponibilidad allí, sin establecer el estado del despliegue en tiendas de aplicaciones.

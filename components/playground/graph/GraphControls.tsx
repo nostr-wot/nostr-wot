@@ -1,5 +1,7 @@
 "use client";
 
+import { useTranslations } from "next-intl";
+
 import { useCallback, useRef } from "react";
 import { useGraph } from "@/contexts/GraphContext";
 import { Button } from "@/components/ui";
@@ -9,6 +11,8 @@ interface GraphControlsProps {
 }
 
 export default function GraphControls({ graphRef }: GraphControlsProps) {
+  const g = useTranslations("playground");
+  const u = useTranslations("ui");
   const { state, setSettings } = useGraph();
   const { settings } = state;
 
@@ -69,7 +73,7 @@ export default function GraphControls({ graphRef }: GraphControlsProps) {
         <button
           onClick={handleZoomIn}
           className="p-2 hover:bg-gray-700 transition-colors text-white"
-          aria-label="Zoom in"
+          aria-label={u("zoomIn")}
         >
           <svg
             className="w-5 h-5"
@@ -90,7 +94,7 @@ export default function GraphControls({ graphRef }: GraphControlsProps) {
         <button
           onClick={handleZoomOut}
           className="p-2 hover:bg-gray-700 transition-colors text-white"
-          aria-label="Zoom out"
+          aria-label={u("zoomOut")}
         >
           <svg
             className="w-5 h-5"
@@ -114,7 +118,7 @@ export default function GraphControls({ graphRef }: GraphControlsProps) {
         <button
           onClick={handleZoomToFit}
           className="p-2 hover:bg-gray-700 transition-colors text-white"
-          aria-label="Fit to view"
+          aria-label={u("fitView")}
         >
           <svg
             className="w-5 h-5"
@@ -135,7 +139,7 @@ export default function GraphControls({ graphRef }: GraphControlsProps) {
         <button
           onClick={handleCenterOnRoot}
           className="p-2 hover:bg-gray-700 transition-colors text-white"
-          aria-label="Center on you"
+          aria-label={u("centerYou")}
         >
           <svg
             className="w-5 h-5"
@@ -162,7 +166,7 @@ export default function GraphControls({ graphRef }: GraphControlsProps) {
             ? "bg-primary text-white border-primary"
             : "bg-gray-800/90 text-white border-gray-700 hover:bg-gray-700"
         }`}
-        aria-label={`Switch to ${settings.layout === "force" ? "radial" : "force"} layout`}
+        aria-label={u("switchLayout", { layout: g(settings.layout === "force" ? "graph.radialLayout" : "graph.forceLayout") })}
       >
         {settings.layout === "force" ? (
           <svg
@@ -202,7 +206,7 @@ export default function GraphControls({ graphRef }: GraphControlsProps) {
               ? "bg-primary/20 text-primary"
               : "text-gray-400 hover:bg-gray-700"
           }`}
-          aria-label={settings.showLabels ? "Hide labels" : "Show labels"}
+          aria-label={u(settings.showLabels ? "hideLabels" : "showLabels")}
           aria-pressed={settings.showLabels}
         >
           <svg
@@ -228,7 +232,7 @@ export default function GraphControls({ graphRef }: GraphControlsProps) {
               ? "bg-primary/20 text-primary"
               : "text-gray-400 hover:bg-gray-700"
           }`}
-          aria-label={settings.showArrows ? "Hide arrows" : "Show arrows"}
+          aria-label={u(settings.showArrows ? "hideArrows" : "showArrows")}
           aria-pressed={settings.showArrows}
         >
           <svg

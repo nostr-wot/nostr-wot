@@ -1,5 +1,5 @@
 {
-  "checkedAt": "2026-09-08",
+  "checkedAt": "2026-09-22",
   "projects": [
     {
       "id": "damus",
@@ -57,10 +57,10 @@
       "summary": "Nostr client with Android and desktop installation paths documented in its official README.",
       "category": "social-client",
       "status": "active",
-      "statusNote": "Checked 2026-09-08: repository is not archived; reviewed maintenance commit dated 2026-09-08. Active describes observed development, not availability, stability or security. Android and desktop feature parity was not tested.",
+      "statusNote": "Checked 2026-09-22: repository is not archived; reviewed published release v1.16.0 dated 2026-09-17. Active describes observed development, not availability, stability or security. Android and desktop feature parity was not tested.",
       "website": "https://amethyst.social",
       "repository": "https://github.com/vitorpamplona/amethyst",
-      "lastVerified": "2026-09-08",
+      "lastVerified": "2026-09-22",
       "people": [
         {
           "name": "Vitor Pamplona",
@@ -102,12 +102,16 @@
         {
           "label": "Vitor Pamplona self-identifies as Amethyst founder",
           "url": "https://vitorpamplona.com"
+        },
+        {
+          "label": "Release v1.16.0, published 2026-09-17",
+          "url": "https://github.com/vitorpamplona/amethyst/releases/tag/v1.16.0"
         }
       ],
       "latestUpdate": {
-        "date": "2026-08-22",
-        "title": "Amethyst v1.14.0, latest release observed, outside the news window",
-        "url": "https://github.com/vitorpamplona/amethyst/releases/tag/v1.14.0"
+        "date": "2026-09-17",
+        "title": "Amethyst v1.16.0 adds BOLT12 payment paths and a personal fitness dashboard",
+        "url": "https://github.com/vitorpamplona/amethyst/releases/tag/v1.16.0"
       }
     },
     {
@@ -210,10 +214,10 @@
       "summary": "Android Nostr event signer designed to keep signing keys in a dedicated app, with NIP-46 and NIP-55 integration documented by the project.",
       "category": "signer",
       "status": "active",
-      "statusNote": "Checked 2026-09-08: repository is not archived; reviewed maintenance commit dated 2026-09-04. Active describes observed development, not availability, stability or security. The official repository is used as the project website; no separate product domain was inferred. Maintainer is qualified from repository ownership, developer-owned continued-development statement and release work, not a single commit; no founder title verified.",
+      "statusNote": "Checked 2026-09-22: repository is not archived; reviewed published releases v6.6.4 and v6.6.5. Active describes observed development, not availability, stability or security. The official repository is used as the project website; no separate product domain was inferred. Maintainer is qualified from repository ownership, developer-owned continued-development statement and release work, not a single commit; no founder title verified.",
       "website": "https://github.com/greenart7c3/Amber",
       "repository": "https://github.com/greenart7c3/Amber",
-      "lastVerified": "2026-09-08",
+      "lastVerified": "2026-09-22",
       "people": [
         {
           "name": "greenart7c3",
@@ -251,12 +255,20 @@
         {
           "label": "Developer-owned site source solicits support for continued Amber development",
           "url": "https://github.com/greenart7c3/greenart7c3.com/blob/master/index.html"
+        },
+        {
+          "label": "Release v6.6.5, published 2026-09-21",
+          "url": "https://github.com/greenart7c3/Amber/releases/tag/v6.6.5"
+        },
+        {
+          "label": "Release v6.6.4, published 2026-09-14",
+          "url": "https://github.com/greenart7c3/Amber/releases/tag/v6.6.4"
         }
       ],
       "latestUpdate": {
-        "date": "2026-09-04",
-        "title": "Amber v6.6.1: permission parsing and rejection request IDs",
-        "url": "https://github.com/greenart7c3/Amber/releases/tag/v6.6.1"
+        "date": "2026-09-21",
+        "title": "Amber v6.6.5 separates backup encryption from remembered app permissions",
+        "url": "https://github.com/greenart7c3/Amber/releases/tag/v6.6.5"
       }
     },
     {
@@ -312,6 +324,24 @@
     }
   ],
   "news": [
+    {
+      "title": "Amber v6.6.5 separates backup encryption from remembered app permissions",
+      "date": "2026-09-21",
+      "url": "https://github.com/greenart7c3/Amber/releases/tag/v6.6.5",
+      "summary": "Release notes say kind 30078 backups now use a dedicated HKDF-derived key outside the NIP-44 derive-key namespace, so apps with remembered nip44_decrypt permission cannot read backup payloads containing per-app NIP-46 secrets and local keys. Legacy restore remains available until a later publish overwrites the old backup."
+    },
+    {
+      "title": "Amethyst v1.16.0 adds BOLT12 payment paths and a personal fitness dashboard",
+      "date": "2026-09-17",
+      "url": "https://github.com/vitorpamplona/amethyst/releases/tag/v1.16.0",
+      "summary": "The published release includes BOLT12 offers in profile payments and the zap picker with BOLT11 fallback on refused offers, plus a personal Health Connect dashboard. Downloadable Android and desktop artifacts are attached; feature behavior was not independently tested."
+    },
+    {
+      "title": "Amber v6.6.4 fixes a Tor startup clearnet race",
+      "date": "2026-09-14",
+      "url": "https://github.com/greenart7c3/Amber/releases/tag/v6.6.4",
+      "summary": "Release notes say profile fetches and startup callbacks could contact relays directly before the Tor setting finished loading. The same release bounds Tor bootstrap retries and restores relay connections when the daemon returns. No exploitation claim is made."
+    },
     {
       "title": "relayer v2.2.19 adds a union path for overlapping COUNT filters",
       "date": "2026-09-08",
@@ -408,6 +438,22 @@
   ],
   "security": [
     {
+      "title": "Amber v6.6.5: dedicated encryption boundary for relay backups",
+      "date": "2026-09-21",
+      "url": "https://github.com/greenart7c3/Amber/releases/tag/v6.6.5",
+      "summary": "Maintainer release notes describe moving kind 30078 backups to a dedicated HKDF-derived key outside NIP-44 app permissions. This is classified as hardening; the source does not report observed exploitation.",
+      "type": "hardening",
+      "coverage": "current"
+    },
+    {
+      "title": "Amber v6.6.4: Tor startup clearnet race fixed",
+      "date": "2026-09-14",
+      "url": "https://github.com/greenart7c3/Amber/releases/tag/v6.6.4",
+      "summary": "Maintainer release notes state that startup network activity could reach relays directly before the Tor preference loaded. This is a documented privacy fix, not evidence of an exploited incident.",
+      "type": "privacy-fix",
+      "coverage": "current"
+    },
+    {
       "title": "strfry 1.1.2: documented memory DoS fix",
       "date": "2026-08-27",
       "url": "https://github.com/hoytech/strfry/blob/1.1.2/CHANGES",
@@ -482,12 +528,12 @@
     }
   ],
   "coverage": {
-    "start": "2026-08-26",
-    "end": "2026-09-08",
+    "start": "2026-09-08T08:00:00Z",
+    "end": "2026-09-22T08:00:00Z",
     "timezone": "UTC",
     "endIsPartialDay": true,
-    "issue": "first-fortnightly-roundup",
-    "projectEntries": "index-baseline",
+    "issue": "2026-09-22-fortnightly-ecosystem",
+    "projectEntries": "verified-existing-project-updates",
     "newsSelection": "selected-primary-verified-updates"
   }
 }

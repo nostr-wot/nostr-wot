@@ -105,7 +105,8 @@ social accounts post in one language, so the derived link is the English one,
 which for the default locale takes no locale prefix
 (`https://nostr-wot.com/news/<slug>`).
 
-`lint-social.mjs` **rejects any hard-coded `http(s)://` link** in a copy field:
+`lint-social.mjs` **rejects hard-coded `http(s)://` links** in a copy field,
+except the exact verified community credit URL documented below:
 a hand-typed URL drifts the moment a slug is renamed, and nothing catches it
 until a reader hits a 404. Use `{url}` in the text to place the link somewhere
 other than the end; otherwise it is appended on its own line by `withUrl()`. A
@@ -341,3 +342,15 @@ Start with `dry_run=true`, then use `dry_run=false` to publish. Manual tests are
 additional to the schedule. A green no-op verifies orchestration only: confirm
 the ledger and returned platform URLs to prove a real publication. Never remove
 a ledger entry just to test posting.
+
+## Sharing guides and blog articles
+
+Social copy may set `"collection": "guides"` or `"collection": "blog"`. Omission keeps the existing `news` default. The publisher resolves the English article in that collection, excludes `published: false` drafts, and derives its canonical URL. Unsupported collections fail validation. Use the manual workflow’s `slug` input to publish only the approved article.
+
+## Community credit links
+
+The verified `https://lacrypta.ar/` URL is allowed directly in social copy for the
+user-requested La Crypta community-call thank-you. This is an exact-URL exception;
+other external URLs and hand-written article URLs remain lint errors. Article
+links still use `{url}` or `{url:/path}`. Keep this rule in `checks.mjs` and cover
+lookalike hosts and altered paths in the social tests.

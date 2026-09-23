@@ -1,0 +1,45 @@
+---
+title: "Amethyst 1.15.2 charge plus tôt les commentaires imbriqués NIP-22"
+description: "Amethyst 1.15.2 ajoute des filtres de racine pour les commentaires imbriqués NIP-22 et corrige la recherche des mises à jour de pull requests NIP-34."
+seoDescription: "Amethyst 1.15.2 ajoute des filtres de racine pour les commentaires imbriqués NIP-22 et corrige la recherche des mises à jour de pull requests NIP-34."
+excerpt: "Amethyst 1.15.2 ajoute des filtres de racine pour les commentaires imbriqués NIP-22 et corrige la recherche des mises à jour de pull requests NIP-34."
+date: "2026-09-16"
+publishedAt: "2026-09-16"
+backfilled: false
+type: "story"
+tags: ["Nostr","NIP-22","NIP-34","Clients"]
+featuredImage: "/images/news/nip-22-amethyst-loads-nested-comments.svg"
+translationKey: "nip-22-amethyst-loads-nested-comments"
+sources: [{"title":"Amethyst v1.15.2","url":"https://github.com/vitorpamplona/amethyst/releases/tag/v1.15.2","publisher":"vitorpamplona/amethyst","date":"2026-09-12"},{"title":"PR #4095: Separate NIP-22 root filters","url":"https://github.com/vitorpamplona/amethyst/pull/4095","publisher":"vitorpamplona/amethyst","date":"2026-09-12"},{"title":"NIP-22","url":"https://github.com/nostr-protocol/nips/blob/master/22.md","publisher":"nostr-protocol/nips","date":"2026-09-16"},{"title":"NIP-01","url":"https://github.com/nostr-protocol/nips/blob/master/01.md","publisher":"nostr-protocol/nips","date":"2026-09-16"},{"title":"NIP-34","url":"https://github.com/nostr-protocol/nips/blob/master/34.md","publisher":"nostr-protocol/nips","date":"2026-09-16"}]
+published: true
+---
+
+Amethyst 1.15.2 modifie la manière dont le client découvre les réponses au contenu visible. La [PR #4095](https://github.com/vitorpamplona/amethyst/pull/4095), intégrée le 12 septembre 2026, ajoute des filtres ciblant la racine d'une conversation NIP-22 aux filtres existants pour les réponses directes. Les commentaires imbriqués que les anciennes requêtes ne trouvaient pas peuvent désormais arriver sans attendre que le lecteur ouvre l'écran du fil.
+
+La modification figure dans la [version v1.15.2 publiée sur GitHub](https://github.com/vitorpamplona/amethyst/releases/tag/v1.15.2), disponible le même jour avec des téléchargements pour Android et ordinateur. Elle corrige aussi le filtre servant à découvrir les mises à jour de pull requests NIP-34. Les deux corrections reposent sur une distinction facile à manquer : les noms de tags en majuscules et en minuscules ont des fonctions différentes.
+
+## La racine n'est pas le parent direct
+
+[NIP-22](https://github.com/nostr-protocol/nips/blob/master/22.md) définit les commentaires comme des événements kind 1111. Les tags en majuscules identifient la racine de la conversation. Ceux en minuscules identifient l'élément auquel le commentaire répond. Pour un événement identifié par son ID, ces tags sont `E` et `e` ; pour une racine adressable, le tag de racine correspondant est `A`.
+
+Prenons un événement décrivant un fichier, un commentaire sur ce fichier et une réponse au commentaire. Le premier commentaire désigne le fichier à la fois comme racine et comme parent. La réponse imbriquée conserve l'ID du fichier dans `E`, mais son `e` désigne le premier commentaire. Une requête où `#e` vaut l'ID du fichier trouve donc le commentaire direct, mais pas cette réponse imbriquée par sa référence au parent.
+
+Les requêtes d'interaction existantes utilisaient les tags en minuscules. L'écran du fil disposait déjà de son propre abonnement pour la racine en majuscules. Cela explique pourquoi ouvrir une conversation pouvait révéler des réponses absentes des résultats précédents. Cette version étend cette recherche aux filtres d'interaction.
+
+## Des filtres séparés conservent le sens de la requête
+
+Le correctif ajoute un filtre `E` pour les IDs d'événements et un filtre `A` pour le contenu adressable. Chaque nouveau filtre de racine utilise une limite de 1000 et conserve la valeur `since` existante pour chaque relay. Les filtres de réponses directes restent en place.
+
+Réunir les deux conditions dans un seul filtre ne résoudrait pas le problème. [NIP-01](https://github.com/nostr-protocol/nips/blob/master/01.md) exige que toutes les conditions d'un filtre soient satisfaites. Demander que `#e` et `#E` contiennent tous deux l'ID de la racine exclurait encore un commentaire imbriqué dont le parent direct est un autre commentaire. Des filtres séparés permettent de rechercher les deux relations indépendamment.
+
+La limite est un paramètre de requête, pas une garantie de charger tous les commentaires de tous les fils. La disponibilité des relays, leur sélection et les bornes temporelles déterminent toujours les événements reçus. La correction porte sur ce que le client demande à ces relays.
+
+## Les révisions de pull requests avaient le même décalage
+
+Le nouveau filtre de racine pour les IDs inclut aussi kind 1619, l'événement de mise à jour de pull request de NIP-34. L'[exemple de NIP-34](https://github.com/nostr-protocol/nips/blob/master/34.md) identifie la pull request révisée par un tag `E` majuscule.
+
+Auparavant, Amethyst plaçait ce kind dans un filtre utilisant `e` minuscule. Le bon kind associé au mauvais tag ne permettait pas de trouver les mises à jour suivant cet exemple. Le correctif déplace kind 1619 dans `RootScopedRepliesKinds`. Les réponses Git et les événements de statut conservent leur filtre en minuscules.
+
+Les tests ajoutés vérifient la génération de filtres de racine pour les IDs et les adresses, ainsi que la séparation des conditions en majuscules et en minuscules. D'autres assertions maintiennent kind 1619 dans la liste en majuscules et hors de celle en minuscules.
+
+Il s'agit d'une correction des requêtes du client. Elle ne modifie pas le format des événements NIP-22 et ne demande pas de republier les commentaires. La distribution vérifiée est celle de GitHub : les fichiers téléchargeables y établissent la disponibilité, sans établir l'état du déploiement dans les boutiques d'applications.

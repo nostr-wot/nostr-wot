@@ -1,0 +1,56 @@
+---
+title: "NIP-02 donne des chemins résolubles aux petnames"
+description: "NIP-02 définit des chemins relatifs et absolus résolus par les listes de suivi, tandis que l’adoption et l’échappement restent ouverts."
+seoDescription: "NIP-02 définit des chemins relatifs et absolus résolus par les listes de suivi, tandis que l’adoption et l’échappement restent ouverts."
+excerpt: "NIP-02 définit des chemins relatifs et absolus résolus par les listes de suivi, tandis que l’adoption et l’échappement restent ouverts."
+date: "2026-09-20"
+publishedAt: "2026-09-20"
+backfilled: false
+type: "story"
+tags: ["Nostr","NIP-02","Web of Trust","Identity"]
+featuredImage: "/images/news/nip-02-gives-petnames-resolvable-paths.svg"
+translationKey: "nip-02-gives-petnames-resolvable-paths"
+sources: [{"title":"PR #2472: nip02: make petnames great again","url":"https://github.com/nostr-protocol/nips/pull/2472","publisher":"nostr-protocol/nips","date":"2026-09-19"},{"title":"NIP-02 at merge commit 11cca8f","url":"https://github.com/nostr-protocol/nips/blob/11cca8f6cf0b65ef4fa6ab97deb2c68db4900847/02.md","publisher":"nostr-protocol/nips","date":"2026-09-19"},{"title":"Merge commit 11cca8f","url":"https://github.com/nostr-protocol/nips/commit/11cca8f6cf0b65ef4fa6ab97deb2c68db4900847","publisher":"nostr-protocol/nips","date":"2026-09-19"}]
+published: true
+---
+
+NIP-02 donne désormais une notation de chemin explicite à son système de petnames. La [PR #2472](https://github.com/nostr-protocol/nips/pull/2472), fusionnée le 19 septembre 2026, remplace l’ancien exemple à plusieurs sauts par des règles permettant d’afficher et de résoudre des noms comme `~/erin/charlie` à travers les listes de suivi Nostr.
+
+Le changement n’ajoute aucun type d’événement et ne modifie pas la structure d’une liste kind 3. Il précise un champ facultatif existant. La quatrième valeur d’un tag `p` peut contenir un nom local choisi par l’auteur de la liste :
+
+```json
+["p", "21df6d143fb96c2ec9d63726bf9edc7121df6d143fb96c2ec9d63726bf9edc71", "", "erin"]
+```
+
+Dans le contexte de l’utilisateur actuel, un client peut afficher cette clé publique connue sous le nom `erin`. Ce nom appartient à la vue de cet utilisateur sur le graphe. Ce n’est pas un identifiant global et les autres utilisateurs ne sont pas tenus de l’accepter.
+
+## Chaque composant suit la liste d’une personne
+
+Le [texte fusionné de NIP-02](https://github.com/nostr-protocol/nips/blob/11cca8f6cf0b65ef4fa6ab97deb2c68db4900847/02.md) définit la résolution composant par composant. Si la liste de l’utilisateur associe `erin` à une clé publique et si la liste d’Erin associe `charlie` à une autre, un client peut résoudre `~/erin/charlie` : il cherche d’abord `erin` localement, récupère le dernier événement kind 3 d’Erin, puis y cherche `charlie`.
+
+Le texte précédent montrait des noms dérivés comme `frank.david.erin`, sans définir de grammaire de chemin ni de procédure de recherche. La nouvelle version suit l’ordre réel du parcours : partir d’une racine, trouver le premier nom, puis utiliser la liste de ce profil pour le suivant.
+
+La forme `~` prend l’utilisateur connecté comme racine relative. NIP-02 donne aussi deux exemples de racine absolue lorsqu’aucun utilisateur n’est connecté ou que le contexte actuel n’est pas pertinent :
+
+```text
+~npub1.../erin/charlie
+~carol@names.com/erin/charlie
+```
+
+Ces exemples indiquent le contexte de nommage qui commence le chemin. Ils ne créent pas de registre global. Chaque composant suivant dépend du petname choisi dans la liste du profil précédent.
+
+## Un chemin lisible n’est pas une preuve de confiance
+
+Les chemins peuvent montrer un contexte social sans confier tous les noms à une autorité unique. Dans une interface de web of trust, `~/erin/charlie` peut être plus parlant qu’une clé seule, car il décrit comment l’utilisateur atteint Charlie par Erin.
+
+Ce chemin ne constitue pas une preuve cryptographique d’identité. Un événement kind 3 est signé, donc un client peut vérifier qui a publié chaque correspondance. Son auteur peut néanmoins choisir un petname trompeur, le modifier ou le faire pointer vers une autre clé. NIP-02 indique aussi qu’une nouvelle liste remplace la précédente. Le résolveur doit disposer du dernier événement valide à chaque étape.
+
+La disponibilité reste une autre limite. Un chemin long peut nécessiter plusieurs listes conservées par des relays. Un événement manquant ou périmé peut arrêter la résolution même si les clés restent valides. Les clients peuvent afficher la clé résolue, la racine et l’étape en échec plutôt que de présenter le chemin comme un nom incontestable.
+
+## Des détails d’analyse restent ouverts
+
+La fusion modifie un fichier, avec dix lignes ajoutées et vingt supprimées. Elle définit des exemples relatifs et absolus, mais pas l’échappement des petnames contenant `/`, des espaces ou d’autres caractères spéciaux. Ces cas ont été soulevés dans des commentaires après la fusion et le NIP actuel ne les tranche pas.
+
+La pull request ne fournit pas non plus de preuve d’une implémentation publiée. Il s’agit d’une clarification de la spécification, pas de la preuve qu’un client particulier sait déjà saisir, afficher ou résoudre cette notation. L’interopérabilité dépendra d’un accord sur l’analyse et sur le signalement des chemins incomplets.
+
+La limite utile est nette : NIP-02 décrit une chaîne de noms attribués localement. Elle ne les transforme pas en identifiants uniques mondiaux, ne remplace pas la vérification des clés publiques et n’établit pas de score de confiance.

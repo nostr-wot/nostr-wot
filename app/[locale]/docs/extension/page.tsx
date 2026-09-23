@@ -12,8 +12,8 @@ type Props = {
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { locale } = await params;
   const t = await getTranslations("docs");
-  const title = `Extension API | ${t("meta.title")}`;
-  const description = "Complete NIP-07 signer API reference for the Nostr WoT browser extension. Methods for public keys, event signing, and NIP-04/NIP-44 encryption.";
+  const title = `${t("extensionApi.title")} | ${t("meta.title")}`;
+  const description = t("extensionApi.metaDescription");
 
   return {
     title,
@@ -37,16 +37,17 @@ interface TableRow {
   description: string;
 }
 
-function ParamTable({ rows, hasDefault }: { rows: TableRow[]; hasDefault?: boolean }) {
+async function ParamTable({ rows, hasDefault }: { rows: TableRow[]; hasDefault?: boolean }) {
+  const t = await getTranslations("docs.extensionApi");
   return (
     <div className="overflow-x-auto mb-6 not-prose">
       <table className="w-full text-sm border border-gray-200 dark:border-gray-700 rounded-lg">
         <thead className="bg-gray-50 dark:bg-gray-800">
           <tr>
-            <th className="text-left p-3 font-semibold">Name</th>
-            <th className="text-left p-3 font-semibold">Type</th>
-            {hasDefault && <th className="text-left p-3 font-semibold">Default</th>}
-            <th className="text-left p-3 font-semibold">Description</th>
+            <th className="text-left p-3 font-semibold">{t("name")}</th>
+            <th className="text-left p-3 font-semibold">{t("type")}</th>
+            {hasDefault && <th className="text-left p-3 font-semibold">{t("default")}</th>}
+            <th className="text-left p-3 font-semibold">{t("description")}</th>
           </tr>
         </thead>
         <tbody>
@@ -64,7 +65,7 @@ function ParamTable({ rows, hasDefault }: { rows: TableRow[]; hasDefault?: boole
   );
 }
 
-function MethodSection({ id, title, description, params, returns, example, children }: {
+async function MethodSection({ id, title, description, params, returns, example, children }: {
   id: string;
   title: string;
   description: string;
@@ -75,6 +76,7 @@ function MethodSection({ id, title, description, params, returns, example, child
   example: string;
   children?: React.ReactNode;
 }) {
+  const t = await getTranslations("docs.extensionApi");
   return (
     <section id={id} className="mb-12 scroll-mt-24 pb-8 border-b border-gray-200 dark:border-gray-800">
       <h3 className="text-xl font-bold mb-3">
@@ -84,53 +86,53 @@ function MethodSection({ id, title, description, params, returns, example, child
 
       {params && params.length > 0 && (
         <>
-          <h4 className="font-semibold mb-2">Parameters</h4>
+          <h4 className="font-semibold mb-2">{t("parameters")}</h4>
           <ParamTable rows={params} hasDefault={params.some(p => p.default)} />
         </>
       )}
 
-      <h4 className="font-semibold mb-2">Returns</h4>
+      <h4 className="font-semibold mb-2">{t("returns")}</h4>
       <p className="text-gray-600 dark:text-gray-400 mb-4">
         <InlineCode>{returns}</InlineCode>
       </p>
 
       {children}
 
-      <h4 className="font-semibold mb-2">Example</h4>
+      <h4 className="font-semibold mb-2">{t("example")}</h4>
       <CodeBlock language="javascript" code={example} />
     </section>
   );
 }
 
 export default async function ExtensionDocsPage() {
-  const t = await getTranslations("docs");
+  const t = await getTranslations("docs.extensionApi");
 
   return (
     <article className="prose prose-gray dark:prose-invert max-w-none">
       <ScrollReveal animation="fade-up">
-        <h1>Extension API</h1>
+        <h1>{t("title")}</h1>
 
         <p className="lead text-xl text-gray-600 dark:text-gray-400">
-          The extension provides the NIP-07 signer API (<InlineCode>window.nostr</InlineCode>) for identity, event signing, and NIP-04/NIP-44 message encryption.
+          {t.rich("intro", { api: (chunks) => <InlineCode>{chunks}</InlineCode> })}
         </p>
 
         <div className="not-prose my-6 p-4 bg-amber-50 dark:bg-amber-950/30 rounded-lg border border-amber-200 dark:border-amber-900">
         <p className="text-sm text-amber-800 dark:text-amber-200">
-          <strong>Prerequisite:</strong> Users must have the <Link href="/download" className="underline">extension</Link> installed and an account unlocked.
+          {t.rich("prerequisite", { download: (chunks) => <Link href="/download" className="underline">{chunks}</Link> })}
         </p>
         </div>
       </ScrollReveal>
 
       {/* Setup */}
       <section id="setup" className="mb-12 scroll-mt-24">
-        <h2>Setup</h2>
-        <p>Always check that a NIP-07 provider is available before using the API:</p>
+        <h2>{t("setup")}</h2>
+        <p>{t("setupDescription")}</p>
         <CodeBlock
           language="javascript"
           code={`// Feature detection
 function hasNostr() {
   return typeof window !== "undefined" &&
-         window.nostr !== undefined;
+         typeof window.nostr?.getPublicKey === "function";
 }
 
 // Wait for the extension to load
@@ -146,17 +148,19 @@ async function waitForNostr(timeout = 3000) {
 
       {/* NIP-07 Signer API */}
       <section id="nip07" className="mb-12 scroll-mt-24">
-        <h2>NIP-07 Signer API</h2>
+        <h2>{t("nip07Title")}</h2>
         <p>
-          The extension implements the <a href="https://github.com/nostr-protocol/nips/blob/master/07.md" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">NIP-07 standard</a>,
-          making it compatible with any Nostr client that supports <InlineCode>window.nostr</InlineCode>.
+          {t.rich("standard", {
+            standard: (chunks) => <a href="https://github.com/nostr-protocol/nips/blob/master/07.md" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">{chunks}</a>,
+            api: (chunks) => <InlineCode>{chunks}</InlineCode>,
+          })}
         </p>
       </section>
 
       <MethodSection
         id="getpublickey"
         title="getPublicKey()"
-        description="Returns the active account's hex-encoded public key."
+        description={t("getPublicKey")}
         returns="Promise<string>"
         example={`const pubkey = await window.nostr.getPublicKey();
 console.log(pubkey); // "3bf0c63f..."`}
@@ -165,8 +169,8 @@ console.log(pubkey); // "3bf0c63f..."`}
       <MethodSection
         id="signevent"
         title="signEvent(event)"
-        description="Signs a Nostr event with the active key. Returns the event with id, pubkey, sig, and created_at fields populated."
-        params={[{ name: "event", type: "UnsignedEvent", description: "Event object with kind, content, tags, and created_at" }]}
+        description={t("signEvent")}
+        params={[{ name: "event", type: "UnsignedEvent", description: t("event") }]}
         returns="Promise<SignedEvent>"
         example={`const signed = await window.nostr.signEvent({
   kind: 1,
@@ -180,10 +184,10 @@ console.log(signed.sig); // schnorr signature`}
       <MethodSection
         id="nip04encrypt"
         title="nip04.encrypt(pubkey, plaintext)"
-        description="Encrypts a message using NIP-04 (legacy DM encryption)."
+        description={t("nip04Encrypt")}
         params={[
-          { name: "pubkey", type: "string", description: "Recipient's hex pubkey" },
-          { name: "plaintext", type: "string", description: "Message to encrypt" },
+          { name: "pubkey", type: "string", description: t("recipient") },
+          { name: "plaintext", type: "string", description: t("plaintext") },
         ]}
         returns="Promise<string>"
         example={`const encrypted = await window.nostr.nip04.encrypt(
@@ -195,10 +199,10 @@ console.log(signed.sig); // schnorr signature`}
       <MethodSection
         id="nip04decrypt"
         title="nip04.decrypt(pubkey, ciphertext)"
-        description="Decrypts a NIP-04 encrypted message."
+        description={t("nip04Decrypt")}
         params={[
-          { name: "pubkey", type: "string", description: "Sender's hex pubkey" },
-          { name: "ciphertext", type: "string", description: "Encrypted message string" },
+          { name: "pubkey", type: "string", description: t("sender") },
+          { name: "ciphertext", type: "string", description: t("ciphertext") },
         ]}
         returns="Promise<string>"
         example={`const plaintext = await window.nostr.nip04.decrypt(
@@ -211,10 +215,10 @@ console.log(plaintext); // "Secret message"`}
       <MethodSection
         id="nip44encrypt"
         title="nip44.encrypt(pubkey, plaintext)"
-        description="Encrypts a message using NIP-44 (recommended). NIP-44 provides improved security over NIP-04."
+        description={t("nip44Encrypt")}
         params={[
-          { name: "pubkey", type: "string", description: "Recipient's hex pubkey" },
-          { name: "plaintext", type: "string", description: "Message to encrypt" },
+          { name: "pubkey", type: "string", description: t("recipient") },
+          { name: "plaintext", type: "string", description: t("plaintext") },
         ]}
         returns="Promise<string>"
         example={`const encrypted = await window.nostr.nip44.encrypt(
@@ -226,10 +230,10 @@ console.log(plaintext); // "Secret message"`}
       <MethodSection
         id="nip44decrypt"
         title="nip44.decrypt(pubkey, ciphertext)"
-        description="Decrypts a NIP-44 encrypted message."
+        description={t("nip44Decrypt")}
         params={[
-          { name: "pubkey", type: "string", description: "Sender's hex pubkey" },
-          { name: "ciphertext", type: "string", description: "Encrypted message string" },
+          { name: "pubkey", type: "string", description: t("sender") },
+          { name: "ciphertext", type: "string", description: t("ciphertext") },
         ]}
         returns="Promise<string>"
         example={`const plaintext = await window.nostr.nip44.decrypt(
@@ -242,21 +246,51 @@ console.log(plaintext); // "Secret message"`}
       <MethodSection
         id="getrelays"
         title="getRelays()"
-        description="Returns the user's relay list (NIP-65) as a map of relay URLs to read/write policies."
+        description={t("getRelays")}
         returns="Promise<Record<string, { read: boolean; write: boolean }>>"
         example={`const relays = await window.nostr.getRelays();
 
 // {
 //   "wss://relay.damus.io": { read: true, write: true },
-//   "wss://nos.lol": { read: true, write: false }
+//   "wss://nos.lol": { read: true, write: true }
 // }`}
       />
 
+      <section id="errors" className="mb-12 scroll-mt-24">
+        <h2>{t("errorsTitle")}</h2>
+        <p>{t("errorsDescription")}</p>
+        <p>{t("errorsDetails")}</p>
+        <CodeBlock language="javascript" code={`async function signNote(content) {
+  const provider = window.nostr;
+  if (typeof provider?.getPublicKey !== "function" ||
+      typeof provider?.signEvent !== "function") {
+    return { ok: false, reason: "provider-unavailable" };
+  }
+
+  try {
+    const pubkey = await provider.getPublicKey();
+    if (!pubkey) return { ok: false, reason: "no-active-account" };
+
+    const event = await provider.signEvent({
+      pubkey,
+      kind: 1,
+      content,
+      tags: [],
+      created_at: Math.floor(Date.now() / 1000),
+    });
+    return { ok: true, event };
+  } catch (error) {
+    return { ok: false, reason: "request-failed", error };
+  }
+}`} />
+      </section>
+
       <div className="not-prose my-8 p-4 bg-blue-50 dark:bg-blue-950/30 rounded-lg border border-blue-200 dark:border-blue-900">
         <p className="text-sm text-blue-800 dark:text-blue-200">
-          Looking for Web of Trust distance and trust-score queries? Those now live in the{" "}
-          <Link href="/docs/sdk" className="underline">nostr-wot-sdk</Link> and the{" "}
-          <Link href="/docs/oracle" className="underline">WoT Oracle API</Link>, not the browser extension.
+          {t.rich("trustRedirect", {
+            sdk: (chunks) => <Link href="/docs/sdk" className="underline">{chunks}</Link>,
+            oracle: (chunks) => <Link href="/docs/oracle" className="underline">{chunks}</Link>,
+          })}
         </p>
       </div>
 
@@ -269,13 +303,13 @@ console.log(plaintext); // "Secret message"`}
           <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
           </svg>
-          Getting Started
+          {t("gettingStarted")}
         </Link>
         <Link
           href="/docs/sdk"
           className="flex items-center gap-2 text-gray-600 dark:text-gray-400 hover:text-primary"
         >
-          SDK Reference
+          {t("sdkReference")}
           <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
           </svg>

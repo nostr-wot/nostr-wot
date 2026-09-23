@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useRef } from 'react';
 import { Link, useRouter } from '@/i18n/routing';
-import { useTranslations } from 'next-intl';
+import { useLocale, useTranslations } from 'next-intl';
 import { GitHubIcon, XTwitterIcon, NostrIcon } from '@/components/icons';
 import type { AuthorSocials } from '@/lib/blog';
 import { type Locale, localeNames } from '@/i18n/config';
@@ -71,6 +71,7 @@ export function BlogSidebar({
   translations,
   allPosts = []
 }: BlogSidebarProps) {
+  const locale = useLocale();
   const t = useTranslations('blog.sidebar');
   const router = useRouter();
   const [searchQuery, setSearchQuery] = useState('');
@@ -284,7 +285,7 @@ export function BlogSidebar({
                   {post.title}
                 </h4>
                 <time className="text-xs text-gray-500 dark:text-gray-400 mt-1 block">
-                  {new Date(post.date).toLocaleDateString('en-US', {
+                  {new Date(post.date).toLocaleDateString(locale, {
                     year: 'numeric',
                     month: 'short',
                     day: 'numeric',

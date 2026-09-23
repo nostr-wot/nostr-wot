@@ -1,27 +1,27 @@
 {
   "meta": {
     "title": "WoT Oracle",
-    "description": "API backend haute performance pour les requêtes Nostr Web of Trust. Indexez le graphe social et interrogez la distance sociale à grande échelle."
+    "description": "API Nostr auto-hébergeable pour la distance des abonnements dirigés et les observations séparées des listes publiques de masquage. Oracle v0.3.0."
   },
   "hero": {
     "badge": "API Backend",
     "title": "WoT Oracle",
-    "subtitle": "Indexeur haute performance pour le graphe social Nostr. Requêtes en sous-milliseconde répondant à « combien de sauts séparent ces deux utilisateurs ? »",
+    "subtitle": "Interrogez la distance des abonnements dirigés et les observations publiques de masquage par HTTP. Version 0.3.0, sans extension.",
     "viewOnGitHub": "Voir sur GitHub",
     "apiDocs": "Documentation API"
   },
   "whatItDoes": {
     "title": "Ce qu'il fait",
-    "description": "WoT Oracle synchronise en continu les listes d'abonnements (événements Kind 3) depuis les relais Nostr, construisant un graphe en mémoire de l'ensemble du réseau social. Il fournit ensuite une API REST pour interroger la distance sociale entre deux pubkeys.",
+    "description": "L’Oracle indexe les abonnements kind-3 et les clés publiques des listes de masquage kind-10000 reçus des relais configurés. La couverture se limite à ces événements. Distance et masquages restent des signaux séparés ; l’API ne les combine pas en score de confiance.",
     "example": "Exemple :",
     "exampleText": "Si Alice suit Bob, et Bob suit Carol, alors la distance entre Alice et Carol est de 2 sauts."
   },
   "performance": {
-    "title": "Performance",
-    "cachedLatency": "Latence en cache",
-    "uncachedLatency": "Latence hors cache",
-    "queriesPerSecond": "Requêtes par seconde",
-    "bidirectionalBfs": "BFS bidirectionnel"
+    "title": "Fonctions de la version",
+    "release": "Version",
+    "maxHops": "Profondeur maximale (sauts)",
+    "batchTargets": "Cibles par lot",
+    "eventKinds": "Types d’événements indexés"
   },
   "apiEndpoints": {
     "title": "Points d'accès API",
@@ -41,19 +41,20 @@
     },
     "health": {
       "title": "GET /health",
-      "description": "Point d'accès de vérification de l'état pour la surveillance."
-    }
+      "description": "État du processus et version. Utilisez /ready pour vérifier la disponibilité de l’ingestion."
+    },
+    "subtitle": "Réponses illustratives avec des clés publiques hexadécimales fictives de 64 caractères. Les résultats dépendent des événements indexés. Consultez la référence pour tous les endpoints, dont /mutes, /trust et /ready."
   },
   "selfHosting": {
     "title": "Auto-hébergement",
-    "subtitle": "Exécutez votre propre instance de WoT Oracle. Contrôle total sur votre infrastructure de confiance.",
+    "subtitle": "Les exemples utilisent v0.3.0. Docker et Compose exposent localhost:8080. Un déploiement public nécessite un proxy inverse qui remplace les en-têtes d’IP client. La compilation native nécessite Rust 1.93, pkg-config et les bibliothèques de développement OpenSSL.",
     "docker": "Docker (recommandé)",
     "dockerCompose": "Docker Compose",
-    "fromSource": "Depuis les sources (Rust 1.75+)"
+    "fromSource": "Depuis les sources (Rust 1.93)"
   },
   "configuration": {
     "title": "Configuration",
-    "subtitle": "Configurer via les variables d'environnement :",
+    "subtitle": "Les valeurs ci-dessous sont celles du binaire natif. L’image Docker utilise /app/data/wot.db ; Compose expose l’interface locale par défaut. Le cache accepte 100–100000 entrées, le TTL 10–3600 secondes et la limite 1–1000 requêtes/minute.",
     "table": {
       "variable": "Variable",
       "default": "Par défaut",
@@ -72,7 +73,7 @@
       "description": "Limitation des requêtes par IP"
     },
     "cacheSize": {
-      "description": "Entrées du cache LRU"
+      "description": "Nombre maximal d’entrées du cache de requêtes Moka"
     },
     "cacheTtl": {
       "description": "Expiration du cache (5 min)"
@@ -86,11 +87,11 @@
     },
     "pathfinding": {
       "title": "Recherche de chemin",
-      "description": "Recherche en largeur bidirectionnelle (BFS) depuis les deux extrémités simultanément, se rejoignant au milieu pour une complexité O(b^(d/2))."
+      "description": "La recherche en largeur bidirectionnelle calcule les plus courts chemins dirigés. La durée dépend de la taille du graphe, des ramifications et de la profondeur."
     },
     "caching": {
       "title": "Mise en cache",
-      "description": "Cache LRU avec taille et TTL configurables. La plupart des requêtes atteignent le cache pour des temps de réponse en sous-milliseconde."
+      "description": "Cache Moka avec capacité et TTL configurables. Les entrées sont invalidées quand la révision du graphe change. La latence dépend du déploiement et de la charge."
     },
     "rateLimiting": {
       "title": "Limitation du débit",
@@ -100,10 +101,10 @@
   "publicInstance": {
     "title": "Instance publique",
     "subtitle": "Une instance publique est disponible pour le développement et les tests :",
-    "rateLimit": "Limité à 100 requêtes/minute par IP. Pour une utilisation en production, envisagez l'auto-hébergement."
+    "rateLimit": "Les limites dépendent du déploiement. Gérez HTTP 429 avec une attente progressive. La saturation renvoie 503 ; /health et /ready restent hors du limiteur des endpoints de données."
   },
   "cta": {
-    "title": "Open Source",
+    "title": "Code source ouvert",
     "subtitle": "Écrit en Rust. Sous licence MIT. Auto-hébergez pour votre communauté ou contribuez des améliorations.",
     "viewSource": "Voir le code source sur GitHub",
     "learnExtension": "En savoir plus sur l'extension WoT →"

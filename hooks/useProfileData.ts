@@ -1,15 +1,15 @@
 "use client";
 
 import { useState, useCallback, useRef, useEffect } from "react";
-import { NodeProfile } from "@/lib/graph/types";
+import { SimplePool, type Event } from "nostr-tools";
+import type { NodeProfile } from "@/lib/graph/types";
+import { selectProfileEvent, profileFromEvent, followingCountFromEvent } from "@/lib/graph/profile-events";
 
-// Fast relays for profile fetching
 const RELAYS = [
   "wss://relay.damus.io",
   "wss://relay.nostr.band",
   "wss://purplepag.es",
 ];
-
 const FETCH_TIMEOUT = 5000;
 
 interface UseProfileDataResult {
@@ -21,217 +21,101 @@ interface UseProfileDataResult {
   reset: () => void;
 }
 
-/**
- * Hook to fetch profile data (kind:0) and following list (kind:3) progressively
- * Shows data as soon as it arrives from any relay
- */
+/** Fetch verified profile and following events progressively across relays. */
 export function useProfileData(): UseProfileDataResult {
   const [profile, setProfile] = useState<NodeProfile | null>(null);
   const [followingCount, setFollowingCount] = useState<number | null>(null);
   const [isLoadingProfile, setIsLoadingProfile] = useState(false);
   const [isLoadingFollowing, setIsLoadingFollowing] = useState(false);
+  const poolRef = useRef<SimplePool | null>(null);
+  const generationRef = useRef(0);
+  const cancelRef = useRef<(() => void) | null>(null);
 
-  const activeConnectionsRef = useRef<WebSocket[]>([]);
-  const currentPubkeyRef = useRef<string | null>(null);
-
-  /**
-   * Close all active connections
-   */
-  const closeConnections = useCallback(() => {
-    activeConnectionsRef.current.forEach((ws) => {
-      try {
-        ws.close();
-      } catch {
-        // Ignore
-      }
-    });
-    activeConnectionsRef.current = [];
+  const cancelFetch = useCallback(() => {
+    generationRef.current++;
+    cancelRef.current?.();
+    cancelRef.current = null;
   }, []);
 
-  /**
-   * Fetch profile and following data progressively
-   */
-  const fetchProfile = useCallback(
-    (pubkey: string) => {
-      // Close existing connections
-      closeConnections();
+  const fetchProfile = useCallback((pubkey: string) => {
+    cancelFetch();
+    setProfile(null);
+    setFollowingCount(null);
+    const validPubkey = /^[0-9a-f]{64}$/.test(pubkey);
+    setIsLoadingProfile(validPubkey);
+    setIsLoadingFollowing(validPubkey);
+    if (!validPubkey) return;
 
-      // Reset state
-      setProfile(null);
-      setFollowingCount(null);
-      setIsLoadingProfile(true);
-      setIsLoadingFollowing(true);
-      currentPubkeyRef.current = pubkey;
+    const generation = generationRef.current;
+    const pool = poolRef.current ?? (poolRef.current = new SimplePool());
+    const abort = new AbortController();
+    let subscription: { close: () => void } | undefined;
+    let newestProfile: Event | null = null;
+    let newestFollows: Event | null = null;
+    let finished = false;
+    const isCurrent = () => !finished && generationRef.current === generation;
 
-      let profileReceived = false;
-      let followsReceived = false;
-      let profileCompletedRelays = 0;
-      let followsCompletedRelays = 0;
+    const cleanup = () => {
+      finished = true;
+      clearTimeout(timeout);
+      abort.abort();
+      subscription?.close();
+    };
+    const finish = () => {
+      if (!isCurrent()) return;
+      cleanup();
+      cancelRef.current = null;
+      setIsLoadingProfile(false);
+      setIsLoadingFollowing(false);
+    };
+    // Always retain the deadline until every relay completes, even after data arrives.
+    const timeout = setTimeout(finish, FETCH_TIMEOUT);
+    cancelRef.current = cleanup;
 
-      // Hard 5s deadline — fires once, then is cleared when both profile and
-      // follows have completed (whether by data arrival or all relays closing).
-      const timeoutId = setTimeout(() => {
-        closeConnections();
-        setIsLoadingProfile(false);
-        setIsLoadingFollowing(false);
-      }, FETCH_TIMEOUT);
-
-      const maybeClearTimeout = () => {
-        const profileDone = profileReceived || profileCompletedRelays >= RELAYS.length;
-        const followsDone = followsReceived || followsCompletedRelays >= RELAYS.length;
-        if (profileDone && followsDone) clearTimeout(timeoutId);
-      };
-
-      for (const relayUrl of RELAYS) {
-        // Profile connection (kind:0)
-        try {
-          const profileWs = new WebSocket(relayUrl);
-          activeConnectionsRef.current.push(profileWs);
-          const profileSubId = `profile-${Date.now()}-${Math.random()}`;
-
-          profileWs.onopen = () => {
-            profileWs.send(
-              JSON.stringify([
-                "REQ",
-                profileSubId,
-                { kinds: [0], authors: [pubkey], limit: 1 },
-              ])
-            );
-          };
-
-          profileWs.onmessage = (event) => {
-            try {
-              const data = JSON.parse(event.data);
-              if (data[0] === "EVENT" && data[2]?.kind === 0 && !profileReceived) {
-                const content = JSON.parse(data[2].content);
-                const newProfile: NodeProfile = {
-                  pubkey: data[2].pubkey,
-                  name: content.name,
-                  displayName: content.display_name,
-                  picture: content.picture,
-                  about: content.about,
-                  nip05: content.nip05,
-                };
-                profileReceived = true;
-                setProfile(newProfile);
-                setIsLoadingProfile(false);
-                profileWs.close();
-                maybeClearTimeout();
-              } else if (data[0] === "EOSE") {
-                profileWs.close();
-              }
-            } catch {
-              // Ignore
-            }
-          };
-
-          profileWs.onerror = () => {
-            profileCompletedRelays++;
-            if (profileCompletedRelays >= RELAYS.length && !profileReceived) {
+    try {
+      subscription = pool.subscribeMany(RELAYS, { authors: [pubkey], kinds: [0, 3] }, {
+        maxWait: FETCH_TIMEOUT,
+        abort: abort.signal,
+        onevent(event) {
+          if (!isCurrent()) return;
+          if (event.kind === 0) {
+            const selected = selectProfileEvent(newestProfile, event, pubkey, 0);
+            if (selected !== newestProfile && selected) {
+              newestProfile = selected;
+              setProfile(profileFromEvent(selected));
               setIsLoadingProfile(false);
             }
-            maybeClearTimeout();
-          };
-
-          profileWs.onclose = () => {
-            profileCompletedRelays++;
-            if (profileCompletedRelays >= RELAYS.length && !profileReceived) {
-              setIsLoadingProfile(false);
-            }
-            maybeClearTimeout();
-          };
-        } catch {
-          profileCompletedRelays++;
-          maybeClearTimeout();
-        }
-
-        // Follows connection (kind:3)
-        try {
-          const followsWs = new WebSocket(relayUrl);
-          activeConnectionsRef.current.push(followsWs);
-          const followsSubId = `follows-${Date.now()}-${Math.random()}`;
-
-          followsWs.onopen = () => {
-            followsWs.send(
-              JSON.stringify([
-                "REQ",
-                followsSubId,
-                { kinds: [3], authors: [pubkey], limit: 1 },
-              ])
-            );
-          };
-
-          followsWs.onmessage = (event) => {
-            try {
-              const data = JSON.parse(event.data);
-              if (data[0] === "EVENT" && data[2]?.kind === 3 && !followsReceived) {
-                // Count "p" tags (follows)
-                const tags = data[2].tags || [];
-                const pTags = tags.filter(
-                  (tag: string[]) => tag[0] === "p" && tag[1]
-                );
-                followsReceived = true;
-                setFollowingCount(pTags.length);
-                setIsLoadingFollowing(false);
-                followsWs.close();
-                maybeClearTimeout();
-              } else if (data[0] === "EOSE") {
-                followsWs.close();
-              }
-            } catch {
-              // Ignore
-            }
-          };
-
-          followsWs.onerror = () => {
-            followsCompletedRelays++;
-            if (followsCompletedRelays >= RELAYS.length && !followsReceived) {
+          } else if (event.kind === 3) {
+            const selected = selectProfileEvent(newestFollows, event, pubkey, 3);
+            if (selected !== newestFollows && selected) {
+              newestFollows = selected;
+              setFollowingCount(followingCountFromEvent(selected));
               setIsLoadingFollowing(false);
             }
-            maybeClearTimeout();
-          };
+          }
+        },
+        oneose: finish,
+        onclose: finish,
+      });
+      if (finished) subscription.close();
+    } catch {
+      finish();
+    }
+  }, [cancelFetch]);
 
-          followsWs.onclose = () => {
-            followsCompletedRelays++;
-            if (followsCompletedRelays >= RELAYS.length && !followsReceived) {
-              setIsLoadingFollowing(false);
-            }
-            maybeClearTimeout();
-          };
-        } catch {
-          followsCompletedRelays++;
-          maybeClearTimeout();
-        }
-      }
-    },
-    [closeConnections]
-  );
-
-  /**
-   * Reset state
-   */
   const reset = useCallback(() => {
-    closeConnections();
+    cancelFetch();
     setProfile(null);
     setFollowingCount(null);
     setIsLoadingProfile(false);
     setIsLoadingFollowing(false);
-    currentPubkeyRef.current = null;
-  }, [closeConnections]);
+  }, [cancelFetch]);
 
-  // Cleanup on unmount
-  useEffect(() => {
-    return () => {
-      closeConnections();
-    };
-  }, [closeConnections]);
+  useEffect(() => () => {
+    cancelFetch();
+    poolRef.current?.destroy();
+    poolRef.current = null;
+  }, [cancelFetch]);
 
-  return {
-    profile,
-    followingCount,
-    isLoadingProfile,
-    isLoadingFollowing,
-    fetchProfile,
-    reset,
-  };
+  return { profile, followingCount, isLoadingProfile, isLoadingFollowing, fetchProfile, reset };
 }

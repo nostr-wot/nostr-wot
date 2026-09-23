@@ -1,0 +1,75 @@
+---
+title: "Conectar o LNbits ao Nostr WoT"
+description: "Conecte sua carteira LNbits ao Nostr WoT por NWC ou pela API. Encontre as credenciais, ajuste as permissões e confira saldo, faturas e histórico de pagamentos."
+excerpt: "Escolha uma conexão NWC com limites próprios ou conecte diretamente com a chave API da sua carteira LNbits."
+date: "2026-09-23"
+author:
+  name: "Leon Acosta"
+  avatar: "/authors/leon-profile.jpg"
+  npub: "npub1gxdhmu9swqduwhr6zptjy4ya693zp3ql28nemy4hd97kuufyrqdqwe5zfk"
+featuredImage: "/images/guides/lnbits-wallet-setup/featured.jpg"
+previewImage: "/images/guides/lnbits-wallet-setup/preview.jpg"
+ogImage: "/images/guides/lnbits-wallet-setup/og.jpg"
+tags:
+  - "Lightning"
+  - "LNbits"
+  - "NWC"
+  - "API"
+published: true
+translationKey: "lnbits-wallet-setup"
+difficulty: "beginner"
+order: 16
+---
+
+Você pode conectar o LNbits à extensão Nostr WoT por **Nostr Wallet Connect (NWC)** ou pela **API HTTP** da carteira. Este guia pressupõe que você já tenha uma carteira LNbits. Quem controla os fundos depende do operador da instância e da fonte de financiamento; escolher NWC ou acesso à API não muda essa relação.
+
+## Escolha a conexão
+
+Use **NWC** para criar uma conexão exclusiva para o aplicativo, com permissões, limites de gastos e validade próprios. O administrador do LNbits precisa habilitar primeiro a extensão provedora de NWC. Use a aba **LNbits** para acesso direto pela API quando já tiver a chave de gastos e a URL da instância. São menos etapas, mas você usa a credencial da carteira em vez de uma autorização NWC separada.
+
+<a id="lnbits-nwc" className="block scroll-mt-32" />
+
+## Conectar por NWC
+
+### Preparar a instância LNbits
+
+O administrador instala o **NWC Service Provider** e configura o relay em `/nwcprovider/admin`. O relay transporta as mensagens da conexão. Se você usa uma instância de terceiros e não encontra essa extensão, pergunte ao operador se ela está disponível. Entrar no LNbits não cria automaticamente uma conexão NWC.<Citation id="1" />
+
+### Criar a conexão do aplicativo
+
+1. Abra o **NWC Service Provider** no LNbits e selecione a carteira desejada.
+2. Clique em **+** para adicionar uma conexão. Dê um nome fácil de reconhecer, como **Nostr WoT**.
+3. Habilite as informações da carteira (`get_info`), necessárias para validar a conexão. Adicione permissões para consultar saldo, enviar pagamentos, criar e consultar faturas e visualizar o histórico conforme os recursos que pretende usar.
+4. Defina um limite de gastos e uma data de expiração quando disponíveis. Esses limites valem para esta conexão.
+5. Crie a conexão, escolha **Connect** e copie a URL completa de pareamento, que começa com `nostr+walletconnect://`.
+6. Na extensão Nostr WoT, abra **Carteira → NWC**, cole a URL e escolha **Conectar**.
+
+Mantenha essa URL em segredo: quem a possui pode usar as permissões concedidas. Gerencie ou revogue a conexão no LNbits quando não precisar mais dela.
+
+<a id="lnbits-api" className="block scroll-mt-32" />
+
+## Conectar pela API do LNbits
+
+1. Abra a carteira específica no LNbits. Procure **API info** ou o painel de documentação da API da carteira.
+2. Copie a **Admin API key**. O LNbits também apresenta uma chave de faturas/leitura, que não permite enviar pagamentos.<Citation id="2" />
+3. Na extensão Nostr WoT, abra **Carteira → LNbits**.
+4. Digite a URL HTTPS da instância e a Admin API key dessa carteira, depois escolha **Conectar**. Use o endereço da instância, não a URL de uma página da carteira que contenha credenciais.
+
+<Callout type="warning">
+A Admin API key autoriza gastos desta carteira. Ela não é sua senha de acesso ao LNbits nem a senha do administrador da instância. Cole-a somente no campo de chave API; uma URL de pareamento NWC deve ser usada na aba NWC.
+</Callout>
+
+## Confira o resultado
+
+Após conectar, confira o saldo e o histórico. Para receber sats, crie uma fatura em **Depositar**. A falta de uma permissão NWC pode impedir um recurso mesmo com a conexão funcionando.
+
+Se a configuração falhar, confira a URL da instância ou a URL completa de pareamento, o relay, a validade e a permissão de informações da carteira. Se o resultado de um pagamento for desconhecido, consulte o histórico antes de pagar novamente. Para trocar de carteira, desconecte nos ajustes e volte à configuração.
+
+Volte à [visão geral da configuração de carteiras](/guides/configurar-carteira) para comparar opções ou leia o [guia do Alby Hub](/guides/alby-hub-nwc).
+
+[Conecte aplicativos à sua carteira Nostr WoT com NWC](/guides/nwc-app-connections)
+
+<Bibliography>
+  <BibEntry id="1" authors="LNbits" title="NWC Provider" source="LNbits documentation" url="https://docs.lnbits.com/extensions/nwcprovider/" />
+  <BibEntry id="2" authors="LNbits" title="API Authentication" source="LNbits documentation" url="https://docs.lnbits.com/api/authentication#finding-your-keys" />
+</Bibliography>

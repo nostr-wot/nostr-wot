@@ -23,13 +23,14 @@ export default function NodeDetailCard({
   onCollapse,
   onViewProfile,
 }: NodeDetailCardProps) {
+  const u = useTranslations("ui");
   const t = useTranslations("playground");
   const { state } = useGraph();
   const isExpanded = state.expandedNodes.has(node.id);
   const [copied, setCopied] = useState(false);
 
   const trustClass = getTrustClass(node.trustScore);
-  const trustLabel = getTrustLabel(node.trustScore);
+  const trustLabel = u(getTrustLabel(node.trustScore).toLowerCase());
 
   const handleCopyPubkey = async () => {
     try {
@@ -49,7 +50,7 @@ export default function NodeDetailCard({
         {node.picture || profile?.picture ? (
           <img
             src={node.picture || profile?.picture}
-            alt={`${profile?.displayName || profile?.name || node.label || "User"} avatar`}
+            alt={u("avatar", { name: profile?.displayName || profile?.name || node.label || u("user") })}
             className="w-16 h-16 rounded-full object-cover flex-shrink-0"
           />
         ) : (
@@ -63,7 +64,7 @@ export default function NodeDetailCard({
         <div className="flex-1 min-w-0">
           {/* Name */}
           <h3 className="text-lg font-semibold text-white truncate">
-            {profile?.displayName || profile?.name || node.label || "Unknown"}
+            {profile?.displayName || profile?.name || node.label || u("unknown")}
           </h3>
 
           {/* NIP-05 */}

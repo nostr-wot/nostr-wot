@@ -37,8 +37,8 @@ export default async function DocsOverviewPage() {
   const jsonLd = {
     "@context": "https://schema.org",
     "@type": "TechArticle",
-    "name": "Nostr Web of Trust Documentation",
-    "description": "Complete API documentation for the Nostr Web of Trust extension, SDK, and Oracle server.",
+    "name": t("labels.structuredTitle"),
+    "description": t("labels.structuredDescription"),
     "url": "https://nostr-wot.com/docs",
     "author": {
       "@type": "Organization",
@@ -84,6 +84,16 @@ export default async function DocsOverviewPage() {
               {t("overview.oracle.description")}
             </p>
           </Link>
+
+          <Link
+            href="/docs/lnbits-proxy"
+            className="block p-6 bg-gray-50 dark:bg-gray-900 rounded-xl border border-gray-200 dark:border-gray-800 hover:border-primary dark:hover:border-primary transition-colors"
+          >
+            <h3 className="font-semibold text-lg mb-2">{t("overview.lnbitsProxy.title")}</h3>
+            <p className="text-gray-600 dark:text-gray-400 text-sm">
+              {t("overview.lnbitsProxy.description")}
+            </p>
+          </Link>
         </div>
         </ScrollReveal>
 
@@ -92,7 +102,7 @@ export default async function DocsOverviewPage() {
           {t("overview.fundamentalQuestion")} <em>&quot;{t("overview.question")}&quot;</em>
         </p>
 
-        <h2>Choose Your Integration</h2>
+        <h2>{t("integration.choose")}</h2>
         </ScrollReveal>
 
         <ScrollReveal animation="fade-up" delay={200}>
@@ -104,13 +114,9 @@ export default async function DocsOverviewPage() {
               </svg>
             </div>
             <div>
-              <h4 className="font-semibold mb-1">Browser Extension</h4>
-              <p className="text-sm text-gray-600 dark:text-gray-400 mb-2">
-                For client-side web apps. Users need the WoT extension installed.
-              </p>
-              <Link href="/docs/extension" className="text-sm text-primary hover:underline">
-                Extension API Docs →
-              </Link>
+              <h4 className="font-semibold mb-1">{t("integration.extensionTitle")}</h4>
+              <p className="text-sm text-gray-600 dark:text-gray-400 mb-2">{t("integration.extensionDescription")}</p>
+              <Link href="/docs/extension" className="text-sm text-primary hover:underline">{t("integration.extensionLink")}</Link>
             </div>
           </div>
 
@@ -121,13 +127,9 @@ export default async function DocsOverviewPage() {
               </svg>
             </div>
             <div>
-              <h4 className="font-semibold mb-1">Oracle REST API</h4>
-              <p className="text-sm text-gray-600 dark:text-gray-400 mb-2">
-                For server-side apps. No user extension required. Use our public server or self-host.
-              </p>
-              <Link href="/docs/oracle" className="text-sm text-primary hover:underline">
-                Oracle API Docs →
-              </Link>
+              <h4 className="font-semibold mb-1">{t("integration.oracleTitle")}</h4>
+              <p className="text-sm text-gray-600 dark:text-gray-400 mb-2">{t("integration.oracleDescription")}</p>
+              <Link href="/docs/oracle" className="text-sm text-primary hover:underline">{t("integration.oracleLink")}</Link>
             </div>
           </div>
 
@@ -138,38 +140,34 @@ export default async function DocsOverviewPage() {
               </svg>
             </div>
             <div>
-              <h4 className="font-semibold mb-1">JavaScript SDK</h4>
-              <p className="text-sm text-gray-600 dark:text-gray-400 mb-2">
-                TypeScript SDK for the Oracle API with React hooks and error handling.
-              </p>
-              <Link href="/docs/sdk" className="text-sm text-primary hover:underline">
-                SDK Docs →
-              </Link>
+              <h4 className="font-semibold mb-1">{t("integration.sdkTitle")}</h4>
+              <p className="text-sm text-gray-600 dark:text-gray-400 mb-2">{t("integration.sdkDescription")}</p>
+              <Link href="/docs/sdk" className="text-sm text-primary hover:underline">{t("integration.sdkLink")}</Link>
             </div>
           </div>
         </div>
         </ScrollReveal>
 
         <ScrollReveal animation="fade-up" delay={250}>
-        <h2>Quick Example</h2>
+        <h2>{t("integration.exampleTitle")}</h2>
 
-        <p>Here&apos;s a simple example using the SDK&apos;s Web of Trust module:</p>
+        <p>{t("integration.exampleDescription")}</p>
 
         <CodeBlock
           language="typescript"
-          code={`import { WoT } from "@nostr-wot/wot";
-
-const wot = new WoT({ rootPubkey: "hex-your-pubkey", maxHops: 2 });
-
-// Get hop distance to a target pubkey
-const result = await wot.getDistance("hex-target-pubkey");
-
-if (result && result.hops <= 2) {
-  console.log(\`Trusted: \${result.hops} hops away\`);
-} else {
-  console.log("Not in your web of trust");
-}`}
+          code={`const from = "a".repeat(64); // Replace with your public key
+const to = "b".repeat(64); // Replace with the target public key
+const query = new URLSearchParams({ from, to, max_hops: "2" });
+const response = await fetch(
+  "https://wot-oracle.mappingbitcoin.com/distance?" + query
+);
+if (!response.ok) throw new Error("Oracle HTTP " + response.status);
+const { hops } = await response.json();
+console.log(hops === null ? "No indexed path within 2 hops" : hops);
+// Follow distance is evidence of a connection, not a trust score.
+// Use /trust for separate public mute evidence.`}
         />
+        <p>{t.rich("integration.sdkCompatibilityLink", { link0: chunks => <Link href="/docs/sdk#wot">{chunks}</Link> })}</p>
         </ScrollReveal>
 
         <ScrollReveal animation="fade-up" delay={300}>
@@ -178,7 +176,7 @@ if (result && result.hops <= 2) {
             href="/docs/getting-started"
             className="inline-flex items-center gap-2 px-6 py-3 bg-primary text-white rounded-lg hover:bg-primary/90 transition-colors"
           >
-            Get Started
+            {t("labels.getStarted")}
             <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
             </svg>

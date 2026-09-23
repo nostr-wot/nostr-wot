@@ -1,0 +1,58 @@
+---
+{
+  "title": "Nova criptografia, os mesmos relés Nostr",
+  "description": "Como adicionar métodos de criptografia ao Nostr com identificadores compactos, capacidades explícitas e limites claros para os relés.",
+  "excerpt": "Como adicionar métodos de criptografia ao Nostr com identificadores compactos, capacidades explícitas e limites claros para os relés.",
+  "date": "2026-09-12",
+  "author": {
+    "name": "Nostr WoT"
+  },
+  "tags": [
+    "Nostr",
+    "Post-Quantum",
+    "Cryptography"
+  ],
+  "published": true,
+  "translationKey": "new-encryption-same-nostr-relays",
+  "featuredImage": "/images/blog/crypto-agility/preview.png",
+  "previewImage": "/images/blog/crypto-agility/preview.png",
+  "seoTitle": "Nova criptografia, os mesmos relés Nostr",
+  "seoDescription": "Como adicionar métodos de criptografia ao Nostr com identificadores compactos, capacidades explícitas e limites claros para os relés."
+}
+---
+
+Um novo método de criptografia não deveria exigir a substituição da rede que transporta uma conversa. Duas pessoas podem atualizar os clientes enquanto o relé continua a aceitar eventos válidos, aplicar regras e entregar conteúdo cifrado.
+
+Essa é a direção dos rascunhos do Nostr WoT em [nostr-pqc/nip-drafts](https://github.com/nostr-wot/nostr-pqc/tree/main/nip-drafts). A nova explicação ilustrada mostra como acrescentar uma suíte criptográfica e escolher uma rota compatível.
+
+## Responsabilidades distintas
+
+Os participantes precisam de criptografia compatível. O relé decide o que aceita e valida. Na composição híbrida existente, a mensagem é cifrada dentro de um selo, transportado por um invólucro externo padrão. O relé verifica assinatura visível, tamanho e regras de acesso; não precisa da chave secreta do destinatário nem de compreender a criptografia interna.
+
+![Responsabilidades do remetente, relé e destinatário; diagrama em inglês](/images/blog/crypto-agility/validation-boundaries.svg)
+
+O transporte continua compatível, mas clientes antigos não passam a decifrar o novo formato. As duas pontas precisam de suporte adequado.
+
+## Dois bytes e uma especificação
+
+O envelope local já começa com um byte de versão e um de suíte. A suíte define algoritmos, chaves, combinação dos segredos, campos autenticados, preenchimento e codificação. Uma nova atribuição exige revisão e vetores de teste. Os leitores devem chegar antes da adoção pelos emissores. Nenhum campo universal é acrescentado aos eventos comuns.
+
+Alice suporta A e B; Bob apenas A. Podem escolher A se a política permitir. Se Alice exigir B, o envio para. Depois da atualização de Bob e da publicação de um vínculo autenticado entre capacidades e chaves, podem usar B pelo mesmo relé, respeitando seus limites. Uma falha não pode provocar reenvio silencioso com criptografia mais fraca.
+
+## Regras declaradas pelo relé
+
+A proposta usa NIP-11 para descrever limites, tipos de eventos admitidos e provas públicas exigidas. Um relé poderia aceitar mensagens encapsuladas e exigir assinatura híbrida apenas nas publicações públicas.
+
+O invólucro habitual tem uma chave efêmera. Exigir a prova estável do remetente do lado de fora revelaria a identidade que se procura ocultar. A confirmação do relé significa aceitação, não leitura ou decifragem pelo destinatário.
+
+## O custo em bytes
+
+No modelo reproduzível, uma mensagem de 280 bytes ocupa 2567 bytes no invólucro clássico e 5295 no híbrido. A assinatura pública proposta acrescenta 6275 bytes a um evento originalmente sem etiquetas. O preenchimento faz a diferença variar.
+
+Os dois bytes do seletor são pequenos perante o texto cifrado do KEM e as assinaturas. Grupos exigem cópias por destinatário, multiplicadas pela replicação nos relés. O cliente deve medir o evento completo antes de publicar.
+
+## O que existe e o que falta
+
+O envelope e a integração com o assinador existem. As novas políticas de relé e a autenticação pública híbrida são propostas. Ainda precisam de regras completas para rotação de chaves e referências a eventos, além de revisão independente. O invólucro externo clássico também não protege todos os metadados contra ataques quânticos.
+
+A [explicação ilustrada](https://github.com/nostr-wot/nostr-pqc/blob/main/nip-drafts/07-suite-evolution-and-relay-flows.md) detalha os fluxos. A [auditoria](https://github.com/nostr-wot/nostr-pqc/blob/main/nip-drafts/AUDIT.md) registra tamanhos, interoperabilidade e trabalho pendente.

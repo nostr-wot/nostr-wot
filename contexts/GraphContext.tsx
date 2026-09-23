@@ -7,7 +7,6 @@ import React, {
   useCallback,
   ReactNode,
   useMemo,
-  useEffect,
 } from "react";
 import {
   GraphData,
@@ -22,9 +21,8 @@ import {
   DEFAULT_STATS,
 } from "@/lib/graph/types";
 import { filterGraphData, calculateStats } from "@/lib/graph/transformers";
-import { calculateTrustScore } from "@/lib/graph/colors";
+import { mergeGraphData, applyGraphProfiles } from "@/lib/graph/merge";
 import {
-  getCachedProfile,
   cacheProfiles as cacheProfilesToStorage,
 } from "@/lib/cache/profileCache";
 
@@ -126,7 +124,7 @@ function graphReducer(state: GraphState, action: GraphAction): GraphState {
       if (profilesToCache.length > 0) {
         cacheProfilesToStorage(profilesToCache);
       }
-      return { ...state, profiles: newProfiles };
+      return { ...state, profiles: newProfiles, data: applyGraphProfiles(state.data, action.payload) };
     }
 
     case "EXPAND_NODE": {
@@ -172,80 +170,8 @@ function graphReducer(state: GraphState, action: GraphAction): GraphState {
       };
     }
 
-    case "MERGE_DATA": {
-      const existingNodeMap = new Map(state.data.nodes.map((n) => [n.id, n]));
-      const existingLinkKeys = new Set(
-        state.data.links.map((l) => `${l.source}-${l.target}`)
-      );
-
-      // Track which nodes get new incoming paths
-      const nodePathIncrements = new Map<string, number>();
-
-      // Filter new links and track path increments for existing nodes
-      const newLinks = action.payload.links.filter((l) => {
-        const key = `${l.source}-${l.target}`;
-        if (existingLinkKeys.has(key)) {
-          return false;
-        }
-        // If target node exists, increment its path count
-        const targetId = typeof l.target === "string" ? l.target : l.target.id;
-        if (existingNodeMap.has(targetId)) {
-          const current = nodePathIncrements.get(targetId) || 0;
-          nodePathIncrements.set(targetId, current + 1);
-        }
-        return true;
-      });
-
-      // Build distance correction map: nodes in payload that already exist
-      // and have a SHORTER distance than what's currently in state
-      const distanceUpdateMap = new Map<string, GraphNode>();
-      for (const node of action.payload.nodes) {
-        const existing = existingNodeMap.get(node.id);
-        if (existing && node.distance < existing.distance) {
-          distanceUpdateMap.set(node.id, node);
-        }
-      }
-
-      // Get new nodes (not already existing)
-      const newNodes = action.payload.nodes.filter(
-        (n) => !existingNodeMap.has(n.id)
-      );
-
-      // Update existing nodes: apply distance corrections AND path count increments
-      const updatedNodes = state.data.nodes.map((node) => {
-        const distUpdate = distanceUpdateMap.get(node.id);
-        const pathIncrement = nodePathIncrements.get(node.id);
-
-        let result = node;
-
-        // Apply distance correction first (shorter real distance found)
-        if (distUpdate) {
-          result = {
-            ...result,
-            distance: distUpdate.distance,
-            pathCount: distUpdate.pathCount ?? result.pathCount,
-            trustScore: distUpdate.trustScore ?? result.trustScore,
-          };
-        }
-
-        // Then apply path count increment from new incoming links
-        if (pathIncrement) {
-          const newPathCount = result.pathCount + pathIncrement;
-          const newTrustScore = calculateTrustScore(result.distance, newPathCount);
-          result = { ...result, pathCount: newPathCount, trustScore: newTrustScore };
-        }
-
-        return result;
-      });
-
-      return {
-        ...state,
-        data: {
-          nodes: [...updatedNodes, ...newNodes],
-          links: [...state.data.links, ...newLinks],
-        },
-      };
-    }
+    case "MERGE_DATA":
+      return { ...state, data: mergeGraphData(state.data, action.payload) };
 
     case "RESET_GRAPH":
       return {
@@ -375,8 +301,7 @@ export function GraphProvider({ children }: { children: ReactNode }) {
       const memProfile = state.profiles.get(pubkey);
       if (memProfile) return memProfile;
 
-      // Fall back to localStorage cache
-      return getCachedProfile(pubkey) ?? undefined;
+      return undefined;
     },
     [state.profiles]
   );

@@ -1,3 +1,4 @@
+import { useTranslations } from "next-intl";
 export function SlideCounter({
   current,
   total,
@@ -39,19 +40,20 @@ export function SlideArrows({
   onPrev: () => void;
   onNext: () => void;
 }) {
+  const u = useTranslations("ui");
   return (
     <div className="pitch-arrows">
       <button
         className="pitch-arrow-btn"
         onClick={onPrev}
-        aria-label="Previous slide"
+        aria-label={u("previousSlide")}
       >
         &larr;
       </button>
       <button
         className="pitch-arrow-btn"
         onClick={onNext}
-        aria-label="Next slide"
+        aria-label={u("nextSlide")}
       >
         &rarr;
       </button>

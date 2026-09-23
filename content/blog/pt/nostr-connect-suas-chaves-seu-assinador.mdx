@@ -1,0 +1,36 @@
+---
+featuredImage: "/images/blog/nostr-connect/featured.svg"
+previewImage: "/images/blog/nostr-connect/preview.jpg"
+ogImage: "/images/blog/nostr-connect/og.jpg"
+title: "Nostr Connect: suas chaves, seu assinador"
+description: "Use o Nostr WoT com um assinador remoto sem importar sua chave privada do Nostr para a extensão."
+excerpt: "Use o Nostr WoT com um assinador remoto sem importar sua chave privada do Nostr para a extensão."
+date: "2026-09-20"
+author: {"name": "Nostr WoT Team"}
+tags: ["Nostr Connect", "NIP-46", "Nostr WoT"]
+published: true
+translationKey: "nostr-connect-your-keys-your-signer"
+---
+
+O Nostr Connect já funciona no Nostr WoT. Você pode conectar um assinador remoto e usar sites Nostr compatíveis pela extensão sem importar sua chave privada.
+
+A extensão conecta o navegador ao assinador. Sua chave de identidade permanece no assinador, que gerencia os pedidos de assinatura e as permissões concedidas.
+
+## Como conectar
+
+1. Abra a configuração de contas da extensão e escolha **Nostr Connect**.
+2. Escaneie o código QR com um assinador compatível ou cole o link `bunker://` dele na aba Bunker.
+3. Aprove a conexão no assinador e confira sua identidade na extensão.
+4. Acesse um site Nostr compatível com extensões, conecte o Nostr WoT e gerencie os pedidos no assinador.
+
+A extensão oferece a interface de navegador NIP-07 e encaminha os pedidos pelo [NIP-46](https://github.com/nostr-protocol/nips/blob/master/46.md). Ela armazena credenciais de conexão; sua chave privada do Nostr continua no assinador.
+
+O [Amber](https://github.com/greenart7c3/Amber) oferece Nostr Connect no Android. Use a conexão NIP-46 nesse caso. Outros assinadores compatíveis podem usar o mesmo protocolo, conforme sua implementação. A interface nativa do Amber para aplicativos Android é um método separado.
+
+## Escolha onde sua chave fica
+
+Você pode usar a extensão sem confiar a ela sua chave privada. Confira as solicitações e as permissões lembradas pelo assinador: a extensão continua intermediando pedidos dos sites. O assinador precisa estar disponível para responder.
+
+A [versão 0.7.2 publicada no GitHub](https://github.com/nostr-wot/nostr-wot-extension/releases/tag/v0.7.2) inclui as correções de identidade remota da 0.7.1 e exibe nomes e imagens de perfil. Reconecte contas antigas que mostravam a identidade errada. A assinatura com Amber já foi confirmada no Nostr WoT por meio do Nostr Connect. Outros assinadores precisam de suporte compatível com NIP-46.
+
+[Baixe o Nostr WoT](/pt/download) e escolha onde manter sua chave.

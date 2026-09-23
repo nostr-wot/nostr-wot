@@ -1,5 +1,7 @@
 "use client";
 
+import { useTranslations } from "next-intl";
+
 import { useEffect, useState } from "react";
 
 interface TocItem {
@@ -13,7 +15,8 @@ interface TableOfContentsProps {
   title?: string;
 }
 
-export function TableOfContents({ items, title = "On this page" }: TableOfContentsProps) {
+export function TableOfContents({ items, title }: TableOfContentsProps) {
+  const t = useTranslations("docs");
   const [activeId, setActiveId] = useState<string>("");
 
   useEffect(() => {
@@ -56,7 +59,7 @@ export function TableOfContents({ items, title = "On this page" }: TableOfConten
   return (
     <nav className="h-full overflow-y-auto pl-4 pb-8">
       <h4 className="font-semibold text-sm uppercase tracking-wide text-gray-500 dark:text-gray-400 mb-3">
-        {title}
+        {title ?? t("sidebar.onThisPage")}
       </h4>
       <ul className="space-y-2 border-l border-gray-200 dark:border-gray-700">
         {items.map((item) => (

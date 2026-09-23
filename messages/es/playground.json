@@ -1,11 +1,7 @@
 {
   "meta": {
-    "title": "WoT Playground",
-    "description": "Prueba y explora la API de Nostr Web of Trust en tiempo real. Consulta distancias de confianza, puntuaciones y conexiones del grafo social."
-  },
-  "unavailable": {
-    "title": "Área de pruebas temporalmente no disponible",
-    "description": "El área de pruebas interactiva de la Red de Confianza se está reconstruyendo sobre nuestro backend Oracle y volverá pronto."
+    "title": "Entorno de pruebas WoT",
+    "description": "Explora los seguimientos públicos de Nostr en un grafo social interactivo. Alterna entre las vistas de grafo, lista y cronología."
   },
   "extension": {
     "connecting": "Conectando a la extensión WoT...",
@@ -22,8 +18,8 @@
   },
   "hero": {
     "badge": "Interactivo",
-    "title": "WoT Playground",
-    "subtitle": "Prueba la API de Web of Trust en tiempo real. Consulta distancias, puntuaciones de confianza y explora tu grafo social.",
+    "title": "Entorno de pruebas WoT",
+    "subtitle": "Explora los seguimientos públicos de Nostr y descubre conexiones en 2D y 3D.",
     "loginButton": "Iniciar sesión con Nostr",
     "logout": "Cerrar sesión"
   },
@@ -112,12 +108,12 @@
     "maxDistance": "Dist Máx",
     "mutuals": "Mutuos",
     "loading": "Cargando...",
-    "loadingGraph": "Cargando tu grafo social...",
+    "loadingGraph": "Cargando el grafo social...",
     "errorTitle": "Error",
     "viewGraph": "Grafo",
     "viewList": "Lista",
     "viewTimeline": "Línea de Tiempo",
-    "you": "Tú",
+    "you": "Raíz",
     "mutual": "Mutuo",
     "copyNpub": "Copiar npub",
     "copied": "¡Copiado!",
@@ -138,10 +134,10 @@
     "colName": "Nombre",
     "colTrust": "Confianza",
     "colDistance": "Distancia",
-    "colPaths": "Paths",
+    "colPaths": "Rutas",
     "colStatus": "Estado",
     "noNodes": "No hay nodos para mostrar",
-    "timelineYou": "Tú",
+    "timelineYou": "Raíz",
     "timelineDirectFollows": "Seguidos Directos",
     "timelineHops": "A {count} Saltos",
     "trustCalculator": "Calculadora de Confianza",
@@ -155,7 +151,7 @@
     "exportCSV": "Exportar como CSV",
     "copyLink": "Copiar Enlace",
     "clickToExplore": "Haz clic para explorar",
-    "clickToExploreDesc": "Haz clic en ti para cargar tus seguidos",
+    "clickToExploreDesc": "Haz clic en el perfil raíz para cargar sus seguimientos",
     "cacheSynced": "Sincronizado",
     "cacheNotSynced": "No sincronizado",
     "cacheJustNow": "justo ahora",
@@ -164,7 +160,21 @@
     "close": "Cerrar",
     "viewMore": "Ver más",
     "copyPubkey": "Copiar pubkey",
-    "cacheRefresh": "Actualizar caché de confianza"
+    "cacheRefresh": "Actualizar caché de confianza",
+    "resetGraph": "Restablecer grafo",
+    "retry": "Reintentar",
+    "loadMoreFollows": "Cargar más seguimientos",
+    "emptyFollows": "Esta lista pública de seguimientos está vacía.",
+    "nodeLimit": "Se muestran {count} personas. Contrae una rama para explorar más.",
+    "sourceHint": "Conexiones de seguimiento públicas. Las puntuaciones reflejan la distancia de seguimiento y las rutas compartidas.",
+    "legendTitle": "Leyenda",
+    "legendRoot": "Raíz",
+    "legendHops": "{count} saltos",
+    "legendHigh": "Alta",
+    "legendMedium": "Media",
+    "legendLow": "Baja",
+    "localSourceHint": "Seguimientos públicos guardados en este navegador. Las puntuaciones usan el grafo recopilado localmente.",
+    "extensionSourceHint": "Grafo y puntuaciones proporcionados por tu extensión."
   },
   "contextMenu": {
     "expandFollows": "Expandir seguidos",
@@ -173,5 +183,75 @@
     "maxDepthReached": "Profundidad máxima alcanzada",
     "viewProfile": "Ver perfil",
     "copyNpub": "Copiar npub"
+  },
+  "entry": {
+    "label": "Clave pública de Nostr",
+    "placeholder": "npub o clave pública hexadecimal de 64 caracteres",
+    "explore": "Explorar",
+    "useIdentity": "Usar mi identidad",
+    "help": "Conecta tu extensión o introduce un npub/hex para crear un grafo en este navegador.",
+    "invalid": "Introduce un npub válido o una clave pública hexadecimal de 64 caracteres. No se aceptan claves secretas.",
+    "emptyTitle": "Explora un grafo social",
+    "emptyDescription": "Empieza con una clave pública y expande los perfiles para descubrir sus seguimientos y conexiones.",
+    "connectExtension": "Conectar extensión",
+    "connecting": "Conectando…",
+    "extensionMissing": "No se encontró una extensión de Nostr. Instala o activa una, o introduce una clave pública.",
+    "extensionFailed": "La conexión falló o fue rechazada. Inténtalo de nuevo o introduce una clave pública."
+  },
+  "saved": {
+    "title": "Grafos guardados ({count})",
+    "description": "Los grafos creados aquí se guardan en este navegador. Las bases de datos de la extensión se gestionan en la extensión.",
+    "empty": "Aún no hay grafos locales guardados.",
+    "deleteSelected": "Eliminar seleccionados",
+    "deleteAll": "Eliminar todos",
+    "delete": "Eliminar",
+    "select": "Seleccionar {key}",
+    "confirmDelete": "¿Eliminar {count} grafos guardados? Puedes reconstruirlos desde los relays.",
+    "unavailable": "El almacenamiento no está disponible en este navegador.",
+    "deleteFailed": "No se pudo eliminar el grafo.",
+    "never": "Nunca",
+    "counts": "{nodes} personas · {edges} seguimientos",
+    "created": "Creado: {date}",
+    "lastSync": "Última sincronización: {date}",
+    "lastAttempt": "Último intento: {date}",
+    "status": {
+      "new": "Sin sincronizar",
+      "syncing": "Sincronizando",
+      "ready": "Guardado",
+      "stopped": "Detenido",
+      "error": "Error de sincronización",
+      "partial": "Sincronización parcial"
+    }
+  },
+  "sync": {
+    "local": "Grafo local",
+    "extension": "Grafo de la extensión",
+    "lastSync": "Última sincronización: {date}",
+    "never": "Nunca",
+    "depth": "Profundidad",
+    "hops": "{count, plural, one {# salto} other {# saltos}}",
+    "refresh": "Sincronizar ahora",
+    "reloadExtension": "Recargar desde la extensión",
+    "stop": "Detener",
+    "progress": "{count} listas obtenidas · profundidad {depth}",
+    "extensionHelp": "Sincroniza y gestiona este grafo en la extensión."
+  },
+  "sourceErrors": {
+    "storageUnavailable": "El almacenamiento local del grafo no está disponible en este navegador.",
+    "noFollows": "No se recibió ninguna lista de seguimiento de los relés. Tu grafo guardado se ha conservado; vuelve a intentar la sincronización.",
+    "extensionEnable": "Activa Web of Trust en tu extensión, selecciona el modo local y sincroniza primero su grafo.",
+    "extensionLocal": "Selecciona el modo local y sincroniza primero el grafo en tu extensión.",
+    "accountChanged": "La cuenta de la extensión ha cambiado. Conéctate de nuevo para cargar su grafo.",
+    "invalidKey": "Clave pública no válida. Comprueba la clave y conéctate de nuevo.",
+    "invalidDepth": "Profundidad de sincronización no válida. Elige una profundidad de 1 a 3.",
+    "extensionFollows": "La extensión devolvió una lista de seguimiento no válida. Sincroniza su grafo e inténtalo de nuevo.",
+    "extensionMetrics": "La extensión devolvió métricas del grafo no válidas. Sincroniza su grafo e inténtalo de nuevo.",
+    "invalidRequest": "La solicitud del grafo no es válida. Comprueba la clave pública y los ajustes de sincronización.",
+    "invalidResponse": "El Oracle devolvió una respuesta del grafo no válida. Inténtalo más tarde.",
+    "incompleteResponse": "El Oracle devolvió una respuesta del grafo incompleta. Inténtalo más tarde.",
+    "loadFailed": "No se pudieron cargar los seguimientos públicos. Comprueba tu conexión e inténtalo de nuevo.",
+    "syncFailed": "La sincronización del grafo falló. Comprueba tu conexión e inténtalo de nuevo.",
+    "openAnotherTab": "Este grafo está abierto en otra pestaña. Ciérralo allí e inténtalo de nuevo.",
+    "oracleRequest": "La solicitud al Oracle falló (HTTP {status}). Inténtalo más tarde."
   }
 }

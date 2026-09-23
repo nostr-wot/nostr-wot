@@ -1,3 +1,4 @@
+import { getTranslations } from "next-intl/server";
 import { ImageResponse } from "next/og";
 import { getGuide } from "@/lib/guides";
 import { type Locale } from "@/i18n/config";
@@ -12,6 +13,8 @@ type Props = {
 
 export default async function OgImage({ params }: Props) {
   const { locale, slug } = await params;
+  const u = await getTranslations({ locale, namespace: "ui" });
+  const t = await getTranslations({ locale, namespace: "guides" });
   const guide = getGuide(slug, locale as Locale);
   const title = guide?.title || "Nostr WoT Guide";
   const difficulty = guide?.difficulty || "beginner";
@@ -85,7 +88,7 @@ export default async function OgImage({ params }: Props) {
               fontWeight: 700,
             }}
           >
-            Guide
+            {u("guide")}
           </div>
           <div
             style={{
@@ -106,7 +109,7 @@ export default async function OgImage({ params }: Props) {
               fontWeight: 700,
             }}
           >
-            {difficulty}
+            {t(`difficulty.${difficulty}`)}
           </div>
         </div>
 

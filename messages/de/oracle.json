@@ -1,27 +1,27 @@
 {
   "meta": {
     "title": "WoT Oracle",
-    "description": "Hochleistungs-Backend-API für Nostr Web of Trust Abfragen. Indizieren Sie den Follow-Graphen und fragen Sie soziale Distanzen im grossen Massstab ab."
+    "description": "Selbst hostbare Nostr-API für gerichtete Follow-Distanzen und separate öffentliche Stummschaltungsdaten. Oracle v0.3.0."
   },
   "hero": {
     "badge": "Backend-API",
     "title": "WoT Oracle",
-    "subtitle": "Hochleistungs-Indexer für den Nostr-Follow-Graphen. Sub-Millisekunden-Abfragen, die beantworten: \"Wie viele Hops trennen diese beiden Benutzer?\"",
+    "subtitle": "Frage gerichtete Follow-Distanzen und öffentliche Stummschaltungsdaten per HTTP ab. Version 0.3.0, ohne Erweiterung.",
     "viewOnGitHub": "Auf GitHub ansehen",
     "apiDocs": "API-Dokumentation"
   },
   "whatItDoes": {
     "title": "Was es macht",
-    "description": "WoT Oracle synchronisiert kontinuierlich Follow-Listen (Kind-3-Events) von Nostr-Relays und erstellt einen In-Memory-Graphen des gesamten sozialen Netzwerks. Es stellt dann eine REST-API zur Abfrage der sozialen Distanz zwischen beliebigen pubkeys bereit.",
+    "description": "Das Oracle indexiert Kind-3-Follows und öffentliche Schlüssel aus Kind-10000-Stummschaltungslisten der konfigurierten Relays. Die Abdeckung beschränkt sich auf diese Ereignisse. Distanz und Stummschaltungen bleiben getrennte Signale; die API kombiniert sie nicht zu einem Vertrauenswert.",
     "example": "Beispiel:",
     "exampleText": "Wenn Alice Bob folgt und Bob Carol folgt, dann beträgt die Distanz von Alice zu Carol 2 Hops."
   },
   "performance": {
-    "title": "Leistung",
-    "cachedLatency": "Gecachte Abfragelatenz",
-    "uncachedLatency": "Ungecachte Abfragelatenz",
-    "queriesPerSecond": "Abfragen pro Sekunde",
-    "bidirectionalBfs": "Bidirektionale BFS"
+    "title": "Funktionen der Version",
+    "release": "Version",
+    "maxHops": "Maximale Suchtiefe (Hops)",
+    "batchTargets": "Ziele pro Stapel",
+    "eventKinds": "Indexierte Ereignistypen"
   },
   "apiEndpoints": {
     "title": "API-Endpunkte",
@@ -41,19 +41,20 @@
     },
     "health": {
       "title": "GET /health",
-      "description": "Health-Check-Endpunkt zur Überwachung."
-    }
+      "description": "Prozessstatus und Version. Prüfe die Aufnahmebereitschaft mit /ready."
+    },
+    "subtitle": "Beispielantworten mit synthetischen öffentlichen Schlüsseln aus 64 Hexadezimalzeichen. Ergebnisse hängen von den indexierten Ereignissen ab. Alle Endpunkte, einschließlich /mutes, /trust und /ready, stehen in der API-Referenz."
   },
   "selfHosting": {
-    "title": "Self-Hosting",
-    "subtitle": "Betreiben Sie Ihre eigene WoT Oracle Instanz. Volle Kontrolle über Ihre Vertrauensinfrastruktur.",
+    "title": "Selbst hosten",
+    "subtitle": "Die Beispiele nutzen v0.3.0. Docker und Compose veröffentlichen auf localhost:8080. Öffentliche Installationen benötigen einen Reverse-Proxy, der Client-IP-Header ersetzt. Native Builds benötigen Rust 1.93, pkg-config und OpenSSL-Entwicklungsbibliotheken.",
     "docker": "Docker (Empfohlen)",
     "dockerCompose": "Docker Compose",
-    "fromSource": "Aus dem Quellcode (Rust 1.75+)"
+    "fromSource": "Aus dem Quellcode (Rust 1.93)"
   },
   "configuration": {
     "title": "Konfiguration",
-    "subtitle": "Konfiguration über Umgebungsvariablen:",
+    "subtitle": "Die Werte unten sind Standardwerte des nativen Programms. Das Docker-Image nutzt /app/data/wot.db; Compose veröffentlicht standardmäßig nur lokal. Der Cache erlaubt 100–100000 Einträge, die TTL 10–3600 Sekunden und das Limit 1–1000 Anfragen/Minute.",
     "table": {
       "variable": "Variable",
       "default": "Standard",
@@ -72,7 +73,7 @@
       "description": "Abfragedrosselung pro IP"
     },
     "cacheSize": {
-      "description": "LRU-Cache-Einträge"
+      "description": "Maximale Einträge im Moka-Abfragecache"
     },
     "cacheTtl": {
       "description": "Cache-Ablaufzeit (5 Min.)"
@@ -86,24 +87,24 @@
     },
     "pathfinding": {
       "title": "Pfadfindung",
-      "description": "Bidirektionale Breitensuche (BFS) von beiden Endpunkten gleichzeitig, die sich in der Mitte treffen, für O(b^(d/2))-Komplexität."
+      "description": "Die bidirektionale Breitensuche berechnet kürzeste gerichtete Follow-Pfade. Die Laufzeit hängt von Graphgröße, Verzweigung und Suchtiefe ab."
     },
     "caching": {
-      "title": "Caching",
-      "description": "LRU-Cache mit konfigurierbarer Grösse und TTL. Die meisten Abfragen treffen den Cache für Sub-Millisekunden-Antwortzeiten."
+      "title": "Zwischenspeicherung",
+      "description": "Moka-Abfragecache mit konfigurierbarer Kapazität und TTL. Einträge werden bei einer neuen Graphrevision ungültig. Die Latenz hängt von Installation und Last ab."
     },
     "rateLimiting": {
-      "title": "Rate Limiting",
+      "title": "Anfragebegrenzung",
       "description": "Pro-IP-Rate-Limiting schützt den Dienst vor Missbrauch. Konfigurierbare Limits für verschiedene Einsatzszenarien."
     }
   },
   "publicInstance": {
     "title": "Öffentliche Instanz",
     "subtitle": "Eine öffentliche Instanz ist für Entwicklung und Tests verfügbar:",
-    "rateLimit": "Begrenzt auf 100 Anfragen/Minute pro IP. Für den Produktiveinsatz empfehlen wir Self-Hosting."
+    "rateLimit": "Limits hängen von der Installation ab. Wiederhole HTTP-429-Anfragen mit zunehmender Wartezeit. Ausgelastete Graphabfragen liefern 503; /health und /ready liegen außerhalb des Datenendpunkt-Limiters."
   },
   "cta": {
-    "title": "Open Source",
+    "title": "Quelloffen",
     "subtitle": "Geschrieben in Rust. MIT-lizenziert. Hosten Sie es selbst für Ihre Community oder tragen Sie Verbesserungen bei.",
     "viewSource": "Quellcode auf GitHub ansehen",
     "learnExtension": "Mehr über die WoT Extension erfahren →"

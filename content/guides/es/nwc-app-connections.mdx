@@ -1,0 +1,56 @@
+---
+title: "Conecta aplicaciones a tu cartera Nostr WoT con NWC"
+description: "Crea conexiones NWC independientes para tu cartera LNbits, define límites diarios y vencimiento y gestiona el acceso desde Nostr WoT 0.8.3."
+excerpt: "Crea conexiones NWC independientes para tu cartera LNbits, define límites diarios y vencimiento y gestiona el acceso desde Nostr WoT 0.8.3."
+date: "2026-09-23"
+author:
+  name: "Leon Acosta"
+  avatar: "/authors/leon-profile.jpg"
+  npub: "npub1gxdhmu9swqduwhr6zptjy4ya693zp3ql28nemy4hd97kuufyrqdqwe5zfk"
+featuredImage: "/images/guides/lnbits-wallet-setup/featured.jpg"
+previewImage: "/images/guides/lnbits-wallet-setup/preview.jpg"
+ogImage: "/images/guides/lnbits-wallet-setup/og.jpg"
+tags:
+  - "Lightning"
+  - "LNbits"
+  - "NWC"
+  - "API"
+published: true
+translationKey: "nwc-app-connections"
+difficulty: "beginner"
+order: 17
+---
+
+Nostr WoT Extension **0.8.3** permite conectar una cartera LNbits de Nostr WoT existente a aplicaciones compatibles con NWC. Crea una conexión por aplicación y gestiónalas en **Cartera → Ajustes → Conexiones de aplicaciones**. Todas usan el saldo de la misma cartera.
+
+## Antes de empezar
+
+Instala o actualiza a la [versión 0.8.3 desde GitHub](https://github.com/nostr-wot/nostr-wot-extension/releases/tag/v0.8.3). La publicación en las tiendas de navegadores es independiente. Desbloquea la extensión y conecta tu cartera LNbits de Nostr WoT. Si necesitas configurarla, consulta la [guía de LNbits](/guides/lnbits-wallet-setup).
+
+Esta pantalla corresponde a carteras LNbits. Un servidor personalizado necesita el [adaptador de gestión de conexiones](https://github.com/nostr-wot/LNbits-proxy); instalar solamente el proveedor NWC no proporciona la API de esta pantalla.
+
+## Crea una conexión
+
+1. Abre **Cartera → Ajustes → Conexiones de aplicaciones** y elige crear una conexión nueva.
+2. Escribe un nombre reconocible, como **Primal**. Usa una conexión distinta para cada aplicación.
+3. Define un límite positivo en sats por cada 24 horas y un vencimiento de entre 1 y 365 días. El formulario comienza con **1.000 sats** y **30 días**; ajústalos a tu uso.
+4. Crea la conexión. Copia la cadena completa `nostr+walletconnect://` o muestra su código QR.
+5. En la aplicación de destino, abre la opción NWC o de cartera externa, pega la cadena o escanea el QR y confirma. En Primal, usa su opción NWC cuando esté disponible en tu versión.
+
+La conexión permite pagos, consulta de pagos e información de la cartera. **No** permite consultar el saldo o el historial ni crear facturas. Una aplicación que requiera esos métodos puede ofrecer funciones limitadas.
+
+<Callout type="warning">
+La cadena y el QR autorizan gastos dentro de los límites de la conexión. Compártelos únicamente con la aplicación que deseas conectar. Estos pagos no requieren una aprobación adicional en la extensión.
+</Callout>
+
+## Revisa o revoca el acceso
+
+Vuelve a **Conexiones de aplicaciones** para ver conexiones activas, consumo del límite y vencimiento. Puedes volver a mostrar una conexión guardada localmente o revocarla tras confirmar. Los límites son por conexión; varias conexiones pueden gastar del mismo saldo.
+
+Bloquear o desconectar la extensión no revoca una conexión. Revócala aquí para detener su acceso. Desconectar o eliminar una cartera borra los secretos locales; conserva el acceso a esa cartera para gestionar sus permisos posteriormente. Las conexiones creadas en otro dispositivo se pueden listar y revocar, pero no reconstruir para copiarlas.
+
+## Si algo falla
+
+Actualiza la lista después de una creación interrumpida antes de crear otra conexión. Revisa el saldo, el límite, el vencimiento, la conexión al relay y los métodos que necesita la aplicación. Si no está claro el resultado de un pago, consulta el historial antes de intentarlo otra vez.
+
+Consulta los [cambios y descargas de 0.8.3](https://github.com/nostr-wot/nostr-wot-extension/releases/tag/v0.8.3). Puedes usar tu cartera LNbits existente sin crear otra.

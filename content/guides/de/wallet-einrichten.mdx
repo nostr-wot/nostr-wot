@@ -1,7 +1,7 @@
 ---
 title: "Ihr Wallet einrichten"
-description: "Verbinden Sie ein Lightning-Wallet mit der Nostr WoT Extension. Wählen Sie die Schnelleinrichtung für sofortigen Zugang, NWC für Ihr bestehendes Wallet oder LNbits für volle Kontrolle."
-excerpt: "Die Erweiterung unterstützt drei Wallet-Optionen: Schnelleinrichtung, Nostr Wallet Connect und LNbits. Wählen Sie die Option, die zu Ihren Bedürfnissen passt."
+description: "Verbinde eine Lightning-Wallet mit Nostr WoT. Vergleiche Schnelleinrichtung, NWC und LNbits-API mit unseren Anleitungen für Alby Hub und LNbits."
+excerpt: "Die Extension bietet Schnelleinrichtung, Nostr Wallet Connect und LNbits-API-Zugriff. Wähle die Verbindung, die zu deiner Wallet passt."
 date: "2026-03-11"
 author:
   name: "Leon Acosta"
@@ -15,86 +15,65 @@ tags:
   - "NWC"
 published: true
 seoTitle: "Ihr Wallet einrichten — Nostr WoT Extension Anleitung"
-seoDescription: "Verbinden Sie ein Lightning-Wallet mit der Nostr WoT Extension. Wählen Sie die Schnelleinrichtung für sofortigen Zugang, NWC für Ihr bestehendes Wallet oder LNbits für volle Kontrolle."
+seoDescription: "Verbinde eine Lightning-Wallet mit Nostr WoT. Vergleiche Schnelleinrichtung, NWC und LNbits-API mit unseren Anleitungen für Alby Hub und LNbits."
 ogImage: "/images/guides/setting-up-wallet/og.jpg"
 translationKey: "setting-up-wallet"
 difficulty: "beginner"
 order: 5
 ---
 
-Die Erweiterung enthält ein integriertes Lightning-Wallet, damit Sie Sats senden und empfangen können, ohne Ihren Browser zu verlassen. Diese Anleitung behandelt alle drei Verbindungsmethoden: Schnelleinrichtung für den sofortigen Start, NWC zum Verbinden Ihres bestehenden Wallets und LNbits für selbst gehostete Setups.
+Mit der Nostr WoT Extension verbinden Sie ein Lightning-Wallet, um im Browser Ihren Kontostand abzurufen, Sats zu empfangen und Zahlungen zu bestätigen. Öffnen Sie die Erweiterung und wählen Sie unter **Wallet** zwischen **Schnelleinrichtung**, **NWC** und **LNbits**.
 
-## Zugang zur Wallet-Einrichtung
+Wenn Sie bereits Alby Hub nutzen, bieten dessen App-Verbindungen einen einfachen Einstieg. Bei einem vorhandenen LNbits-Wallet benötigt der direkte API-Zugang weniger Einrichtungsschritte; NWC ermöglicht eigene Berechtigungen und Budgets je Verbindung. Wer Ihre Mittel verwahrt, hängt vom Wallet und dessen Betreiber ab, nicht von der Verbindungsmethode.
 
-1. Klicken Sie auf das Erweiterungssymbol in Ihrer Symbolleiste.
-2. Navigieren Sie zum **Wallet**-Tab.
-3. Wenn kein Wallet verbunden ist, sehen Sie den Einrichtungsbildschirm mit drei Optionen.
-
-{/* TODO: Screenshot of the wallet setup screen showing the three connection options */}
+Die einzelnen Schritte findest du in unserer [Alby-Hub-Anleitung](/guides/alby-hub-nwc) und unserer [LNbits-Anleitung](/guides/lnbits-wallet-setup).
 
 ## Schnelleinrichtung
 
-Dies ist der schnellste Weg zu einem funktionierenden Wallet. Ein Klick und Sie sind bereit zu zappen.
+Wählen Sie **Schnelleinrichtung**, um beim eingestellten Anbieter ein verwahrtes Wallet anzulegen. Nach erfolgreicher Erstellung können Sie unter **Einzahlen** eine Lightning-Rechnung erzeugen. Der Anbieter verwahrt die Mittel. Auch NWC und LNbits bedeuten nicht automatisch Selbstverwahrung.
 
-1. Klicken Sie auf **Schnelleinrichtung** auf dem Wallet-Konfigurationsbildschirm.
-2. Die Erweiterung erstellt ein kustodiales Wallet, das mit Ihrer Nostr-Identität verknüpft ist. Keine Registrierung, keine Formulare, keine zusätzlichen Konten.
-3. Ihr Wallet ist bereit. Sie sehen Ihren Kontostand (anfangs bei null) und Optionen zum Einzahlen und Senden.
+<a id="alby-hub" className="block scroll-mt-32" />
 
-{/* TODO: Screenshot of the Quick Setup button and the resulting wallet view */}
+## Alby Hub über NWC
 
-<Callout type="tip">
-Die Schnelleinrichtung erstellt ein kustodiales Wallet, was bedeutet, dass die Mittel vom Anbieter verwahrt werden. Dies ist bequem für kleine Beträge und gelegentliches Zapping. Für größere Beträge sollten Sie NWC oder LNbits für selbstverwahrte Kontrolle in Betracht ziehen.
-</Callout>
+Voraussetzung ist ein betriebsbereiter Alby Hub mit Lightning-Wallet.
 
-### Sats einzahlen
+1. Öffnen Sie in Alby Hub **Connections → Add Connection**.
+2. Erstellen Sie eine eigene Verbindung namens **Nostr WoT**. Legen Sie Berechtigungen, ein Ausgabenbudget und bei Bedarf ein Ablaufdatum fest.
+3. Erlauben Sie Wallet-Informationen (`get_info`) zur Verbindungsprüfung. Ergänzen Sie nach Bedarf Kontostand, Zahlungen, Rechnungserstellung, Rechnungsabfrage und Transaktionsverlauf. Diese Berechtigungen bestimmen die verfügbaren Funktionen.
+4. Kopieren Sie das vollständige Verbindungsgeheimnis, das mit `nostr+walletconnect://` beginnt.
+5. Wählen Sie in der Erweiterung **NWC**, fügen Sie es ein und klicken Sie auf **Verbinden**.
 
-Nach der Schnelleinrichtung tippen Sie auf **Einzahlen**, um eine Lightning-Rechnung oder einen QR-Code zu erhalten. Senden Sie Sats von einem beliebigen Lightning-Wallet und Ihr Kontostand aktualisiert sich innerhalb von Sekunden.
+Bewahren Sie dieses Geheimnis vertraulich auf: Es kann Zahlungen erlauben. In Alby Hub können Sie die Verbindung ändern oder widerrufen. Weitere Schritte erklärt die [offizielle Alby-Hub-Anleitung](https://guides.getalby.com/user-guide/alby-hub/app-connections).
 
-## Nostr Wallet Connect (NWC)
+<a id="lnbits-nwc" className="block scroll-mt-32" />
 
-Wenn Sie bereits ein Lightning-Wallet besitzen, das NWC unterstützt — wie Alby, Mutiny oder ein anderer NWC-kompatibler Anbieter — können Sie es mit der Erweiterung verbinden.
+## LNbits über NWC
 
-1. Generieren Sie in Ihrem Wallet-Anbieter einen NWC-Verbindungsstring. Diesen finden Sie normalerweise in den Wallet-Einstellungen unter „Nostr Wallet Connect" oder „Verbindungen".
-2. Kopieren Sie den Verbindungsstring. Er beginnt mit `nostr+walletconnect://`.
-3. Klicken Sie in der Erweiterung auf **NWC** auf dem Wallet-Einrichtungsbildschirm.
-4. Fügen Sie den Verbindungsstring ein und klicken Sie auf **Verbinden**.
-5. Die Erweiterung überprüft die Verbindung und zeigt Ihren Kontostand an.
+1. Bitten Sie den Administrator der Instanz, **NWC Service Provider** zu installieren und unter `/nwcprovider/admin` einen Relay einzurichten.
+2. Öffnen Sie diese Erweiterung in LNbits, wählen Sie Ihr Wallet und legen Sie mit **+** eine Verbindung an.
+3. Aktivieren Sie Wallet-Informationen und die benötigten Funktionen. Legen Sie, sofern verfügbar, Budget und Ablaufdatum fest.
+4. Erstellen Sie die Verbindung und kopieren Sie die Kopplungs-URL.
+5. Fügen Sie diese im Tab **NWC** der Nostr WoT Extension ein und verbinden Sie das Wallet.
 
-{/* TODO: Screenshot of the NWC connection string input field */}
+Eine LNbits-Anmeldung allein erzeugt keine NWC-Verbindung. Die [offizielle Anleitung](https://docs.lnbits.com/extensions/nwcprovider/) beschreibt sowohl die Relay-Konfiguration als auch das Verbindungsformular.
 
-Mit NWC bleiben Ihre Mittel in Ihrem bestehenden Wallet. Die Erweiterung sendet lediglich Zahlungsanfragen an es. Sie behalten die volle Kontrolle über Ihre Sats.
+<a id="lnbits-api" className="block scroll-mt-32" />
 
-Jedes Wallet, das das NWC-Protokoll implementiert, funktioniert, einschließlich Alby, Mutiny und andere. Das Protokoll ist offen und die Liste kompatibler Wallets wächst stetig.
+## LNbits über die API
 
-## LNbits
+1. Öffnen Sie in LNbits das gewünschte Wallet und dessen Bereich **API info** beziehungsweise die API-Dokumentation.
+2. Kopieren Sie den **Admin API key** dieses Wallets.
+3. Tragen Sie im Tab **LNbits** der Erweiterung die HTTPS-URL der Instanz und diesen Schlüssel ein. Klicken Sie auf **Verbinden**.
 
-Für alle, die ihre eigene Lightning-Infrastruktur betreiben, verbindet sich die Erweiterung direkt mit einer LNbits-Instanz.
+Der Admin-API-Schlüssel gehört zum Wallet und ist **nicht das Passwort Ihres Administratorzugangs**. Er erlaubt ausgehende Zahlungen. Der Invoice-/Leseschlüssel kann keine Mittel versenden und ersetzt diesen Schlüssel nicht, wenn Sie alle Wallet-Funktionen nutzen möchten. Die [LNbits-Dokumentation zeigt den Fundort](https://docs.lnbits.com/api/authentication#finding-your-keys). Eine NWC-Kopplungs-URL gehört in den Tab **NWC**, nicht ins API-Schlüsselfeld.
 
-1. Klicken Sie auf **LNbits** auf dem Wallet-Einrichtungsbildschirm.
-2. Geben Sie die URL Ihrer LNbits-Instanz ein (z. B. `https://ihre-lnbits-instanz.com`).
-3. Geben Sie Ihren Wallet-Admin-Schlüssel oder Rechnungs-/Leseschlüssel ein, je nach gewünschter Zugriffsstufe.
-4. Klicken Sie auf **Verbinden**.
+## Weitere Wallets und Verbindungsprüfung
 
-{/* TODO: Screenshot of the LNbits configuration fields */}
+Bei YakiHonne können Sie ein NWC-Geheimnis kopieren oder exportieren, sofern Ihr Wallet diese Funktion anbietet. Andere NWC-Anbieter nutzen denselben Verbindungsablauf; verfügbare Funktionen hängen von Umsetzung und Berechtigungen ab.
 
-<Callout type="tip">
-Verwenden Sie einen Rechnungs-/Leseschlüssel, wenn Sie nur empfangen und den Kontostand prüfen möchten. Verwenden Sie den Admin-Schlüssel, wenn Sie auch Zahlungen aus der Erweiterung senden möchten. Beschränken Sie die Berechtigungen auf das, was Sie tatsächlich benötigen.
-</Callout>
+Das übliche Nostr-Plugin von BTCPay Server verbindet sich **mit** einem externen NWC-Wallet. Es erstellt selbst kein Verbindungsgeheimnis für diese Erweiterung. Verwenden Sie eine eigene Verbindung des tatsächlichen Wallets oder seiner NWC-Brücke. Siehe [BTCPays Lightning-Optionen](https://docs.btcpayserver.org/LightningNetwork/).
 
-## Ihren Kontostand prüfen
+Prüfen Sie nach der Verbindung Kontostand und Verlauf. Bei Problemen kontrollieren Sie Berechtigungen, Ablaufdatum und Erreichbarkeit. Ist der Zahlungsausgang unklar, prüfen Sie den Verlauf vor einem erneuten Versuch. Zum Wallet-Wechsel trennen Sie die Verbindung in den Wallet-Einstellungen.
 
-Sobald verbunden, erscheint Ihr Wallet-Kontostand oben im Wallet-Tab. Er aktualisiert sich automatisch. Sie können außerdem sehen:
-
-- **Letzte Transaktionen** — ein scrollbarer Verlauf von Sende- und Empfangsvorgängen.
-- **Einzahlen** — eine Rechnung zum Empfangen von Sats generieren.
-- **Senden** — eine Lightning-Rechnung einfügen, um sie zu bezahlen.
-
-{/* TODO: Screenshot of the wallet balance view with transaction history */}
-
-## Wallet-Anbieter wechseln
-
-Sie können Ihre Wallet-Verbindung jederzeit ändern. Gehen Sie zum Wallet-Tab, öffnen Sie **Einstellungen** und klicken Sie auf **Anbieter wechseln**. Dadurch wird das aktuelle Wallet getrennt und Sie kehren zum Einrichtungsbildschirm zurück. Ihre Identitäts- und Vertrauenseinstellungen sind davon nicht betroffen.
-
-## Wie geht es weiter?
-
-Nachdem Ihr Wallet verbunden ist, erfahren Sie, wie Sie [zappen und Auto-Genehmigungs-Schwellenwerte einrichten](/guides/zaps-und-automatische-genehmigung). Sie können auch [Ihre Lightning-Adresse beanspruchen](/guides/lightning-adresse), wenn Sie die Schnelleinrichtung verwendet haben.
+Lesen Sie anschließend mehr über [Zaps und automatische Genehmigungen](/guides/zaps-und-automatische-genehmigung) oder [Lightning-Adressen](/guides/lightning-adresse).

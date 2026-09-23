@@ -78,13 +78,14 @@ function WotLogo({ className }: { className?: string }) {
 
 export default async function MediaKitPage() {
   const t = await getTranslations("mediaKit");
+  const u = await getTranslations("ui");
 
   // JSON-LD structured data
   const jsonLd = {
     "@context": "https://schema.org",
     "@type": "WebPage",
-    "name": "Media Kit - Nostr Web of Trust",
-    "description": "Brand assets, logos, and guidelines for Nostr Web of Trust. Download official logos and learn about our brand identity.",
+    "name": t("meta.title"),
+    "description": t("meta.description"),
     "url": "https://nostr-wot.com/media-kit",
     "publisher": {
       "@type": "Organization",
@@ -259,7 +260,7 @@ export default async function MediaKitPage() {
               <p className="text-lg text-gray-600 dark:text-gray-300 mb-2">
                 {t("typography.bodyExample")}
               </p>
-              <code className="text-sm text-gray-500">Font weight: 400 | Line height: 1.6</code>
+              <code className="text-sm text-gray-500">{u("fontMetrics")}</code>
             </div>
             <div className="bg-white dark:bg-gray-800 rounded-xl p-6 border border-gray-200 dark:border-gray-700">
               <span className="text-sm text-gray-500 dark:text-gray-400 block mb-2">{t("typography.code")}</span>

@@ -1,0 +1,56 @@
+---
+title: "Name your Nostr identities and choose a custom path"
+description: "Use optional identity names, advanced derivation paths and public-key previews in Nostr WoT. Learn what to keep for recovery."
+excerpt: "Use optional identity names, advanced derivation paths and public-key previews in Nostr WoT. Learn what to keep for recovery."
+date: "2026-09-11"
+author: {"name": "Leon Acosta", "avatar": "/authors/leon-profile.jpg", "npub": "npub1gxdhmu9swqduwhr6zptjy4ya693zp3ql28nemy4hd97kuufyrqdqwe5zfk"}
+featuredImage: "/images/guides/custom-identity-paths/en.png"
+previewImage: "/images/guides/custom-identity-paths/en.png"
+tags: ["Nostr", "NIP-06", "BIP-32"]
+published: true
+seoTitle: "Name your Nostr identities and choose a custom path"
+seoDescription: "Use optional identity names, advanced derivation paths and public-key previews in Nostr WoT. Learn what to keep for recovery."
+ogImage: "/images/guides/custom-identity-paths/en.png"
+translationKey: "custom-identity-paths"
+difficulty: "advanced"
+order: 2.6
+---
+
+A work identity, a project identity and a testing identity do not have to look identical in your account list. Nostr WoT lets you give a new seed-derived identity a useful local name and, under **Advanced**, choose the derivation path yourself. Leave the path alone if the automatic choice suits you.
+
+## Which version includes this?
+
+This guide describes extension **0.7.0**, available as a downloadable [GitHub release](https://github.com/nostr-wot/nostr-wot-extension/releases/tag/v0.7.0). Chrome and Firefox store approval of this version was not confirmed when this guide was prepared. Check your installed version before looking for these controls.
+
+## A name and a path do different jobs
+
+| Setting | What it changes |
+|---|---|
+| Account name | A local label that helps you recognize the identity. It is optional and does not change the key or publish a profile name. |
+| Derivation path | The route used to derive a key from your existing seed. A different path normally produces a different identity. |
+| npub and hex preview | Two representations of the resulting public key, shown before you save. |
+
+## Create the identity
+
+1. Unlock the extension and open the account selector. Start adding an account and choose **HD Sub-Account**. This requires an existing recovery phrase in the vault; an imported nsec alone is not that phrase.
+2. Check the source seed shown on **New Sub-Account**. The extension proposes the next unused path in its existing sequence.
+3. Optionally enter a name such as “Project” or “Testing”. Leaving it blank keeps the proposed name.
+4. Open **Advanced** only if you need a specific path. Enter the exact path and wait for the public-key preview to refresh.
+5. Check both the path and the displayed npub. An invalid path, failed preview or preview still loading prevents continuation.
+6. Select **Continue** to save the identity in the vault. Editing the preview alone does not save an account.
+
+## What does a path look like?
+
+The initial Nostr path is `m/44'/1237'/0'/0/0`. An example later path in the extension’s sequence is `m/44'/1237'/0'/0/1`. These are paths, not private keys. Keep every slash, number and apostrophe when recording yours.
+
+For recovery in another tool, never assume its account counter follows the same sequence. [NIP-06](https://github.com/nostr-protocol/nips/blob/master/06.md) describes incrementing the hardened account component; the extension’s existing additional-account sequence increments the final component. Matching the exact path and public key matters more than matching an account number. NIP-06 is currently marked optional and unrecommended by its maintainers, so support across clients is not guaranteed.
+
+Recognized network-prefix hints describe a convention only. Choosing a Bitcoin-looking path still creates a Nostr identity, not a Bitcoin wallet. Avoid reusing a path already used by a wallet.
+
+## Keep recovery practical
+
+Store your recovery phrase securely, together with the exact path and the public npub you expect to recover. A local name is useful for organization but cannot restore a key. A seed alone does not tell another application which custom path you selected.
+
+Different paths are useful for organizing identities, not for isolating them from compromise of their shared seed. They do not guarantee anonymity either. Changing the path does not transfer posts, followers or profile information to the new identity. Existing keys are not changed by this feature.
+
+Start with [identity management](/guides/managing-identity) if you only need account switching. Use custom paths when you have a recovery or organization requirement you can document.

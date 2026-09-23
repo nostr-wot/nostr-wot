@@ -1,29 +1,33 @@
 "use client";
 
+import { useTranslations } from "next-intl";
+
 import { AnimatedStatusDot } from "@/components/icons";
 
-const SCOPE_NODES = [
-  { hop: "Acct", label: "Account", color: "emerald" },
-  { hop: "Site", label: "Domain", color: "amber" },
-  { hop: "Call", label: "Method", color: "red" },
-];
-
-const ACCESS_LEVELS = [
-  { color: "green" as const, label: "Allowed", range: "Sign without prompts", bg: "bg-emerald-50 dark:bg-emerald-900/20", border: "border-emerald-200 dark:border-emerald-800/50", text: "text-emerald-700 dark:text-emerald-300", subtext: "text-emerald-600 dark:text-emerald-400" },
-  { color: "yellow" as const, label: "Ask", range: "Prompt for approval", bg: "bg-amber-50 dark:bg-amber-900/20", border: "border-amber-200 dark:border-amber-800/50", text: "text-amber-700 dark:text-amber-300", subtext: "text-amber-600 dark:text-amber-400" },
-  { color: "red" as const, label: "Blocked", range: "Reject all requests", bg: "bg-red-50 dark:bg-red-900/20", border: "border-red-200 dark:border-red-800/50", text: "text-red-700 dark:text-red-300", subtext: "text-red-600 dark:text-red-400" },
-];
-
 export default function TrustSpectrumVisualization() {
+  const t = useTranslations("features");
+  const u = useTranslations("ui");
+  const SCOPE_NODES = [
+    { hop: t("trustScoring.distance.rows.hop1"), label: t("trustScoring.distance.rows.hop1"), color: "emerald" },
+    { hop: t("trustScoring.distance.rows.hop2"), label: t("trustScoring.distance.rows.hop2"), color: "amber" },
+    { hop: t("trustScoring.distance.rows.hop3"), label: t("trustScoring.distance.rows.hop3"), color: "red" },
+  ];
+
+  const ACCESS_LEVELS = [
+    { color: "green" as const, label: t("trustScoring.thresholds.trusted.label"), range: t("trustScoring.thresholds.trusted.meaning"), bg: "bg-emerald-50 dark:bg-emerald-900/20", border: "border-emerald-200 dark:border-emerald-800/50", text: "text-emerald-700 dark:text-emerald-300", subtext: "text-emerald-600 dark:text-emerald-400" },
+    { color: "yellow" as const, label: t("trustScoring.thresholds.neutral.label"), range: t("trustScoring.thresholds.neutral.meaning"), bg: "bg-amber-50 dark:bg-amber-900/20", border: "border-amber-200 dark:border-amber-800/50", text: "text-amber-700 dark:text-amber-300", subtext: "text-amber-600 dark:text-amber-400" },
+    { color: "red" as const, label: t("trustScoring.thresholds.untrusted.label"), range: t("trustScoring.thresholds.untrusted.meaning"), bg: "bg-red-50 dark:bg-red-900/20", border: "border-red-200 dark:border-red-800/50", text: "text-red-700 dark:text-red-300", subtext: "text-red-600 dark:text-red-400" },
+  ];
+
   return (
     <div className="bg-white dark:bg-gray-800/50 rounded-3xl p-8 lg:p-12 shadow-sm border border-gray-200 dark:border-gray-700/50 mb-12">
-      <h3 className="text-xl font-bold mb-8 text-center">How Permission Scopes Work</h3>
+      <h3 className="text-xl font-bold mb-8 text-center">{u("scopesTitle")}</h3>
 
       {/* Visual diagram */}
       <div className="flex items-center justify-center gap-4 lg:gap-8 mb-12 overflow-x-auto pb-4">
         <div className="flex flex-col items-center shrink-0">
-          <div className="w-16 h-16 rounded-full bg-primary flex items-center justify-center text-white font-bold shadow-lg shadow-primary/30">You</div>
-          <span className="text-xs text-gray-500 mt-2">Your grant</span>
+          <div className="w-16 h-16 rounded-full bg-primary flex items-center justify-center text-white font-bold shadow-lg shadow-primary/30">{u("you")}</div>
+          <span className="text-xs text-gray-500 mt-2">{u("yourGrant")}</span>
         </div>
         {SCOPE_NODES.map((node, i) => (
           <div key={node.hop} className="contents">
@@ -32,7 +36,7 @@ export default function TrustSpectrumVisualization() {
               <div className={`text-${node.color}-500`}>→</div>
             </div>
             <div className="flex flex-col items-center shrink-0">
-              <div className={`w-14 h-14 rounded-full bg-${node.color}-500/20 border-2 border-${node.color}-500 flex items-center justify-center text-${node.color}-600 dark:text-${node.color}-400 font-bold text-xs`}>
+              <div className={`w-14 h-14 rounded-full bg-${node.color}-500/20 border-2 border-${node.color}-500 flex items-center justify-center text-${node.color}-600 dark:text-${node.color}-400 font-bold text-[10px] text-center px-1 break-words`}>
                 {node.hop}
               </div>
               <span className={`text-xs text-${node.color}-600 dark:text-${node.color}-400 mt-2 font-medium`}>{node.label}</span>

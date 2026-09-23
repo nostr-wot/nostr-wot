@@ -29,7 +29,7 @@ import {
   KeyIcon,
 } from "@/components/icons";
 import { CodeBlock } from "@/components/ui";
-import { generateAlternates, generateOpenGraph, generateTwitter } from "@/lib/metadata";
+import { generateAlternates, generateOpenGraph, generateTwitter, getFullUrl } from "@/lib/metadata";
 import { type Locale } from "@/i18n/config";
 import { NewsletterSection } from "@/components/layout/NewsletterSection";
 import { getAllNews } from "@/lib/news";
@@ -62,6 +62,9 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 export default async function Home({ params }: Props) {
   const { locale } = await params;
   const t = await getTranslations("home");
+  const u = await getTranslations("ui");
+  const common = await getTranslations("common");
+  const localUrl = (path: string) => getFullUrl(path, locale as Locale);
   const tNews = await getTranslations("news");
 
   // The newsroom strip is the homepage half of the spec's Discoverability
@@ -76,9 +79,9 @@ export default async function Home({ params }: Props) {
     "@type": "Organization",
     "name": "Nostr Web of Trust",
     "alternateName": "Nostr WoT",
-    "url": "https://nostr-wot.com",
+    "url": localUrl("/"),
     "logo": "https://nostr-wot.com/icon-512.png",
-    "description": "All-in-one Nostr browser extension — identity provider, NIP-07 signer, encrypted key vault, and Lightning wallet. Manage your profile, relays, and mute list with granular per-site permissions.",
+    "description": t("meta.description"),
     "sameAs": [
       "https://github.com/nostr-wot",
       "https://twitter.com/nostr_wot",
@@ -89,11 +92,11 @@ export default async function Home({ params }: Props) {
     "@context": "https://schema.org",
     "@type": "WebSite",
     "name": "Nostr Web of Trust",
-    "url": "https://nostr-wot.com",
-    "description": "All-in-one Nostr browser extension — identity provider, NIP-07 signer, encrypted key vault, and Lightning wallet with profile, relay, and mute-list management",
+    "url": localUrl("/"),
+    "description": t("meta.description"),
     "potentialAction": {
       "@type": "SearchAction",
-      "target": "https://nostr-wot.com/docs?search={search_term_string}",
+      "target": `${localUrl("/docs")}?search={search_term_string}`,
       "query-input": "required name=search_term_string",
     },
   };
@@ -105,37 +108,37 @@ export default async function Home({ params }: Props) {
       {
         "@type": "SiteNavigationElement",
         "position": 1,
-        "name": "Download Extension",
-        "description": "Download the Nostr WoT extension for Chrome, Brave, Edge, Opera, and Firefox",
-        "url": "https://nostr-wot.com/download",
+        "name": common("buttons.downloadExtension"),
+        "description": t("howItWorks.step1.description"),
+        "url": localUrl("/download"),
       },
       {
         "@type": "SiteNavigationElement",
         "position": 2,
-        "name": "Features",
-        "description": "Identity provider, NIP-07 signer, encrypted vault, Lightning wallet, profile & relay management, and granular permissions",
-        "url": "https://nostr-wot.com/features",
+        "name": common("nav.features"),
+        "description": t("identity.description"),
+        "url": localUrl("/features"),
       },
       {
         "@type": "SiteNavigationElement",
         "position": 3,
-        "name": "Documentation",
-        "description": "API documentation, integration guides, and SDK reference",
-        "url": "https://nostr-wot.com/docs",
+        "name": common("nav.docs"),
+        "description": t("developers.description"),
+        "url": localUrl("/docs"),
       },
       {
         "@type": "SiteNavigationElement",
         "position": 4,
-        "name": "Playground",
-        "description": "Interactive Web of Trust graph explorer",
-        "url": "https://nostr-wot.com/playground",
+        "name": t("playground.title"),
+        "description": t("playground.description"),
+        "url": localUrl("/playground"),
       },
       {
         "@type": "SiteNavigationElement",
         "position": 5,
-        "name": "Post-Quantum Nostr",
-        "description": "Hybrid post-quantum encryption for Nostr — ML-KEM-1024 and ML-DSA-87 keys derived from an existing BIP-39 seed, built with QuantaKrypto",
-        "url": "https://nostr-wot.com/pqc",
+        "name": t("postQuantum.exploreButton"),
+        "description": t("postQuantum.description"),
+        "url": localUrl("/pqc"),
       },
     ],
   };
@@ -147,8 +150,8 @@ export default async function Home({ params }: Props) {
       {
         "@type": "ListItem",
         "position": 1,
-        "name": "Home",
-        "item": "https://nostr-wot.com",
+        "name": "Nostr WoT",
+        "item": localUrl("/"),
       },
     ],
   };
@@ -466,7 +469,7 @@ export default async function Home({ params }: Props) {
                       <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-500 opacity-75" />
                       <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-emerald-500" />
                     </span>
-                    In Development
+                    {u("inDevelopment")}
                   </span>
                 </div>
                 <div className="w-12 h-12 rounded-2xl bg-emerald-100 dark:bg-emerald-900/40 flex items-center justify-center mb-6">
@@ -498,7 +501,7 @@ export default async function Home({ params }: Props) {
                       <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-blue-500 opacity-75" />
                       <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-blue-500" />
                     </span>
-                    Planned
+                    {u("planned")}
                   </span>
                 </div>
                 <div className="w-12 h-12 rounded-2xl bg-blue-100 dark:bg-blue-900/40 flex items-center justify-center mb-6">
@@ -580,7 +583,7 @@ export default async function Home({ params }: Props) {
                 <h3 className="text-2xl font-bold mb-3">{t("developers.sdk.title")}</h3>
                 <p className="text-gray-600 dark:text-gray-400 mb-6">{t("developers.sdk.description")}</p>
                 <div className="flex flex-col sm:flex-row gap-3">
-                  <LinkButton href="/docs#sdk-setup" variant="secondary" className="hover-lift">{t("developers.sdk.viewDocsButton")}</LinkButton>
+                  <LinkButton href="/docs/sdk#setup" variant="secondary" className="hover-lift">{t("developers.sdk.viewDocsButton")}</LinkButton>
                   <ExternalLinkButton href="https://www.npmjs.com/package/nostr-wot-sdk" variant="secondary" className="hover-lift">
                     {t("developers.sdk.npmButton")}
                   </ExternalLinkButton>

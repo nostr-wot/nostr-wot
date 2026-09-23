@@ -1,3 +1,14 @@
+# Sending the weekly newsletter
+
+From the deployed website directory:
+
+```sh
+node --env-file=.env scripts/newsletters/send.mjs newsletters/2026-09-11/issue.json --dry-run
+node --env-file=.env scripts/newsletters/send.mjs newsletters/2026-09-11/issue.json --send
+```
+
+Prefer the repository’s `newsletter.yml` workflow, after deployment. Its default is count-only. The sender requires all seven approved editions, validates the archive contract before sending, reads only active consented subscribers, selects their locale and prints aggregate counts only. It stores private delivery state under `NEWSLETTER_DATA_DIR/deliveries/<issue>/`. Never commit that directory. Do not retry pending/uncertain records or remove a stale lock without inspecting the original attempt. Reconcile accepted messages using provider evidence and repair the archive through the recorder below. Never fabricate a provider ID.
+
 # Recording accepted newsletter editions
 
 This module imports a receipt produced by a trusted server-side sending process. It does not send email, look up subscribers, call a provider, or independently verify delivery. A provider accepting a message is not proof of delivery to an inbox, opening or reading.

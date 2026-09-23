@@ -1,7 +1,7 @@
 'use client';
 
 import { useMemo, useState, type ReactNode } from 'react';
-import { ecosystemCopy, ecosystemDate, isCommitDate, reportTypeLabel, dateBasisLabel, categoryLabel, newsDateLabel, filterProjects, isSafeExternalUrl, PROJECT_STATUSES, type EcosystemData, type EcosystemNews, type EcosystemProject } from '@/lib/ecosystem-projects';
+import { coverageLabel, ecosystemCopy, ecosystemDate, isCommitDate, reportTypeLabel, dateBasisLabel, categoryLabel, newsDateLabel, filterProjects, isSafeExternalUrl, PROJECT_STATUSES, type EcosystemData, type EcosystemNews, type EcosystemProject } from '@/lib/ecosystem-projects';
 
 const focus = 'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-violet-500 focus-visible:ring-offset-2 dark:focus-visible:ring-offset-gray-950';
 const statusStyles = {
@@ -78,7 +78,7 @@ function NewsPanel({ title, items, locale }: { title: string; items: EcosystemNe
         <summary className={`cursor-pointer rounded py-1 ${focus}`}>{t.summaryEvidence}<span className="sr-only"> {t.for} {item.title}</span></summary>
         <div className="mt-2 space-y-2 text-gray-600 dark:text-gray-300">
           <p>{item.summary}</p>
-          {item.coverage && <p><strong>{t.coverage}</strong> {item.coverage}</p>}
+          {item.coverage && <p><strong>{t.coverage}</strong> {coverageLabel(item.coverage, locale)}</p>}
           {item.dateBasis && <p><strong>{t.dateBasis}</strong> {dateBasisLabel(item.dateBasis, locale)}{isCommitDate(item.dateBasis) && t.commitNotice}</p>}
           {!!item.sources?.length && <ul className="space-y-2">{item.sources.map((source, i) => <li key={`${source.url}-${i}`}><ExternalLink locale={locale} url={source.url}>{source.label}</ExternalLink></li>)}</ul>}
         </div>
@@ -95,7 +95,7 @@ export default function EcosystemDirectory({ data, blogHref, newsHref, locale = 
   const categories = useMemo(() => [...new Set(data.projects.map(project => project.category))].sort(), [data.projects]);
   const projects = useMemo(() => filterProjects(data.projects, { query, category, status }), [data.projects, query, category, status]);
   const control = `mt-2 w-full rounded-lg border border-gray-300 bg-white px-3 py-3 text-base dark:border-gray-700 dark:bg-gray-900 ${focus}`;
-  return <div lang={locale === 'es' ? 'es' : 'en'} className="mx-auto max-w-6xl px-6 py-12">
+  return <div lang={locale} className="mx-auto max-w-6xl px-6 py-12">
     <section aria-labelledby="ecosystem-heading">
       <p className="text-xs font-semibold uppercase tracking-wider text-violet-700 dark:text-violet-300">{t.languageNotice}</p>
       <h2 id="ecosystem-heading" className="mt-3 text-3xl font-bold">{t.heading}</h2>
