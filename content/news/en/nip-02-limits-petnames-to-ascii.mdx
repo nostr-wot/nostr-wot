@@ -1,0 +1,62 @@
+---
+title: "NIP-02 limits petnames to ASCII"
+description: "A one-line commit restricts the petnames that qualify for NIP-02 resolution to ASCII letters, numbers and underscore, removing the path-parsing ambiguity by exclusion."
+seoDescription: "A one-line commit restricts the petnames that qualify for NIP-02 resolution to ASCII letters, numbers and underscore, removing the path-parsing ambiguity by exclusion."
+excerpt: "One day after petname paths were merged, NIP-02 gained a single sentence limiting eligible petnames to ASCII letters, numbers and underscore."
+date: "2026-09-20"
+publishedAt: "2026-09-23"
+backfilled: false
+type: "story"
+tags: ["Nostr", "NIP-02", "Identity", "Web of Trust"]
+featuredImage: "/images/news/nip-02-limits-petnames-to-ascii.svg"
+translationKey: "nip-02-limits-petnames-to-ascii"
+sources:
+  - title: "Commit 46f8e95: nip02: clarify petname character eligibility"
+    url: "https://github.com/nostr-protocol/nips/commit/46f8e9501c32f506d07b5de67f414d4f92928cd5"
+    publisher: "nostr-protocol/nips"
+    date: "2026-09-20"
+  - title: "NIP-02 at commit 46f8e95"
+    url: "https://github.com/nostr-protocol/nips/blob/46f8e9501c32f506d07b5de67f414d4f92928cd5/02.md"
+    publisher: "nostr-protocol/nips"
+    date: "2026-09-20"
+  - title: "PR #2472: nip02: make petnames great again"
+    url: "https://github.com/nostr-protocol/nips/pull/2472"
+    publisher: "nostr-protocol/nips"
+    date: "2026-09-19"
+published: true
+---
+
+NIP-02 now restricts which petnames can be resolved. [Commit 46f8e95](https://github.com/nostr-protocol/nips/commit/46f8e9501c32f506d07b5de67f414d4f92928cd5), pushed to `master` on 20 September 2026 at 16:53 UTC, adds one sentence to the end of the petname section:
+
+```text
+In order to qualify for petname resolution they must have only ASCII letters, numbers or `_`.
+```
+
+The commit changes a single file and counts one addition and one deletion, because the new line replaces a trailing blank one. It was pushed directly rather than through a pull request, and it sits immediately after the petname path notation that [PR #2472](https://github.com/nostr-protocol/nips/pull/2472) merged the day before.
+
+## What now qualifies
+
+The permitted set is narrow: the twenty-six ASCII letters in either case, the digits `0` to `9`, and the underscore. Everything else falls outside it. That excludes the space, the forward slash, the hyphen, the period and the at sign. It also excludes accented Latin characters such as `é` or `ñ`, every non-Latin script including Cyrillic, Greek, Arabic, Hebrew, Devanagari and the CJK scripts, and emoji.
+
+The practical effect reaches the parsing question the previous merge left open. [The merged NIP-02 text](https://github.com/nostr-protocol/nips/blob/46f8e9501c32f506d07b5de67f414d4f92928cd5/02.md) resolves a path such as `~/erin/charlie` one component at a time, looking each component up in the follow list of the profile resolved by the previous one. A petname containing `/` would make that split ambiguous, and a petname containing a space would complicate where a path ends in surrounding text. The specification does not answer this with an escaping mechanism. It answers it by removing the characters that would require one.
+
+## What the sentence does not settle
+
+The sentence does not name its subject. It begins with "they", and it is placed after the absolute-root examples:
+
+```text
+~npub1.../erin/charlie
+~carol@names.com/erin/charlie
+```
+
+Those roots contain a period and an at sign, both outside the permitted set. The section around the sentence concerns petnames stored as the fourth value of a `p` tag, and the commit message describes the change as clarifying petname character eligibility. A reader has to take the antecedent from that context rather than from the sentence itself.
+
+The text also stops at eligibility. It states which petnames qualify for resolution. It does not say what a client should do with one that does not: whether to display it as a local label while refusing to resolve it, to hide it, or to reject it when a follow list is written. A petname is stored in a kind 3 event the user's own client publishes, and nothing in NIP-02 validates that field, so events carrying ineligible petnames can already exist and will continue to be published.
+
+The wording uses a lowercase "must" rather than the uppercase form. NIP-02 uses uppercase keywords twice elsewhere, in both cases `SHOULD`, for relay deletion of superseded follow lists and for appending new follows in chronological order. Whether implementers read the lowercase "must" as carrying the same weight is not addressed in the file.
+
+## The cost of the boundary
+
+Restricting resolution to ASCII has a direct consequence for users who do not write in it. A petname is a local label, chosen by the author of a follow list for their own view of the graph, and it is exactly the kind of field a user would write in their own script. Under this rule, a Cyrillic or Japanese petname remains storable in a `p` tag but is not eligible to be resolved as a path component.
+
+That is the trade the committed text makes: an unambiguous grammar for multi-hop name paths, in exchange for names drawn from a character set that most of the world's writing systems fall outside. The commit records the restriction. It does not record a migration path for follow lists that already carry petnames outside the set, and no client release has yet been published citing this rule.

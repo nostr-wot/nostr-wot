@@ -32,3 +32,5 @@ run at all, which is a different problem entirely.
 
 2026-09-20 08:20 UTC  pending    nip-02-gives-petnames-resolvable-paths (3 sources; seven editions, deterministic illustration and social copy prepared; PR CI, merge, production and scheduled social delivery verification pending)
 2026-09-22 08:00 UTC  published  amber-6-6-5-separates-backup-encryption-from-app-permissions  (2 sources; fortnightly ecosystem)
+
+2026-09-23 15:25 UTC  published  nip-02-limits-petnames-to-ascii  (3 sources)

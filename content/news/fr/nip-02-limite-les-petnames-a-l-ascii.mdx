@@ -1,0 +1,62 @@
+---
+title: "NIP-02 limite les petnames à l'ASCII"
+description: "Un commit d'une seule ligne restreint les petnames résolubles dans NIP-02 aux lettres ASCII, aux chiffres et au tiret bas, supprimant par exclusion l'ambiguïté d'analyse des chemins."
+seoDescription: "Un commit d'une seule ligne restreint les petnames résolubles dans NIP-02 aux lettres ASCII, aux chiffres et au tiret bas, supprimant par exclusion l'ambiguïté d'analyse des chemins."
+excerpt: "Un jour après l'arrivée des chemins de petnames, NIP-02 a reçu une seule phrase limitant les petnames admissibles aux lettres ASCII, aux chiffres et au tiret bas."
+date: "2026-09-20"
+publishedAt: "2026-09-23"
+backfilled: false
+type: "story"
+tags: ["Nostr", "NIP-02", "Identity", "Web of Trust"]
+featuredImage: "/images/news/nip-02-limits-petnames-to-ascii.svg"
+translationKey: "nip-02-limits-petnames-to-ascii"
+sources:
+  - title: "Commit 46f8e95: nip02: clarify petname character eligibility"
+    url: "https://github.com/nostr-protocol/nips/commit/46f8e9501c32f506d07b5de67f414d4f92928cd5"
+    publisher: "nostr-protocol/nips"
+    date: "2026-09-20"
+  - title: "NIP-02 au commit 46f8e95"
+    url: "https://github.com/nostr-protocol/nips/blob/46f8e9501c32f506d07b5de67f414d4f92928cd5/02.md"
+    publisher: "nostr-protocol/nips"
+    date: "2026-09-20"
+  - title: "PR #2472: nip02: make petnames great again"
+    url: "https://github.com/nostr-protocol/nips/pull/2472"
+    publisher: "nostr-protocol/nips"
+    date: "2026-09-19"
+published: true
+---
+
+NIP-02 restreint désormais les petnames qui peuvent être résolus. Le [commit 46f8e95](https://github.com/nostr-protocol/nips/commit/46f8e9501c32f506d07b5de67f414d4f92928cd5), poussé sur `master` le 20 septembre 2026 à 16h53 UTC, ajoute une seule phrase à la fin de la section consacrée aux petnames :
+
+```text
+In order to qualify for petname resolution they must have only ASCII letters, numbers or `_`.
+```
+
+Le commit modifie un seul fichier et compte une ligne ajoutée et une ligne supprimée, car la nouvelle ligne remplace une ligne vide finale. Il a été poussé directement, sans pull request, et se place juste après la notation de chemin que la [PR #2472](https://github.com/nostr-protocol/nips/pull/2472) avait fusionnée la veille.
+
+## Ce qui reste admissible
+
+L'ensemble autorisé est étroit : les vingt-six lettres ASCII en majuscule ou en minuscule, les chiffres de `0` à `9` et le tiret bas. Tout le reste en est exclu. Cela écarte l'espace, la barre oblique, le trait d'union, le point et l'arobase. Cela écarte aussi les caractères latins accentués comme `é` ou `ç`, toutes les écritures non latines, dont le cyrillique, le grec, l'arabe, l'hébreu, la devanagari et les écritures CJK, ainsi que les émojis.
+
+L'effet pratique touche la question d'analyse laissée ouverte par la fusion précédente. [Le texte fusionné de NIP-02](https://github.com/nostr-protocol/nips/blob/46f8e9501c32f506d07b5de67f414d4f92928cd5/02.md) résout un chemin comme `~/erin/charlie` un composant à la fois, en cherchant chacun dans la liste de suivi du profil résolu par le composant précédent. Un petname contenant `/` rendrait ce découpage ambigu, et un petname contenant une espace compliquerait la détermination de la fin du chemin dans le texte environnant. La spécification ne répond pas par un mécanisme d'échappement. Elle répond en retirant les caractères qui en exigeraient un.
+
+## Ce qui reste en suspens
+
+La phrase ne nomme pas son sujet. Elle commence par « they » et se trouve après les exemples de racine absolue :
+
+```text
+~npub1.../erin/charlie
+~carol@names.com/erin/charlie
+```
+
+Ces racines contiennent un point et une arobase, tous deux hors de l'ensemble autorisé. La section qui entoure la phrase traite des petnames stockés comme quatrième valeur d'un tag `p`, et le message du commit décrit le changement comme une clarification des caractères admis dans un petname. Il revient au lecteur de tirer l'antécédent de ce contexte plutôt que de la phrase elle-même.
+
+Le texte s'arrête à l'admissibilité. Il indique quels petnames peuvent être résolus. Il ne dit pas ce qu'un client doit faire d'un petname non admissible : l'afficher comme étiquette locale en refusant de le résoudre, le masquer, ou le rejeter à l'écriture d'une liste de suivi. Un petname est stocké dans un événement kind 3 publié par le client de l'utilisateur lui-même, et rien dans NIP-02 ne valide ce champ, si bien que des événements portant des petnames non admissibles peuvent déjà exister et continueront d'être publiés.
+
+La formulation emploie un « must » en minuscules et non la forme en majuscules. NIP-02 utilise deux fois ailleurs des mots-clés en majuscules, dans les deux cas `SHOULD`, pour la suppression par les relais des listes de suivi remplacées et pour l'ajout des nouveaux suivis dans l'ordre chronologique. Le fichier ne précise pas si les implémenteurs doivent lire ce « must » minuscule avec le même poids.
+
+## Le coût de cette limite
+
+Restreindre la résolution à l'ASCII a une conséquence directe pour les personnes qui n'écrivent pas dans cet ensemble. Un petname est une étiquette locale, choisie par l'auteur d'une liste de suivi pour sa propre vue du graphe, et c'est exactement le genre de champ qu'une personne remplirait dans sa propre écriture. Sous cette règle, un petname en cyrillique ou en japonais reste stockable dans un tag `p`, mais n'est pas admissible comme composant de chemin.
+
+Tel est l'arbitrage inscrit dans le texte fusionné : une grammaire sans ambiguïté pour les chemins de noms à plusieurs sauts, au prix de noms tirés d'un jeu de caractères hors duquel se situe la majorité des systèmes d'écriture du monde. Le commit enregistre la restriction. Il n'enregistre pas de chemin de migration pour les listes de suivi qui portent déjà des petnames hors de cet ensemble, et aucune version publiée de client ne cite encore cette règle.
