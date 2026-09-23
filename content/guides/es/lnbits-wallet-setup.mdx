@@ -1,0 +1,73 @@
+---
+title: "Conectar LNbits a Nostr WoT"
+description: "Conecta tu billetera LNbits a Nostr WoT mediante NWC o su API. Encuentra las credenciales, configura los permisos y consulta saldo, facturas e historial."
+excerpt: "Elige una conexión NWC con límites propios o conecta directamente con la clave API de tu billetera LNbits."
+date: "2026-09-23"
+author:
+  name: "Leon Acosta"
+  avatar: "/authors/leon-profile.jpg"
+  npub: "npub1gxdhmu9swqduwhr6zptjy4ya693zp3ql28nemy4hd97kuufyrqdqwe5zfk"
+featuredImage: "/images/guides/lnbits-wallet-setup/featured.jpg"
+previewImage: "/images/guides/lnbits-wallet-setup/preview.jpg"
+ogImage: "/images/guides/lnbits-wallet-setup/og.jpg"
+tags:
+  - "Lightning"
+  - "LNbits"
+  - "NWC"
+  - "API"
+published: true
+translationKey: "lnbits-wallet-setup"
+difficulty: "beginner"
+order: 16
+---
+
+Puedes conectar LNbits a la extensión Nostr WoT mediante **Nostr Wallet Connect (NWC)** o la **API HTTP** de la billetera. Esta guía parte de una billetera LNbits existente. Quien controla los fondos depende del operador de la instancia y de su fuente de financiación; elegir NWC o la API no cambia esa relación.
+
+## Elige el tipo de conexión
+
+Usa **NWC** para crear una conexión exclusiva para la aplicación, con permisos, límites de gasto y caducidad propios. El administrador de LNbits debe habilitar primero la extensión proveedora de NWC. Elige la pestaña **LNbits** para acceder directamente por API si ya tienes la clave de gasto y la URL de tu instancia. Requiere menos pasos, pero utiliza la credencial de la billetera en lugar de una autorización NWC independiente.
+
+<a id="lnbits-nwc" className="block scroll-mt-32" />
+
+## Conectar mediante NWC
+
+### Preparar la instancia LNbits
+
+El administrador instala **NWC Service Provider** y configura su relay en `/nwcprovider/admin`. El relay transporta los mensajes de la conexión. Si utilizas una instancia ajena y no ves esta extensión, consulta al operador si está disponible. Iniciar sesión en LNbits no crea por sí solo una conexión NWC.<Citation id="1" />
+
+### Crear la conexión de la aplicación
+
+1. Abre **NWC Service Provider** en LNbits y selecciona la billetera que quieres usar.
+2. Pulsa **+** para añadir una conexión. Dale un nombre reconocible, como **Nostr WoT**.
+3. Habilita la información de la billetera (`get_info`), necesaria para validar la conexión. Añade permisos para consultar saldo, enviar pagos, crear y consultar facturas y ver el historial según las funciones que necesites.
+4. Configura un límite de gasto y una fecha de caducidad cuando estén disponibles. Se aplican a esta conexión.
+5. Crea la conexión, pulsa **Connect** y copia la URL de emparejamiento completa, que empieza por `nostr+walletconnect://`.
+6. Abre **Billetera → NWC** en la extensión Nostr WoT, pega la URL y pulsa **Conectar**.
+
+Mantén esta URL en privado: quien la tenga podrá usar los permisos concedidos. Gestiona o revoca la conexión desde LNbits cuando dejes de necesitarla.
+
+<a id="lnbits-api" className="block scroll-mt-32" />
+
+## Conectar mediante la API de LNbits
+
+1. Abre la billetera concreta en LNbits. Busca **API info** o su panel de documentación de la API.
+2. Copia su **Admin API key**. LNbits también muestra una clave de facturas/lectura, que no permite enviar pagos.<Citation id="2" />
+3. En la extensión Nostr WoT, abre **Billetera → LNbits**.
+4. Introduce la URL HTTPS de la instancia y la Admin API key de esa billetera; después pulsa **Conectar**. Usa la dirección de la instancia, no una URL de la página de la billetera que contenga credenciales.
+
+<Callout type="warning">
+La Admin API key autoriza gastos desde esta billetera. No es tu contraseña de acceso a LNbits ni la contraseña del administrador de la instancia. Pégala únicamente en el campo de clave API; las URL de emparejamiento NWC van en la pestaña NWC.
+</Callout>
+
+## Comprueba el resultado
+
+Revisa el saldo y el historial tras conectar. Para recibir sats, crea una factura con **Depositar**. La falta de un permiso NWC puede impedir una función aunque la conexión funcione.
+
+Si la configuración falla, comprueba la URL de la instancia o la URL de emparejamiento completa, el relay, la caducidad y el permiso de información de la billetera. Si el resultado de un pago es desconocido, revisa el historial antes de volver a pagar. Para cambiar de billetera, desconecta desde sus ajustes y vuelve a la configuración.
+
+Vuelve a la [guía general de billeteras](/guides/configurar-billetera) para comparar opciones o consulta la [guía de Alby Hub](/guides/alby-hub-nwc).
+
+<Bibliography>
+  <BibEntry id="1" authors="LNbits" title="NWC Provider" source="LNbits documentation" url="https://docs.lnbits.com/extensions/nwcprovider/" />
+  <BibEntry id="2" authors="LNbits" title="API Authentication" source="LNbits documentation" url="https://docs.lnbits.com/api/authentication#finding-your-keys" />
+</Bibliography>

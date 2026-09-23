@@ -1,5 +1,7 @@
 'use client';
 
+import ReadingTime from '@/components/ui/ReadingTime';
+
 import Image from 'next/image';
 import { Link } from '@/i18n/routing';
 import { useLocale, useTranslations } from 'next-intl';
@@ -125,7 +127,7 @@ export function GuideCard({ guide, featured = false }: GuideCardProps) {
               <div className="flex items-center gap-4 text-sm text-gray-500 dark:text-gray-400">
                 <time dateTime={guide.date}>{formatDate(guide.date, locale)}</time>
                 <span>·</span>
-                <span>{guide.readingTime}</span>
+                <ReadingTime value={guide.readingTime} />
               </div>
             </div>
           </div>
@@ -170,7 +172,7 @@ export function GuideCard({ guide, featured = false }: GuideCardProps) {
           </p>
           <div className="flex items-center justify-between text-xs text-gray-500 dark:text-gray-400 pt-4 border-t border-gray-100 dark:border-gray-700/50">
             <time dateTime={guide.date}>{formatDate(guide.date, locale)}</time>
-            <span>{guide.readingTime}</span>
+            <ReadingTime value={guide.readingTime} />
           </div>
         </div>
       </article>

@@ -1,7 +1,7 @@
 ---
 title: "Configurare il Tuo Portafoglio"
-description: "Collega un portafoglio Lightning all'Estensione Nostr WoT. Scegli la Configurazione Rapida per accesso immediato, NWC per il tuo portafoglio esistente o LNbits per il pieno controllo."
-excerpt: "L'estensione supporta tre opzioni di portafoglio: Configurazione Rapida, Nostr Wallet Connect e LNbits. Scegli quella adatta alle tue esigenze."
+description: "Collega un wallet Lightning a Nostr WoT. Confronta Configurazione rapida, NWC e API LNbits con le nostre guide di connessione per Alby Hub e LNbits."
+excerpt: "L’estensione offre Configurazione rapida, Nostr Wallet Connect e accesso all’API LNbits. Scegli la connessione adatta al tuo wallet."
 date: "2026-03-11"
 author:
   name: "Leon Acosta"
@@ -15,86 +15,65 @@ tags:
   - "NWC"
 published: true
 seoTitle: "Configurare il Tuo Portafoglio — Guida Estensione Nostr WoT"
-seoDescription: "Collega un portafoglio Lightning all'Estensione Nostr WoT. Scegli la Configurazione Rapida per accesso immediato, NWC per il tuo portafoglio esistente o LNbits per il pieno controllo."
+seoDescription: "Collega un wallet Lightning a Nostr WoT. Confronta Configurazione rapida, NWC e API LNbits con le nostre guide di connessione per Alby Hub e LNbits."
 ogImage: "/images/guides/setting-up-wallet/og.jpg"
 translationKey: "setting-up-wallet"
 difficulty: "beginner"
 order: 5
 ---
 
-L'estensione include un portafoglio Lightning integrato così puoi inviare e ricevere sat senza uscire dal browser. Questa guida copre tutti e tre i metodi di connessione: Configurazione Rapida per iniziare subito, NWC per collegare il tuo portafoglio esistente e LNbits per le configurazioni self-hosted.
+L’estensione Nostr WoT si collega a un portafoglio Lightning per consultare il saldo, ricevere sat e approvare pagamenti dal browser. Apri l’estensione, vai su **Wallet** e scegli **Configurazione rapida**, **NWC** o **LNbits**.
 
-## Accedere alla Configurazione del Portafoglio
+Se usi già Alby Hub, le sue connessioni per le app sono un punto di partenza semplice. Per un portafoglio LNbits esistente, l’API diretta richiede meno passaggi; NWC offre permessi e budget per ogni connessione. La custodia dei fondi dipende dal portafoglio e dal suo gestore, non dal metodo di collegamento.
 
-1. Clicca l'icona dell'estensione nella barra degli strumenti.
-2. Naviga alla scheda **Wallet**.
-3. Se nessun portafoglio è collegato, vedrai la schermata di configurazione con tre opzioni.
+Trovi i passaggi dettagliati nella nostra [guida ad Alby Hub](/guides/alby-hub-nwc) o nella [guida a LNbits](/guides/lnbits-wallet-setup).
 
-{/* TODO: Screenshot della schermata di configurazione del portafoglio che mostra le tre opzioni di connessione */}
+## Configurazione rapida
 
-## Configurazione Rapida
+Scegli **Configurazione rapida** per creare un portafoglio custodial presso il fornitore configurato. Al termine, usa **Deposita** per generare una fattura Lightning. Il fornitore custodisce i fondi. Anche NWC e LNbits, da soli, non garantiscono l’autocustodia.
 
-Questo è il modo più veloce per ottenere un portafoglio funzionante. Un clic e sei pronto per fare zap.
+<a id="alby-hub" className="block scroll-mt-32" />
 
-1. Clicca **Configurazione Rapida** nella schermata di configurazione del portafoglio.
-2. L'estensione crea un portafoglio custodial collegato alla tua identità Nostr. Nessuna registrazione, nessun modulo, nessun account extra.
-3. Il tuo portafoglio è pronto. Vedrai il tuo saldo (che parte da zero) e le opzioni per depositare e inviare.
+## Alby Hub tramite NWC
 
-{/* TODO: Screenshot del pulsante Configurazione Rapida e della vista portafoglio risultante */}
+Serve un Alby Hub funzionante con il suo portafoglio Lightning.
 
-<Callout type="tip">
-La Configurazione Rapida crea un portafoglio custodial, il che significa che i fondi sono conservati dal provider. È conveniente per piccoli importi e zap casuali. Per importi maggiori, considera NWC o LNbits per il controllo self-custodial.
-</Callout>
+1. In Alby Hub, apri **Connections → Add Connection**.
+2. Crea una connessione dedicata chiamata **Nostr WoT**. Imposta permessi, budget di spesa e, se vuoi, una scadenza.
+3. Consenti le informazioni del portafoglio (`get_info`) per verificare la connessione. Aggiungi secondo necessità saldo, pagamenti, creazione e consultazione delle fatture e cronologia. I permessi determinano le funzioni disponibili.
+4. Copia il segreto di connessione completo, che inizia con `nostr+walletconnect://`.
+5. Nell’estensione, seleziona **NWC**, incolla il segreto e premi **Connetti**.
 
-### Depositare Sat
+Mantieni privato questo segreto: può autorizzare spese. Puoi modificare o revocare la connessione in Alby Hub. Consulta la [guida ufficiale alle connessioni](https://guides.getalby.com/user-guide/alby-hub/app-connections).
 
-Dopo la Configurazione Rapida, tocca **Deposita** per ottenere una fattura Lightning o un codice QR. Invia sat da qualsiasi portafoglio Lightning e il tuo saldo si aggiorna in pochi secondi.
+<a id="lnbits-nwc" className="block scroll-mt-32" />
 
-## Nostr Wallet Connect (NWC)
+## LNbits tramite NWC
 
-Se hai già un portafoglio Lightning che supporta NWC — come Alby, Mutiny o qualsiasi provider compatibile NWC — puoi collegarlo all'estensione.
+1. Chiedi all’amministratore dell’istanza di installare **NWC Service Provider** e configurare un relay in `/nwcprovider/admin`.
+2. Apri questa estensione in LNbits, seleziona il portafoglio e aggiungi una connessione con **+**.
+3. Abilita le informazioni del portafoglio e le operazioni necessarie. Imposta budget e scadenza, se disponibili.
+4. Crea la connessione e copia l’URL di abbinamento.
+5. Incollalo nella scheda **NWC** di Nostr WoT e collega il portafoglio.
 
-1. Nel tuo provider di portafoglio, genera una stringa di connessione NWC. Di solito si trova nelle impostazioni del portafoglio sotto "Nostr Wallet Connect" o "Connessioni."
-2. Copia la stringa di connessione. Inizia con `nostr+walletconnect://`.
-3. Nell'estensione, clicca **NWC** nella schermata di configurazione del portafoglio.
-4. Incolla la stringa di connessione e clicca **Connetti**.
-5. L'estensione verifica la connessione e mostra il tuo saldo.
+Accedere a LNbits non crea automaticamente una connessione NWC. La [guida ufficiale del fornitore](https://docs.lnbits.com/extensions/nwcprovider/) descrive la configurazione del relay e il modulo di connessione.
 
-{/* TODO: Screenshot del campo di input della stringa di connessione NWC */}
+<a id="lnbits-api" className="block scroll-mt-32" />
 
-Con NWC, i tuoi fondi restano nel tuo portafoglio esistente. L'estensione invia semplicemente le richieste di pagamento ad esso. Mantieni il pieno controllo dei tuoi sat.
+## LNbits tramite API
 
-Qualsiasi portafoglio che implementa il protocollo NWC funziona, inclusi Alby, Mutiny e altri. Il protocollo è aperto e la lista dei portafogli compatibili continua a crescere.
+1. Apri il portafoglio specifico in LNbits e cerca **API info** o il pannello della documentazione API.
+2. Copia la **Admin API key** di quel portafoglio.
+3. Nella scheda **LNbits** dell’estensione, inserisci l’URL HTTPS dell’istanza e questa chiave, quindi connetti.
 
-## LNbits
+La chiave Admin API è una credenziale del portafoglio, **non la password di accesso dell’amministratore**. Consente pagamenti in uscita. La chiave invoice/read non permette di spendere e non sostituisce quella necessaria per tutte le funzioni. Vedi [dove trovare le chiavi LNbits](https://docs.lnbits.com/api/authentication#finding-your-keys). Un URL di abbinamento NWC va inserito in **NWC**, non nel campo della chiave API.
 
-Per chi gestisce la propria infrastruttura Lightning, l'estensione si collega direttamente a un'istanza LNbits.
+## Altri portafogli e verifiche
 
-1. Clicca **LNbits** nella schermata di configurazione del portafoglio.
-2. Inserisci l'URL della tua istanza LNbits (es. `https://la-tua-istanza-lnbits.com`).
-3. Inserisci la chiave admin del portafoglio o la chiave invoice/read a seconda del livello di accesso desiderato.
-4. Clicca **Connetti**.
+In YakiHonne, copia o esporta un segreto NWC quando il portafoglio offre questa possibilità. Gli altri fornitori NWC seguono lo stesso percorso; le operazioni disponibili dipendono dall’implementazione e dai permessi.
 
-{/* TODO: Screenshot dei campi di configurazione LNbits */}
+Il normale plugin Nostr di BTCPay Server si collega **a** un portafoglio NWC esterno. Non genera un segreto per questa estensione. Usa una connessione separata del portafoglio effettivo o del suo bridge NWC; consulta le [opzioni Lightning di BTCPay](https://docs.btcpayserver.org/LightningNetwork/).
 
-<Callout type="tip">
-Usa una chiave invoice/read se vuoi solo ricevere e controllare il saldo. Usa la chiave admin se vuoi anche inviare pagamenti dall'estensione. Limita i permessi a ciò di cui hai effettivamente bisogno.
-</Callout>
+Dopo il collegamento, controlla saldo e cronologia. Se manca una funzione, verifica permessi, scadenza e connettività. Se l’esito di un pagamento è sconosciuto, consulta la cronologia prima di ripeterlo. Per cambiare portafoglio, disconnettilo dalle impostazioni e torna alla configurazione.
 
-## Controllare il Saldo
-
-Una volta collegato, il saldo del tuo portafoglio appare in cima alla scheda Wallet. Si aggiorna automaticamente. Puoi anche vedere:
-
-- **Transazioni recenti** — una cronologia scorrevole di invii e ricezioni.
-- **Deposita** — genera una fattura per ricevere sat.
-- **Invia** — incolla una fattura Lightning per pagarla.
-
-{/* TODO: Screenshot della vista saldo del portafoglio con cronologia transazioni */}
-
-## Cambiare Provider del Portafoglio
-
-Puoi cambiare la connessione del portafoglio in qualsiasi momento. Vai alla scheda Wallet, apri le **Impostazioni** e clicca **Cambia Provider**. Questo disconnette il portafoglio attuale e ti riporta alla schermata di configurazione. La tua identità e le impostazioni di fiducia non vengono influenzate.
-
-## Cosa Fare Dopo?
-
-Con il tuo portafoglio collegato, impara come [fare zap e configurare le soglie di approvazione automatica](/guides/zap-e-approvazione-automatica). Puoi anche [reclamare il tuo Lightning Address](/guides/indirizzo-lightning) se hai usato la Configurazione Rapida.
+Prosegui con [zap e approvazione automatica](/guides/zap-e-approvazione-automatica) oppure con gli [indirizzi Lightning](/guides/indirizzo-lightning).

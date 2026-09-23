@@ -1,0 +1,63 @@
+---
+title: "Conectar o Alby Hub via NWC"
+description: "Conecte o Alby Hub ao Nostr WoT via NWC. Defina permissões e orçamento, confira o saldo e gerencie o acesso pelo seu Hub."
+excerpt: "Conecte o Alby Hub ao Nostr WoT via NWC. Defina permissões e orçamento, confira o saldo e gerencie o acesso pelo seu Hub."
+date: "2026-09-23"
+author:
+  name: "Leon Acosta"
+  avatar: "/authors/leon-profile.jpg"
+  npub: "npub1gxdhmu9swqduwhr6zptjy4ya693zp3ql28nemy4hd97kuufyrqdqwe5zfk"
+featuredImage: "/images/guides/alby-hub-nwc/featured.jpg"
+previewImage: "/images/guides/alby-hub-nwc/preview.jpg"
+ogImage: "/images/guides/alby-hub-nwc/og.jpg"
+tags:
+  - "Lightning"
+  - "Alby Hub"
+  - "NWC"
+published: true
+seoTitle: "Conectar o Alby Hub via NWC"
+seoDescription: "Conecte o Alby Hub ao Nostr WoT via NWC. Defina permissões e orçamento, confira o saldo e gerencie o acesso pelo seu Hub."
+translationKey: "alby-hub-nwc"
+difficulty: "beginner"
+order: 15
+---
+
+O Alby Hub permite conectar sua carteira Lightning à extensão Nostr WoT por meio do Nostr Wallet Connect (NWC). Antes de começar, seu Hub precisa estar em funcionamento, acessível e com saldo. Este guia explica a conexão dessa carteira; não cobre a instalação do Hub nem a abertura de canais Lightning.
+
+<span id="alby-hub" className="block scroll-mt-32"></span>
+
+## Crie uma conexão no Alby Hub
+
+Abra o Hub e acesse **Connections → Add Connection**. Escolha um nome fácil de reconhecer, como “Nostr WoT navegador”. Uma conexão exclusiva facilita identificar sua atividade e remover o acesso depois. O [guia de conexões do Alby](https://guides.getalby.com/user-guide/alby-hub/app-connections) explica os controles de permissões, orçamento e validade.
+
+Escolha as permissões conforme os recursos que pretende usar:
+
+- **Informações da carteira (`get_info`)**: necessárias para a extensão verificar a conexão.
+- **Saldo (`get_balance`)**: permite exibir seus sats.
+- **Pagamentos (`pay_invoice`)**: permite enviar pagamentos.
+- **Faturas (`make_invoice`, `lookup_invoice`)**: permite criar e consultar faturas para receber fundos.
+- **Histórico (`list_transactions`)**: permite mostrar transações recentes.
+
+Defina um orçamento de gastos adequado para essa conexão do navegador. Confira se ele se renova e escolha uma data de expiração, se necessário. O orçamento no Hub e o limite de aprovação automática na extensão são controles separados. Verifique os dois antes de permitir pagamentos sem confirmação individual.
+
+## Cole o segredo de conexão NWC
+
+Conclua a criação da conexão no Hub e copie a URI completa, que começa com `nostr+walletconnect://`.
+
+<Callout type="warning">
+A URI é uma credencial. Quem tiver acesso a ela poderá exercer as permissões concedidas. Não a inclua em capturas de tela, mensagens de suporte, documentos compartilhados ou publicações.
+</Callout>
+
+Abra a extensão Nostr WoT, entre em **Carteira**, selecione **NWC**, cole a URI e conecte. A janela de ajuda do primeiro uso explica as opções de carteira. Você pode desativar a exibição automática dessa ajuda; isso não altera as permissões da carteira.
+
+O [tutorial de conexão NWC do Alby](https://guides.getalby.com/user-guide/browser-extension/link-wallet/alby-hub-via-nwc-link) mostra o processo com **a extensão do próprio Alby**. No Nostr WoT, use os passos Carteira → NWC descritos acima.
+
+## Confira o acesso sem enviar um pagamento
+
+Se autorizou a consulta ao saldo, compare o valor exibido com o Hub. Confira também o histórico caso tenha concedido essa permissão. A conexão não exige um pagamento de teste. Se algum recurso falhar, revise a permissão correspondente e a validade da conexão antes de substituir o segredo.
+
+O NWC define a conexão entre aplicativos. A custódia e a recuperação dos fundos dependem da carteira e da forma como seu Hub está hospedado; a escolha do protocolo, por si só, não determina essas condições.
+
+Se um pagamento indicar **resultado desconhecido**, consulte o histórico no Hub antes de tentar novamente. A ausência de resposta não comprova que o pagamento falhou. Para remover o acesso, revogue essa conexão no Hub; desconectar apenas a extensão não substitui a revogação.
+
+Volte à [visão geral das carteiras](/guides/configurar-carteira) ou consulte o [guia de configuração do LNbits](/guides/lnbits-wallet-setup).

@@ -74,13 +74,15 @@ Highlighted info, warning, or tip boxes.
 
 For academic-style references. Three components work together: `Citation`, `BibEntry`, and `Bibliography`.
 
+Use quoted literal IDs such as `id="1"`. The MDX renderer keeps `blockJS` enabled, which strips JavaScript expression props, including `id={1}`. Quoted IDs reach the citation components and produce matching citation and reference links.
+
 #### Inline Citation
 
 Place inline citation markers that link to a bibliography at the bottom of the post.
 
 ```mdx
-The Web of Trust model was first described by Phil Zimmermann in the PGP documentation.<Citation id={1} />
-Trust networks reduce spam by 85% compared to naive filtering approaches.<Citation id={2} />
+The Web of Trust model was first described by Phil Zimmermann in the PGP documentation.<Citation id="1" />
+Trust networks reduce spam by 85% compared to naive filtering approaches.<Citation id="2" />
 ```
 
 **Rendered output:** The text with superscript `[1]` and `[2]` markers that are clickable links to the bibliography.
@@ -92,7 +94,7 @@ Place at the end of the post. The `BibEntry` items link back to their inline cit
 ```mdx
 <Bibliography>
   <BibEntry
-    id={1}
+    id="1"
     authors="Zimmermann, P."
     title="PGP User's Guide, Volume I: Essential Topics"
     source="MIT Press"
@@ -100,7 +102,7 @@ Place at the end of the post. The `BibEntry` items link back to their inline cit
     url="https://www.philzimmermann.com/EN/essays/index.html"
   />
   <BibEntry
-    id={2}
+    id="2"
     authors="Garcia-Molina, H., Kamvar, S., Schlosser, M."
     title="The EigenTrust Algorithm for Reputation Management in P2P Networks"
     source="Proceedings of the 12th International Conference on World Wide Web"
@@ -377,3 +379,7 @@ Use this checklist when creating a new blog post:
 - [ ] Target keyword in title, description, and first paragraph
 - [ ] H2/H3 headings include related keywords
 - [ ] Internal links to relevant pages (guides, docs, features)
+
+### Localized internal links
+
+Use locale-free internal paths in Markdown links, for example `/guides/configurar-billetera` in Spanish content. The shared link component adds the current locale. Adding `/es` yourself produces `/es/es/...` after hydration. Keep the translated slug, and verify the rendered link in the browser.

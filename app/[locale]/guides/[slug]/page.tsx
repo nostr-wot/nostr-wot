@@ -1,3 +1,4 @@
+import ReadingTime from '@/components/ui/ReadingTime';
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import Image from 'next/image';
@@ -234,7 +235,7 @@ export default async function GuidePostPage({ params }: Props) {
                   <div className="flex items-center gap-3 text-sm text-gray-500 dark:text-gray-400">
                     <time dateTime={guide.date}>{formatDate(guide.date, locale)}</time>
                     <span>·</span>
-                    <span>{guide.readingTime}</span>
+                    <ReadingTime value={guide.readingTime} />
                   </div>
                 </div>
               </ScrollReveal>

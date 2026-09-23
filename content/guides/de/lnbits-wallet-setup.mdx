@@ -1,0 +1,73 @@
+---
+title: "LNbits mit Nostr WoT verbinden"
+description: "Verbinde deine LNbits-Wallet per NWC oder API mit Nostr WoT. Finde die Zugangsdaten, vergib Berechtigungen und prüfe Guthaben, Rechnungen und Zahlungsverlauf."
+excerpt: "Wähle eine NWC-Verbindung mit eigenen Limits oder verbinde dich direkt mit dem API-Schlüssel deiner LNbits-Wallet."
+date: "2026-09-23"
+author:
+  name: "Leon Acosta"
+  avatar: "/authors/leon-profile.jpg"
+  npub: "npub1gxdhmu9swqduwhr6zptjy4ya693zp3ql28nemy4hd97kuufyrqdqwe5zfk"
+featuredImage: "/images/guides/lnbits-wallet-setup/featured.jpg"
+previewImage: "/images/guides/lnbits-wallet-setup/preview.jpg"
+ogImage: "/images/guides/lnbits-wallet-setup/og.jpg"
+tags:
+  - "Lightning"
+  - "LNbits"
+  - "NWC"
+  - "API"
+published: true
+translationKey: "lnbits-wallet-setup"
+difficulty: "beginner"
+order: 16
+---
+
+Du kannst LNbits über **Nostr Wallet Connect (NWC)** oder die **HTTP-API** der Wallet mit der Nostr WoT Extension verbinden. Diese Anleitung setzt eine bestehende LNbits-Wallet voraus. Wer dein Guthaben verwahrt, hängt vom Betreiber der Instanz und ihrer Finanzierungsquelle ab. Die Wahl zwischen NWC und API ändert daran nichts.
+
+## Verbindung auswählen
+
+Mit **NWC** erstellst du eine eigene Verbindung für die Anwendung, mit getrennten Berechtigungen, Ausgabenlimits und Ablaufdatum. Der LNbits-Administrator muss dafür zuerst die NWC-Anbieter-Erweiterung aktivieren. Nutze den Reiter **LNbits** für direkten API-Zugriff, wenn du bereits den Schlüssel für ausgehende Zahlungen und die Instanz-URL hast. Das erfordert weniger Schritte, verwendet aber den API-Schlüssel der Wallet statt einer eigenen NWC-Freigabe.
+
+<a id="lnbits-nwc" className="block scroll-mt-32" />
+
+## Über NWC verbinden
+
+### LNbits-Instanz vorbereiten
+
+Der Administrator installiert **NWC Service Provider** und richtet das Relay unter `/nwcprovider/admin` ein. Das Relay überträgt die Nachrichten der Verbindung. Nutzt du eine fremde Instanz und findest diese Erweiterung nicht, frage beim Betreiber nach. Eine Anmeldung bei LNbits erstellt noch keine NWC-Verbindung.<Citation id="1" />
+
+### Verbindung für die Anwendung erstellen
+
+1. Öffne **NWC Service Provider** in LNbits und wähle die gewünschte Wallet.
+2. Klicke auf **+**, um eine Verbindung hinzuzufügen. Vergib einen verständlichen Namen wie **Nostr WoT**.
+3. Erlaube Wallet-Informationen (`get_info`), damit die Extension die Verbindung prüfen kann. Ergänze je nach Bedarf Berechtigungen für Guthaben, ausgehende Zahlungen, das Erstellen und Prüfen von Rechnungen und den Zahlungsverlauf.
+4. Lege ein Ausgabenlimit und ein Ablaufdatum fest, sofern verfügbar. Diese Grenzen gelten für diese Verbindung.
+5. Erstelle die Verbindung, wähle **Connect** und kopiere die vollständige Kopplungs-URL. Sie beginnt mit `nostr+walletconnect://`.
+6. Öffne in der Nostr WoT Extension **Wallet → NWC**, füge die URL ein und wähle **Verbinden**.
+
+Halte diese URL geheim: Wer sie besitzt, kann die erteilten Berechtigungen nutzen. Verwalte oder widerrufe die Verbindung in LNbits, sobald du sie nicht mehr benötigst.
+
+<a id="lnbits-api" className="block scroll-mt-32" />
+
+## Über die LNbits-API verbinden
+
+1. Öffne die betreffende Wallet in LNbits. Suche nach **API info** oder dem Bereich mit der API-Dokumentation der Wallet.
+2. Kopiere ihren **Admin API key**. LNbits zeigt auch einen Rechnungs-/Leseschlüssel an, mit dem keine ausgehenden Zahlungen möglich sind.<Citation id="2" />
+3. Öffne in der Nostr WoT Extension **Wallet → LNbits**.
+4. Trage die HTTPS-URL der Instanz und den Admin API key dieser Wallet ein und wähle **Verbinden**. Verwende die Adresse der Instanz, keine Wallet-Seiten-URL mit Zugangsdaten.
+
+<Callout type="warning">
+Der Admin API key erlaubt Ausgaben aus dieser Wallet. Er ist weder dein LNbits-Anmeldepasswort noch das Passwort des Instanz-Administrators. Füge ihn nur in das Feld für den API-Schlüssel ein. Eine NWC-Kopplungs-URL gehört in den NWC-Reiter.
+</Callout>
+
+## Ergebnis prüfen
+
+Prüfe nach dem Verbinden Guthaben und Zahlungsverlauf. Mit **Einzahlen** erstellst du eine Rechnung, um Sats zu empfangen. Eine fehlende NWC-Berechtigung kann einzelne Funktionen verhindern, obwohl die Verbindung funktioniert.
+
+Schlägt die Einrichtung fehl, prüfe die Instanz-URL oder die vollständige Kopplungs-URL, das Relay, das Ablaufdatum und die Berechtigung für Wallet-Informationen. Ist der Ausgang einer Zahlung unbekannt, prüfe zuerst den Verlauf, bevor du erneut zahlst. Zum Wechseln der Wallet trennst du die Verbindung in den Wallet-Einstellungen und kehrst zur Einrichtung zurück.
+
+Weitere Optionen findest du in der [Übersicht zur Wallet-Einrichtung](/guides/wallet-einrichten) und in der [Alby-Hub-Anleitung](/guides/alby-hub-nwc).
+
+<Bibliography>
+  <BibEntry id="1" authors="LNbits" title="NWC Provider" source="LNbits documentation" url="https://docs.lnbits.com/extensions/nwcprovider/" />
+  <BibEntry id="2" authors="LNbits" title="API Authentication" source="LNbits documentation" url="https://docs.lnbits.com/api/authentication#finding-your-keys" />
+</Bibliography>
