@@ -1,0 +1,56 @@
+---
+title: "Apps per NWC mit deiner Nostr-WoT-Wallet verbinden"
+description: "Erstelle eigene NWC-Verbindungen für LNbits, lege Tageslimits und Ablaufdaten fest und verwalte Zugriffe in Nostr WoT 0.8.3."
+excerpt: "Erstelle eigene NWC-Verbindungen für LNbits, lege Tageslimits und Ablaufdaten fest und verwalte Zugriffe in Nostr WoT 0.8.3."
+date: "2026-09-23"
+author:
+  name: "Leon Acosta"
+  avatar: "/authors/leon-profile.jpg"
+  npub: "npub1gxdhmu9swqduwhr6zptjy4ya693zp3ql28nemy4hd97kuufyrqdqwe5zfk"
+featuredImage: "/images/guides/lnbits-wallet-setup/featured.jpg"
+previewImage: "/images/guides/lnbits-wallet-setup/preview.jpg"
+ogImage: "/images/guides/lnbits-wallet-setup/og.jpg"
+tags:
+  - "Lightning"
+  - "LNbits"
+  - "NWC"
+  - "API"
+published: true
+translationKey: "nwc-app-connections"
+difficulty: "beginner"
+order: 17
+---
+
+Mit Nostr WoT Extension **0.8.3** kannst du eine bestehende LNbits-Wallet von Nostr WoT mit NWC-kompatiblen Apps verbinden. Erstelle für jede App eine eigene Verbindung unter **Wallet → Einstellungen → App-Verbindungen**. Alle verwenden dasselbe Wallet-Guthaben.
+
+## Vorbereitung
+
+Installiere [Version 0.8.3 von GitHub](https://github.com/nostr-wot/nostr-wot-extension/releases/tag/v0.8.3). Die Veröffentlichung in Browser-Stores erfolgt separat. Entsperre die Erweiterung und verbinde deine LNbits-Wallet von Nostr WoT. Bei Bedarf hilft die [LNbits-Anleitung](/guides/lnbits-wallet-setup).
+
+Diese Ansicht ist für LNbits-Wallets gedacht. Ein eigener Server benötigt den [Adapter zur Verbindungsverwaltung](https://github.com/nostr-wot/LNbits-proxy). Die Installation des NWC-Providers allein stellt die benötigte API nicht bereit.
+
+## Verbindung erstellen
+
+1. Öffne **Wallet → Einstellungen → App-Verbindungen** und erstelle eine neue Verbindung.
+2. Vergib einen erkennbaren Namen wie **Primal**. Verwende pro App eine eigene Verbindung.
+3. Lege ein positives Limit in Sats pro 24 Stunden sowie eine Laufzeit zwischen 1 und 365 Tagen fest. Das Formular startet mit **1.000 Sats** und **30 Tagen**; passe die Werte an.
+4. Erstelle die Verbindung. Kopiere die vollständige Zeichenfolge `nostr+walletconnect://` oder zeige den QR-Code an.
+5. Öffne in der Ziel-App die Option für NWC oder eine externe Wallet. Füge die Zeichenfolge ein oder scanne den QR-Code und bestätige. Nutze in Primal die NWC-Option, sofern deine Version sie anbietet.
+
+Die Verbindung erlaubt Zahlungen, Zahlungsabfragen und Wallet-Informationen. Sie erlaubt **keinen** Zugriff auf Guthaben oder Transaktionsverlauf und keine Rechnungserstellung. Apps, die solche Methoden benötigen, können eingeschränkt funktionieren.
+
+<Callout type="warning">
+Zeichenfolge und QR-Code erlauben Ausgaben innerhalb des Verbindungslimits. Teile sie nur mit der vorgesehenen App. Zahlungen über diese Verbindung erfordern keine zusätzliche Freigabe in der Erweiterung.
+</Callout>
+
+## Zugriff prüfen oder widerrufen
+
+In den App-Verbindungen siehst du aktive Verbindungen, Budgetverbrauch und Ablaufdatum. Lokal gespeicherte Verbindungen kannst du erneut anzeigen oder nach Bestätigung widerrufen. Jedes Limit gilt pro Verbindung; mehrere Verbindungen können dasselbe Guthaben ausgeben.
+
+Sperren oder Trennen der Erweiterung widerruft keine Verbindung. Widerrufe sie hier, um den Zugriff zu beenden. Beim Trennen oder Entfernen einer Wallet werden lokale Geheimnisse gelöscht. Bewahre den Zugang zur Wallet auf, um ihre Berechtigungen später zu verwalten. Auf anderen Geräten erstellte Verbindungen lassen sich auflisten und widerrufen, ihr Geheimnis lässt sich aber nicht zum Kopieren rekonstruieren.
+
+## Bei Problemen
+
+Aktualisiere nach einer unterbrochenen Erstellung zuerst die Liste. Prüfe Guthaben, Limit, Ablaufdatum, Relay-Verbindung und die von der App benötigten Methoden. Ist der Zahlungsausgang unklar, prüfe den Verlauf vor einem weiteren Versuch.
+
+Die [Versionshinweise zu 0.8.3](https://github.com/nostr-wot/nostr-wot-extension/releases/tag/v0.8.3) enthalten Änderungen und Downloads. Deine bestehende LNbits-Wallet kann weiterverwendet werden.
