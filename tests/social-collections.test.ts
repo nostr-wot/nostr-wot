@@ -14,3 +14,14 @@ test('default collection preserves existing news routing', () => {
 test('unrecognized collections cannot read arbitrary paths', () => {
   assert.throws(() => loadNewsIndex('../../'), /Unsupported social collection/);
 });
+
+
+test('only the exact verified community URL is allowed in social credits', async () => {
+  const { hasUnapprovedLink } = await import('../scripts/social/checks.mjs');
+  assert.equal(hasUnapprovedLink('La Crypta: https://lacrypta.ar/'), false);
+  assert.equal(hasUnapprovedLink('{url} and {url:/guides/nwc-app-connections}'), false);
+  for (const url of ['https://lacrypta.ar.evil.example/', 'https://lacrypta.ar/other', 'https://example.org/', 'https://nostr-wot.com/blog/manual']) {
+    assert.equal(hasUnapprovedLink(url), true, url);
+  }
+  assert.equal(hasUnapprovedLink('https://lacrypta.ar/ https://example.org/'), true);
+});
