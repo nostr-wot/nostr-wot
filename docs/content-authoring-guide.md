@@ -379,3 +379,7 @@ Use this checklist when creating a new blog post:
 - [ ] Target keyword in title, description, and first paragraph
 - [ ] H2/H3 headings include related keywords
 - [ ] Internal links to relevant pages (guides, docs, features)
+
+### Localized internal links
+
+Use locale-free internal paths in Markdown links, for example `/guides/configurar-billetera` in Spanish content. The shared link component adds the current locale. Adding `/es` yourself produces `/es/es/...` after hydration. Keep the translated slug, and verify the rendered link in the browser.
