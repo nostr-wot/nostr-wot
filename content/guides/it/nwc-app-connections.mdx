@@ -1,0 +1,56 @@
+---
+title: "Collega le app al tuo wallet Nostr WoT con NWC"
+description: "Crea connessioni NWC separate per LNbits, imposta limiti giornalieri e scadenze e gestisci gli accessi da Nostr WoT 0.8.3."
+excerpt: "Crea connessioni NWC separate per LNbits, imposta limiti giornalieri e scadenze e gestisci gli accessi da Nostr WoT 0.8.3."
+date: "2026-09-23"
+author:
+  name: "Leon Acosta"
+  avatar: "/authors/leon-profile.jpg"
+  npub: "npub1gxdhmu9swqduwhr6zptjy4ya693zp3ql28nemy4hd97kuufyrqdqwe5zfk"
+featuredImage: "/images/guides/lnbits-wallet-setup/featured.jpg"
+previewImage: "/images/guides/lnbits-wallet-setup/preview.jpg"
+ogImage: "/images/guides/lnbits-wallet-setup/og.jpg"
+tags:
+  - "Lightning"
+  - "LNbits"
+  - "NWC"
+  - "API"
+published: true
+translationKey: "nwc-app-connections"
+difficulty: "beginner"
+order: 17
+---
+
+Nostr WoT Extension **0.8.3** consente di collegare un wallet LNbits di Nostr WoT esistente alle app compatibili con NWC. Crea una connessione per ogni app in **Wallet → Impostazioni → Connessioni delle app**. Tutte usano lo stesso saldo.
+
+## Prima di iniziare
+
+Installa la [versione 0.8.3 da GitHub](https://github.com/nostr-wot/nostr-wot-extension/releases/tag/v0.8.3). La pubblicazione negli store dei browser avviene separatamente. Sblocca l’estensione e collega il tuo wallet LNbits di Nostr WoT. Se necessario, consulta la [guida LNbits](/guides/lnbits-wallet-setup).
+
+Questa schermata riguarda i wallet LNbits. Un server personalizzato richiede l’[adattatore per la gestione delle connessioni](https://github.com/nostr-wot/LNbits-proxy). Installare solo il provider NWC non fornisce l’API necessaria.
+
+## Crea una connessione
+
+1. Apri **Wallet → Impostazioni → Connessioni delle app** e scegli di creare una connessione.
+2. Inserisci un nome riconoscibile, come **Primal**. Usa una connessione distinta per ogni app.
+3. Imposta un limite positivo in sats ogni 24 ore e una scadenza tra 1 e 365 giorni. Il modulo parte da **1.000 sats** e **30 giorni**; adatta i valori alle tue esigenze.
+4. Crea la connessione. Copia la stringa completa `nostr+walletconnect://` oppure mostra il codice QR.
+5. Nell’app di destinazione, apri l’opzione NWC o wallet esterno, incolla la stringa o scansiona il QR e conferma. In Primal, usa l’opzione NWC se disponibile nella tua versione.
+
+La connessione permette pagamenti, ricerca dei pagamenti e informazioni sul wallet. **Non** permette di leggere saldo e cronologia né di creare fatture. Le app che richiedono questi metodi possono avere funzionalità limitate.
+
+<Callout type="warning">
+La stringa e il QR autorizzano spese entro i limiti della connessione. Condividili solo con l’app che vuoi collegare. Questi pagamenti non richiedono un’ulteriore approvazione nell’estensione.
+</Callout>
+
+## Controlla o revoca l’accesso
+
+Torna alle connessioni per vedere accessi attivi, budget utilizzato e scadenza. Puoi mostrare di nuovo una connessione salvata localmente o revocarla dopo conferma. I limiti valgono per singola connessione; più connessioni possono spendere lo stesso saldo.
+
+Bloccare o disconnettere l’estensione non revoca una connessione. Revocala qui per interromperne l’accesso. Disconnettere o rimuovere un wallet cancella i segreti locali; conserva l’accesso al wallet per gestire i permessi in seguito. Le connessioni create su un altro dispositivo possono essere elencate e revocate, ma il loro segreto non può essere ricostruito per copiarle.
+
+## Se qualcosa non funziona
+
+Aggiorna l’elenco dopo una creazione interrotta prima di creare un’altra connessione. Controlla saldo, limite, scadenza, relay e metodi richiesti dall’app. Se l’esito di un pagamento è incerto, controlla la cronologia prima di riprovare.
+
+Consulta le [novità e i download di 0.8.3](https://github.com/nostr-wot/nostr-wot-extension/releases/tag/v0.8.3). Puoi continuare a usare il wallet LNbits esistente.

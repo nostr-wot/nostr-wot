@@ -1,0 +1,56 @@
+---
+title: "Connecter des applications à votre portefeuille Nostr WoT avec NWC"
+description: "Créez des connexions NWC distinctes pour LNbits, fixez une limite quotidienne et une expiration, puis gérez les accès dans Nostr WoT 0.8.3."
+excerpt: "Créez des connexions NWC distinctes pour LNbits, fixez une limite quotidienne et une expiration, puis gérez les accès dans Nostr WoT 0.8.3."
+date: "2026-09-23"
+author:
+  name: "Leon Acosta"
+  avatar: "/authors/leon-profile.jpg"
+  npub: "npub1gxdhmu9swqduwhr6zptjy4ya693zp3ql28nemy4hd97kuufyrqdqwe5zfk"
+featuredImage: "/images/guides/lnbits-wallet-setup/featured.jpg"
+previewImage: "/images/guides/lnbits-wallet-setup/preview.jpg"
+ogImage: "/images/guides/lnbits-wallet-setup/og.jpg"
+tags:
+  - "Lightning"
+  - "LNbits"
+  - "NWC"
+  - "API"
+published: true
+translationKey: "nwc-app-connections"
+difficulty: "beginner"
+order: 17
+---
+
+Nostr WoT Extension **0.8.3** permet de connecter un portefeuille LNbits de Nostr WoT existant à des applications compatibles NWC. Créez une connexion par application dans **Portefeuille → Paramètres → Connexions des applications**. Toutes utilisent le même solde.
+
+## Avant de commencer
+
+Installez la [version 0.8.3 depuis GitHub](https://github.com/nostr-wot/nostr-wot-extension/releases/tag/v0.8.3). La publication dans les boutiques de navigateurs est distincte. Déverrouillez l’extension et connectez votre portefeuille LNbits de Nostr WoT. Consultez le [guide LNbits](/guides/lnbits-wallet-setup) si nécessaire.
+
+Cet écran concerne les portefeuilles LNbits. Un serveur personnalisé nécessite l’[adaptateur de gestion des connexions](https://github.com/nostr-wot/LNbits-proxy). Le fournisseur NWC seul ne fournit pas l’API de cet écran.
+
+## Créer une connexion
+
+1. Ouvrez **Portefeuille → Paramètres → Connexions des applications**, puis créez une connexion.
+2. Donnez-lui un nom reconnaissable, par exemple **Primal**. Utilisez une connexion distincte par application.
+3. Fixez une limite positive en sats par période de 24 heures et une expiration entre 1 et 365 jours. Les valeurs initiales sont **1 000 sats** et **30 jours** ; adaptez-les à votre usage.
+4. Créez la connexion et copiez la chaîne complète `nostr+walletconnect://`, ou affichez son QR code.
+5. Dans l’application destinataire, ouvrez l’option NWC ou portefeuille externe, collez la chaîne ou scannez le QR code, puis confirmez. Dans Primal, utilisez l’option NWC lorsqu’elle est disponible dans votre version.
+
+La connexion autorise les paiements, leur consultation et les informations du portefeuille. Elle **n’autorise pas** la lecture du solde ou de l’historique ni la création de factures. Les applications exigeant ces méthodes peuvent proposer des fonctions limitées.
+
+<Callout type="warning">
+La chaîne et le QR code autorisent des dépenses dans les limites de la connexion. Partagez-les uniquement avec l’application choisie. Ces paiements ne demandent pas de confirmation supplémentaire dans l’extension.
+</Callout>
+
+## Consulter ou révoquer un accès
+
+Revenez aux connexions pour voir les accès actifs, le budget utilisé et l’expiration. Vous pouvez afficher à nouveau une connexion enregistrée localement ou la révoquer après confirmation. Les limites sont propres à chaque connexion ; plusieurs connexions peuvent dépenser le même solde.
+
+Verrouiller ou déconnecter l’extension ne révoque pas les connexions. Révoquez-les ici pour arrêter leur accès. Déconnecter ou supprimer un portefeuille efface les secrets locaux ; conservez l’accès au portefeuille pour gérer ses autorisations ensuite. Une connexion créée sur un autre appareil peut être listée et révoquée, mais son secret ne peut pas être reconstitué pour la copier.
+
+## En cas de problème
+
+Actualisez la liste après une création interrompue avant de recommencer. Vérifiez le solde, la limite, l’expiration, le relais et les méthodes requises par l’application. Si le résultat d’un paiement est incertain, consultez l’historique avant de réessayer.
+
+Les [notes de version 0.8.3](https://github.com/nostr-wot/nostr-wot-extension/releases/tag/v0.8.3) contiennent les changements et téléchargements. Votre portefeuille LNbits existant suffit.
