@@ -84,6 +84,16 @@ export default async function DocsOverviewPage() {
               {t("overview.oracle.description")}
             </p>
           </Link>
+
+          <Link
+            href="/docs/lnbits-proxy"
+            className="block p-6 bg-gray-50 dark:bg-gray-900 rounded-xl border border-gray-200 dark:border-gray-800 hover:border-primary dark:hover:border-primary transition-colors"
+          >
+            <h3 className="font-semibold text-lg mb-2">{t("overview.lnbitsProxy.title")}</h3>
+            <p className="text-gray-600 dark:text-gray-400 text-sm">
+              {t("overview.lnbitsProxy.description")}
+            </p>
+          </Link>
         </div>
         </ScrollReveal>
 

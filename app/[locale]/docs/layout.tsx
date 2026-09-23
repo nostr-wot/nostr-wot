@@ -62,6 +62,21 @@ export default async function DocsLayout({ children }: DocsLayoutProps) {
       ],
     },
     {
+      title: t("sidebar.lnbitsProxy"),
+      links: [
+        { href: "/docs/lnbits-proxy", label: t("sidebar.proxyOverview") },
+        { href: "/docs/lnbits-proxy#architecture", label: t("sidebar.proxyArchitecture") },
+        { href: "/docs/lnbits-proxy#prerequisites", label: t("sidebar.proxyPrerequisites") },
+        { href: "/docs/lnbits-proxy#install", label: t("sidebar.proxyInstall") },
+        { href: "/docs/lnbits-proxy#endpoints", label: t("sidebar.proxyEndpoints") },
+        { href: "/docs/lnbits-proxy#nip98", label: t("sidebar.proxyNip98") },
+        { href: "/docs/lnbits-proxy#nginx", label: t("sidebar.proxyNginx") },
+        { href: "/docs/lnbits-proxy#process", label: t("sidebar.proxyProcess") },
+        { href: "/docs/lnbits-proxy#monitoring", label: t("sidebar.proxyMonitoring") },
+        { href: "/docs/lnbits-proxy#limits", label: t("sidebar.proxyLimits") },
+      ],
+    },
+    {
       title: t("sidebar.resources"),
       links: [
         { href: "/download", label: t("sidebar.extensionGuide") },
