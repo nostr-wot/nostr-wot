@@ -1,0 +1,63 @@
+---
+title: "Alby Hub über NWC verbinden"
+description: "Verbinde Alby Hub über NWC mit Nostr WoT. Lege Berechtigungen und Budget fest, prüfe das Guthaben und verwalte den Zugriff in deinem Hub."
+excerpt: "Verbinde Alby Hub über NWC mit Nostr WoT. Lege Berechtigungen und Budget fest, prüfe das Guthaben und verwalte den Zugriff in deinem Hub."
+date: "2026-09-23"
+author:
+  name: "Leon Acosta"
+  avatar: "/authors/leon-profile.jpg"
+  npub: "npub1gxdhmu9swqduwhr6zptjy4ya693zp3ql28nemy4hd97kuufyrqdqwe5zfk"
+featuredImage: "/images/guides/alby-hub-nwc/featured.jpg"
+previewImage: "/images/guides/alby-hub-nwc/preview.jpg"
+ogImage: "/images/guides/alby-hub-nwc/og.jpg"
+tags:
+  - "Lightning"
+  - "Alby Hub"
+  - "NWC"
+published: true
+seoTitle: "Alby Hub über NWC verbinden"
+seoDescription: "Verbinde Alby Hub über NWC mit Nostr WoT. Lege Berechtigungen und Budget fest, prüfe das Guthaben und verwalte den Zugriff in deinem Hub."
+translationKey: "alby-hub-nwc"
+difficulty: "beginner"
+order: 15
+---
+
+Mit Alby Hub kannst du deine vorhandene Lightning-Wallet über Nostr Wallet Connect (NWC) mit der Nostr WoT-Erweiterung verbinden. Dein Hub muss bereits laufen, erreichbar sein und über Guthaben verfügen. Diese Anleitung beschreibt die Verbindung zur Wallet. Die Installation von Hub und das Öffnen von Lightning-Kanälen sind eigene Schritte.
+
+<span id="alby-hub" className="block scroll-mt-32"></span>
+
+## Eine Verbindung in Alby Hub anlegen
+
+Öffne in Hub **Connections → Add Connection**. Wähle einen erkennbaren Namen, zum Beispiel „Nostr WoT Browser“. Eine eigene Verbindung erleichtert es, ihre Aktivitäten zuzuordnen und den Zugriff später zu widerrufen. Die [Alby-Anleitung zu App-Verbindungen](https://guides.getalby.com/user-guide/alby-hub/app-connections) erklärt Berechtigungen, Budget und Ablaufdatum.
+
+Wähle die Berechtigungen passend zu den gewünschten Funktionen:
+
+- **Wallet-Informationen (`get_info`)** benötigt die Erweiterung zur Prüfung der Verbindung.
+- **Guthaben (`get_balance`)** erlaubt die Anzeige deiner Sats.
+- **Zahlungen (`pay_invoice`)** erlaubt das Senden von Zahlungen.
+- **Rechnungen (`make_invoice`, `lookup_invoice`)** erlaubt das Erstellen und Prüfen von Rechnungen für Einzahlungen.
+- **Verlauf (`list_transactions`)** erlaubt die Anzeige letzter Transaktionen.
+
+Lege ein Ausgabenbudget fest, das du dieser Browser-Verbindung einräumen möchtest. Prüfe, ob es sich erneuert, und wähle bei Bedarf ein Ablaufdatum. Das Budget in Hub und die Grenze für automatische Freigaben in der Erweiterung sind getrennte Einstellungen. Prüfe beide, bevor du Zahlungen ohne einzelne Bestätigung zulässt.
+
+## Das NWC-Verbindungsgeheimnis einfügen
+
+Schließe die Einrichtung in Hub ab und kopiere die vollständige URI, die mit `nostr+walletconnect://` beginnt.
+
+<Callout type="warning">
+Die URI ist ein Zugangsschlüssel. Wer sie besitzt, kann die erteilten Berechtigungen nutzen. Teile sie weder in Screenshots noch in Supportnachrichten, gemeinsamen Dokumenten oder öffentlichen Beiträgen.
+</Callout>
+
+Öffne die Nostr WoT-Erweiterung, gehe zu **Wallet**, wähle **NWC**, füge die URI ein und verbinde dich. Das Hilfefenster beim ersten Aufruf erläutert die Wallet-Optionen. Du kannst seine automatische Anzeige abstellen; die Berechtigungen der Wallet bleiben davon unberührt.
+
+Albys [Anleitung zur NWC-Verknüpfung](https://guides.getalby.com/user-guide/browser-extension/link-wallet/alby-hub-via-nwc-link) beschreibt die Verbindung mit **Albys eigener Erweiterung**. Für Nostr WoT gelten die oben beschriebenen Schritte unter Wallet → NWC.
+
+## Den Zugriff ohne Zahlung prüfen
+
+Wenn du die Guthabenabfrage erlaubt hast, vergleiche die Anzeige mit Hub. Prüfe auch den Verlauf, sofern du diese Berechtigung erteilt hast. Für die Verbindung ist keine Testzahlung nötig. Funktioniert etwas nicht, kontrolliere die betreffende Berechtigung und das Ablaufdatum der Verbindung, bevor du den Zugangsschlüssel ersetzt.
+
+NWC beschreibt die Verbindung zwischen Anwendungen. Wer die Gelder verwahrt und wie du sie wiederherstellen kannst, hängt von deiner Wallet und deren Hosting ab. Das Protokoll allein legt diese Bedingungen nicht fest.
+
+Wird der Ausgang einer Zahlung als **unbekannt** angezeigt, prüfe den Zahlungsverlauf in Hub, bevor du einen neuen Versuch startest. Eine ausbleibende Antwort belegt keinen fehlgeschlagenen Zahlungsvorgang. Um den Zugriff zu beenden, widerrufe diese App-Verbindung in Hub. Nur die Erweiterung zu trennen, ersetzt diesen Widerruf nicht.
+
+Zurück zur [Wallet-Übersicht](/de/guides/wallet-einrichten) oder weiter zur [LNbits-Einrichtung](/de/guides/lnbits-wallet-setup).

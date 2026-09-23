@@ -1,7 +1,7 @@
 ---
 title: "Configurar tu Billetera Lightning"
-description: "Conecta tu billetera Lightning a la extension Nostr WoT. Tres opciones: Configuracion Rapida, Nostr Wallet Connect y LNbits para un control total."
-excerpt: "Configura tu billetera Lightning en la extension en menos de un minuto. Elige entre Configuracion Rapida, NWC o LNbits segun tus necesidades."
+description: "Conecta una billetera Lightning a Nostr WoT. Compara Configuración rápida, NWC y la API de LNbits, con guías de conexión para Alby Hub y LNbits."
+excerpt: "La extensión admite Configuración rápida, Nostr Wallet Connect y la API de LNbits. Elige la conexión adecuada para tu billetera."
 date: "2026-03-11"
 author:
   name: "Leon Acosta"
@@ -15,88 +15,65 @@ tags:
   - "NWC"
 published: true
 seoTitle: "Configurar tu Billetera Lightning en Nostr WoT"
-seoDescription: "Conecta tu billetera Lightning a la extension Nostr WoT. Tres opciones: Configuracion Rapida, Nostr Wallet Connect y LNbits para un control total."
+seoDescription: "Conecta una billetera Lightning a Nostr WoT. Compara Configuración rápida, NWC y la API de LNbits, con guías de conexión para Alby Hub y LNbits."
 ogImage: "/images/guides/setting-up-wallet/og.jpg"
 translationKey: "setting-up-wallet"
 difficulty: "beginner"
 order: 5
 ---
 
-La extension Nostr WoT incluye una billetera Lightning integrada. No necesitas otra extension ni una app aparte para enviar y recibir sats. Todo vive en el mismo lugar que tu identidad y tu red de confianza.
+La extensión Nostr WoT se conecta a una billetera Lightning para consultar el saldo, recibir sats y aprobar pagos desde el navegador. Abre la extensión, entra en **Billetera** y elige **Configuración rápida**, **NWC** o **LNbits**.
 
-Tienes tres formas de configurar tu billetera. Elige la que mejor se adapte a tu situacion.
+Si ya utilizas Alby Hub, sus conexiones de aplicaciones son una opción sencilla. Para una billetera LNbits existente, la API directa requiere menos pasos; NWC permite asignar permisos y presupuestos a cada conexión. Quién custodia los fondos depende de la billetera y de su operador, no del método de conexión.
 
-## Configuracion Rapida
+Encontrarás los pasos detallados en nuestra [guía de Alby Hub](/guides/alby-hub-nwc) y nuestra [guía de LNbits](/guides/lnbits-wallet-setup).
 
-Esta es la opcion mas sencilla. Un clic y estas listo.
+## Configuración rápida
 
-1. Abre la extension y ve a la pestana de **Wallet**.
-2. Haz clic en **Configuracion Rapida**.
-3. La extension crea una billetera automaticamente usando tu identidad Nostr.
+Elige **Configuración rápida** para crear una billetera custodial con el proveedor configurado. Cuando termine, utiliza **Depositar** para generar una factura Lightning. El proveedor custodia los fondos. Usar NWC o LNbits tampoco garantiza por sí solo la autocustodia.
 
-Sin formularios, sin claves adicionales, sin cuentas en servicios externos. Abres la pestana, presionas el boton y puedes empezar a zapear.
+<a id="alby-hub" className="block scroll-mt-32" />
 
-{/* TODO: Captura de pantalla del boton de Configuracion Rapida */}
+## Alby Hub mediante NWC
 
-<Callout type="tip">
-La Configuracion Rapida crea una billetera custodial — el proveedor guarda los fondos. Es perfecta para empezar y probar los zaps. Siempre puedes migrar a una opcion auto-custodial despues.
-</Callout>
+Necesitas un Alby Hub operativo con su billetera Lightning.
 
-## Nostr Wallet Connect (NWC)
+1. En Alby Hub, abre **Connections → Add Connection**.
+2. Crea una conexión exclusiva llamada **Nostr WoT**. Define los permisos, el presupuesto de gasto y, si quieres, una fecha de vencimiento.
+3. Habilita la información de la billetera (`get_info`) para validar la conexión. Añade saldo, pagos, creación y consulta de facturas e historial según lo que necesites. Los permisos determinan qué funciones estarán disponibles.
+4. Copia el secreto de conexión completo, que empieza con `nostr+walletconnect://`.
+5. En la extensión, selecciona **NWC**, pega el secreto y pulsa **Conectar**.
 
-Si ya tienes una billetera que te gusta, no necesitas cambiar. NWC te permite conectar tu billetera existente a la extension.
+Mantén este secreto privado: puede autorizar gastos. Puedes modificar o revocar la conexión desde Alby Hub. Consulta la [guía oficial de conexiones](https://guides.getalby.com/user-guide/alby-hub/app-connections).
 
-1. Abre tu billetera (Alby, Mutiny u otra compatible con NWC).
-2. Genera un string de conexion NWC en la configuracion de tu billetera.
-3. En la extension, ve a **Wallet** y selecciona **Nostr Wallet Connect**.
-4. Pega el string de conexion.
-5. La extension se conecta y muestra tu balance.
+<a id="lnbits-nwc" className="block scroll-mt-32" />
 
-Tus fondos se quedan en tu billetera. La extension solo actua como puente entre las apps de Nostr y tu billetera existente.
+## LNbits mediante NWC
 
-{/* TODO: Captura de pantalla del formulario de conexion NWC */}
+1. Pide al administrador de la instancia que instale **NWC Service Provider** y configure un relay en `/nwcprovider/admin`.
+2. Abre esa extensión en LNbits, selecciona tu billetera y añade una conexión con **+**.
+3. Habilita la información de la billetera y las operaciones necesarias. Define presupuesto y vencimiento cuando estén disponibles.
+4. Crea la conexión y copia su URL de emparejamiento.
+5. Pégala en la pestaña **NWC** de Nostr WoT y conecta la billetera.
 
-### Billeteras Compatibles
+Iniciar sesión en LNbits no genera una conexión NWC. La [guía oficial del proveedor](https://docs.lnbits.com/extensions/nwcprovider/) explica la configuración del relay y el formulario de conexión.
 
-Cualquier billetera que soporte el protocolo NWC funciona. Algunas de las mas populares:
+<a id="lnbits-api" className="block scroll-mt-32" />
 
-- **Alby** — extension de navegador y billetera web.
-- **Mutiny** — billetera auto-custodial con soporte NWC nativo.
-- **Otras** — cualquier implementacion que genere strings de conexion NWC.
+## LNbits mediante su API
 
-## LNbits
+1. Abre la billetera concreta en LNbits y busca **API info** o su panel de documentación de la API.
+2. Copia la **Admin API key** de esa billetera.
+3. En la pestaña **LNbits** de la extensión, introduce la URL HTTPS de la instancia y esa clave; después, conecta.
 
-Si corres tu propia instancia de LNbits, puedes conectarla directamente. Esta opcion te da el maximo control sobre tus fondos.
+La clave Admin API pertenece a la billetera: **no es la contraseña de acceso del administrador**. Permite enviar pagos. La clave de facturas o lectura no permite gastar y no sustituye la clave necesaria para usar todas las funciones. Consulta [dónde encontrar las claves de LNbits](https://docs.lnbits.com/api/authentication#finding-your-keys). Una URL de emparejamiento NWC se pega en **NWC**, no en el campo de clave API.
 
-1. En la extension, ve a **Wallet** y selecciona **LNbits**.
-2. Ingresa la URL de tu instancia de LNbits.
-3. Ingresa tu clave de API (Admin key o Invoice key segun tus necesidades).
-4. Haz clic en **Conectar**.
+## Otras billeteras y comprobaciones
 
-{/* TODO: Captura de pantalla del formulario de conexion LNbits */}
+En YakiHonne, copia o exporta un secreto NWC cuando tu billetera ofrezca esa opción. Otros proveedores NWC utilizan el mismo proceso; las operaciones disponibles dependen de su implementación y de los permisos.
 
-<Callout type="tip">
-Si usas LNbits con una Invoice key, la extension solo podra crear invoices para recibir pagos. Para enviar sats y hacer zaps, necesitas la Admin key. Decide que nivel de acceso quieres otorgar.
-</Callout>
+El plugin Nostr habitual de BTCPay Server se conecta **a** una billetera NWC externa. No emite un secreto para esta extensión. Utiliza una conexión independiente de la billetera real o de su puente NWC; consulta las [opciones Lightning de BTCPay](https://docs.btcpayserver.org/LightningNetwork/).
 
-## La Interfaz de la Billetera
+Tras conectar, revisa saldo e historial. Si falta alguna función, comprueba permisos, vencimiento y conectividad. Si el resultado de un pago es incierto, consulta el historial antes de repetirlo. Para cambiar de billetera, desconéctala desde sus ajustes y vuelve a la configuración.
 
-Una vez configurada, la billetera vive dentro del popup de la extension:
-
-- **Balance** visible en la parte superior.
-- **Depositar** con codigo QR para recibir sats.
-- **Enviar** pegando un invoice Lightning — ves el monto antes de confirmar.
-- **Historial** de transacciones con busqueda y paginacion.
-- **Configuracion** para cambiar de proveedor o ajustar parametros.
-
-Abre el popup, haz lo que necesites, cierralo. No estorba.
-
-## Cambiar de Proveedor
-
-Puedes cambiar el metodo de conexion en cualquier momento. Ve a la configuracion de la billetera y selecciona un proveedor diferente. Tu historial se mantiene, pero el balance mostrara el de la nueva billetera conectada.
-
-{/* TODO: Video del proceso completo de configuracion de billetera */}
-
-## Que Sigue?
-
-Con tu billetera configurada, aprende a [enviar zaps y configurar la auto-aprobacion](/guides/zaps-y-auto-aprobacion) para hacer micropagos sin friccion. Tambien puedes [reclamar tu Lightning Address](/guides/direccion-lightning) para recibir zaps facilmente.
+Continúa con [zaps y aprobación automática](/guides/zaps-y-auto-aprobacion) o [direcciones Lightning](/guides/direccion-lightning).

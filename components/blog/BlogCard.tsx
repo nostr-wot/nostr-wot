@@ -1,5 +1,7 @@
 'use client';
 
+import ReadingTime from '@/components/ui/ReadingTime';
+
 import Image from 'next/image';
 import { Link } from '@/i18n/routing';
 import { useLocale } from 'next-intl';
@@ -91,7 +93,7 @@ export function BlogCard({ post, featured = false }: BlogCardProps) {
                 <span>·</span>
                 <time dateTime={post.date}>{formatDate(post.date, locale)}</time>
                 <span>·</span>
-                <span>{post.readingTime}</span>
+                <ReadingTime value={post.readingTime} />
               </div>
             </div>
           </div>
@@ -131,7 +133,7 @@ export function BlogCard({ post, featured = false }: BlogCardProps) {
           </p>
           <div className="flex items-center justify-between text-xs text-gray-500 dark:text-gray-400 pt-4 border-t border-gray-100 dark:border-gray-700/50">
             <time dateTime={post.date}>{formatDate(post.date, locale)}</time>
-            <span>{post.readingTime}</span>
+            <ReadingTime value={post.readingTime} />
           </div>
         </div>
       </article>

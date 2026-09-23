@@ -1,0 +1,73 @@
+---
+title: "Connect LNbits to Nostr WoT"
+description: "Connect your LNbits wallet to Nostr WoT through NWC or its API. Find the right credentials, set permissions and check balance, invoices and payment history."
+excerpt: "Choose an NWC connection with its own limits or connect directly with your LNbits wallet API key."
+date: "2026-09-23"
+author:
+  name: "Leon Acosta"
+  avatar: "/authors/leon-profile.jpg"
+  npub: "npub1gxdhmu9swqduwhr6zptjy4ya693zp3ql28nemy4hd97kuufyrqdqwe5zfk"
+featuredImage: "/images/guides/lnbits-wallet-setup/featured.jpg"
+previewImage: "/images/guides/lnbits-wallet-setup/preview.jpg"
+ogImage: "/images/guides/lnbits-wallet-setup/og.jpg"
+tags:
+  - "Lightning"
+  - "LNbits"
+  - "NWC"
+  - "API"
+published: true
+translationKey: "lnbits-wallet-setup"
+difficulty: "beginner"
+order: 16
+---
+
+LNbits can connect to the Nostr WoT Extension in two ways: **Nostr Wallet Connect (NWC)** or the wallet's **HTTP API**. This guide starts with an existing LNbits wallet. Your instance operator and funding source determine who holds your funds; choosing NWC or API access does not change that.
+
+## Choose your connection
+
+Use **NWC** for a dedicated app connection with its own permissions, spending limits and expiry. Your LNbits administrator must first enable the NWC provider extension. Use the **LNbits** tab for direct API access when you already have your wallet's spending key and instance URL. It needs fewer setup steps, but shares the wallet's API credential rather than a separate NWC allowance.
+
+<a id="lnbits-nwc" className="block scroll-mt-32" />
+
+## Connect through NWC
+
+### Prepare the LNbits instance
+
+The instance administrator installs **NWC Service Provider** and configures its relay at `/nwcprovider/admin`. A relay carries the connection's messages. If you use someone else's instance and cannot see this extension, ask its operator whether it is available. A normal LNbits login does not create an NWC connection.<Citation id="1" />
+
+### Create your app connection
+
+1. Open **NWC Service Provider** in LNbits and select the wallet you want to use.
+2. Choose **+** to add a connection. Give it a recognizable name, such as **Nostr WoT**.
+3. Enable wallet information (`get_info`), which the extension needs to validate the connection. Enable balance, outgoing payments, invoice creation, invoice lookup and transaction history according to the features you want.
+4. Set a spending limit and expiry where available. These limits belong to this connection.
+5. Create the connection, choose **Connect**, and copy its complete pairing URL, beginning with `nostr+walletconnect://`.
+6. Open **Wallet → NWC** in the Nostr WoT Extension, paste the URL and choose **Connect**.
+
+Keep the pairing URL private. Anyone holding it can use the permissions you granted. Manage or revoke this connection in LNbits when you no longer need it.
+
+<a id="lnbits-api" className="block scroll-mt-32" />
+
+## Connect through the LNbits API
+
+1. Open the specific wallet in LNbits. Find **API info** or the wallet's API documentation panel.
+2. Copy its **Admin API key**. LNbits also displays an invoice/read key; that key cannot send payments.<Citation id="2" />
+3. In the Nostr WoT Extension, open **Wallet → LNbits**.
+4. Enter the instance's HTTPS URL and the wallet's Admin API key, then choose **Connect**. Use the instance address, not a wallet page URL containing credentials.
+
+<Callout type="warning">
+The Admin API key authorizes spending from this wallet. It is not your LNbits login password or the instance administrator's password. Paste it only into the extension's API-key field; an NWC pairing URL belongs in the NWC tab.
+</Callout>
+
+## Check the result
+
+After connecting, check the balance and transaction history. To receive sats, create an invoice with **Deposit**. A missing NWC permission can make one feature unavailable even when the connection works.
+
+If setup fails, check the instance URL or complete pairing URL, the relay configuration, connection expiry and wallet information permission. If a payment's outcome is unknown, check the wallet's history before paying again. To switch wallets, disconnect in wallet settings and return to setup.
+
+Return to the [wallet setup overview](/guides/setting-up-wallet) to compare providers, or read the [Alby Hub guide](/guides/alby-hub-nwc).
+
+<Bibliography>
+  <BibEntry id="1" authors="LNbits" title="NWC Provider" source="LNbits documentation" url="https://docs.lnbits.com/extensions/nwcprovider/" />
+  <BibEntry id="2" authors="LNbits" title="API Authentication" source="LNbits documentation" url="https://docs.lnbits.com/api/authentication#finding-your-keys" />
+</Bibliography>

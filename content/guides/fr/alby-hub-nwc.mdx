@@ -1,0 +1,63 @@
+---
+title: "Connecter Alby Hub avec NWC"
+description: "Connectez Alby Hub à Nostr WoT avec NWC. Réglez les autorisations et le budget, vérifiez le solde et gérez les accès depuis votre Hub."
+excerpt: "Connectez Alby Hub à Nostr WoT avec NWC. Réglez les autorisations et le budget, vérifiez le solde et gérez les accès depuis votre Hub."
+date: "2026-09-23"
+author:
+  name: "Leon Acosta"
+  avatar: "/authors/leon-profile.jpg"
+  npub: "npub1gxdhmu9swqduwhr6zptjy4ya693zp3ql28nemy4hd97kuufyrqdqwe5zfk"
+featuredImage: "/images/guides/alby-hub-nwc/featured.jpg"
+previewImage: "/images/guides/alby-hub-nwc/preview.jpg"
+ogImage: "/images/guides/alby-hub-nwc/og.jpg"
+tags:
+  - "Lightning"
+  - "Alby Hub"
+  - "NWC"
+published: true
+seoTitle: "Connecter Alby Hub avec NWC"
+seoDescription: "Connectez Alby Hub à Nostr WoT avec NWC. Réglez les autorisations et le budget, vérifiez le solde et gérez les accès depuis votre Hub."
+translationKey: "alby-hub-nwc"
+difficulty: "beginner"
+order: 15
+---
+
+Alby Hub permet de relier votre portefeuille Lightning à l’extension Nostr WoT avec Nostr Wallet Connect (NWC). Votre Hub doit déjà fonctionner, être accessible et disposer de fonds. Ce guide décrit la connexion du portefeuille ; il ne couvre ni l’installation de Hub ni l’ouverture de canaux Lightning.
+
+<span id="alby-hub" className="block scroll-mt-32"></span>
+
+## Créer une connexion dans Alby Hub
+
+Ouvrez Hub, puis **Connections → Add Connection**. Choisissez un nom reconnaissable, comme « Nostr WoT navigateur ». Une connexion dédiée facilite le suivi de son activité et la suppression de son accès. Le [guide des connexions Alby](https://guides.getalby.com/user-guide/alby-hub/app-connections) présente les réglages d’autorisations, de budget et d’expiration.
+
+Sélectionnez les autorisations correspondant aux fonctions souhaitées :
+
+- **Informations du portefeuille (`get_info`)** : nécessaires à la vérification de connexion par l’extension.
+- **Solde (`get_balance`)** : permet d’afficher vos sats.
+- **Paiements (`pay_invoice`)** : permet d’envoyer des paiements.
+- **Factures (`make_invoice`, `lookup_invoice`)** : permet de créer et de vérifier des factures de dépôt.
+- **Historique (`list_transactions`)** : permet d’afficher les transactions récentes.
+
+Définissez un budget de dépenses adapté à cette connexion du navigateur. Vérifiez son renouvellement et choisissez une date d’expiration si nécessaire. Le budget de Hub et le seuil d’approbation automatique de l’extension sont deux contrôles distincts. Examinez les deux avant d’autoriser des paiements sans confirmation individuelle.
+
+## Coller le secret de connexion NWC
+
+Terminez la création de la connexion dans Hub et copiez l’URI complète commençant par `nostr+walletconnect://`.
+
+<Callout type="warning">
+L’URI est un identifiant secret. Toute personne qui la possède peut exercer les autorisations accordées. Ne la partagez pas dans une capture d’écran, un message d’assistance, un document partagé ou une publication.
+</Callout>
+
+Ouvrez l’extension Nostr WoT, accédez au **Portefeuille**, choisissez **NWC**, collez l’URI et connectez-vous. La fenêtre d’aide du premier lancement présente les options disponibles. Vous pouvez désactiver son affichage automatique ; cela ne modifie pas les autorisations du portefeuille.
+
+Le [tutoriel NWC d’Alby](https://guides.getalby.com/user-guide/browser-extension/link-wallet/alby-hub-via-nwc-link) décrit l’association avec **l’extension Alby**. Pour Nostr WoT, suivez les étapes Portefeuille → NWC ci-dessus.
+
+## Vérifier l’accès sans effectuer de paiement
+
+Si vous avez autorisé la lecture du solde, comparez le montant affiché avec celui de Hub. Consultez aussi l’historique si cette autorisation est activée. Aucun paiement de test n’est nécessaire pour se connecter. Si une fonction échoue, vérifiez son autorisation et l’expiration de la connexion avant de remplacer le secret.
+
+NWC définit la connexion entre applications. La garde et la récupération des fonds dépendent du portefeuille et de son hébergement ; le choix du protocole ne les détermine pas à lui seul.
+
+Si un paiement affiche un **résultat inconnu**, consultez l’historique dans Hub avant de réessayer. Une réponse manquante ne prouve pas l’échec du paiement. Pour retirer l’accès, révoquez cette connexion dans Hub ; déconnecter uniquement l’extension ne remplace pas cette révocation.
+
+Revenez au [guide général des portefeuilles](/fr/guides/configurer-portefeuille) ou consultez le [guide de configuration LNbits](/fr/guides/lnbits-wallet-setup).

@@ -1,7 +1,7 @@
 ---
 title: "Configurar Carteira Lightning"
-description: "Conecte uma carteira Lightning a extensao Nostr WoT usando Quick Setup, NWC ou LNbits. Envie e receba sats diretamente pelo navegador em poucos minutos."
-excerpt: "Conecte sua carteira Lightning a extensao e comece a enviar e receber sats sem sair do navegador."
+description: "Conecte uma carteira Lightning ao Nostr WoT. Compare Configuração rápida, NWC e a API do LNbits, com guias de conexão para Alby Hub e LNbits."
+excerpt: "A extensão oferece Configuração rápida, Nostr Wallet Connect e acesso à API do LNbits. Escolha a conexão adequada para sua carteira."
 date: "2026-03-11"
 author:
   name: "Leon Acosta"
@@ -15,87 +15,65 @@ tags:
   - "NWC"
 published: true
 seoTitle: "Configurar Carteira Lightning na Extensao Nostr WoT"
-seoDescription: "Conecte uma carteira Lightning a extensao Nostr WoT usando Quick Setup, NWC ou LNbits. Envie e receba sats diretamente pelo navegador em poucos minutos."
+seoDescription: "Conecte uma carteira Lightning ao Nostr WoT. Compare Configuração rápida, NWC e a API do LNbits, com guias de conexão para Alby Hub e LNbits."
 ogImage: "/images/guides/setting-up-wallet/og.jpg"
 translationKey: "setting-up-wallet"
 difficulty: "beginner"
 order: 5
 ---
 
-A extensao Nostr WoT inclui suporte integrado a carteira Lightning, permitindo que voce envie e receba sats diretamente do navegador. Este guia mostra as tres formas de conectar uma carteira: Quick Setup, Nostr Wallet Connect (NWC) e LNbits.
+A extensão Nostr WoT conecta uma carteira Lightning para você consultar o saldo, receber sats e aprovar pagamentos pelo navegador. Abra a extensão, entre em **Carteira** e escolha **Configuração rápida**, **NWC** ou **LNbits**.
 
-## Quick Setup
+Se você já usa Alby Hub, as conexões de aplicativos são um caminho simples. Para uma carteira LNbits existente, a API direta exige menos etapas; NWC oferece permissões e orçamentos por conexão. A custódia dos fundos depende da carteira e de quem a opera, não do método de conexão.
 
-A maneira mais rapida de comecar. O Quick Setup cria uma carteira custodial conectada a extensao em poucos cliques.
+Veja as etapas detalhadas no nosso [guia do Alby Hub](/guides/alby-hub-nwc) ou no [guia do LNbits](/guides/lnbits-wallet-setup).
 
-1. Abra a extensao e va para a aba **Carteira**.
-2. Selecione **Quick Setup**.
-3. A extensao configura uma carteira automaticamente e conecta via NWC nos bastidores.
-4. Pronto. Voce ja pode enviar e receber sats.
+## Configuração rápida
 
-{/* TODO: Captura de tela do fluxo Quick Setup */}
+Escolha **Configuração rápida** para criar uma carteira custodial no provedor configurado. Após a criação, use **Depositar** para gerar uma fatura Lightning. O provedor guarda os fundos. NWC e LNbits também não garantem autocustódia por si só.
 
-<Callout type="tip">
-O Quick Setup e ideal para comecar rapidamente. Quando voce se sentir confortavel, pode migrar para uma carteira auto-custodiada como LNbits para ter controle total dos seus fundos.
-</Callout>
+<a id="alby-hub" className="block scroll-mt-32" />
 
-## Nostr Wallet Connect (NWC)
+## Alby Hub via NWC
 
-NWC e um protocolo aberto que conecta sua carteira Lightning a aplicacoes Nostr de forma segura. Se voce ja tem uma carteira compativel com NWC, essa e a opcao recomendada.
+Você precisa de um Alby Hub em funcionamento com sua carteira Lightning.
 
-### Como Conectar via NWC
+1. No Alby Hub, abra **Connections → Add Connection**.
+2. Crie uma conexão exclusiva chamada **Nostr WoT**. Defina permissões, orçamento de gastos e, se desejar, uma data de expiração.
+3. Permita informações da carteira (`get_info`) para validar a conexão. Acrescente saldo, pagamentos, criação e consulta de faturas e histórico conforme necessário. As permissões determinam quais funções ficam disponíveis.
+4. Copie o segredo de conexão completo, que começa com `nostr+walletconnect://`.
+5. Na extensão, selecione **NWC**, cole o segredo e clique em **Conectar**.
 
-1. Na sua carteira Lightning (como Alby, Mutiny ou outra compativel), gere uma string de conexao NWC.
-2. Abra a extensao e va para a aba **Carteira**.
-3. Selecione **Nostr Wallet Connect**.
-4. Cole a string de conexao NWC.
-5. A extensao testa a conexao e confirma que esta funcionando.
+Mantenha esse segredo privado: ele pode autorizar gastos. Você pode alterar ou revogar a conexão no Alby Hub. Consulte o [guia oficial de conexões](https://guides.getalby.com/user-guide/alby-hub/app-connections).
 
-{/* TODO: Captura de tela da tela de conexao NWC */}
+<a id="lnbits-nwc" className="block scroll-mt-32" />
 
-### Vantagens do NWC
+## LNbits via NWC
 
-- Voce mantem o controle da sua carteira. A extensao nunca tem acesso direto aos seus fundos.
-- A comunicacao entre a extensao e a carteira acontece via relays Nostr, criptografada de ponta a ponta.
-- Voce pode revogar a conexao a qualquer momento pela sua carteira.
+1. Peça ao administrador da instância para instalar **NWC Service Provider** e configurar um relay em `/nwcprovider/admin`.
+2. Abra essa extensão no LNbits, selecione sua carteira e adicione uma conexão com **+**.
+3. Ative as informações da carteira e as operações necessárias. Defina orçamento e expiração, quando disponíveis.
+4. Crie a conexão e copie a URL de pareamento.
+5. Cole a URL na aba **NWC** da extensão Nostr WoT e conecte a carteira.
 
-## LNbits
+Entrar no LNbits não cria uma conexão NWC. O [guia oficial do provedor](https://docs.lnbits.com/extensions/nwcprovider/) explica a configuração do relay e o formulário de conexão da carteira.
 
-LNbits e uma plataforma de carteira Lightning de codigo aberto que voce pode hospedar por conta propria. Se voce quer soberania total, esta e a melhor opcao.
+<a id="lnbits-api" className="block scroll-mt-32" />
 
-### Conectando o LNbits
+## LNbits pela API
 
-1. Acesse sua instancia LNbits e crie uma carteira (ou use uma existente).
-2. Va para as extensoes do LNbits e ative a extensao **Nostr Wallet Connect**.
-3. Gere uma string de conexao NWC no LNbits.
-4. Abra a extensao Nostr WoT, va para a aba **Carteira** e selecione **Nostr Wallet Connect**.
-5. Cole a string de conexao do LNbits.
+1. Abra a carteira específica no LNbits e procure **API info** ou o painel de documentação da API.
+2. Copie a **Admin API key** dessa carteira.
+3. Na aba **LNbits** da extensão, informe a URL HTTPS da instância e essa chave; depois, conecte.
 
-{/* TODO: Captura de tela da extensao NWC no LNbits */}
+A chave Admin API é uma credencial da carteira, **não a senha de login do administrador**. Ela permite pagamentos de saída. A chave de faturas ou leitura não pode gastar e não substitui a chave necessária para usar todas as funções. Veja [onde encontrar as chaves do LNbits](https://docs.lnbits.com/api/authentication#finding-your-keys). Uma URL de pareamento NWC deve ser colada em **NWC**, não no campo de chave API.
 
-<Callout type="tip">
-Se voce nao quer hospedar seu proprio LNbits, existem instancias publicas disponiveis. Mas lembre-se: ao usar uma instancia de terceiros, voce esta confiando nesse operador com seus fundos.
-</Callout>
+## Outras carteiras e verificações
 
-## Verificando a Conexao
+No YakiHonne, copie ou exporte um segredo NWC quando sua carteira oferecer essa opção. Outros provedores NWC usam o mesmo processo; as operações disponíveis dependem da implementação e das permissões.
 
-Apos conectar sua carteira por qualquer metodo, verifique se tudo esta funcionando:
+O plugin Nostr padrão do BTCPay Server se conecta **a** uma carteira NWC externa. Ele não gera um segredo de conexão para esta extensão. Use uma conexão separada da carteira de origem ou da sua ponte NWC; consulte as [opções Lightning do BTCPay](https://docs.btcpayserver.org/LightningNetwork/).
 
-1. Clique no icone da extensao e va para a aba **Carteira**.
-2. Voce deve ver seu saldo atual.
-3. Tente enviar um pequeno valor para si mesmo ou para um contato para confirmar que pagamentos estao funcionando.
+Após conectar, confira saldo e histórico. Se uma função estiver indisponível, verifique permissões, expiração e conectividade. Se o resultado de um pagamento for desconhecido, consulte o histórico antes de pagar novamente. Para trocar de carteira, desconecte-a nas configurações e volte à tela inicial de conexão.
 
-## Gerenciando sua Carteira
-
-Na aba Carteira, voce pode:
-
-- Verificar seu saldo atualizado.
-- Ver o historico de transacoes.
-- Desconectar a carteira e conectar outra.
-- Configurar limites de gasto para aprovacao automatica.
-
-{/* TODO: Video do processo completo de configuracao da carteira */}
-
-## O Que Vem a Seguir?
-
-Com a carteira conectada, aprenda a usar [Zaps e Aprovacao Automatica](/guides/zaps-e-aprovacao-automatica) para enviar sats com facilidade. Voce tambem pode [reivindicar seu Endereco Lightning](/guides/endereco-lightning) para receber pagamentos de forma simples.
+Continue com [zaps e aprovação automática](/guides/zaps-e-aprovacao-automatica) ou [endereços Lightning](/guides/endereco-lightning).
