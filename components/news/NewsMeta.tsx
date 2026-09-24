@@ -1,3 +1,4 @@
+import ReadingTime from '@/components/ui/ReadingTime';
 function InfoGlyph({ className = '' }: { className?: string }) {
   return (
     <svg
@@ -65,7 +66,7 @@ export function NewsMeta({
         </span>
         <time dateTime={post.date}>{formattedDate}</time>
         <span aria-hidden="true">·</span>
-        <span>{post.readingTime}</span>
+        <ReadingTime value={post.readingTime} />
       </div>
 
       <p className="mt-4 flex items-start gap-2 text-sm text-gray-600 dark:text-gray-400">

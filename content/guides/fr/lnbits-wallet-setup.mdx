@@ -1,0 +1,75 @@
+---
+title: "Connecter LNbits à Nostr WoT"
+description: "Connectez votre portefeuille LNbits à Nostr WoT par NWC ou par API. Retrouvez les clés, réglez les autorisations et consultez solde, factures et historique."
+excerpt: "Choisissez une connexion NWC avec ses propres limites ou utilisez directement la clé API de votre portefeuille LNbits."
+date: "2026-09-23"
+author:
+  name: "Leon Acosta"
+  avatar: "/authors/leon-profile.jpg"
+  npub: "npub1gxdhmu9swqduwhr6zptjy4ya693zp3ql28nemy4hd97kuufyrqdqwe5zfk"
+featuredImage: "/images/guides/lnbits-wallet-setup/featured.jpg"
+previewImage: "/images/guides/lnbits-wallet-setup/preview.jpg"
+ogImage: "/images/guides/lnbits-wallet-setup/og.jpg"
+tags:
+  - "Lightning"
+  - "LNbits"
+  - "NWC"
+  - "API"
+published: true
+translationKey: "lnbits-wallet-setup"
+difficulty: "beginner"
+order: 16
+---
+
+LNbits se connecte à l'extension Nostr WoT par **Nostr Wallet Connect (NWC)** ou par l'**API HTTP** du portefeuille. Ce guide suppose que vous possédez déjà un portefeuille LNbits. La garde des fonds dépend de l'opérateur de l'instance et de sa source de financement ; choisir NWC ou l'API ne change pas cette relation.
+
+## Choisir la connexion
+
+Utilisez **NWC** pour créer une connexion dédiée à l'application, avec ses autorisations, son plafond de dépenses et sa date d'expiration. L'administrateur LNbits doit d'abord activer l'extension qui fournit NWC. Choisissez l'onglet **LNbits** pour accéder directement à l'API si vous possédez déjà la clé permettant de dépenser et l'URL de l'instance. Cette méthode demande moins d'étapes, mais utilise la clé du portefeuille plutôt qu'une autorisation NWC distincte.
+
+<a id="lnbits-nwc" className="block scroll-mt-32" />
+
+## Se connecter par NWC
+
+### Préparer l'instance LNbits
+
+L'administrateur installe **NWC Service Provider** et configure son relais dans `/nwcprovider/admin`. Le relais transmet les messages de la connexion. Si vous utilisez l'instance d'un tiers et ne voyez pas cette extension, demandez à l'opérateur si elle est disponible. Se connecter à LNbits ne crée pas automatiquement de connexion NWC.<Citation id="1" />
+
+### Créer la connexion de l'application
+
+1. Ouvrez **NWC Service Provider** dans LNbits et sélectionnez le portefeuille souhaité.
+2. Cliquez sur **+** pour ajouter une connexion. Donnez-lui un nom reconnaissable, comme **Nostr WoT**.
+3. Autorisez les informations du portefeuille (`get_info`), nécessaires à la validation de la connexion. Ajoutez les droits de consultation du solde, de paiement, de création et de consultation des factures et d'accès à l'historique selon vos besoins.
+4. Définissez un plafond de dépenses et une date d'expiration lorsque ces options sont proposées. Ces limites concernent cette connexion.
+5. Créez la connexion, choisissez **Connect** et copiez l'URL d'association complète, qui commence par `nostr+walletconnect://`.
+6. Dans l'extension Nostr WoT, ouvrez **Portefeuille → NWC**, collez l'URL et choisissez **Connecter**.
+
+Gardez cette URL privée : toute personne qui la possède peut exercer les droits accordés. Gérez ou révoquez la connexion dans LNbits lorsque vous n'en avez plus besoin.
+
+<a id="lnbits-api" className="block scroll-mt-32" />
+
+## Se connecter par l'API LNbits
+
+1. Ouvrez le portefeuille concerné dans LNbits. Cherchez **API info** ou son panneau de documentation de l'API.
+2. Copiez son **Admin API key**. LNbits affiche aussi une clé de facturation/lecture, qui ne permet pas d'envoyer de paiements.<Citation id="2" />
+3. Dans l'extension Nostr WoT, ouvrez **Portefeuille → LNbits**.
+4. Saisissez l'URL HTTPS de l'instance et l'Admin API key du portefeuille, puis choisissez **Connecter**. Utilisez l'adresse de l'instance, pas l'URL d'une page du portefeuille contenant des identifiants.
+
+<Callout type="warning">
+L'Admin API key autorise les dépenses de ce portefeuille. Ce n'est ni votre mot de passe de connexion à LNbits ni celui de l'administrateur de l'instance. Collez-la uniquement dans le champ de clé API ; une URL d'association NWC appartient à l'onglet NWC.
+</Callout>
+
+## Vérifier le résultat
+
+Après la connexion, consultez le solde et l'historique. Pour recevoir des sats, créez une facture avec **Déposer**. Une autorisation NWC manquante peut rendre une fonction indisponible même si la connexion fonctionne.
+
+En cas d'échec, vérifiez l'URL de l'instance ou l'URL d'association complète, le relais, la date d'expiration et le droit d'accès aux informations du portefeuille. Si le résultat d'un paiement est inconnu, consultez l'historique avant de payer à nouveau. Pour changer de portefeuille, déconnectez-le dans ses paramètres et revenez à la configuration.
+
+Revenez au [guide général des portefeuilles](/guides/configurer-portefeuille) pour comparer les options ou consultez le [guide Alby Hub](/guides/alby-hub-nwc).
+
+[Connecter des applications à votre portefeuille Nostr WoT avec NWC](/guides/nwc-app-connections)
+
+<Bibliography>
+  <BibEntry id="1" authors="LNbits" title="NWC Provider" source="LNbits documentation" url="https://docs.lnbits.com/extensions/nwcprovider/" />
+  <BibEntry id="2" authors="LNbits" title="API Authentication" source="LNbits documentation" url="https://docs.lnbits.com/api/authentication#finding-your-keys" />
+</Bibliography>

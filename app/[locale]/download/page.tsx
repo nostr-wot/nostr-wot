@@ -72,6 +72,8 @@ const FEATURES = [
 
 export default async function DownloadPage() {
   const t = await getTranslations("download");
+  const home = await getTranslations("home");
+  const features = await getTranslations("features");
 
   // JSON-LD structured data for the extension
   const jsonLd = {
@@ -80,7 +82,7 @@ export default async function DownloadPage() {
     "name": "Nostr Web of Trust Extension",
     "applicationCategory": "BrowserApplication",
     "operatingSystem": "Chrome, Brave, Edge, Opera, Firefox, Safari (coming soon)",
-    "description": "Nostr identity provider, NIP-07 signer, Lightning wallet, and profile/relay manager browser extension. Manage multiple accounts, sign events, encrypt messages, send zaps, and edit your profile, relays, and mute list.",
+    "description": t("meta.description"),
     "url": "https://nostr-wot.com/download",
     "downloadUrl": "https://chromewebstore.google.com/detail/nostr-wot-extension/gfmefgdkmjpjinecjchlangpamhclhdo",
     "softwareVersion": "0.3.0",
@@ -97,19 +99,19 @@ export default async function DownloadPage() {
       "worstRating": "1",
     },
     "featureList": [
-      "NIP-07 signer and identity provider",
-      "Multi-account management with HD derivation",
-      "NIP-04 and NIP-44 encryption",
-      "NIP-46 remote signer support",
-      "Encrypted vault with auto-lock",
-      "Profile metadata management (kind:0)",
-      "NIP-65 relay list management",
-      "NIP-51 mute list management",
-      "Watch-only and read-only accounts",
-      "6 languages supported",
-      "Granular per-site permissions",
-      "Built-in Lightning wallet with NWC and LNbits support",
-      "WebLN provider for seamless zap payments",
+      home("identity.features.signer.title"),
+      home("identity.features.multiAccount.title"),
+      home("identity.features.signer.description"),
+      features("chooseSource.hybrid.title"),
+      home("identity.features.vault.title"),
+      home("profile.features.metadata.title"),
+      home("profile.features.relays.title"),
+      home("profile.features.mutes.title"),
+      home("identity.features.multiAccount.description"),
+      features("extensionOverview.i18n.title"),
+      home("identity.features.permissions.title"),
+      home("wallet.description"),
+      home("wallet.features.webln.title"),
     ],
     "screenshot": "https://nostr-wot.com/og-image.png",
     "author": {

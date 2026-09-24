@@ -1,4 +1,5 @@
 "use client";
+import { formatGraphError } from "@/lib/graph/error-messages";
 import { useEffect, useState } from "react";
 import { useLocale, useTranslations } from "next-intl";
 import { nip19 } from "nostr-tools";
@@ -10,6 +11,7 @@ export default function SavedGraphs({ onOpen, onRemove }: {
   const t = useTranslations("playground.saved"), locale = useLocale();
   const [items, setItems] = useState<SavedGraph[]>([]);
   const [selected, setSelected] = useState(new Set<string>());
+  const errors = useTranslations("playground.sourceErrors");
   const [busy, setBusy] = useState(false), [error, setError] = useState<string | null>(null);
   useEffect(() => {
     let active = true;
@@ -23,7 +25,7 @@ export default function SavedGraphs({ onOpen, onRemove }: {
   async function remove(keys: string[]) {
     if (!keys.length || !window.confirm(t("confirmDelete", { count: keys.length }))) return;
     setBusy(true); setError(null);
-    try { await onRemove(keys); setSelected(new Set()); } catch (e) { setError(e instanceof Error ? e.message : t("deleteFailed")); }
+    try { await onRemove(keys); setSelected(new Set()); } catch (error) { setError(formatGraphError(error, errors, t("deleteFailed"))); }
     finally { setBusy(false); }
   }
   return <details className="mb-4 rounded-xl border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-900 p-4">

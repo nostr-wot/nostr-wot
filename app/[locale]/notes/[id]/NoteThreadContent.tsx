@@ -1,8 +1,10 @@
 "use client";
 
+import { formatRelativeTime } from "@/lib/relative-time";
+
 import Image from "next/image";
 import { Link } from "@/i18n/routing";
-import { useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { useWoTContext } from "nostr-wot-sdk/react";
 import { hexToNpub } from "@/lib/graph/transformers";
@@ -45,19 +47,6 @@ function parseContent(content: string): { text: string; images: string[] } {
   return { text, images };
 }
 
-function formatRelativeTime(ts: number): string {
-  const now = Math.floor(Date.now() / 1000);
-  const diff = now - ts;
-  if (diff < 60) return "just now";
-  if (diff < 3600) return `${Math.floor(diff / 60)}m`;
-  if (diff < 86400) return `${Math.floor(diff / 3600)}h`;
-  if (diff < 604800) return `${Math.floor(diff / 86400)}d`;
-  return new Date(ts * 1000).toLocaleDateString(undefined, {
-    month: "short",
-    day: "numeric",
-    year: "numeric",
-  });
-}
 
 function authorDisplay(author: AuthorMeta, fallbackPubkey: string): string {
   return (
@@ -111,6 +100,8 @@ function NoteEngagementFooter({
 }
 
 function ReplyCard({ reply }: { reply: ThreadReply }) {
+  const locale = useLocale();
+  const u = useTranslations("ui");
   const { text, images } = useMemo(() => parseContent(reply.content), [reply.content]);
   const authorName = authorDisplay(reply.author, reply.pubkey);
   const npub = hexToNpub(reply.pubkey);
@@ -136,7 +127,7 @@ function ReplyCard({ reply }: { reply: ThreadReply }) {
               {authorName}
             </span>
             <span className="text-xs text-gray-500 dark:text-gray-400">
-              {formatRelativeTime(reply.createdAt)}
+              {formatRelativeTime(reply.createdAt, locale)}
             </span>
           </div>
           <Link
@@ -144,7 +135,7 @@ function ReplyCard({ reply }: { reply: ThreadReply }) {
             className="text-xs text-gray-400 hover:text-primary transition-colors"
             onClick={(e) => e.stopPropagation()}
           >
-            profile
+            {u("profile")}
           </Link>
         </header>
 
@@ -161,7 +152,7 @@ function ReplyCard({ reply }: { reply: ThreadReply }) {
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img
                   src={src}
-                  alt="reply media"
+                  alt={u("replyMedia")}
                   className="w-full h-32 object-cover rounded-lg bg-gray-200 dark:bg-gray-700"
                   loading="lazy"
                 />
@@ -188,6 +179,8 @@ export default function NoteThreadContent({
   parentAuthor,
   reactionCount,
 }: Props) {
+  const u = useTranslations("ui");
+  const locale = useLocale();
   const t = useTranslations("notes");
   const { wot, isReady: isWotReady } = useWoTContext();
 
@@ -322,7 +315,7 @@ export default function NoteThreadContent({
                 <p className="text-xs text-primary truncate">{author.nip05}</p>
               )}
               <p className="text-xs text-gray-500 dark:text-gray-400">
-                {formatRelativeTime(event.createdAt)}
+                {formatRelativeTime(event.createdAt, locale)}
               </p>
             </div>
           </header>
@@ -340,7 +333,7 @@ export default function NoteThreadContent({
                   {/* eslint-disable-next-line @next/next/no-img-element */}
                   <img
                     src={src}
-                    alt="note media"
+                    alt={u("noteMedia")}
                     className="w-full h-56 object-cover rounded-lg bg-gray-200 dark:bg-gray-700"
                     loading="lazy"
                   />

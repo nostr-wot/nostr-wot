@@ -26,6 +26,7 @@ const storageNotice: Record<Locale, string> = {
 
 export function NewsletterForm() {
   const t = useTranslations("home.newsletter");
+  const u = useTranslations("ui");
   const pageLocale = useLocale();
   const locale = locales.includes(pageLocale as Locale) ? pageLocale as Locale : null;
   const [email, setEmail] = useState("");
@@ -47,17 +48,17 @@ export function NewsletterForm() {
         body: JSON.stringify({ email, locale }),
       });
 
-      const data = await response.json();
-
       if (!response.ok) {
-        throw new Error(data.error || "Failed to subscribe");
+        setStatus("error");
+        setErrorMessage(u(response.status === 429 ? "subscribeRateLimit" : response.status === 400 ? "subscribeInvalid" : "subscribeError"));
+        return;
       }
 
       setStatus("success");
       setEmail("");
-    } catch (error) {
+    } catch {
       setStatus("error");
-      setErrorMessage(error instanceof Error ? error.message : "An error occurred");
+      setErrorMessage(u("subscribeError"));
     }
   };
 

@@ -6,7 +6,12 @@ import { type Locale } from "@/i18n/config";
 
 import EcosystemDirectory from "@/components/projects/EcosystemDirectory";
 import ecosystemData from "@/data/ecosystem-projects.json";
-import spanishEcosystemData from "@/data/ecosystem-projects.es.json";
+import esEcosystemData from "@/data/ecosystem-projects.es.json";
+import deEcosystemData from "@/data/ecosystem-projects.de.json";
+import frEcosystemData from "@/data/ecosystem-projects.fr.json";
+import itEcosystemData from "@/data/ecosystem-projects.it.json";
+import ptEcosystemData from "@/data/ecosystem-projects.pt.json";
+import ruEcosystemData from "@/data/ecosystem-projects.ru.json";
 import { ecosystemJsonLd, serializeJsonLd, type EcosystemData } from "@/lib/ecosystem-projects";
 
 
@@ -57,7 +62,8 @@ const PROJECTS = [
 export default async function ProjectsPage({ params }: Props) {
   const { locale } = await params;
   const t = await getTranslations("projects");
-  const data = (locale === "es" ? spanishEcosystemData : ecosystemData) as EcosystemData;
+  const dataByLocale = { en: ecosystemData, es: esEcosystemData, de: deEcosystemData, fr: frEcosystemData, it: itEcosystemData, pt: ptEcosystemData, ru: ruEcosystemData };
+  const data = (dataByLocale[locale as Locale] ?? ecosystemData) as EcosystemData;
   const jsonLd = ecosystemJsonLd(data, getFullUrl("/projects", locale as Locale), locale);
   const localPath = (path: string) => locale === "en" ? path : `/${locale}${path}`;
 

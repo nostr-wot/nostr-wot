@@ -13,14 +13,38 @@
     "badge": "Lo que obtienes",
     "title": "Identidad, monedero y perfil — una sola extensión",
     "description": "Todo lo que necesitas para Nostr en una sola instalación. Sin hacer malabares con varias extensiones.",
-    "signer": { "title": "Firmante NIP-07", "description": "Firma eventos y cifra mensajes (NIP-04 y NIP-44) en cualquier cliente de Nostr" },
-    "vault": { "title": "Bóveda cifrada", "description": "Almacenamiento de claves cifrado con AES-256-GCM, bloqueo automático y respaldo seguro" },
-    "multiAccount": { "title": "Multicuenta", "description": "Derivación HD, solo lectura, firmante remoto NIP-46 — cambia de identidad al instante" },
-    "wallet": { "title": "Monedero Lightning", "description": "Monedero integrado para zaps con NWC, LNbits o configuración rápida en un clic" },
-    "badges": { "title": "Perfil y relays", "description": "Edita tu perfil kind:0 y gestiona los relays NIP-65 y tu lista de silenciados NIP-51" },
-    "permissions": { "title": "Permisos granulares", "description": "Controles por cuenta, por dominio y por método con registro de actividad" },
-    "webln": { "title": "Proveedor WebLN", "description": "Los sitios pueden solicitar pagos a través de window.webln con tu aprobación" },
-    "i18n": { "title": "6 idiomas", "description": "Inglés, español, portugués, alemán, francés e italiano" }
+    "signer": {
+      "title": "Firmante NIP-07",
+      "description": "Firma eventos y cifra mensajes (NIP-04 y NIP-44) en cualquier cliente de Nostr"
+    },
+    "vault": {
+      "title": "Bóveda cifrada",
+      "description": "Almacenamiento de claves cifrado con AES-256-GCM, bloqueo automático y respaldo seguro"
+    },
+    "multiAccount": {
+      "title": "Multicuenta",
+      "description": "Derivación HD, solo lectura, firmante remoto NIP-46 — cambia de identidad al instante"
+    },
+    "wallet": {
+      "title": "Monedero Lightning",
+      "description": "Monedero integrado para zaps con NWC, LNbits o configuración rápida en un clic"
+    },
+    "badges": {
+      "title": "Perfil y relays",
+      "description": "Edita tu perfil kind:0 y gestiona los relays NIP-65 y tu lista de silenciados NIP-51"
+    },
+    "permissions": {
+      "title": "Permisos granulares",
+      "description": "Controles por cuenta, por dominio y por método con registro de actividad"
+    },
+    "webln": {
+      "title": "Proveedor WebLN",
+      "description": "Los sitios pueden solicitar pagos a través de window.webln con tu aprobación"
+    },
+    "i18n": {
+      "title": "6 idiomas",
+      "description": "Inglés, español, portugués, alemán, francés e italiano"
+    }
   },
   "universalApi": {
     "badge": "API de firmante NIP-07",
@@ -32,50 +56,256 @@
     "badge": "Configura tu cuenta",
     "title": "Tres formas de traer tu identidad",
     "description": "Elige lo que se ajuste a tus necesidades",
-    "remote": { "title": "Crear claves nuevas", "description": "Genera un par de claves nuevo en segundos. Derivadas por HD y cifradas en la bóveda desde el principio.", "features": { "instant": "Incorporación instantánea", "noStorage": "Claves derivadas por HD (BIP-32)", "default": "Cifradas en reposo", "selfHosted": "Respalda tu semilla cuando quieras" }, "bestFor": "Nuevos usuarios que empiezan desde cero en Nostr" },
-    "local": { "title": "Importar nsec", "description": "¿Ya tienes claves? Pega tu nsec o semilla y la extensión se encarga de la firma localmente.", "features": { "privacy": "Las claves nunca salen de tu dispositivo", "relays": "Trae tu identidad existente", "offline": "Firma totalmente sin conexión", "export": "Exporta/reimporta cuando quieras" }, "bestFor": "Usuarios de Nostr existentes que migran" },
-    "hybrid": { "title": "Firmante remoto NIP-46", "description": "Mantén las claves en un bunker o firmante remoto. La extensión enruta las solicitudes de firma sin retener la clave.", "features": { "fast": "Las claves permanecen en el bunker", "privacy": "Nada sensible se almacena localmente", "coverage": "Funciona con cualquier firmante NIP-46", "fallback": "Añade también cuentas de solo lectura" }, "recommended": "Avanzado" }
+    "remote": {
+      "title": "Crear claves nuevas",
+      "description": "Genera un par de claves nuevo en segundos. Derivadas por HD y cifradas en la bóveda desde el principio.",
+      "features": {
+        "instant": "Incorporación instantánea",
+        "noStorage": "Claves derivadas por HD (BIP-32)",
+        "default": "Cifradas en reposo",
+        "selfHosted": "Respalda tu semilla cuando quieras"
+      },
+      "bestFor": "Nuevos usuarios que empiezan desde cero en Nostr"
+    },
+    "local": {
+      "title": "Importar nsec",
+      "description": "¿Ya tienes claves? Pega tu nsec o semilla y la extensión se encarga de la firma localmente.",
+      "features": {
+        "privacy": "Las claves nunca salen de tu dispositivo",
+        "relays": "Trae tu identidad existente",
+        "offline": "Firma totalmente sin conexión",
+        "export": "Exporta/reimporta cuando quieras"
+      },
+      "bestFor": "Usuarios de Nostr existentes que migran"
+    },
+    "hybrid": {
+      "title": "Firmante remoto NIP-46",
+      "description": "Mantén las claves en un bunker o firmante remoto. La extensión enruta las solicitudes de firma sin retener la clave.",
+      "features": {
+        "fast": "Las claves permanecen en el bunker",
+        "privacy": "Nada sensible se almacena localmente",
+        "coverage": "Funciona con cualquier firmante NIP-46",
+        "fallback": "Añade también cuentas de solo lectura"
+      },
+      "recommended": "Avanzado"
+    }
   },
   "trustScoring": {
     "badge": "Permisos por sitio",
     "title": "No todos los sitios obtienen el mismo acceso",
     "description": "Define lo que cada app puede hacer",
     "formula": "permiso = cuenta × dominio × método",
-    "distance": { "title": "Ámbitos de permiso", "description": "Los permisos se limitan tan estrictamente como quieras:", "headers": { "hops": "Ámbito", "default": "Se aplica a", "custom": "Significado" }, "rows": { "hop1": "Cuenta", "hop1Weight": "1 identidad", "hop1Meaning": "Qué clave puede firmar", "hop2": "Dominio", "hop2Weight": "1 sitio", "hop2Meaning": "Qué app está solicitando", "hop3": "Método", "hop3Weight": "1 llamada", "hop3Meaning": "signEvent, nip44, etc.", "hop4": "Tipo", "hop4Weight": "1 tipo de evento", "hop4Meaning": "Limitar signEvent por kind" } },
-    "bonuses": { "title": "Modos de aprobación", "description": "Decide cuánto se te consulta:", "headers": { "signal": "Modo", "multiplier": "Comportamiento" }, "rows": { "hop2Paths": "Preguntar siempre", "hop2Bonus": "Solicitar", "hop3Paths": "Recordar durante la sesión", "hop3Bonus": "Automático", "hop4Paths": "Permitir siempre", "hop4Bonus": "Silencioso", "maxBonus": "Revoca cualquier permiso al instante" } },
-    "thresholds": { "title": "Niveles de acceso", "description": "Establece límites por sitio:", "trusted": { "label": "Permitido", "range": "Sitio de confianza", "meaning": "Firma sin solicitudes" }, "neutral": { "label": "Preguntar", "range": "Sitio nuevo", "meaning": "Solicitar aprobación" }, "untrusted": { "label": "Bloqueado", "range": "Sitio denegado", "meaning": "Rechazar todas las solicitudes" } }
+    "distance": {
+      "title": "Ámbitos de permiso",
+      "description": "Los permisos se limitan tan estrictamente como quieras:",
+      "headers": {
+        "hops": "Ámbito",
+        "default": "Se aplica a",
+        "custom": "Significado"
+      },
+      "rows": {
+        "hop1": "Cuenta",
+        "hop1Weight": "1 identidad",
+        "hop1Meaning": "Qué clave puede firmar",
+        "hop2": "Dominio",
+        "hop2Weight": "1 sitio",
+        "hop2Meaning": "Qué app está solicitando",
+        "hop3": "Método",
+        "hop3Weight": "1 llamada",
+        "hop3Meaning": "signEvent, nip44, etc.",
+        "hop4": "Tipo",
+        "hop4Weight": "1 tipo de evento",
+        "hop4Meaning": "Limitar signEvent por kind"
+      }
+    },
+    "bonuses": {
+      "title": "Modos de aprobación",
+      "description": "Decide cuánto se te consulta:",
+      "headers": {
+        "signal": "Modo",
+        "multiplier": "Comportamiento"
+      },
+      "rows": {
+        "hop2Paths": "Preguntar siempre",
+        "hop2Bonus": "Solicitar",
+        "hop3Paths": "Recordar durante la sesión",
+        "hop3Bonus": "Automático",
+        "hop4Paths": "Permitir siempre",
+        "hop4Bonus": "Silencioso",
+        "maxBonus": "Revoca cualquier permiso al instante"
+      }
+    },
+    "thresholds": {
+      "title": "Niveles de acceso",
+      "description": "Establece límites por sitio:",
+      "trusted": {
+        "label": "Permitido",
+        "range": "Sitio de confianza",
+        "meaning": "Firma sin solicitudes"
+      },
+      "neutral": {
+        "label": "Preguntar",
+        "range": "Sitio nuevo",
+        "meaning": "Solicitar aprobación"
+      },
+      "untrusted": {
+        "label": "Bloqueado",
+        "range": "Sitio denegado",
+        "meaning": "Rechazar todas las solicitudes"
+      }
+    }
   },
-  "formula": { "badge": "Bóveda cifrada", "title": "Tus claves. Cifradas. Locales.", "example": { "title": "Ejemplo:", "description": "Tus claves privadas se sellan con AES-256-GCM y una clave derivada de tu contraseña mediante PBKDF2 (210.000 iteraciones).", "note": "Nada sale de tu navegador." } },
+  "formula": {
+    "badge": "Bóveda cifrada",
+    "title": "Tus claves. Cifradas. Locales.",
+    "example": {
+      "title": "Ejemplo:",
+      "description": "Tus claves privadas se sellan con AES-256-GCM y una clave derivada de tu contraseña mediante PBKDF2 (210.000 iteraciones).",
+      "note": "Nada sale de tu navegador."
+    }
+  },
   "settings": {
     "badge": "Perfil y relays",
     "title": "Gestiona tu presencia en Nostr",
-    "relays": { "title": "Lista de relays (NIP-65)", "description": "Elige tus relays de lectura y escritura:" },
-    "syncDepth": { "title": "Perfil (kind:0)", "description": "Edita los metadatos que muestran los clientes:", "headers": { "depth": "Campo", "nodes": "Ejemplo", "storage": "Tipo", "time": "Tipo de dato" } },
-    "cache": { "title": "Bloqueo automático", "ttl": "Temporizador:", "ttlDesc": "Bloquea la bóveda tras la inactividad", "ttlDefault": "predeterminado: 15 min", "maxEntries": "Contraseña:", "maxEntriesDesc": "Requerida para desbloquear y firmar", "maxEntriesDefault": "mín. 8 caracteres" },
-    "lists": { "title": "Lista de silenciados (NIP-51)", "blocklist": { "title": "Pubkeys silenciadas", "description": "Oculta cuentas en clientes compatibles publicando una lista de silenciados NIP-51.", "add": "+ Añadir pubkey a silenciar" }, "trustlist": { "title": "Palabras silenciadas", "description": "Filtra temas y frases que prefieres no ver.", "add": "+ Añadir palabra o hashtag silenciado" } }
+    "relays": {
+      "title": "Lista de relays (NIP-65)",
+      "description": "Elige tus relays de lectura y escritura:"
+    },
+    "syncDepth": {
+      "title": "Perfil (kind:0)",
+      "description": "Edita los metadatos que muestran los clientes:",
+      "headers": {
+        "depth": "Campo",
+        "nodes": "Ejemplo",
+        "storage": "Tipo",
+        "time": "Tipo de dato"
+      }
+    },
+    "cache": {
+      "title": "Bloqueo automático",
+      "ttl": "Temporizador:",
+      "ttlDesc": "Bloquea la bóveda tras la inactividad",
+      "ttlDefault": "predeterminado: 15 min",
+      "maxEntries": "Contraseña:",
+      "maxEntriesDesc": "Requerida para desbloquear y firmar",
+      "maxEntriesDefault": "mín. 8 caracteres"
+    },
+    "lists": {
+      "title": "Lista de silenciados (NIP-51)",
+      "blocklist": {
+        "title": "Pubkeys silenciadas",
+        "description": "Oculta cuentas en clientes compatibles publicando una lista de silenciados NIP-51.",
+        "add": "+ Añadir pubkey a silenciar"
+      },
+      "trustlist": {
+        "title": "Palabras silenciadas",
+        "description": "Filtra temas y frases que prefieres no ver.",
+        "add": "+ Añadir palabra o hashtag silenciado"
+      }
+    }
   },
-  "dashboard": { "badge": "Cuentas", "title": "Cambia de identidad con un clic", "nodes": "Cuentas", "edges": "Sitios aprobados", "cacheHitRate": "Estado de la bóveda", "avgQueryTime": "Latencia de firma", "lastSync": "Cuenta activa: {time}", "visualize": { "title": "Selector de cuentas", "comingSoon": "", "description": "Mantén varias identidades y cambia el firmante activo al instante" } },
+  "dashboard": {
+    "badge": "Cuentas",
+    "title": "Cambia de identidad con un clic",
+    "nodes": "Cuentas",
+    "edges": "Sitios aprobados",
+    "cacheHitRate": "Estado de la bóveda",
+    "avgQueryTime": "Latencia de firma",
+    "lastSync": "Cuenta activa: {time}",
+    "visualize": {
+      "title": "Selector de cuentas",
+      "comingSoon": "",
+      "description": "Mantén varias identidades y cambia el firmante activo al instante"
+    }
+  },
   "wallet": {
     "badge": "Monedero Lightning",
     "title": "Zaps integrados. Sin apps adicionales.",
     "description": "Envía sats, recibe zaps y gestiona tu saldo sin salir de la extensión. Tres formas de conectar:",
-    "quickSetup": { "title": "Configuración rápida", "description": "Consigue un monedero en un clic — sin configuración manual. Ideal para empezar con los zaps rápido." },
-    "nwc": { "title": "Nostr Wallet Connect", "description": "Pega tu URI de NWC para conectar cualquier monedero Lightning externo que ya uses." },
-    "lnbits": { "title": "LNbits", "description": "Conecta tu instancia de LNbits con una clave de administrador para acceso directo a la API." },
-    "webln": { "title": "Proveedor WebLN", "description": "La extensión inyecta window.webln para que las apps de Nostr puedan solicitar pagos automáticamente — con tu permiso." },
-    "autoApprove": { "title": "Aprobar pagos pequeños automáticamente", "description": "Establece un umbral en sats. Los pagos por debajo se aprueban automáticamente — sin ventana emergente para cada zap." }
+    "quickSetup": {
+      "title": "Configuración rápida",
+      "description": "Consigue un monedero en un clic — sin configuración manual. Ideal para empezar con los zaps rápido."
+    },
+    "nwc": {
+      "title": "Nostr Wallet Connect",
+      "description": "Pega tu URI de NWC para conectar cualquier monedero Lightning externo que ya uses."
+    },
+    "lnbits": {
+      "title": "LNbits",
+      "description": "Conecta tu instancia de LNbits con una clave de administrador para acceso directo a la API."
+    },
+    "webln": {
+      "title": "Proveedor WebLN",
+      "description": "La extensión inyecta window.webln para que las apps de Nostr puedan solicitar pagos automáticamente — con tu permiso."
+    },
+    "autoApprove": {
+      "title": "Aprobar pagos pequeños automáticamente",
+      "description": "Establece un umbral en sats. Los pagos por debajo se aprueban automáticamente — sin ventana emergente para cada zap."
+    }
   },
   "privacy": {
     "badge": "Privacidad",
     "title": "Tus datos, tus reglas",
-    "remote": { "title": "Custodia local", "description": "Las claves privadas están cifradas y nunca se envían a ningún sitio", "features": { "noContent": "Ninguna clave sale nunca de la bóveda", "onlyPubkey": "Solo se comparten las firmas" } },
-    "local": { "title": "Sin rastreo", "description": "La extensión no se comunica con nadie", "features": { "noExternal": "Sin solicitudes externas", "noTracking": "Sin rastreo", "noAnalytics": "Sin analíticas", "export": "Exporta tus datos cuando quieras" } }
+    "remote": {
+      "title": "Custodia local",
+      "description": "Las claves privadas están cifradas y nunca se envían a ningún sitio",
+      "features": {
+        "noContent": "Ninguna clave sale nunca de la bóveda",
+        "onlyPubkey": "Solo se comparten las firmas"
+      }
+    },
+    "local": {
+      "title": "Sin rastreo",
+      "description": "La extensión no se comunica con nadie",
+      "features": {
+        "noExternal": "Sin solicitudes externas",
+        "noTracking": "Sin rastreo",
+        "noAnalytics": "Sin analíticas",
+        "export": "Exporta tus datos cuando quieras"
+      }
+    }
   },
   "getStarted": {
     "badge": "Empezar",
     "title": "En marcha en minutos",
-    "steps": { "install": { "title": "Instala la extensión", "description": "Añádela a Chrome, Firefox o Brave" }, "pubkey": { "title": "Configura tu cuenta", "description": "Crea claves nuevas, importa un nsec, añade solo lectura o conéctate vía NIP-46" }, "mode": { "title": "Asegura tu bóveda", "description": "Establece una contraseña y un temporizador de bloqueo automático" }, "scoring": { "title": "Configura los permisos por sitio", "description": "Elige qué puede firmar cada app y aprueba las solicitudes" }, "browse": { "title": "Navega por Nostr", "description": "Tu identidad y monedero te acompañan a todas partes" } }
+    "steps": {
+      "install": {
+        "title": "Instala la extensión",
+        "description": "Añádela a Chrome, Firefox o Brave"
+      },
+      "pubkey": {
+        "title": "Configura tu cuenta",
+        "description": "Crea claves nuevas, importa un nsec, añade solo lectura o conéctate vía NIP-46"
+      },
+      "mode": {
+        "title": "Asegura tu bóveda",
+        "description": "Establece una contraseña y un temporizador de bloqueo automático"
+      },
+      "scoring": {
+        "title": "Configura los permisos por sitio",
+        "description": "Elige qué puede firmar cada app y aprueba las solicitudes"
+      },
+      "browse": {
+        "title": "Navega por Nostr",
+        "description": "Tu identidad y monedero te acompañan a todas partes"
+      }
+    }
   },
-  "api": { "badge": "API para desarrolladores", "title": "Crea apps de Nostr con window.nostr", "viewDocs": "Ver la documentación completa de la API" },
-  "pricing": { "title": "Gratis. Para siempre. Código abierto.", "description": "Bifurca la extensión, usa el SDK o autoaloja el Oracle — haz lo que quieras." }
+  "api": {
+    "badge": "API para desarrolladores",
+    "title": "Crea apps de Nostr con window.nostr",
+    "viewDocs": "Ver la documentación completa de la API"
+  },
+  "pricing": {
+    "title": "Gratis. Para siempre. Código abierto.",
+    "description": "Bifurca la extensión, usa el SDK o autoaloja el Oracle — haz lo que quieras."
+  },
+  "pageDetails": {
+    "installDescription": "Añádela a Chrome, Brave, Edge, Opera o Firefox",
+    "vaultDescription": "Establece una contraseña y un temporizador de bloqueo automático para tus claves cifradas",
+    "approveRequest": "Tú apruebas cada solicitud",
+    "noTrackingAnalytics": "Sin seguimiento ni analíticas",
+    "offline": "Funciona completamente sin conexión",
+    "maximumPrivacy": "Máxima privacidad"
+  }
 }

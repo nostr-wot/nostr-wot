@@ -1,5 +1,7 @@
 "use client";
 
+import { useTranslations } from "next-intl";
+
 import { useEffect, useState, ReactNode } from "react";
 import { DocsSidebar } from "./DocsSidebar";
 import { TableOfContents } from "./TableOfContents";
@@ -35,6 +37,7 @@ export function DocsLayout({
   tocItems,
   tocTitle,
 }: DocsLayoutProps) {
+  const t = useTranslations("docs");
   const [activeSection, setActiveSection] = useState<string>("");
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
@@ -79,7 +82,7 @@ export function DocsLayout({
           <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
           </svg>
-          Navigation
+          {t("labels.navigation")}
         </button>
       </div>
 
@@ -120,7 +123,7 @@ export function DocsLayout({
         {/* Right sidebar - table of contents */}
         <aside className="hidden xl:block w-56 flex-shrink-0">
           <div className="sticky top-24 max-h-[calc(100vh-8rem)]">
-            <TableOfContents items={tocItems} title={tocTitle} />
+            <TableOfContents items={tocItems} title={tocTitle ?? t("sidebar.onThisPage")} />
           </div>
         </aside>
       </div>

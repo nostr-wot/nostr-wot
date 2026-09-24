@@ -9,6 +9,8 @@ import { Input } from "@/components/ui";
 import { formatPubkey } from "@/lib/graph/transformers";
 
 export default function SearchBar() {
+  const g = useTranslations("playground");
+  const u = useTranslations("ui");
   const t = useTranslations("playground");
   const { filters, setSearchQuery, clearSearch } = useGraphFilters();
   const { filteredData } = useGraph();
@@ -109,7 +111,7 @@ export default function SearchBar() {
           <button
             onClick={handleClear}
             className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-300"
-            aria-label="Clear search"
+            aria-label={u("clearSearch")}
           >
             <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
               <path
@@ -135,7 +137,7 @@ export default function SearchBar() {
               {node.picture ? (
                 <img
                   src={node.picture}
-                  alt={`${node.label || "User"} avatar`}
+                  alt={u("avatar", { name: node.label || u("user") })}
                   className="w-8 h-8 rounded-full object-cover"
                 />
               ) : (
@@ -154,7 +156,7 @@ export default function SearchBar() {
                 </p>
               </div>
               <span className="text-xs text-gray-400">
-                {node.distance} hop{node.distance !== 1 ? "s" : ""}
+                {g("sync.hops", { count: node.distance })}
               </span>
             </button>
           ))}

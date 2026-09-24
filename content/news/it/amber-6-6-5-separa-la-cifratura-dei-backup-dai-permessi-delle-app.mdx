@@ -1,0 +1,52 @@
+---
+title: "Amber 6.6.5 separa la cifratura dei backup dai permessi delle app"
+description: "Amber 6.6.5 cambia la cifratura dei backup del firmatario dopo che 6.6.4 ha corretto una perdita clearnet all'avvio di Tor. Sono correzioni, non prove di sfruttamento."
+excerpt: "Amber ora deriva una chiave di backup dedicata fuori dallo spazio di derivazione NIP-44, impedendo ai permessi memorizzati delle app di decifrare il backup."
+date: "2026-09-21"
+publishedAt: "2026-09-22"
+backfilled: false
+type: "story"
+tags: ["Nostr", "Sicurezza", "Privacy", "Firmatario"]
+featuredImage: "/images/news/amber-6-6-5-separates-backup-encryption-from-app-permissions.svg"
+translationKey: "amber-6-6-5-separates-backup-encryption-from-app-permissions"
+sources:
+  - title: "Versione Amber v6.6.5"
+    url: "https://github.com/greenart7c3/Amber/releases/tag/v6.6.5"
+    publisher: "greenart7c3/Amber"
+    date: "2026-09-21"
+  - title: "Versione Amber v6.6.4"
+    url: "https://github.com/greenart7c3/Amber/releases/tag/v6.6.4"
+    publisher: "greenart7c3/Amber"
+    date: "2026-09-14"
+published: true
+---
+
+[Amber 6.6.5](https://github.com/greenart7c3/Amber/releases/tag/v6.6.5) modifica il confine crittografico dei backup delle applicazioni. I backup pubblicati come eventi `kind 30078` sono ora cifrati con una chiave dedicata, derivata dalla chiave dell'account tramite HKDF fuori dallo spazio di derivazione NIP-44. Secondo le note di rilascio, un'applicazione con un permesso `nip44_decrypt` memorizzato non può più recuperare e decifrare il backup.
+
+La differenza conta perché Amber è un firmatario. Un'app può chiedergli di decifrare contenuti NIP-44 senza ricevere la chiave di identità dell'utente. Prima della 6.6.5, lo stesso permesso poteva raggiungere un backup cifrato con quella chiave. Le note dicono che il backup può contenere segreti NIP-46 specifici per applicazione e chiavi locali. Un permesso destinato ai messaggi arrivava quindi ai dati di recupero.
+
+Il nuovo progetto non rimuove i backup dai relay e non introduce un nuovo tipo di evento. Cambia la chiave usata per il contenuto. Un contesto HKDF separato tiene la chiave di backup fuori dalle chiavi accessibili con il permesso NIP-44 memorizzato.
+
+## Una migrazione, non un taglio netto
+
+I backup esistenti possono ancora usare la vecchia cifratura. Amber 6.6.5 mantiene un metodo alternativo per ripristinarli. La successiva pubblicazione riuscita li sostituisce con il nuovo formato, secondo le note.
+
+Questa scelta mantiene la compatibilità durante la transizione. Chi aggiorna ma non pubblica un altro backup può avere ancora un vecchio record su un relay. Il rilascio non afferma che venga eliminato subito, e l'aggiornamento dell'app non dimostra che ogni copia remota sia stata sostituita.
+
+La stessa versione corregge un altro difetto del ripristino. Se la pubblicazione dei backup era disattivata, uscire e rientrare poteva impedire la comparsa della richiesta di ripristino. La versione 6.6.5 ripristina quella richiesta.
+
+## La condizione di gara Tor corretta nella 6.6.4
+
+La versione precedente, [Amber 6.6.4](https://github.com/greenart7c3/Amber/releases/tag/v6.6.4), riguardava un altro confine di privacy. Le note dicono che il caricamento dei profili e le chiamate di rete all'avvio potevano contattare direttamente i relay prima del completamento del caricamento dell'impostazione Tor. La prima connessione poteva quindi aggirare temporaneamente la scelta dell'utente.
+
+La 6.6.4 limita anche la finestra di bootstrap del daemon Tor integrato e ripristina le connessioni quando Tor torna, anche dopo un riavvio manuale. Questi cambiamenti riguardano disponibilità e gestione delle connessioni. La condizione di gara con traffico diretto è la parte rilevante per la sicurezza.
+
+Nessuna delle due note segnala sfruttamento, numero di utenti coinvolti o chiavi rubate. L'affermazione sostenuta è più stretta: il progetto ha trovato due percorsi in cui il confine applicato non corrispondeva a quello previsto e ha pubblicato artefatti corretti.
+
+## Cosa stabiliscono gli artefatti
+
+Entrambe le versioni sono release GitHub con APK Android e manifesti di checksum firmati. La 6.6.5 è stata pubblicata il 21 settembre 2026 e la 6.6.4 il 14 settembre. Per esempio, i metadati GitHub assegnano all'APK universale 6.6.5 lo SHA-256 `447dd52d6be8c8f01df1fdc1c105b30be0ea391bdb988d8f35fee68e01481578`.
+
+Ciò stabilisce che esistono artefatti scaricabili e identifica i byte serviti da GitHub. Non dimostra la velocità di aggiornamento di ogni canale, l'installazione su un telefono specifico o una riproduzione indipendente del comportamento. Chi dipende dalla modalità Tor o dai backup su relay dovrebbe controllare la versione installata e seguire le istruzioni del manifesto per un APK diretto.
+
+Le due correzioni mostrano lo stesso punto: i permessi del firmatario e le impostazioni di trasporto sono utili solo se valgono all'avvio, durante il backup e nel ripristino. Amber 6.6.4 e 6.6.5 riducono queste lacune, ma sono correzioni documentate, non prove di sfruttamento.

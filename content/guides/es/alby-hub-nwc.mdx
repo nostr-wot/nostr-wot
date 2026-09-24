@@ -1,0 +1,63 @@
+---
+title: "Conectar Alby Hub mediante NWC"
+description: "Conecta Alby Hub con Nostr WoT mediante NWC. Configura permisos y presupuesto, comprueba el saldo y gestiona el acceso desde tu Hub."
+excerpt: "Conecta Alby Hub con Nostr WoT mediante NWC. Configura permisos y presupuesto, comprueba el saldo y gestiona el acceso desde tu Hub."
+date: "2026-09-23"
+author:
+  name: "Leon Acosta"
+  avatar: "/authors/leon-profile.jpg"
+  npub: "npub1gxdhmu9swqduwhr6zptjy4ya693zp3ql28nemy4hd97kuufyrqdqwe5zfk"
+featuredImage: "/images/guides/alby-hub-nwc/featured.jpg"
+previewImage: "/images/guides/alby-hub-nwc/preview.jpg"
+ogImage: "/images/guides/alby-hub-nwc/og.jpg"
+tags:
+  - "Lightning"
+  - "Alby Hub"
+  - "NWC"
+published: true
+seoTitle: "Conectar Alby Hub mediante NWC"
+seoDescription: "Conecta Alby Hub con Nostr WoT mediante NWC. Configura permisos y presupuesto, comprueba el saldo y gestiona el acceso desde tu Hub."
+translationKey: "alby-hub-nwc"
+difficulty: "beginner"
+order: 15
+---
+
+Alby Hub permite conectar tu billetera Lightning a la extensión Nostr WoT mediante Nostr Wallet Connect (NWC). Antes de empezar, tu Hub debe estar funcionando, ser accesible y tener fondos. Esta guía explica cómo conectar esa billetera; la instalación de Hub y la apertura de canales Lightning quedan fuera de este proceso.
+
+<span id="alby-hub" className="block scroll-mt-32"></span>
+
+## Crea una conexión en Alby Hub
+
+Abre Hub y entra en **Connections → Add Connection**. Ponle un nombre reconocible, como «Nostr WoT navegador». Una conexión exclusiva facilita reconocer su actividad y retirar el acceso más adelante. La [guía de conexiones de Alby](https://guides.getalby.com/user-guide/alby-hub/app-connections) explica sus controles de permisos, presupuesto y vencimiento.
+
+Selecciona los permisos según las funciones que quieras utilizar:
+
+- **Información de la billetera (`get_info`)**: necesaria para que la extensión compruebe la conexión.
+- **Saldo (`get_balance`)**: permite mostrar tus sats.
+- **Pagos (`pay_invoice`)**: permite enviar pagos.
+- **Facturas (`make_invoice`, `lookup_invoice`)**: permite crear y consultar facturas para recibir fondos.
+- **Historial (`list_transactions`)**: permite mostrar las transacciones recientes.
+
+Define un presupuesto de gasto adecuado para esta conexión del navegador. Revisa si se renueva y, si corresponde, establece una fecha de vencimiento. El presupuesto de Hub y el umbral de aprobación automática de la extensión son controles distintos. Comprueba ambos antes de habilitar pagos sin confirmación individual.
+
+## Pega el secreto de conexión NWC
+
+Termina de crear la conexión en Hub y copia la URI completa, que comienza por `nostr+walletconnect://`.
+
+<Callout type="warning">
+La URI es una credencial. Quien la tenga podrá ejercer los permisos concedidos. No la incluyas en capturas, mensajes de soporte, documentos compartidos ni publicaciones.
+</Callout>
+
+Abre la extensión Nostr WoT, entra en **Billetera**, selecciona **NWC**, pega la URI y conecta. La ventana de ayuda del primer uso explica las opciones disponibles. Puedes desactivar su aparición automática; esa elección no modifica los permisos de la billetera.
+
+El [tutorial de enlace NWC de Alby](https://guides.getalby.com/user-guide/browser-extension/link-wallet/alby-hub-via-nwc-link) muestra el proceso con **la extensión de Alby**. En Nostr WoT, sigue los pasos Billetera → NWC indicados aquí.
+
+## Comprueba el acceso sin realizar un pago
+
+Si autorizaste consultar el saldo, compáralo con el de Hub. Revisa también el historial si habilitaste ese permiso. No hace falta enviar un pago de prueba para conectar. Si alguna función falla, revisa su permiso y el vencimiento de la conexión antes de sustituir el secreto.
+
+NWC define la conexión entre aplicaciones. La custodia y la recuperación de los fondos dependen de tu billetera y de cómo alojes Hub; el protocolo por sí solo no las determina.
+
+Si un pago muestra un **resultado desconocido**, consulta el historial de Hub antes de intentarlo otra vez. La falta de respuesta no demuestra que el pago haya fallado. Para retirar el acceso, revoca esta conexión en Hub; desconectar únicamente la extensión no sustituye esa revocación.
+
+Vuelve a la [guía general de billeteras](/guides/configurar-billetera) o consulta la [configuración de LNbits](/guides/lnbits-wallet-setup).

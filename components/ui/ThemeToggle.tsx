@@ -1,10 +1,13 @@
 "use client";
 
+import { useTranslations } from "next-intl";
+
 import { useEffect, useState } from "react";
 import { useTheme } from "@/components/providers/ThemeProvider";
 import { SunIcon, MoonIcon } from "@/components/icons";
 
 export function ThemeToggle() {
+  const u = useTranslations("ui");
   const { resolvedTheme, setTheme, theme } = useTheme();
   const [mounted, setMounted] = useState(false);
 
@@ -28,7 +31,7 @@ export function ThemeToggle() {
     return (
       <button
         className="cursor-pointer p-2 rounded-lg text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
-        aria-label="Toggle theme"
+        aria-label={u("toggleTheme")}
       >
         <div className="w-5 h-5" />
       </button>
@@ -39,8 +42,8 @@ export function ThemeToggle() {
     <button
       onClick={toggleTheme}
       className="cursor-pointer p-2 rounded-lg text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
-      aria-label={`Current theme: ${theme}. Click to change.`}
-      title={`Theme: ${theme}`}
+      aria-label={u("currentTheme", { theme: u(theme) })}
+      title={u("theme", { theme: u(theme) })}
     >
       {resolvedTheme === "dark" ? (
         <MoonIcon className="w-5 h-5" />

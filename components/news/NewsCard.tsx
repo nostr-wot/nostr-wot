@@ -1,5 +1,7 @@
 'use client';
 
+import ReadingTime from '@/components/ui/ReadingTime';
+
 import Image from 'next/image';
 import { Link } from '@/i18n/routing';
 import { useLocale, useTranslations } from 'next-intl';
@@ -90,7 +92,7 @@ export function NewsCard({ post, featured = false }: NewsCardProps) {
               <div className="flex flex-wrap items-center gap-3 text-sm text-gray-500 dark:text-gray-400">
                 <time dateTime={post.date}>{formatDate(post.date, locale)}</time>
                 <span aria-hidden="true">·</span>
-                <span>{post.readingTime}</span>
+                <ReadingTime value={post.readingTime} />
               </div>
             </div>
           </div>
@@ -136,7 +138,7 @@ export function NewsCard({ post, featured = false }: NewsCardProps) {
           <div className="pt-4 border-t border-gray-100 dark:border-gray-700/50">
             <div className="flex items-center justify-between text-xs text-gray-500 dark:text-gray-400">
               <time dateTime={post.date}>{formatDate(post.date, locale)}</time>
-              <span>{post.readingTime}</span>
+              <ReadingTime value={post.readingTime} />
             </div>
           </div>
         </div>

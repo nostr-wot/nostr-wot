@@ -31,5 +31,7 @@ run at all, which is a different problem entirely.
 2026-09-16 12:52 UTC  published  nip-22-amethyst-loads-nested-comments (5 sources); resolves the pending entry above. Content PR #41 merged as 6e03426e0a98ea5139674fec95a9d196ba7f2347 after passing CI 35097630813 (163 tests, TypeScript, parity, social lint, build). Production deployment 35097917324 succeeded; all seven live pages return 200 with correct canonical/hreflang, descriptions, Open Graph and NewsArticle data. LinkedIn and Nostr: pending scheduled social workflow and per-channel durable receipts in data/social-posted.json; verify next run without regenerating or reposting. Recovery clarification: the older nip-78 copy contains LinkedIn only, and its receipt covers that authored channel; no whole-entry retry is needed.
 
 2026-09-20 08:20 UTC  pending    nip-02-gives-petnames-resolvable-paths (3 sources; seven editions, deterministic illustration and social copy prepared; PR CI, merge, production and scheduled social delivery verification pending)
-2026-09-22 08:15 UTC  published  nip-02-gives-petnames-resolvable-paths (reconciled: PR #45, production and both scheduled social channels confirmed; durable LinkedIn and Nostr receipts present)
-2026-09-22 08:25 UTC  pending    amethyst-1-16-adds-bolt12-and-fitness (4 sources; draft PR #53 preserved after concurrent PR #52 supplied the September 22 newsroom publication; refresh publishedAt and rebase before a later merge)
+2026-09-22 08:00 UTC  published  amber-6-6-5-separates-backup-encryption-from-app-permissions  (2 sources; fortnightly ecosystem)
+
+2026-09-23 15:25 UTC  published  nip-02-limits-petnames-to-ascii  (3 sources)
+2026-09-24 07:59 UTC  published  amethyst-1-16-adds-bolt12-and-fitness  (4 sources; recovered draft PR #53, source claims reverified before publication)

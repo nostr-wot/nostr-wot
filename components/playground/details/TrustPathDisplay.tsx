@@ -12,6 +12,7 @@ interface TrustPathDisplayProps {
 }
 
 export default function TrustPathDisplay({ node }: TrustPathDisplayProps) {
+  const u = useTranslations("ui");
   const t = useTranslations("playground");
   const { state, getProfile } = useGraph();
 
@@ -36,7 +37,7 @@ export default function TrustPathDisplay({ node }: TrustPathDisplayProps) {
               {pathNode.picture || profile?.picture ? (
                 <img
                   src={pathNode.picture || profile?.picture}
-                  alt={`${profile?.displayName || profile?.name || pathNode.label || "User"} avatar`}
+                  alt={u("avatar", { name: profile?.displayName || profile?.name || pathNode.label || u("user") })}
                   className="w-6 h-6 rounded-full object-cover flex-shrink-0"
                 />
               ) : (

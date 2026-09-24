@@ -118,7 +118,7 @@ test('Spanish UI translates controls, roles, dates and evidence without changing
   assert.doesNotMatch(html, /Curated content|Search projects|Founder: not verified|People, status|Commit date|link unavailable/);
 });
 
-test('Spanish empty state and JSON-LD declare Spanish while unsupported locales retain English', async () => {
+test('Spanish and French empty states and JSON-LD honor their page language', async () => {
   const { createElement } = await import('react');
   const { renderToStaticMarkup } = await import('react-dom/server');
   const { default: Directory } = await import('../components/projects/EcosystemDirectory');
@@ -126,11 +126,11 @@ test('Spanish empty state and JSON-LD declare Spanish while unsupported locales 
   const html = renderToStaticMarkup(createElement(Directory, { locale: 'es', data, blogHref: '/es/blog', newsHref: '/es/news' }));
   assert.match(html, /El directorio está en preparación/);
   assert.doesNotMatch(html, /English|inglés/);
-  const fallback = renderToStaticMarkup(createElement(Directory, { locale: 'fr', data, blogHref: '/fr/blog', newsHref: '/fr/news' }));
-  assert.match(fallback, /lang="en"/);
-  assert.match(fallback, /Curated content · English/);
+  const french = renderToStaticMarkup(createElement(Directory, { locale: 'fr', data, blogHref: '/fr/blog', newsHref: '/fr/news' }));
+  assert.match(french, /lang="fr"/);
+  assert.doesNotMatch(french, /Curated content · English/);
   assert.equal(ecosystemJsonLd(data, 'https://nostr-wot.com/es/projects', 'es').inLanguage, 'es');
-  assert.equal(ecosystemJsonLd(data, 'https://nostr-wot.com/fr/projects', 'fr').inLanguage, 'en');
+  assert.equal(ecosystemJsonLd(data, 'https://nostr-wot.com/fr/projects', 'fr').inLanguage, 'fr');
 });
 
 test('Spanish dataset preserves the English source URLs and dated evidence', async () => {
@@ -144,4 +144,18 @@ test('Spanish dataset preserves the English source URLs and dated evidence', asy
     return Object.fromEntries(Object.entries(value).filter(([key, item]) => evidenceKeys.has(key) || (item !== null && typeof item === 'object')).map(([key, item]) => [key, evidence(item)]));
   }
   assert.deepEqual(evidence(spanish), evidence(english));
+});
+
+test('directory UI and structured data honor all seven page languages', async () => {
+  const { createElement } = await import('react');
+  const { renderToStaticMarkup } = await import('react-dom/server');
+  const { default: Directory } = await import('../components/projects/EcosystemDirectory');
+  const { ecosystemCopy } = await import('../lib/ecosystem-projects');
+  for (const locale of ['en', 'es', 'de', 'fr', 'it', 'pt', 'ru']) {
+    const data = { checkedAt: '2026-09-08', projects: [project], news: [], security: [] };
+    const html = renderToStaticMarkup(createElement(Directory, { data, locale, blogHref: '/blog', newsHref: '/news' }));
+    assert.ok(html.includes(`lang="${locale}"`), locale);
+    assert.equal(ecosystemJsonLd(data, `https://nostr-wot.com/${locale}/projects`, locale).inLanguage, locale);
+    if (locale !== 'en') assert.notEqual(ecosystemCopy(locale).heading, ecosystemCopy('en').heading, locale);
+  }
 });

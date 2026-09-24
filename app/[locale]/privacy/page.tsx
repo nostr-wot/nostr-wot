@@ -32,13 +32,14 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
 export default async function PrivacyPage() {
   const t = await getTranslations("privacy");
+  const u = await getTranslations("ui");
 
   // JSON-LD structured data
   const jsonLd = {
     "@context": "https://schema.org",
     "@type": "WebPage",
-    "name": "Privacy Policy - Nostr Web of Trust",
-    "description": "Privacy policy for Nostr Web of Trust website, browser extension, and Oracle server. Learn how we protect your data and respect your privacy.",
+    "name": t("meta.title"),
+    "description": t("meta.description"),
     "url": "https://nostr-wot.com/privacy",
     "publisher": {
       "@type": "Organization",
@@ -323,7 +324,7 @@ export default async function PrivacyPage() {
                 <li><strong className="text-gray-900 dark:text-white">{t("yourRights.items.portability.title")}</strong> {t("yourRights.items.portability.description")}</li>
               </ul>
               <p className="text-gray-600 dark:text-gray-400">
-                To exercise these rights, please{" "}
+                {u("exerciseRights")}{" "}
                 <Link href="/contact" className="text-primary hover:underline">{t("yourRights.contactLink")}</Link>.
               </p>
             </section>

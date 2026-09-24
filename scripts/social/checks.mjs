@@ -40,6 +40,11 @@ export const EM_EN_DASH = /[—–]/;
 export const EMOJI =
   /[\u{1F300}-\u{1FAFF}\u{2600}-\u{27BF}\u{2190}-\u{21FF}\u{2B00}-\u{2BFF}\u{1F1E6}-\u{1F1FF}]/u;
 export const HARD_LINK = /https?:\/\//i;
+// Explicitly requested community credit. Keep article URLs derived as before.
+export function hasUnapprovedLink(text) {
+  const links = text.match(/https?:\/\/[^\s]*/gi) ?? [];
+  return links.some((url) => url !== 'https://lacrypta.ar/');
+}
 // docs/social-voice.md section 5: dead calls to action. Narrow on purpose,
 // these are the ones that have actually shipped.
 export const DEAD_CTA =
@@ -82,9 +87,9 @@ export function collectErrors() {
       errors.push(`${rel}: "${key}" must be a non-empty string`);
       return;
     }
-    if (HARD_LINK.test(text)) {
+    if (hasUnapprovedLink(text)) {
       errors.push(
-        `${rel}: "${key}" contains a hard-coded link. Remove it; the poster derives and appends the canonical URL. Use {url} only to place it somewhere other than the end.`,
+        `${rel}: "${key}" contains an unapproved hard-coded link. Only the verified La Crypta credit URL is allowed; the poster derives and appends the canonical URL. Use {url} only to place it somewhere other than the end.`,
       );
     }
     if (EM_EN_DASH.test(text)) {
