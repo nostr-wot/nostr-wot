@@ -34,3 +34,4 @@ run at all, which is a different problem entirely.
 2026-09-22 08:00 UTC  published  amber-6-6-5-separates-backup-encryption-from-app-permissions  (2 sources; fortnightly ecosystem)
 
 2026-09-23 15:25 UTC  published  nip-02-limits-petnames-to-ascii  (3 sources)
+2026-09-24 07:59 UTC  published  amethyst-1-16-adds-bolt12-and-fitness  (4 sources; recovered draft PR #53, source claims reverified before publication)
