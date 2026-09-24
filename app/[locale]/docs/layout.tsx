@@ -70,6 +70,7 @@ export default async function DocsLayout({ children }: DocsLayoutProps) {
         { href: "/docs/lnbits-proxy#install", label: t("sidebar.proxyInstall") },
         { href: "/docs/lnbits-proxy#endpoints", label: t("sidebar.proxyEndpoints") },
         { href: "/docs/lnbits-proxy#nip98", label: t("sidebar.proxyNip98") },
+        { href: "/docs/lnbits-proxy#ownership", label: t("sidebar.proxyOwnership") },
         { href: "/docs/lnbits-proxy#nginx", label: t("sidebar.proxyNginx") },
         { href: "/docs/lnbits-proxy#process", label: t("sidebar.proxyProcess") },
         { href: "/docs/lnbits-proxy#monitoring", label: t("sidebar.proxyMonitoring") },

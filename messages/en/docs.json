@@ -52,7 +52,8 @@
     "proxyNginx": "Reverse Proxy",
     "proxyProcess": "Process Management",
     "proxyMonitoring": "Monitoring",
-    "proxyLimits": "Limits & Validation"
+    "proxyLimits": "Limits & Validation",
+    "proxyOwnership": "Wallet Ownership"
   },
   "overview": {
     "title": "Overview",
@@ -514,6 +515,16 @@
     "bodyLimitsTitle": "Request bodies",
     "bodyLimitsDescription": "64 KB for provisioning and Lightning Address requests, 4 KB for NWC connection creation.",
     "sourceTitle": "Source",
-    "sourceDescription": "The service is a single Node file with one runtime dependency. Read it before you run it."
+    "sourceDescription": "The service is a single Node file with one runtime dependency. Read it before you run it.",
+    "envProvisionDb": "Pubkey to wallet mapping owned by this service, created automatically.",
+    "healthzTitle": "Health",
+    "healthzDescription": "Opens both LNbits databases, checks the admin key is configured and pings LNbits. Returns 200 when healthy and 503 with a per-dependency reason otherwise. No authentication.",
+    "ownershipTitle": "Wallet ownership",
+    "ownershipDescription": "A Nostr public key is resolved to its wallet through the mapping database this service owns. Rows are written only after a NIP-98 signature from that key has been verified.",
+    "ownershipMirror": "LNbits has its own pubkey column on each account, and the service mirrors into it so the LNbits interface shows the association. It is never read back to decide ownership: LNbits lets any signed-in user set that column on their own account without proving they hold the Nostr key.",
+    "ownershipPermissionTitle": "Keep the mapping unwritable by LNbits",
+    "ownershipPermission": "The file permission is what makes wallet ownership trustworthy. Store it outside the LNbits data directory and make sure the user LNbits runs as cannot write it.",
+    "ownershipMigrate": "On an instance that already has wallets, import the existing mapping before running the new version:",
+    "ownershipMigrateNote": "The import is idempotent and verifies that every public key still resolves to the same wallet and the same keys as before, exiting with an error otherwise. The deploy script runs it before restarting and stops the deployment if verification fails."
   }
 }

@@ -52,7 +52,8 @@
     "proxyNginx": "Proxy inverso",
     "proxyProcess": "Gestione del processo",
     "proxyMonitoring": "Monitoraggio",
-    "proxyLimits": "Limiti e validazione"
+    "proxyLimits": "Limiti e validazione",
+    "proxyOwnership": "Proprietà del wallet"
   },
   "overview": {
     "title": "Panoramica",
@@ -514,6 +515,16 @@
     "bodyLimitsTitle": "Corpo delle richieste",
     "bodyLimitsDescription": "64 KB per provisioning e richieste Lightning Address, 4 KB per la creazione di una connessione NWC.",
     "sourceTitle": "Codice sorgente",
-    "sourceDescription": "Il servizio è un singolo file Node con una sola dipendenza di runtime. Leggilo prima di eseguirlo."
+    "sourceDescription": "Il servizio è un singolo file Node con una sola dipendenza di runtime. Leggilo prima di eseguirlo.",
+    "envProvisionDb": "Associazione tra chiave pubblica e wallet, di proprietà di questo servizio e creata automaticamente.",
+    "healthzTitle": "Stato del servizio",
+    "healthzDescription": "Apre entrambi i database di LNbits, controlla che la chiave di amministrazione sia configurata e interroga LNbits. Restituisce 200 quando tutto è a posto e 503 con il motivo per ciascuna dipendenza in caso contrario. Senza autenticazione.",
+    "ownershipTitle": "Proprietà del wallet",
+    "ownershipDescription": "Una chiave pubblica Nostr viene associata al proprio wallet tramite il database gestito da questo servizio. Le righe vengono scritte solo dopo aver verificato una firma NIP-98 di quella chiave.",
+    "ownershipMirror": "LNbits ha una propria colonna per la chiave pubblica su ogni account, che il servizio compila affinché l'interfaccia di LNbits mostri l'associazione. Non viene mai riletta per stabilire la proprietà: LNbits consente a chiunque abbia effettuato l'accesso di impostare quella colonna sul proprio account senza dimostrare di possedere la chiave Nostr.",
+    "ownershipPermissionTitle": "Tieni l'associazione non scrivibile da LNbits",
+    "ownershipPermission": "Sono i permessi del file a rendere affidabile la proprietà del wallet. Conservalo fuori dalla cartella dati di LNbits e assicurati che l'utente con cui gira LNbits non possa scriverci.",
+    "ownershipMigrate": "Su un'istanza che ha già dei wallet, importa l'associazione esistente prima di avviare la nuova versione:",
+    "ownershipMigrateNote": "L'importazione è idempotente e verifica che ogni chiave pubblica continui a risolvere allo stesso wallet e alle stesse chiavi di prima, altrimenti termina con errore. Lo script di deploy la esegue prima del riavvio e interrompe il deploy se la verifica fallisce."
   }
 }

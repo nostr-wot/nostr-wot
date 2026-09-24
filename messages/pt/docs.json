@@ -52,7 +52,8 @@
     "proxyNginx": "Proxy reverso",
     "proxyProcess": "Gestão do processo",
     "proxyMonitoring": "Monitorização",
-    "proxyLimits": "Limites e validação"
+    "proxyLimits": "Limites e validação",
+    "proxyOwnership": "Propriedade da carteira"
   },
   "overview": {
     "title": "Visão Geral",
@@ -514,6 +515,16 @@
     "bodyLimitsTitle": "Corpos dos pedidos",
     "bodyLimitsDescription": "64 KB para aprovisionamento e pedidos de Lightning Address, 4 KB para a criação de ligações NWC.",
     "sourceTitle": "Código-fonte",
-    "sourceDescription": "O serviço é um único ficheiro Node com uma só dependência de execução. Leia-o antes de o executar."
+    "sourceDescription": "O serviço é um único ficheiro Node com uma só dependência de execução. Leia-o antes de o executar.",
+    "envProvisionDb": "Associação entre chave pública e carteira, pertencente a este serviço e criada automaticamente.",
+    "healthzTitle": "Estado do serviço",
+    "healthzDescription": "Abre as duas bases de dados do LNbits, verifica se a chave de administração está configurada e consulta o LNbits. Devolve 200 quando está tudo bem e 503 com o motivo por dependência caso contrário. Sem autenticação.",
+    "ownershipTitle": "Propriedade da carteira",
+    "ownershipDescription": "Uma chave pública Nostr é associada à sua carteira através da base de dados que este serviço controla. As linhas só são escritas depois de verificada uma assinatura NIP-98 dessa chave.",
+    "ownershipMirror": "O LNbits tem a sua própria coluna de chave pública em cada conta, e o serviço preenche-a para que a interface do LNbits mostre a associação. Nunca é lida para decidir a propriedade: o LNbits permite que qualquer pessoa com sessão iniciada defina essa coluna na sua própria conta sem provar que detém a chave Nostr.",
+    "ownershipPermissionTitle": "Mantenha a associação inacessível ao LNbits",
+    "ownershipPermission": "As permissões do ficheiro são o que torna a propriedade da carteira fiável. Guarde-o fora da pasta de dados do LNbits e garanta que o utilizador com que o LNbits corre não o consegue escrever.",
+    "ownershipMigrate": "Numa instância que já tem carteiras, importe a associação existente antes de executar a nova versão:",
+    "ownershipMigrateNote": "A importação é idempotente e verifica que cada chave pública continua a resolver para a mesma carteira e as mesmas chaves de antes, terminando com erro caso contrário. O script de implementação executa-a antes de reiniciar e interrompe a implementação se a verificação falhar."
   }
 }
