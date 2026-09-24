@@ -170,6 +170,11 @@ Lightning backend (phoenixd, LND, ...)`}
                 <td className="py-2 pr-4"><InlineCode>.../data/ext_lnurlp.sqlite3</InlineCode></td>
                 <td className="py-2 text-gray-600 dark:text-gray-400">{t("lnbitsProxy.envLnurlpPath")}</td>
               </tr>
+              <tr className="border-b border-gray-200 dark:border-gray-800">
+                <td className="py-2 pr-4"><InlineCode>PROVISION_DB_PATH</InlineCode></td>
+                <td className="py-2 pr-4"><InlineCode>.../provisioning.sqlite3</InlineCode></td>
+                <td className="py-2 text-gray-600 dark:text-gray-400">{t("lnbitsProxy.envProvisionDb")}</td>
+              </tr>
               <tr>
                 <td className="py-2 pr-4"><InlineCode>PORT</InlineCode></td>
                 <td className="py-2 pr-4"><InlineCode>3003</InlineCode></td>
@@ -287,6 +292,20 @@ Lightning backend (phoenixd, LND, ...)`}
           <p>{t("lnbitsProxy.nwcSecretsNote")}</p>
           <p>{t("lnbitsProxy.nwcPermissionsNote")}</p>
         </Callout>
+
+        <h3 id="healthz" className="scroll-mt-24">{t("lnbitsProxy.healthzTitle")}</h3>
+
+        <Endpoint
+          id="healthz-endpoint"
+          method="GET"
+          path="/healthz"
+          description={t("lnbitsProxy.healthzDescription")}
+        >
+          <CodeBlock
+            language="json"
+            code={json({ ok: true, checks: { lnbitsDb: "ok", lnurlpDb: "ok", adminKey: "set", lnbits: "ok" } })}
+          />
+        </Endpoint>
 
         <h3 id="passthrough" className="scroll-mt-24">{t("lnbitsProxy.passthroughTitle")}</h3>
         <p>{t("lnbitsProxy.passthroughDescription")}</p>
@@ -432,6 +451,24 @@ WantedBy=timers.target`}
         </Callout>
       </section>
 
+      <section id="ownership" className="scroll-mt-24">
+        <h2>{t("lnbitsProxy.ownershipTitle")}</h2>
+        <p>{t("lnbitsProxy.ownershipDescription")}</p>
+        <p>{t("lnbitsProxy.ownershipMirror")}</p>
+        <Callout tone="warning" title={t("lnbitsProxy.ownershipPermissionTitle")}>
+          <p>{t("lnbitsProxy.ownershipPermission")}</p>
+          <CodeBlock language="bash" code={`chown root:root provisioning.sqlite3\nchmod 600 provisioning.sqlite3`} />
+        </Callout>
+        <p>{t("lnbitsProxy.ownershipMigrate")}</p>
+        <TerminalBlock
+          commands={[
+            "node scripts/backfill-provisioned.mjs --dry-run",
+            "node scripts/backfill-provisioned.mjs",
+          ]}
+        />
+        <p>{t("lnbitsProxy.ownershipMigrateNote")}</p>
+      </section>
+
       <section id="limits" className="scroll-mt-24">
         <h2>{t("lnbitsProxy.limitsTitle")}</h2>
 
@@ -448,6 +485,8 @@ WantedBy=timers.target`}
             <tbody>
               {[
                 ["/api/nwc/connections", "60"],
+                ["/api/v1/wallet, /api/v1/payments", "120"],
+                ["LNURL passthrough", "60"],
                 ["/api/provision/challenge", "10"],
                 ["/api/provision", "5"],
                 ["/api/claim-username", "3"],

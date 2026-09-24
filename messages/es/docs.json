@@ -52,7 +52,8 @@
     "proxyNginx": "Proxy inverso",
     "proxyProcess": "Gestión del proceso",
     "proxyMonitoring": "Monitorización",
-    "proxyLimits": "Límites y validación"
+    "proxyLimits": "Límites y validación",
+    "proxyOwnership": "Propiedad del monedero"
   },
   "overview": {
     "title": "Resumen",
@@ -514,6 +515,16 @@
     "bodyLimitsTitle": "Cuerpos de las peticiones",
     "bodyLimitsDescription": "64 KB para aprovisionamiento y peticiones de Lightning Address, 4 KB para la creación de conexiones NWC.",
     "sourceTitle": "Código fuente",
-    "sourceDescription": "El servicio es un único archivo Node con una sola dependencia de ejecución. Léelo antes de ejecutarlo."
+    "sourceDescription": "El servicio es un único archivo Node con una sola dependencia de ejecución. Léelo antes de ejecutarlo.",
+    "envProvisionDb": "Asociación entre clave pública y monedero, propiedad de este servicio y creada automáticamente.",
+    "healthzTitle": "Estado del servicio",
+    "healthzDescription": "Abre las dos bases de datos de LNbits, comprueba que la clave de administración está configurada y consulta a LNbits. Devuelve 200 si todo está bien y 503 con el motivo por dependencia en caso contrario. Sin autenticación.",
+    "ownershipTitle": "Propiedad del monedero",
+    "ownershipDescription": "Una clave pública de Nostr se asocia a su monedero mediante la base de datos que gestiona este servicio. Solo se escriben filas después de verificar una firma NIP-98 de esa clave.",
+    "ownershipMirror": "LNbits tiene su propia columna de clave pública en cada cuenta, y el servicio la rellena para que su interfaz muestre la asociación. Nunca se lee para decidir la propiedad: LNbits permite que cualquier persona con sesión iniciada fije esa columna en su propia cuenta sin demostrar que posee la clave Nostr.",
+    "ownershipPermissionTitle": "Mantén la asociación fuera del alcance de LNbits",
+    "ownershipPermission": "Los permisos del archivo son lo que hace fiable la propiedad del monedero. Guárdalo fuera del directorio de datos de LNbits y asegúrate de que el usuario con el que se ejecuta LNbits no pueda escribirlo.",
+    "ownershipMigrate": "En una instancia que ya tiene monederos, importa la asociación existente antes de ejecutar la nueva versión:",
+    "ownershipMigrateNote": "La importación es idempotente y verifica que cada clave pública sigue resolviendo al mismo monedero y a las mismas claves que antes; si no, termina con error. El script de despliegue la ejecuta antes de reiniciar y detiene el despliegue si la verificación falla."
   }
 }

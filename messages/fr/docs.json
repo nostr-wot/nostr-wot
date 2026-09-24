@@ -52,7 +52,8 @@
     "proxyNginx": "Proxy inverse",
     "proxyProcess": "Gestion du processus",
     "proxyMonitoring": "Supervision",
-    "proxyLimits": "Limites et validation"
+    "proxyLimits": "Limites et validation",
+    "proxyOwnership": "Propriété du portefeuille"
   },
   "overview": {
     "title": "Vue d'ensemble",
@@ -514,6 +515,16 @@
     "bodyLimitsTitle": "Corps des requêtes",
     "bodyLimitsDescription": "64 Ko pour le provisionnement et les requêtes Lightning Address, 4 Ko pour la création de connexion NWC.",
     "sourceTitle": "Code source",
-    "sourceDescription": "Le service tient dans un seul fichier Node avec une unique dépendance d'exécution. Lisez-le avant de le lancer."
+    "sourceDescription": "Le service tient dans un seul fichier Node avec une unique dépendance d'exécution. Lisez-le avant de le lancer.",
+    "envProvisionDb": "Association entre clé publique et portefeuille, propre à ce service et créée automatiquement.",
+    "healthzTitle": "État du service",
+    "healthzDescription": "Ouvre les deux bases LNbits, vérifie que la clé d'administration est configurée et interroge LNbits. Renvoie 200 si tout va bien, sinon 503 avec le motif par dépendance. Sans authentification.",
+    "ownershipTitle": "Propriété du portefeuille",
+    "ownershipDescription": "Une clé publique Nostr est reliée à son portefeuille par la base de données que ce service gère. Les lignes ne sont écrites qu'après vérification d'une signature NIP-98 de cette clé.",
+    "ownershipMirror": "LNbits possède sa propre colonne de clé publique sur chaque compte, que le service renseigne pour que l'interface LNbits affiche l'association. Elle n'est jamais relue pour déterminer la propriété : LNbits laisse n'importe quel utilisateur connecté définir cette colonne sur son propre compte sans prouver qu'il détient la clé Nostr.",
+    "ownershipPermissionTitle": "Gardez l'association hors de portée de LNbits",
+    "ownershipPermission": "Les droits du fichier sont ce qui rend la propriété du portefeuille fiable. Placez-le hors du répertoire de données de LNbits et assurez-vous que l'utilisateur sous lequel tourne LNbits ne puisse pas y écrire.",
+    "ownershipMigrate": "Sur une instance qui possède déjà des portefeuilles, importez l'association existante avant de lancer la nouvelle version :",
+    "ownershipMigrateNote": "L'import est idempotent et vérifie que chaque clé publique renvoie toujours au même portefeuille et aux mêmes clés qu'auparavant, en s'arrêtant en erreur sinon. Le script de déploiement l'exécute avant le redémarrage et interrompt le déploiement si la vérification échoue."
   }
 }

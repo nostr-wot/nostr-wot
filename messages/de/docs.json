@@ -52,7 +52,8 @@
     "proxyNginx": "Reverse Proxy",
     "proxyProcess": "Prozessverwaltung",
     "proxyMonitoring": "Überwachung",
-    "proxyLimits": "Grenzwerte und Validierung"
+    "proxyLimits": "Grenzwerte und Validierung",
+    "proxyOwnership": "Wallet-Zuordnung"
   },
   "overview": {
     "title": "Übersicht",
@@ -514,6 +515,16 @@
     "bodyLimitsTitle": "Anfragekörper",
     "bodyLimitsDescription": "64 KB für Bereitstellung und Lightning-Adress-Anfragen, 4 KB für das Anlegen einer NWC-Verbindung.",
     "sourceTitle": "Quelltext",
-    "sourceDescription": "Der Dienst ist eine einzige Node-Datei mit einer einzigen Laufzeitabhängigkeit. Lies ihn, bevor du ihn betreibst."
+    "sourceDescription": "Der Dienst ist eine einzige Node-Datei mit einer einzigen Laufzeitabhängigkeit. Lies ihn, bevor du ihn betreibst.",
+    "envProvisionDb": "Zuordnung von öffentlichem Schlüssel zu Wallet, im Besitz dieses Dienstes und automatisch angelegt.",
+    "healthzTitle": "Dienstzustand",
+    "healthzDescription": "Öffnet beide LNbits-Datenbanken, prüft, ob der Administrationsschlüssel gesetzt ist, und fragt LNbits ab. Liefert 200, wenn alles in Ordnung ist, sonst 503 mit einem Grund je Abhängigkeit. Ohne Authentifizierung.",
+    "ownershipTitle": "Wem welche Wallet gehört",
+    "ownershipDescription": "Ein öffentlicher Nostr-Schlüssel wird über die Datenbank, die dieser Dienst besitzt, seiner Wallet zugeordnet. Einträge entstehen erst, nachdem eine NIP-98-Signatur dieses Schlüssels geprüft wurde.",
+    "ownershipMirror": "LNbits führt auf jedem Konto eine eigene Spalte für den öffentlichen Schlüssel, die der Dienst mitschreibt, damit die LNbits-Oberfläche die Zuordnung anzeigt. Für die Eigentumsfrage wird sie nie gelesen: LNbits lässt jede angemeldete Person diese Spalte im eigenen Konto setzen, ohne den Besitz des Nostr-Schlüssels nachzuweisen.",
+    "ownershipPermissionTitle": "Die Zuordnung für LNbits unbeschreibbar halten",
+    "ownershipPermission": "Die Dateirechte sind es, was die Wallet-Zuordnung vertrauenswürdig macht. Lege die Datei außerhalb des LNbits-Datenverzeichnisses ab und stelle sicher, dass der Benutzer, unter dem LNbits läuft, nicht hineinschreiben kann.",
+    "ownershipMigrate": "Auf einer Instanz mit vorhandenen Wallets die bestehende Zuordnung importieren, bevor die neue Version startet:",
+    "ownershipMigrateNote": "Der Import ist wiederholbar und prüft, dass jeder öffentliche Schlüssel weiterhin dieselbe Wallet und dieselben Schlüssel ergibt wie zuvor, sonst bricht er mit einem Fehler ab. Das Deployment-Skript führt ihn vor dem Neustart aus und stoppt das Deployment, wenn die Prüfung fehlschlägt."
   }
 }
