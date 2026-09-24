@@ -1,0 +1,98 @@
+---
+title: "NIP-86 suma siete métodos y asume las invitaciones de NIP-43"
+description: "Tres pull requests fusionadas en ocho horas llevaron la API de gestión de relays de 25 métodos a 32, dieron a cada método una descripción escrita y trasladaron los códigos de invitación de NIP-43 desde un evento solicitado por el usuario a una llamada de administración autenticada."
+seoDescription: "Tres pull requests fusionadas en ocho horas llevaron la API de gestión de relays de 25 métodos a 32, dieron a cada método una descripción escrita y trasladaron los códigos de invitación de NIP-43 desde un evento solicitado por el usuario a una llamada de administración autenticada."
+excerpt: "NIP-86 pasó de 25 métodos a 32 entre el 23 y el 24 de septiembre, obtuvo una descripción en prosa para cada uno y absorbió el flujo de códigos de invitación que NIP-43 definía como un evento kind 28935."
+date: "2026-09-24"
+publishedAt: "2026-09-24"
+backfilled: false
+type: "story"
+tags: ["Nostr", "NIP-86", "NIP-43", "Relays"]
+featuredImage: "/images/news/nip-86-gains-seven-methods-and-takes-over-invites.svg"
+translationKey: "nip-86-gains-seven-methods-and-takes-over-invites"
+sources:
+  - title: "PR #2477: NIP-86: Add unallow/unban event and list methods"
+    url: "https://github.com/nostr-protocol/nips/pull/2477"
+    publisher: "nostr-protocol/nips"
+    date: "2026-09-23"
+  - title: "PR #2481: Reformat and describe nip 86 methods"
+    url: "https://github.com/nostr-protocol/nips/pull/2481"
+    publisher: "nostr-protocol/nips"
+    date: "2026-09-23"
+  - title: "PR #2408: Add claim management to nip 86"
+    url: "https://github.com/nostr-protocol/nips/pull/2408"
+    publisher: "nostr-protocol/nips"
+    date: "2026-09-24"
+  - title: "NIP-86 en el commit 62d5fed"
+    url: "https://github.com/nostr-protocol/nips/blob/62d5feddb1a12f4d454af3890af5253e7292f1d2/86.md"
+    publisher: "nostr-protocol/nips"
+    date: "2026-09-24"
+  - title: "NIP-43 en el commit 62d5fed"
+    url: "https://github.com/nostr-protocol/nips/blob/62d5feddb1a12f4d454af3890af5253e7292f1d2/43.md"
+    publisher: "nostr-protocol/nips"
+    date: "2026-09-24"
+published: true
+---
+
+La API de gestión de relays creció en siete métodos en unas ocho horas. Entre las 17:16 UTC del 23 de septiembre de 2026 y la 01:14 UTC del 24 de septiembre, tres pull requests se fusionaron en `nostr-protocol/nips` y llevaron NIP-86 de 25 métodos a 32, dando a cada uno de ellos una descripción escrita por primera vez.
+
+## Cuatro métodos que cierran pares existentes
+
+La [PR #2477](https://github.com/nostr-protocol/nips/pull/2477) se fusionó a las 17:16 UTC del 23 de septiembre como el commit `5b99209`. Añade doce líneas a `86.md` y no elimina ninguna. Los cuatro métodos que incorpora son, cada uno, la mitad que faltaba de algo que ya estaba en el documento.
+
+`unallowevent` y `unbanevent` son los inversos de `allowevent` y `banevent`. Ambos reciben `["<32-byte-hex-event-id>", "<optional-reason>"]` y devuelven `true`. El lado de las pubkeys de la API ya tenía `unallowpubkey` y `unbanpubkey`, de modo que un operador podía revertir una decisión sobre un autor. El lado de los eventos no tenía forma de deshacer ninguna de las dos listas.
+
+`listallowedevents` es el complemento de `listbannedevents`, que se podía leer desde antes de este cambio mientras que la lista de permitidos no. `listdisallowedkinds` es el complemento de `listallowedkinds`: `disallowkind` existía sin nada que permitiera consultarlo.
+
+## La reescritura una hora después
+
+La [PR #2481](https://github.com/nostr-protocol/nips/pull/2481) se fusionó a las 18:21 UTC como el commit `182a13e` y es la mayor de las tres, con 202 adiciones y 87 eliminaciones en un solo archivo. Convierte la lista plana de viñetas en una sección `###` por método, cada una con una frase en prosa sobre sus líneas `params` y `result`.
+
+El reformateo es la parte visible. La parte que cambia lo que hace una implementación es la prosa, porque varias de esas frases describen comportamientos que el documento nunca había puesto por escrito:
+
+```text
+banpubkey:     Should automatically remove the pubkey from the allow list.
+unbanpubkey:   Should not automatically add the pubkey to the allow list.
+allowpubkey:   Should automatically remove the pubkey from the ban list.
+unallowpubkey: Should not automatically add the pubkey to the ban list.
+```
+
+Las mismas cuatro afirmaciones aparecen ahora para los métodos de eventos que la #2477 había completado una hora antes. En conjunto responden a una pregunta que la lista antigua dejaba abierta: si la lista de permitidos y la de vetados son conjuntos independientes o las dos caras de un mismo interruptor. La respuesta es asimétrica. Añadir a una elimina de la otra, y quitar de una no añade a la otra, así que una pubkey o un evento pueden no estar en ninguna de las dos.
+
+`supportedmethods` también ganó una frase. Ahora dice "Lists the methods supported by the relay. May be customized to match permissions assigned to the authenticated user." El método en sí no cambia y el documento ya delimitaba a los operadores mediante `assignrole`, pero una respuesta que depende de quien llama implica que dos operadores que consulten un mismo relay pueden recibir listas de métodos distintas.
+
+Todas estas frases usan "should" y "may" en minúscula. El archivo no contiene ninguna palabra clave RFC 2119 en mayúscula, ni antes ni después de la reescritura.
+
+## Los códigos de invitación pasan detrás de la API de administración
+
+La [PR #2408](https://github.com/nostr-protocol/nips/pull/2408) se fusionó a la 01:14 UTC del 24 de septiembre como el commit `62d5fed` y toca dos archivos. En `86.md` añade `listclaims`, `createclaim` y `deleteclaim`, para los códigos de invitación que define NIP-43. En `43.md` elimina diecisiete líneas y añade una.
+
+Las líneas eliminadas son toda la sección "Invite Request", que definía cómo obtenía un usuario un código:
+
+```yaml
+{
+  "kind": 28935,
+  "pubkey": "<nip11.self>",
+  "tags": [
+    ["-"],
+    ["claim", "<invite code>"],
+  ],
+  // ...other fields
+}
+```
+
+Un usuario solicitaba ese evento al relay, y el relay lo firmaba con la pubkey del campo `self` de su documento NIP-11. En su lugar, `43.md` lleva ahora una sola frase: "Users can request a `claim` using the [NIP 86](./86.md) `createclaim` method."
+
+Las dos rutas no llegan al mismo sitio. `kind 28935` era una petición hecha por la propia conexión del usuario con el relay. NIP-86 es un protocolo parecido a JSON-RPC sobre HTTP, en el mismo URI que el websocket, y su sección de autorización exige un evento NIP-98 válido en una cabecera `Authorization`, devolviendo 401 si no lo hay. `createclaim` queda detrás de esa cabecera, que es la vía que usa un operador de relay y no un futuro miembro.
+
+## Una referencia a un evento que ya no está definido
+
+La sección Implementation de `43.md` sigue diciendo: "Clients MUST only request `kind 28935` events from and send `kind 28934` events to relays which include this NIP in the `supported_nips` section of its NIP 11 relay information document."
+
+Esa frase sobrevivió a la eliminación. El evento cuya solicitud describe ya no está definido en ninguna parte del archivo, y es uno de los pocos requisitos en mayúscula de NIP-43.
+
+## Lo que el reemplazo no conserva
+
+El párrafo eliminado terminaba con una nota sobre por qué la petición era un evento efímero: los relays tenían que optar explícitamente generando claims bajo demanda, lo que les permitía emitir un claim distinto para cada petición, emitirlos solo a ciertos usuarios o hacerlos caducar.
+
+Nada de eso sobrevive en los tres métodos nuevos. `createclaim` recibe `[claim]` y devuelve `true`, así que quien llama aporta el código en lugar de recibir uno generado. `listclaims` devuelve "an array of NIP 43 invite codes". Nada en el texto añadido indica un formato, una longitud, una caducidad ni si un claim es de un solo uso, y `deleteclaim` es el único mecanismo previsto para retirar uno.
