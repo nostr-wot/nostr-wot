@@ -1,0 +1,63 @@
+---
+title: "Eine Nostr-Folgeliste ist eine vollständige Momentaufnahme"
+description: "Kind-3-Folgelisten aus NIP-02 ersetzen die vorherige Liste. Ein sicheres Update erhält jedes p-Tag, jeden Relay-Hinweis und jeden Petname."
+seoDescription: "Warum eine Nostr-Folgeliste vom Kind 3 eine vollständige ersetzbare Momentaufnahme ist und wie veraltete Geräte neuere Änderungen überschreiben können."
+excerpt: "Ein Kind-3-Event fügt nicht nur einen Follow hinzu. Es ersetzt die vorherige Liste des Autors, daher lautet die sichere Reihenfolge: lesen, ändern, signieren und prüfen."
+date: "2026-09-26"
+publishedAt: "2026-09-26"
+backfilled: false
+type: "story"
+tags: ["Nostr", "NIP-02", "Web of Trust", "Folgelisten"]
+featuredImage: "/images/news/a-nostr-follow-list-is-a-complete-snapshot.svg"
+translationKey: "a-nostr-follow-list-is-a-complete-snapshot"
+sources:
+  - title: "NIP-02: Follow List bei Commit b82211e"
+    url: "https://github.com/nostr-protocol/nips/blob/b82211e96c6dad616ed2ea43034c1c621256b745/02.md"
+    publisher: "nostr-protocol/nips"
+    date: "2026-09-20"
+  - title: "NIP-01: grundlegender Protokollablauf bei Commit b82211e"
+    url: "https://github.com/nostr-protocol/nips/blob/b82211e96c6dad616ed2ea43034c1c621256b745/01.md"
+    publisher: "nostr-protocol/nips"
+    date: "2026-09-04"
+published: true
+---
+
+Jemandem auf Nostr zu folgen wirkt in der Oberfläche wie eine Ergänzung: Follow drücken und eine Person hinzufügen. Das an Relays gesendete Event ist jedoch keine Anweisung, einen Schlüssel anzuhängen. [NIP-02](https://github.com/nostr-protocol/nips/blob/b82211e96c6dad616ed2ea43034c1c621256b745/02.md) definiert Kind `3` als vollständige Folgeliste des Autors und legt fest, dass jede neue Liste die früheren überschreibt.
+
+Ein Update besteht deshalb aus Lesen, Ändern, Signieren und Veröffentlichen. Ein Client muss mit der Liste beginnen, die er ersetzen will, den vollständigen Satz ändern und ein neues Event mit allen Einträgen signieren, die erhalten bleiben sollen. Nur das neue `p`-Tag zu veröffentlichen ist kein kleines Update. Es ersetzt die Liste durch einen einzigen Eintrag.
+
+## Jedes p-Tag enthält mehr als einen Schlüssel
+
+Das Tag-Array enthält ein `p`-Tag für jedes gefolgte oder bekannte Profil. Der erste Wert ist der hexadezimale öffentliche Schlüssel mit 32 Byte. Zwei optionale Positionen können eine empfohlene Relay-URL und einen lokalen Petname enthalten:
+
+```json
+["p", "<32-byte-hex-pubkey>", "wss://relay.example", "alice"]
+```
+
+NIP-02 verwendet den Event-Content nicht. Die Liste steckt in den Tags. Ein Client, der nur öffentliche Schlüssel erhält, kann daher Relay-Hinweise oder Petnames eines anderen Clients unbemerkt verwerfen. Ein sicherer Editor behandelt das gesamte Tag als Daten, einschließlich leerer optionaler Positionen, wenn sie für eine eindeutige Feldreihenfolge nötig sind.
+
+Der Relay-Wert ist ein Hinweis darauf, wo Events dieses Profils gefunden werden könnten. Er ist weder eine Anweisung, dort zu veröffentlichen, noch ein Beweis, dass das Relay diesen Schlüssel weiterhin bedient. Ein Petname ist lokaler Kontext des Listenautors. Er ist kein globaler Benutzername und keine verifizierte Identität.
+
+## Kind 3 ist nach Autor und Kind ersetzbar
+
+[NIP-01](https://github.com/nostr-protocol/nips/blob/b82211e96c6dad616ed2ea43034c1c621256b745/01.md) klassifiziert Kind `3` als ersetzbar. Für jede Kombination aus Pubkey und Kind muss ein Relay das neueste Event speichern und darf ältere Versionen verwerfen. Haben zwei Kandidaten denselben `created_at`-Zeitstempel, gewinnt das Event mit der lexikografisch kleineren ID.
+
+Die Regel bestimmt eine aktuelle Momentaufnahme. Sie definiert keine Zusammenführung zwischen Momentaufnahmen. Folgt ein Telefon Alice ausgehend von einer Liste mit 100 Einträgen, während ein Laptop Bob aus einer älteren Liste mit 90 Einträgen folgt, kann der Laptop später 91 Einträge veröffentlichen und die Telefonversion ersetzen. Alice verschwindet, obwohl auf dem Laptop niemand Unfollow gedrückt hat.
+
+Alle älteren Events zu vereinigen ist ebenfalls keine sichere Reparatur. Eine alte Version kann Personen enthalten, die der Autor absichtlich entfernt hat. Ein Client, der alle beobachteten Listen zusammenführt, kann diese Follows samt Relay-Hinweisen wiederherstellen. Der deterministische Gewinner ist das aktuelle ersetzbare Event, nicht die größte Liste.
+
+## Mehrere Relays können vorübergehend abweichen
+
+Der Autor kann dieselbe signierte Momentaufnahme an mehrere Relays senden, doch die Zustellung kann scheitern oder zu unterschiedlichen Zeiten erfolgen. Ein Relay zeigt bereits das neue Event, während ein anderes noch das vorherige liefert. NIP-01 weist außerdem darauf hin, dass Implementierungen abweichen können, obwohl Relays bei einer Abfrage nach ersetzbaren Events nur die neueste Version zurückgeben sollten.
+
+Ein Client sollte bei der Wiederherstellung die vorgesehenen Relays abfragen, Signaturen prüfen und Kandidaten mit den Ordnungsregeln für ersetzbare Events vergleichen. Er darf nicht annehmen, dass die erste Relay-Antwort global aktuell ist. Nach der Veröffentlichung lässt sich durch erneutes Lesen von mehreren Relays prüfen, ob die gewählte Momentaufnahme an den erwarteten Stellen verfügbar ist.
+
+Auch die Löschung hat eine Grenze. NIP-02 sagt, dass Relays und Clients alte Folgelisten löschen sollten, sobald eine neue eintrifft. Diese Empfehlung beweist nicht, dass jedes Relay jede ältere Kopie entfernt hat. Das neue Event bestimmt die aktuelle Liste, ist aber keine kryptografische Löschbestätigung.
+
+## Eine sicherere Update-Reihenfolge
+
+Vor einer Änderung sollte der Client das gewinnende Kind-`3`-Event von den Relays des Kontos abrufen. Jedes gewünschte `p`-Tag und seine optionalen Werte bleiben erhalten. Die Änderung an Follow, Unfollow, Relay oder Petname wird auf den vollständigen Satz angewendet. Danach folgt ein neuer Zeitstempel, eine Signatur und die Veröffentlichung desselben Events an die ausgewählten Relays.
+
+Anschließend sollte der Client das Event zurücklesen und ID, Autor und Tag-Anzahl prüfen. Falls ein anderes Gerät die Liste bearbeiten könnte, sollte vor der Veröffentlichung die ID des Ausgangsevents verglichen werden. Eine Abweichung bedeutet, dass sich die Basis geändert hat und die Bearbeitung auf der neueren Liste wiederholt werden muss.
+
+Dieser Ablauf macht aus Follows keine Vertrauenswertung. Er schützt die Eingabe, die viele Web-of-Trust-Werkzeuge verwenden. Die zentrale Eigenschaft ist einfach: Ein Kind-`3`-Event enthält die gesamte aktuelle Liste. Wer es wie eine Anhängeoperation behandelt, kann Beziehungen löschen. Als versionierte Momentaufnahme macht es Konflikte sichtbar, bevor sie zu einem signierten Ersatz werden.

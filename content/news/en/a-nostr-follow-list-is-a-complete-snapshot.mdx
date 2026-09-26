@@ -1,0 +1,63 @@
+---
+title: "A Nostr follow list is a complete snapshot"
+description: "NIP-02 kind 3 follow lists replace the previous list. Safe updates must preserve every intended p tag, relay hint and petname."
+seoDescription: "Learn why a Nostr kind 3 follow list is a complete replaceable snapshot, how relays choose the latest event, and how to avoid stale-device overwrites."
+excerpt: "A kind 3 event does not add one follow. It replaces the author's previous follow list, which makes read, modify, sign and verify the safe update sequence."
+date: "2026-09-26"
+publishedAt: "2026-09-26"
+backfilled: false
+type: "story"
+tags: ["Nostr", "NIP-02", "Web of Trust", "Follow Lists"]
+featuredImage: "/images/news/a-nostr-follow-list-is-a-complete-snapshot.svg"
+translationKey: "a-nostr-follow-list-is-a-complete-snapshot"
+sources:
+  - title: "NIP-02: Follow List at commit b82211e"
+    url: "https://github.com/nostr-protocol/nips/blob/b82211e96c6dad616ed2ea43034c1c621256b745/02.md"
+    publisher: "nostr-protocol/nips"
+    date: "2026-09-20"
+  - title: "NIP-01: Basic protocol flow at commit b82211e"
+    url: "https://github.com/nostr-protocol/nips/blob/b82211e96c6dad616ed2ea43034c1c621256b745/01.md"
+    publisher: "nostr-protocol/nips"
+    date: "2026-09-04"
+published: true
+---
+
+A Nostr follow action looks incremental in the interface: press Follow, add one person. The event sent to relays is not an instruction to append one key. [NIP-02](https://github.com/nostr-protocol/nips/blob/b82211e96c6dad616ed2ea43034c1c621256b745/02.md) defines kind `3` as the author's complete follow list and says every new list overwrites the past ones.
+
+That makes a follow-list update a read, modify, sign and publish operation. A client must start from the list it intends to replace, change that complete set, then sign a new event containing every entry that should remain. Publishing only the new `p` tag is not a small update. It is a one-entry replacement.
+
+## Every p tag carries more than a key
+
+The tags array contains one `p` tag for each followed or known profile. Its first value is the profile's 32-byte public key in hexadecimal. Two optional positions can carry a recommended relay URL and a local petname:
+
+```json
+["p", "<32-byte-hex-pubkey>", "wss://relay.example", "alice"]
+```
+
+NIP-02 leaves the event content unused. The list lives in the tags, so a client that preserves only public keys can silently discard relay hints or petnames written by another client. A safe editor treats the whole tag as data, including empty optional positions when they are needed to keep the field order clear.
+
+The relay value is a hint about where events from that profile may be found. It is not an instruction to publish there, and it is not proof that the relay still serves that key. A petname is local context chosen by the list author. It is not a global username or a verified identity claim.
+
+## Kind 3 is replaceable by author and kind
+
+[NIP-01](https://github.com/nostr-protocol/nips/blob/b82211e96c6dad616ed2ea43034c1c621256b745/01.md) classifies kind `3` as replaceable. For each combination of pubkey and kind, a relay must keep the latest event and may discard older versions. When two candidates have the same `created_at` timestamp, the event with the lower ID in lexical order wins.
+
+The rule identifies one current snapshot. It does not define a merge between snapshots. If a phone follows Alice from a list containing 100 entries while a laptop follows Bob from an older list containing 90, the laptop can later publish 91 entries and replace the phone's version. Alice disappears even though nobody pressed Unfollow on the laptop.
+
+Combining all older events is not a safe repair. An old version can contain people the author deliberately removed. A client that unions every observed list can resurrect those follows and their relay hints. The deterministic winner is the current replaceable event, not the largest list.
+
+## Multiple relays can disagree temporarily
+
+The author may publish the same signed snapshot to several relays, but delivery can fail or happen at different times. One relay may expose the new event while another still returns the previous one. NIP-01 also notes that implementations may differ, even though relays answering a replaceable-event query should return only the latest version.
+
+A client recovering a follow list should therefore query the intended relays, validate signatures and compare candidates using the replaceable-event ordering rules. It should not assume the first relay response is globally current. After publishing, rereading from more than one relay is a practical way to confirm that the chosen snapshot is available where expected.
+
+Deletion has a similar boundary. NIP-02 says relays and clients should delete past follow lists when a new one arrives. That recommendation does not prove every relay erased every older copy. The new event controls which list is current; it is not a cryptographic deletion receipt.
+
+## A safer update sequence
+
+Before changing a follow list, fetch the current winning kind `3` event from the relays the account uses. Preserve every intended `p` tag and its optional values. Apply the follow, unfollow, relay-hint or petname change to that complete set. Use a fresh timestamp, sign once, and publish the same event to the selected relays.
+
+Then fetch it back and verify the event ID, author and tag count. If another device may be editing the list, compare its starting event ID before publishing. A mismatch means the base snapshot changed and the edit should be replayed on the newer list instead of overwriting it blindly.
+
+This process does not turn follows into trust scores. It protects the input that many Web-of-Trust tools use. The key property is simple: a kind `3` event is the whole current list. Treating it like an append operation can erase relationships; treating it like a versioned snapshot makes conflicts visible before they become a signed replacement.

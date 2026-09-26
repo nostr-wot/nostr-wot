@@ -1,0 +1,63 @@
+---
+title: "Una lista di follow Nostr è un'istantanea completa"
+description: "Le liste di follow kind 3 del NIP-02 sostituiscono la lista precedente. Un aggiornamento sicuro conserva ogni tag p, suggerimento relay e petname."
+seoDescription: "Perché una lista di follow kind 3 di Nostr è un'istantanea sostituibile completa e come evitare sovrascritture da dispositivi non aggiornati."
+excerpt: "Un evento kind 3 non aggiunge un solo follow. Sostituisce la lista precedente dell'autore, quindi la sequenza sicura è leggere, modificare, firmare e verificare."
+date: "2026-09-26"
+publishedAt: "2026-09-26"
+backfilled: false
+type: "story"
+tags: ["Nostr", "NIP-02", "Web of Trust", "Liste di follow"]
+featuredImage: "/images/news/a-nostr-follow-list-is-a-complete-snapshot.svg"
+translationKey: "a-nostr-follow-list-is-a-complete-snapshot"
+sources:
+  - title: "NIP-02: Follow List al commit b82211e"
+    url: "https://github.com/nostr-protocol/nips/blob/b82211e96c6dad616ed2ea43034c1c621256b745/02.md"
+    publisher: "nostr-protocol/nips"
+    date: "2026-09-20"
+  - title: "NIP-01: flusso base del protocollo al commit b82211e"
+    url: "https://github.com/nostr-protocol/nips/blob/b82211e96c6dad616ed2ea43034c1c621256b745/01.md"
+    publisher: "nostr-protocol/nips"
+    date: "2026-09-04"
+published: true
+---
+
+Seguire qualcuno su Nostr sembra un'azione incrementale nell'interfaccia: premi Follow e aggiungi una persona. L'evento inviato ai relay non è però un'istruzione per aggiungere una chiave. Il [NIP-02](https://github.com/nostr-protocol/nips/blob/b82211e96c6dad616ed2ea43034c1c621256b745/02.md) definisce il kind `3` come la lista completa dei follow dell'autore e stabilisce che ogni nuova lista sovrascrive quelle precedenti.
+
+L'aggiornamento è quindi un'operazione di lettura, modifica, firma e pubblicazione. Un client deve partire dalla lista che intende sostituire, modificare l'intero insieme e firmare un nuovo evento contenente tutte le voci che devono restare. Pubblicare soltanto il nuovo tag `p` non è un piccolo aggiornamento. È una sostituzione con una sola voce.
+
+## Ogni tag p contiene più di una chiave
+
+L'array dei tag contiene un tag `p` per ogni profilo seguito o conosciuto. Il primo valore è la chiave pubblica esadecimale di 32 byte. Due posizioni facoltative possono contenere un URL relay consigliato e un petname locale:
+
+```json
+["p", "<chiave-pubblica-hex-32-byte>", "wss://relay.example", "alice"]
+```
+
+Il NIP-02 non usa il content dell'evento. La lista risiede nei tag, quindi un client che conserva solo le chiavi pubbliche può eliminare silenziosamente suggerimenti relay o petname scritti da un altro client. Un editor sicuro tratta l'intero tag come dato, comprese le posizioni facoltative vuote quando servono a mantenere chiaro l'ordine dei campi.
+
+Il valore relay suggerisce dove possono essere trovati gli eventi di quel profilo. Non ordina di pubblicare lì e non prova che il relay serva ancora quella chiave. Un petname è un contesto locale scelto dall'autore della lista. Non è un nome utente globale né un'identità verificata.
+
+## Il kind 3 è sostituibile per autore e kind
+
+Il [NIP-01](https://github.com/nostr-protocol/nips/blob/b82211e96c6dad616ed2ea43034c1c621256b745/01.md) classifica il kind `3` come sostituibile. Per ogni combinazione di pubkey e kind, un relay deve conservare l'evento più recente e può scartare le versioni precedenti. Se due candidati hanno lo stesso timestamp `created_at`, vince l'evento con l'ID più basso in ordine lessicale.
+
+La regola identifica un'istantanea corrente, ma non definisce una fusione tra istantanee. Se un telefono segue Alice partendo da una lista di 100 voci, mentre un laptop segue Bob da una lista più vecchia di 90, il laptop può poi pubblicare 91 voci e sostituire la versione del telefono. Alice scompare anche se nessuno ha premuto Unfollow sul laptop.
+
+Unire tutti i vecchi eventi non è una riparazione sicura. Una versione precedente può contenere persone rimosse intenzionalmente dall'autore. Un client che unisce tutte le liste osservate può ripristinare quei follow e i relativi suggerimenti relay. Il vincitore deterministico è l'evento sostituibile corrente, non la lista più grande.
+
+## Più relay possono divergere temporaneamente
+
+L'autore può pubblicare la stessa istantanea firmata su diversi relay, ma la consegna può fallire o avvenire in momenti diversi. Un relay può esporre il nuovo evento mentre un altro restituisce ancora quello precedente. Il NIP-01 osserva inoltre che le implementazioni possono differire, anche se un relay che risponde a una query per eventi sostituibili dovrebbe restituire solo l'ultima versione.
+
+Un client che recupera una lista dovrebbe interrogare i relay previsti, convalidare le firme e confrontare i candidati usando le regole di ordinamento degli eventi sostituibili. Non dovrebbe assumere che la prima risposta di un relay sia globalmente aggiornata. Dopo la pubblicazione, rileggere da più relay aiuta a confermare che l'istantanea scelta sia disponibile dove previsto.
+
+La cancellazione ha un limite simile. Il NIP-02 dice che relay e client dovrebbero eliminare le vecchie liste quando ne ricevono una nuova. La raccomandazione non prova che ogni relay abbia cancellato ogni vecchia copia. Il nuovo evento determina la lista corrente, ma non è una ricevuta crittografica di cancellazione.
+
+## Una sequenza di aggiornamento più sicura
+
+Prima di cambiare una lista, recupera l'evento kind `3` vincente dai relay usati dall'account. Conserva ogni tag `p` desiderato e i suoi valori facoltativi. Applica la modifica di follow, unfollow, relay o petname all'intero insieme. Usa un timestamp nuovo, firma una volta e pubblica lo stesso evento sui relay selezionati.
+
+Poi recuperalo di nuovo e verifica ID, autore e numero di tag. Se un altro dispositivo può modificare la lista, confronta l'ID dell'evento di partenza prima di pubblicare. Una differenza significa che l'istantanea di base è cambiata e che la modifica deve essere riapplicata alla lista più nuova.
+
+Questo processo non trasforma i follow in punteggi di fiducia. Protegge l'input usato da molti strumenti Web of Trust. La proprietà centrale è semplice: un evento kind `3` contiene l'intera lista corrente. Trattarlo come un'operazione di aggiunta può cancellare relazioni; trattarlo come un'istantanea versionata rende visibili i conflitti prima che diventino una sostituzione firmata.
