@@ -1,0 +1,63 @@
+---
+title: "Una lista de seguidos de Nostr es una instantánea completa"
+description: "Las listas de seguidos kind 3 del NIP-02 reemplazan la lista anterior. Una actualización segura conserva cada etiqueta p, pista de relay y petname."
+seoDescription: "Descubre por qué una lista de seguidos kind 3 de Nostr es una instantánea reemplazable completa y cómo evitar sobrescrituras desde dispositivos desactualizados."
+excerpt: "Un evento kind 3 no añade un único seguido. Reemplaza la lista anterior del autor, por lo que la secuencia segura es leer, modificar, firmar y verificar."
+date: "2026-09-26"
+publishedAt: "2026-09-26"
+backfilled: false
+type: "story"
+tags: ["Nostr", "NIP-02", "Web of Trust", "Listas de seguidos"]
+featuredImage: "/images/news/a-nostr-follow-list-is-a-complete-snapshot.svg"
+translationKey: "a-nostr-follow-list-is-a-complete-snapshot"
+sources:
+  - title: "NIP-02: Follow List en el commit b82211e"
+    url: "https://github.com/nostr-protocol/nips/blob/b82211e96c6dad616ed2ea43034c1c621256b745/02.md"
+    publisher: "nostr-protocol/nips"
+    date: "2026-09-20"
+  - title: "NIP-01: flujo básico del protocolo en el commit b82211e"
+    url: "https://github.com/nostr-protocol/nips/blob/b82211e96c6dad616ed2ea43034c1c621256b745/01.md"
+    publisher: "nostr-protocol/nips"
+    date: "2026-09-04"
+published: true
+---
+
+Seguir a alguien en Nostr parece una acción incremental en la interfaz: pulsas Seguir y añades una persona. El evento enviado a los relays no es una instrucción para añadir una clave. El [NIP-02](https://github.com/nostr-protocol/nips/blob/b82211e96c6dad616ed2ea43034c1c621256b745/02.md) define el kind `3` como la lista completa de seguidos del autor y establece que cada lista nueva sobrescribe las anteriores.
+
+Por eso, actualizar la lista exige leer, modificar, firmar y publicar. Un cliente debe partir de la lista que pretende reemplazar, cambiar ese conjunto completo y firmar un nuevo evento con todas las entradas que deben permanecer. Publicar solo la etiqueta `p` nueva no es una actualización pequeña. Es un reemplazo de una sola entrada.
+
+## Cada etiqueta p contiene más que una clave
+
+El array de etiquetas contiene una etiqueta `p` por cada perfil seguido o conocido. El primer valor es la clave pública hexadecimal de 32 bytes. Dos posiciones opcionales pueden contener un relay recomendado y un petname local:
+
+```json
+["p", "<clave-publica-hex-de-32-bytes>", "wss://relay.example", "alice"]
+```
+
+El NIP-02 no utiliza el contenido del evento. La lista vive en las etiquetas, así que un cliente que conserve solo las claves públicas puede descartar silenciosamente pistas de relay o petnames escritos por otro cliente. Un editor seguro trata toda la etiqueta como datos, incluidas las posiciones opcionales vacías cuando hacen falta para mantener claro el orden de los campos.
+
+El valor del relay es una pista sobre dónde encontrar eventos de ese perfil. No ordena publicar allí ni demuestra que el relay siga sirviendo esa clave. Un petname es contexto local elegido por el autor de la lista. No es un nombre de usuario global ni una identidad verificada.
+
+## El kind 3 es reemplazable por autor y kind
+
+El [NIP-01](https://github.com/nostr-protocol/nips/blob/b82211e96c6dad616ed2ea43034c1c621256b745/01.md) clasifica el kind `3` como reemplazable. Para cada combinación de pubkey y kind, un relay debe conservar el evento más reciente y puede descartar versiones anteriores. Si dos candidatos comparten el mismo timestamp `created_at`, gana el evento con el ID menor en orden léxico.
+
+La regla identifica una instantánea actual. No define una fusión entre instantáneas. Si un teléfono sigue a Alice desde una lista con 100 entradas mientras un portátil sigue a Bob desde una lista antigua con 90, el portátil puede publicar después 91 entradas y reemplazar la versión del teléfono. Alice desaparece aunque nadie haya pulsado Dejar de seguir en el portátil.
+
+Combinar todos los eventos antiguos tampoco es una reparación segura. Una versión anterior puede contener personas que el autor eliminó deliberadamente. Un cliente que una todas las listas observadas puede resucitar esos seguidos y sus pistas de relay. El ganador determinista es el evento reemplazable actual, no la lista más grande.
+
+## Varios relays pueden discrepar temporalmente
+
+El autor puede publicar la misma instantánea firmada en varios relays, pero la entrega puede fallar o completarse en momentos diferentes. Un relay puede mostrar el evento nuevo mientras otro todavía devuelve el anterior. El NIP-01 también señala que las implementaciones pueden diferir, aunque los relays deberían devolver solo la versión más reciente al responder una consulta de eventos reemplazables.
+
+Un cliente que recupera una lista debería consultar los relays previstos, validar las firmas y comparar candidatos con las reglas de orden de eventos reemplazables. No debe asumir que la primera respuesta de un relay es la versión globalmente actual. Después de publicar, volver a leer desde más de un relay permite confirmar que la instantánea elegida está disponible donde se esperaba.
+
+La eliminación tiene un límite parecido. El NIP-02 dice que relays y clientes deberían borrar las listas antiguas al recibir una nueva. Esa recomendación no demuestra que cada relay haya eliminado cada copia anterior. El evento nuevo determina qué lista está vigente, pero no es un recibo criptográfico de eliminación.
+
+## Una secuencia de actualización más segura
+
+Antes de cambiar una lista, obtén el evento kind `3` ganador desde los relays que usa la cuenta. Conserva cada etiqueta `p` prevista y sus valores opcionales. Aplica el cambio de seguimiento, relay o petname al conjunto completo. Usa un timestamp nuevo, firma una vez y publica el mismo evento en los relays seleccionados.
+
+Después, recupéralo y verifica el ID, el autor y la cantidad de etiquetas. Si otro dispositivo puede estar editando la lista, compara el ID del evento de partida antes de publicar. Una diferencia indica que la instantánea base cambió y que la edición debe repetirse sobre la lista más nueva.
+
+Este proceso no convierte los seguidos en puntuaciones de confianza. Protege la entrada que utilizan muchas herramientas de Web of Trust. La propiedad clave es sencilla: un evento kind `3` contiene toda la lista actual. Tratarlo como una operación de anexado puede borrar relaciones; tratarlo como una instantánea versionada hace visibles los conflictos antes de que se conviertan en un reemplazo firmado.

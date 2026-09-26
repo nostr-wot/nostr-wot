@@ -1,0 +1,63 @@
+---
+title: "Une liste de suivis Nostr est un instantané complet"
+description: "Les listes de suivis kind 3 du NIP-02 remplacent la liste précédente. Une mise à jour sûre conserve chaque tag p, indice de relais et petname."
+seoDescription: "Pourquoi une liste de suivis kind 3 de Nostr est un instantané remplaçable complet et comment éviter les écrasements depuis un appareil obsolète."
+excerpt: "Un événement kind 3 n'ajoute pas un seul suivi. Il remplace la liste précédente de l'auteur, donc la séquence sûre consiste à lire, modifier, signer et vérifier."
+date: "2026-09-26"
+publishedAt: "2026-09-26"
+backfilled: false
+type: "story"
+tags: ["Nostr", "NIP-02", "Web of Trust", "Listes de suivis"]
+featuredImage: "/images/news/a-nostr-follow-list-is-a-complete-snapshot.svg"
+translationKey: "a-nostr-follow-list-is-a-complete-snapshot"
+sources:
+  - title: "NIP-02 : Follow List au commit b82211e"
+    url: "https://github.com/nostr-protocol/nips/blob/b82211e96c6dad616ed2ea43034c1c621256b745/02.md"
+    publisher: "nostr-protocol/nips"
+    date: "2026-09-20"
+  - title: "NIP-01 : flux de base du protocole au commit b82211e"
+    url: "https://github.com/nostr-protocol/nips/blob/b82211e96c6dad616ed2ea43034c1c621256b745/01.md"
+    publisher: "nostr-protocol/nips"
+    date: "2026-09-04"
+published: true
+---
+
+Suivre quelqu'un sur Nostr ressemble à une action incrémentale dans l'interface : appuyer sur Follow et ajouter une personne. L'événement envoyé aux relais n'est pourtant pas une instruction pour ajouter une clé. Le [NIP-02](https://github.com/nostr-protocol/nips/blob/b82211e96c6dad616ed2ea43034c1c621256b745/02.md) définit le kind `3` comme la liste complète des suivis de l'auteur et précise que chaque nouvelle liste écrase les précédentes.
+
+Une mise à jour est donc une opération de lecture, modification, signature et publication. Un client doit partir de la liste qu'il veut remplacer, modifier cet ensemble complet, puis signer un nouvel événement qui contient toutes les entrées à conserver. Publier uniquement le nouveau tag `p` n'est pas une petite mise à jour. C'est un remplacement par une seule entrée.
+
+## Chaque tag p contient plus qu'une clé
+
+Le tableau de tags contient un tag `p` pour chaque profil suivi ou connu. La première valeur est la clé publique hexadécimale de 32 octets. Deux positions facultatives peuvent contenir l'URL d'un relais recommandé et un petname local :
+
+```json
+["p", "<cle-publique-hex-32-octets>", "wss://relay.example", "alice"]
+```
+
+Le NIP-02 n'utilise pas le content de l'événement. La liste se trouve dans les tags, donc un client qui ne conserve que les clés publiques peut supprimer silencieusement des indices de relais ou des petnames écrits par un autre client. Un éditeur sûr traite l'ensemble du tag comme une donnée, y compris les positions facultatives vides lorsqu'elles sont nécessaires pour préserver l'ordre des champs.
+
+La valeur relay indique où les événements de ce profil peuvent être trouvés. Elle n'ordonne pas d'y publier et ne prouve pas que le relais sert encore cette clé. Un petname est un contexte local choisi par l'auteur de la liste. Ce n'est ni un nom d'utilisateur global ni une identité vérifiée.
+
+## Le kind 3 est remplaçable par auteur et kind
+
+Le [NIP-01](https://github.com/nostr-protocol/nips/blob/b82211e96c6dad616ed2ea43034c1c621256b745/01.md) classe le kind `3` parmi les événements remplaçables. Pour chaque combinaison de pubkey et de kind, un relais doit conserver l'événement le plus récent et peut supprimer les anciennes versions. Si deux candidats ont le même timestamp `created_at`, l'événement dont l'ID est le plus petit dans l'ordre lexical l'emporte.
+
+Cette règle identifie un instantané courant, mais elle ne définit aucune fusion entre instantanés. Si un téléphone suit Alice depuis une liste de 100 entrées tandis qu'un ordinateur suit Bob depuis une ancienne liste de 90 entrées, l'ordinateur peut ensuite publier 91 entrées et remplacer la version du téléphone. Alice disparaît même si personne n'a appuyé sur Unfollow sur l'ordinateur.
+
+Fusionner tous les anciens événements n'est pas une réparation sûre. Une ancienne version peut contenir des personnes que l'auteur a volontairement retirées. Un client qui réunit toutes les listes observées peut ressusciter ces suivis et leurs indices de relais. Le gagnant déterministe est l'événement remplaçable courant, pas la plus grande liste.
+
+## Plusieurs relais peuvent diverger temporairement
+
+L'auteur peut publier le même instantané signé sur plusieurs relais, mais la livraison peut échouer ou se produire à des moments différents. Un relais peut exposer le nouvel événement alors qu'un autre renvoie encore le précédent. Le NIP-01 précise aussi que les implémentations peuvent différer, même si les relais répondant à une requête d'événement remplaçable devraient ne renvoyer que la dernière version.
+
+Un client qui récupère une liste devrait interroger les relais prévus, valider les signatures et comparer les candidats selon les règles d'ordre des événements remplaçables. Il ne devrait pas supposer que la première réponse d'un relais est globalement à jour. Après publication, relire auprès de plusieurs relais permet de confirmer que l'instantané choisi est disponible aux endroits attendus.
+
+La suppression connaît une limite similaire. Le NIP-02 dit que les relais et les clients devraient effacer les anciennes listes lorsqu'ils en reçoivent une nouvelle. Cette recommandation ne prouve pas que chaque relais a supprimé chaque ancienne copie. Le nouvel événement détermine la liste courante, mais il ne constitue pas un reçu cryptographique de suppression.
+
+## Une séquence de mise à jour plus sûre
+
+Avant de modifier une liste, récupérez l'événement kind `3` gagnant auprès des relais utilisés par le compte. Conservez chaque tag `p` souhaité et ses valeurs facultatives. Appliquez la modification de suivi, de relais ou de petname à l'ensemble complet. Utilisez un timestamp récent, signez une fois et publiez le même événement sur les relais sélectionnés.
+
+Récupérez-le ensuite et vérifiez son ID, son auteur et le nombre de tags. Si un autre appareil peut modifier la liste, comparez l'ID de l'événement de départ avant de publier. Une différence indique que l'instantané de base a changé et que la modification doit être rejouée sur la liste plus récente.
+
+Ce processus ne transforme pas les suivis en scores de confiance. Il protège l'entrée utilisée par de nombreux outils Web of Trust. La propriété essentielle est simple : un événement kind `3` contient toute la liste courante. Le traiter comme une opération d'ajout peut effacer des relations ; le traiter comme un instantané versionné rend les conflits visibles avant qu'ils ne deviennent un remplacement signé.

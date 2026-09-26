@@ -1,0 +1,63 @@
+---
+title: "Uma lista de seguidos do Nostr é um retrato completo"
+description: "As listas de seguidos kind 3 do NIP-02 substituem a lista anterior. Uma atualização segura preserva cada tag p, dica de relay e petname."
+seoDescription: "Entenda por que uma lista kind 3 do Nostr é um retrato substituível completo e como evitar sobrescritas causadas por dispositivos desatualizados."
+excerpt: "Um evento kind 3 não adiciona apenas um seguido. Ele substitui a lista anterior do autor, por isso a sequência segura é ler, modificar, assinar e verificar."
+date: "2026-09-26"
+publishedAt: "2026-09-26"
+backfilled: false
+type: "story"
+tags: ["Nostr", "NIP-02", "Web of Trust", "Listas de seguidos"]
+featuredImage: "/images/news/a-nostr-follow-list-is-a-complete-snapshot.svg"
+translationKey: "a-nostr-follow-list-is-a-complete-snapshot"
+sources:
+  - title: "NIP-02: Follow List no commit b82211e"
+    url: "https://github.com/nostr-protocol/nips/blob/b82211e96c6dad616ed2ea43034c1c621256b745/02.md"
+    publisher: "nostr-protocol/nips"
+    date: "2026-09-20"
+  - title: "NIP-01: fluxo básico do protocolo no commit b82211e"
+    url: "https://github.com/nostr-protocol/nips/blob/b82211e96c6dad616ed2ea43034c1c621256b745/01.md"
+    publisher: "nostr-protocol/nips"
+    date: "2026-09-04"
+published: true
+---
+
+Seguir alguém no Nostr parece uma ação incremental na interface: toque em Seguir e adicione uma pessoa. O evento enviado aos relays não é uma instrução para acrescentar uma chave. O [NIP-02](https://github.com/nostr-protocol/nips/blob/b82211e96c6dad616ed2ea43034c1c621256b745/02.md) define o kind `3` como a lista completa de seguidos do autor e afirma que cada nova lista sobrescreve as anteriores.
+
+Isso transforma uma atualização em uma operação de ler, modificar, assinar e publicar. Um cliente precisa começar pela lista que pretende substituir, alterar esse conjunto completo e assinar um novo evento com todas as entradas que devem permanecer. Publicar somente a nova tag `p` não é uma pequena atualização. É uma substituição por uma única entrada.
+
+## Cada tag p carrega mais do que uma chave
+
+O array de tags contém uma tag `p` para cada perfil seguido ou conhecido. O primeiro valor é a chave pública hexadecimal de 32 bytes. Duas posições opcionais podem trazer um relay recomendado e um petname local:
+
+```json
+["p", "<chave-publica-hex-de-32-bytes>", "wss://relay.example", "alice"]
+```
+
+O NIP-02 não usa o conteúdo do evento. A lista fica nas tags, portanto um cliente que preserve apenas as chaves públicas pode descartar silenciosamente dicas de relay ou petnames gravados por outro cliente. Um editor seguro trata a tag inteira como dado, inclusive posições opcionais vazias quando elas são necessárias para manter clara a ordem dos campos.
+
+O valor do relay é uma dica sobre onde eventos daquele perfil podem ser encontrados. Ele não manda publicar ali e não prova que o relay ainda atende aquela chave. Um petname é contexto local escolhido pelo autor da lista. Não é um nome de usuário global nem uma identidade verificada.
+
+## O kind 3 é substituível por autor e kind
+
+O [NIP-01](https://github.com/nostr-protocol/nips/blob/b82211e96c6dad616ed2ea43034c1c621256b745/01.md) classifica o kind `3` como substituível. Para cada combinação de pubkey e kind, um relay deve manter o evento mais recente e pode descartar versões antigas. Quando dois candidatos têm o mesmo timestamp `created_at`, vence o evento com o menor ID em ordem lexical.
+
+A regra identifica um retrato atual. Ela não define uma fusão entre retratos. Se um telefone segue Alice a partir de uma lista com 100 entradas enquanto um notebook segue Bob usando uma lista antiga com 90, o notebook pode depois publicar 91 entradas e substituir a versão do telefone. Alice desaparece mesmo que ninguém tenha tocado em Deixar de seguir no notebook.
+
+Unir todos os eventos antigos não é um reparo seguro. Uma versão anterior pode conter pessoas que o autor removeu de propósito. Um cliente que faça a união de todas as listas observadas pode ressuscitar esses seguidos e suas dicas de relay. O vencedor determinístico é o evento substituível atual, não a maior lista.
+
+## Vários relays podem discordar por algum tempo
+
+O autor pode publicar o mesmo retrato assinado em vários relays, mas a entrega pode falhar ou ocorrer em momentos diferentes. Um relay pode mostrar o evento novo enquanto outro ainda devolve o anterior. O NIP-01 também observa que implementações podem variar, embora relays respondendo a uma consulta de evento substituível devam retornar apenas a versão mais recente.
+
+Um cliente que recupera uma lista deve consultar os relays previstos, validar assinaturas e comparar candidatos pelas regras de ordenação de eventos substituíveis. Não deve presumir que a primeira resposta de um relay seja a versão globalmente atual. Depois de publicar, ler novamente em mais de um relay ajuda a confirmar que o retrato escolhido está disponível onde deveria.
+
+A exclusão tem um limite semelhante. O NIP-02 diz que relays e clientes devem apagar listas antigas quando recebem uma nova. Essa recomendação não prova que todo relay eliminou toda cópia anterior. O novo evento controla qual lista é atual, mas não é um recibo criptográfico de exclusão.
+
+## Uma sequência de atualização mais segura
+
+Antes de alterar uma lista, busque o evento kind `3` vencedor nos relays usados pela conta. Preserve cada tag `p` desejada e seus valores opcionais. Aplique a mudança de follow, unfollow, relay ou petname ao conjunto completo. Use um timestamp novo, assine uma vez e publique o mesmo evento nos relays selecionados.
+
+Depois, busque-o novamente e verifique ID, autor e quantidade de tags. Se outro dispositivo puder editar a lista, compare o ID do evento inicial antes de publicar. Uma diferença significa que o retrato base mudou e que a edição deve ser reaplicada sobre a lista mais nova.
+
+Esse processo não transforma follows em pontuações de confiança. Ele protege a entrada usada por muitas ferramentas de Web of Trust. A propriedade central é simples: um evento kind `3` contém toda a lista atual. Tratá-lo como uma operação de anexar pode apagar relações; tratá-lo como um retrato versionado torna os conflitos visíveis antes que virem uma substituição assinada.
