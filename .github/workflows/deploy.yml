@@ -1,22 +1,15 @@
 name: Deploy to Prod
 
-# Repository docs, social drafts and the delivery ledger are not site inputs.
-# Keep content/** (including Markdown), public/** and newsletters/** deployable.
+# Called only after CI has verified this exact main-branch commit. The caller
+# holds the repository-wide concurrency lock for verification AND deployment.
 on:
-  push:
-    branches:
-      - main
-    paths-ignore:
-      - 'README.md'
-      - 'AGENTS.md'
-      - 'LICENSE'
-      - 'docs/**'
-      - 'social/**'
-      - 'scripts/newsletters/README.md'
-      - 'data/social-posted.json'
+  workflow_call:
+
+permissions:
+  contents: read
 
 jobs:
-  build-and-deploy:
+  deploy:
     runs-on: ubuntu-latest
 
     steps:
@@ -31,16 +24,17 @@ jobs:
           node-version-file: '.nvmrc'
           cache: 'npm'
 
-      - name: Install dependencies
-        run: npm install
+      - uses: actions/download-artifact@v8
+        with:
+          name: production-${{ github.sha }}
 
-      - name: Write .env from secret
-        run: echo "${{ secrets.ENV_PRODUCTION }}" > .env
+      - name: Unpack the verified build
+        run: tar -xzf production.tar.gz
 
-      - name: Build Next.js app
+      - name: Write runtime environment
         env:
-          NEXT_DISABLE_TURBOPACK: "1"
-        run: npm run build
+          PRODUCTION_ENV: ${{ secrets.ENV_PRODUCTION }}
+        run: printf '%s\n' "$PRODUCTION_ENV" > .env
 
       - name: Upload production files via SCP
         uses: appleboy/scp-action@v0.1.4
@@ -63,20 +57,30 @@ jobs:
             cd /var/www/nostr-wot
             # Runtime subscriptions and delivery records must survive application deploys.
             install -d -m 700 data/newsletter
-            npm install
+            npm ci --legacy-peer-deps
             export PORT=3000
             pm2 delete nostr-wot || true
             pm2 start "npm run start" --name nostr-wot
             pm2 save
 
-      - name: Wait for service to start
-        run: sleep 15
+      - name: Verify the live homepage and refreshed sitemap
+        run: |
+          curl --fail --retry 12 --retry-delay 5 --retry-all-errors https://nostr-wot.com/ -o /dev/null
+          curl --fail --retry 6 --retry-delay 5 --retry-all-errors https://nostr-wot.com/sitemap.xml -o "$RUNNER_TEMP/live-sitemap.xml"
+          python3 -c 'import os, xml.etree.ElementTree as E; r=E.parse(os.environ["RUNNER_TEMP"]+"/live-sitemap.xml"); assert len(r.findall("{*}url")) > 0'
 
-      - name: Cache IndexNow state
-        uses: actions/cache@v6
+      - name: Restore IndexNow state
+        uses: actions/cache/restore@v6
         with:
           path: scripts/.indexnow-cache.json
-          key: indexnow-cache
+          key: indexnow-${{ github.sha }}
+          restore-keys: indexnow-
 
-      - name: Submit to IndexNow
-        run: npm run indexnow
+      - name: Submit changed URLs and request homepage reindexing
+        run: npx --yes --package=tsx tsx scripts/indexnow.ts --homepage
+
+      - name: Save updated IndexNow state
+        uses: actions/cache/save@v6
+        with:
+          path: scripts/.indexnow-cache.json
+          key: indexnow-${{ github.sha }}

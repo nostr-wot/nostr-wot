@@ -1,3 +1,4 @@
+import { withMetadataPolicy } from '@/lib/metadata-policy';
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { NextIntlClientProvider } from "next-intl";
@@ -14,17 +15,14 @@ import "@nostr-wot/ui/styles.css";
 
 const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || 'https://nostr-wot.com';
 
-export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }): Promise<Metadata> {
+async function pageMetadata({ params }: { params: Promise<{ locale: string }> }): Promise<Metadata> {
   const { locale } = await params;
   const t = await getTranslations({ locale, namespace: "home.meta" });
   const title = t("title");
   const description = t("description");
   return {
   metadataBase: new URL(BASE_URL),
-  title: {
-    default: title,
-    template: "%s | Nostr WoT",
-  },
+  title,
   description,
   keywords: ["nostr wot", "nostr web of trust", "web of trust"],
   manifest: "/manifest.json",
@@ -120,3 +118,5 @@ export default async function LocaleLayout({ children, params }: Props) {
     </html>
   );
 }
+
+export const generateMetadata = withMetadataPolicy(pageMetadata);

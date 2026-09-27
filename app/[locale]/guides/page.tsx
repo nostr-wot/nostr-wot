@@ -1,3 +1,5 @@
+import { serializeJsonLd } from '@/lib/serialize-jsonld';
+import { withMetadataPolicy } from '@/lib/metadata-policy';
 import type { Metadata } from 'next';
 import { getTranslations } from 'next-intl/server';
 import { Link } from '@/i18n/routing';
@@ -13,7 +15,7 @@ type Props = {
   searchParams: Promise<{ q?: string; tag?: string }>;
 };
 
-export async function generateMetadata({ params }: Props): Promise<Metadata> {
+async function pageMetadata({ params }: Props): Promise<Metadata> {
   const { locale } = await params;
   const t = await getTranslations('guides.meta');
   const title = t('title');
@@ -60,8 +62,8 @@ export default async function GuidesPage({ params, searchParams }: Props) {
   const jsonLd = {
     '@context': 'https://schema.org',
     '@type': 'CollectionPage',
-    'name': 'Nostr WoT Extension Guides',
-    'description': 'Step-by-step guides to get the most out of the Nostr WoT Extension',
+    'name': t('meta.title'),
+    'description': t('meta.description'),
     'url': getFullUrl('/guides', locale as Locale),
     'publisher': {
       '@type': 'Organization',
@@ -72,8 +74,11 @@ export default async function GuidesPage({ params, searchParams }: Props) {
       },
     },
     'hasPart': guides.map((guide) => ({
-      '@type': 'HowTo',
-      'name': guide.title,
+      '@type': 'Article',
+      'headline': guide.title,
+      'image': new URL(guide.featuredImage, getFullUrl('/', 'en')).href,
+      'datePublished': guide.date,
+      'author': { '@type': 'Person', 'name': guide.author.name },
       'description': guide.excerpt,
       'url': getFullUrl(`/guides/${guide.slug}`, locale as Locale),
     })),
@@ -83,7 +88,7 @@ export default async function GuidesPage({ params, searchParams }: Props) {
     <>
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+        dangerouslySetInnerHTML={{ __html: serializeJsonLd(jsonLd) }}
       />
       <main>
         {/* Hero Section */}
@@ -176,3 +181,5 @@ export default async function GuidesPage({ params, searchParams }: Props) {
     </>
   );
 }
+
+export const generateMetadata = withMetadataPolicy(pageMetadata);

@@ -1,3 +1,5 @@
+import { serializeJsonLd } from '@/lib/serialize-jsonld';
+import { withMetadataPolicy } from '@/lib/metadata-policy';
 import type { Metadata } from "next";
 import { Link } from "@/i18n/routing";
 import { getTranslations } from "next-intl/server";
@@ -38,7 +40,7 @@ type Props = {
   params: Promise<{ locale: string }>;
 };
 
-export async function generateMetadata({ params }: Props): Promise<Metadata> {
+async function pageMetadata({ params }: Props): Promise<Metadata> {
   const { locale } = await params;
   const t = await getTranslations("home.meta");
   const title = t("title");
@@ -96,7 +98,7 @@ export default async function Home({ params }: Props) {
     "description": t("meta.description"),
     "potentialAction": {
       "@type": "SearchAction",
-      "target": `${localUrl("/docs")}?search={search_term_string}`,
+      "target": `${localUrl("/news")}?q={search_term_string}`,
       "query-input": "required name=search_term_string",
     },
   };
@@ -224,23 +226,23 @@ export default async function Home({ params }: Props) {
     <>
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(organizationJsonLd) }}
+        dangerouslySetInnerHTML={{ __html: serializeJsonLd(organizationJsonLd) }}
       />
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(websiteJsonLd) }}
+        dangerouslySetInnerHTML={{ __html: serializeJsonLd(websiteJsonLd) }}
       />
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(navigationJsonLd) }}
+        dangerouslySetInnerHTML={{ __html: serializeJsonLd(navigationJsonLd) }}
       />
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(faqJsonLd) }}
+        dangerouslySetInnerHTML={{ __html: serializeJsonLd(faqJsonLd) }}
       />
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd) }}
+        dangerouslySetInnerHTML={{ __html: serializeJsonLd(breadcrumbJsonLd) }}
       />
       <main>
         {/* Hero Section — Extension-focused */}
@@ -655,3 +657,5 @@ export default async function Home({ params }: Props) {
     </>
   );
 }
+
+export const generateMetadata = withMetadataPolicy(pageMetadata);

@@ -45,12 +45,57 @@ const typeBadgeStyles: Record<NewsCardMeta['type'], string> = {
 interface NewsCardProps {
   post: NewsCardMeta;
   featured?: boolean;
+  variant?: 'card' | 'lead' | 'compact' | 'headline';
 }
 
-export function NewsCard({ post, featured = false }: NewsCardProps) {
+export function NewsCard({ post, featured = false, variant = 'card' }: NewsCardProps) {
   const locale = useLocale();
   const t = useTranslations('news');
   const typeLabel = t(`types.${post.type}`);
+
+  if (variant === 'compact' || variant === 'headline') {
+    return (
+      <Link href={`/news/${post.slug}`} className="group block rounded-lg focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-primary">
+        <article className="flex items-start gap-4 py-4">
+          <div className="min-w-0 flex-1">
+            <p className="mb-2 text-xs font-medium text-primary">{post.tags[0] || typeLabel}</p>
+            <h3 className="text-sm font-semibold leading-snug text-gray-900 transition-colors group-hover:text-primary dark:text-white">{post.title}</h3>
+            <div className="mt-2 flex flex-wrap gap-x-3 gap-y-1 text-xs text-gray-500 dark:text-gray-400">
+              <time dateTime={post.date}>{formatDate(post.date, locale)}</time>
+              {variant === 'compact' && <ReadingTime value={post.readingTime} />}
+            </div>
+          </div>
+          {variant === 'compact' && (
+            <div className="relative aspect-[4/3] w-20 shrink-0 overflow-hidden rounded-lg">
+              <Image src={post.previewImage} alt="" fill sizes="80px" className="object-cover" />
+            </div>
+          )}
+        </article>
+      </Link>
+    );
+  }
+
+  if (variant === 'lead') {
+    return (
+      <Link href={`/news/${post.slug}`} className="group block rounded-xl focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-primary">
+        <article>
+          <div className="relative mb-5 aspect-[1200/630] overflow-hidden rounded-xl">
+            <Image src={post.featuredImage} alt="" fill priority sizes="(min-width: 1280px) 32vw, (min-width: 768px) 45vw, 100vw" className="object-cover" />
+          </div>
+          <div className="mb-3 flex flex-wrap gap-2">
+            <span className={`rounded-full px-2.5 py-1 text-xs font-semibold ${typeBadgeStyles[post.type]}`}>{typeLabel}</span>
+            {post.tags.slice(0, 2).map(tag => <span key={tag} className="rounded-full bg-gray-100 px-2.5 py-1 text-xs text-gray-600 dark:bg-gray-800 dark:text-gray-300">{tag}</span>)}
+          </div>
+          <h3 className="mb-3 text-2xl font-bold leading-tight text-gray-900 transition-colors group-hover:text-primary dark:text-white">{post.title}</h3>
+          <p className="mb-4 text-base leading-relaxed text-gray-600 dark:text-gray-400">{post.excerpt}</p>
+          <div className="flex flex-wrap gap-3 text-xs text-gray-500 dark:text-gray-400">
+            <time dateTime={post.date}>{formatDate(post.date, locale)}</time>
+            <ReadingTime value={post.readingTime} />
+          </div>
+        </article>
+      </Link>
+    );
+  }
 
   if (featured) {
     return (

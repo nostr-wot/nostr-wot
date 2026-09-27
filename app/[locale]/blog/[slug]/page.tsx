@@ -1,3 +1,4 @@
+import { withMetadataPolicy } from '@/lib/metadata-policy';
 import ReadingTime from '@/components/ui/ReadingTime';
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
@@ -42,7 +43,7 @@ export async function generateStaticParams() {
   return params;
 }
 
-export async function generateMetadata({ params }: Props): Promise<Metadata> {
+async function pageMetadata({ params }: Props): Promise<Metadata> {
   const { locale, slug } = await params;
   const post = getBlogPost(slug, locale as Locale);
 
@@ -297,3 +298,5 @@ export default async function BlogPostPage({ params }: Props) {
     </BlogPostWrapper>
   );
 }
+
+export const generateMetadata = withMetadataPolicy(pageMetadata);

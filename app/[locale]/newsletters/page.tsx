@@ -1,3 +1,4 @@
+import { withMetadataPolicy } from '@/lib/metadata-policy';
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import { listSentNewsletters } from '@/lib/newsletter-archive';
@@ -10,7 +11,7 @@ export const dynamic = 'force-dynamic';
 export const runtime = 'nodejs';
 type Props = { params: Promise<{ locale: string }> };
 
-export async function generateMetadata({ params }: Props): Promise<Metadata> {
+async function pageMetadata({ params }: Props): Promise<Metadata> {
   const { locale } = await params;
   if (!isNewsletterLocale(locale)) notFound();
   const { title, description } = newsletterCopy[locale];
@@ -36,3 +37,5 @@ export default async function NewslettersPage({ params }: Props) {
     <NewsletterSection />
   </main>;
 }
+
+export const generateMetadata = withMetadataPolicy(pageMetadata);

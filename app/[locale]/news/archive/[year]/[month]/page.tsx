@@ -1,3 +1,4 @@
+import { withMetadataPolicy } from '@/lib/metadata-policy';
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import { getTranslations } from 'next-intl/server';
@@ -88,7 +89,7 @@ export async function generateStaticParams() {
   return params;
 }
 
-export async function generateMetadata({ params }: Props): Promise<Metadata> {
+async function pageMetadata({ params }: Props): Promise<Metadata> {
   const { locale, year, month } = await params;
   const parsed = parseSegments(year, month);
 
@@ -200,3 +201,5 @@ export default async function NewsArchiveMonthPage({ params }: Props) {
     </>
   );
 }
+
+export const generateMetadata = withMetadataPolicy(pageMetadata);

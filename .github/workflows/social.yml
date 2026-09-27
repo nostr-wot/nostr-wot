@@ -47,8 +47,9 @@ on:
 # unshared, and both share it. Do not cancel an in-flight run either: a run
 # cancelled mid-POST could leave the ledger and the actual post disagreeing.
 concurrency:
-  group: social-posting
+  group: nostr-wot-actions
   cancel-in-progress: false
+  queue: max
 
 permissions:
   contents: write

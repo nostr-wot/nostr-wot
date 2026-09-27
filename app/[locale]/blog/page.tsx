@@ -1,3 +1,5 @@
+import { serializeJsonLd } from '@/lib/serialize-jsonld';
+import { withMetadataPolicy } from '@/lib/metadata-policy';
 import type { Metadata } from 'next';
 import { getTranslations } from 'next-intl/server';
 import { Link } from '@/i18n/routing';
@@ -13,7 +15,7 @@ type Props = {
   searchParams: Promise<{ q?: string; tag?: string }>;
 };
 
-export async function generateMetadata({ params }: Props): Promise<Metadata> {
+async function pageMetadata({ params }: Props): Promise<Metadata> {
   const { locale } = await params;
   const t = await getTranslations('blog.meta');
   const title = t('title');
@@ -63,7 +65,7 @@ export default async function BlogPage({ params, searchParams }: Props) {
     '@context': 'https://schema.org',
     '@type': 'Blog',
     'name': 'Nostr Web of Trust Blog',
-    'description': 'News, updates, and insights about Web of Trust on Nostr',
+    'description': t('meta.description'),
     'url': getFullUrl('/blog', locale as Locale),
     'publisher': {
       '@type': 'Organization',
@@ -77,6 +79,7 @@ export default async function BlogPage({ params, searchParams }: Props) {
       '@type': 'BlogPosting',
       'headline': post.title,
       'description': post.excerpt,
+      'image': new URL(post.featuredImage, getFullUrl('/', 'en')).href,
       'datePublished': post.date,
       'author': {
         '@type': 'Person',
@@ -90,7 +93,7 @@ export default async function BlogPage({ params, searchParams }: Props) {
     <>
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+        dangerouslySetInnerHTML={{ __html: serializeJsonLd(jsonLd) }}
       />
       <main>
         {/* Hero Section */}
@@ -196,3 +199,5 @@ export default async function BlogPage({ params, searchParams }: Props) {
     </>
   );
 }
+
+export const generateMetadata = withMetadataPolicy(pageMetadata);

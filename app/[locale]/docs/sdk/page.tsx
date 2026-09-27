@@ -1,3 +1,4 @@
+import { withMetadataPolicy } from '@/lib/metadata-policy';
 import type { Metadata } from "next";
 import { getTranslations } from "next-intl/server";
 import { Link } from "@/i18n/routing";
@@ -22,7 +23,7 @@ const packages = [
   ["@nostr-wot/pq", "0.2.2"],
 ] as const;
 
-export async function generateMetadata({ params }: Props): Promise<Metadata> {
+async function pageMetadata({ params }: Props): Promise<Metadata> {
   const { locale } = await params;
   const t = await getTranslations("docs.sdk");
   const title = t("title");
@@ -210,3 +211,5 @@ function LocalTrust({ graph, pubkey }: { graph: WotGraph; pubkey: string }) {
     </article>
   );
 }
+
+export const generateMetadata = withMetadataPolicy(pageMetadata);

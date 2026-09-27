@@ -91,3 +91,18 @@ test('relative images are absolutised', () => {
   const ld = newsArticleJsonLd(base) as any;
   assert.ok(String(ld.image).startsWith('https://'), `expected absolute, got ${ld.image}`);
 });
+
+import { renderToStaticMarkup } from 'react-dom/server';
+import { createElement } from 'react';
+import { JsonLd, blogPostingJsonLd } from '../lib/jsonld';
+
+test('JSON-LD cannot terminate its script when relay or article text contains HTML', () => {
+  const markup = renderToStaticMarkup(createElement(JsonLd, { data: { '@context': 'https://schema.org', '@type': 'Article', headline: '</script><script>alert(1)</script>' } }));
+  assert.equal((markup.match(/<script/g) || []).length, 1);
+  assert.ok(markup.includes('\\u003c/script>'));
+});
+
+test('BlogPosting images are absolute crawler-accessible URLs', () => {
+  const graph = blogPostingJsonLd({ headline: 'Test', description: 'Test', image: '/images/blog/test.jpg', url: 'https://nostr-wot.com/blog/test', datePublished: '2026-01-01', authorName: 'Test', tags: [] });
+  assert.equal(graph.image, 'https://nostr-wot.com/images/blog/test.jpg');
+});

@@ -1,3 +1,5 @@
+import { serializeJsonLd } from '@/lib/serialize-jsonld';
+import { withMetadataPolicy } from '@/lib/metadata-policy';
 import type { Metadata } from "next";
 import { getTranslations } from "next-intl/server";
 import { ScrollReveal, LinkButton, ExternalLinkButton, Section, CodeBlock } from "@/components/ui";
@@ -12,7 +14,7 @@ const REPO_URL = "https://github.com/nostr-wot/nostr-widgets";
 const DEMO_NPUB = "npub1gxdhmu9swqduwhr6zptjy4ya693zp3ql28nemy4hd97kuufyrqdqwe5zfk";
 const SITE_URL = "https://nostr-wot.com";
 
-export async function generateMetadata({ params }: Props): Promise<Metadata> {
+async function pageMetadata({ params }: Props): Promise<Metadata> {
   const { locale } = await params;
   const t = await getTranslations("widgets.meta");
   const title = t("title");
@@ -95,7 +97,7 @@ export default async function WidgetsPage() {
     <>
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+        dangerouslySetInnerHTML={{ __html: serializeJsonLd(jsonLd) }}
       />
       <main>
         {/* Hero */}
@@ -237,3 +239,5 @@ export default async function WidgetsPage() {
     </>
   );
 }
+
+export const generateMetadata = withMetadataPolicy(pageMetadata);
