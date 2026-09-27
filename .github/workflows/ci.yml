@@ -1,10 +1,29 @@
 name: CI
 
+# Only repository documentation and the social delivery ledger are excluded.
+# Keep site Markdown, newsletter editions, social copy, tests and config covered.
+# No required checks are configured; revisit PR filtering before requiring verify.
 on:
   pull_request:
     branches: [main]
+    paths-ignore:
+      - 'README.md'
+      - 'AGENTS.md'
+      - 'LICENSE'
+      - 'docs/**'
+      - 'social/README.md'
+      - 'scripts/newsletters/README.md'
+      - 'data/social-posted.json'
   push:
     branches: [main]
+    paths-ignore:
+      - 'README.md'
+      - 'AGENTS.md'
+      - 'LICENSE'
+      - 'docs/**'
+      - 'social/README.md'
+      - 'scripts/newsletters/README.md'
+      - 'data/social-posted.json'
 
 jobs:
   verify:

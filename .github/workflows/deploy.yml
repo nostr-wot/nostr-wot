@@ -1,9 +1,19 @@
 name: Deploy to Prod
 
+# Repository docs, social drafts and the delivery ledger are not site inputs.
+# Keep content/** (including Markdown), public/** and newsletters/** deployable.
 on:
   push:
     branches:
       - main
+    paths-ignore:
+      - 'README.md'
+      - 'AGENTS.md'
+      - 'LICENSE'
+      - 'docs/**'
+      - 'social/**'
+      - 'scripts/newsletters/README.md'
+      - 'data/social-posted.json'
 
 jobs:
   build-and-deploy:
