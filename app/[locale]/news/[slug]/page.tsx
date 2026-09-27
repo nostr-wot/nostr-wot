@@ -1,3 +1,4 @@
+import { withMetadataPolicy } from '@/lib/metadata-policy';
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import Image from 'next/image';
@@ -46,7 +47,7 @@ export async function generateStaticParams() {
   return params;
 }
 
-export async function generateMetadata({ params }: Props): Promise<Metadata> {
+async function pageMetadata({ params }: Props): Promise<Metadata> {
   const { locale, slug } = await params;
   const post = getNewsPost(slug, locale as Locale);
 
@@ -338,3 +339,5 @@ export default async function NewsPostPage({ params }: Props) {
     </BlogPostWrapper>
   );
 }
+
+export const generateMetadata = withMetadataPolicy(pageMetadata);

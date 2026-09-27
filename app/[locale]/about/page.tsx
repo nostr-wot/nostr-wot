@@ -1,3 +1,5 @@
+import { serializeJsonLd } from '@/lib/serialize-jsonld';
+import { withMetadataPolicy } from '@/lib/metadata-policy';
 import type { Metadata } from "next";
 import { getTranslations } from "next-intl/server";
 import { ScrollReveal, LinkButton, Section, SectionHeader, CodeBlock, TerminalBlock, WotGraphIllustration } from "@/components/ui";
@@ -16,7 +18,7 @@ type Props = {
   params: Promise<{ locale: string }>;
 };
 
-export async function generateMetadata({ params }: Props): Promise<Metadata> {
+async function pageMetadata({ params }: Props): Promise<Metadata> {
   const { locale } = await params;
   const t = await getTranslations("about.meta");
   const title = t("title");
@@ -93,7 +95,7 @@ export default async function AboutPage() {
     <>
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+        dangerouslySetInnerHTML={{ __html: serializeJsonLd(jsonLd) }}
       />
       <main>
       {/* Hero Section */}
@@ -338,3 +340,5 @@ if (result && result.hops <= 2) {
     </>
   );
 }
+
+export const generateMetadata = withMetadataPolicy(pageMetadata);

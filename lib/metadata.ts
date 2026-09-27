@@ -1,8 +1,9 @@
+import { previewImageUrl } from '@/lib/metadata-policy';
 import { Metadata } from 'next';
 import { locales, defaultLocale, type Locale } from '@/i18n/config';
 
 const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || 'https://nostr-wot.com';
-const DEFAULT_OG_IMAGE = '/icon-512.png';
+
 
 // Locale to OpenGraph locale format mapping
 const ogLocaleMap: Record<Locale, string> = {
@@ -124,7 +125,7 @@ export function generateOpenGraph(options: {
 }): Metadata['openGraph'] {
   const { title, description, path, locale, type = 'website', image, imageAlt } = options;
   const url = getFullUrl(path, locale);
-  const ogImage = image || DEFAULT_OG_IMAGE;
+  const ogImage = image || previewImageUrl(title, description, locale);
 
   return {
     title,
@@ -139,7 +140,7 @@ export function generateOpenGraph(options: {
         width: 1200,
         height: 630,
         alt: imageAlt || title,
-        type: 'image/jpeg',
+        ...(!image ? { type: 'image/png' } : {}),
       },
     ],
   };
@@ -156,7 +157,7 @@ export function generateTwitter(options: {
   image?: string;
 }): Metadata['twitter'] {
   const { title, description, image } = options;
-  const twitterImage = image || DEFAULT_OG_IMAGE;
+  const twitterImage = image || previewImageUrl(title, description);
 
   return {
     card: 'summary_large_image',

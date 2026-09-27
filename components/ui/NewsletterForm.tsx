@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useId, useState } from "react";
 import { useLocale, useTranslations } from "next-intl";
 import { locales, type Locale } from "@/i18n/config";
 
@@ -24,7 +24,11 @@ const storageNotice: Record<Locale, string> = {
   de: "Wir speichern deine E-Mail-Adresse und bevorzugte Sprache, um dir den Newsletter zu senden.",
 };
 
-export function NewsletterForm() {
+export function NewsletterForm({ stacked = false }: { stacked?: boolean }) {
+  const id = useId();
+  const emailId = `newsletter-email-${id}`;
+  const languageId = `newsletter-language-${id}`;
+  const storageId = `newsletter-storage-${id}`;
   const t = useTranslations("home.newsletter");
   const u = useTranslations("ui");
   const pageLocale = useLocale();
@@ -73,20 +77,20 @@ export function NewsletterForm() {
 
   return (
     <form onSubmit={handleSubmit} className="w-full max-w-md mx-auto">
-      <div className="flex flex-col sm:flex-row gap-3">
-        <label htmlFor="newsletter-email" className="sr-only">
+      <div className={`flex flex-col gap-3 ${stacked ? "" : "sm:flex-row"}`}>
+        <label htmlFor={emailId} className="sr-only">
           {t("placeholder")}
         </label>
         <input
-          id="newsletter-email"
+          id={emailId}
           type="email"
           maxLength={254}
-          aria-describedby="newsletter-language newsletter-storage"
+          aria-describedby={`${languageId} ${storageId}`}
           value={email}
           onChange={(e) => setEmail(e.target.value)}
           placeholder={t("placeholder")}
           required
-          className="flex-1 px-4 py-3 rounded-xl border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all"
+          className="min-w-0 flex-1 px-4 py-3 rounded-xl border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all"
           disabled={status === "loading" || !locale}
         />
         <button
@@ -97,11 +101,11 @@ export function NewsletterForm() {
           {status === "loading" ? t("subscribing") : t("subscribe")}
         </button>
       </div>
-      {locale && <p id="newsletter-language" className="mt-2 text-sm text-gray-600 dark:text-gray-300">{languageHint[locale]}</p>}
+      {locale && <p id={languageId} className="mt-2 text-sm text-gray-600 dark:text-gray-300">{languageHint[locale]}</p>}
       {status === "error" && (
         <p className="mt-2 text-sm text-trust-red">{errorMessage}</p>
       )}
-      {locale && <p id="newsletter-storage" className="mt-3 text-xs text-gray-500 dark:text-gray-400">{storageNotice[locale]}</p>}
+      {locale && <p id={storageId} className="mt-3 text-xs text-gray-500 dark:text-gray-400">{storageNotice[locale]}</p>}
     </form>
   );
 }

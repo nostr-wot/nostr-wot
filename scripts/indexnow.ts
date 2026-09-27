@@ -65,7 +65,7 @@ async function fetchSitemap(): Promise<SitemapEntry[]> {
     if (locMatch) {
       entries.push({
         url: locMatch[1],
-        lastmod: lastmodMatch ? lastmodMatch[1] : new Date().toISOString(),
+        lastmod: lastmodMatch ? lastmodMatch[1] : "undated",
       });
     }
   }
@@ -157,6 +157,10 @@ async function main(): Promise<void> {
       console.log(`${urlsToSubmit.length} URLs changed since last submission`);
     }
 
+    if (process.argv.includes("--homepage")) {
+      urlsToSubmit = [...new Set([...urlsToSubmit, SITE_URL])];
+    }
+
     if (urlsToSubmit.length > 0) {
       console.log("URLs to submit:");
       urlsToSubmit.forEach(url => console.log(`  - ${url}`));
@@ -164,6 +168,10 @@ async function main(): Promise<void> {
 
     const success = await submitToIndexNow(urlsToSubmit);
 
+    if (!success) {
+      process.exitCode = 1;
+      return;
+    }
     if (success) {
       // Update cache with all current entries
       const newCache: CacheData = {};

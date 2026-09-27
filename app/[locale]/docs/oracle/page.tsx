@@ -1,3 +1,4 @@
+import { withMetadataPolicy } from '@/lib/metadata-policy';
 import type { Metadata } from "next";
 import { getTranslations } from "next-intl/server";
 import { Link } from "@/i18n/routing";
@@ -9,7 +10,7 @@ type Props = {
   params: Promise<{ locale: string }>;
 };
 
-export async function generateMetadata({ params }: Props): Promise<Metadata> {
+async function pageMetadata({ params }: Props): Promise<Metadata> {
   const { locale } = await params;
   const t = await getTranslations("docs");
   const title = `${t("sidebar.oracleApi")} | ${t("meta.title")}`;
@@ -211,3 +212,5 @@ export default async function OracleDocsPage() {
     </article>
   );
 }
+
+export const generateMetadata = withMetadataPolicy(pageMetadata);

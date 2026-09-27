@@ -1,3 +1,5 @@
+import { serializeJsonLd } from '@/lib/serialize-jsonld';
+import { withMetadataPolicy } from '@/lib/metadata-policy';
 import type { Metadata } from "next";
 import { notFound, redirect } from "next/navigation";
 import { getTranslations } from "next-intl/server";
@@ -78,7 +80,7 @@ function buildArticleJsonLd(
   };
 }
 
-export async function generateMetadata({
+async function pageMetadata({
   params,
 }: NotePageProps): Promise<Metadata> {
   const { id, locale } = await params;
@@ -158,7 +160,7 @@ export default async function NotePage({ params }: NotePageProps) {
       <script
         type="application/ld+json"
         // eslint-disable-next-line react/no-danger
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+        dangerouslySetInnerHTML={{ __html: serializeJsonLd(jsonLd) }}
       />
       <NoteThreadContent
         event={event}
@@ -170,3 +172,5 @@ export default async function NotePage({ params }: NotePageProps) {
     </>
   );
 }
+
+export const generateMetadata = withMetadataPolicy(pageMetadata);

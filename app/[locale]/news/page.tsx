@@ -1,3 +1,4 @@
+import { withMetadataPolicy } from '@/lib/metadata-policy';
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import { getTranslations } from 'next-intl/server';
@@ -7,12 +8,12 @@ import type { NewsPostMeta } from '@/lib/news';
 import { generateOpenGraph, generateTwitter, getFullUrl } from '@/lib/metadata';
 import { type Locale, locales, defaultLocale } from '@/i18n/config';
 import { NewsCard } from '@/components/news';
-import { ScrollReveal, Section } from '@/components/ui';
+import { ScrollReveal } from '@/components/ui';
 import { JsonLd, breadcrumbJsonLd, collectionPageJsonLd } from '@/lib/jsonld';
 import { NewsletterSection } from '@/components/layout/NewsletterSection';
 
 /** Entries per index page. */
-const PAGE_SIZE = 12;
+import { PAGE_SIZE, pageCount } from '@/lib/news-pagination';
 
 type SearchParams = { [key: string]: string | string[] | undefined };
 
@@ -40,9 +41,7 @@ function parsePage(raw: string | string[] | undefined): number | null {
 }
 
 /** Total index pages for a locale. Always at least one, so `/news` can render its empty state. */
-function pageCount(total: number): number {
-  return Math.max(1, Math.ceil(total / PAGE_SIZE));
-}
+
 
 /** `/news` for page one, `/news?page=N` beyond it. Page one never carries `?page=1`. */
 function indexPath(page: number): string {
@@ -76,7 +75,7 @@ function indexAlternates(page: number, currentLocale: Locale): Metadata['alterna
   };
 }
 
-export async function generateMetadata({ params, searchParams }: Props): Promise<Metadata> {
+async function pageMetadata({ params, searchParams }: Props): Promise<Metadata> {
   const { locale } = await params;
   const sp = await searchParams;
   // A search or tag filter renders its own view of `/news`, not one of the
@@ -85,8 +84,11 @@ export async function generateMetadata({ params, searchParams }: Props): Promise
   const isFiltered = typeof sp.q === 'string' || typeof sp.tag === 'string';
   const page = isFiltered ? 1 : parsePage(sp.page);
   const t = await getTranslations('news.meta');
-  const title = t('title');
-  const description = t('description');
+  const pageLabel = page && page > 1
+    ? (await getTranslations('news'))('pagination.page', { current: page, total: pageCount(getAllNews(locale as Locale).length) })
+    : '';
+  const title = pageLabel ? `${pageLabel} | ${t('title')}` : t('title');
+  const description = pageLabel ? `${pageLabel}. ${t('description')}` : t('description');
 
   if (!isFiltered && (page === null || page > pageCount(getAllNews(locale as Locale).length))) {
     return { title: 'Not Found' };
@@ -158,7 +160,8 @@ export default async function NewsPage({ params, searchParams }: Props) {
   // pages and filtered results are a plain grid, so nothing further down the
   // list is dressed up as the newest.
   const featuredPost = !isFiltered && page === 1 ? posts[0] : undefined;
-  const otherPosts = !isFiltered && page === 1 ? posts.slice(1) : posts;
+  const supportingPosts = featuredPost ? posts.slice(1, 5) : [];
+  const otherPosts = featuredPost ? posts.slice(5) : posts;
 
   const pageUrl = `${getFullUrl('/news', locale as Locale)}${page > 1 ? `?page=${page}` : ''}`;
 
@@ -182,17 +185,15 @@ export default async function NewsPage({ params, searchParams }: Props) {
     <>
       <JsonLd data={[collectionLd, crumbsLd]} />
       <main>
-        {/* Hero */}
-        <Section padding="lg" className="pt-24">
-          <ScrollReveal animation="fade-up">
-            <div className="text-center max-w-3xl mx-auto">
-              <h1 className="text-3xl md:text-4xl font-bold mb-4">{t('title')}</h1>
-              <p className="text-lg text-gray-600 dark:text-gray-400">{t('subtitle')}</p>
-            </div>
-          </ScrollReveal>
-        </Section>
+        <header className="border-b border-gray-200 dark:border-gray-800">
+          <div className="mx-auto max-w-screen-2xl px-6 py-10 lg:px-8">
+            <h1 className="mb-3 text-3xl font-bold md:text-4xl">{t('title')}</h1>
+            <p className="max-w-2xl text-lg text-gray-600 dark:text-gray-400">{t('subtitle')}</p>
+          </div>
+        </header>
 
-        <div className="max-w-7xl mx-auto px-6 pb-16">
+        <div className="mx-auto grid max-w-screen-2xl gap-8 px-6 py-10 lg:grid-cols-[minmax(0,1fr)_260px] lg:px-8 xl:grid-cols-[190px_minmax(0,1fr)_260px]">
+          <div className="min-w-0 lg:col-start-1 lg:row-start-1 xl:col-start-2">
           {/* Filtered results header */}
           {isFiltered && (
             <ScrollReveal animation="fade-up">
@@ -220,26 +221,29 @@ export default async function NewsPage({ params, searchParams }: Props) {
             </div>
           )}
 
-          {/* Featured entry */}
           {featuredPost && (
-            <section className="mb-12">
-              <ScrollReveal animation="fade-up" delay={100}>
-                <h2 className="text-sm font-semibold text-primary uppercase tracking-wider mb-6">
-                  {t('latest')}
-                </h2>
-                <NewsCard post={featuredPost} featured />
-              </ScrollReveal>
+            <section aria-labelledby="featured-news-heading" className="mb-10">
+              <div className="mb-6 flex flex-wrap items-center justify-between gap-3 border-b border-gray-300 pb-3 dark:border-gray-700">
+                <h2 id="featured-news-heading" className="text-lg font-bold">{t('layout.featured')}</h2>
+                <Link href="#news-archive" className="text-sm text-primary hover:underline">{t('archive.browse')}</Link>
+              </div>
+              <div className="grid gap-6 md:grid-cols-[1.15fr_1fr]">
+                <NewsCard post={featuredPost} variant="lead" />
+                <div className="divide-y divide-gray-200 dark:divide-gray-800">
+                  {supportingPosts.map(post => <NewsCard key={post.slug} post={post} variant="compact" />)}
+                </div>
+              </div>
             </section>
           )}
 
-          {/* The rest of the latest batch */}
           {otherPosts.length > 0 && (
-            <section>
-              <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-                {otherPosts.map((post, index) => (
-                  <ScrollReveal key={post.slug} animation="fade-up" delay={100 + index * 50}>
-                    <NewsCard post={post} />
-                  </ScrollReveal>
+            <section aria-labelledby="more-news-heading">
+              <h2 id="more-news-heading" className="mb-3 border-b border-gray-300 pb-3 text-lg font-bold dark:border-gray-700">{t('layout.more')}</h2>
+              <div className="grid gap-x-6 sm:grid-cols-2">
+                {otherPosts.map(post => (
+                  <div key={post.slug} className="border-b border-gray-200 dark:border-gray-800">
+                    <NewsCard post={post} variant="compact" />
+                  </div>
                 ))}
               </div>
             </section>
@@ -326,44 +330,37 @@ export default async function NewsPage({ params, searchParams }: Props) {
             </ScrollReveal>
           )}
 
-          {/* Archive */}
-          {archiveMonths.length > 0 && (
-            <section className="mt-16">
-              <ScrollReveal animation="fade-up">
-                <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">
-                  {t('archive.title')}
-                </h2>
-                <p className="text-gray-600 dark:text-gray-400 mb-6">{t('archive.subtitle')}</p>
-                <ul className="flex flex-wrap gap-3">
+          </div>
+
+          <aside aria-labelledby="latest-news-heading" className="min-w-0 lg:col-span-2 xl:col-span-1 xl:col-start-1 xl:row-start-1">
+            <h2 id="latest-news-heading" className="mb-2 border-b border-gray-300 pb-3 text-base font-bold dark:border-gray-700">{t('latest')}</h2>
+            <div className="divide-y divide-gray-200 dark:divide-gray-800">
+              {allPosts.slice(0, 8).map(post => <NewsCard key={post.slug} post={post} variant="headline" />)}
+            </div>
+          </aside>
+
+          <aside className="min-w-0 space-y-8 lg:col-start-2 lg:row-start-1 xl:col-start-3" aria-label={t('layout.resources')}>
+            <NewsletterSection compact />
+            {archiveMonths.length > 0 && (
+              <section id="news-archive" aria-labelledby="archive-heading" className="scroll-mt-24">
+                <h2 id="archive-heading" className="mb-3 border-b border-gray-300 pb-3 text-base font-bold dark:border-gray-700">{t('archive.title')}</h2>
+                <ul className="space-y-1">
                   {archiveMonths.map(({ year, month, count }) => (
                     <li key={`${year}-${month}`}>
-                      <Link
-                        href={`/news/archive/${year}/${String(month).padStart(2, '0')}`}
-                        className="inline-flex items-center gap-2 rounded-full border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800/50 px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:border-primary hover:text-primary transition-colors"
-                      >
-                        <span>
-                          {t('archive.monthTitle', {
-                            month: monthName(year, month, locale),
-                            year,
-                          })}
-                        </span>
-                        <span className="text-xs text-gray-500 dark:text-gray-400">
-                          {t('archive.count', { count })}
-                        </span>
+                      <Link href={`/news/archive/${year}/${String(month).padStart(2, '0')}`} className="flex items-center justify-between gap-3 rounded-lg py-2 text-sm text-gray-600 hover:text-primary dark:text-gray-400">
+                        <span>{t('archive.monthTitle', { month: monthName(year, month, locale), year })}</span>
+                        <span className="shrink-0 rounded-full bg-gray-100 px-2 py-0.5 text-xs dark:bg-gray-800">{count}</span>
                       </Link>
                     </li>
                   ))}
                 </ul>
-              </ScrollReveal>
-            </section>
-          )}
-
-          {/* Newsletter */}
-          <ScrollReveal animation="fade-left" delay={200}>
-            <NewsletterSection />
-          </ScrollReveal>
+              </section>
+            )}
+          </aside>
         </div>
       </main>
     </>
   );
 }
+
+export const generateMetadata = withMetadataPolicy(pageMetadata);

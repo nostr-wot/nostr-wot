@@ -1,3 +1,5 @@
+import { serializeJsonLd } from '@/lib/serialize-jsonld';
+import { withMetadataPolicy } from '@/lib/metadata-policy';
 import type { Metadata } from "next";
 import { getTranslations } from "next-intl/server";
 import ProfilePageContent from "./ProfilePageContent";
@@ -51,7 +53,7 @@ function buildPersonJsonLd(
   };
 }
 
-export async function generateMetadata({
+async function pageMetadata({
   params,
 }: ProfilePageProps): Promise<Metadata> {
   const { pubkey, locale } = await params;
@@ -70,7 +72,7 @@ export async function generateMetadata({
     title,
     description,
     authors: [{ name }],
-    alternates: generateAlternates(`/profile/${pubkey}`, locale as Locale),
+    alternates: generateAlternates(`/profile/${npub}`, locale as Locale),
     openGraph: {
       title,
       description,
@@ -101,9 +103,11 @@ export default async function ProfilePage({ params }: ProfilePageProps) {
       <script
         type="application/ld+json"
         // eslint-disable-next-line react/no-danger
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+        dangerouslySetInnerHTML={{ __html: serializeJsonLd(jsonLd) }}
       />
       <ProfilePageContent pubkey={pubkey} initialProfile={initialProfile} />
     </>
   );
 }
+
+export const generateMetadata = withMetadataPolicy(pageMetadata);

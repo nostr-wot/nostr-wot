@@ -1,3 +1,4 @@
+import { withMetadataPolicy } from '@/lib/metadata-policy';
 import type { Metadata } from "next";
 import { getTranslations } from "next-intl/server";
 import { ScrollReveal, LinkButton, Section } from "@/components/ui";
@@ -19,7 +20,7 @@ type Props = {
   params: Promise<{ locale: string }>;
 };
 
-export async function generateMetadata({ params }: Props): Promise<Metadata> {
+async function pageMetadata({ params }: Props): Promise<Metadata> {
   const { locale } = await params;
   const t = await getTranslations("projects.meta");
   const title = t("title");
@@ -143,3 +144,5 @@ export default async function ProjectsPage({ params }: Props) {
     </>
   );
 }
+
+export const generateMetadata = withMetadataPolicy(pageMetadata);

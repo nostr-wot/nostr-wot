@@ -1,3 +1,4 @@
+import { serializeJsonLd } from '@/lib/serialize-jsonld';
 import type { NewsSource, NewsDigestItem } from '@/lib/content/shapes';
 
 const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || 'https://nostr-wot.com';
@@ -75,8 +76,7 @@ export interface BlogPostingArgs {
   headline: string;
   description: string;
   /**
-   * Rendered as-is (NOT absolutised). Matches the blog page's pre-refactor
-   * behaviour, which passed post.featuredImage straight through.
+   * Relative image paths are resolved against the public site origin.
    */
   image: string;
   url: string;
@@ -100,7 +100,7 @@ export function blogPostingJsonLd(args: BlogPostingArgs) {
     '@type': 'BlogPosting',
     headline: args.headline,
     description: args.description,
-    image: args.image,
+    image: absolute(args.image),
     datePublished: args.datePublished,
     dateModified: args.dateModified || args.datePublished,
     author: {
@@ -188,7 +188,7 @@ export function JsonLd({ data }: { data: object | object[] }) {
         <script
           key={i}
           type="application/ld+json"
-          dangerouslySetInnerHTML={{ __html: JSON.stringify(g) }}
+          dangerouslySetInnerHTML={{ __html: serializeJsonLd(g) }}
         />
       ))}
     </>

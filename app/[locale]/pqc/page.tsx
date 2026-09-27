@@ -1,3 +1,4 @@
+import { withMetadataPolicy } from '@/lib/metadata-policy';
 import type { Metadata } from "next";
 import { getTranslations } from "next-intl/server";
 import { generateAlternates, generateOpenGraph, generateTwitter } from "@/lib/metadata";
@@ -8,7 +9,7 @@ type Props = {
   params: Promise<{ locale: string }>;
 };
 
-export async function generateMetadata({ params }: Props): Promise<Metadata> {
+async function pageMetadata({ params }: Props): Promise<Metadata> {
   const { locale } = await params;
   const t = await getTranslations("pqc.meta");
   const title = t("title");
@@ -37,3 +38,5 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 export default function PqcPage() {
   return <PqcContent />;
 }
+
+export const generateMetadata = withMetadataPolicy(pageMetadata);

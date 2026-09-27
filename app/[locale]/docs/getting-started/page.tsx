@@ -1,3 +1,4 @@
+import { withMetadataPolicy } from '@/lib/metadata-policy';
 import type { Metadata } from "next";
 import { getTranslations } from "next-intl/server";
 import { Link } from "@/i18n/routing";
@@ -9,7 +10,7 @@ type Props = {
   params: Promise<{ locale: string }>;
 };
 
-export async function generateMetadata({ params }: Props): Promise<Metadata> {
+async function pageMetadata({ params }: Props): Promise<Metadata> {
   const { locale } = await params;
   const t = await getTranslations("docs");
   const title = `${t("quickStart.title")} | ${t("meta.title")}`;
@@ -155,3 +156,5 @@ console.log(public_mute_evidence.source_mute_list_known);`}
     </article>
   );
 }
+
+export const generateMetadata = withMetadataPolicy(pageMetadata);

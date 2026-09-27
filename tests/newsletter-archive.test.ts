@@ -125,7 +125,11 @@ test('routes read the configured archive, mark absent languages noindex and reje
     assert.deepEqual(metadata.robots, { index: false, follow: true });
     assert.deepEqual(Object.keys(metadata.alternates!.languages!), ['en', 'x-default']);
     const sentMetadata = await generateMetadata({ params: Promise.resolve({ locale: 'en', id: edition.id }) });
-    assert.equal(sentMetadata.title, edition.translations.en!.subject);
+    assert.ok(typeof sentMetadata.title === 'object' && sentMetadata.title && 'absolute' in sentMetadata.title);
+    const sentTitle = (sentMetadata.title as { absolute: string }).absolute;
+    assert.ok(sentTitle.startsWith(edition.translations.en!.subject));
+    assert.ok(sentTitle.length >= 45 && sentTitle.length <= 57);
+    assert.deepEqual(await getSentNewsletter(edition.id), edition, 'metadata policy never rewrites immutable sent content');
     for (const params of [{ locale: 'en', id: '../secret' }, { locale: 'xx', id: edition.id }, { locale: 'en', id: 'missing-v1' }]) {
       await assert.rejects(Page({ params: Promise.resolve(params) }), /NEXT_HTTP_ERROR_FALLBACK;404/);
       await assert.rejects(generateMetadata({ params: Promise.resolve(params) }), /NEXT_HTTP_ERROR_FALLBACK;404/);
@@ -142,7 +146,10 @@ test('archive index metadata covers every supported UI locale without claiming s
   const { newsletterCopy } = await import('../lib/newsletter-copy');
   for (const locale of locales) {
     const metadata = await generateMetadata({ params: Promise.resolve({ locale }) });
-    assert.equal(metadata.title, newsletterCopy[locale].title);
+    assert.ok(typeof metadata.title === 'object' && metadata.title && 'absolute' in metadata.title);
+    const title = (metadata.title as { absolute: string }).absolute;
+    assert.ok(title.startsWith(newsletterCopy[locale].title));
+    assert.ok(title.length >= 45 && title.length <= 57);
     assert.deepEqual(Object.keys(metadata.alternates!.languages!).sort(), [...locales, 'x-default'].sort());
   }
 });

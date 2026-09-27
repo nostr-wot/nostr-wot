@@ -1,3 +1,4 @@
+import { pageCount } from '@/lib/news-pagination';
 import { MetadataRoute } from "next";
 import { locales, defaultLocale } from "@/i18n/config";
 import { getAllBlogPosts } from "@/lib/blog";
@@ -76,96 +77,45 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     }
   }
 
-  // Generate entries for blog posts
-  // Get posts from default locale and use their translations to generate correct URLs for each locale
-  const blogPosts = getAllBlogPosts();
-  for (const post of blogPosts) {
-    // Build alternates using correct translated slugs
-    const alternateLanguages: Record<string, string> = {};
-    for (const locale of locales) {
-      const translatedSlug = post.translations[locale];
-      if (translatedSlug) {
-        alternateLanguages[locale] = getLocalizedUrl(`/blog/${translatedSlug}`, locale);
-      }
+  // Enumerate each locale's published inventory, rather than using English
+  // translation links as the inventory. A locale can publish independently,
+  // and a translation link alone does not guarantee a published destination.
+  for (const { section, getAll, priority } of [
+    { section: "blog", getAll: getAllBlogPosts, priority: 0.7 },
+    { section: "guides", getAll: getAllGuides, priority: 0.7 },
+    { section: "news", getAll: getAllNews, priority: 0.8 },
+  ]) {
+    const published = locales.flatMap(locale =>
+      getAll(locale).map(post => ({ locale, post }))
+    );
+    const translations = new Map<string, Record<string, string>>();
+    for (const { locale, post } of published) {
+      const alternates = translations.get(post.translationKey) || {};
+      alternates[locale] = getLocalizedUrl(`/${section}/${post.slug}`, locale);
+      translations.set(post.translationKey, alternates);
     }
-
-    // Generate an entry for each available translation
-    for (const locale of locales) {
-      const translatedSlug = post.translations[locale];
-      // Only create entry if translation exists for this locale
-      if (!translatedSlug) continue;
-
-      const url = getLocalizedUrl(`/blog/${translatedSlug}`, locale);
-
+    for (const { locale, post } of published) {
+      const modified = "publishedAt" in post
+        ? post.updated || post.publishedAt
+        : post.date;
       sitemapEntries.push({
-        url,
-        lastModified: new Date(post.date),
+        url: getLocalizedUrl(`/${section}/${post.slug}`, locale),
+        lastModified: new Date(modified),
         changeFrequency: "monthly",
-        priority: 0.7,
-        alternates: {
-          languages: alternateLanguages,
-        },
+        priority,
+        alternates: { languages: translations.get(post.translationKey)! },
       });
     }
   }
 
-  // Generate entries for guides
-  const guides = getAllGuides();
-  for (const guide of guides) {
-    const alternateLanguages: Record<string, string> = {};
-    for (const locale of locales) {
-      const translatedSlug = guide.translations[locale];
-      if (translatedSlug) {
-        alternateLanguages[locale] = getLocalizedUrl(`/guides/${translatedSlug}`, locale);
-      }
-    }
-
-    for (const locale of locales) {
-      const translatedSlug = guide.translations[locale];
-      if (!translatedSlug) continue;
-
-      const url = getLocalizedUrl(`/guides/${translatedSlug}`, locale);
-
-      sitemapEntries.push({
-        url,
-        lastModified: new Date(guide.date),
-        changeFrequency: "monthly",
-        priority: 0.7,
-        alternates: {
-          languages: alternateLanguages,
-        },
-      });
-    }
-  }
-
-  // Generate entries for news posts
-  const newsPosts = getAllNews();
-  for (const post of newsPosts) {
-    const alternateLanguages: Record<string, string> = {};
-    for (const locale of locales) {
-      const translatedSlug = post.translations[locale];
-      if (translatedSlug) {
-        alternateLanguages[locale] = getLocalizedUrl(`/news/${translatedSlug}`, locale);
-      }
-    }
-
-    for (const locale of locales) {
-      const translatedSlug = post.translations[locale];
-      if (!translatedSlug) continue;
-
-      const url = getLocalizedUrl(`/news/${translatedSlug}`, locale);
-
-      sitemapEntries.push({
-        url,
-        // `date` is the EVENT date; `lastModified` must reflect when the page
-        // itself last changed, which is the real ship date (or a later edit).
-        lastModified: new Date(post.updated || post.publishedAt),
-        changeFrequency: "monthly",
-        priority: 0.8,
-        alternates: {
-          languages: alternateLanguages,
-        },
-      });
+  // Numbered news pages are self-canonical public collections, not filters.
+  const counts = new Map(locales.map(locale => [locale, pageCount(getAllNews(locale).length)]));
+  for (let page = 2; page <= Math.max(...counts.values()); page++) {
+    const available = locales.filter(locale => counts.get(locale)! >= page);
+    const path = `/news?page=${page}`;
+    const languages = Object.fromEntries(available.map(locale => [locale, getLocalizedUrl(path, locale)]));
+    for (const locale of available) {
+      sitemapEntries.push({ url: languages[locale], changeFrequency: "daily", priority: 0.6, alternates: { languages } });
     }
   }
 

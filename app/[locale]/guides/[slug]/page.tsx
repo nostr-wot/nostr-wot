@@ -1,3 +1,5 @@
+import { serializeJsonLd } from '@/lib/serialize-jsonld';
+import { withMetadataPolicy } from '@/lib/metadata-policy';
 import ReadingTime from '@/components/ui/ReadingTime';
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
@@ -43,7 +45,7 @@ export async function generateStaticParams() {
   return params;
 }
 
-export async function generateMetadata({ params }: Props): Promise<Metadata> {
+async function pageMetadata({ params }: Props): Promise<Metadata> {
   const { locale, slug } = await params;
   const guide = getGuide(slug, locale as Locale);
 
@@ -99,11 +101,11 @@ export default async function GuidePostPage({ params }: Props) {
     advanced: t('difficulty.advanced'),
   };
 
-  // JSON-LD structured data (HowTo schema)
+  // Guides include conceptual articles, not only step-by-step procedures.
   const jsonLd = {
     '@context': 'https://schema.org',
-    '@type': 'HowTo',
-    'name': guide.title,
+    '@type': 'Article',
+    'headline': guide.title,
     'description': guide.excerpt,
     'image': guide.featuredImage.startsWith('http') ? guide.featuredImage : `${BASE_URL}${guide.featuredImage}`,
     'datePublished': guide.date,
@@ -172,11 +174,11 @@ export default async function GuidePostPage({ params }: Props) {
     <GuidePostWrapper translations={guide.translations}>
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+        dangerouslySetInnerHTML={{ __html: serializeJsonLd(jsonLd) }}
       />
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbJsonLd) }}
+        dangerouslySetInnerHTML={{ __html: serializeJsonLd(breadcrumbJsonLd) }}
       />
       <main className="py-4 mb-14">
         <article>
@@ -317,3 +319,5 @@ export default async function GuidePostPage({ params }: Props) {
     </GuidePostWrapper>
   );
 }
+
+export const generateMetadata = withMetadataPolicy(pageMetadata);
