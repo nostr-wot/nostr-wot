@@ -1,0 +1,77 @@
+---
+title: "NIP-39 adds Bluesky and Discord as NIP-51 moves favorite follow sets"
+description: "NIP-39 now defines Bluesky and Discord identity proofs, while NIP-51 moves favorite follow sets from kind 10011 to kind 10021."
+seoDescription: "NIP-39 adds Bluesky and Discord identity proofs and unifies proof text, while NIP-51 moves favorite follow sets to kind 10021."
+excerpt: "Two Nostr specifications now separate cross-platform identity claims from favorite follow sets and define how new Bluesky and Discord proofs are checked."
+date: "2026-09-27"
+publishedAt: "2026-09-28"
+backfilled: false
+type: "digest"
+tags: ["Nostr", "NIP-39", "NIP-51", "Identity"]
+featuredImage: "/images/news/nip-39-adds-bluesky-discord-nip-51-moves-follow-sets.svg"
+translationKey: "nip-39-adds-bluesky-discord-nip-51-moves-follow-sets"
+sources:
+  - title: "PR #2486: NIP-39 unifies verification text and adds Bluesky and Discord"
+    url: "https://github.com/nostr-protocol/nips/pull/2486"
+    publisher: "nostr-protocol/nips"
+    date: "2026-09-27"
+  - title: "NIP-39 at merge commit 0046368"
+    url: "https://github.com/nostr-protocol/nips/blob/0046368a747c5c25ae2bec28bae0e537744c8f10/39.md"
+    publisher: "nostr-protocol/nips"
+    date: "2026-09-27"
+  - title: "PR #2417: move favorite follow sets to kind 10021"
+    url: "https://github.com/nostr-protocol/nips/pull/2417"
+    publisher: "nostr-protocol/nips"
+    date: "2026-09-27"
+  - title: "NIP-51 at merge commit 6631b3e"
+    url: "https://github.com/nostr-protocol/nips/blob/6631b3eb1f2a8d808f9a0efc073df8f31404bed0/51.md"
+    publisher: "nostr-protocol/nips"
+    date: "2026-09-27"
+items:
+  - title: "NIP-39 unifies identity proof text and adds Bluesky and Discord"
+    url: "https://github.com/nostr-protocol/nips/pull/2486"
+    summary: "Defines one recommended proof sentence, keeps older proofs valid when they contain the npub, and adds Bluesky and Discord claim formats."
+  - title: "NIP-51 moves favorite follow sets to kind 10021"
+    url: "https://github.com/nostr-protocol/nips/pull/2417"
+    summary: "Moves favorite follow sets away from kind 10011, which NIP-39 already uses for cross-platform identity claims."
+published: true
+---
+
+Six pull requests merged into `nostr-protocol/nips` between 22 and 28 September 2026. Three changed NIP-86 and were covered on 24 September. One repaired missing rows in the event-kind table without changing the underlying specifications. The two remaining changes both concern a collision around kind `10011`, but from different directions.
+
+[PR #2486](https://github.com/nostr-protocol/nips/pull/2486) expands the identity claims carried by NIP-39. [PR #2417](https://github.com/nostr-protocol/nips/pull/2417) moves the favorite follow sets listed in NIP-51 from kind `10011` to kind `10021`. Together, the changes give kind `10011` one documented purpose and give favorite follow sets a separate event kind.
+
+## NIP-39 gains one proof sentence and two providers
+
+NIP-39 defines how a user can associate a Nostr public key with an identity on another platform. The associations live in `i` tags inside a kind `10011` event. Each tag has a provider and identity in its first value, followed by a pointer to evidence published through that provider.
+
+The merged change adds one recommended sentence for every supported provider:
+
+> Verifying that I control the following Nostr public key: &lt;npub encoded public key&gt;
+
+Previously, the GitHub, Twitter, Mastodon and Telegram sections each described their own proof text. The differences included punctuation and quotation marks. NIP-39 now points all four sections to the shared sentence.
+
+The new rule is deliberately tolerant of older evidence. A verifier `SHOULD` accept any proof published by the claimed identity when the proof contains the user's `npub`. The specification uses `SHOULD`, not `MUST`, for both the recommended sentence and the compatibility rule. It therefore gives clients guidance without making one exact sentence the only valid evidence.
+
+The same merge adds two claim types:
+
+- `bluesky` uses a handle without the leading `@` as the identity. Its proof value is the record key of a Bluesky post. The defined path is `bsky.app/profile/<identity>/post/<proof>`.
+- `discord` uses a Discord username as the identity. Its proof value contains the guild, channel and message identifiers in that order. The defined path is `discord.com/channels/<proof>`.
+
+The Discord section includes an explicit limit. A message is readable only to people who can access the server where it was posted. A client without that access cannot verify the claim. The presence of a correctly shaped `i` tag is not itself proof that the linked account is controlled by the Nostr key owner.
+
+## NIP-51 moves favorite follow sets to kind 10021
+
+The other merge changes two lines of the registry. NIP-51 previously assigned kind `10011` to a standard list of favorite follow sets. Each `a` tag in that event points to a kind `30000` follow set.
+
+Kind `10011` was also already the event kind used by NIP-39 for identity claims. A normal replaceable event has one current value for each author and kind. Giving two unrelated data models the same kind therefore leaves clients unable to interpret the current event from the kind number alone.
+
+PR #2417 changes the NIP-51 row to kind `10021` and adds `10021` to the repository's event-kind table. It does not alter kind `30000` follow sets, their `d` identifiers, or the `a` tags that point to them. The change is only to the standard list that records which follow sets a user marks as favorites.
+
+The merged text does not define a migration event or a conversion procedure for favorite lists already published as kind `10011`. Implementations that followed the earlier draft need to recognize that old data may exist and avoid treating every kind `10011` event as a favorite list. New favorite-follow-set lists belong at kind `10021` under the current NIP-51 text.
+
+## What changed, and what did not
+
+Both NIP-39 and NIP-51 remain marked `draft` and `optional`. The merge records a specification change. It does not show which clients already publish Bluesky or Discord claims, which verifiers accept them, or which clients have moved favorite lists to kind `10021`.
+
+The useful boundary is now clearer. Kind `10011` contains cross-platform identity claims. Kind `10021` contains pointers to favorite follow sets. Proof verification still requires fetching evidence from the named provider, and a Discord proof can remain unverifiable when the verifier cannot enter the server.

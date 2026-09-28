@@ -1,0 +1,77 @@
+---
+title: "NIP-39 ergänzt Bluesky und Discord, NIP-51 verschiebt favorisierte Folgesets"
+description: "NIP-39 definiert Identitätsnachweise für Bluesky und Discord, NIP-51 verschiebt favorisierte Folgesets von Kind 10011 zu Kind 10021."
+seoDescription: "NIP-39 ergänzt Bluesky- und Discord-Nachweise und vereinheitlicht den Text, NIP-51 verschiebt favorisierte Folgesets zu Kind 10021."
+excerpt: "Zwei Nostr-Spezifikationen trennen plattformübergreifende Identitäten von favorisierten Folgesets und definieren neue Nachweise."
+date: "2026-09-27"
+publishedAt: "2026-09-28"
+backfilled: false
+type: "digest"
+tags: ["Nostr", "NIP-39", "NIP-51", "Identität"]
+featuredImage: "/images/news/nip-39-adds-bluesky-discord-nip-51-moves-follow-sets.svg"
+translationKey: "nip-39-adds-bluesky-discord-nip-51-moves-follow-sets"
+sources:
+  - title: "PR #2486: NIP-39 vereinheitlicht den Verifizierungstext und ergänzt Bluesky und Discord"
+    url: "https://github.com/nostr-protocol/nips/pull/2486"
+    publisher: "nostr-protocol/nips"
+    date: "2026-09-27"
+  - title: "NIP-39 beim Merge-Commit 0046368"
+    url: "https://github.com/nostr-protocol/nips/blob/0046368a747c5c25ae2bec28bae0e537744c8f10/39.md"
+    publisher: "nostr-protocol/nips"
+    date: "2026-09-27"
+  - title: "PR #2417: favorisierte Folgesets zu Kind 10021 verschieben"
+    url: "https://github.com/nostr-protocol/nips/pull/2417"
+    publisher: "nostr-protocol/nips"
+    date: "2026-09-27"
+  - title: "NIP-51 beim Merge-Commit 6631b3e"
+    url: "https://github.com/nostr-protocol/nips/blob/6631b3eb1f2a8d808f9a0efc073df8f31404bed0/51.md"
+    publisher: "nostr-protocol/nips"
+    date: "2026-09-27"
+items:
+  - title: "NIP-39 vereinheitlicht Identitätsnachweise und ergänzt Bluesky und Discord"
+    url: "https://github.com/nostr-protocol/nips/pull/2486"
+    summary: "Definiert einen empfohlenen Satz, erhält ältere Nachweise mit dem npub und ergänzt zwei Formate."
+  - title: "NIP-51 verschiebt favorisierte Folgesets zu Kind 10021"
+    url: "https://github.com/nostr-protocol/nips/pull/2417"
+    summary: "Entfernt favorisierte Folgesets von Kind 10011, das NIP-39 bereits für externe Identitäten nutzt."
+published: true
+---
+
+Zwischen dem 22. und 28. September 2026 wurden sechs Pull Requests in `nostr-protocol/nips` zusammengeführt. Drei änderten NIP-86 und wurden bereits am 24. September behandelt. Ein weiterer ergänzte fehlende Zeilen in der Event-Kind-Tabelle, ohne die zugrunde liegenden Spezifikationen zu ändern. Die beiden verbleibenden Änderungen behandeln eine Kollision um Kind `10011` aus zwei Richtungen.
+
+[PR #2486](https://github.com/nostr-protocol/nips/pull/2486) erweitert die Identitätsangaben in NIP-39. [PR #2417](https://github.com/nostr-protocol/nips/pull/2417) verschiebt die favorisierten Folgesets in NIP-51 von Kind `10011` zu Kind `10021`. Damit erhält Kind `10011` einen dokumentierten Zweck und die Favoritenliste einen eigenen Kind.
+
+## NIP-39 erhält einen Nachweissatz und zwei Anbieter
+
+NIP-39 beschreibt, wie ein öffentlicher Nostr-Schlüssel mit einer Identität auf einer anderen Plattform verknüpft wird. Die Zuordnungen stehen in `i`-Tags eines Events vom Kind `10011`. Jedes Tag enthält im ersten Wert Anbieter und Identität, gefolgt von einem Verweis auf den beim Anbieter veröffentlichten Nachweis.
+
+Die zusammengeführte Änderung empfiehlt für alle Anbieter denselben Satz:
+
+> Verifying that I control the following Nostr public key: &lt;npub encoded public key&gt;
+
+Zuvor beschrieben die Abschnitte für GitHub, Twitter, Mastodon und Telegram jeweils andere Texte. Unterschiede bestanden bei Satzzeichen und Anführungszeichen. Nun verweisen alle vier auf denselben Satz.
+
+Die neue Regel bleibt mit älteren Nachweisen tolerant. Ein Prüfer `SHOULD` jeden Nachweis akzeptieren, der von der behaupteten Identität veröffentlicht wurde und den `npub` des Nutzers enthält. Die Spezifikation verwendet `SHOULD`, nicht `MUST`, sowohl für den Satz als auch für die Kompatibilitätsregel. Sie gibt Orientierung, ohne nur eine exakte Formulierung zuzulassen.
+
+Der Merge ergänzt zwei Claim-Typen:
+
+- `bluesky` verwendet einen Handle ohne führendes `@`. Der Nachweis ist der Record Key eines Bluesky-Posts. Der definierte Pfad lautet `bsky.app/profile/<identity>/post/<proof>`.
+- `discord` verwendet einen Discord-Benutzernamen. Der Nachweis enthält die Kennungen für Guild, Channel und Message in dieser Reihenfolge. Der definierte Pfad lautet `discord.com/channels/<proof>`.
+
+Der Discord-Abschnitt nennt eine klare Grenze. Eine Nachricht ist nur für Mitglieder lesbar, die Zugang zum betreffenden Server haben. Ein Client ohne Zugang kann den Claim nicht prüfen. Ein korrekt geformtes `i`-Tag beweist allein keine Kontrolle über das verknüpfte Konto.
+
+## NIP-51 verschiebt favorisierte Folgesets zu Kind 10021
+
+Der andere Merge ändert zwei Zeilen im Register. NIP-51 hatte Kind `10011` einer Standardliste favorisierter Follow Sets zugewiesen. Jedes `a`-Tag im Event verweist auf ein Follow Set vom Kind `30000`.
+
+Kind `10011` wurde bereits von NIP-39 für Identitätsangaben genutzt. Ein normales ersetzbares Event besitzt für jede Kombination aus Autor und Kind nur einen aktuellen Wert. Zwei unabhängige Datenmodelle unter demselben Kind lassen sich anhand der Nummer allein nicht eindeutig unterscheiden.
+
+PR #2417 ändert den NIP-51-Eintrag zu Kind `10021` und ergänzt `10021` in der Kind-Tabelle. Kind-`30000`-Follow-Sets, ihre `d`-Kennungen und die auf sie zeigenden `a`-Tags bleiben unverändert. Nur die Standardliste für favorisierte Sets wechselt den Kind.
+
+Der zusammengeführte Text enthält weder ein Migrations-Event noch ein Konvertierungsverfahren für bereits als Kind `10011` veröffentlichte Favoritenlisten. Implementierungen des älteren Entwurfs müssen mit solchen Daten rechnen und dürfen nicht jedes Kind-`10011`-Event als Favoritenliste lesen. Neue Listen gehören laut aktuellem NIP-51 zu Kind `10021`.
+
+## Was sich geändert hat und was nicht
+
+NIP-39 und NIP-51 bleiben `draft` und `optional`. Der Merge dokumentiert eine Spezifikationsänderung. Er belegt nicht, welche Clients Bluesky- oder Discord-Claims bereits veröffentlichen, welche Prüfer sie akzeptieren oder welche Anwendungen Favoritenlisten schon verschoben haben.
+
+Die Grenze ist jetzt klarer. Kind `10011` enthält plattformübergreifende Identitätsangaben. Kind `10021` enthält Verweise auf favorisierte Folgesets. Der Nachweis muss weiterhin beim genannten Anbieter abgerufen werden, und ein Discord-Nachweis kann ohne Serverzugang unprüfbar bleiben.
