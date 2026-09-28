@@ -1,0 +1,77 @@
+---
+title: "NIP-39 adiciona Bluesky e Discord enquanto NIP-51 move listas favoritas"
+description: "NIP-39 define provas de identidade para Bluesky e Discord, enquanto NIP-51 move listas favoritas do kind 10011 para o kind 10021."
+seoDescription: "NIP-39 adiciona provas do Bluesky e Discord e unifica o texto, enquanto NIP-51 move listas favoritas para o kind 10021."
+excerpt: "Duas especificações do Nostr separam identidades entre plataformas de listas de seguidos favoritas e definem novas provas."
+date: "2026-09-27"
+publishedAt: "2026-09-28"
+backfilled: false
+type: "digest"
+tags: ["Nostr", "NIP-39", "NIP-51", "Identidade"]
+featuredImage: "/images/news/nip-39-adds-bluesky-discord-nip-51-moves-follow-sets.svg"
+translationKey: "nip-39-adds-bluesky-discord-nip-51-moves-follow-sets"
+sources:
+  - title: "PR #2486: NIP-39 unifica o texto de verificação e adiciona Bluesky e Discord"
+    url: "https://github.com/nostr-protocol/nips/pull/2486"
+    publisher: "nostr-protocol/nips"
+    date: "2026-09-27"
+  - title: "NIP-39 no commit de merge 0046368"
+    url: "https://github.com/nostr-protocol/nips/blob/0046368a747c5c25ae2bec28bae0e537744c8f10/39.md"
+    publisher: "nostr-protocol/nips"
+    date: "2026-09-27"
+  - title: "PR #2417: mover listas de seguidos favoritas para o kind 10021"
+    url: "https://github.com/nostr-protocol/nips/pull/2417"
+    publisher: "nostr-protocol/nips"
+    date: "2026-09-27"
+  - title: "NIP-51 no commit de merge 6631b3e"
+    url: "https://github.com/nostr-protocol/nips/blob/6631b3eb1f2a8d808f9a0efc073df8f31404bed0/51.md"
+    publisher: "nostr-protocol/nips"
+    date: "2026-09-27"
+items:
+  - title: "NIP-39 unifica provas de identidade e adiciona Bluesky e Discord"
+    url: "https://github.com/nostr-protocol/nips/pull/2486"
+    summary: "Define uma frase recomendada, preserva provas antigas com o npub e adiciona formatos para Bluesky e Discord."
+  - title: "NIP-51 move listas de seguidos favoritas para o kind 10021"
+    url: "https://github.com/nostr-protocol/nips/pull/2417"
+    summary: "Afasta as listas favoritas do kind 10011, já usado pelo NIP-39 para identidades entre plataformas."
+published: true
+---
+
+Seis pull requests foram integrados em `nostr-protocol/nips` entre 22 e 28 de setembro de 2026. Três alteraram o NIP-86 e já foram cobertos em 24 de setembro. Outro corrigiu linhas ausentes na tabela de kinds sem mudar as especificações correspondentes. As duas mudanças restantes tratam de uma colisão em torno do kind `10011`, por caminhos diferentes.
+
+O [PR #2486](https://github.com/nostr-protocol/nips/pull/2486) amplia as declarações de identidade do NIP-39. O [PR #2417](https://github.com/nostr-protocol/nips/pull/2417) move as listas de seguidos favoritas do NIP-51 do kind `10011` para o kind `10021`. Juntas, as mudanças deixam um propósito documentado para o kind `10011` e reservam outro kind para as listas favoritas.
+
+## NIP-39 recebe uma frase de prova e dois provedores
+
+O NIP-39 define como associar uma chave pública Nostr a uma identidade em outra plataforma. As associações ficam em tags `i` dentro de um evento kind `10011`. Cada tag traz o provedor e a identidade no primeiro valor, seguidos por um ponteiro para a evidência publicada no provedor.
+
+A mudança integrada adiciona uma frase recomendada para todos os provedores:
+
+> Verifying that I control the following Nostr public key: &lt;npub encoded public key&gt;
+
+Antes, as seções de GitHub, Twitter, Mastodon e Telegram descreviam textos diferentes. Havia diferenças de pontuação e aspas. Agora as quatro apontam para a mesma frase.
+
+A nova regra tolera evidências antigas. Um verificador `SHOULD` aceitar qualquer prova publicada pela identidade declarada quando ela contiver o `npub` do usuário. A especificação usa `SHOULD`, não `MUST`, tanto para a frase quanto para a regra de compatibilidade. Isso orienta clientes sem tornar uma frase exata a única evidência válida.
+
+A mesma integração acrescenta dois tipos de declaração:
+
+- `bluesky` usa um handle sem o `@` inicial como identidade. A prova é a record key de um post do Bluesky. O caminho definido é `bsky.app/profile/<identity>/post/<proof>`.
+- `discord` usa um nome de usuário do Discord. A prova contém os identificadores de guild, channel e message nessa ordem. O caminho definido é `discord.com/channels/<proof>`.
+
+A seção do Discord registra um limite explícito. Uma mensagem só pode ser lida por quem tem acesso ao servidor onde foi publicada. Um cliente sem esse acesso não pode verificar a declaração. Uma tag `i` bem formada não prova, por si só, que o proprietário da chave controla a conta vinculada.
+
+## NIP-51 move listas favoritas para o kind 10021
+
+A outra integração altera duas linhas do registro. O NIP-51 atribuía o kind `10011` a uma lista padrão de follow sets favoritos. Cada tag `a` nesse evento aponta para um follow set de kind `30000`.
+
+O kind `10011` também já era usado pelo NIP-39 para declarações de identidade. Um evento substituível normal tem apenas um valor atual para cada autor e kind. Colocar dois modelos de dados sem relação no mesmo kind impede que um cliente determine o significado apenas pelo número.
+
+O PR #2417 muda a linha do NIP-51 para o kind `10021` e adiciona `10021` à tabela de kinds. Ele não altera os follow sets de kind `30000`, seus identificadores `d` nem as tags `a` que apontam para eles. A mudança afeta apenas a lista padrão que registra quais conjuntos o usuário marcou como favoritos.
+
+O texto integrado não define um evento de migração nem um procedimento de conversão para listas já publicadas como kind `10011`. Implementações que seguiram o rascunho anterior precisam reconhecer que esses dados podem existir e não devem interpretar todo evento kind `10011` como lista favorita. No texto atual do NIP-51, novas listas favoritas pertencem ao kind `10021`.
+
+## O que mudou e o que não mudou
+
+NIP-39 e NIP-51 continuam marcados como `draft` e `optional`. O merge registra uma mudança de especificação. Ele não mostra quais clientes já publicam declarações de Bluesky ou Discord, quais verificadores as aceitam ou quais aplicativos migraram listas favoritas.
+
+O limite agora está mais claro. O kind `10011` contém declarações de identidade entre plataformas. O kind `10021` contém ponteiros para follow sets favoritos. A verificação ainda exige buscar a evidência no provedor indicado, e uma prova do Discord pode continuar sem verificação quando o verificador não consegue entrar no servidor.
