@@ -1,0 +1,81 @@
+---
+title: "Amber 6.6.6 corrige um analisador nostrconnect que estragava segredos NIP-46"
+description: "A Amber 6.6.6 divide os parâmetros de consulta do nostrconnect apenas no primeiro sinal de igual, de modo que segredos base64 com preenchimento sobrevivem à resposta connect e a validação do cliente passa."
+excerpt: "Um separador padrão do Kotlin transformava um segredo base64 com preenchimento em um fragmento separado por vírgulas, e a NIP-46 obriga o cliente a rejeitar exatamente isso."
+date: "2026-09-28"
+publishedAt: "2026-09-28"
+backfilled: false
+type: "story"
+tags: ["Nostr", "Signer", "NIP-46", "Clientes"]
+featuredImage: "/images/news/amber-6-6-6-fixes-nostrconnect-secret-parsing.svg"
+translationKey: "amber-6-6-6-fixes-nostrconnect-secret-parsing"
+sources:
+  - title: "Lançamento da Amber v6.6.6"
+    url: "https://github.com/greenart7c3/Amber/releases/tag/v6.6.6"
+    publisher: "greenart7c3/Amber"
+    date: "2026-09-28"
+  - title: "Issue #526: o analisador de nostrconnect:// corrompe valores que contêm ="
+    url: "https://github.com/greenart7c3/Amber/issues/526"
+    publisher: "greenart7c3/Amber"
+    date: "2026-09-23"
+  - title: "Comparação v6.6.5...v6.6.6"
+    url: "https://github.com/greenart7c3/Amber/compare/v6.6.5...v6.6.6"
+    publisher: "greenart7c3/Amber"
+    date: "2026-09-28"
+  - title: "NIP-46 Nostr Remote Signing"
+    url: "https://github.com/nostr-protocol/nips/blob/master/46.md"
+    publisher: "nostr-protocol/nips"
+    date: "2026-09-28"
+published: true
+---
+
+A [Amber 6.6.6](https://github.com/greenart7c3/Amber/releases/tag/v6.6.6) foi publicada em 28 de setembro de 2026. A primeira entrada do seu changelog conserta uma falha de análise no tratamento que o signer dá aos tokens de conexão `nostrconnect://`: um segredo de conexão contendo o caractere `=` voltava alterado na resposta `connect`, e o cliente solicitante recusava a conexão.
+
+A [issue #526](https://github.com/greenart7c3/Amber/issues/526), aberta em 23 de setembro, apresenta o caso concreto. Um cliente oferece um token no formato `nostrconnect://715ad7d1...?relay=wss%3A%2F%2Frelay.primal.net&secret=XQUdha4rjh_gjAgHN8X5yg==&perms=...`. O segredo é base64 com o preenchimento intacto. A Amber devolvia `XQUdha4rjh_gjAgHN8X5yg, , ` no lugar. A issue relata que aplicativos construídos sobre NDK, citando o Nmail como exemplo, geravam segredos nesse formato.
+
+## A especificação torna a falha total, não cosmética
+
+A [NIP-46](https://github.com/nostr-protocol/nips/blob/master/46.md) descreve `secret` como um parâmetro de consulta obrigatório, "uma string aleatória curta que o _remote-signer_ deveria devolver como campo `result` da sua resposta". Em seguida determina que o valor "MUST be provided to avoid connection spoofing" e que o cliente "MUST validate the `secret` returned by `connect` response".
+
+Esse requisito explica por que uma única sequência de caracteres alterada encerra o handshake. O cliente não pode aceitar uma correspondência aproximada nem recorrer a confiar na chave que respondeu. Ele compara o que gerou com o que recebeu, vê uma string diferente e para. O pareamento nunca se completa e, do lado do usuário, o signer simplesmente não conecta.
+
+A especificação não impõe nenhuma restrição ao alfabeto do segredo. "Uma string aleatória curta" admite base64, e o preenchimento do base64 é `=`. Um cliente que produzia base64 com preenchimento estava dentro da especificação, e era o signer que precisava aceitá-lo.
+
+## Um separador padrão, duas vezes
+
+A causa é estreita e está documentada no diff. O `joinToString` do Kotlin usa `", "` como separador padrão. O código anterior dividia cada parâmetro de consulta em cada `=`, descartava o primeiro elemento e reunia o restante sem passar um separador:
+
+```kotlin
+val internalSplit = it.split("=")
+val paramName = internalSplit.first()
+val json = internalSplit.mapIndexedNotNull { index, s ->
+    if (index == 0) null else s
+}.joinToString { data -> data }
+```
+
+Aplicado a `secret=XQUdha4rjh_gjAgHN8X5yg==`, a divisão produz quatro elementos, os dois últimos vazios. Reunir os três finais com `", "` resulta em `XQUdha4rjh_gjAgHN8X5yg, , `. Dois defeitos se somam em uma linha: os caracteres de preenchimento são consumidos como delimitadores, e um separador que ninguém pretendia é inserido no lugar deles.
+
+A versão 6.6.6 substitui o bloco inteiro por uma função auxiliar nomeada que divide uma única vez:
+
+```kotlin
+fun splitParam(param: String): Pair<String, String> =
+    param.substringBefore("=") to param.substringAfter("=", "")
+```
+
+O mesmo lançamento corrige o erro idêntico em um segundo ponto de chamada. O token é dividido em `?` para separar a chave pública do cliente da string de consulta, e os fragmentos restantes eram reunidos com `split.drop(1).joinToString { it }`. Agora se lê `joinToString("") { it }`. O primeiro ponto quebrava todo segredo com preenchimento; o segundo só afeta um token cuja string de consulta carregue um `?` literal, mas é o mesmo padrão e a mesma classe de erro.
+
+Um novo arquivo de testes, `NostrConnectUtilsTest.kt`, acrescenta sete casos. Quatro cobrem valores que contêm `=`, incluindo o segredo com preenchimento da issue, um valor com `=` no meio, uma URL de relay codificada em porcentagem e uma lista `perms`. Três fixam as entradas degeneradas para que o conserto não as altere: um parâmetro sem `=`, um com valor vazio e a string vazia.
+
+## O restante do lançamento
+
+Seis commits e dezesseis arquivos separam a 6.6.5 da 6.6.6. O restante é apresentação e roteamento, não protocolo.
+
+Três entradas do changelog tratam de contraste. Texto e ícones brancos sobre superfícies âmbar claras no tema escuro foram corrigidos no botão de ação flutuante de Edit Relays, nos botões de ícone para adicionar relays e nos chips de filtro selecionados na tela de feedback. O ícone de status de Tor e proxy na barra superior, descrito como quase invisível no tema claro, agora usa cores adaptadas ao tema em ambos, e o ícone de reconexão de relay foi alinhado à contagem de relays ao lado.
+
+A última entrada muda o destino do feedback. As issues de feedback são publicadas nos relays anunciados no anúncio do repositório da Amber, e não em um relay fixo no código, com retorno ao comportamento anterior quando o anúncio não pode ser obtido. Os tempos limite sobre Tor foram alongados para que um relay lento ainda consiga confirmar a publicação.
+
+## O que os artefatos estabelecem
+
+A versão 6.6.6 é um lançamento publicado no GitHub, com recursos para Android e um manifesto de somas de verificação assinado, marcado no commit `fc2e0de5`. A mudança do analisador, a função auxiliar, o segundo ponto de chamada e os sete casos de teste aparecem na comparação com a 6.6.5, então o changelog e o diff concordam neste lançamento.
+
+Isso estabelece o que o código faz agora. Não estabelece que uma instalação específica tenha atualizado, e os canais de loja e de repositório avançam no próprio ritmo. Quem tinha um cliente que continuava falhando na verificação do segredo deveria confirmar a versão realmente em execução no aparelho.

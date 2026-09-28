@@ -1,0 +1,81 @@
+---
+title: "Amber 6.6.6 behebt einen nostrconnect-Parser, der NIP-46-Geheimnisse zerstörte"
+description: "Amber 6.6.6 trennt nostrconnect-Abfrageparameter nur am ersten Gleichheitszeichen, sodass base64-Geheimnisse mit Padding die connect-Antwort überstehen und die Prüfung im Client gelingt."
+excerpt: "Ein Standardtrennzeichen in Kotlin machte aus einem base64-Geheimnis mit Padding ein kommagetrenntes Fragment, und NIP-46 verpflichtet den Client, genau das abzulehnen."
+date: "2026-09-28"
+publishedAt: "2026-09-28"
+backfilled: false
+type: "story"
+tags: ["Nostr", "Signer", "NIP-46", "Clients"]
+featuredImage: "/images/news/amber-6-6-6-fixes-nostrconnect-secret-parsing.svg"
+translationKey: "amber-6-6-6-fixes-nostrconnect-secret-parsing"
+sources:
+  - title: "Veröffentlichung von Amber v6.6.6"
+    url: "https://github.com/greenart7c3/Amber/releases/tag/v6.6.6"
+    publisher: "greenart7c3/Amber"
+    date: "2026-09-28"
+  - title: "Issue #526: Der nostrconnect://-Parser beschädigt Werte, die = enthalten"
+    url: "https://github.com/greenart7c3/Amber/issues/526"
+    publisher: "greenart7c3/Amber"
+    date: "2026-09-23"
+  - title: "Vergleich v6.6.5...v6.6.6"
+    url: "https://github.com/greenart7c3/Amber/compare/v6.6.5...v6.6.6"
+    publisher: "greenart7c3/Amber"
+    date: "2026-09-28"
+  - title: "NIP-46 Nostr Remote Signing"
+    url: "https://github.com/nostr-protocol/nips/blob/master/46.md"
+    publisher: "nostr-protocol/nips"
+    date: "2026-09-28"
+published: true
+---
+
+[Amber 6.6.6](https://github.com/greenart7c3/Amber/releases/tag/v6.6.6) wurde am 28. September 2026 veröffentlicht. Der erste Eintrag im Änderungsprotokoll behebt einen Parserfehler im Umgang des Signers mit `nostrconnect://`-Verbindungstoken: Ein Verbindungsgeheimnis, das ein `=` enthielt, kam in der `connect`-Antwort verändert zurück, und der anfragende Client lehnte die Verbindung ab.
+
+[Issue #526](https://github.com/greenart7c3/Amber/issues/526), eröffnet am 23. September, führt den konkreten Fall auf. Ein Client bietet ein Token der Form `nostrconnect://715ad7d1...?relay=wss%3A%2F%2Frelay.primal.net&secret=XQUdha4rjh_gjAgHN8X5yg==&perms=...` an. Das Geheimnis ist base64 mit unversehrtem Padding. Amber gab stattdessen `XQUdha4rjh_gjAgHN8X5yg, , ` zurück. Die Issue berichtet, dass auf NDK aufgebaute Anwendungen, mit Nmail als Beispiel, Geheimnisse in dieser Form erzeugten.
+
+## Die Spezifikation macht den Ausfall vollständig, nicht kosmetisch
+
+[NIP-46](https://github.com/nostr-protocol/nips/blob/master/46.md) beschreibt `secret` als erforderlichen Abfrageparameter, „eine kurze Zufallszeichenkette, die der _remote-signer_ als `result`-Feld seiner Antwort zurückgeben sollte". Anschließend heißt es, der Wert „MUST be provided to avoid connection spoofing" und der Client „MUST validate the `secret` returned by `connect` response".
+
+Diese Anforderung erklärt, warum eine einzige veränderte Zeichenfolge den Handshake beendet. Der Client darf weder eine ungefähre Übereinstimmung annehmen noch auf Vertrauen in den antwortenden Schlüssel ausweichen. Er vergleicht, was er erzeugt hat, mit dem, was er erhalten hat, sieht eine andere Zeichenkette und hält an. Die Kopplung kommt nie zustande, und aus Sicht der Nutzerinnen und Nutzer verbindet sich der Signer schlicht nicht.
+
+Die Spezifikation schränkt das Alphabet des Geheimnisses nicht ein. „Eine kurze Zufallszeichenkette" lässt base64 zu, und das Padding von base64 ist `=`. Ein Client, der base64 mit Padding erzeugte, hielt sich an die Spezifikation, und der Signer war die Seite, die es annehmen musste.
+
+## Ein Standardtrennzeichen, zweimal
+
+Die Ursache ist eng begrenzt und im Diff dokumentiert. Kotlins `joinToString` verwendet `", "` als Standardtrennzeichen. Der bisherige Code trennte jeden Abfrageparameter an jedem `=`, verwarf das erste Element und fügte den Rest ohne übergebenes Trennzeichen wieder zusammen:
+
+```kotlin
+val internalSplit = it.split("=")
+val paramName = internalSplit.first()
+val json = internalSplit.mapIndexedNotNull { index, s ->
+    if (index == 0) null else s
+}.joinToString { data -> data }
+```
+
+Auf `secret=XQUdha4rjh_gjAgHN8X5yg==` angewandt liefert die Trennung vier Elemente, die letzten beiden leer. Das Zusammenfügen der letzten drei mit `", "` ergibt `XQUdha4rjh_gjAgHN8X5yg, , `. In einer Zeile summieren sich zwei Fehler: Die Padding-Zeichen werden als Trenner verbraucht, und an ihre Stelle tritt ein Trennzeichen, das niemand beabsichtigt hatte.
+
+Version 6.6.6 ersetzt den gesamten Block durch eine benannte Hilfsfunktion, die genau einmal trennt:
+
+```kotlin
+fun splitParam(param: String): Pair<String, String> =
+    param.substringBefore("=") to param.substringAfter("=", "")
+```
+
+Dieselbe Veröffentlichung korrigiert den gleichen Fehler an einer zweiten Aufrufstelle. Das Token wird an `?` getrennt, um den öffentlichen Schlüssel des Clients von der Abfragezeichenkette zu lösen, und die verbleibenden Fragmente wurden mit `split.drop(1).joinToString { it }` wieder verbunden. Dort steht nun `joinToString("") { it }`. Die erste Stelle zerstörte jedes Geheimnis mit Padding; die zweite trifft nur ein Token, dessen Abfragezeichenkette ein wörtliches `?` enthält, doch es ist derselbe Standardwert und dieselbe Fehlerklasse.
+
+Eine neue Testdatei, `NostrConnectUtilsTest.kt`, ergänzt sieben Fälle. Vier decken Werte mit `=` ab, darunter das Geheimnis mit Padding aus der Issue, ein Wert mit `=` in der Mitte, eine prozentkodierte Relay-URL und eine `perms`-Liste. Drei halten die entarteten Eingaben fest, damit die Reparatur sie nicht verändert: ein Parameter ohne `=`, einer mit leerem Wert und die leere Zeichenkette.
+
+## Der Rest der Veröffentlichung
+
+Sechs Commits und sechzehn Dateien trennen 6.6.5 von 6.6.6. Der Rest betrifft Darstellung und Weiterleitung, nicht das Protokoll.
+
+Drei Einträge des Änderungsprotokolls betreffen den Kontrast. Weiße Schrift und weiße Symbole auf hellen Bernsteinflächen im dunklen Thema sind beim schwebenden Aktionsknopf von Edit Relays, bei den Symbolschaltflächen zum Hinzufügen von Relays und bei den ausgewählten Filter-Chips im Feedback-Bildschirm korrigiert. Das Tor- und Proxy-Statussymbol in der oberen Leiste, beschrieben als im hellen Thema kaum sichtbar, verwendet nun in beiden Themen themenbewusste Farben, und das Symbol für die Relay-Neuverbindung ist an die danebenstehende Relay-Zahl angeglichen.
+
+Der letzte Eintrag ändert das Ziel von Rückmeldungen. Feedback-Meldungen werden auf den Relays veröffentlicht, die in Ambers Repository-Ankündigung genannt sind, statt auf einem fest eingetragenen Relay, mit Rückfall auf das bisherige Verhalten, wenn die Ankündigung nicht abgerufen werden kann. Die Zeitlimits über Tor wurden verlängert, damit auch ein langsames Relay die Veröffentlichung noch bestätigen kann.
+
+## Was die Artefakte belegen
+
+Version 6.6.6 ist eine veröffentlichte GitHub-Release mit Android-Dateien und einem signierten Prüfsummenmanifest, markiert am Commit `fc2e0de5`. Die Parseränderung, die Hilfsfunktion, die zweite Aufrufstelle und die sieben Testfälle sind im Vergleich mit 6.6.5 sichtbar, Änderungsprotokoll und Diff stimmen für diese Veröffentlichung also überein.
+
+Das belegt, was der Code jetzt tut. Es belegt nicht, dass eine bestimmte Installation aktualisiert wurde, und Store- und Repository-Kanäle bewegen sich in ihrem eigenen Tempo. Wer einen Client hatte, dessen Geheimnisprüfung weiterhin fehlschlug, sollte die tatsächlich auf dem Gerät laufende Version prüfen.

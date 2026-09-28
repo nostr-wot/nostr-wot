@@ -1,0 +1,81 @@
+---
+title: "Amber 6.6.6 ispravlyaet razbor nostrconnect, portivshiy sekrety NIP-46"
+description: "Amber 6.6.6 delit parametry zaprosa nostrconnect tolko po pervomu znaku ravenstva, poetomu sekrety base64 s zapolneniem perezhivayut otvet connect i proverka na storone klienta prohodit."
+excerpt: "Razdelitel po umolchaniyu v Kotlin prevrashchal sekret base64 s zapolneniem v fragment cherez zapyatuyu, a NIP-46 obyazyvaet klienta otklonit imenno eto."
+date: "2026-09-28"
+publishedAt: "2026-09-28"
+backfilled: false
+type: "story"
+tags: ["Nostr", "Podpisant", "NIP-46", "Klienty"]
+featuredImage: "/images/news/amber-6-6-6-fixes-nostrconnect-secret-parsing.svg"
+translationKey: "amber-6-6-6-fixes-nostrconnect-secret-parsing"
+sources:
+  - title: "Reliz Amber v6.6.6"
+    url: "https://github.com/greenart7c3/Amber/releases/tag/v6.6.6"
+    publisher: "greenart7c3/Amber"
+    date: "2026-09-28"
+  - title: "Issue #526: razbor nostrconnect:// portit znacheniya, soderzhashchie ="
+    url: "https://github.com/greenart7c3/Amber/issues/526"
+    publisher: "greenart7c3/Amber"
+    date: "2026-09-23"
+  - title: "Sravnenie v6.6.5...v6.6.6"
+    url: "https://github.com/greenart7c3/Amber/compare/v6.6.5...v6.6.6"
+    publisher: "greenart7c3/Amber"
+    date: "2026-09-28"
+  - title: "NIP-46 Nostr Remote Signing"
+    url: "https://github.com/nostr-protocol/nips/blob/master/46.md"
+    publisher: "nostr-protocol/nips"
+    date: "2026-09-28"
+published: true
+---
+
+[Amber 6.6.6](https://github.com/greenart7c3/Amber/releases/tag/v6.6.6) opublikovan 28 sentyabrya 2026 goda. Pervaya zapis v ego spiske izmeneniy ustranyaet oshibku razbora v obrabotke tokenov podklyucheniya `nostrconnect://`: sekret podklyucheniya, soderzhashchiy simvol `=`, vozvrashchalsya izmenennym v otvete `connect`, i zaprashivayushchiy klient otkazyvalsya ot soedineniya.
+
+[Issue #526](https://github.com/greenart7c3/Amber/issues/526), otkrytaya 23 sentyabrya, privodit konkretnyy sluchay. Klient predlagaet token vida `nostrconnect://715ad7d1...?relay=wss%3A%2F%2Frelay.primal.net&secret=XQUdha4rjh_gjAgHN8X5yg==&perms=...`. Sekret predstavlyaet soboy base64 s sohranennym zapolneniem. Amber vozvrashchal vmesto nego `XQUdha4rjh_gjAgHN8X5yg, , `. V issue ukazano, chto prilozheniya, postroennye na NDK, s Nmail v kachestve primera, generirovali sekrety imenno takogo vida.
+
+## Specifikaciya delaet sboy polnym, a ne kosmeticheskim
+
+[NIP-46](https://github.com/nostr-protocol/nips/blob/master/46.md) opisyvaet `secret` kak obyazatelnyy parametr zaprosa, "korotkuyu sluchaynuyu stroku, kotoruyu _remote-signer_ dolzhen vernut v pole `result` svoego otveta". Zatem ukazano, chto znachenie "MUST be provided to avoid connection spoofing" i chto klient "MUST validate the `secret` returned by `connect` response".
+
+Eto trebovanie obyasnyaet, pochemu odna iskazhennaya posledovatelnost simvolov zavershaet rukopozhatie. Klientu ne razresheno prinyat priblizitelnoe sovpadenie ili pereyti k doveriyu otvechayushchemu klyuchu. On sravnivaet to, chto sozdal, s tem, chto poluchil, vidit druguyu stroku i ostanavlivaetsya. Sopryazhenie nikogda ne zavershaetsya, a so storony polzovatelya podpisant prosto ne podklyuchaetsya.
+
+Specifikaciya ne nakladyvaet ogranicheniy na alfavit sekreta. "Korotkaya sluchaynaya stroka" dopuskaet base64, a zapolnenie base64 eto `=`. Klient, sozdavavshiy base64 s zapolneniem, sootvetstvoval specifikacii, i imenno podpisant dolzhen byl ego prinyat.
+
+## Razdelitel po umolchaniyu, dvazhdy
+
+Prichina uzkaya i zadokumentirovana v diffe. `joinToString` v Kotlin ispolzuet `", "` kak razdelitel po umolchaniyu. Prezhniy kod delil kazhdyy parametr zaprosa po kazhdomu `=`, otbrasyval pervyy element i soedinyal ostatok, ne peredavaya razdelitel:
+
+```kotlin
+val internalSplit = it.split("=")
+val paramName = internalSplit.first()
+val json = internalSplit.mapIndexedNotNull { index, s ->
+    if (index == 0) null else s
+}.joinToString { data -> data }
+```
+
+Primenenno k `secret=XQUdha4rjh_gjAgHN8X5yg==` delenie daet chetyre elementa, poslednie dva pustye. Soedinenie trekh poslednih cherez `", "` daet `XQUdha4rjh_gjAgHN8X5yg, , `. V odnoy stroke skladyvayutsya dva defekta: simvoly zapolneniya potreblyayutsya kak razdeliteli, a na ih mesto vstavlyaetsya razdelitel, kotorogo nikto ne predpolagal.
+
+Versiya 6.6.6 zamenyaet ves blok imenovannoy vspomogatelnoy funkciey, kotoraya delit odin raz:
+
+```kotlin
+fun splitParam(param: String): Pair<String, String> =
+    param.substringBefore("=") to param.substringAfter("=", "")
+```
+
+Tot zhe reliz ispravlyaet tu zhe oshibku vo vtorom meste vyzova. Token delitsya po `?`, chtoby otdelit publichnyy klyuch klienta ot stroki zaprosa, a ostavshiesya fragmenty soedinyalis cherez `split.drop(1).joinToString { it }`. Teper tam `joinToString("") { it }`. Pervoe mesto lomalo kazhdyy sekret s zapolneniem; vtoroe zatragivaet tolko token, v stroke zaprosa kotorogo est bukvalnyy `?`, no eto to zhe znachenie po umolchaniyu i tot zhe klass oshibki.
+
+Novyy fayl testov, `NostrConnectUtilsTest.kt`, dobavlyaet sem sluchaev. Chetyre pokryvayut znacheniya s `=`, vklyuchaya sekret s zapolneniem iz issue, znachenie s `=` v seredine, URL relaya v procentnoy kodirovke i spisok `perms`. Tri zakreplyayut vyrozhdennye vhody, chtoby ispravlenie ih ne izmenilo: parametr bez `=`, parametr s pustym znacheniem i pustaya stroka.
+
+## Ostalnaya chast reliza
+
+Shest kommitov i shestnadcat faylov otdelyayut 6.6.5 ot 6.6.6. Ostalnoe otnositsya k otobrazheniyu i marshrutizacii, a ne k protokolu.
+
+Tri zapisi spiska izmeneniy kasayutsya kontrasta. Belyy tekst i znachki na svetlyh yantarnyh poverhnostyah v temnoy teme ispravleny dlya plavayushchey knopki deystviya Edit Relays, knopok-znachkov dobavleniya relaya i vybrannyh fitrov na ekrane obratnoy svyazi. Znachok sostoyaniya Tor i proksi v verhney paneli, opisannyy kak pochti nezametnyy v svetloy teme, teper ispolzuet cveta, uchityvayushchie temu, v oboih rezhimah, a znachok pereodklyucheniya relaya priveden v sootvetstvie s sosednim schetchikom relaev.
+
+Poslednyaya zapis menyaet naznachenie obratnoy svyazi. Soobshcheniya obratnoy svyazi publikuyutsya na relayah, ukazannyh v obyavlenii repozitoriya Amber, a ne na zhestko zadannom relae, s vozvratom k prezhnemu povedeniyu, kogda obyavlenie poluchit ne udaetsya. Taymauty poverh Tor uvelicheny, chtoby medlennyy relay vse zhe podtverdil publikaciyu.
+
+## Chto ustanavlivayut artefakty
+
+Versiya 6.6.6 eto opublikovannyy reliz GitHub s resursami dlya Android i podpisannym manifestom kontrolnyh summ, otmechennyy na kommite `fc2e0de5`. Izmenenie razbora, vspomogatelnaya funkciya, vtoroe mesto vyzova i sem testovyh sluchaev vidny v sravnenii s 6.6.5, tak chto spisok izmeneniy i diff soglasuyutsya v etom relize.
+
+Eto ustanavlivaet, chto kod delaet seychas. Eto ne ustanavlivaet, chto kakaya-libo konkretnaya ustanovka obnovilas, a kanaly magazinov i repozitoriev dvizhutsya v sobstvennom tempe. Tomu, u kogo klient prodolzhal ne prohodit proverku sekreta, stoit podtverdit versiyu, deystvitelno zapushchennuyu na ustroystve.
