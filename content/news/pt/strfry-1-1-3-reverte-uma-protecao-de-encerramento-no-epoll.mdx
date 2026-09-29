@@ -1,0 +1,88 @@
+---
+title: "strfry 1.1.3 reverte uma proteção de encerramento no epoll"
+description: "O strfry 1.1.3 move seu submódulo golpe para um commit do uWebSockets que reverte a proteção contra o encerramento duplicado por eventos epoll obsoletos presente na 1.1.1 e na 1.1.2. A versão não altera nenhum arquivo de código do strfry."
+excerpt: "Dois commits, dois caminhos, e a versão inteira é um movimento de ponteiro de submódulo. Sai uma guarda de idempotência em WebSocket::onEnd e um salto para os polls já fechados no laço de despacho do epoll. A correção do buffer de fragmentos da 1.1.2 permanece."
+date: "2026-09-29"
+publishedAt: "2026-09-29"
+backfilled: false
+type: "story"
+tags:
+  - "Nostr"
+  - "Relays"
+published: true
+translationKey: "strfry-1-1-3-backs-out-an-epoll-teardown-guard"
+featuredImage: "/images/news/strfry-1-1-3-backs-out-an-epoll-teardown-guard.svg"
+sources:
+  - title: "strfry 1.1.3"
+    url: "https://github.com/hoytech/strfry/releases/tag/1.1.3"
+    publisher: "hoytech/strfry"
+    date: "2026-09-04"
+  - title: "Comparação 1.1.2...1.1.3"
+    url: "https://github.com/hoytech/strfry/compare/1.1.2...1.1.3"
+    publisher: "hoytech/strfry"
+    date: "2026-09-04"
+  - title: "golpe: bump uWebSockets"
+    url: "https://github.com/hoytech/golpe/commit/73ba63b506b4ce412a98fca78bc9d1d3968d4f1e"
+    publisher: "hoytech/golpe"
+    date: "2026-09-04"
+  - title: "Revert \"Prevent duplicate teardown from stale epoll events\""
+    url: "https://github.com/hoytech/uWebSockets/commit/45816de84b51b9f217fd0242fecd003e0d6a48c6"
+    publisher: "hoytech/uWebSockets"
+    date: "2026-09-04"
+  - title: "Pull request #6: Prevent duplicate teardown from stale epoll events"
+    url: "https://github.com/hoytech/uWebSockets/pull/6"
+    publisher: "hoytech/uWebSockets"
+    date: "2026-07-20"
+---
+
+O [strfry](https://github.com/hoytech/strfry) marcou a tag [1.1.3](https://github.com/hoytech/strfry/releases/tag/1.1.3) em 4 de setembro de 2026, oito dias depois da 1.1.2. A versão não altera nada do código próprio do strfry. [Dois commits separam as tags](https://github.com/hoytech/strfry/compare/1.1.2...1.1.3) e eles tocam dois caminhos, `CHANGES` e o ponteiro do submódulo `golpe`. O primeiro dos dois se chama `bump golpe to back out uWebSockets change`.
+
+A entrada do `CHANGES` é uma única linha, reproduzida aqui como aparece no arquivo, incluindo a redação:
+
+> Revert uWebSockets fix that doesn't apply to release branch and may cause be causing problems.
+
+## O que o movimento do ponteiro contém
+
+O strfry não incorpora diretamente sua pilha de WebSocket. Ele carrega o `golpe`, e o `golpe` carrega `external/uWebSockets`. A tag move o `golpe` de `72477956` para [`73ba63b5`](https://github.com/hoytech/golpe/commit/73ba63b506b4ce412a98fca78bc9d1d3968d4f1e), e esse commit move dois submódulos próprios: `external/uWebSockets` de `1ef91686` para `45816de8`, e `external/hoytech-cpp` de `722e3dc9` para `1d33d359`. A atualização do hoytech-cpp vem de um commit anterior do golpe, datado de 28 de agosto, e não faz parte da reversão.
+
+O movimento do uWebSockets é aquilo a que a linha do changelog se refere. O commit [`45816de8`](https://github.com/hoytech/uWebSockets/commit/45816de84b51b9f217fd0242fecd003e0d6a48c6) é filho de `1ef91686` e sua mensagem é `Revert "Prevent duplicate teardown from stale epoll events"`.
+
+## A proteção que sai
+
+O trabalho revertido chegou ao uWebSockets pelo [pull request #6](https://github.com/hoytech/uWebSockets/pull/6), integrado em 20 de julho de 2026. Ele acrescentava dois trechos, ambos curtos, ambos com a própria explicação em um comentário.
+
+O primeiro fica no laço de despacho de `src/Epoll.cpp`:
+
+```cpp
+if (poll->isClosed()) {
+    continue;
+}
+```
+
+O comentário dá o motivo: um poll fechado por uma chamada anterior do mesmo lote continua presente em `readyEvents`, porque sua remoção é adiada para `loop->closing`. Despachá-lo operaria sobre um descritor fechado de valor `-1` e executaria o caminho de encerramento uma segunda vez.
+
+O segundo é um retorno antecipado no início de `WebSocket<isServer>::onEnd`, em `src/WebSocket.cpp`:
+
+```cpp
+if (webSocket->isClosed()) {
+    return;
+}
+```
+
+Esse comentário detalha melhor a sequência. `terminate()` pode ser chamado a partir da callback de outro poll, e o comentário aponta o limite de contrapressão para clientes lentos como um chamador que faz exatamente isso. `closeSocket()` define o descritor como `-1`, mas adia a destruição do objeto, então o evento obsoleto que ainda está no mesmo lote do epoll reentra em `onEnd`. Sem a proteção, `disconnectionHandler` dispara duas vezes e o socket é fechado duas vezes, o que o comentário descreve como uma liberação dupla tanto dos dados de usuário quanto do próprio `WebSocket`.
+
+Os dois trechos estão ausentes de `45816de8`, e os dois arquivos voltam à forma que tinham antes da integração.
+
+## Quais versões a carregavam
+
+O golpe absorveu a integração em `3cbace13`, em 20 de julho, e o strfry [1.1.1](https://github.com/hoytech/strfry/releases/tag/1.1.1), marcado no dia seguinte, aponta para esse commit do golpe. A 1.1.2 a manteve: sua própria atualização do golpe moveu o uWebSockets de `85d00e24`, o commit de integração, para `1ef91686`, um descendente dele. A proteção, portanto, foi publicada na 1.1.1 e na 1.1.2, e a 1.1.3 é a primeira tag dessa linha sem ela.
+
+## O que não sai
+
+A correção que abria a 1.1.2 permanece intacta. A atualização do uWebSockets daquela versão levava `1ef91686`, que acrescentava uma verificação do buffer de fragmentos acumulado contra `maxPayload` e fechava um caminho pelo qual um cliente podia continuar anexando quadros de continuação, cada um abaixo do limite por quadro, e fazer a memória do relay crescer sem teto. O commit `45816de8` é construído sobre esse commit em vez de revertê-lo, então a 1.1.3 ainda tem a verificação de fragmentos. A proteção de encerramento no epoll é a única coisa removida.
+
+## Em que ponto está
+
+`45816de8` é a cabeça atual do hoytech/uWebSockets e `73ba63b5` a cabeça atual do golpe. Tanto o `master` do strfry quanto seu branch `release` apontam para esse commit do golpe, e a tag `1.1.3` é a ponta do `release`. A proteção não está presente em nenhum ponto da cadeia publicada, e a linha do changelog citada acima é a única declaração sobre ela nos artefatos.
+
+Para quem opera um relay, a direção importa: passar da 1.1.1 ou da 1.1.2 para a 1.1.3 remove a proteção em vez de acrescentá-la. O ponteiro do `golpe` mudou, então a compilação precisa atualizar o submódulo em vez de reaproveitar uma cópia em cache, a mesma condição que valia para a 1.1.2.

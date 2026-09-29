@@ -1,0 +1,88 @@
+---
+title: "strfry 1.1.3 backs out an epoll teardown guard"
+description: "strfry 1.1.3 moves its golpe submodule to a uWebSockets commit that reverts the stale-epoll teardown guard carried by 1.1.1 and 1.1.2. The release changes no strfry source file."
+excerpt: "Two commits, two paths, and the whole release is a submodule pointer move. What comes out is an idempotency guard in WebSocket::onEnd and a skip for closed polls in the epoll dispatch loop. The fragment buffer fix from 1.1.2 stays in."
+date: "2026-09-29"
+publishedAt: "2026-09-29"
+backfilled: false
+type: "story"
+tags:
+  - "Nostr"
+  - "Relays"
+published: true
+translationKey: "strfry-1-1-3-backs-out-an-epoll-teardown-guard"
+featuredImage: "/images/news/strfry-1-1-3-backs-out-an-epoll-teardown-guard.svg"
+sources:
+  - title: "strfry 1.1.3"
+    url: "https://github.com/hoytech/strfry/releases/tag/1.1.3"
+    publisher: "hoytech/strfry"
+    date: "2026-09-04"
+  - title: "Compare 1.1.2...1.1.3"
+    url: "https://github.com/hoytech/strfry/compare/1.1.2...1.1.3"
+    publisher: "hoytech/strfry"
+    date: "2026-09-04"
+  - title: "golpe: bump uWebSockets"
+    url: "https://github.com/hoytech/golpe/commit/73ba63b506b4ce412a98fca78bc9d1d3968d4f1e"
+    publisher: "hoytech/golpe"
+    date: "2026-09-04"
+  - title: "Revert \"Prevent duplicate teardown from stale epoll events\""
+    url: "https://github.com/hoytech/uWebSockets/commit/45816de84b51b9f217fd0242fecd003e0d6a48c6"
+    publisher: "hoytech/uWebSockets"
+    date: "2026-09-04"
+  - title: "Pull request #6: Prevent duplicate teardown from stale epoll events"
+    url: "https://github.com/hoytech/uWebSockets/pull/6"
+    publisher: "hoytech/uWebSockets"
+    date: "2026-07-20"
+---
+
+[strfry](https://github.com/hoytech/strfry) tagged [1.1.3](https://github.com/hoytech/strfry/releases/tag/1.1.3) on 4 September 2026, eight days after 1.1.2. The release changes none of strfry's own source. [Two commits separate the tags](https://github.com/hoytech/strfry/compare/1.1.2...1.1.3) and they touch two paths, `CHANGES` and the `golpe` submodule pointer. The first of the two is named `bump golpe to back out uWebSockets change`.
+
+The `CHANGES` entry is a single line, reproduced here as it appears in the file, including its wording:
+
+> Revert uWebSockets fix that doesn't apply to release branch and may cause be causing problems.
+
+## What the pointer move contains
+
+strfry does not vendor its WebSocket stack directly. It carries `golpe`, and `golpe` carries `external/uWebSockets`. The tag moves `golpe` from `72477956` to [`73ba63b5`](https://github.com/hoytech/golpe/commit/73ba63b506b4ce412a98fca78bc9d1d3968d4f1e), and that commit moves two submodules of its own: `external/uWebSockets` from `1ef91686` to `45816de8`, and `external/hoytech-cpp` from `722e3dc9` to `1d33d359`. The hoytech-cpp bump arrives from an earlier golpe commit dated 28 August and is not part of the revert.
+
+The uWebSockets move is what the changelog line refers to. [`45816de8`](https://github.com/hoytech/uWebSockets/commit/45816de84b51b9f217fd0242fecd003e0d6a48c6) is a child of `1ef91686`, and its message is `Revert "Prevent duplicate teardown from stale epoll events"`.
+
+## The guard that came out
+
+The reverted work reached uWebSockets through [pull request #6](https://github.com/hoytech/uWebSockets/pull/6), merged on 20 July 2026. It added two hunks, both short, both carrying their own explanation in a comment.
+
+The first sits in the dispatch loop in `src/Epoll.cpp`:
+
+```cpp
+if (poll->isClosed()) {
+    continue;
+}
+```
+
+Its comment states the reason: a poll closed by an earlier callback in the same batch is still present in `readyEvents`, because its deletion is deferred to `loop->closing`. Dispatching to it would operate on a closed fd of `-1` and run the teardown path a second time.
+
+The second is an early return at the top of `WebSocket<isServer>::onEnd` in `src/WebSocket.cpp`:
+
+```cpp
+if (webSocket->isClosed()) {
+    return;
+}
+```
+
+That comment sets out the sequence in more detail. `terminate()` can be called from a different poll's callback, and the comment names the slow-client back-pressure cap as a caller that does exactly that. `closeSocket()` sets the fd to `-1` but defers deleting the object, so the stale event still sitting in the same epoll batch re-enters `onEnd`. Without the guard, `disconnectionHandler` fires twice and the socket is closed twice, which the comment describes as double-freeing both the user data and the `WebSocket` itself.
+
+Both hunks are absent from `45816de8`, and the two files return to the form they had before the merge.
+
+## Which releases carried it
+
+golpe picked the merge up in `3cbace13` on 20 July, and strfry [1.1.1](https://github.com/hoytech/strfry/releases/tag/1.1.1), tagged the following day, points at that golpe commit. 1.1.2 kept it: its own golpe bump moved uWebSockets from `85d00e24`, the merge commit, to `1ef91686`, a descendant of it. The guard therefore shipped in 1.1.1 and 1.1.2, and 1.1.3 is the first tag in that line without it.
+
+## What did not come out
+
+The fix that led 1.1.2 is untouched. That release's uWebSockets bump carried `1ef91686`, which added a check of the accumulated fragment buffer against `maxPayload` and closed a path where a client could keep appending continuation frames, each one under the per-frame limit, and grow relay memory without a ceiling. `45816de8` is built on top of that commit rather than reverting it, so 1.1.3 still has the fragment check. The epoll teardown guard is the only thing removed.
+
+## Where it stands
+
+`45816de8` is the current head of hoytech/uWebSockets and `73ba63b5` the current head of golpe. Both strfry's `master` and its `release` branch point at that golpe commit, and the `1.1.3` tag is the tip of `release`. The guard is not present anywhere in the published chain, and the changelog line above is the only statement about it in the artifacts.
+
+For an operator, the direction matters: moving from 1.1.1 or 1.1.2 to 1.1.3 removes the guard rather than adding it. The `golpe` pointer changed, so a build has to update the submodule instead of reusing a cached checkout, the same condition that applied to 1.1.2.
