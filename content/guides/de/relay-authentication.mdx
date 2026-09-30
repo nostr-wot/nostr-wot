@@ -1,0 +1,58 @@
+---
+title: "Wähle, welche Relays dein Konto authentifizieren dürfen"
+description: "Erlaube Relays pro Website oder für verbundene Websites und widerrufe den Zugriff gezielt."
+excerpt: "Erlaube Relays pro Website oder für verbundene Websites und widerrufe den Zugriff gezielt."
+date: "2026-09-30"
+featuredImage: "/images/guides/site-permissions/featured.svg"
+previewImage: "/images/guides/site-permissions/preview.svg"
+ogImage: "/images/guides/site-permissions/og.jpg"
+published: true
+translationKey: "relay-authentication"
+difficulty: "intermediate"
+order: 19
+author:
+  name: "Leon Acosta"
+  avatar: "/authors/leon-profile.jpg"
+tags:
+  - "Security"
+  - "Permissions"
+  - "Authentication"
+---
+
+In [Nostr WoT 0.8.7](https://github.com/nostr-wot/nostr-wot-extension/releases/tag/v0.8.7) erlaubt eine Website-Verbindung oder allgemeine Signaturfreigabe nicht automatisch die Identifizierung bei jedem Relay. HTTP-APIs behandelt der [Backend-Leitfaden](/guides/backend-authentication).
+
+## Website und Relay sind verschiedene Parteien
+
+`https://client.example` kann sich mit `wss://relay.example` verbinden. Bei [NIP-42](https://github.com/nostr-protocol/nips/blob/master/42.md) sendet das Relay eine Challenge; der Client fordert ein signiertes Authentifizierungsereignis an. Damit erfährt das Relay den öffentlichen Schlüssel, nicht den privaten Schlüssel oder eine Erlaubnis für andere Signaturen.
+
+Der Dialog nennt Website und Relay. Die Code-Schaltfläche öffnet das gesamte Ereignis. Diese Authentifizierung verwendet keine HTTP-Methode.
+
+## Wähle den Umfang
+
+| Auswahl | Umfang |
+| --- | --- |
+| Genehmigen | Aktuelle Anfrage |
+| Immer genehmigen | Diese Website, dieses Konto und dieses Relay |
+| Immer für alle Websites | Verbundene Websites mit Identitätszugriff, für dieses Konto und Relay |
+| Ablehnen | Aktuelle Anfrage |
+| Immer ablehnen | Gespeicherte Ablehnung für Website, Konto und Relay |
+
+Gespeicherte Optionen stehen in den Pfeilmenüs. Der Umfang richtet sich nach der normalisierten Relay-URL, nicht nur dem angezeigten Hostnamen. Ein anderer Pfad oder Port ist nicht automatisch erlaubt.
+
+Die Freigabe für alle Websites spart wiederholte Zustimmung bei mehreren Clients. Sie kann auch später verbundene Websites erfassen. Sie verbindet keine neuen Websites, erteilt keinen Identitätszugriff und gilt nicht für andere Konten, normale Ereignissignaturen oder HTTP-Backends. Eine websitespezifische Ablehnung hat Vorrang. Entzogener Identitätszugriff oder eine getrennte Verbindung blockiert weiterhin die Authentifizierung, auch mit NIP-46.
+
+## Prüfen und widerrufen
+
+Öffne **Berechtigungen** für das aktive Konto und die Authentifizierungssektion unten. Die Tabelle enthält websitespezifische Freigaben. Der Link darunter öffnet die separate Tabelle der für alle verbundenen Websites erlaubten Relays. Einträge lassen sich einzeln widerrufen.
+
+Eine Website zu trennen entfernt ihre eigenen Freigaben. Eine gemeinsame Relay-Freigabe bleibt für andere verbundene Websites erhalten, gilt aber nicht für die getrennte Website. Das Löschen eines Kontos entfernt dessen Freigaben. Widerruf verhindert künftige Signaturen, schließt aber keine bereits authentifizierte WebSocket-Verbindung. Dafür muss der Client die Verbindung beenden.
+
+## Prüfungen und Grenzen
+
+Die Erweiterung verlangt eine vom Browser bestätigte Origin im Hauptframe. Iframes, undurchsichtige oder widersprüchliche Origins sowie unsichere Transporte werden abgelehnt, außer bei ausdrücklichen Loopback-Ausnahmen. Relay- und Challenge-Tags, URL, Inhalt und Zeitstempel werden geprüft, auch nach Wartezeiten. Allgemeine Berechtigungen und Sammelgenehmigungen umgehen die Zielzustimmung nicht. Kontowechsel machen vorherige Anfragen ungültig. NIP-46-Antworten müssen exakt zum genehmigten Ereignis und erwarteten Konto passen.
+
+Die Erweiterung kontrolliert nicht den WebSocket des Clients. Das Relay muss Signatur, Adresse, Aktualität und Challenge dieser Verbindung prüfen. Ein Signer kann nicht beweisen, wie der Client die Challenge erhalten hat, oder jede Weiterleitung verhindern.
+
+Derselbe öffentliche Schlüssel kann Verbindungen verschiedener Clients beim Relay verknüpfbar machen. Nutze getrennte Konten oder engere Freigaben, wenn diese Trennung wichtig ist. CORS ersetzt weder die Verbindungsprüfung noch Berechtigungen nach Konto, Website und Ziel.
+
+Siehe [Berechtigungsregeln](https://github.com/nostr-wot/nostr-wot-extension/blob/v0.8.7/src/services/permissions/authentication.ts) und [Tests](https://github.com/nostr-wot/nostr-wot-extension/blob/v0.8.7/tests/authentication.test.ts).

@@ -1,0 +1,58 @@
+---
+title: "Escolha quais relays podem autenticar sua conta"
+description: "Autorize um relay por site ou entre sites conectados, com controle por conta e revogação."
+excerpt: "Autorize um relay por site ou entre sites conectados, com controle por conta e revogação."
+date: "2026-09-30"
+featuredImage: "/images/guides/site-permissions/featured.svg"
+previewImage: "/images/guides/site-permissions/preview.svg"
+ogImage: "/images/guides/site-permissions/og.jpg"
+published: true
+translationKey: "relay-authentication"
+difficulty: "intermediate"
+order: 19
+author:
+  name: "Leon Acosta"
+  avatar: "/authors/leon-profile.jpg"
+tags:
+  - "Security"
+  - "Permissions"
+  - "Authentication"
+---
+
+No [Nostr WoT 0.8.7](https://github.com/nostr-wot/nostr-wot-extension/releases/tag/v0.8.7), conectar um site ou permitir assinaturas comuns não o autoriza a identificar você em qualquer relay. APIs HTTP seguem o [guia de autenticação de backends](/guides/backend-authentication).
+
+## Site e relay são partes diferentes
+
+`https://client.example` pode se conectar a `wss://relay.example`. Relays independentes são normais. No [NIP-42](https://github.com/nostr-protocol/nips/blob/master/42.md), o relay envia um desafio e o cliente pede um evento de autenticação assinado. A prova identifica sua chave pública, sem entregar a chave privada nem permitir outras assinaturas.
+
+O diálogo mostra o site e o relay; o botão de código abre o evento completo. Autenticação de relay não tem método HTTP.
+
+## Escolha o alcance
+
+| Opção | Alcance |
+| --- | --- |
+| Aprovar | O pedido atual |
+| Aprovar sempre | Este site, esta conta e este relay |
+| Sempre para todos os sites | Sites conectados com acesso à identidade, para esta conta e este relay |
+| Rejeitar | O pedido atual |
+| Rejeitar sempre | Recusa salva para este site, conta e relay |
+
+As decisões persistentes ficam nas setas dos botões. O escopo usa a URL normalizada do relay, não apenas seu nome. Outra porta ou caminho não é autorizado automaticamente.
+
+A opção para todos os sites evita repetir a autorização ao usar vários clientes no mesmo relay. Ela também pode valer para sites conectados depois. Não conecta novos sites, concede acesso à identidade, cobre outras contas, permite assinaturas comuns ou autoriza APIs HTTP. Uma recusa por site tem prioridade. Desativar acesso à identidade ou desconectar o site continua bloqueando a autenticação, inclusive com NIP-46.
+
+## Revise e revogue
+
+Abra **Permissões** na conta ativa e vá à seção de autenticação no final. A tabela contém permissões por site. O link abaixo abre uma tabela separada de relays permitidos para todos os sites conectados. Revogue cada entrada conforme necessário.
+
+Desconectar um site remove seus próprios escopos. Uma autorização compartilhada continua disponível para outros sites conectados, nunca para o desconectado. Excluir uma conta apaga suas autorizações. Revogar impede novas assinaturas; não desfaz provas enviadas nem fecha um WebSocket já autenticado. O cliente precisa encerrar essa conexão.
+
+## Verificações e limites
+
+A origem vem do navegador e deve ser de um quadro principal verificado. Iframes, origens opacas ou inconsistentes e transportes inseguros são rejeitados, salvo exceções explícitas de loopback. A extensão verifica tags de relay e desafio, URL, conteúdo e validade temporal, inclusive depois de esperar aprovação ou desbloqueio. Permissões genéricas e aprovação em lote não ignoram esse consentimento. Trocar a conta invalida o trabalho anterior. Respostas NIP-46 precisam coincidir com o evento aprovado e a assinatura da conta esperada.
+
+A extensão não controla o WebSocket do cliente. O relay deve validar assinatura, endereço, timestamp e desafio daquela conexão. O assinante não comprova como o cliente obteve o desafio nem impede todo encaminhamento.
+
+Autenticar revela sua chave pública ao relay. Usar a mesma conta em vários clientes pode vincular essas conexões. Use contas separadas ou permissões menores quando essa distinção importar. CORS não substitui a validação da conexão ou o controle por conta, site e destino.
+
+Veja as [regras de permissões](https://github.com/nostr-wot/nostr-wot-extension/blob/v0.8.7/src/services/permissions/authentication.ts) e os [testes](https://github.com/nostr-wot/nostr-wot-extension/blob/v0.8.7/tests/authentication.test.ts).

@@ -1,0 +1,56 @@
+---
+title: "Controlla a quale backend ti stai autenticando"
+description: "Gestisci il consenso per sito, account, URL e metodo anche quando l’API usa un dominio diverso."
+excerpt: "Gestisci il consenso per sito, account, URL e metodo anche quando l’API usa un dominio diverso."
+date: "2026-09-30"
+featuredImage: "/images/guides/site-permissions/featured.svg"
+previewImage: "/images/guides/site-permissions/preview.svg"
+ogImage: "/images/guides/site-permissions/og.jpg"
+published: true
+translationKey: "backend-authentication"
+difficulty: "intermediate"
+order: 18
+author:
+  name: "Leon Acosta"
+  avatar: "/authors/leon-profile.jpg"
+tags:
+  - "Security"
+  - "Permissions"
+  - "Authentication"
+---
+
+[Nostr WoT 0.8.7](https://github.com/nostr-wot/nostr-wot-extension/releases/tag/v0.8.7) distingue l’accesso di un sito alla tua identità dal permesso di autenticarla presso un servizio HTTP. Per WebSocket consulta la [guida ai relay](/guides/relay-authentication).
+
+## Un’API può avere un dominio diverso
+
+Un sito di esempio `https://client.example` può usare `https://api.client.example/session`. È normale. L’estensione distingue il sito che richiede la firma dal servizio che riceve la prova.
+
+Un permesso HTTP memorizzato riguarda **account, origine del sito, URL firmato esatto e metodo HTTP**, per esempio `POST`. Comprende il testo della query. Percorso, porta, query, metodo, sito o account diversi richiedono un altro consenso. La regola vale anche se sito e API condividono l’origine. Le vecchie autorizzazioni HTTP generiche richiedono un nuovo consenso; i rifiuti restano validi.
+
+Il [registro di client e backend](https://github.com/nostr-wot/nostr-wot-extension/blob/v0.8.7/docs/auth-client-registry.md) è informativo: aggiungere una voce non concede permessi.
+
+## Decidi e revoca
+
+La richiesta mostra sito e destinazione. **Approva** e **Rifiuta** riguardano la richiesta attuale. I menu a freccia permettono di ricordare la decisione per quella combinazione esatta. HTTP non offre un’autorizzazione per tutti i siti.
+
+Il pulsante del codice mostra l’evento completo. L’approvazione collettiva delle firme ordinarie esclude l’autenticazione. La tabella in fondo a **Permessi** segue l’account attivo e permette la revoca. Revocare impedisce firme future; non ritira prove inviate e non chiude sessioni già aperte sul backend.
+
+## Verifiche dell’estensione
+
+L’origine deriva dall’identità del documento fornita dal browser, non da un valore scelto dalla pagina. Serve un frame principale verificato. Iframe, anche della stessa origine, e origini opache o incoerenti vengono rifiutati. HTTPS è obbligatorio salvo eccezioni esplicite di sviluppo in loopback.
+
+Tag obbligatori ambigui, URL invalidi, contenuti inattesi e timestamp scaduti vengono rifiutati. I tag facoltativi `origin` e `client-origin` devono corrispondere all’origine reale. Accesso, permessi e sessione dell’account vengono ricontrollati dopo l’attesa di approvazione o sblocco. Una risposta NIP-46 deve avere la firma dell’account previsto e coincidere con l’intero evento approvato, ordine dei tag compreso.
+
+## Operazioni del wallet integrato
+
+Creazione o recupero del wallet e gestione degli indirizzi Lightning usano LNbits-proxy v2. Il firmatario generico dei siti rifiuta token per queste rotte sensibili.
+
+La prova vincola URL, metodo e hash dei byte esatti del corpo. Una challenge del backend dura 60 secondi e si usa una sola volta. Un token di transazione separato viaggia in un proprio header; viene firmato solo il suo hash. Il server controlla firma e vincoli prima di consumare atomicamente la challenge. Le chiamate del browser richiedono anche un’origine HTTPS consentita e un `client-origin` firmato corrispondente. Le vecchie rotte rispondono 426 e il client non torna al vecchio protocollo.
+
+## Limiti
+
+[NIP-98](https://github.com/nostr-protocol/nips/blob/master/98.md) richiede che il backend verifichi URL e metodo. L’estensione non può imporre questa verifica a tutti i server. Chi possiede una prova valida e i token necessari può inoltrarli alla destinazione prevista prima del primo utilizzo.
+
+CORS limita i browser, non le richieste tra server. Un tag di origine non è un’attestazione crittografica del browser. Codice malevolo nel sito principale autorizzato ne condivide i poteri. Questi controlli limitano il consenso, ma non eliminano ogni phishing o inoltro di autenticazione.
+
+Consulta il [contratto v2](https://github.com/nostr-wot/nostr-wot-extension/blob/v0.8.7/docs/wallet-auth-v2.md) e i [test](https://github.com/nostr-wot/nostr-wot-extension/blob/v0.8.7/tests/authentication.test.ts).

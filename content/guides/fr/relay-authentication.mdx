@@ -1,0 +1,58 @@
+---
+title: "Choisissez les relais qui peuvent authentifier votre compte"
+description: "Autorisez un relais par site ou pour les sites connectés, puis contrôlez et révoquez ces permissions."
+excerpt: "Autorisez un relais par site ou pour les sites connectés, puis contrôlez et révoquez ces permissions."
+date: "2026-09-30"
+featuredImage: "/images/guides/site-permissions/featured.svg"
+previewImage: "/images/guides/site-permissions/preview.svg"
+ogImage: "/images/guides/site-permissions/og.jpg"
+published: true
+translationKey: "relay-authentication"
+difficulty: "intermediate"
+order: 19
+author:
+  name: "Leon Acosta"
+  avatar: "/authors/leon-profile.jpg"
+tags:
+  - "Security"
+  - "Permissions"
+  - "Authentication"
+---
+
+Avec [Nostr WoT 0.8.7](https://github.com/nostr-wot/nostr-wot-extension/releases/tag/v0.8.7), connecter un site ou autoriser des signatures ordinaires ne lui permet pas de vous identifier auprès de tous les relais. Les API HTTP ont un [guide distinct](/guides/backend-authentication).
+
+## Site et relais sont distincts
+
+`https://client.example` peut se connecter à `wss://relay.example`. Avec [NIP-42](https://github.com/nostr-protocol/nips/blob/master/42.md), le relais envoie un défi et le client demande un événement d’authentification signé. La preuve révèle la clé publique, sans communiquer la clé privée ni autoriser d’autres signatures.
+
+Le dialogue nomme le site et le relais. Le bouton de code affiche l’événement complet. Cette authentification n’a pas de méthode HTTP.
+
+## Choisissez la portée
+
+| Choix | Autorisation |
+| --- | --- |
+| Approuver | La demande actuelle |
+| Toujours approuver | Ce site, ce compte et ce relais |
+| Toujours pour tous les sites | Les sites connectés ayant accès à l’identité, pour ce compte et ce relais |
+| Refuser | La demande actuelle |
+| Toujours refuser | Refus mémorisé pour ce site, ce compte et ce relais |
+
+Les décisions mémorisées se trouvent dans les menus fléchés. La portée utilise l’URL normalisée du relais, pas seulement son nom : un autre chemin ou port n’est pas automatiquement couvert.
+
+L’option pour tous les sites évite une autorisation répétée avec plusieurs clients et peut concerner des sites connectés ultérieurement. Elle ne connecte aucun nouveau site, n’accorde pas l’accès à l’identité, ne couvre pas d’autres comptes, signatures ordinaires ou backends HTTP. Un refus spécifique au site est prioritaire. Désactiver son accès à l’identité ou le déconnecter bloque toujours l’authentification, y compris avec NIP-46.
+
+## Révoquez les permissions
+
+Dans **Permissions**, la section d’authentification en bas suit le compte actif. Sa table affiche les permissions par site. Le lien dessous ouvre la table des relais autorisés pour tous les sites connectés. Chaque entrée peut être révoquée.
+
+Déconnecter un site supprime ses permissions propres. Une autorisation partagée reste valable pour les autres sites connectés, jamais pour le site déconnecté. Supprimer un compte efface ses permissions. Révoquer bloque les signatures futures ; cela ne retire pas une preuve envoyée ni ne ferme un WebSocket déjà authentifié. Le client doit fermer cette connexion.
+
+## Vérifications et limites
+
+L’extension exige une origine fournie par le navigateur et un cadre principal vérifié. Elle refuse les iframes, origines opaques ou incohérentes et transports non sécurisés, hors exceptions explicites de loopback. Elle vérifie les tags de relais et défi, l’URL, le contenu et la fraîcheur, également après attente. Les permissions générales et l’approbation groupée ne contournent pas ce consentement. Changer de compte invalide les demandes précédentes. NIP-46 doit retourner exactement l’événement approuvé signé par le compte attendu.
+
+L’extension ne contrôle pas le WebSocket du client. Le relais doit vérifier signature, adresse, fraîcheur et défi de la connexion. Le signataire ne prouve pas comment le client a obtenu le défi et ne bloque pas tout transfert.
+
+La même clé publique peut relier vos connexions entre clients auprès d’un relais. Utilisez des comptes séparés ou des autorisations plus étroites si nécessaire. CORS ne remplace pas la validation de connexion et les limites par compte, site et destination.
+
+Voir les [règles de permissions](https://github.com/nostr-wot/nostr-wot-extension/blob/v0.8.7/src/services/permissions/authentication.ts) et les [tests](https://github.com/nostr-wot/nostr-wot-extension/blob/v0.8.7/tests/authentication.test.ts).

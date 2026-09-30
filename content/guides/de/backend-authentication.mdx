@@ -1,0 +1,56 @@
+---
+title: "Prüfe, bei welchem Backend du dich authentifizierst"
+description: "Verstehe Berechtigungen für Website, Konto, genaue URL und HTTP-Methode bei getrennten API-Domains."
+excerpt: "Verstehe Berechtigungen für Website, Konto, genaue URL und HTTP-Methode bei getrennten API-Domains."
+date: "2026-09-30"
+featuredImage: "/images/guides/site-permissions/featured.svg"
+previewImage: "/images/guides/site-permissions/preview.svg"
+ogImage: "/images/guides/site-permissions/og.jpg"
+published: true
+translationKey: "backend-authentication"
+difficulty: "intermediate"
+order: 18
+author:
+  name: "Leon Acosta"
+  avatar: "/authors/leon-profile.jpg"
+tags:
+  - "Security"
+  - "Permissions"
+  - "Authentication"
+---
+
+[Nostr WoT 0.8.7](https://github.com/nostr-wot/nostr-wot-extension/releases/tag/v0.8.7) trennt den Zugriff einer Website auf deine Identität von der Erlaubnis, dich bei einem HTTP-Dienst zu authentifizieren. Für WebSocket gibt es den [Relay-Leitfaden](/guides/relay-authentication).
+
+## Eine API darf eine andere Domain verwenden
+
+Die fiktive Website `https://client.example` kann `https://api.client.example/session` nutzen. Das ist eine übliche Architektur. Entscheidend sind sowohl die anfragende Website als auch das Ziel des signierten Nachweises.
+
+Eine gespeicherte HTTP-Erlaubnis gilt für **Konto, Website-Origin, exakte signierte URL und HTTP-Methode**, etwa `POST`. Auch der Query-Text gehört dazu. Andere Pfade, Ports, Methoden, Websites oder Konten benötigen eine eigene Erlaubnis. Das gilt ebenfalls für APIs mit derselben Origin. Frühere pauschale HTTP-Freigaben benötigen neue Zustimmung; Ablehnungen bleiben wirksam.
+
+Das [Client- und Backend-Verzeichnis](https://github.com/nostr-wot/nostr-wot-extension/blob/v0.8.7/docs/auth-client-registry.md) erklärt bekannte Dienste. Ein Eintrag erteilt keine Berechtigung.
+
+## Entscheiden und widerrufen
+
+Der Dialog zeigt Website und Ziel. **Genehmigen** und **Ablehnen** betreffen die aktuelle Anfrage. Über die Pfeilmenüs kannst du die Entscheidung für die genaue Kombination speichern. HTTP bietet keine Freigabe für alle Websites.
+
+Die Code-Schaltfläche zeigt das vollständige Ereignis. Sammelgenehmigungen gewöhnlicher Signaturen schließen Authentifizierung aus. Die Authentifizierungstabelle unten in **Berechtigungen** folgt dem aktiven Konto. Ein Widerruf verhindert weitere Signaturen; er holt versendete Nachweise nicht zurück und beendet keine bestehende Backend-Sitzung.
+
+## Was die Erweiterung prüft
+
+Die Origin stammt aus der vom Browser gelieferten Dokumentidentität. Eine Website kann nicht über ein RPC-Feld eine andere Origin wählen. Ein verifizierter Hauptframe ist erforderlich. Iframes, auch derselben Origin, sowie undurchsichtige oder widersprüchliche Origins werden abgelehnt. HTTPS ist vorgeschrieben, abgesehen von ausdrücklichen Loopback-Ausnahmen für Entwicklung.
+
+Mehrdeutige Pflicht-Tags, ungültige URLs, unerwartete Inhalte und veraltete Zeitstempel werden abgelehnt. Optionale `origin`- und `client-origin`-Tags müssen zur tatsächlichen Origin passen. Nach Wartezeiten für Genehmigung oder Entsperrung werden Zugriff, Berechtigungen und Kontositzung erneut geprüft. Ein NIP-46-Signer muss das vollständige genehmigte Ereignis einschließlich Tag-Reihenfolge mit dem erwarteten Konto signieren.
+
+## Integrierte Wallet-Vorgänge
+
+Wallet-Erstellung oder Wiederherstellung und Lightning-Adressverwaltung verwenden LNbits-proxy v2. Der allgemeine Website-Signer verweigert Tokens für diese sensiblen Verwaltungsrouten.
+
+Der Nachweis bindet URL, Methode und Hash der exakten Body-Bytes. Eine Backend-Challenge gilt 60 Sekunden und nur einmal. Ein separates Transaktionstoken wird in einem eigenen Header übertragen; nur sein Hash wird signiert. Der Server prüft Signatur und Bindungen, bevor er die Challenge atomar verbraucht. Browser-Aufrufe benötigen zusätzlich eine zugelassene HTTPS-Origin und ein passendes signiertes `client-origin`. Alte Routen liefern 426; der Client wechselt nicht zum alten Protokoll zurück.
+
+## Grenzen
+
+[NIP-98](https://github.com/nostr-protocol/nips/blob/master/98.md) setzt voraus, dass das Backend URL und Methode korrekt prüft. Die Erweiterung kann dies fremden Servern nicht aufzwingen. Wer einen gültigen Nachweis und erforderliche Tokens besitzt, kann sie vor der ersten Nutzung an das vorgesehene Ziel weiterleiten.
+
+CORS beschränkt Browser, nicht Server-zu-Server-Aufrufe. Ein Origin-Tag ist kein kryptografischer Browsernachweis. Bösartiger Code innerhalb einer vertrauten Hauptseite teilt deren Befugnisse. Diese Kontrollen begrenzen die Zustimmung, verhindern aber nicht jedes Phishing oder Weiterleiten von Authentifizierungsnachweisen.
+
+Siehe [v2-Vertrag](https://github.com/nostr-wot/nostr-wot-extension/blob/v0.8.7/docs/wallet-auth-v2.md) und [Tests](https://github.com/nostr-wot/nostr-wot-extension/blob/v0.8.7/tests/authentication.test.ts).

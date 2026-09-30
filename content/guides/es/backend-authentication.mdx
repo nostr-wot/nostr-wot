@@ -1,0 +1,58 @@
+---
+title: "Comprueba en qué backend te estás autenticando"
+description: "Controla los permisos por sitio, cuenta, URL y método, incluso cuando la API utiliza otro dominio."
+excerpt: "Controla los permisos por sitio, cuenta, URL y método, incluso cuando la API utiliza otro dominio."
+date: "2026-09-30"
+featuredImage: "/images/guides/site-permissions/featured.svg"
+previewImage: "/images/guides/site-permissions/preview.svg"
+ogImage: "/images/guides/site-permissions/og.jpg"
+published: true
+translationKey: "backend-authentication"
+difficulty: "intermediate"
+order: 18
+author:
+  name: "Leon Acosta"
+  avatar: "/authors/leon-profile.jpg"
+tags:
+  - "Security"
+  - "Permissions"
+  - "Authentication"
+---
+
+[Nostr WoT 0.8.7](https://github.com/nostr-wot/nostr-wot-extension/releases/tag/v0.8.7) separa el acceso de una web a tu identidad del permiso para autenticarte ante un servicio HTTP. Para WebSocket, consulta la [guía de autenticación de relays](/guides/relay-authentication).
+
+## Una API puede utilizar otro dominio
+
+Una web ficticia `https://client.example` puede usar `https://api.client.example/session`. Esa separación es normal. Lo importante es distinguir quién solicita la firma y qué servicio recibirá la prueba.
+
+Un permiso HTTP recordado queda limitado a **tu cuenta, el origen de la web, la URL firmada exacta y el método HTTP**, por ejemplo `POST`. Incluye el texto de la consulta. No permite otra ruta, puerto, método, web o cuenta. La misma regla se aplica cuando web y API comparten origen. Las autorizaciones amplias antiguas requieren nuevo consentimiento; las denegaciones siguen vigentes.
+
+El [directorio de clientes y backends](https://github.com/nostr-wot/nostr-wot-extension/blob/v0.8.7/docs/auth-client-registry.md) es informativo. Añadir una entrada nunca concede permisos ni omite la aprobación.
+
+## Revisa y decide
+
+La solicitud muestra la web y el destino. **Aprobar** o **Rechazar** afectan a la solicitud actual. En las flechas puedes recordar la decisión para esa combinación exacta de sitio, cuenta, URL y método. HTTP no ofrece autorización para todos los sitios.
+
+El botón de código muestra el evento completo. La aprobación masiva de firmas ordinarias excluye autenticaciones. En **Permisos**, la tabla de autenticación está al final y sigue la cuenta activa. Revocar un permiso impide firmas futuras; no retira pruebas ya enviadas ni cierra sesiones existentes en el backend.
+
+## Qué comprueba la extensión
+
+El origen procede del documento identificado por el navegador, no de un parámetro elegido por la web. Se exige un marco principal verificado: los iframes, incluso del mismo origen, y los orígenes opacos o inconsistentes se rechazan. Se requiere HTTPS salvo excepciones explícitas de desarrollo en loopback.
+
+Se rechazan etiquetas obligatorias ambiguas, URL inválidas, contenido inesperado y fechas caducadas. Las etiquetas opcionales `origin` y `client-origin` deben coincidir con el solicitante real. Tras esperar una aprobación o desbloqueo se vuelven a comprobar acceso, permisos y sesión de cuenta.
+
+Con un firmante NIP-46, la firma debe corresponder a la cuenta esperada y al evento aprobado completo, incluidas las etiquetas en su orden original. Cambiar de cuenta invalida el trabajo anterior.
+
+## Operaciones de la cartera integrada
+
+La creación o recuperación de carteras y la gestión de direcciones Lightning utilizan el protocolo v2 de LNbits-proxy. El firmante genérico de las webs rechaza tokens para esas rutas sensibles.
+
+La prueba vincula URL, método y hash de los bytes exactos del cuerpo. El backend emite un desafío válido durante 60 segundos y de un solo uso. Un token de transacción separado viaja en su propia cabecera; se firma únicamente su hash. El servidor valida firma y valores antes de consumir el desafío de forma atómica. Para solicitudes del navegador también exige un origen HTTPS permitido y un `client-origin` firmado coincidente. Los endpoints antiguos responden 426 y el cliente no utiliza un protocolo anterior.
+
+## Límites de la protección
+
+[NIP-98](https://github.com/nostr-protocol/nips/blob/master/98.md) requiere que el backend compruebe URL y método. La extensión no puede obligar a otros servidores a validar correctamente. Quien posea una prueba válida y los tokens necesarios puede reenviarlos al destino previsto antes de su primer uso.
+
+CORS limita a los navegadores, no las llamadas entre servidores. Una etiqueta de origen firmada no acredita criptográficamente al navegador. El código malicioso dentro de una web principal autorizada comparte su autoridad. Estas comprobaciones acotan el consentimiento; no eliminan todo phishing o reenvío de autenticaciones.
+
+Consulta el [contrato v2](https://github.com/nostr-wot/nostr-wot-extension/blob/v0.8.7/docs/wallet-auth-v2.md) y las [pruebas de autenticación](https://github.com/nostr-wot/nostr-wot-extension/blob/v0.8.7/tests/authentication.test.ts).

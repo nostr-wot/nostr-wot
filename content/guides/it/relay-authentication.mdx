@@ -1,0 +1,58 @@
+---
+title: "Scegli quali relay possono autenticare il tuo account"
+description: "Autorizza un relay per sito o per i siti collegati e gestisci la revoca dei permessi."
+excerpt: "Autorizza un relay per sito o per i siti collegati e gestisci la revoca dei permessi."
+date: "2026-09-30"
+featuredImage: "/images/guides/site-permissions/featured.svg"
+previewImage: "/images/guides/site-permissions/preview.svg"
+ogImage: "/images/guides/site-permissions/og.jpg"
+published: true
+translationKey: "relay-authentication"
+difficulty: "intermediate"
+order: 19
+author:
+  name: "Leon Acosta"
+  avatar: "/authors/leon-profile.jpg"
+tags:
+  - "Security"
+  - "Permissions"
+  - "Authentication"
+---
+
+In [Nostr WoT 0.8.7](https://github.com/nostr-wot/nostr-wot-extension/releases/tag/v0.8.7), collegare un sito o consentire firme ordinarie non lo autorizza a identificarti presso ogni relay. Le API HTTP hanno una [guida distinta](/guides/backend-authentication).
+
+## Sito e relay sono soggetti distinti
+
+`https://client.example` può collegarsi a `wss://relay.example`. Con [NIP-42](https://github.com/nostr-protocol/nips/blob/master/42.md), il relay invia una challenge e il client richiede un evento di autenticazione firmato. La prova rivela la chiave pubblica, senza consegnare quella privata o permettere altre firme.
+
+Il dialogo mostra sito e relay; il pulsante del codice apre l’evento completo. L’autenticazione del relay non ha un metodo HTTP.
+
+## Scegli l’ambito
+
+| Scelta | Ambito |
+| --- | --- |
+| Approva | Richiesta attuale |
+| Approva sempre | Questo sito, account e relay |
+| Sempre per tutti i siti | Siti collegati con accesso all’identità, per questo account e relay |
+| Rifiuta | Richiesta attuale |
+| Rifiuta sempre | Rifiuto memorizzato per sito, account e relay |
+
+Le opzioni memorizzate sono nei menu a freccia. Il permesso usa l’URL normalizzato del relay, non solo il nome mostrato. Un percorso o una porta diversi non sono automaticamente autorizzati.
+
+L’opzione per tutti i siti evita conferme ripetute tra client e può valere anche per siti collegati in seguito. Non collega nuovi siti, concede accesso all’identità, copre altri account, autorizza firme ordinarie o backend HTTP. Un rifiuto specifico del sito prevale. Disabilitare l’accesso all’identità o scollegare il sito continua a bloccarlo, anche con NIP-46.
+
+## Controlla e revoca
+
+Apri **Permessi** per l’account attivo e raggiungi la sezione di autenticazione in fondo. La tabella mostra i permessi per sito. Il collegamento sotto apre una tabella separata dei relay consentiti per tutti i siti collegati. Ogni voce può essere revocata.
+
+Scollegare un sito rimuove i suoi permessi specifici. Un permesso condiviso resta disponibile per gli altri siti collegati, non per quello scollegato. Eliminare un account cancella i suoi permessi. La revoca impedisce nuove firme; non annulla prove inviate e non chiude un WebSocket già autenticato. Il client deve chiudere la connessione.
+
+## Verifiche e limiti
+
+L’estensione richiede l’origine fornita dal browser e un frame principale verificato. Rifiuta iframe, origini opache o incoerenti e trasporti non sicuri salvo eccezioni esplicite di loopback. Verifica tag del relay e challenge, URL, contenuto e timestamp, anche dopo attese. Permessi generici e approvazioni collettive non evitano il consenso alla destinazione. Cambiare account invalida le richieste precedenti. NIP-46 deve restituire esattamente l’evento approvato firmato dall’account previsto.
+
+L’estensione non gestisce il WebSocket del client. Il relay deve verificare firma, indirizzo, data e challenge della connessione. Il firmatario non può dimostrare come il client abbia ottenuto la challenge o impedire ogni inoltro.
+
+La stessa chiave pubblica può rendere collegabili le connessioni di vari client presso un relay. Usa account separati o permessi più limitati quando serve questa distinzione. CORS non sostituisce la verifica della connessione né i limiti per account, sito e destinazione.
+
+Vedi le [regole dei permessi](https://github.com/nostr-wot/nostr-wot-extension/blob/v0.8.7/src/services/permissions/authentication.ts) e i [test](https://github.com/nostr-wot/nostr-wot-extension/blob/v0.8.7/tests/authentication.test.ts).

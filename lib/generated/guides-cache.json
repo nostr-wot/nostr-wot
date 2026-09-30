@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-09-23T07:34:34.209Z",
+  "generatedAt": "2026-09-30T13:28:41.333Z",
   "locales": {
     "en": {
       "posts": [
@@ -801,6 +801,94 @@
           "content": "\nNostr WoT Extension **0.8.3** lets you connect an existing Nostr WoT LNbits wallet to NWC-compatible apps. Create a separate connection for each app and manage them in **Wallet → Settings → App connections**. All connections use the same wallet balance.\n\n## Before you start\n\nInstall or update to [version 0.8.3 from GitHub](https://github.com/nostr-wot/nostr-wot-extension/releases/tag/v0.8.3). Browser-store publication is separate. Unlock the extension and connect your Nostr WoT LNbits wallet. If you still need a wallet, follow the [LNbits setup guide](/guides/lnbits-wallet-setup).\n\nThis screen is for LNbits wallets. A custom LNbits server needs the [connection-management adapter](https://github.com/nostr-wot/LNbits-proxy); installing the NWC provider alone does not provide this screen's API.\n\n## Create a connection\n\n1. Open **Wallet → Settings → App connections** and choose the option to create a new connection.\n2. Enter a recognizable name, such as **Primal**. Use a separate connection for each app.\n3. Set a positive spending limit in sats per 24 hours and an expiry between 1 and 365 days. The form starts at **1,000 sats** and **30 days**; change these to suit your use.\n4. Create the connection. Copy the complete `nostr+walletconnect://` string or display its QR code.\n5. In the receiving app, open its NWC or external-wallet connection option, paste the string or scan the QR, and confirm. In Primal, use its NWC option when available in your version.\n\nThe connection allows payments, payment lookup and wallet information. It does **not** grant balance, transaction-history or invoice-creation access. An app requiring those additional methods may show limited functionality.\n\n<Callout type=\"warning\">\nThe connection string and QR code authorize spending within the connection's limits. Share them only with the app you intend to connect. Payments through this connection do not require a separate approval in the extension.\n</Callout>\n\n## Review or revoke access\n\nReturn to **App connections** to see active connections, budget usage and expiry. You can display a locally saved connection again or revoke it after confirmation. Limits apply per connection, so several connections can spend from the same balance.\n\nLocking or disconnecting the extension does not revoke a connection. Revoke it here when you want to stop its access. Disconnecting or removing a wallet clears local connection secrets, so keep access to this wallet if you need to manage its grants later. Connections created on another device can be listed and revoked, but their secret cannot be reconstructed for copying.\n\n## If something does not work\n\nRefresh the list after an interrupted creation request before creating another connection. Check the wallet balance, spending limit, expiry, relay connectivity and the methods the app needs. If a payment's outcome is unclear, check payment history before trying again.\n\nSee the [0.8.3 changelog](https://github.com/nostr-wot/nostr-wot-extension/releases/tag/v0.8.3) for the release downloads and changes. Existing LNbits wallets work without creating a new wallet.\n"
         },
         {
+          "slug": "backend-authentication",
+          "title": "Know which backend you are authenticating to",
+          "description": "Understand exact URL and method permissions, separate API domains, iframe protection and the limits of authentication forwarding.",
+          "excerpt": "Understand exact URL and method permissions, separate API domains, iframe protection and the limits of authentication forwarding.",
+          "date": "2026-09-30T00:00:00.000Z",
+          "author": {
+            "name": "Leon Acosta",
+            "avatar": "/authors/leon-profile.jpg"
+          },
+          "featuredImage": "/images/guides/site-permissions/featured.svg",
+          "previewImage": "/images/guides/site-permissions/preview.svg",
+          "tags": [
+            "Security",
+            "Permissions",
+            "Authentication"
+          ],
+          "published": true,
+          "readingTime": "5 min read",
+          "locale": "en",
+          "translationKey": "backend-authentication",
+          "translations": {
+            "en": "backend-authentication",
+            "es": "backend-authentication",
+            "pt": "backend-authentication",
+            "ru": "backend-authentication",
+            "it": "backend-authentication",
+            "fr": "backend-authentication",
+            "de": "backend-authentication"
+          },
+          "availableLocales": [
+            "en",
+            "es",
+            "pt",
+            "ru",
+            "it",
+            "fr",
+            "de"
+          ],
+          "ogImage": "/images/guides/site-permissions/og.jpg",
+          "difficulty": "intermediate",
+          "order": 18,
+          "content": "\nNostr WoT separates permission to use your identity on a website from permission to\nauthenticate that identity to an HTTP service. A website and its API can live on\ndifferent domains. The approval must describe the service receiving the proof,\nnot assume that it is the website in your address bar.\n\nThis guide covers [Nostr WoT 0.8.7](https://github.com/nostr-wot/nostr-wot-extension/releases/tag/v0.8.7).\n\nFor WebSocket relay authentication, read the separate\n[relay authentication guide](/guides/relay-authentication).\n\n## Different domains are legitimate; permission still has a destination\n\nConsider a fictional client at `https://client.example` whose API is\n`https://api.client.example`. A request to authenticate a `POST` to\n`https://api.client.example/session` can be legitimate. Blocking every different\nhostname would break this architecture.\n\nInstead, Nostr WoT keeps the requesting website and the signed destination\nseparate. A remembered HTTP approval is specific to:\n\n| Permission boundary | Example |\n| --- | --- |\n| Your account | The account approving the request |\n| Requesting website origin | `https://client.example` |\n| Exact signed URL, including query text | `https://api.client.example/session` |\n| HTTP method | `POST` |\n\nThat approval does not also authorize `/delete-account`, another method, another\nport, another website or another account. A different query string requires its\nown approval. Same-origin authentication follows the same rule. Older saved\norigin-wide HTTP allows require consent again; older denials remain effective.\n\nThe [client/backend directory](https://github.com/nostr-wot/nostr-wot-extension/blob/v0.8.7/docs/auth-client-registry.md) helps explain familiar\nservices. It is informational: adding an entry cannot authorize a backend or skip\nconsent. Contributors can [propose registry entries](https://github.com/nostr-wot/nostr-wot-extension/blob/v0.8.7/CONTRIBUTING.md).\n\n## What you see and control\n\nThe prompt identifies the requesting site and the authentication destination.\nUse **Approve** or **Reject** for the current request. The arrow menu offers\n**Approve always** for this exact site/account/URL/method, or **Reject always**.\nHTTP authentication has no “all sites” allowance.\n\nThe code button opens the raw event for inspection. Ordinary bulk signing\napproval excludes authentication requests so destination-specific consent is not\nlost in a mixed queue. At the bottom of **Permissions**, the authentication table\nshows remembered decisions for the active account and lets you revoke them.\nRevoking permission prevents future use; it cannot recall a proof already sent or\nlog you out of a session the backend has already created.\n\n## What the extension verifies\n\nThe requester comes from browser-provided document identity, not a website's\nclaimed origin parameter. Authentication requires a verified top-level frame;\nembedded frames, opaque origins and inconsistent document origins are refused.\nHTTPS is required outside explicit loopback development exceptions. An iframe\ncannot borrow a trusted parent's authentication permission.\n\nThe event parser rejects ambiguous required tags, invalid URLs, unexpected\ncontent and stale timestamps. Optional `origin` and `client-origin` tags must\nmatch the actual requesting origin. General signing permission does not bypass\nthese authentication approvals. Site access, account-session validity and\npermissions are rechecked after waiting for approval or unlock.\n\nWith a NIP-46 bunker, the returned signature must belong to the expected account\nand match the approved event's kind, timestamp, content and ordered tags. A valid\nsignature on a different event is rejected.\n\n## Extra protection for native wallet operations\n\nThe companion LNbits-proxy uses a stricter v2 contract for provisioning/recovering\na wallet and claiming/releasing an address. These are privileged operations, not\nan ordinary website login. The extension's generic website signer refuses tokens\nfor the native wallet service's sensitive management paths.\n\nIn the dedicated wallet flow, the proof binds the exact URL, method and hash of\nthe exact request body. A backend-issued challenge lasts 60 seconds and can be\nconsumed once. A separate transaction token travels in its own header; only its\nhash is signed. The server verifies these bindings and the signature before an\natomic nonce consumption. Changing the operation body invalidates the proof.\n\nBrowser requests use an exact configured HTTPS origin allowlist and a matching\nsigned client-origin value. The native flow still requires the proof and separate\ntransaction token. Public LNURL discovery retains its separate policy. This is\nan application-specific contract, not a new requirement imposed on all Nostr APIs.\nThe [wire specification and rollout guide](https://github.com/nostr-wot/nostr-wot-extension/blob/v0.8.7/docs/wallet-auth-v2.md) has the developer\ndetails. Deploy the compatible backend before publishing the extension: retired\nroutes return HTTP 426, and the client deliberately does not downgrade.\n\n## What the proof establishes\n\n[NIP-98](https://github.com/nostr-protocol/nips/blob/master/98.md) binds a signed\nHTTP proof to its URL and method; a conforming backend must check those values.\nThe wallet contract additionally requires body binding and one-use transactions.\nFor other backends, the extension cannot force the server to validate correctly.\n\nA proof for backend A should not be accepted by backend B. However, someone who\nholds a valid proof and any required transaction token can forward them to the\nintended backend before their first use. CORS restricts browsers; it cannot stop\narbitrary server-to-server requests. An origin tag is not cryptographic browser\nattestation, since another signer could sign a false claim.\n\nLikewise, malicious code running inside a trusted top-level site shares that\nsite's authority. These controls reduce the scope of consent and reject concrete\nforms of substitution and replay; they do not promise to eliminate phishing,\ncompromised sites, or every form of authentication forwarding.\n\n## Inspect the implementation\n\n- [Origin boundary](https://github.com/nostr-wot/nostr-wot-extension/blob/v0.8.7/src/domain/signing/requestOrigin.ts), [event parser](https://github.com/nostr-wot/nostr-wot-extension/blob/v0.8.7/src/domain/signing/authentication.ts), and [saved grants](https://github.com/nostr-wot/nostr-wot-extension/blob/v0.8.7/src/services/permissions/authentication.ts).\n- [Remote event verifier](https://github.com/nostr-wot/nostr-wot-extension/blob/v0.8.7/src/services/signing/remoteEventVerifier.ts).\n- [Authentication regression tests](https://github.com/nostr-wot/nostr-wot-extension/blob/v0.8.7/tests/authentication.test.ts) and [remote signature tests](https://github.com/nostr-wot/nostr-wot-extension/blob/v0.8.7/tests/remote-signer-integrity.test.ts).\n- [Backend validator and tests](https://github.com/nostr-wot/LNbits-proxy): exact request binding, local HTTP integration, and nonce consumption across processes sharing the database.\n"
+        },
+        {
+          "slug": "relay-authentication",
+          "title": "Choose which relays can authenticate your account",
+          "description": "Choose account-specific relay permissions, allow a relay across connected sites, and revoke access with clear privacy boundaries.",
+          "excerpt": "Choose account-specific relay permissions, allow a relay across connected sites, and revoke access with clear privacy boundaries.",
+          "date": "2026-09-30T00:00:00.000Z",
+          "author": {
+            "name": "Leon Acosta",
+            "avatar": "/authors/leon-profile.jpg"
+          },
+          "featuredImage": "/images/guides/site-permissions/featured.svg",
+          "previewImage": "/images/guides/site-permissions/preview.svg",
+          "tags": [
+            "Security",
+            "Permissions",
+            "Authentication"
+          ],
+          "published": true,
+          "readingTime": "5 min read",
+          "locale": "en",
+          "translationKey": "relay-authentication",
+          "translations": {
+            "en": "relay-authentication",
+            "es": "relay-authentication",
+            "pt": "relay-authentication",
+            "ru": "relay-authentication",
+            "it": "relay-authentication",
+            "fr": "relay-authentication",
+            "de": "relay-authentication"
+          },
+          "availableLocales": [
+            "en",
+            "es",
+            "pt",
+            "ru",
+            "it",
+            "fr",
+            "de"
+          ],
+          "ogImage": "/images/guides/site-permissions/og.jpg",
+          "difficulty": "intermediate",
+          "order": 19,
+          "content": "\nNostr WoT treats relay authentication as a separate permission. Connecting a\nwebsite to your account, or letting it sign ordinary events, does not silently\nauthorize it to identify you to every relay it chooses.\n\nThis guide covers [Nostr WoT 0.8.7](https://github.com/nostr-wot/nostr-wot-extension/releases/tag/v0.8.7).\n\nHTTP APIs have different permission boundaries. See the companion\n[backend authentication guide](/guides/backend-authentication).\n\n## A website and a relay are different parties\n\nA Nostr client at `https://client.example` might connect to\n`wss://relay.example`. The different domain is normal: clients often use multiple\nindependently operated relays.\n\nUnder [NIP-42](https://github.com/nostr-protocol/nips/blob/master/42.md), a relay\nsends a challenge and the client requests a signed authentication event. That\nproof identifies the signing public key to the relay. It does not give the relay\nthe private key or permission to sign other events.\n\nThe extension shows the requesting website and a short sentence naming the relay.\nYou can inspect the complete event with the code button. Relay authentication is\nnot an HTTP request, so it has no HTTP method to display or approve.\n\n## Choose the scope that fits your use\n\n| Choice | What it allows |\n| --- | --- |\n| **Approve** | The current authentication request |\n| **Approve always** | This website authenticating this account to this relay |\n| **Always for all sites** | Any connected site with identity access authenticating this account to this relay |\n| **Reject** | Reject the current request |\n| **Reject always** | Remember a denial for this website, account and relay |\n\nThe remembered options are in the arrow menus beside Approve and Reject. A relay\npermission uses the normalized relay URL, not just the displayed hostname, so a\nshared hostname does not automatically authorize another relay path or port.\n\n**Always for all sites is an explicit convenience option.** If you use several\nclients with the same relay, it avoids granting that relay separately in each\nclient. It remains limited to the approving account and that relay. It does not\nconnect new sites, grant them identity access, cover other accounts, approve\nordinary event signing, or authorize HTTP backends. It can also apply to sites\nyou connect later; choose the site-specific option when you want a smaller scope.\n\nA site-specific remembered denial takes precedence over an all-sites allowance.\nA site's identity access being disabled, or its connection being removed, still\nblocks authentication. These checks also apply when signing is delegated to a\nNIP-46 bunker.\n\n## Review and revoke permissions\n\nOpen **Permissions** for the active account and scroll to the authentication\nsection at the bottom. The table contains site-specific backend and relay grants.\nThe link below it opens a separate table for relay authentication allowed across\nall connected sites. Each entry can be revoked individually; there is no second\naccount selector because these views follow the active account.\n\nDisconnecting a website removes its site-specific grants. An intentionally shared\nrelay grant remains available to other connected sites, but cannot serve the\ndisconnected site. Deleting an account clears its authentication grants.\n\nRevocation affects subsequent signing decisions. It does not undo a proof already\nsent or close a WebSocket session that the client has already authenticated. To\nend that connection, the client must disconnect from the relay.\n\n## Protection against misleading requests\n\nThe extension obtains the requesting origin from the browser's document identity.\nA page cannot choose a different trusted origin by supplying an RPC field.\nAuthentication requires a top-level frame: even a same-origin iframe cannot use\nthis path. Opaque or inconsistent origins are refused. Secure page and relay\ntransports are required outside explicit loopback development exceptions.\n\nRequired relay and challenge tags must be unambiguous. Invalid URLs, unexpected\ncontent and stale timestamps are rejected, including after a request has waited\nfor approval or unlock. Generic signing grants and ordinary bulk approval cannot\nbypass destination consent. Account-session checks prevent queued work from\nbeing signed under a different account after switching.\n\nRemote signer responses are checked against the exact approved event and expected\naccount signature, so substituting a different relay or challenge is rejected.\nThe [backend guide](/guides/backend-authentication#what-the-extension-verifies) explains\nthe shared request and remote-signature boundaries in more detail.\n\n## The relay must still validate its connection\n\nThe extension signs the relay URL and challenge supplied by the client; it does\nnot own the client's WebSocket. The relay must validate the signature, relay\naddress, freshness, and challenge for the connection being authenticated.\n\nConsequently, a signer cannot prove that a client obtained its challenge honestly\nor prevent every challenge-forwarding scheme. An all-sites grant deliberately\ntrusts connected clients to authenticate this account to the selected relay. It\nis not evidence that every such client is benign.\n\nAuthentication reveals the signing public key to the relay. Reusing an account\nacross clients can make those authenticated connections linkable at that relay.\nUse separate accounts or narrower grants when that distinction matters. CORS is\nnot the protection for this flow: relay connection validation and the extension's\naccount/site/destination permission checks serve different roles.\n\n## Inspect the implementation\n\n- [NIP-42 specification](https://github.com/nostr-protocol/nips/blob/master/42.md).\n- [Authentication parser and scope rules](https://github.com/nostr-wot/nostr-wot-extension/blob/v0.8.7/src/domain/signing/authentication.ts).\n- [Account/site/relay grant matching and denial precedence](https://github.com/nostr-wot/nostr-wot-extension/blob/v0.8.7/src/services/permissions/authentication.ts).\n- [Origin checks](https://github.com/nostr-wot/nostr-wot-extension/blob/v0.8.7/src/domain/signing/requestOrigin.ts) and [signing lifecycle](https://github.com/nostr-wot/nostr-wot-extension/blob/v0.8.7/src/services/signing/signer.ts).\n- [Authentication tests](https://github.com/nostr-wot/nostr-wot-extension/blob/v0.8.7/tests/authentication.test.ts) and [approval UI tests](https://github.com/nostr-wot/nostr-wot-extension/blob/v0.8.7/tests/authentication-ui.test.ts).\n"
+        },
+        {
           "slug": "post-quantum-key",
           "title": "Creating a Post-Quantum Key",
           "description": "Generate post-quantum keys for your Nostr identity with a single command, entirely offline, and publish the attestation that lets others send you post-quantum encrypted messages.",
@@ -874,6 +962,7 @@
         "Accounts",
         "Advanced",
         "Alby Hub",
+        "Authentication",
         "BIP-32",
         "Beginner",
         "Concepts",
@@ -1703,11 +1792,100 @@
           "difficulty": "beginner",
           "order": 17,
           "content": "\nNostr WoT Extension **0.8.3** permite conectar una cartera LNbits de Nostr WoT existente a aplicaciones compatibles con NWC. Crea una conexión por aplicación y gestiónalas en **Cartera → Ajustes → Conexiones de aplicaciones**. Todas usan el saldo de la misma cartera.\n\n## Antes de empezar\n\nInstala o actualiza a la [versión 0.8.3 desde GitHub](https://github.com/nostr-wot/nostr-wot-extension/releases/tag/v0.8.3). La publicación en las tiendas de navegadores es independiente. Desbloquea la extensión y conecta tu cartera LNbits de Nostr WoT. Si necesitas configurarla, consulta la [guía de LNbits](/guides/lnbits-wallet-setup).\n\nEsta pantalla corresponde a carteras LNbits. Un servidor personalizado necesita el [adaptador de gestión de conexiones](https://github.com/nostr-wot/LNbits-proxy); instalar solamente el proveedor NWC no proporciona la API de esta pantalla.\n\n## Crea una conexión\n\n1. Abre **Cartera → Ajustes → Conexiones de aplicaciones** y elige crear una conexión nueva.\n2. Escribe un nombre reconocible, como **Primal**. Usa una conexión distinta para cada aplicación.\n3. Define un límite positivo en sats por cada 24 horas y un vencimiento de entre 1 y 365 días. El formulario comienza con **1.000 sats** y **30 días**; ajústalos a tu uso.\n4. Crea la conexión. Copia la cadena completa `nostr+walletconnect://` o muestra su código QR.\n5. En la aplicación de destino, abre la opción NWC o de cartera externa, pega la cadena o escanea el QR y confirma. En Primal, usa su opción NWC cuando esté disponible en tu versión.\n\nLa conexión permite pagos, consulta de pagos e información de la cartera. **No** permite consultar el saldo o el historial ni crear facturas. Una aplicación que requiera esos métodos puede ofrecer funciones limitadas.\n\n<Callout type=\"warning\">\nLa cadena y el QR autorizan gastos dentro de los límites de la conexión. Compártelos únicamente con la aplicación que deseas conectar. Estos pagos no requieren una aprobación adicional en la extensión.\n</Callout>\n\n## Revisa o revoca el acceso\n\nVuelve a **Conexiones de aplicaciones** para ver conexiones activas, consumo del límite y vencimiento. Puedes volver a mostrar una conexión guardada localmente o revocarla tras confirmar. Los límites son por conexión; varias conexiones pueden gastar del mismo saldo.\n\nBloquear o desconectar la extensión no revoca una conexión. Revócala aquí para detener su acceso. Desconectar o eliminar una cartera borra los secretos locales; conserva el acceso a esa cartera para gestionar sus permisos posteriormente. Las conexiones creadas en otro dispositivo se pueden listar y revocar, pero no reconstruir para copiarlas.\n\n## Si algo falla\n\nActualiza la lista después de una creación interrumpida antes de crear otra conexión. Revisa el saldo, el límite, el vencimiento, la conexión al relay y los métodos que necesita la aplicación. Si no está claro el resultado de un pago, consulta el historial antes de intentarlo otra vez.\n\nConsulta los [cambios y descargas de 0.8.3](https://github.com/nostr-wot/nostr-wot-extension/releases/tag/v0.8.3). Puedes usar tu cartera LNbits existente sin crear otra.\n"
+        },
+        {
+          "slug": "backend-authentication",
+          "title": "Comprueba en qué backend te estás autenticando",
+          "description": "Controla los permisos por sitio, cuenta, URL y método, incluso cuando la API utiliza otro dominio.",
+          "excerpt": "Controla los permisos por sitio, cuenta, URL y método, incluso cuando la API utiliza otro dominio.",
+          "date": "2026-09-30T00:00:00.000Z",
+          "author": {
+            "name": "Leon Acosta",
+            "avatar": "/authors/leon-profile.jpg"
+          },
+          "featuredImage": "/images/guides/site-permissions/featured.svg",
+          "previewImage": "/images/guides/site-permissions/preview.svg",
+          "tags": [
+            "Security",
+            "Permissions",
+            "Authentication"
+          ],
+          "published": true,
+          "readingTime": "3 min read",
+          "locale": "es",
+          "translationKey": "backend-authentication",
+          "translations": {
+            "en": "backend-authentication",
+            "es": "backend-authentication",
+            "pt": "backend-authentication",
+            "ru": "backend-authentication",
+            "it": "backend-authentication",
+            "fr": "backend-authentication",
+            "de": "backend-authentication"
+          },
+          "availableLocales": [
+            "en",
+            "es",
+            "pt",
+            "ru",
+            "it",
+            "fr",
+            "de"
+          ],
+          "ogImage": "/images/guides/site-permissions/og.jpg",
+          "difficulty": "intermediate",
+          "order": 18,
+          "content": "\n[Nostr WoT 0.8.7](https://github.com/nostr-wot/nostr-wot-extension/releases/tag/v0.8.7) separa el acceso de una web a tu identidad del permiso para autenticarte ante un servicio HTTP. Para WebSocket, consulta la [guía de autenticación de relays](/guides/relay-authentication).\n\n## Una API puede utilizar otro dominio\n\nUna web ficticia `https://client.example` puede usar `https://api.client.example/session`. Esa separación es normal. Lo importante es distinguir quién solicita la firma y qué servicio recibirá la prueba.\n\nUn permiso HTTP recordado queda limitado a **tu cuenta, el origen de la web, la URL firmada exacta y el método HTTP**, por ejemplo `POST`. Incluye el texto de la consulta. No permite otra ruta, puerto, método, web o cuenta. La misma regla se aplica cuando web y API comparten origen. Las autorizaciones amplias antiguas requieren nuevo consentimiento; las denegaciones siguen vigentes.\n\nEl [directorio de clientes y backends](https://github.com/nostr-wot/nostr-wot-extension/blob/v0.8.7/docs/auth-client-registry.md) es informativo. Añadir una entrada nunca concede permisos ni omite la aprobación.\n\n## Revisa y decide\n\nLa solicitud muestra la web y el destino. **Aprobar** o **Rechazar** afectan a la solicitud actual. En las flechas puedes recordar la decisión para esa combinación exacta de sitio, cuenta, URL y método. HTTP no ofrece autorización para todos los sitios.\n\nEl botón de código muestra el evento completo. La aprobación masiva de firmas ordinarias excluye autenticaciones. En **Permisos**, la tabla de autenticación está al final y sigue la cuenta activa. Revocar un permiso impide firmas futuras; no retira pruebas ya enviadas ni cierra sesiones existentes en el backend.\n\n## Qué comprueba la extensión\n\nEl origen procede del documento identificado por el navegador, no de un parámetro elegido por la web. Se exige un marco principal verificado: los iframes, incluso del mismo origen, y los orígenes opacos o inconsistentes se rechazan. Se requiere HTTPS salvo excepciones explícitas de desarrollo en loopback.\n\nSe rechazan etiquetas obligatorias ambiguas, URL inválidas, contenido inesperado y fechas caducadas. Las etiquetas opcionales `origin` y `client-origin` deben coincidir con el solicitante real. Tras esperar una aprobación o desbloqueo se vuelven a comprobar acceso, permisos y sesión de cuenta.\n\nCon un firmante NIP-46, la firma debe corresponder a la cuenta esperada y al evento aprobado completo, incluidas las etiquetas en su orden original. Cambiar de cuenta invalida el trabajo anterior.\n\n## Operaciones de la cartera integrada\n\nLa creación o recuperación de carteras y la gestión de direcciones Lightning utilizan el protocolo v2 de LNbits-proxy. El firmante genérico de las webs rechaza tokens para esas rutas sensibles.\n\nLa prueba vincula URL, método y hash de los bytes exactos del cuerpo. El backend emite un desafío válido durante 60 segundos y de un solo uso. Un token de transacción separado viaja en su propia cabecera; se firma únicamente su hash. El servidor valida firma y valores antes de consumir el desafío de forma atómica. Para solicitudes del navegador también exige un origen HTTPS permitido y un `client-origin` firmado coincidente. Los endpoints antiguos responden 426 y el cliente no utiliza un protocolo anterior.\n\n## Límites de la protección\n\n[NIP-98](https://github.com/nostr-protocol/nips/blob/master/98.md) requiere que el backend compruebe URL y método. La extensión no puede obligar a otros servidores a validar correctamente. Quien posea una prueba válida y los tokens necesarios puede reenviarlos al destino previsto antes de su primer uso.\n\nCORS limita a los navegadores, no las llamadas entre servidores. Una etiqueta de origen firmada no acredita criptográficamente al navegador. El código malicioso dentro de una web principal autorizada comparte su autoridad. Estas comprobaciones acotan el consentimiento; no eliminan todo phishing o reenvío de autenticaciones.\n\nConsulta el [contrato v2](https://github.com/nostr-wot/nostr-wot-extension/blob/v0.8.7/docs/wallet-auth-v2.md) y las [pruebas de autenticación](https://github.com/nostr-wot/nostr-wot-extension/blob/v0.8.7/tests/authentication.test.ts).\n"
+        },
+        {
+          "slug": "relay-authentication",
+          "title": "Elige qué relays pueden autenticar tu cuenta",
+          "description": "Autoriza un relay para una web o para todos los sitios conectados y aprende a revocar ese acceso.",
+          "excerpt": "Autoriza un relay para una web o para todos los sitios conectados y aprende a revocar ese acceso.",
+          "date": "2026-09-30T00:00:00.000Z",
+          "author": {
+            "name": "Leon Acosta",
+            "avatar": "/authors/leon-profile.jpg"
+          },
+          "featuredImage": "/images/guides/site-permissions/featured.svg",
+          "previewImage": "/images/guides/site-permissions/preview.svg",
+          "tags": [
+            "Security",
+            "Permissions",
+            "Authentication"
+          ],
+          "published": true,
+          "readingTime": "3 min read",
+          "locale": "es",
+          "translationKey": "relay-authentication",
+          "translations": {
+            "en": "relay-authentication",
+            "es": "relay-authentication",
+            "pt": "relay-authentication",
+            "ru": "relay-authentication",
+            "it": "relay-authentication",
+            "fr": "relay-authentication",
+            "de": "relay-authentication"
+          },
+          "availableLocales": [
+            "en",
+            "es",
+            "pt",
+            "ru",
+            "it",
+            "fr",
+            "de"
+          ],
+          "ogImage": "/images/guides/site-permissions/og.jpg",
+          "difficulty": "intermediate",
+          "order": 19,
+          "content": "\nEn [Nostr WoT 0.8.7](https://github.com/nostr-wot/nostr-wot-extension/releases/tag/v0.8.7), conectar una web o permitir firmas ordinarias no la autoriza automáticamente a identificarte ante cualquier relay. Las API HTTP tienen su propia [guía de autenticación de backends](/guides/backend-authentication).\n\n## Web y relay son partes distintas\n\n`https://client.example` puede conectarse a `wss://relay.example`. Es normal utilizar relays independientes. Con [NIP-42](https://github.com/nostr-protocol/nips/blob/master/42.md), el relay envía un desafío y el cliente solicita un evento de autenticación firmado. Este identifica tu clave pública, sin entregar la privada ni permitir otras firmas.\n\nLa solicitud muestra la web y el relay. El botón de código abre el evento completo. Esta autenticación no tiene método HTTP.\n\n## Elige el alcance\n\n| Opción | Alcance |\n| --- | --- |\n| Aprobar | La solicitud actual |\n| Aprobar siempre | Esta web, esta cuenta y este relay |\n| Siempre para todos los sitios | Los sitios conectados con acceso a tu identidad, para esta cuenta y este relay |\n| Rechazar | La solicitud actual |\n| Rechazar siempre | Recuerda la denegación para esta web, cuenta y relay |\n\nLas opciones recordadas están en las flechas junto a los botones. El permiso usa la URL normalizada del relay, no solo el nombre mostrado: otra ruta o puerto no queda autorizado automáticamente.\n\nLa opción para todos los sitios evita repetir la autorización al usar el mismo relay en varios clientes. También puede aplicarse a webs que conectes después. No conecta webs nuevas, concede acceso a la identidad, cubre otras cuentas, permite firmas ordinarias ni autoriza backends HTTP. Una denegación específica de un sitio tiene prioridad. Desactivar su acceso a la identidad o desconectarlo sigue bloqueándolo, incluso con un firmante NIP-46.\n\n## Revoca el acceso\n\nAbre **Permisos** para la cuenta activa y ve a la sección de autenticación al final. La tabla contiene permisos por sitio. El enlace inferior abre la tabla de relays autorizados para todos los sitios conectados. Puedes revocar cada entrada.\n\nDesconectar una web elimina sus permisos particulares. Un permiso compartido continúa para otras webs conectadas, pero no sirve a la desconectada. Eliminar una cuenta borra sus permisos. La revocación afecta a firmas futuras; no deshace una prueba enviada ni cierra un WebSocket ya autenticado. El cliente debe cerrar esa conexión.\n\n## Comprobaciones y límites\n\nLa extensión obtiene el origen del navegador y exige un marco principal. Rechaza iframes, orígenes opacos o inconsistentes y transportes inseguros salvo excepciones explícitas de loopback. Valida etiquetas de relay y desafío sin ambigüedades, URL, contenido y vigencia. Repite comprobaciones tras esperar aprobación o desbloqueo. Las autorizaciones generales y masivas no omiten este consentimiento; cambiar de cuenta invalida las solicitudes anteriores. Las respuestas NIP-46 deben coincidir exactamente con el evento aprobado y la cuenta esperada.\n\nLa extensión no controla el WebSocket del cliente. El relay debe validar firma, dirección, fecha y desafío para esa conexión. El firmante no puede demostrar que el cliente obtuvo honestamente el desafío ni impedir todo reenvío.\n\nAutenticarte revela tu clave pública. Usar la misma cuenta en varios clientes permite al relay relacionar esas conexiones. Usa cuentas separadas o permisos por sitio cuando necesites esa separación. CORS no sustituye la validación de la conexión ni los límites de cuenta, sitio y destino.\n\nConsulta las [reglas de permisos](https://github.com/nostr-wot/nostr-wot-extension/blob/v0.8.7/src/services/permissions/authentication.ts) y las [pruebas](https://github.com/nostr-wot/nostr-wot-extension/blob/v0.8.7/tests/authentication.test.ts).\n"
         }
       ],
       "tags": [
         "API",
         "Alby Hub",
+        "Authentication",
         "Avanzado",
         "BIP-32",
         "Billetera",
@@ -1727,10 +1905,12 @@
         "NWC",
         "Nostr",
         "Permisos",
+        "Permissions",
         "Playground",
         "Primeros Pasos",
         "Principiante",
         "Privacidad",
+        "Security",
         "Seguridad",
         "Visualizacion",
         "Web of Trust",
@@ -2535,11 +2715,100 @@
           "difficulty": "beginner",
           "order": 17,
           "content": "\nO Nostr WoT Extension **0.8.3** permite conectar uma carteira LNbits existente do Nostr WoT a aplicativos compatíveis com NWC. Crie uma conexão por aplicativo em **Carteira → Configurações → Conexões de aplicativos**. Todas usam o mesmo saldo.\n\n## Antes de começar\n\nInstale a [versão 0.8.3 pelo GitHub](https://github.com/nostr-wot/nostr-wot-extension/releases/tag/v0.8.3). A publicação nas lojas dos navegadores acontece separadamente. Desbloqueie a extensão e conecte sua carteira LNbits do Nostr WoT. Consulte o [guia de LNbits](/guides/lnbits-wallet-setup) se precisar.\n\nEsta tela é para carteiras LNbits. Um servidor personalizado precisa do [adaptador de gerenciamento de conexões](https://github.com/nostr-wot/LNbits-proxy). Instalar apenas o provedor NWC não disponibiliza a API necessária.\n\n## Crie uma conexão\n\n1. Abra **Carteira → Configurações → Conexões de aplicativos** e escolha criar uma conexão.\n2. Use um nome reconhecível, como **Primal**. Crie uma conexão diferente para cada aplicativo.\n3. Defina um limite positivo em sats a cada 24 horas e uma validade entre 1 e 365 dias. Os valores iniciais são **1.000 sats** e **30 dias**; ajuste-os ao seu uso.\n4. Crie a conexão. Copie a string completa `nostr+walletconnect://` ou exiba o código QR.\n5. No aplicativo de destino, abra a opção NWC ou carteira externa, cole a string ou escaneie o QR e confirme. No Primal, use a opção NWC quando estiver disponível na sua versão.\n\nA conexão permite pagamentos, consulta de pagamentos e informações da carteira. **Não** permite consultar saldo ou histórico nem criar faturas. Aplicativos que exigem esses métodos podem ter funções limitadas.\n\n<Callout type=\"warning\">\nA string e o QR autorizam gastos dentro dos limites da conexão. Compartilhe-os apenas com o aplicativo escolhido. Esses pagamentos não exigem uma aprovação adicional na extensão.\n</Callout>\n\n## Revise ou revogue o acesso\n\nVolte às conexões para ver acessos ativos, uso do orçamento e validade. Você pode exibir novamente uma conexão salva localmente ou revogá-la após confirmar. Os limites valem por conexão; várias conexões podem gastar o mesmo saldo.\n\nBloquear ou desconectar a extensão não revoga uma conexão. Revogue-a aqui para encerrar o acesso. Desconectar ou remover uma carteira apaga os segredos locais; mantenha acesso à carteira para gerenciar suas permissões depois. Conexões criadas em outro dispositivo podem ser listadas e revogadas, mas seu segredo não pode ser reconstruído para copiá-las.\n\n## Se algo não funcionar\n\nAtualize a lista após uma criação interrompida antes de tentar criar outra conexão. Confira saldo, limite, validade, relay e métodos exigidos pelo aplicativo. Se o resultado de um pagamento estiver incerto, confira o histórico antes de tentar novamente.\n\nConsulte as [novidades e os downloads de 0.8.3](https://github.com/nostr-wot/nostr-wot-extension/releases/tag/v0.8.3). Sua carteira LNbits existente pode continuar sendo usada.\n"
+        },
+        {
+          "slug": "backend-authentication",
+          "title": "Saiba em qual backend está se autenticando",
+          "description": "Controle a autenticação por site, conta, URL e método, mesmo quando a API usa outro domínio.",
+          "excerpt": "Controle a autenticação por site, conta, URL e método, mesmo quando a API usa outro domínio.",
+          "date": "2026-09-30T00:00:00.000Z",
+          "author": {
+            "name": "Leon Acosta",
+            "avatar": "/authors/leon-profile.jpg"
+          },
+          "featuredImage": "/images/guides/site-permissions/featured.svg",
+          "previewImage": "/images/guides/site-permissions/preview.svg",
+          "tags": [
+            "Security",
+            "Permissions",
+            "Authentication"
+          ],
+          "published": true,
+          "readingTime": "3 min read",
+          "locale": "pt",
+          "translationKey": "backend-authentication",
+          "translations": {
+            "en": "backend-authentication",
+            "es": "backend-authentication",
+            "pt": "backend-authentication",
+            "ru": "backend-authentication",
+            "it": "backend-authentication",
+            "fr": "backend-authentication",
+            "de": "backend-authentication"
+          },
+          "availableLocales": [
+            "en",
+            "es",
+            "pt",
+            "ru",
+            "it",
+            "fr",
+            "de"
+          ],
+          "ogImage": "/images/guides/site-permissions/og.jpg",
+          "difficulty": "intermediate",
+          "order": 18,
+          "content": "\nO [Nostr WoT 0.8.7](https://github.com/nostr-wot/nostr-wot-extension/releases/tag/v0.8.7) separa o acesso de um site à sua identidade da autorização para autenticá-la em um serviço HTTP. Para WebSocket, consulte o [guia de autenticação de relays](/guides/relay-authentication).\n\n## APIs em domínios diferentes\n\nUm site fictício `https://client.example` pode usar `https://api.client.example/session`. Isso é normal. A extensão distingue o site que pede a assinatura do serviço que receberá a prova.\n\nUma autorização HTTP salva vale apenas para **a conta, a origem do site, a URL assinada exata e o método HTTP**, como `POST`. Inclui o texto da consulta. Outra rota, porta, consulta, método, conta ou site exige autorização própria. A regra também vale quando site e API têm a mesma origem. Permissões antigas abrangentes exigem novo consentimento; recusas continuam válidas.\n\nO [diretório de clientes e backends](https://github.com/nostr-wot/nostr-wot-extension/blob/v0.8.7/docs/auth-client-registry.md) apenas informa. Uma entrada não concede acesso nem dispensa consentimento.\n\n## Revise o pedido\n\nO diálogo identifica site e destino. **Aprovar** e **Rejeitar** afetam o pedido atual. Os menus das setas permitem lembrar a decisão para aquela combinação exata. HTTP não oferece autorização para todos os sites.\n\nO botão de código mostra o evento completo. A aprovação em lote de assinaturas comuns exclui autenticações. A tabela no final de **Permissões** acompanha a conta ativa e permite revogar decisões. Revogar impede assinaturas futuras; não recolhe provas já enviadas nem encerra sessões no backend.\n\n## O que a extensão verifica\n\nA origem vem da identidade do documento fornecida pelo navegador. A página não pode escolher outra origem em um campo RPC. A autenticação exige um quadro principal verificado; iframes, inclusive da mesma origem, e origens opacas ou inconsistentes são recusados. HTTPS é obrigatório, salvo exceções explícitas de desenvolvimento em loopback.\n\nSão rejeitados tags obrigatórias ambíguas, URLs inválidas, conteúdo inesperado e timestamps vencidos. As tags opcionais `origin` e `client-origin` devem coincidir com a origem real. Acesso ao site, permissões e sessão da conta são verificados novamente após aprovação ou desbloqueio. Um assinante NIP-46 deve devolver uma assinatura da conta esperada sobre o evento aprovado inteiro, inclusive a ordem das tags.\n\n## Proteção da carteira integrada\n\nCriar ou recuperar uma carteira e gerenciar endereços Lightning usa o protocolo v2 do LNbits-proxy. O assinante genérico de sites recusa tokens para essas rotas sensíveis.\n\nA prova vincula URL, método e hash dos bytes exatos do corpo. O desafio do backend dura 60 segundos e só pode ser consumido uma vez. Um token de transação separado vai em seu próprio cabeçalho; apenas seu hash é assinado. O servidor verifica a assinatura e os vínculos antes de consumir o desafio atomicamente. Pedidos do navegador também exigem uma origem HTTPS permitida e um `client-origin` assinado correspondente. Rotas antigas retornam 426; não há retorno ao protocolo anterior.\n\n## Limites\n\n[NIP-98](https://github.com/nostr-protocol/nips/blob/master/98.md) depende de o backend validar URL e método. A extensão não pode obrigar outros servidores a implementar essa validação. Quem possui uma prova válida e os tokens exigidos pode encaminhá-los ao destino correto antes do primeiro uso.\n\nCORS restringe navegadores, não chamadas entre servidores. Uma tag de origem não comprova criptograficamente o navegador. Código malicioso dentro de um site principal autorizado compartilha sua autoridade. Esses controles limitam o consentimento, mas não eliminam todo phishing ou encaminhamento de autenticação.\n\nVeja o [contrato v2](https://github.com/nostr-wot/nostr-wot-extension/blob/v0.8.7/docs/wallet-auth-v2.md) e os [testes de autenticação](https://github.com/nostr-wot/nostr-wot-extension/blob/v0.8.7/tests/authentication.test.ts).\n"
+        },
+        {
+          "slug": "relay-authentication",
+          "title": "Escolha quais relays podem autenticar sua conta",
+          "description": "Autorize um relay por site ou entre sites conectados, com controle por conta e revogação.",
+          "excerpt": "Autorize um relay por site ou entre sites conectados, com controle por conta e revogação.",
+          "date": "2026-09-30T00:00:00.000Z",
+          "author": {
+            "name": "Leon Acosta",
+            "avatar": "/authors/leon-profile.jpg"
+          },
+          "featuredImage": "/images/guides/site-permissions/featured.svg",
+          "previewImage": "/images/guides/site-permissions/preview.svg",
+          "tags": [
+            "Security",
+            "Permissions",
+            "Authentication"
+          ],
+          "published": true,
+          "readingTime": "3 min read",
+          "locale": "pt",
+          "translationKey": "relay-authentication",
+          "translations": {
+            "en": "relay-authentication",
+            "es": "relay-authentication",
+            "pt": "relay-authentication",
+            "ru": "relay-authentication",
+            "it": "relay-authentication",
+            "fr": "relay-authentication",
+            "de": "relay-authentication"
+          },
+          "availableLocales": [
+            "en",
+            "es",
+            "pt",
+            "ru",
+            "it",
+            "fr",
+            "de"
+          ],
+          "ogImage": "/images/guides/site-permissions/og.jpg",
+          "difficulty": "intermediate",
+          "order": 19,
+          "content": "\nNo [Nostr WoT 0.8.7](https://github.com/nostr-wot/nostr-wot-extension/releases/tag/v0.8.7), conectar um site ou permitir assinaturas comuns não o autoriza a identificar você em qualquer relay. APIs HTTP seguem o [guia de autenticação de backends](/guides/backend-authentication).\n\n## Site e relay são partes diferentes\n\n`https://client.example` pode se conectar a `wss://relay.example`. Relays independentes são normais. No [NIP-42](https://github.com/nostr-protocol/nips/blob/master/42.md), o relay envia um desafio e o cliente pede um evento de autenticação assinado. A prova identifica sua chave pública, sem entregar a chave privada nem permitir outras assinaturas.\n\nO diálogo mostra o site e o relay; o botão de código abre o evento completo. Autenticação de relay não tem método HTTP.\n\n## Escolha o alcance\n\n| Opção | Alcance |\n| --- | --- |\n| Aprovar | O pedido atual |\n| Aprovar sempre | Este site, esta conta e este relay |\n| Sempre para todos os sites | Sites conectados com acesso à identidade, para esta conta e este relay |\n| Rejeitar | O pedido atual |\n| Rejeitar sempre | Recusa salva para este site, conta e relay |\n\nAs decisões persistentes ficam nas setas dos botões. O escopo usa a URL normalizada do relay, não apenas seu nome. Outra porta ou caminho não é autorizado automaticamente.\n\nA opção para todos os sites evita repetir a autorização ao usar vários clientes no mesmo relay. Ela também pode valer para sites conectados depois. Não conecta novos sites, concede acesso à identidade, cobre outras contas, permite assinaturas comuns ou autoriza APIs HTTP. Uma recusa por site tem prioridade. Desativar acesso à identidade ou desconectar o site continua bloqueando a autenticação, inclusive com NIP-46.\n\n## Revise e revogue\n\nAbra **Permissões** na conta ativa e vá à seção de autenticação no final. A tabela contém permissões por site. O link abaixo abre uma tabela separada de relays permitidos para todos os sites conectados. Revogue cada entrada conforme necessário.\n\nDesconectar um site remove seus próprios escopos. Uma autorização compartilhada continua disponível para outros sites conectados, nunca para o desconectado. Excluir uma conta apaga suas autorizações. Revogar impede novas assinaturas; não desfaz provas enviadas nem fecha um WebSocket já autenticado. O cliente precisa encerrar essa conexão.\n\n## Verificações e limites\n\nA origem vem do navegador e deve ser de um quadro principal verificado. Iframes, origens opacas ou inconsistentes e transportes inseguros são rejeitados, salvo exceções explícitas de loopback. A extensão verifica tags de relay e desafio, URL, conteúdo e validade temporal, inclusive depois de esperar aprovação ou desbloqueio. Permissões genéricas e aprovação em lote não ignoram esse consentimento. Trocar a conta invalida o trabalho anterior. Respostas NIP-46 precisam coincidir com o evento aprovado e a assinatura da conta esperada.\n\nA extensão não controla o WebSocket do cliente. O relay deve validar assinatura, endereço, timestamp e desafio daquela conexão. O assinante não comprova como o cliente obteve o desafio nem impede todo encaminhamento.\n\nAutenticar revela sua chave pública ao relay. Usar a mesma conta em vários clientes pode vincular essas conexões. Use contas separadas ou permissões menores quando essa distinção importar. CORS não substitui a validação da conexão ou o controle por conta, site e destino.\n\nVeja as [regras de permissões](https://github.com/nostr-wot/nostr-wot-extension/blob/v0.8.7/src/services/permissions/authentication.ts) e os [testes](https://github.com/nostr-wot/nostr-wot-extension/blob/v0.8.7/tests/authentication.test.ts).\n"
         }
       ],
       "tags": [
         "API",
         "Alby Hub",
+        "Authentication",
         "Avancado",
         "BIP-32",
         "Carteira",
@@ -2560,10 +2829,12 @@
         "NIP-07",
         "NWC",
         "Nostr",
+        "Permissions",
         "Permissoes",
         "Playground",
         "Primeiros Passos",
         "Privacidade",
+        "Security",
         "Seguranca",
         "Segurança",
         "Visualizacao",
@@ -3370,11 +3641,100 @@
           "difficulty": "beginner",
           "order": 17,
           "content": "\nNostr WoT Extension **0.8.3** позволяет подключить существующий LNbits-кошелёк Nostr WoT к приложениям с поддержкой NWC. Создайте отдельное подключение для каждого приложения в разделе **Кошелёк → Настройки → Подключения приложений**. Все подключения используют один баланс.\n\n## Подготовка\n\nУстановите [версию 0.8.3 с GitHub](https://github.com/nostr-wot/nostr-wot-extension/releases/tag/v0.8.3). Публикация в магазинах браузеров происходит отдельно. Разблокируйте расширение и подключите LNbits-кошелёк Nostr WoT. При необходимости воспользуйтесь [руководством по LNbits](/guides/lnbits-wallet-setup).\n\nЭтот экран предназначен для кошельков LNbits. Для собственного сервера нужен [адаптер управления подключениями](https://github.com/nostr-wot/LNbits-proxy). Одной установки NWC-провайдера недостаточно для работы API этого экрана.\n\n## Создание подключения\n\n1. Откройте **Кошелёк → Настройки → Подключения приложений** и выберите создание подключения.\n2. Введите понятное имя, например **Primal**. Используйте отдельное подключение для каждого приложения.\n3. Укажите положительный лимит в сатоши на каждые 24 часа и срок действия от 1 до 365 дней. Начальные значения: **1 000 сатоши** и **30 дней**. Измените их по необходимости.\n4. Создайте подключение. Скопируйте полную строку `nostr+walletconnect://` или покажите QR-код.\n5. В нужном приложении откройте настройку NWC или внешнего кошелька, вставьте строку либо отсканируйте QR-код и подтвердите. В Primal используйте опцию NWC, если она доступна в вашей версии.\n\nПодключение разрешает платежи, проверку платежей и получение информации о кошельке. Оно **не разрешает** просмотр баланса и истории или создание счетов. В приложениях, которым нужны эти методы, часть функций может быть недоступна.\n\n<Callout type=\"warning\">\nСтрока и QR-код дают право расходовать средства в пределах лимита подключения. Передавайте их только выбранному приложению. Эти платежи не требуют отдельного подтверждения в расширении.\n</Callout>\n\n## Просмотр и отзыв доступа\n\nВернитесь в раздел подключений, чтобы увидеть активные подключения, расход бюджета и срок действия. Можно снова показать локально сохранённое подключение или отозвать его после подтверждения. Лимит действует на каждое подключение отдельно; несколько подключений могут расходовать один баланс.\n\nБлокировка или отключение расширения не отзывает подключение. Отзовите его здесь, чтобы прекратить доступ. Отключение или удаление кошелька стирает локальные секреты; сохраните доступ к кошельку для последующего управления разрешениями. Подключения с другого устройства можно просмотреть и отозвать, но восстановить их секрет для копирования нельзя.\n\n## Если что-то не работает\n\nПосле прерванного создания обновите список, прежде чем создавать другое подключение. Проверьте баланс, лимит, срок действия, связь с релеем и методы, необходимые приложению. Если результат платежа неизвестен, проверьте историю перед повторной попыткой.\n\nИзменения и файлы доступны в [релизе 0.8.3](https://github.com/nostr-wot/nostr-wot-extension/releases/tag/v0.8.3). Создавать новый кошелёк LNbits не требуется.\n"
+        },
+        {
+          "slug": "backend-authentication",
+          "title": "Проверяйте, на каком сервере вы проходите аутентификацию",
+          "description": "Управляйте разрешениями для сайта, аккаунта, точного URL и HTTP-метода, даже если API находится на другом домене.",
+          "excerpt": "Управляйте разрешениями для сайта, аккаунта, точного URL и HTTP-метода, даже если API находится на другом домене.",
+          "date": "2026-09-30T00:00:00.000Z",
+          "author": {
+            "name": "Leon Acosta",
+            "avatar": "/authors/leon-profile.jpg"
+          },
+          "featuredImage": "/images/guides/site-permissions/featured.svg",
+          "previewImage": "/images/guides/site-permissions/preview.svg",
+          "tags": [
+            "Security",
+            "Permissions",
+            "Authentication"
+          ],
+          "published": true,
+          "readingTime": "3 min read",
+          "locale": "ru",
+          "translationKey": "backend-authentication",
+          "translations": {
+            "en": "backend-authentication",
+            "es": "backend-authentication",
+            "pt": "backend-authentication",
+            "ru": "backend-authentication",
+            "it": "backend-authentication",
+            "fr": "backend-authentication",
+            "de": "backend-authentication"
+          },
+          "availableLocales": [
+            "en",
+            "es",
+            "pt",
+            "ru",
+            "it",
+            "fr",
+            "de"
+          ],
+          "ogImage": "/images/guides/site-permissions/og.jpg",
+          "difficulty": "intermediate",
+          "order": 18,
+          "content": "\n[Nostr WoT 0.8.7](https://github.com/nostr-wot/nostr-wot-extension/releases/tag/v0.8.7) разделяет доступ сайта к вашей идентичности и разрешение подтвердить её перед HTTP-сервисом. Для WebSocket есть отдельное [руководство по реле](/guides/relay-authentication).\n\n## API может находиться на другом домене\n\nУсловный сайт `https://client.example` может использовать `https://api.client.example/session`. Это обычная архитектура. Важно различать сайт, запрашивающий подпись, и сервис, который получит подтверждение.\n\nСохранённое HTTP-разрешение связано с **аккаунтом, источником сайта, точным подписываемым URL и HTTP-методом**, например `POST`. Учитывается и текст параметров запроса. Другие путь, порт, параметры, метод, сайт или аккаунт требуют отдельного согласия. Это относится и к API с тем же источником. Старые общие разрешения HTTP требуют повторного согласия; запреты остаются в силе.\n\n[Справочник клиентов и серверов](https://github.com/nostr-wot/nostr-wot-extension/blob/v0.8.7/docs/auth-client-registry.md) носит информационный характер. Запись в нём не предоставляет доступ.\n\n## Подтверждение и отзыв\n\nДиалог показывает сайт и назначение. **Одобрить** и **Отклонить** относятся к текущему запросу. Меню со стрелками позволяют запомнить решение для этой точной комбинации. Для HTTP нет разрешения сразу для всех сайтов.\n\nКнопка кода открывает полное событие. Групповое одобрение обычных подписей не включает аутентификацию. Таблица внизу раздела **Разрешения** относится к активному аккаунту и позволяет отозвать решения. Отзыв блокирует будущие подписи, но не возвращает уже отправленные подтверждения и не закрывает сессии сервера.\n\n## Что проверяет расширение\n\nИсточник определяется по данным документа от браузера, а не по выбранному страницей параметру RPC. Требуется проверенный основной фрейм. Iframe, в том числе с тем же источником, а также непрозрачные или противоречивые источники отклоняются. Нужен HTTPS, кроме явно разрешённых случаев разработки через loopback.\n\nОтклоняются неоднозначные обязательные теги, неверные URL, неожиданное содержимое и устаревшие метки времени. Необязательные теги `origin` и `client-origin` должны совпадать с реальным источником. После ожидания одобрения или разблокировки повторно проверяются доступ, разрешения и сессия аккаунта. Ответ NIP-46 должен содержать подпись ожидаемого аккаунта и точно соответствовать одобренному событию, включая порядок тегов.\n\n## Операции встроенного кошелька\n\nСоздание или восстановление кошелька и управление Lightning-адресами используют LNbits-proxy v2. Обычный механизм подписания для сайтов отклоняет токены этих чувствительных маршрутов.\n\nПодтверждение связывает URL, метод и хеш точных байтов тела. Задание сервера действует 60 секунд и используется один раз. Отдельный токен транзакции передаётся в собственном заголовке; подписывается только его хеш. Сервер проверяет подпись и все связи до атомарного использования задания. Запросы браузера также требуют разрешённого HTTPS-источника и соответствующего подписанного `client-origin`. Старые маршруты возвращают 426; клиент не переключается на прежний протокол.\n\n## Ограничения\n\n[NIP-98](https://github.com/nostr-protocol/nips/blob/master/98.md) требует проверки URL и метода на сервере. Расширение не может заставить любой внешний сервер проверять их правильно. Обладатель действительного подтверждения и необходимых токенов может переслать их по исходному назначению до первого использования.\n\nCORS ограничивает браузеры, но не запросы между серверами. Тег источника не является криптографическим свидетельством браузера. Вредоносный код внутри разрешённой основной страницы обладает её полномочиями. Эти проверки ограничивают согласие, но не исключают весь фишинг и пересылку подтверждений.\n\nСм. [протокол v2](https://github.com/nostr-wot/nostr-wot-extension/blob/v0.8.7/docs/wallet-auth-v2.md) и [тесты](https://github.com/nostr-wot/nostr-wot-extension/blob/v0.8.7/tests/authentication.test.ts).\n"
+        },
+        {
+          "slug": "relay-authentication",
+          "title": "Выбирайте реле, которым разрешено аутентифицировать ваш аккаунт",
+          "description": "Разрешайте аутентификацию на реле для одного сайта или подключённых сайтов и отзывайте доступ.",
+          "excerpt": "Разрешайте аутентификацию на реле для одного сайта или подключённых сайтов и отзывайте доступ.",
+          "date": "2026-09-30T00:00:00.000Z",
+          "author": {
+            "name": "Leon Acosta",
+            "avatar": "/authors/leon-profile.jpg"
+          },
+          "featuredImage": "/images/guides/site-permissions/featured.svg",
+          "previewImage": "/images/guides/site-permissions/preview.svg",
+          "tags": [
+            "Security",
+            "Permissions",
+            "Authentication"
+          ],
+          "published": true,
+          "readingTime": "3 min read",
+          "locale": "ru",
+          "translationKey": "relay-authentication",
+          "translations": {
+            "en": "relay-authentication",
+            "es": "relay-authentication",
+            "pt": "relay-authentication",
+            "ru": "relay-authentication",
+            "it": "relay-authentication",
+            "fr": "relay-authentication",
+            "de": "relay-authentication"
+          },
+          "availableLocales": [
+            "en",
+            "es",
+            "pt",
+            "ru",
+            "it",
+            "fr",
+            "de"
+          ],
+          "ogImage": "/images/guides/site-permissions/og.jpg",
+          "difficulty": "intermediate",
+          "order": 19,
+          "content": "\nВ [Nostr WoT 0.8.7](https://github.com/nostr-wot/nostr-wot-extension/releases/tag/v0.8.7) подключение сайта или разрешение обычных подписей не позволяет автоматически идентифицировать вас на любом реле. Для HTTP API есть [отдельное руководство](/guides/backend-authentication).\n\n## Сайт и реле являются разными сторонами\n\n`https://client.example` может подключаться к `wss://relay.example`. По [NIP-42](https://github.com/nostr-protocol/nips/blob/master/42.md) реле отправляет задание, а клиент запрашивает подписанное событие аутентификации. Оно раскрывает публичный ключ, но не передаёт приватный ключ и не разрешает другие подписи.\n\nДиалог показывает сайт и реле. Кнопка кода открывает полное событие. У такой аутентификации нет HTTP-метода.\n\n## Выберите область действия\n\n| Решение | Область действия |\n| --- | --- |\n| Одобрить | Текущий запрос |\n| Всегда одобрять | Этот сайт, аккаунт и реле |\n| Всегда для всех сайтов | Подключённые сайты с доступом к идентичности, для этого аккаунта и реле |\n| Отклонить | Текущий запрос |\n| Всегда отклонять | Сохранённый запрет для сайта, аккаунта и реле |\n\nПостоянные решения находятся в меню со стрелками. Разрешение учитывает нормализованный URL реле, а не только имя хоста. Другой путь или порт не разрешается автоматически.\n\nВариант для всех сайтов избавляет от повторных запросов в разных клиентах и может распространяться на сайты, подключённые позже. Он не подключает новые сайты, не предоставляет доступ к идентичности, не охватывает другие аккаунты, обычные подписи или HTTP-серверы. Запрет для конкретного сайта имеет приоритет. Отключение сайта или его доступа к идентичности продолжает блокировать аутентификацию, в том числе с NIP-46.\n\n## Проверка и отзыв\n\nОткройте **Разрешения** активного аккаунта и раздел аутентификации внизу. Таблица показывает разрешения отдельных сайтов. Ссылка под ней открывает отдельную таблицу реле, разрешённых для всех подключённых сайтов. Каждую запись можно отозвать.\n\nОтключение сайта удаляет его собственные разрешения. Общее разрешение сохраняется для других подключённых сайтов, но не действует для отключённого. Удаление аккаунта удаляет его разрешения. Отзыв запрещает будущие подписи, но не отменяет отправленные подтверждения и не закрывает уже аутентифицированный WebSocket. Соединение должен закрыть клиент.\n\n## Проверки и ограничения\n\nРасширение требует источник, подтверждённый браузером, и основной фрейм. Iframe, непрозрачные или противоречивые источники и незащищённый транспорт отклоняются, кроме явных исключений loopback. Проверяются теги реле и задания, URL, содержимое и время, в том числе после ожидания. Общие разрешения и групповое одобрение не обходят согласие для назначения. Смена аккаунта делает предыдущие запросы недействительными. Ответ NIP-46 должен точно совпадать с одобренным событием и подписью ожидаемого аккаунта.\n\nРасширение не управляет WebSocket клиента. Реле обязано проверить подпись, адрес, актуальность и задание именно этого соединения. Подписывающая сторона не может доказать, как клиент получил задание, или предотвратить любую пересылку.\n\nОдин публичный ключ позволяет реле связать подключения разных клиентов. Используйте отдельные аккаунты или более узкие разрешения, когда важно разделение. CORS не заменяет проверку соединения и ограничения по аккаунту, сайту и назначению.\n\nСм. [правила разрешений](https://github.com/nostr-wot/nostr-wot-extension/blob/v0.8.7/src/services/permissions/authentication.ts) и [тесты](https://github.com/nostr-wot/nostr-wot-extension/blob/v0.8.7/tests/authentication.test.ts).\n"
         }
       ],
       "tags": [
         "API",
         "Alby Hub",
+        "Authentication",
         "BIP-32",
         "LNbits",
         "Lightning",
@@ -3383,7 +3743,9 @@
         "NIP-07",
         "NWC",
         "Nostr",
+        "Permissions",
         "Playground",
+        "Security",
         "Web of Trust",
         "WebLN",
         "Аккаунты",
@@ -4207,12 +4569,101 @@
           "difficulty": "beginner",
           "order": 17,
           "content": "\nNostr WoT Extension **0.8.3** consente di collegare un wallet LNbits di Nostr WoT esistente alle app compatibili con NWC. Crea una connessione per ogni app in **Wallet → Impostazioni → Connessioni delle app**. Tutte usano lo stesso saldo.\n\n## Prima di iniziare\n\nInstalla la [versione 0.8.3 da GitHub](https://github.com/nostr-wot/nostr-wot-extension/releases/tag/v0.8.3). La pubblicazione negli store dei browser avviene separatamente. Sblocca l’estensione e collega il tuo wallet LNbits di Nostr WoT. Se necessario, consulta la [guida LNbits](/guides/lnbits-wallet-setup).\n\nQuesta schermata riguarda i wallet LNbits. Un server personalizzato richiede l’[adattatore per la gestione delle connessioni](https://github.com/nostr-wot/LNbits-proxy). Installare solo il provider NWC non fornisce l’API necessaria.\n\n## Crea una connessione\n\n1. Apri **Wallet → Impostazioni → Connessioni delle app** e scegli di creare una connessione.\n2. Inserisci un nome riconoscibile, come **Primal**. Usa una connessione distinta per ogni app.\n3. Imposta un limite positivo in sats ogni 24 ore e una scadenza tra 1 e 365 giorni. Il modulo parte da **1.000 sats** e **30 giorni**; adatta i valori alle tue esigenze.\n4. Crea la connessione. Copia la stringa completa `nostr+walletconnect://` oppure mostra il codice QR.\n5. Nell’app di destinazione, apri l’opzione NWC o wallet esterno, incolla la stringa o scansiona il QR e conferma. In Primal, usa l’opzione NWC se disponibile nella tua versione.\n\nLa connessione permette pagamenti, ricerca dei pagamenti e informazioni sul wallet. **Non** permette di leggere saldo e cronologia né di creare fatture. Le app che richiedono questi metodi possono avere funzionalità limitate.\n\n<Callout type=\"warning\">\nLa stringa e il QR autorizzano spese entro i limiti della connessione. Condividili solo con l’app che vuoi collegare. Questi pagamenti non richiedono un’ulteriore approvazione nell’estensione.\n</Callout>\n\n## Controlla o revoca l’accesso\n\nTorna alle connessioni per vedere accessi attivi, budget utilizzato e scadenza. Puoi mostrare di nuovo una connessione salvata localmente o revocarla dopo conferma. I limiti valgono per singola connessione; più connessioni possono spendere lo stesso saldo.\n\nBloccare o disconnettere l’estensione non revoca una connessione. Revocala qui per interromperne l’accesso. Disconnettere o rimuovere un wallet cancella i segreti locali; conserva l’accesso al wallet per gestire i permessi in seguito. Le connessioni create su un altro dispositivo possono essere elencate e revocate, ma il loro segreto non può essere ricostruito per copiarle.\n\n## Se qualcosa non funziona\n\nAggiorna l’elenco dopo una creazione interrotta prima di creare un’altra connessione. Controlla saldo, limite, scadenza, relay e metodi richiesti dall’app. Se l’esito di un pagamento è incerto, controlla la cronologia prima di riprovare.\n\nConsulta le [novità e i download di 0.8.3](https://github.com/nostr-wot/nostr-wot-extension/releases/tag/v0.8.3). Puoi continuare a usare il wallet LNbits esistente.\n"
+        },
+        {
+          "slug": "backend-authentication",
+          "title": "Controlla a quale backend ti stai autenticando",
+          "description": "Gestisci il consenso per sito, account, URL e metodo anche quando l’API usa un dominio diverso.",
+          "excerpt": "Gestisci il consenso per sito, account, URL e metodo anche quando l’API usa un dominio diverso.",
+          "date": "2026-09-30T00:00:00.000Z",
+          "author": {
+            "name": "Leon Acosta",
+            "avatar": "/authors/leon-profile.jpg"
+          },
+          "featuredImage": "/images/guides/site-permissions/featured.svg",
+          "previewImage": "/images/guides/site-permissions/preview.svg",
+          "tags": [
+            "Security",
+            "Permissions",
+            "Authentication"
+          ],
+          "published": true,
+          "readingTime": "3 min read",
+          "locale": "it",
+          "translationKey": "backend-authentication",
+          "translations": {
+            "en": "backend-authentication",
+            "es": "backend-authentication",
+            "pt": "backend-authentication",
+            "ru": "backend-authentication",
+            "it": "backend-authentication",
+            "fr": "backend-authentication",
+            "de": "backend-authentication"
+          },
+          "availableLocales": [
+            "en",
+            "es",
+            "pt",
+            "ru",
+            "it",
+            "fr",
+            "de"
+          ],
+          "ogImage": "/images/guides/site-permissions/og.jpg",
+          "difficulty": "intermediate",
+          "order": 18,
+          "content": "\n[Nostr WoT 0.8.7](https://github.com/nostr-wot/nostr-wot-extension/releases/tag/v0.8.7) distingue l’accesso di un sito alla tua identità dal permesso di autenticarla presso un servizio HTTP. Per WebSocket consulta la [guida ai relay](/guides/relay-authentication).\n\n## Un’API può avere un dominio diverso\n\nUn sito di esempio `https://client.example` può usare `https://api.client.example/session`. È normale. L’estensione distingue il sito che richiede la firma dal servizio che riceve la prova.\n\nUn permesso HTTP memorizzato riguarda **account, origine del sito, URL firmato esatto e metodo HTTP**, per esempio `POST`. Comprende il testo della query. Percorso, porta, query, metodo, sito o account diversi richiedono un altro consenso. La regola vale anche se sito e API condividono l’origine. Le vecchie autorizzazioni HTTP generiche richiedono un nuovo consenso; i rifiuti restano validi.\n\nIl [registro di client e backend](https://github.com/nostr-wot/nostr-wot-extension/blob/v0.8.7/docs/auth-client-registry.md) è informativo: aggiungere una voce non concede permessi.\n\n## Decidi e revoca\n\nLa richiesta mostra sito e destinazione. **Approva** e **Rifiuta** riguardano la richiesta attuale. I menu a freccia permettono di ricordare la decisione per quella combinazione esatta. HTTP non offre un’autorizzazione per tutti i siti.\n\nIl pulsante del codice mostra l’evento completo. L’approvazione collettiva delle firme ordinarie esclude l’autenticazione. La tabella in fondo a **Permessi** segue l’account attivo e permette la revoca. Revocare impedisce firme future; non ritira prove inviate e non chiude sessioni già aperte sul backend.\n\n## Verifiche dell’estensione\n\nL’origine deriva dall’identità del documento fornita dal browser, non da un valore scelto dalla pagina. Serve un frame principale verificato. Iframe, anche della stessa origine, e origini opache o incoerenti vengono rifiutati. HTTPS è obbligatorio salvo eccezioni esplicite di sviluppo in loopback.\n\nTag obbligatori ambigui, URL invalidi, contenuti inattesi e timestamp scaduti vengono rifiutati. I tag facoltativi `origin` e `client-origin` devono corrispondere all’origine reale. Accesso, permessi e sessione dell’account vengono ricontrollati dopo l’attesa di approvazione o sblocco. Una risposta NIP-46 deve avere la firma dell’account previsto e coincidere con l’intero evento approvato, ordine dei tag compreso.\n\n## Operazioni del wallet integrato\n\nCreazione o recupero del wallet e gestione degli indirizzi Lightning usano LNbits-proxy v2. Il firmatario generico dei siti rifiuta token per queste rotte sensibili.\n\nLa prova vincola URL, metodo e hash dei byte esatti del corpo. Una challenge del backend dura 60 secondi e si usa una sola volta. Un token di transazione separato viaggia in un proprio header; viene firmato solo il suo hash. Il server controlla firma e vincoli prima di consumare atomicamente la challenge. Le chiamate del browser richiedono anche un’origine HTTPS consentita e un `client-origin` firmato corrispondente. Le vecchie rotte rispondono 426 e il client non torna al vecchio protocollo.\n\n## Limiti\n\n[NIP-98](https://github.com/nostr-protocol/nips/blob/master/98.md) richiede che il backend verifichi URL e metodo. L’estensione non può imporre questa verifica a tutti i server. Chi possiede una prova valida e i token necessari può inoltrarli alla destinazione prevista prima del primo utilizzo.\n\nCORS limita i browser, non le richieste tra server. Un tag di origine non è un’attestazione crittografica del browser. Codice malevolo nel sito principale autorizzato ne condivide i poteri. Questi controlli limitano il consenso, ma non eliminano ogni phishing o inoltro di autenticazione.\n\nConsulta il [contratto v2](https://github.com/nostr-wot/nostr-wot-extension/blob/v0.8.7/docs/wallet-auth-v2.md) e i [test](https://github.com/nostr-wot/nostr-wot-extension/blob/v0.8.7/tests/authentication.test.ts).\n"
+        },
+        {
+          "slug": "relay-authentication",
+          "title": "Scegli quali relay possono autenticare il tuo account",
+          "description": "Autorizza un relay per sito o per i siti collegati e gestisci la revoca dei permessi.",
+          "excerpt": "Autorizza un relay per sito o per i siti collegati e gestisci la revoca dei permessi.",
+          "date": "2026-09-30T00:00:00.000Z",
+          "author": {
+            "name": "Leon Acosta",
+            "avatar": "/authors/leon-profile.jpg"
+          },
+          "featuredImage": "/images/guides/site-permissions/featured.svg",
+          "previewImage": "/images/guides/site-permissions/preview.svg",
+          "tags": [
+            "Security",
+            "Permissions",
+            "Authentication"
+          ],
+          "published": true,
+          "readingTime": "3 min read",
+          "locale": "it",
+          "translationKey": "relay-authentication",
+          "translations": {
+            "en": "relay-authentication",
+            "es": "relay-authentication",
+            "pt": "relay-authentication",
+            "ru": "relay-authentication",
+            "it": "relay-authentication",
+            "fr": "relay-authentication",
+            "de": "relay-authentication"
+          },
+          "availableLocales": [
+            "en",
+            "es",
+            "pt",
+            "ru",
+            "it",
+            "fr",
+            "de"
+          ],
+          "ogImage": "/images/guides/site-permissions/og.jpg",
+          "difficulty": "intermediate",
+          "order": 19,
+          "content": "\nIn [Nostr WoT 0.8.7](https://github.com/nostr-wot/nostr-wot-extension/releases/tag/v0.8.7), collegare un sito o consentire firme ordinarie non lo autorizza a identificarti presso ogni relay. Le API HTTP hanno una [guida distinta](/guides/backend-authentication).\n\n## Sito e relay sono soggetti distinti\n\n`https://client.example` può collegarsi a `wss://relay.example`. Con [NIP-42](https://github.com/nostr-protocol/nips/blob/master/42.md), il relay invia una challenge e il client richiede un evento di autenticazione firmato. La prova rivela la chiave pubblica, senza consegnare quella privata o permettere altre firme.\n\nIl dialogo mostra sito e relay; il pulsante del codice apre l’evento completo. L’autenticazione del relay non ha un metodo HTTP.\n\n## Scegli l’ambito\n\n| Scelta | Ambito |\n| --- | --- |\n| Approva | Richiesta attuale |\n| Approva sempre | Questo sito, account e relay |\n| Sempre per tutti i siti | Siti collegati con accesso all’identità, per questo account e relay |\n| Rifiuta | Richiesta attuale |\n| Rifiuta sempre | Rifiuto memorizzato per sito, account e relay |\n\nLe opzioni memorizzate sono nei menu a freccia. Il permesso usa l’URL normalizzato del relay, non solo il nome mostrato. Un percorso o una porta diversi non sono automaticamente autorizzati.\n\nL’opzione per tutti i siti evita conferme ripetute tra client e può valere anche per siti collegati in seguito. Non collega nuovi siti, concede accesso all’identità, copre altri account, autorizza firme ordinarie o backend HTTP. Un rifiuto specifico del sito prevale. Disabilitare l’accesso all’identità o scollegare il sito continua a bloccarlo, anche con NIP-46.\n\n## Controlla e revoca\n\nApri **Permessi** per l’account attivo e raggiungi la sezione di autenticazione in fondo. La tabella mostra i permessi per sito. Il collegamento sotto apre una tabella separata dei relay consentiti per tutti i siti collegati. Ogni voce può essere revocata.\n\nScollegare un sito rimuove i suoi permessi specifici. Un permesso condiviso resta disponibile per gli altri siti collegati, non per quello scollegato. Eliminare un account cancella i suoi permessi. La revoca impedisce nuove firme; non annulla prove inviate e non chiude un WebSocket già autenticato. Il client deve chiudere la connessione.\n\n## Verifiche e limiti\n\nL’estensione richiede l’origine fornita dal browser e un frame principale verificato. Rifiuta iframe, origini opache o incoerenti e trasporti non sicuri salvo eccezioni esplicite di loopback. Verifica tag del relay e challenge, URL, contenuto e timestamp, anche dopo attese. Permessi generici e approvazioni collettive non evitano il consenso alla destinazione. Cambiare account invalida le richieste precedenti. NIP-46 deve restituire esattamente l’evento approvato firmato dall’account previsto.\n\nL’estensione non gestisce il WebSocket del client. Il relay deve verificare firma, indirizzo, data e challenge della connessione. Il firmatario non può dimostrare come il client abbia ottenuto la challenge o impedire ogni inoltro.\n\nLa stessa chiave pubblica può rendere collegabili le connessioni di vari client presso un relay. Usa account separati o permessi più limitati quando serve questa distinzione. CORS non sostituisce la verifica della connessione né i limiti per account, sito e destinazione.\n\nVedi le [regole dei permessi](https://github.com/nostr-wot/nostr-wot-extension/blob/v0.8.7/src/services/permissions/authentication.ts) e i [test](https://github.com/nostr-wot/nostr-wot-extension/blob/v0.8.7/tests/authentication.test.ts).\n"
         }
       ],
       "tags": [
         "API",
         "Account",
         "Alby Hub",
+        "Authentication",
         "Avanzato",
         "BIP-32",
         "Chiavi",
@@ -4232,10 +4683,12 @@
         "NWC",
         "Nostr",
         "Permessi",
+        "Permissions",
         "Playground",
         "Principiante",
         "Privacy",
         "Resilienza",
+        "Security",
         "Sicurezza",
         "Visualizzazione",
         "Wallet",
@@ -5041,12 +5494,101 @@
           "difficulty": "beginner",
           "order": 17,
           "content": "\nNostr WoT Extension **0.8.3** permet de connecter un portefeuille LNbits de Nostr WoT existant à des applications compatibles NWC. Créez une connexion par application dans **Portefeuille → Paramètres → Connexions des applications**. Toutes utilisent le même solde.\n\n## Avant de commencer\n\nInstallez la [version 0.8.3 depuis GitHub](https://github.com/nostr-wot/nostr-wot-extension/releases/tag/v0.8.3). La publication dans les boutiques de navigateurs est distincte. Déverrouillez l’extension et connectez votre portefeuille LNbits de Nostr WoT. Consultez le [guide LNbits](/guides/lnbits-wallet-setup) si nécessaire.\n\nCet écran concerne les portefeuilles LNbits. Un serveur personnalisé nécessite l’[adaptateur de gestion des connexions](https://github.com/nostr-wot/LNbits-proxy). Le fournisseur NWC seul ne fournit pas l’API de cet écran.\n\n## Créer une connexion\n\n1. Ouvrez **Portefeuille → Paramètres → Connexions des applications**, puis créez une connexion.\n2. Donnez-lui un nom reconnaissable, par exemple **Primal**. Utilisez une connexion distincte par application.\n3. Fixez une limite positive en sats par période de 24 heures et une expiration entre 1 et 365 jours. Les valeurs initiales sont **1 000 sats** et **30 jours** ; adaptez-les à votre usage.\n4. Créez la connexion et copiez la chaîne complète `nostr+walletconnect://`, ou affichez son QR code.\n5. Dans l’application destinataire, ouvrez l’option NWC ou portefeuille externe, collez la chaîne ou scannez le QR code, puis confirmez. Dans Primal, utilisez l’option NWC lorsqu’elle est disponible dans votre version.\n\nLa connexion autorise les paiements, leur consultation et les informations du portefeuille. Elle **n’autorise pas** la lecture du solde ou de l’historique ni la création de factures. Les applications exigeant ces méthodes peuvent proposer des fonctions limitées.\n\n<Callout type=\"warning\">\nLa chaîne et le QR code autorisent des dépenses dans les limites de la connexion. Partagez-les uniquement avec l’application choisie. Ces paiements ne demandent pas de confirmation supplémentaire dans l’extension.\n</Callout>\n\n## Consulter ou révoquer un accès\n\nRevenez aux connexions pour voir les accès actifs, le budget utilisé et l’expiration. Vous pouvez afficher à nouveau une connexion enregistrée localement ou la révoquer après confirmation. Les limites sont propres à chaque connexion ; plusieurs connexions peuvent dépenser le même solde.\n\nVerrouiller ou déconnecter l’extension ne révoque pas les connexions. Révoquez-les ici pour arrêter leur accès. Déconnecter ou supprimer un portefeuille efface les secrets locaux ; conservez l’accès au portefeuille pour gérer ses autorisations ensuite. Une connexion créée sur un autre appareil peut être listée et révoquée, mais son secret ne peut pas être reconstitué pour la copier.\n\n## En cas de problème\n\nActualisez la liste après une création interrompue avant de recommencer. Vérifiez le solde, la limite, l’expiration, le relais et les méthodes requises par l’application. Si le résultat d’un paiement est incertain, consultez l’historique avant de réessayer.\n\nLes [notes de version 0.8.3](https://github.com/nostr-wot/nostr-wot-extension/releases/tag/v0.8.3) contiennent les changements et téléchargements. Votre portefeuille LNbits existant suffit.\n"
+        },
+        {
+          "slug": "backend-authentication",
+          "title": "Vérifiez le backend auquel vous vous authentifiez",
+          "description": "Comprenez les autorisations par site, compte, URL et méthode lorsque votre application utilise une API distincte.",
+          "excerpt": "Comprenez les autorisations par site, compte, URL et méthode lorsque votre application utilise une API distincte.",
+          "date": "2026-09-30T00:00:00.000Z",
+          "author": {
+            "name": "Leon Acosta",
+            "avatar": "/authors/leon-profile.jpg"
+          },
+          "featuredImage": "/images/guides/site-permissions/featured.svg",
+          "previewImage": "/images/guides/site-permissions/preview.svg",
+          "tags": [
+            "Security",
+            "Permissions",
+            "Authentication"
+          ],
+          "published": true,
+          "readingTime": "3 min read",
+          "locale": "fr",
+          "translationKey": "backend-authentication",
+          "translations": {
+            "en": "backend-authentication",
+            "es": "backend-authentication",
+            "pt": "backend-authentication",
+            "ru": "backend-authentication",
+            "it": "backend-authentication",
+            "fr": "backend-authentication",
+            "de": "backend-authentication"
+          },
+          "availableLocales": [
+            "en",
+            "es",
+            "pt",
+            "ru",
+            "it",
+            "fr",
+            "de"
+          ],
+          "ogImage": "/images/guides/site-permissions/og.jpg",
+          "difficulty": "intermediate",
+          "order": 18,
+          "content": "\n[Nostr WoT 0.8.7](https://github.com/nostr-wot/nostr-wot-extension/releases/tag/v0.8.7) distingue l’accès d’un site à votre identité de l’autorisation de vous authentifier auprès d’un service HTTP. Pour WebSocket, consultez le [guide des relais](/guides/relay-authentication).\n\n## Une API peut avoir un autre domaine\n\nUn site fictif `https://client.example` peut utiliser `https://api.client.example/session`. Cette architecture est normale. L’extension distingue le site demandeur du service destinataire de la preuve.\n\nUne autorisation HTTP mémorisée concerne **le compte, l’origine du site, l’URL signée exacte et la méthode HTTP**, par exemple `POST`. Le texte de la requête dans l’URL compte aussi. Une autre route, un autre port, une autre méthode, un autre site ou compte exige son propre consentement. La règle vaut également pour une API de même origine. Les anciennes autorisations HTTP générales nécessitent un nouveau consentement ; les refus restent applicables.\n\nLe [répertoire des clients et backends](https://github.com/nostr-wot/nostr-wot-extension/blob/v0.8.7/docs/auth-client-registry.md) est informatif et ne peut accorder aucun droit.\n\n## Décider et révoquer\n\nLe dialogue affiche le site et la destination. **Approuver** ou **Refuser** traite la demande actuelle. Les menus fléchés permettent de mémoriser la décision pour cette combinaison précise. HTTP n’offre pas d’autorisation pour tous les sites.\n\nLe bouton de code affiche l’événement complet. L’approbation groupée des signatures ordinaires exclut l’authentification. La table située en bas de **Permissions** suit le compte actif et permet la révocation. Celle-ci bloque les signatures futures, sans retirer une preuve déjà envoyée ni fermer une session ouverte sur le backend.\n\n## Vérifications de l’extension\n\nL’origine vient de l’identité du document fournie par le navigateur. Une page ne peut pas choisir une origine de confiance dans un paramètre RPC. Un cadre principal vérifié est obligatoire ; les iframes, même de même origine, et les origines opaques ou incohérentes sont refusés. HTTPS est requis hors exceptions explicites de développement en loopback.\n\nLes tags obligatoires ambigus, URL invalides, contenus inattendus et dates périmées sont rejetés. Les tags facultatifs `origin` et `client-origin` doivent correspondre à l’origine réelle. Accès, permissions et session du compte sont revérifiés après attente d’une approbation ou d’un déverrouillage. Avec NIP-46, la signature retournée doit appartenir au compte attendu et correspondre exactement à l’événement approuvé, ordre des tags compris.\n\n## Opérations du portefeuille intégré\n\nCréer ou récupérer un portefeuille et gérer une adresse Lightning utilise le protocole v2 de LNbits-proxy. Le signataire générique des sites refuse les jetons destinés à ces routes sensibles.\n\nLa preuve lie URL, méthode et hash des octets exacts du corps. Un défi de 60 secondes ne peut être consommé qu’une fois. Un jeton de transaction distinct circule dans son propre en-tête ; seul son hash est signé. Le serveur valide signature et paramètres avant de consommer atomiquement le défi. Les appels du navigateur nécessitent aussi une origine HTTPS autorisée et un `client-origin` signé correspondant. Les anciennes routes retournent 426, sans repli du client.\n\n## Limites\n\n[NIP-98](https://github.com/nostr-protocol/nips/blob/master/98.md) dépend d’une validation correcte de l’URL et de la méthode par le backend. L’extension ne peut l’imposer à tous les serveurs. Une personne détenant une preuve et les jetons requis peut les transférer au destinataire prévu avant leur première utilisation.\n\nCORS limite les navigateurs, pas les appels entre serveurs. Un tag d’origine ne constitue pas une attestation cryptographique du navigateur. Du code malveillant dans un site principal autorisé partage ses droits. Ces contrôles limitent le consentement sans éliminer tout hameçonnage ou transfert d’authentification.\n\nConsultez le [contrat v2](https://github.com/nostr-wot/nostr-wot-extension/blob/v0.8.7/docs/wallet-auth-v2.md) et les [tests](https://github.com/nostr-wot/nostr-wot-extension/blob/v0.8.7/tests/authentication.test.ts).\n"
+        },
+        {
+          "slug": "relay-authentication",
+          "title": "Choisissez les relais qui peuvent authentifier votre compte",
+          "description": "Autorisez un relais par site ou pour les sites connectés, puis contrôlez et révoquez ces permissions.",
+          "excerpt": "Autorisez un relais par site ou pour les sites connectés, puis contrôlez et révoquez ces permissions.",
+          "date": "2026-09-30T00:00:00.000Z",
+          "author": {
+            "name": "Leon Acosta",
+            "avatar": "/authors/leon-profile.jpg"
+          },
+          "featuredImage": "/images/guides/site-permissions/featured.svg",
+          "previewImage": "/images/guides/site-permissions/preview.svg",
+          "tags": [
+            "Security",
+            "Permissions",
+            "Authentication"
+          ],
+          "published": true,
+          "readingTime": "3 min read",
+          "locale": "fr",
+          "translationKey": "relay-authentication",
+          "translations": {
+            "en": "relay-authentication",
+            "es": "relay-authentication",
+            "pt": "relay-authentication",
+            "ru": "relay-authentication",
+            "it": "relay-authentication",
+            "fr": "relay-authentication",
+            "de": "relay-authentication"
+          },
+          "availableLocales": [
+            "en",
+            "es",
+            "pt",
+            "ru",
+            "it",
+            "fr",
+            "de"
+          ],
+          "ogImage": "/images/guides/site-permissions/og.jpg",
+          "difficulty": "intermediate",
+          "order": 19,
+          "content": "\nAvec [Nostr WoT 0.8.7](https://github.com/nostr-wot/nostr-wot-extension/releases/tag/v0.8.7), connecter un site ou autoriser des signatures ordinaires ne lui permet pas de vous identifier auprès de tous les relais. Les API HTTP ont un [guide distinct](/guides/backend-authentication).\n\n## Site et relais sont distincts\n\n`https://client.example` peut se connecter à `wss://relay.example`. Avec [NIP-42](https://github.com/nostr-protocol/nips/blob/master/42.md), le relais envoie un défi et le client demande un événement d’authentification signé. La preuve révèle la clé publique, sans communiquer la clé privée ni autoriser d’autres signatures.\n\nLe dialogue nomme le site et le relais. Le bouton de code affiche l’événement complet. Cette authentification n’a pas de méthode HTTP.\n\n## Choisissez la portée\n\n| Choix | Autorisation |\n| --- | --- |\n| Approuver | La demande actuelle |\n| Toujours approuver | Ce site, ce compte et ce relais |\n| Toujours pour tous les sites | Les sites connectés ayant accès à l’identité, pour ce compte et ce relais |\n| Refuser | La demande actuelle |\n| Toujours refuser | Refus mémorisé pour ce site, ce compte et ce relais |\n\nLes décisions mémorisées se trouvent dans les menus fléchés. La portée utilise l’URL normalisée du relais, pas seulement son nom : un autre chemin ou port n’est pas automatiquement couvert.\n\nL’option pour tous les sites évite une autorisation répétée avec plusieurs clients et peut concerner des sites connectés ultérieurement. Elle ne connecte aucun nouveau site, n’accorde pas l’accès à l’identité, ne couvre pas d’autres comptes, signatures ordinaires ou backends HTTP. Un refus spécifique au site est prioritaire. Désactiver son accès à l’identité ou le déconnecter bloque toujours l’authentification, y compris avec NIP-46.\n\n## Révoquez les permissions\n\nDans **Permissions**, la section d’authentification en bas suit le compte actif. Sa table affiche les permissions par site. Le lien dessous ouvre la table des relais autorisés pour tous les sites connectés. Chaque entrée peut être révoquée.\n\nDéconnecter un site supprime ses permissions propres. Une autorisation partagée reste valable pour les autres sites connectés, jamais pour le site déconnecté. Supprimer un compte efface ses permissions. Révoquer bloque les signatures futures ; cela ne retire pas une preuve envoyée ni ne ferme un WebSocket déjà authentifié. Le client doit fermer cette connexion.\n\n## Vérifications et limites\n\nL’extension exige une origine fournie par le navigateur et un cadre principal vérifié. Elle refuse les iframes, origines opaques ou incohérentes et transports non sécurisés, hors exceptions explicites de loopback. Elle vérifie les tags de relais et défi, l’URL, le contenu et la fraîcheur, également après attente. Les permissions générales et l’approbation groupée ne contournent pas ce consentement. Changer de compte invalide les demandes précédentes. NIP-46 doit retourner exactement l’événement approuvé signé par le compte attendu.\n\nL’extension ne contrôle pas le WebSocket du client. Le relais doit vérifier signature, adresse, fraîcheur et défi de la connexion. Le signataire ne prouve pas comment le client a obtenu le défi et ne bloque pas tout transfert.\n\nLa même clé publique peut relier vos connexions entre clients auprès d’un relais. Utilisez des comptes séparés ou des autorisations plus étroites si nécessaire. CORS ne remplace pas la validation de connexion et les limites par compte, site et destination.\n\nVoir les [règles de permissions](https://github.com/nostr-wot/nostr-wot-extension/blob/v0.8.7/src/services/permissions/authentication.ts) et les [tests](https://github.com/nostr-wot/nostr-wot-extension/blob/v0.8.7/tests/authentication.test.ts).\n"
         }
       ],
       "tags": [
         "API",
         "Adresse Lightning",
         "Alby Hub",
+        "Authentication",
         "Avance",
         "BIP-32",
         "Cles",
@@ -5070,6 +5612,7 @@
         "Playground",
         "Portefeuille",
         "Securite",
+        "Security",
         "Sécurité",
         "Vie privee",
         "Visualisation",
@@ -5875,12 +6418,101 @@
           "difficulty": "beginner",
           "order": 17,
           "content": "\nMit Nostr WoT Extension **0.8.3** kannst du eine bestehende LNbits-Wallet von Nostr WoT mit NWC-kompatiblen Apps verbinden. Erstelle für jede App eine eigene Verbindung unter **Wallet → Einstellungen → App-Verbindungen**. Alle verwenden dasselbe Wallet-Guthaben.\n\n## Vorbereitung\n\nInstalliere [Version 0.8.3 von GitHub](https://github.com/nostr-wot/nostr-wot-extension/releases/tag/v0.8.3). Die Veröffentlichung in Browser-Stores erfolgt separat. Entsperre die Erweiterung und verbinde deine LNbits-Wallet von Nostr WoT. Bei Bedarf hilft die [LNbits-Anleitung](/guides/lnbits-wallet-setup).\n\nDiese Ansicht ist für LNbits-Wallets gedacht. Ein eigener Server benötigt den [Adapter zur Verbindungsverwaltung](https://github.com/nostr-wot/LNbits-proxy). Die Installation des NWC-Providers allein stellt die benötigte API nicht bereit.\n\n## Verbindung erstellen\n\n1. Öffne **Wallet → Einstellungen → App-Verbindungen** und erstelle eine neue Verbindung.\n2. Vergib einen erkennbaren Namen wie **Primal**. Verwende pro App eine eigene Verbindung.\n3. Lege ein positives Limit in Sats pro 24 Stunden sowie eine Laufzeit zwischen 1 und 365 Tagen fest. Das Formular startet mit **1.000 Sats** und **30 Tagen**; passe die Werte an.\n4. Erstelle die Verbindung. Kopiere die vollständige Zeichenfolge `nostr+walletconnect://` oder zeige den QR-Code an.\n5. Öffne in der Ziel-App die Option für NWC oder eine externe Wallet. Füge die Zeichenfolge ein oder scanne den QR-Code und bestätige. Nutze in Primal die NWC-Option, sofern deine Version sie anbietet.\n\nDie Verbindung erlaubt Zahlungen, Zahlungsabfragen und Wallet-Informationen. Sie erlaubt **keinen** Zugriff auf Guthaben oder Transaktionsverlauf und keine Rechnungserstellung. Apps, die solche Methoden benötigen, können eingeschränkt funktionieren.\n\n<Callout type=\"warning\">\nZeichenfolge und QR-Code erlauben Ausgaben innerhalb des Verbindungslimits. Teile sie nur mit der vorgesehenen App. Zahlungen über diese Verbindung erfordern keine zusätzliche Freigabe in der Erweiterung.\n</Callout>\n\n## Zugriff prüfen oder widerrufen\n\nIn den App-Verbindungen siehst du aktive Verbindungen, Budgetverbrauch und Ablaufdatum. Lokal gespeicherte Verbindungen kannst du erneut anzeigen oder nach Bestätigung widerrufen. Jedes Limit gilt pro Verbindung; mehrere Verbindungen können dasselbe Guthaben ausgeben.\n\nSperren oder Trennen der Erweiterung widerruft keine Verbindung. Widerrufe sie hier, um den Zugriff zu beenden. Beim Trennen oder Entfernen einer Wallet werden lokale Geheimnisse gelöscht. Bewahre den Zugang zur Wallet auf, um ihre Berechtigungen später zu verwalten. Auf anderen Geräten erstellte Verbindungen lassen sich auflisten und widerrufen, ihr Geheimnis lässt sich aber nicht zum Kopieren rekonstruieren.\n\n## Bei Problemen\n\nAktualisiere nach einer unterbrochenen Erstellung zuerst die Liste. Prüfe Guthaben, Limit, Ablaufdatum, Relay-Verbindung und die von der App benötigten Methoden. Ist der Zahlungsausgang unklar, prüfe den Verlauf vor einem weiteren Versuch.\n\nDie [Versionshinweise zu 0.8.3](https://github.com/nostr-wot/nostr-wot-extension/releases/tag/v0.8.3) enthalten Änderungen und Downloads. Deine bestehende LNbits-Wallet kann weiterverwendet werden.\n"
+        },
+        {
+          "slug": "backend-authentication",
+          "title": "Prüfe, bei welchem Backend du dich authentifizierst",
+          "description": "Verstehe Berechtigungen für Website, Konto, genaue URL und HTTP-Methode bei getrennten API-Domains.",
+          "excerpt": "Verstehe Berechtigungen für Website, Konto, genaue URL und HTTP-Methode bei getrennten API-Domains.",
+          "date": "2026-09-30T00:00:00.000Z",
+          "author": {
+            "name": "Leon Acosta",
+            "avatar": "/authors/leon-profile.jpg"
+          },
+          "featuredImage": "/images/guides/site-permissions/featured.svg",
+          "previewImage": "/images/guides/site-permissions/preview.svg",
+          "tags": [
+            "Security",
+            "Permissions",
+            "Authentication"
+          ],
+          "published": true,
+          "readingTime": "3 min read",
+          "locale": "de",
+          "translationKey": "backend-authentication",
+          "translations": {
+            "en": "backend-authentication",
+            "es": "backend-authentication",
+            "pt": "backend-authentication",
+            "ru": "backend-authentication",
+            "it": "backend-authentication",
+            "fr": "backend-authentication",
+            "de": "backend-authentication"
+          },
+          "availableLocales": [
+            "en",
+            "es",
+            "pt",
+            "ru",
+            "it",
+            "fr",
+            "de"
+          ],
+          "ogImage": "/images/guides/site-permissions/og.jpg",
+          "difficulty": "intermediate",
+          "order": 18,
+          "content": "\n[Nostr WoT 0.8.7](https://github.com/nostr-wot/nostr-wot-extension/releases/tag/v0.8.7) trennt den Zugriff einer Website auf deine Identität von der Erlaubnis, dich bei einem HTTP-Dienst zu authentifizieren. Für WebSocket gibt es den [Relay-Leitfaden](/guides/relay-authentication).\n\n## Eine API darf eine andere Domain verwenden\n\nDie fiktive Website `https://client.example` kann `https://api.client.example/session` nutzen. Das ist eine übliche Architektur. Entscheidend sind sowohl die anfragende Website als auch das Ziel des signierten Nachweises.\n\nEine gespeicherte HTTP-Erlaubnis gilt für **Konto, Website-Origin, exakte signierte URL und HTTP-Methode**, etwa `POST`. Auch der Query-Text gehört dazu. Andere Pfade, Ports, Methoden, Websites oder Konten benötigen eine eigene Erlaubnis. Das gilt ebenfalls für APIs mit derselben Origin. Frühere pauschale HTTP-Freigaben benötigen neue Zustimmung; Ablehnungen bleiben wirksam.\n\nDas [Client- und Backend-Verzeichnis](https://github.com/nostr-wot/nostr-wot-extension/blob/v0.8.7/docs/auth-client-registry.md) erklärt bekannte Dienste. Ein Eintrag erteilt keine Berechtigung.\n\n## Entscheiden und widerrufen\n\nDer Dialog zeigt Website und Ziel. **Genehmigen** und **Ablehnen** betreffen die aktuelle Anfrage. Über die Pfeilmenüs kannst du die Entscheidung für die genaue Kombination speichern. HTTP bietet keine Freigabe für alle Websites.\n\nDie Code-Schaltfläche zeigt das vollständige Ereignis. Sammelgenehmigungen gewöhnlicher Signaturen schließen Authentifizierung aus. Die Authentifizierungstabelle unten in **Berechtigungen** folgt dem aktiven Konto. Ein Widerruf verhindert weitere Signaturen; er holt versendete Nachweise nicht zurück und beendet keine bestehende Backend-Sitzung.\n\n## Was die Erweiterung prüft\n\nDie Origin stammt aus der vom Browser gelieferten Dokumentidentität. Eine Website kann nicht über ein RPC-Feld eine andere Origin wählen. Ein verifizierter Hauptframe ist erforderlich. Iframes, auch derselben Origin, sowie undurchsichtige oder widersprüchliche Origins werden abgelehnt. HTTPS ist vorgeschrieben, abgesehen von ausdrücklichen Loopback-Ausnahmen für Entwicklung.\n\nMehrdeutige Pflicht-Tags, ungültige URLs, unerwartete Inhalte und veraltete Zeitstempel werden abgelehnt. Optionale `origin`- und `client-origin`-Tags müssen zur tatsächlichen Origin passen. Nach Wartezeiten für Genehmigung oder Entsperrung werden Zugriff, Berechtigungen und Kontositzung erneut geprüft. Ein NIP-46-Signer muss das vollständige genehmigte Ereignis einschließlich Tag-Reihenfolge mit dem erwarteten Konto signieren.\n\n## Integrierte Wallet-Vorgänge\n\nWallet-Erstellung oder Wiederherstellung und Lightning-Adressverwaltung verwenden LNbits-proxy v2. Der allgemeine Website-Signer verweigert Tokens für diese sensiblen Verwaltungsrouten.\n\nDer Nachweis bindet URL, Methode und Hash der exakten Body-Bytes. Eine Backend-Challenge gilt 60 Sekunden und nur einmal. Ein separates Transaktionstoken wird in einem eigenen Header übertragen; nur sein Hash wird signiert. Der Server prüft Signatur und Bindungen, bevor er die Challenge atomar verbraucht. Browser-Aufrufe benötigen zusätzlich eine zugelassene HTTPS-Origin und ein passendes signiertes `client-origin`. Alte Routen liefern 426; der Client wechselt nicht zum alten Protokoll zurück.\n\n## Grenzen\n\n[NIP-98](https://github.com/nostr-protocol/nips/blob/master/98.md) setzt voraus, dass das Backend URL und Methode korrekt prüft. Die Erweiterung kann dies fremden Servern nicht aufzwingen. Wer einen gültigen Nachweis und erforderliche Tokens besitzt, kann sie vor der ersten Nutzung an das vorgesehene Ziel weiterleiten.\n\nCORS beschränkt Browser, nicht Server-zu-Server-Aufrufe. Ein Origin-Tag ist kein kryptografischer Browsernachweis. Bösartiger Code innerhalb einer vertrauten Hauptseite teilt deren Befugnisse. Diese Kontrollen begrenzen die Zustimmung, verhindern aber nicht jedes Phishing oder Weiterleiten von Authentifizierungsnachweisen.\n\nSiehe [v2-Vertrag](https://github.com/nostr-wot/nostr-wot-extension/blob/v0.8.7/docs/wallet-auth-v2.md) und [Tests](https://github.com/nostr-wot/nostr-wot-extension/blob/v0.8.7/tests/authentication.test.ts).\n"
+        },
+        {
+          "slug": "relay-authentication",
+          "title": "Wähle, welche Relays dein Konto authentifizieren dürfen",
+          "description": "Erlaube Relays pro Website oder für verbundene Websites und widerrufe den Zugriff gezielt.",
+          "excerpt": "Erlaube Relays pro Website oder für verbundene Websites und widerrufe den Zugriff gezielt.",
+          "date": "2026-09-30T00:00:00.000Z",
+          "author": {
+            "name": "Leon Acosta",
+            "avatar": "/authors/leon-profile.jpg"
+          },
+          "featuredImage": "/images/guides/site-permissions/featured.svg",
+          "previewImage": "/images/guides/site-permissions/preview.svg",
+          "tags": [
+            "Security",
+            "Permissions",
+            "Authentication"
+          ],
+          "published": true,
+          "readingTime": "3 min read",
+          "locale": "de",
+          "translationKey": "relay-authentication",
+          "translations": {
+            "en": "relay-authentication",
+            "es": "relay-authentication",
+            "pt": "relay-authentication",
+            "ru": "relay-authentication",
+            "it": "relay-authentication",
+            "fr": "relay-authentication",
+            "de": "relay-authentication"
+          },
+          "availableLocales": [
+            "en",
+            "es",
+            "pt",
+            "ru",
+            "it",
+            "fr",
+            "de"
+          ],
+          "ogImage": "/images/guides/site-permissions/og.jpg",
+          "difficulty": "intermediate",
+          "order": 19,
+          "content": "\nIn [Nostr WoT 0.8.7](https://github.com/nostr-wot/nostr-wot-extension/releases/tag/v0.8.7) erlaubt eine Website-Verbindung oder allgemeine Signaturfreigabe nicht automatisch die Identifizierung bei jedem Relay. HTTP-APIs behandelt der [Backend-Leitfaden](/guides/backend-authentication).\n\n## Website und Relay sind verschiedene Parteien\n\n`https://client.example` kann sich mit `wss://relay.example` verbinden. Bei [NIP-42](https://github.com/nostr-protocol/nips/blob/master/42.md) sendet das Relay eine Challenge; der Client fordert ein signiertes Authentifizierungsereignis an. Damit erfährt das Relay den öffentlichen Schlüssel, nicht den privaten Schlüssel oder eine Erlaubnis für andere Signaturen.\n\nDer Dialog nennt Website und Relay. Die Code-Schaltfläche öffnet das gesamte Ereignis. Diese Authentifizierung verwendet keine HTTP-Methode.\n\n## Wähle den Umfang\n\n| Auswahl | Umfang |\n| --- | --- |\n| Genehmigen | Aktuelle Anfrage |\n| Immer genehmigen | Diese Website, dieses Konto und dieses Relay |\n| Immer für alle Websites | Verbundene Websites mit Identitätszugriff, für dieses Konto und Relay |\n| Ablehnen | Aktuelle Anfrage |\n| Immer ablehnen | Gespeicherte Ablehnung für Website, Konto und Relay |\n\nGespeicherte Optionen stehen in den Pfeilmenüs. Der Umfang richtet sich nach der normalisierten Relay-URL, nicht nur dem angezeigten Hostnamen. Ein anderer Pfad oder Port ist nicht automatisch erlaubt.\n\nDie Freigabe für alle Websites spart wiederholte Zustimmung bei mehreren Clients. Sie kann auch später verbundene Websites erfassen. Sie verbindet keine neuen Websites, erteilt keinen Identitätszugriff und gilt nicht für andere Konten, normale Ereignissignaturen oder HTTP-Backends. Eine websitespezifische Ablehnung hat Vorrang. Entzogener Identitätszugriff oder eine getrennte Verbindung blockiert weiterhin die Authentifizierung, auch mit NIP-46.\n\n## Prüfen und widerrufen\n\nÖffne **Berechtigungen** für das aktive Konto und die Authentifizierungssektion unten. Die Tabelle enthält websitespezifische Freigaben. Der Link darunter öffnet die separate Tabelle der für alle verbundenen Websites erlaubten Relays. Einträge lassen sich einzeln widerrufen.\n\nEine Website zu trennen entfernt ihre eigenen Freigaben. Eine gemeinsame Relay-Freigabe bleibt für andere verbundene Websites erhalten, gilt aber nicht für die getrennte Website. Das Löschen eines Kontos entfernt dessen Freigaben. Widerruf verhindert künftige Signaturen, schließt aber keine bereits authentifizierte WebSocket-Verbindung. Dafür muss der Client die Verbindung beenden.\n\n## Prüfungen und Grenzen\n\nDie Erweiterung verlangt eine vom Browser bestätigte Origin im Hauptframe. Iframes, undurchsichtige oder widersprüchliche Origins sowie unsichere Transporte werden abgelehnt, außer bei ausdrücklichen Loopback-Ausnahmen. Relay- und Challenge-Tags, URL, Inhalt und Zeitstempel werden geprüft, auch nach Wartezeiten. Allgemeine Berechtigungen und Sammelgenehmigungen umgehen die Zielzustimmung nicht. Kontowechsel machen vorherige Anfragen ungültig. NIP-46-Antworten müssen exakt zum genehmigten Ereignis und erwarteten Konto passen.\n\nDie Erweiterung kontrolliert nicht den WebSocket des Clients. Das Relay muss Signatur, Adresse, Aktualität und Challenge dieser Verbindung prüfen. Ein Signer kann nicht beweisen, wie der Client die Challenge erhalten hat, oder jede Weiterleitung verhindern.\n\nDerselbe öffentliche Schlüssel kann Verbindungen verschiedener Clients beim Relay verknüpfbar machen. Nutze getrennte Konten oder engere Freigaben, wenn diese Trennung wichtig ist. CORS ersetzt weder die Verbindungsprüfung noch Berechtigungen nach Konto, Website und Ziel.\n\nSiehe [Berechtigungsregeln](https://github.com/nostr-wot/nostr-wot-extension/blob/v0.8.7/src/services/permissions/authentication.ts) und [Tests](https://github.com/nostr-wot/nostr-wot-extension/blob/v0.8.7/tests/authentication.test.ts).\n"
         }
       ],
       "tags": [
         "API",
         "Alby Hub",
         "Anfänger",
+        "Authentication",
         "BIP-32",
         "Berechtigungen",
         "Datenschutz",
@@ -5898,8 +6530,10 @@
         "NIP-07",
         "NWC",
         "Nostr",
+        "Permissions",
         "Playground",
         "Schlüssel",
+        "Security",
         "Sicherheit",
         "Trust-Graph",
         "Vertrauenseinstellungen",
