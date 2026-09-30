@@ -1,0 +1,59 @@
+---
+title: "Le richieste di eliminazione NIP-09 non provano la cancellazione"
+description: "Un evento Nostr kind 5 chiede a relay e client di non servire più un altro evento. Non prova che tutte le copie siano scomparse."
+seoDescription: "Come funzionano le richieste NIP-09, perché conta verificare l’autore e perché non garantiscono la cancellazione da tutti i relay e client."
+excerpt: "Kind 5 è una richiesta firmata, non una cancellazione remota. Relay e client possono rispettarla, ma le copie già scaricate restano fuori portata."
+date: "2026-09-30"
+publishedAt: "2026-09-30"
+backfilled: false
+type: "story"
+tags: ["Nostr", "NIP-09", "Privacy", "Relay"]
+featuredImage: "/images/news/nip-09-deletion-requests-do-not-prove-erasure.svg"
+translationKey: "nip-09-deletion-requests-do-not-prove-erasure"
+sources:
+  - title: "NIP-09: Event Deletion Request al commit 0046368"
+    url: "https://github.com/nostr-protocol/nips/blob/0046368a747c5c25ae2bec28bae0e537744c8f10/09.md"
+    publisher: "nostr-protocol/nips"
+    date: "2026-09-27"
+  - title: "NIP-01: Basic protocol flow al commit 0046368"
+    url: "https://github.com/nostr-protocol/nips/blob/0046368a747c5c25ae2bec28bae0e537744c8f10/01.md"
+    publisher: "nostr-protocol/nips"
+    date: "2026-09-27"
+published: true
+---
+
+Eliminare un post in un client Nostr non invia un comando capace di raggiungere ogni relay, cache e dispositivo. Il client pubblica un altro evento firmato. [NIP-09](https://github.com/nostr-protocol/nips/blob/0046368a747c5c25ae2bec28bae0e537744c8f10/09.md) lo definisce come kind `5`, una richiesta di eliminazione che indica uno o più eventi con tag `e` o `a`.
+
+La distinzione conta. Una richiesta valida dà al software cooperante le informazioni per smettere di servire o mostrare un evento. Non rende irrecuperabili i byte indicati e non prova che ogni precedente destinatario abbia cancellato la propria copia.
+
+## Kind 5 identifica ciò che l’autore vuole rimuovere
+
+Un tag `e` nomina uno specifico ID evento. Un tag `a` indirizza un evento sostituibile tramite kind, chiave pubblica e identificatore `d`. NIP-09 dice inoltre che la richiesta dovrebbe includere un tag `k` per ogni kind referenziato. Il contenuto può spiegare il motivo della rimozione.
+
+Per un riferimento `e`, la richiesta è valida solo quando l’evento indicato e la richiesta kind `5` hanno la stessa chiave pubblica. Un client deve verificare questa corrispondenza prima di nascondere o cancellare qualcosa. Senza questa regola, chiunque potrebbe firmare una richiesta per far sparire il post di un altro autore dalle interfacce conformi.
+
+Un riferimento `a` ha una portata maggiore. I relay dovrebbero cancellare tutte le versioni dell’evento sostituibile fino al `created_at` della richiesta. Le versioni successive restano fuori, quindi l’orario fa parte del confine.
+
+## I relay ricevono una richiesta, non un controllo remoto
+
+NIP-09 dice che i relay dovrebbero cancellare o smettere di pubblicare gli eventi corrispondenti. Non dice che possano essere obbligati. Un relay potrebbe non ricevere mai la richiesta, non conservare l’evento citato o applicare una diversa politica di conservazione.
+
+Il protocollo dice anche ai relay di continuare a pubblicare indefinitamente la richiesta stessa. In questo modo i client che hanno già l’evento originale possono scoprire che l’autore lo ha ritirato. I client possono ritrasmettere la richiesta ad altri relay che non l’hanno ancora vista.
+
+L’asimmetria è intenzionale: il contenuto originale dovrebbe diventare meno disponibile, mentre la richiesta firmata di non mostrarlo più dovrebbe restare disponibile. Una richiesta contro un’altra richiesta di eliminazione non ha effetto. Non esiste un annullamento standard.
+
+## Una firma prova l’autore, non una cancellazione globale
+
+[NIP-01](https://github.com/nostr-protocol/nips/blob/0046368a747c5c25ae2bec28bae0e537744c8f10/01.md) rende ogni evento un oggetto firmato indipendente, con un ID derivato dal contenuto serializzato. Dopo che un evento è stato copiato, una firma successiva non può modificare quell’oggetto. Può solo aggiungere una nuova istruzione che altro software può rispettare.
+
+I relay sono indipendenti e i client possono ricevere eventi tramite più sottoscrizioni. Uno screenshot, un database locale, un’esportazione o un relay di archivio può sopravvivere anche quando tutti i relay abituali dell’autore accettano la richiesta. NIP-09 permette quindi di avvisare che la cancellazione non è garantita su tutti i relay e client.
+
+Lo stesso limite vale per gli eventi cifrati. Rimuovere il testo cifrato dai relay cooperanti riduce la disponibilità futura, ma non revoca le copie già scaricate. Cifratura e cancellazione risolvono problemi diversi.
+
+## Cosa possono verificare i client
+
+Un client può validare la firma del kind `5`, controllare che ogni evento referenziato con `e` abbia lo stesso autore e registrare quali relay hanno accettato la richiesta. Può poi interrogarli di nuovo e confermare che non restituiscano più l’obiettivo. Questi controlli producono evidenza utile su un insieme definito di relay.
+
+Non producono una ricevuta di cancellazione globale. La risposta di un relay non dice nulla sui server non interrogati, sui client offline o sulle copie esterne alla rete di relay.
+
+La regola pratica è trattare una pubblicazione Nostr come durevole. Usa kind `5` quando un contenuto deve essere ritirato, invialo ai relay che hanno ricevuto l’originale e lascia che i client nascondano gli obiettivi validi. Ma non pubblicare segreti presumendo che una richiesta successiva possa recuperare ogni copia. NIP-09 coordina la rimozione. Non trasforma una rete distribuita in un sistema di cancellazione remota.
