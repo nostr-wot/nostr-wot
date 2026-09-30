@@ -1,0 +1,59 @@
+---
+title: "Pedidos de exclusão NIP-09 não provam o apagamento"
+description: "Um evento Nostr de kind 5 pede a relays e clientes que parem de servir outro evento. Ele não prova que todas as cópias desapareceram."
+seoDescription: "Entenda como pedidos de exclusão NIP-09 funcionam, por que validar o autor importa e por que eles não garantem apagar um evento de todos os relays e clientes."
+excerpt: "Kind 5 é um pedido assinado, não uma limpeza remota. Relays e clientes podem atendê-lo, mas cópias já obtidas ficam fora do seu alcance."
+date: "2026-09-30"
+publishedAt: "2026-09-30"
+backfilled: false
+type: "story"
+tags: ["Nostr", "NIP-09", "Privacidade", "Relays"]
+featuredImage: "/images/news/nip-09-deletion-requests-do-not-prove-erasure.svg"
+translationKey: "nip-09-deletion-requests-do-not-prove-erasure"
+sources:
+  - title: "NIP-09: Event Deletion Request no commit 0046368"
+    url: "https://github.com/nostr-protocol/nips/blob/0046368a747c5c25ae2bec28bae0e537744c8f10/09.md"
+    publisher: "nostr-protocol/nips"
+    date: "2026-09-27"
+  - title: "NIP-01: Basic protocol flow no commit 0046368"
+    url: "https://github.com/nostr-protocol/nips/blob/0046368a747c5c25ae2bec28bae0e537744c8f10/01.md"
+    publisher: "nostr-protocol/nips"
+    date: "2026-09-27"
+published: true
+---
+
+Excluir uma publicação em um cliente Nostr não envia um comando capaz de alcançar cada relay, cache e dispositivo. O cliente publica outro evento assinado. A [NIP-09](https://github.com/nostr-protocol/nips/blob/0046368a747c5c25ae2bec28bae0e537744c8f10/09.md) define esse evento como kind `5`, um pedido de exclusão que aponta para um ou mais eventos por tags `e` ou `a`.
+
+A diferença importa. Um pedido válido dá a software cooperante informação para parar de servir ou exibir um evento. Ele não torna os bytes referenciados irrecuperáveis nem prova que cada destinatário anterior apagou sua cópia.
+
+## Kind 5 identifica o que o autor quer remover
+
+Uma tag `e` nomeia um ID de evento específico. Uma tag `a` endereça um evento substituível por kind, chave pública e identificador `d`. A NIP-09 também diz que o pedido deveria incluir uma tag `k` para cada kind referenciado. O conteúdo pode explicar por que o autor quer remover o evento.
+
+Para uma referência `e`, o pedido só é válido quando o evento referenciado e o pedido de kind `5` têm a mesma chave pública. Um cliente deve conferir essa correspondência antes de ocultar ou excluir qualquer coisa. Sem isso, qualquer pessoa poderia assinar um pedido para esconder a publicação de outro autor em interfaces compatíveis.
+
+Uma referência `a` tem alcance maior. Relays deveriam excluir todas as versões do evento substituível até o `created_at` do pedido. Versões posteriores ficam fora, por isso o horário faz parte do limite.
+
+## Relays recebem um pedido, não um controle remoto
+
+A NIP-09 diz que relays deveriam excluir ou parar de publicar eventos correspondentes. Ela não diz que um relay pode ser forçado. O servidor pode nunca receber o pedido, não armazenar o evento citado ou aplicar outra política de retenção.
+
+O protocolo também orienta relays a continuar publicando o próprio pedido de exclusão indefinidamente. Assim, clientes que já guardam o evento original podem descobrir que o autor o retirou. Clientes podem retransmitir o pedido para outros relays que ainda não o viram.
+
+Isso cria uma assimetria intencional: o conteúdo original deve ficar menos disponível, enquanto o pedido assinado para parar de exibi-lo deve continuar disponível. Um pedido contra outro pedido de exclusão não tem efeito. Não existe uma operação padrão de desfazer.
+
+## Uma assinatura prova autoria, não exclusão global
+
+A [NIP-01](https://github.com/nostr-protocol/nips/blob/0046368a747c5c25ae2bec28bae0e537744c8f10/01.md) define cada evento como um objeto assinado independente, com ID derivado do conteúdo serializado. Depois que um evento foi copiado, uma assinatura posterior não pode alterar o objeto anterior. Ela só acrescenta uma instrução que outro software pode cumprir.
+
+Relays são independentes, e clientes podem receber eventos por várias assinaturas. Uma captura de tela, banco local, exportação ou relay de arquivo pode sobreviver mesmo quando todos os relays habituais do autor aceitam o pedido. Por isso a NIP-09 permite alertar que a exclusão não é garantida em todos os relays e clientes.
+
+O mesmo limite vale para eventos criptografados. Remover o texto cifrado de relays cooperantes reduz a disponibilidade futura, mas não revoga cópias que destinatários ou observadores já baixaram. Criptografia e exclusão resolvem problemas diferentes.
+
+## O que clientes conseguem verificar
+
+Um cliente pode validar a assinatura do kind `5`, conferir se cada evento citado com `e` tem o mesmo autor e registrar quais relays aceitaram o pedido. Depois pode consultar esses relays e confirmar que eles não devolvem mais o alvo. Essas verificações produzem evidência útil sobre um conjunto definido de relays.
+
+Elas não produzem um recibo global de exclusão. A resposta de um relay nada diz sobre servidores não consultados, clientes offline ou cópias fora da rede de relays.
+
+A regra prática é tratar uma publicação Nostr como durável. Use kind `5` quando o conteúdo precisar ser retirado, transmita-o aos relays que receberam o original e deixe clientes ocultarem alvos válidos. Mas não publique segredos supondo que um pedido posterior recuperará cada cópia. A NIP-09 coordena a remoção. Ela não transforma uma rede distribuída em um sistema de limpeza remota.

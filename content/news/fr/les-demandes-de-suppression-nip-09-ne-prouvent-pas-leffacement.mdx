@@ -1,0 +1,59 @@
+---
+title: "Les demandes de suppression NIP-09 ne prouvent pas l’effacement"
+description: "Un événement Nostr de kind 5 demande aux relais et aux clients de ne plus servir un autre événement. Il ne prouve pas que toutes les copies ont disparu."
+seoDescription: "Comprendre les demandes de suppression NIP-09, la validation de l’auteur et pourquoi elles ne garantissent pas l’effacement sur tous les relais et clients."
+excerpt: "Le kind 5 est une demande signée, pas un effacement à distance. Les relais peuvent l’honorer, mais les copies déjà récupérées restent hors de sa portée."
+date: "2026-09-30"
+publishedAt: "2026-09-30"
+backfilled: false
+type: "story"
+tags: ["Nostr", "NIP-09", "Vie privée", "Relais"]
+featuredImage: "/images/news/nip-09-deletion-requests-do-not-prove-erasure.svg"
+translationKey: "nip-09-deletion-requests-do-not-prove-erasure"
+sources:
+  - title: "NIP-09: Event Deletion Request au commit 0046368"
+    url: "https://github.com/nostr-protocol/nips/blob/0046368a747c5c25ae2bec28bae0e537744c8f10/09.md"
+    publisher: "nostr-protocol/nips"
+    date: "2026-09-27"
+  - title: "NIP-01: Basic protocol flow au commit 0046368"
+    url: "https://github.com/nostr-protocol/nips/blob/0046368a747c5c25ae2bec28bae0e537744c8f10/01.md"
+    publisher: "nostr-protocol/nips"
+    date: "2026-09-27"
+published: true
+---
+
+Supprimer une publication dans un client Nostr n’envoie pas une commande capable d’atteindre chaque relais, cache et appareil. Le client publie un nouvel événement signé. La [NIP-09](https://github.com/nostr-protocol/nips/blob/0046368a747c5c25ae2bec28bae0e537744c8f10/09.md) définit cet événement comme le kind `5`, une demande de suppression qui désigne un ou plusieurs événements avec des tags `e` ou `a`.
+
+La distinction est importante. Une demande valide donne aux logiciels coopératifs les informations nécessaires pour ne plus servir ou afficher un événement. Elle ne rend pas les octets référencés irrécupérables et ne prouve pas que chaque ancien destinataire a effacé sa copie.
+
+## Le kind 5 identifie ce que l’auteur veut retirer
+
+Un tag `e` nomme l’identifiant précis d’un événement. Un tag `a` désigne un événement remplaçable par son kind, sa clé publique et son identifiant `d`. La NIP-09 indique aussi que la demande devrait inclure un tag `k` pour chaque kind référencé. Son contenu peut expliquer la raison du retrait.
+
+Pour une référence `e`, la demande n’est valable que si l’événement référencé et la demande de kind `5` ont la même clé publique. Un client doit vérifier cette correspondance avant de masquer ou supprimer quoi que ce soit. Sans cette règle, n’importe qui pourrait signer une demande pour faire disparaître la publication d’un autre auteur dans les interfaces conformes.
+
+Une référence `a` a une portée plus large. Les relais devraient supprimer toutes les versions de cet événement remplaçable jusqu’au `created_at` de la demande. Les versions plus récentes restent hors de cette portée. L’horodatage fait donc partie de la limite.
+
+## Les relais reçoivent une demande, pas un contrôle à distance
+
+La NIP-09 dit que les relais devraient supprimer les événements correspondants ou cesser de les publier. Elle ne dit pas qu’un relais peut être forcé. Il peut ne jamais recevoir la demande, ne pas stocker l’événement visé ou appliquer une autre politique de conservation.
+
+Le protocole demande aussi aux relais de continuer à publier indéfiniment la demande de suppression elle-même. Les clients qui possèdent déjà l’événement original peuvent ainsi apprendre que son auteur l’a retiré. Les clients peuvent retransmettre la demande vers d’autres relais qui ne l’ont pas encore vue.
+
+Cette asymétrie est volontaire : le contenu original doit devenir moins disponible, tandis que la demande signée de ne plus l’afficher doit rester disponible. Une demande visant une autre demande de suppression n’a aucun effet. Il n’existe pas d’opération standard pour annuler la demande.
+
+## Une signature prouve l’auteur, pas une suppression globale
+
+La [NIP-01](https://github.com/nostr-protocol/nips/blob/0046368a747c5c25ae2bec28bae0e537744c8f10/01.md) fait de chaque événement un objet signé indépendant dont l’identifiant dérive de son contenu sérialisé. Lorsqu’un événement a été copié, une signature ultérieure ne peut pas modifier cet objet. Elle peut seulement ajouter une instruction que d’autres logiciels peuvent respecter.
+
+Les relais sont indépendants et les clients peuvent recevoir des événements par plusieurs abonnements. Une capture d’écran, une base locale, un export ou un relais d’archive peut survivre même si tous les relais habituels de l’auteur acceptent la demande. La NIP-09 permet donc aux clients d’avertir que la suppression ne peut pas être garantie sur tous les relais et clients.
+
+La même limite vaut pour les événements chiffrés. Retirer le texte chiffré des relais coopératifs réduit sa disponibilité future, mais ne révoque pas les copies déjà téléchargées. Chiffrement et suppression répondent à des problèmes différents.
+
+## Ce qu’un client peut vérifier
+
+Un client peut valider la signature du kind `5`, vérifier que chaque événement référencé par `e` a le même auteur et enregistrer les relais qui ont accepté la demande. Il peut ensuite les interroger et confirmer qu’ils ne renvoient plus la cible. Ces contrôles donnent une preuve utile pour un ensemble défini de relais.
+
+Ils ne produisent pas un reçu de suppression global. La réponse d’un relais ne dit rien sur les serveurs non interrogés, les clients hors ligne ou les copies extérieures au réseau de relais.
+
+La règle pratique consiste à considérer une publication Nostr comme durable. Utilisez le kind `5` pour retirer du contenu, diffusez-le aux relais qui ont reçu l’original et laissez les clients masquer les cibles valides. Mais ne publiez pas de secret en supposant qu’une demande ultérieure récupérera chaque copie. La NIP-09 coordonne le retrait. Elle ne transforme pas un réseau distribué en système d’effacement à distance.
