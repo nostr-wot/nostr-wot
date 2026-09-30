@@ -1,94 +1,50 @@
 ---
-title: "Primeiros Passos com o Nostr WoT"
-description: "Instale a extensao Nostr WoT no Chrome, Brave, Edge, Opera ou Firefox. Configure sua identidade Nostr e comece a construir sua Web of Trust em minutos."
-excerpt: "Tudo o que voce precisa para instalar a extensao Nostr WoT e colocar sua rede de confianca para funcionar."
-date: "2026-03-11"
-author:
-  name: "Leon Acosta"
-  avatar: "/authors/leon-profile.jpg"
-  npub: "npub1gxdhmu9swqduwhr6zptjy4ya693zp3ql28nemy4hd97kuufyrqdqwe5zfk"
+title: "Primeiros passos: escolha como configurar sua conta Nostr"
+description: "Instale o Nostr WoT e escolha uma nova identidade, uma chave ou backup existente, uma conta somente leitura ou uma conexão QR a um assinador externo."
+excerpt: "Instale o Nostr WoT e escolha uma nova identidade, uma chave ou backup existente, uma conta somente leitura ou uma conexão QR a um assinador externo."
+date: "2026-09-30"
+author: {"name": "Leon Acosta", "avatar": "/authors/leon-profile.jpg", "npub": "npub1gxdhmu9swqduwhr6zptjy4ya693zp3ql28nemy4hd97kuufyrqdqwe5zfk"}
 featuredImage: "/images/guides/getting-started/featured.svg"
 previewImage: "/images/guides/getting-started/preview.svg"
-tags:
-  - "Extensao"
-  - "Configuracao"
-  - "Iniciante"
+tags: ["Extensão", "Identidade", "Configuração"]
 published: true
-seoTitle: "Primeiros Passos com a Extensao Nostr WoT — Instale"
-seoDescription: "Instale a extensao Nostr WoT no Chrome, Brave, Edge, Opera ou Firefox. Configure sua identidade Nostr e comece a construir sua Web of Trust em minutos."
+seoTitle: "Primeiros passos: escolha como configurar sua conta Nostr"
+seoDescription: "Instale o Nostr WoT e escolha uma nova identidade, uma chave ou backup existente, uma conta somente leitura ou uma conexão QR a um assinador externo."
 ogImage: "/images/guides/getting-started/og.jpg"
 translationKey: "getting-started"
 difficulty: "beginner"
 order: 1
 ---
 
-Este guia mostra como instalar a extensao Nostr WoT, configurar sua identidade e colocar sua rede de confianca para funcionar. O processo todo leva cerca de dois minutos.
+O Nostr WoT oferece quatro maneiras de configurar uma identidade. Para sua primeira conta Nostr, escolha **Create New**. Se já tem uma identidade, escolha o método correspondente ao que você possui.
 
-## Instalando a Extensao
+## Instale e abra a extensão
 
-A extensao funciona em navegadores baseados em Chromium e no Firefox. Escolha o seu e siga os passos.
+1. Acesse a [página de download](/download) e siga o link da loja do seu navegador.
+2. Instale a extensão e fixe-a na barra de ferramentas.
+3. Abra o popup do Nostr WoT e selecione **Continue** para ver os métodos.
 
-### Chrome, Brave, Edge e Opera
+## Escolha o método
 
-1. Acesse a [pagina de download](/download) e clique no link para a Chrome Web Store.
-2. Clique em **Usar no Chrome** (ou o botao equivalente do seu navegador).
-3. Confirme a instalacao quando solicitado.
-4. Fixe a extensao na barra de ferramentas -- clique no icone de quebra-cabeca e ative o pin ao lado de Nostr WoT.
+| O que você tem | Método | Guia |
+|---|---|---|
+| Nenhuma identidade Nostr | **Create New** | [Criar conta e salvar 24 palavras](/guides/create-nostr-account) |
+| Chave privada, frase de recuperação ou backup criptografado | **Import Key or Backup** | [Restaurar identidade](/guides/import-nostr-account) |
+| Apenas uma chave pública para explorar | **Watch-Only** | [Adicionar conta somente leitura](/guides/watch-only-nostr-account) |
+| Identidade em um assinador externo NIP-46 | **Nostr Connect** | [Conectar por QR](/guides/connect-nostr-signer) |
 
-{/* TODO: Captura de tela da listagem na Chrome Web Store com o botao Usar no Chrome destacado */}
+Criar uma identidade não exige e-mail nem telefone. Suas chaves identificam você no Nostr. Importar restaura a identidade da chave existente; criar outra gera uma identidade diferente.
 
-### Firefox
+## O que guardar
 
-1. Acesse a [pagina de download](/download) e clique no link para os complementos do Firefox.
-2. Clique em **Adicionar ao Firefox** e confirme o aviso de permissoes.
-3. Fixe a extensao na barra de ferramentas clicando com o botao direito no icone e selecionando **Fixar na Barra de Ferramentas**.
+A **chave pública (npub)** identifica sua conta e pode ser compartilhada. A **chave privada (nsec) ou frase de recuperação** permite controlar a identidade e deve permanecer privada. A **senha local do cofre** protege as chaves neste navegador; não substitui uma frase perdida.
 
-{/* TODO: Captura de tela da pagina de complementos do Firefox para o Nostr WoT */}
-
-<Callout type="tip">
-Apos a instalacao, o icone da extensao aparece na barra de ferramentas do navegador. Um icone cinza significa que voce ainda nao fez login. Ele fica roxo quando sua identidade esta ativa.
+<Callout type="warning">
+Nunca use palavras de recuperação de tutoriais ou demonstrações. Guarde as palavras geradas pela sua própria extensão antes de continuar.
 </Callout>
 
-## Configuracao Inicial
+## Após a configuração
 
-Ao abrir a extensao pela primeira vez, o assistente guia voce pelo essencial. Voce escolhe entre criar uma identidade Nostr ou importar uma existente. Nenhum cadastro em terceiros e necessario.
+Confira se a chave pública corresponde à identidade desejada. Com uma conta que assina, abra um cliente Nostr e revise as solicitações de permissão. Contas somente leitura não assinam publicações.
 
-{/* TODO: Captura de tela da tela de boas-vindas do assistente de configuracao */}
-
-## Criando uma Nova Chave Nostr
-
-Se voce e novo no Nostr, selecione **Criar Novas Chaves**. A extensao gera uma chave privada (nsec) e uma chave publica (npub) para voce.
-
-1. Clique em **Criar Novas Chaves** no assistente de configuracao.
-2. Salve o backup da sua chave privada. Anote em papel ou guarde em um gerenciador de senhas. Se perder, nao ha como recuperar.
-3. Defina uma senha local para criptografar suas chaves dentro da extensao. Essa senha nunca e enviada para nenhum lugar.
-4. Opcionalmente, preencha os detalhes do seu perfil -- nome de exibicao, bio e avatar.
-
-{/* TODO: Captura de tela da tela de criacao de chaves com o aviso de backup */}
-
-<Callout type="tip">
-Sua chave privada e a senha mestra da sua identidade Nostr. Nunca compartilhe, cole em um site ou armazene em texto simples. A extensao a criptografa localmente para que os sites nunca a vejam diretamente.
-</Callout>
-
-## Importando uma Chave Existente
-
-Ja tem uma identidade Nostr? Selecione **Importar Chave Existente** e cole sua nsec ou use uma extensao de assinatura compativel com NIP-07.
-
-1. Clique em **Importar Chave Existente**.
-2. Cole sua chave privada nsec ou conecte um dispositivo de assinatura.
-3. Defina uma senha de criptografia local.
-4. A extensao busca seu perfil nos relays Nostr automaticamente.
-
-{/* TODO: Captura de tela da tela de importacao de chave */}
-
-## Verificando sua Configuracao
-
-Com sua identidade ativa, clique no icone da extensao. Voce deve ver os detalhes do seu perfil, sua npub e um grafo de confianca inicial construido a partir da sua lista de contatos.
-
-De um ou dois minutos para a sincronizacao inicial. Depois, sua rede e atualizada em segundo plano enquanto voce navega.
-
-{/* TODO: Video do processo de instalacao */}
-
-## O Que Vem a Seguir?
-
-Agora que a extensao esta instalada, aprenda a [gerenciar sua identidade](/guides/gerenciar-identidade) e entenda como a [Web of Trust funciona](/guides/entendendo-web-of-trust).
+Continue com [gerenciamento de identidade](/guides/gerenciar-identidade), [permissões por site](/guides/permissoes-por-site) ou [Web of Trust](/guides/entendendo-web-of-trust). Configure uma [carteira Lightning](/guides/configurar-carteira) separadamente quando quiser usar zaps.

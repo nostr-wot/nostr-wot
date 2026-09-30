@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-09-23T07:34:34.209Z",
+  "generatedAt": "2026-09-30T20:06:14.693Z",
   "locales": {
     "en": {
       "posts": [
@@ -146,10 +146,10 @@
         },
         {
           "slug": "getting-started",
-          "title": "Getting Started with Nostr WoT",
-          "description": "Install the Nostr WoT browser extension on Chrome, Brave, Edge, Opera, or Firefox. Set up your Nostr identity and start building your Web of Trust in minutes.",
-          "excerpt": "Everything you need to install the Nostr WoT Extension and get your first trust network up and running.",
-          "date": "2026-03-11T00:00:00.000Z",
+          "title": "Getting started: choose your Nostr account setup",
+          "description": "Install Nostr WoT and choose a new identity, an existing key or backup, a watch-only account, or a QR connection to an external signer.",
+          "excerpt": "Install Nostr WoT and choose a new identity, an existing key or backup, a watch-only account, or a QR connection to an external signer.",
+          "date": "2026-09-30T00:00:00.000Z",
           "author": {
             "name": "Leon Acosta",
             "avatar": "/authors/leon-profile.jpg",
@@ -159,11 +159,11 @@
           "previewImage": "/images/guides/getting-started/preview.svg",
           "tags": [
             "Extension",
-            "Setup",
-            "Beginner"
+            "Identity",
+            "Setup"
           ],
           "published": true,
-          "readingTime": "5 min read",
+          "readingTime": "2 min read",
           "locale": "en",
           "translationKey": "getting-started",
           "translations": {
@@ -184,12 +184,200 @@
             "fr",
             "de"
           ],
-          "seoTitle": "Getting Started with Nostr WoT — Extension Guide",
-          "seoDescription": "Install the Nostr WoT browser extension on Chrome, Brave, Edge, Opera, or Firefox. Set up your Nostr identity and start building your Web of Trust in minutes.",
+          "seoTitle": "Getting started: choose your Nostr account setup",
+          "seoDescription": "Install Nostr WoT and choose a new identity, an existing key or backup, a watch-only account, or a QR connection to an external signer.",
           "ogImage": "/images/guides/getting-started/og.jpg",
           "difficulty": "beginner",
           "order": 1,
-          "content": "\nThis guide walks you through installing the Nostr WoT Extension, setting up your identity, and getting your trust network running. The whole process takes about two minutes.\n\n## Installing the Extension\n\nThe extension supports all major Chromium-based browsers and Firefox. Pick your browser and follow the steps below.\n\n### Chrome, Brave, Edge, and Opera\n\n1. Visit the [download page](/download) and click the link for the Chrome Web Store.\n2. Click **Add to Chrome** (or the equivalent button in your browser).\n3. Confirm the installation when prompted.\n4. Pin the extension to your toolbar for easy access — click the puzzle piece icon in your browser and toggle the pin next to Nostr WoT.\n\n### Firefox\n\n1. Visit the [download page](/download) and click the link for Firefox Add-ons.\n2. Click **Add to Firefox** and confirm the permissions prompt.\n3. Pin the extension to your toolbar by right-clicking the icon and selecting **Pin to Toolbar**.\n\n<Callout type=\"tip\">\nAfter installation, the extension icon will appear in your browser toolbar. A gray icon means you are not yet signed in. It turns purple once your identity is active.\n</Callout>\n\n## First-Time Setup\n\nWhen you open the extension for the first time, the setup wizard walks you through the essentials. You will be asked to either create a new Nostr identity or import an existing one. No account registration with any third party is required.\n\n![The first-time setup wizard offers four options: create a new identity, import an existing key, watch-only mode, or connect via Nostr Connect (NIP-46) for remote signing — keeping your private key in a separate signing app like nsecBunker or Amber](/images/guides/getting-started/setup-wizard.jpg)\n\n## Creating a New Nostr Key\n\nIf you are new to Nostr, select **Create New Keys**. The extension generates a 12-word seed phrase (BIP39) and derives your Nostr keys from it. Your private key (nsec) and public key (npub) are both derived from this seed — you never need to handle the raw nsec directly.\n\n1. Click **Create New Keys** in the setup wizard.\n2. The extension displays your 12-word seed phrase. Write it down on paper and store it somewhere safe — a secure physical location or a password manager. If you lose it, there is no \"forgot password\" option. No one can recover it for you.\n\n![Your 12-word recovery phrase is displayed once. Write it down, download it as plain text, or save an encrypted backup before confirming.](/images/guides/getting-started/key-creation.jpg)\n\n3. Confirm you have saved the seed phrase before proceeding.\n4. Set a local password to encrypt your keys inside the extension. This password is never sent anywhere.\n5. Optionally fill in your profile details — display name, bio, and avatar.\n\n<Callout type=\"warning\">\nYour 12-word seed phrase is the master key to your Nostr identity. Anyone with access to it controls your account. Store it offline, never paste it into a website, and never share it with anyone — including the Nostr WoT team.\n</Callout>\n\n## Importing an Existing Key\n\nAlready have a Nostr identity? Select **Import Existing Key**. You can restore using your 12-word seed phrase (if you created your key with Nostr WoT) or paste your nsec directly. If you prefer to keep your private key in a remote signing app, choose **Nostr Connect (NIP-46)** from the setup wizard instead — this lets you connect a bunker like nsecBunker or Amber without exposing your key.\n\n![The import screen accepts your nsec, ncryptsec, hex private key, or 12/24-word seed phrase — the format is detected automatically](/images/guides/getting-started/import-key.jpg)\n\n1. Click **Import Existing Key**.\n2. Enter your 12-word seed phrase or paste your nsec private key.\n3. Set a local encryption password.\n4. The extension fetches your profile from Nostr relays automatically.\n\n## Verifying Your Setup\n\nOnce your identity is active, click the extension icon. You should see your profile details, your npub, and an initial trust graph that starts building from your follow list. The extension fetches your contacts from relays and begins mapping your Web of Trust.\n\nGive it a minute or two for the initial sync. After that, your trust network updates in the background as you browse.\n\n## Post Something\n\nYou're set up. Say hello. The Nostr community actively welcomes newcomers.\n\nOpen any Nostr client — [Primal](https://primal.net), [Snort](https://snort.social), or any other — and write your first post. Add the hashtag **#introductions** so others know you're new. Your post goes out to your connected relays. Anyone following you — or browsing those relays — can see it. No algorithm decides who sees your content.\n\n## Zaps\n\nNostr supports instant Bitcoin micropayments called \"zaps.\" You can tip posts you like directly from any Nostr client. The Nostr WoT Extension lets you set up a Lightning wallet right from the extension — no third-party app required. Check the [Lightning wallet setup guide](/guides/setting-up-wallet) whenever you're ready.\n\n## What's Next?\n\nNow that the extension is installed, learn how to [manage your identity](/guides/managing-identity) and understand how the [Web of Trust works](/guides/understanding-wot).\n"
+          "content": "\nNostr WoT offers four ways to set up an identity. If this is your first Nostr account, start with **Create New**. If you already have an identity, choose the method that matches what you have.\n\n## Install and open the extension\n\n1. Open the [download page](/download) and follow the store link for your browser.\n2. Install the extension and pin it to your browser toolbar so you can find it again.\n3. Open the Nostr WoT popup and select **Continue** to reach the account methods.\n\n## Choose your method\n\n| What you have | Method | Follow this guide |\n|---|---|---|\n| No Nostr identity yet | **Create New** | [Create an account and save your 24 recovery words](/guides/create-nostr-account) |\n| A private key, recovery phrase, or encrypted backup | **Import Key or Backup** | [Restore an existing identity](/guides/import-nostr-account) |\n| Only a public key, and you want to explore | **Watch-Only** | [Add a read-only account](/guides/watch-only-nostr-account) |\n| An identity in an external NIP-46 signer | **Nostr Connect** | [Connect your signer with a QR code](/guides/connect-nostr-signer) |\n\nCreating a new identity does not require an email address or phone number. Your keys identify you on Nostr. Importing restores the identity represented by your existing key; creating a new one gives you a different identity.\n\n## Understand what to keep\n\n**Public key (npub):** identifies your account and can be shared. **Private key (nsec) or recovery phrase:** lets someone control the identity and must remain private. **Local vault password:** protects access to keys stored in this browser; it cannot replace a lost recovery phrase.\n\n<Callout type=\"warning\">\nNever use recovery words shown in a tutorial or demonstration. For a new account, save the words generated by your own extension before continuing.\n</Callout>\n\n## After setup\n\nOpen the popup and check that the public key matches the identity you intended to use. With a signing account, visit a Nostr client and review the extension's permission prompts when connecting. Watch-only accounts cannot sign posts.\n\nContinue with [identity management](/guides/managing-identity), [site permissions](/guides/site-permissions), or [the Web of Trust](/guides/understanding-wot). You can set up a [Lightning wallet](/guides/setting-up-wallet) separately when you are ready to use zaps.\n"
+        },
+        {
+          "slug": "create-nostr-account",
+          "title": "Create a Nostr account with 24 recovery words",
+          "description": "Create a new Nostr identity in the extension popup, verify your recovery backup and protect this browser with a local vault password.",
+          "excerpt": "Create a new Nostr identity in the extension popup, verify your recovery backup and protect this browser with a local vault password.",
+          "date": "2026-09-30T00:00:00.000Z",
+          "author": {
+            "name": "Leon Acosta",
+            "avatar": "/authors/leon-profile.jpg",
+            "npub": "npub1gxdhmu9swqduwhr6zptjy4ya693zp3ql28nemy4hd97kuufyrqdqwe5zfk"
+          },
+          "featuredImage": "/images/guides/getting-started/featured.svg",
+          "previewImage": "/images/guides/getting-started/preview.svg",
+          "tags": [
+            "Extension",
+            "Identity",
+            "Setup"
+          ],
+          "published": true,
+          "readingTime": "2 min read",
+          "locale": "en",
+          "translationKey": "create-nostr-account",
+          "translations": {
+            "en": "create-nostr-account",
+            "es": "create-nostr-account",
+            "pt": "create-nostr-account",
+            "ru": "create-nostr-account",
+            "it": "create-nostr-account",
+            "fr": "create-nostr-account",
+            "de": "create-nostr-account"
+          },
+          "availableLocales": [
+            "en",
+            "es",
+            "pt",
+            "ru",
+            "it",
+            "fr",
+            "de"
+          ],
+          "seoTitle": "Create a Nostr account with 24 recovery words",
+          "seoDescription": "Create a new Nostr identity in the extension popup, verify your recovery backup and protect this browser with a local vault password.",
+          "ogImage": "/images/guides/getting-started/og.jpg",
+          "difficulty": "beginner",
+          "order": 1.1,
+          "content": "\nChoose **Create New** when you want a new Nostr identity. The extension generates 24 recovery words and derives your keys from them. You do not need to enter an email address or phone number.\n\n## Create and back up your identity\n\n1. Open the extension popup. On first setup, select **Continue**, then **Create New**.\n2. Reveal your recovery phrase in a private place. Write all **24 words in their exact order** and store them securely.\n3. Use the backup controls if you want a file copy. A plain-text download contains the unencrypted phrase; protect it accordingly. An encrypted backup needs its own backup password.\n4. Confirm that you have saved the phrase. Complete the backup check by filling the missing words from your own saved copy.\n\n<Callout type=\"warning\">\nAnyone with your recovery words can recover this identity. Keep them private. Do not use words from a video, screenshot or another person's account. There is no email reset that can replace a lost phrase.\n</Callout>\n\n## Protect this browser\n\n5. Choose a timed auto-lock setting, then set and confirm a local vault password. Keep the password somewhere you can recover it.\n6. Continue through the remaining setup. Follow suggestions are optional; skip them if you prefer to choose people later.\n7. At the completion screen, select **Get Started**. Check your public key in the popup, then lock the vault when you finish.\n\nThe vault password unlocks this browser's stored keys. Your recovery phrase restores the identity. Save both, and do not treat one as a substitute for the other.\n\nAlready have the identity you want? Use [Import Key or Backup](/guides/import-nostr-account) instead of creating another one. [Compare all four setup methods](/guides/getting-started).\n"
+        },
+        {
+          "slug": "import-nostr-account",
+          "title": "Import a Nostr private key or recovery backup",
+          "description": "Restore an existing Nostr identity from an nsec, hex private key, recovery phrase, ncryptsec or supported encrypted backup.",
+          "excerpt": "Restore an existing Nostr identity from an nsec, hex private key, recovery phrase, ncryptsec or supported encrypted backup.",
+          "date": "2026-09-30T00:00:00.000Z",
+          "author": {
+            "name": "Leon Acosta",
+            "avatar": "/authors/leon-profile.jpg",
+            "npub": "npub1gxdhmu9swqduwhr6zptjy4ya693zp3ql28nemy4hd97kuufyrqdqwe5zfk"
+          },
+          "featuredImage": "/images/guides/getting-started/featured.svg",
+          "previewImage": "/images/guides/getting-started/preview.svg",
+          "tags": [
+            "Extension",
+            "Identity",
+            "Setup"
+          ],
+          "published": true,
+          "readingTime": "2 min read",
+          "locale": "en",
+          "translationKey": "import-nostr-account",
+          "translations": {
+            "en": "import-nostr-account",
+            "es": "import-nostr-account",
+            "pt": "import-nostr-account",
+            "ru": "import-nostr-account",
+            "it": "import-nostr-account",
+            "fr": "import-nostr-account",
+            "de": "import-nostr-account"
+          },
+          "availableLocales": [
+            "en",
+            "es",
+            "pt",
+            "ru",
+            "it",
+            "fr",
+            "de"
+          ],
+          "seoTitle": "Import a Nostr private key or recovery backup",
+          "seoDescription": "Restore an existing Nostr identity from an nsec, hex private key, recovery phrase, ncryptsec or supported encrypted backup.",
+          "ogImage": "/images/guides/getting-started/og.jpg",
+          "difficulty": "beginner",
+          "order": 1.2,
+          "content": "\nChoose **Import Key or Backup** to bring an existing identity into this browser. You need its private key, recovery phrase or a supported encrypted backup. An npub is a public key and belongs in [Watch-Only](/guides/watch-only-nostr-account).\n\n## Restore your existing identity\n\n1. Open the extension popup and choose **Import Key or Backup** from the setup methods.\n2. Paste your **nsec**, hex private key, or recovery phrase into the import field, or load your supported backup file. The extension detects the format.\n3. For an **ncryptsec** or encrypted backup, enter the password used to encrypt it. This is the backup's password, not necessarily your browser vault password.\n4. Continue after the format is recognized. If the extension reports an error, check the input and password before trying again. Keep the original backup intact.\n5. Keep your existing recovery backup safe. Set the local vault password when prompted. If this browser already has a vault, unlock it with its existing password when asked.\n6. Finish setup and compare the displayed public key with the npub of the identity you intended to restore.\n\n## Recovery phrases and encrypted files\n\nExisting 12-word and 24-word recovery phrases can be imported. A new identity generated by the extension uses 24 words. If your identity used a custom derivation path, keep that path and expected public key with your recovery records; see [custom identity paths](/guides/custom-identity-paths).\n\nImporting a phrase starts with its first Nostr key; it does not automatically restore every sub-account or custom path. Read the import screen's seed notice: when the unlocked vault already has a main recovery phrase, only the first key from the additional phrase is imported, rather than storing it as another main seed.\n\nAn encrypted file's password protects that file. Setting a new local vault password does not change the password of an existing backup.\n\n<Callout type=\"warning\">\nEnter private keys and recovery words only in the extension's import interface. Never send them to someone offering to help restore an account.\n</Callout>\n\nPrefer to keep signing in another app? Use [Nostr Connect](/guides/connect-nostr-signer). [Compare all four setup methods](/guides/getting-started).\n"
+        },
+        {
+          "slug": "watch-only-nostr-account",
+          "title": "Add a watch-only Nostr account",
+          "description": "Use an npub to explore a Nostr identity without importing its private key. Understand what a watch-only account can and cannot do.",
+          "excerpt": "Use an npub to explore a Nostr identity without importing its private key. Understand what a watch-only account can and cannot do.",
+          "date": "2026-09-30T00:00:00.000Z",
+          "author": {
+            "name": "Leon Acosta",
+            "avatar": "/authors/leon-profile.jpg",
+            "npub": "npub1gxdhmu9swqduwhr6zptjy4ya693zp3ql28nemy4hd97kuufyrqdqwe5zfk"
+          },
+          "featuredImage": "/images/guides/getting-started/featured.svg",
+          "previewImage": "/images/guides/getting-started/preview.svg",
+          "tags": [
+            "Extension",
+            "Identity",
+            "Setup"
+          ],
+          "published": true,
+          "readingTime": "2 min read",
+          "locale": "en",
+          "translationKey": "watch-only-nostr-account",
+          "translations": {
+            "en": "watch-only-nostr-account",
+            "es": "watch-only-nostr-account",
+            "pt": "watch-only-nostr-account",
+            "ru": "watch-only-nostr-account",
+            "it": "watch-only-nostr-account",
+            "fr": "watch-only-nostr-account",
+            "de": "watch-only-nostr-account"
+          },
+          "availableLocales": [
+            "en",
+            "es",
+            "pt",
+            "ru",
+            "it",
+            "fr",
+            "de"
+          ],
+          "seoTitle": "Add a watch-only Nostr account",
+          "seoDescription": "Use an npub to explore a Nostr identity without importing its private key. Understand what a watch-only account can and cannot do.",
+          "ogImage": "/images/guides/getting-started/og.jpg",
+          "difficulty": "beginner",
+          "order": 1.3,
+          "content": "\nChoose **Watch-Only** when you have a public key and want to view an identity without importing its private key. This is useful for exploring a profile and its trust network before connecting a signing account.\n\n## Add the public key\n\n1. Copy the **npub** of the identity you want to view. Check that it belongs to the intended profile.\n2. Open the extension popup and select **Watch-Only** from the setup methods.\n3. Paste the public key into the field and select **Continue**. If validation fails, check that you copied the complete public key.\n4. Finish setup and confirm that the displayed identity matches the npub you entered. Allow time for profile information to load from relays.\n\n## Know the limits\n\nA public key can identify an account but cannot authorize an action as that account. Watch-only mode cannot sign events, publish posts, or approve signing requests for that identity. Adding someone else's public key does not give you control of their account.\n\nYou do not need that person's private key to view their public identity. Never ask someone to send you an nsec or recovery phrase for this purpose.\n\n## When you want to sign\n\nIf the identity is yours, use [Import Key or Backup](/guides/import-nostr-account) with its private material, or [Nostr Connect](/guides/connect-nostr-signer) with a signer that controls it. Confirm the public key after connecting so you do not confuse two different identities.\n\nIf you do not yet have your own identity, [create a new account](/guides/create-nostr-account). [Compare all four setup methods](/guides/getting-started).\n"
+        },
+        {
+          "slug": "connect-nostr-signer",
+          "title": "Connect a Nostr signer with a QR code",
+          "description": "Use Nostr Connect to pair the extension with an external NIP-46 signer. Scan the QR code, approve the connection and keep signing in your signer.",
+          "excerpt": "Use Nostr Connect to pair the extension with an external NIP-46 signer. Scan the QR code, approve the connection and keep signing in your signer.",
+          "date": "2026-09-30T00:00:00.000Z",
+          "author": {
+            "name": "Leon Acosta",
+            "avatar": "/authors/leon-profile.jpg",
+            "npub": "npub1gxdhmu9swqduwhr6zptjy4ya693zp3ql28nemy4hd97kuufyrqdqwe5zfk"
+          },
+          "featuredImage": "/images/guides/getting-started/featured.svg",
+          "previewImage": "/images/guides/getting-started/preview.svg",
+          "tags": [
+            "Extension",
+            "Identity",
+            "Setup"
+          ],
+          "published": true,
+          "readingTime": "2 min read",
+          "locale": "en",
+          "translationKey": "connect-nostr-signer",
+          "translations": {
+            "en": "connect-nostr-signer",
+            "es": "connect-nostr-signer",
+            "pt": "connect-nostr-signer",
+            "ru": "connect-nostr-signer",
+            "it": "connect-nostr-signer",
+            "fr": "connect-nostr-signer",
+            "de": "connect-nostr-signer"
+          },
+          "availableLocales": [
+            "en",
+            "es",
+            "pt",
+            "ru",
+            "it",
+            "fr",
+            "de"
+          ],
+          "seoTitle": "Connect a Nostr signer with a QR code",
+          "seoDescription": "Use Nostr Connect to pair the extension with an external NIP-46 signer. Scan the QR code, approve the connection and keep signing in your signer.",
+          "ogImage": "/images/guides/getting-started/og.jpg",
+          "difficulty": "beginner",
+          "order": 1.4,
+          "content": "\nChoose **Nostr Connect** when your Nostr identity is controlled by an external NIP-46 signer. The extension connects to that signer; your identity's signing key stays with it.\n\n## Before you begin\n\nHave your signer available and unlocked, with the identity you intend to use. It must support the NIP-46 connection method offered here. You do not need to paste your private key into the extension for this flow.\n\n## Connect by scanning the QR code\n\n1. Open the extension popup and select **Nostr Connect** from the setup methods.\n2. Keep the **QR Code** tab selected. Wait for the code to appear and the **Waiting for connection...** status.\n3. In your signer, open its connection or QR-scanning function and scan the code displayed by this extension. Use the signer's instructions if its controls have different names.\n4. Review the connection request in your signer, confirm the intended identity and approve it there.\n5. Wait for the extension to recognize the connection and advance. Set or unlock the local vault when prompted, then finish setup and check that the displayed public key matches your signer identity.\n\n## If scanning is not available\n\n**Copy URI** provides the same connection request for a signer that supports opening a Nostr Connect URI. If your signer supplies a `bunker://` connection address instead, use the separate **Bunker URL** tab. Choose the tab that matches the connection method supported by your signer.\n\n## If the connection expires\n\nKeep the signer available and check its pending requests. If the extension displays a timeout or failure, select **Try again** and scan the fresh code. An old screenshot is not a reusable recovery backup.\n\nKeep your signer and its own recovery backup accessible. An extension vault password cannot recover a private key held by an external signer.\n\n[Compare all four setup methods](/guides/getting-started), or learn how to [review site permissions](/guides/site-permissions).\n"
         },
         {
           "slug": "managing-identity",
@@ -1050,10 +1238,10 @@
         },
         {
           "slug": "primeros-pasos",
-          "title": "Primeros Pasos con Nostr WoT",
-          "description": "Instala la extension Nostr WoT en Chrome, Brave, Edge, Opera o Firefox. Configura tu identidad Nostr y empieza a construir tu Web of Trust en minutos.",
-          "excerpt": "Todo lo que necesitas para instalar la extension Nostr WoT y poner en marcha tu primera red de confianza.",
-          "date": "2026-03-11T00:00:00.000Z",
+          "title": "Primeros pasos: elige cómo configurar tu cuenta Nostr",
+          "description": "Instala Nostr WoT y elige entre una identidad nueva, una clave o copia existente, una cuenta de solo lectura o la conexión QR a un firmante externo.",
+          "excerpt": "Instala Nostr WoT y elige entre una identidad nueva, una clave o copia existente, una cuenta de solo lectura o la conexión QR a un firmante externo.",
+          "date": "2026-09-30T00:00:00.000Z",
           "author": {
             "name": "Leon Acosta",
             "avatar": "/authors/leon-profile.jpg",
@@ -1062,12 +1250,12 @@
           "featuredImage": "/images/guides/getting-started/featured.svg",
           "previewImage": "/images/guides/getting-started/preview.svg",
           "tags": [
-            "Extension",
-            "Configuracion",
-            "Principiante"
+            "Extensión",
+            "Identidad",
+            "Configuración"
           ],
           "published": true,
-          "readingTime": "4 min read",
+          "readingTime": "2 min read",
           "locale": "es",
           "translationKey": "getting-started",
           "translations": {
@@ -1088,12 +1276,200 @@
             "fr",
             "de"
           ],
-          "seoTitle": "Instalar y Configurar la Extension Nostr WoT — Guia",
-          "seoDescription": "Instala la extension Nostr WoT en Chrome, Brave, Edge, Opera o Firefox. Configura tu identidad Nostr y empieza a construir tu Web of Trust en minutos.",
+          "seoTitle": "Primeros pasos: elige cómo configurar tu cuenta Nostr",
+          "seoDescription": "Instala Nostr WoT y elige entre una identidad nueva, una clave o copia existente, una cuenta de solo lectura o la conexión QR a un firmante externo.",
           "ogImage": "/images/guides/getting-started/og.jpg",
           "difficulty": "beginner",
           "order": 1,
-          "content": "\nEsta guia te lleva paso a paso por la instalacion de la Extension Nostr WoT, la configuracion de tu identidad y la puesta en marcha de tu red de confianza. Todo el proceso toma unos dos minutos.\n\n## Instalar la Extension\n\nLa extension es compatible con todos los navegadores principales basados en Chromium y tambien con Firefox. Elige tu navegador y sigue los pasos.\n\n### Chrome, Brave, Edge y Opera\n\n1. Visita la [pagina de descarga](/download) y haz clic en el enlace de la Chrome Web Store.\n2. Haz clic en **Agregar a Chrome** (o el boton equivalente en tu navegador).\n3. Confirma la instalacion cuando se te solicite.\n4. Fija la extension a tu barra de herramientas para acceder facilmente — haz clic en el icono de puzzle de tu navegador y activa el pin junto a Nostr WoT.\n\n{/* TODO: Captura de pantalla de la Chrome Web Store con el boton Agregar a Chrome resaltado */}\n\n### Firefox\n\n1. Visita la [pagina de descarga](/download) y haz clic en el enlace de Firefox Add-ons.\n2. Haz clic en **Agregar a Firefox** y confirma el aviso de permisos.\n3. Fija la extension a tu barra de herramientas haciendo clic derecho en el icono y seleccionando **Fijar en la Barra de Herramientas**.\n\n{/* TODO: Captura de pantalla de la pagina de Firefox Add-ons para Nostr WoT */}\n\n<Callout type=\"tip\">\nDespues de la instalacion, el icono de la extension aparecera en tu barra de herramientas. Un icono gris significa que aun no has iniciado sesion. Se vuelve morado cuando tu identidad esta activa.\n</Callout>\n\n## Configuracion Inicial\n\nCuando abras la extension por primera vez, el asistente de configuracion te guia por lo esencial. Se te pedira crear una nueva identidad Nostr o importar una existente. No es necesario registrarte en ningun servicio de terceros.\n\n{/* TODO: Captura de pantalla de la pantalla de bienvenida del asistente de configuracion */}\n\n## Crear una Clave Nostr Nueva\n\nSi eres nuevo en Nostr, selecciona **Crear Claves Nuevas**. La extension genera una clave privada (nsec) y una clave publica (npub) por ti.\n\n1. Haz clic en **Crear Claves Nuevas** en el asistente de configuracion.\n2. Guarda el respaldo de tu clave privada. Anotala o guardala en un gestor de contrasenas. Si pierdes esta clave, no hay forma de recuperar tu cuenta.\n3. Establece una contrasena local para cifrar tus claves dentro de la extension. Esta contrasena nunca se envia a ningun lado.\n4. Opcionalmente completa los datos de tu perfil — nombre, biografia y avatar.\n\n{/* TODO: Captura de pantalla de la pantalla de creacion de claves con el aviso de respaldo */}\n\n<Callout type=\"tip\">\nTu clave privada es la contrasena maestra de tu identidad Nostr. Nunca la compartas, la pegues en un sitio web ni la guardes en texto plano. La extension la cifra localmente para que los sitios nunca la vean directamente.\n</Callout>\n\n## Importar una Clave Existente\n\nSi ya tienes una identidad Nostr, selecciona **Importar Clave Existente** y pega tu nsec o usa una extension firmante compatible con NIP-07.\n\n1. Haz clic en **Importar Clave Existente**.\n2. Pega tu clave privada nsec o conecta un firmante de hardware.\n3. Establece una contrasena de cifrado local.\n4. La extension obtiene tu perfil de los relays de Nostr automaticamente.\n\n{/* TODO: Captura de pantalla de la pantalla de importacion de claves */}\n\n## Verificar tu Configuracion\n\nUna vez que tu identidad este activa, haz clic en el icono de la extension. Deberias ver los datos de tu perfil, tu npub y un grafo de confianza inicial que comienza a construirse a partir de tu lista de seguidos. La extension obtiene tus contactos de los relays y empieza a mapear tu Web of Trust.\n\nDale uno o dos minutos para la sincronizacion inicial. Despues de eso, tu red de confianza se actualiza en segundo plano mientras navegas.\n\n{/* TODO: Video del proceso de instalacion */}\n\n## Que Sigue?\n\nAhora que la extension esta instalada, aprende a [gestionar tu identidad](/guides/gestion-de-identidad) y entiende como funciona la [Web of Trust](/guides/entendiendo-web-of-trust).\n"
+          "content": "\nNostr WoT ofrece cuatro formas de configurar una identidad. Si es tu primera cuenta Nostr, elige **Create New**. Si ya tienes una identidad, utiliza el método que corresponda a lo que conservas.\n\n## Instala y abre la extensión\n\n1. Abre la [página de descarga](/download) y sigue el enlace a la tienda de tu navegador.\n2. Instala la extensión y fíjala en la barra de herramientas para encontrarla fácilmente.\n3. Abre la ventana emergente de Nostr WoT y pulsa **Continue** para ver los métodos disponibles.\n\n## Elige un método\n\n| Qué tienes | Método | Guía |\n|---|---|---|\n| Aún no tienes identidad Nostr | **Create New** | [Crear una cuenta y guardar sus 24 palabras](/guides/create-nostr-account) |\n| Clave privada, frase de recuperación o copia cifrada | **Import Key or Backup** | [Restaurar una identidad](/guides/import-nostr-account) |\n| Solo una clave pública y quieres explorar | **Watch-Only** | [Añadir una cuenta de solo lectura](/guides/watch-only-nostr-account) |\n| Una identidad en un firmante externo NIP-46 | **Nostr Connect** | [Conectar mediante QR](/guides/connect-nostr-signer) |\n\nCrear una identidad no requiere correo electrónico ni teléfono. Tus claves te identifican en Nostr. Importar recupera la identidad de tu clave existente; crear otra genera una identidad distinta.\n\n## Qué debes conservar\n\nLa **clave pública (npub)** identifica tu cuenta y puedes compartirla. La **clave privada (nsec) o frase de recuperación** permite controlar la identidad y debe mantenerse privada. La **contraseña local de la bóveda** protege las claves guardadas en este navegador; no sustituye una frase de recuperación perdida.\n\n<Callout type=\"warning\">\nNunca uses palabras de recuperación de un tutorial o demostración. Guarda las que genere tu propia extensión antes de continuar.\n</Callout>\n\n## Después de configurar\n\nComprueba que la clave pública corresponde a la identidad deseada. Con una cuenta que pueda firmar, visita un cliente Nostr y revisa las solicitudes de permiso. Las cuentas de solo lectura no pueden firmar publicaciones.\n\nContinúa con [gestión de identidad](/guides/gestion-de-identidad), [permisos por sitio](/guides/permisos-por-sitio) o [Web of Trust](/guides/entendiendo-web-of-trust). Puedes configurar una [cartera Lightning](/guides/configurar-billetera) por separado para enviar zaps.\n"
+        },
+        {
+          "slug": "create-nostr-account",
+          "title": "Crear una cuenta Nostr con 24 palabras de recuperación",
+          "description": "Crea una identidad Nostr desde la extensión, verifica tu copia de recuperación y protege este navegador con una contraseña local.",
+          "excerpt": "Crea una identidad Nostr desde la extensión, verifica tu copia de recuperación y protege este navegador con una contraseña local.",
+          "date": "2026-09-30T00:00:00.000Z",
+          "author": {
+            "name": "Leon Acosta",
+            "avatar": "/authors/leon-profile.jpg",
+            "npub": "npub1gxdhmu9swqduwhr6zptjy4ya693zp3ql28nemy4hd97kuufyrqdqwe5zfk"
+          },
+          "featuredImage": "/images/guides/getting-started/featured.svg",
+          "previewImage": "/images/guides/getting-started/preview.svg",
+          "tags": [
+            "Extensión",
+            "Identidad",
+            "Configuración"
+          ],
+          "published": true,
+          "readingTime": "2 min read",
+          "locale": "es",
+          "translationKey": "create-nostr-account",
+          "translations": {
+            "en": "create-nostr-account",
+            "es": "create-nostr-account",
+            "pt": "create-nostr-account",
+            "ru": "create-nostr-account",
+            "it": "create-nostr-account",
+            "fr": "create-nostr-account",
+            "de": "create-nostr-account"
+          },
+          "availableLocales": [
+            "en",
+            "es",
+            "pt",
+            "ru",
+            "it",
+            "fr",
+            "de"
+          ],
+          "seoTitle": "Crear una cuenta Nostr con 24 palabras de recuperación",
+          "seoDescription": "Crea una identidad Nostr desde la extensión, verifica tu copia de recuperación y protege este navegador con una contraseña local.",
+          "ogImage": "/images/guides/getting-started/og.jpg",
+          "difficulty": "beginner",
+          "order": 1.1,
+          "content": "\nElige **Create New** para crear una identidad Nostr. La extensión genera 24 palabras de recuperación y deriva tus claves a partir de ellas. No necesitas introducir correo electrónico ni teléfono.\n\n## Crea y respalda tu identidad\n\n1. Abre la extensión. En la configuración inicial, pulsa **Continue** y después **Create New**.\n2. Revela la frase de recuperación en un lugar privado. Anota las **24 palabras en su orden exacto** y guárdalas de forma segura.\n3. Si quieres una copia en archivo, utiliza los controles de respaldo. La descarga en texto plano contiene la frase sin cifrar; protégela adecuadamente. Una copia cifrada necesita su propia contraseña.\n4. Confirma que has guardado la frase. Completa la comprobación rellenando las palabras que faltan a partir de tu copia guardada.\n\n<Callout type=\"warning\">\nCualquiera que tenga tus palabras puede recuperar esta identidad. No las compartas ni uses las de un vídeo, captura o cuenta ajena. No existe un restablecimiento por correo que sustituya una frase perdida.\n</Callout>\n\n## Protege este navegador\n\n5. Elige un intervalo de bloqueo automático y establece y confirma una contraseña local para la bóveda. Consérvala donde puedas recuperarla.\n6. Completa la configuración restante. Las sugerencias de cuentas a seguir son opcionales; puedes omitirlas y elegir después.\n7. En la pantalla final, pulsa **Get Started**. Comprueba tu clave pública en la extensión y bloquea la bóveda al terminar.\n\nLa contraseña desbloquea las claves guardadas en este navegador. La frase de recuperación restaura la identidad. Guarda ambas: una no sustituye a la otra.\n\n¿Ya tienes la identidad que quieres usar? Elige [Import Key or Backup](/guides/import-nostr-account). [Compara los cuatro métodos](/guides/primeros-pasos).\n"
+        },
+        {
+          "slug": "import-nostr-account",
+          "title": "Importar una clave privada o copia de recuperación de Nostr",
+          "description": "Restaura una identidad existente con nsec, clave privada hexadecimal, frase de recuperación, ncryptsec o una copia cifrada compatible.",
+          "excerpt": "Restaura una identidad existente con nsec, clave privada hexadecimal, frase de recuperación, ncryptsec o una copia cifrada compatible.",
+          "date": "2026-09-30T00:00:00.000Z",
+          "author": {
+            "name": "Leon Acosta",
+            "avatar": "/authors/leon-profile.jpg",
+            "npub": "npub1gxdhmu9swqduwhr6zptjy4ya693zp3ql28nemy4hd97kuufyrqdqwe5zfk"
+          },
+          "featuredImage": "/images/guides/getting-started/featured.svg",
+          "previewImage": "/images/guides/getting-started/preview.svg",
+          "tags": [
+            "Extensión",
+            "Identidad",
+            "Configuración"
+          ],
+          "published": true,
+          "readingTime": "2 min read",
+          "locale": "es",
+          "translationKey": "import-nostr-account",
+          "translations": {
+            "en": "import-nostr-account",
+            "es": "import-nostr-account",
+            "pt": "import-nostr-account",
+            "ru": "import-nostr-account",
+            "it": "import-nostr-account",
+            "fr": "import-nostr-account",
+            "de": "import-nostr-account"
+          },
+          "availableLocales": [
+            "en",
+            "es",
+            "pt",
+            "ru",
+            "it",
+            "fr",
+            "de"
+          ],
+          "seoTitle": "Importar una clave privada o copia de recuperación de Nostr",
+          "seoDescription": "Restaura una identidad existente con nsec, clave privada hexadecimal, frase de recuperación, ncryptsec o una copia cifrada compatible.",
+          "ogImage": "/images/guides/getting-started/og.jpg",
+          "difficulty": "beginner",
+          "order": 1.2,
+          "content": "\nElige **Import Key or Backup** para traer una identidad existente a este navegador. Necesitas su clave privada, frase de recuperación o una copia cifrada compatible. Una npub es pública y corresponde a [Watch-Only](/guides/watch-only-nostr-account).\n\n## Restaura tu identidad\n\n1. Abre la extensión y selecciona **Import Key or Backup**.\n2. Pega tu **nsec**, clave privada hexadecimal o frase de recuperación, o carga un archivo de respaldo compatible. La extensión detecta el formato.\n3. Para **ncryptsec** o una copia cifrada, introduce la contraseña que la cifró. Puede ser distinta de la contraseña de la bóveda del navegador.\n4. Continúa cuando se reconozca el formato. Si aparece un error, comprueba los datos y la contraseña antes de reintentar. Conserva intacta la copia original.\n5. Conserva tu copia de recuperación existente de forma segura. Establece la contraseña local cuando se solicite. Si este navegador ya tiene una bóveda, desbloquéala con su contraseña existente cuando se pida.\n6. Termina y compara la clave pública mostrada con la npub de la identidad que querías restaurar.\n\n## Frases y archivos cifrados\n\nPuedes importar frases existentes de 12 o 24 palabras. Las identidades nuevas generan 24. Si usaste una ruta de derivación personalizada, conserva la ruta y la clave pública esperada con tus registros; consulta [rutas de identidad](/guides/custom-identity-paths).\n\nImportar una frase comienza con su primera clave Nostr; no restaura automáticamente todas las subcuentas o rutas personalizadas. Lee el aviso de la pantalla de importación: si la bóveda desbloqueada ya tiene una frase principal, solo se importa la primera clave de la frase adicional, sin guardarla como otra frase principal.\n\nLa contraseña del archivo protege ese archivo. Cambiar la contraseña local no modifica la de una copia existente.\n\n<Callout type=\"warning\">\nIntroduce claves privadas y palabras únicamente en la interfaz de importación de la extensión. Nunca se las envíes a quien ofrezca recuperar tu cuenta.\n</Callout>\n\nPara firmar desde otra aplicación, usa [Nostr Connect](/guides/connect-nostr-signer). [Compara los cuatro métodos](/guides/primeros-pasos).\n"
+        },
+        {
+          "slug": "watch-only-nostr-account",
+          "title": "Añadir una cuenta Nostr de solo lectura",
+          "description": "Explora una identidad con su npub sin importar la clave privada. Conoce las posibilidades y límites del modo de solo lectura.",
+          "excerpt": "Explora una identidad con su npub sin importar la clave privada. Conoce las posibilidades y límites del modo de solo lectura.",
+          "date": "2026-09-30T00:00:00.000Z",
+          "author": {
+            "name": "Leon Acosta",
+            "avatar": "/authors/leon-profile.jpg",
+            "npub": "npub1gxdhmu9swqduwhr6zptjy4ya693zp3ql28nemy4hd97kuufyrqdqwe5zfk"
+          },
+          "featuredImage": "/images/guides/getting-started/featured.svg",
+          "previewImage": "/images/guides/getting-started/preview.svg",
+          "tags": [
+            "Extensión",
+            "Identidad",
+            "Configuración"
+          ],
+          "published": true,
+          "readingTime": "2 min read",
+          "locale": "es",
+          "translationKey": "watch-only-nostr-account",
+          "translations": {
+            "en": "watch-only-nostr-account",
+            "es": "watch-only-nostr-account",
+            "pt": "watch-only-nostr-account",
+            "ru": "watch-only-nostr-account",
+            "it": "watch-only-nostr-account",
+            "fr": "watch-only-nostr-account",
+            "de": "watch-only-nostr-account"
+          },
+          "availableLocales": [
+            "en",
+            "es",
+            "pt",
+            "ru",
+            "it",
+            "fr",
+            "de"
+          ],
+          "seoTitle": "Añadir una cuenta Nostr de solo lectura",
+          "seoDescription": "Explora una identidad con su npub sin importar la clave privada. Conoce las posibilidades y límites del modo de solo lectura.",
+          "ogImage": "/images/guides/getting-started/og.jpg",
+          "difficulty": "beginner",
+          "order": 1.3,
+          "content": "\nElige **Watch-Only** si tienes una clave pública y quieres consultar una identidad sin importar su clave privada. Puedes explorar un perfil y su red de confianza antes de conectar una cuenta con capacidad de firmar.\n\n## Añade la clave pública\n\n1. Copia la **npub** de la identidad que quieres consultar. Comprueba que corresponde al perfil deseado.\n2. Abre la extensión y elige **Watch-Only** entre los métodos de configuración.\n3. Pega la clave pública y pulsa **Continue**. Si falla la validación, comprueba que has copiado la clave completa.\n4. Termina la configuración y confirma que la identidad mostrada corresponde a la npub introducida. Espera a que se cargue el perfil desde los relays.\n\n## Conoce los límites\n\nUna clave pública identifica una cuenta, pero no autoriza acciones en su nombre. El modo de solo lectura no puede firmar eventos, publicar mensajes ni aprobar solicitudes de firma para esa identidad. Añadir la clave pública de otra persona no te da control sobre su cuenta.\n\nNo necesitas su clave privada para consultar su identidad pública. Nunca pidas una nsec o una frase de recuperación para este fin.\n\n## Cuando quieras firmar\n\nSi la identidad es tuya, utiliza [Import Key or Backup](/guides/import-nostr-account) con su material privado, o [Nostr Connect](/guides/connect-nostr-signer) con el firmante que la controla. Comprueba la clave pública después de conectar para no confundir identidades distintas.\n\nSi todavía no tienes identidad propia, [crea una cuenta](/guides/create-nostr-account). [Compara los cuatro métodos](/guides/primeros-pasos).\n"
+        },
+        {
+          "slug": "connect-nostr-signer",
+          "title": "Conectar un firmante Nostr mediante un código QR",
+          "description": "Vincula la extensión a un firmante externo NIP-46 con Nostr Connect. Escanea el QR, aprueba la conexión y conserva la firma en tu firmante.",
+          "excerpt": "Vincula la extensión a un firmante externo NIP-46 con Nostr Connect. Escanea el QR, aprueba la conexión y conserva la firma en tu firmante.",
+          "date": "2026-09-30T00:00:00.000Z",
+          "author": {
+            "name": "Leon Acosta",
+            "avatar": "/authors/leon-profile.jpg",
+            "npub": "npub1gxdhmu9swqduwhr6zptjy4ya693zp3ql28nemy4hd97kuufyrqdqwe5zfk"
+          },
+          "featuredImage": "/images/guides/getting-started/featured.svg",
+          "previewImage": "/images/guides/getting-started/preview.svg",
+          "tags": [
+            "Extensión",
+            "Identidad",
+            "Configuración"
+          ],
+          "published": true,
+          "readingTime": "2 min read",
+          "locale": "es",
+          "translationKey": "connect-nostr-signer",
+          "translations": {
+            "en": "connect-nostr-signer",
+            "es": "connect-nostr-signer",
+            "pt": "connect-nostr-signer",
+            "ru": "connect-nostr-signer",
+            "it": "connect-nostr-signer",
+            "fr": "connect-nostr-signer",
+            "de": "connect-nostr-signer"
+          },
+          "availableLocales": [
+            "en",
+            "es",
+            "pt",
+            "ru",
+            "it",
+            "fr",
+            "de"
+          ],
+          "seoTitle": "Conectar un firmante Nostr mediante un código QR",
+          "seoDescription": "Vincula la extensión a un firmante externo NIP-46 con Nostr Connect. Escanea el QR, aprueba la conexión y conserva la firma en tu firmante.",
+          "ogImage": "/images/guides/getting-started/og.jpg",
+          "difficulty": "beginner",
+          "order": 1.4,
+          "content": "\nElige **Nostr Connect** si tu identidad está controlada por un firmante externo NIP-46. La extensión se conecta a él; la clave de firma permanece en el firmante.\n\n## Antes de empezar\n\nTen el firmante disponible y desbloqueado con la identidad correcta. Debe admitir el método NIP-46 ofrecido aquí. Este proceso no requiere pegar tu clave privada en la extensión.\n\n## Conecta mediante QR\n\n1. Abre la extensión y selecciona **Nostr Connect**.\n2. Mantén seleccionada la pestaña **QR Code**. Espera al código y al estado **Waiting for connection...**.\n3. Abre la función de conexión o escaneo QR de tu firmante y escanea el código de la extensión. Consulta sus instrucciones si sus controles tienen otros nombres.\n4. Revisa la solicitud en el firmante, confirma la identidad y aprueba allí la conexión.\n5. Espera a que la extensión reconozca la conexión y avance. Establece o desbloquea la bóveda local cuando se solicite, completa la configuración y comprueba que la clave pública corresponde a tu firmante.\n\n## Si no puedes escanear\n\n**Copy URI** copia la misma solicitud para firmantes que abren URI Nostr Connect. Si el firmante proporciona una dirección `bunker://`, usa la pestaña **Bunker URL**. Elige la pestaña que corresponda al método de conexión compatible con tu firmante.\n\n## Si la conexión caduca\n\nMantén el firmante disponible y revisa las solicitudes pendientes. Ante un error o tiempo de espera agotado, pulsa **Try again** y escanea el código nuevo. Una captura antigua no es una copia de recuperación reutilizable.\n\nConserva acceso al firmante y a su respaldo. La contraseña de la extensión no recupera una clave privada que reside en un firmante externo.\n\n[Compara los cuatro métodos](/guides/primeros-pasos) o revisa los [permisos por sitio](/guides/permisos-por-sitio).\n"
         },
         {
           "slug": "gestion-de-identidad",
@@ -1714,9 +2090,10 @@
         "Claves",
         "Conceptos",
         "Configuracion",
+        "Configuración",
         "Cuentas",
         "Direccion Lightning",
-        "Extension",
+        "Extensión",
         "Formula",
         "Grafo de Confianza",
         "Identidad",
@@ -1882,10 +2259,10 @@
         },
         {
           "slug": "primeiros-passos",
-          "title": "Primeiros Passos com o Nostr WoT",
-          "description": "Instale a extensao Nostr WoT no Chrome, Brave, Edge, Opera ou Firefox. Configure sua identidade Nostr e comece a construir sua Web of Trust em minutos.",
-          "excerpt": "Tudo o que voce precisa para instalar a extensao Nostr WoT e colocar sua rede de confianca para funcionar.",
-          "date": "2026-03-11T00:00:00.000Z",
+          "title": "Primeiros passos: escolha como configurar sua conta Nostr",
+          "description": "Instale o Nostr WoT e escolha uma nova identidade, uma chave ou backup existente, uma conta somente leitura ou uma conexão QR a um assinador externo.",
+          "excerpt": "Instale o Nostr WoT e escolha uma nova identidade, uma chave ou backup existente, uma conta somente leitura ou uma conexão QR a um assinador externo.",
+          "date": "2026-09-30T00:00:00.000Z",
           "author": {
             "name": "Leon Acosta",
             "avatar": "/authors/leon-profile.jpg",
@@ -1894,12 +2271,12 @@
           "featuredImage": "/images/guides/getting-started/featured.svg",
           "previewImage": "/images/guides/getting-started/preview.svg",
           "tags": [
-            "Extensao",
-            "Configuracao",
-            "Iniciante"
+            "Extensão",
+            "Identidade",
+            "Configuração"
           ],
           "published": true,
-          "readingTime": "3 min read",
+          "readingTime": "2 min read",
           "locale": "pt",
           "translationKey": "getting-started",
           "translations": {
@@ -1920,12 +2297,200 @@
             "fr",
             "de"
           ],
-          "seoTitle": "Primeiros Passos com a Extensao Nostr WoT — Instale",
-          "seoDescription": "Instale a extensao Nostr WoT no Chrome, Brave, Edge, Opera ou Firefox. Configure sua identidade Nostr e comece a construir sua Web of Trust em minutos.",
+          "seoTitle": "Primeiros passos: escolha como configurar sua conta Nostr",
+          "seoDescription": "Instale o Nostr WoT e escolha uma nova identidade, uma chave ou backup existente, uma conta somente leitura ou uma conexão QR a um assinador externo.",
           "ogImage": "/images/guides/getting-started/og.jpg",
           "difficulty": "beginner",
           "order": 1,
-          "content": "\nEste guia mostra como instalar a extensao Nostr WoT, configurar sua identidade e colocar sua rede de confianca para funcionar. O processo todo leva cerca de dois minutos.\n\n## Instalando a Extensao\n\nA extensao funciona em navegadores baseados em Chromium e no Firefox. Escolha o seu e siga os passos.\n\n### Chrome, Brave, Edge e Opera\n\n1. Acesse a [pagina de download](/download) e clique no link para a Chrome Web Store.\n2. Clique em **Usar no Chrome** (ou o botao equivalente do seu navegador).\n3. Confirme a instalacao quando solicitado.\n4. Fixe a extensao na barra de ferramentas -- clique no icone de quebra-cabeca e ative o pin ao lado de Nostr WoT.\n\n{/* TODO: Captura de tela da listagem na Chrome Web Store com o botao Usar no Chrome destacado */}\n\n### Firefox\n\n1. Acesse a [pagina de download](/download) e clique no link para os complementos do Firefox.\n2. Clique em **Adicionar ao Firefox** e confirme o aviso de permissoes.\n3. Fixe a extensao na barra de ferramentas clicando com o botao direito no icone e selecionando **Fixar na Barra de Ferramentas**.\n\n{/* TODO: Captura de tela da pagina de complementos do Firefox para o Nostr WoT */}\n\n<Callout type=\"tip\">\nApos a instalacao, o icone da extensao aparece na barra de ferramentas do navegador. Um icone cinza significa que voce ainda nao fez login. Ele fica roxo quando sua identidade esta ativa.\n</Callout>\n\n## Configuracao Inicial\n\nAo abrir a extensao pela primeira vez, o assistente guia voce pelo essencial. Voce escolhe entre criar uma identidade Nostr ou importar uma existente. Nenhum cadastro em terceiros e necessario.\n\n{/* TODO: Captura de tela da tela de boas-vindas do assistente de configuracao */}\n\n## Criando uma Nova Chave Nostr\n\nSe voce e novo no Nostr, selecione **Criar Novas Chaves**. A extensao gera uma chave privada (nsec) e uma chave publica (npub) para voce.\n\n1. Clique em **Criar Novas Chaves** no assistente de configuracao.\n2. Salve o backup da sua chave privada. Anote em papel ou guarde em um gerenciador de senhas. Se perder, nao ha como recuperar.\n3. Defina uma senha local para criptografar suas chaves dentro da extensao. Essa senha nunca e enviada para nenhum lugar.\n4. Opcionalmente, preencha os detalhes do seu perfil -- nome de exibicao, bio e avatar.\n\n{/* TODO: Captura de tela da tela de criacao de chaves com o aviso de backup */}\n\n<Callout type=\"tip\">\nSua chave privada e a senha mestra da sua identidade Nostr. Nunca compartilhe, cole em um site ou armazene em texto simples. A extensao a criptografa localmente para que os sites nunca a vejam diretamente.\n</Callout>\n\n## Importando uma Chave Existente\n\nJa tem uma identidade Nostr? Selecione **Importar Chave Existente** e cole sua nsec ou use uma extensao de assinatura compativel com NIP-07.\n\n1. Clique em **Importar Chave Existente**.\n2. Cole sua chave privada nsec ou conecte um dispositivo de assinatura.\n3. Defina uma senha de criptografia local.\n4. A extensao busca seu perfil nos relays Nostr automaticamente.\n\n{/* TODO: Captura de tela da tela de importacao de chave */}\n\n## Verificando sua Configuracao\n\nCom sua identidade ativa, clique no icone da extensao. Voce deve ver os detalhes do seu perfil, sua npub e um grafo de confianca inicial construido a partir da sua lista de contatos.\n\nDe um ou dois minutos para a sincronizacao inicial. Depois, sua rede e atualizada em segundo plano enquanto voce navega.\n\n{/* TODO: Video do processo de instalacao */}\n\n## O Que Vem a Seguir?\n\nAgora que a extensao esta instalada, aprenda a [gerenciar sua identidade](/guides/gerenciar-identidade) e entenda como a [Web of Trust funciona](/guides/entendendo-web-of-trust).\n"
+          "content": "\nO Nostr WoT oferece quatro maneiras de configurar uma identidade. Para sua primeira conta Nostr, escolha **Create New**. Se já tem uma identidade, escolha o método correspondente ao que você possui.\n\n## Instale e abra a extensão\n\n1. Acesse a [página de download](/download) e siga o link da loja do seu navegador.\n2. Instale a extensão e fixe-a na barra de ferramentas.\n3. Abra o popup do Nostr WoT e selecione **Continue** para ver os métodos.\n\n## Escolha o método\n\n| O que você tem | Método | Guia |\n|---|---|---|\n| Nenhuma identidade Nostr | **Create New** | [Criar conta e salvar 24 palavras](/guides/create-nostr-account) |\n| Chave privada, frase de recuperação ou backup criptografado | **Import Key or Backup** | [Restaurar identidade](/guides/import-nostr-account) |\n| Apenas uma chave pública para explorar | **Watch-Only** | [Adicionar conta somente leitura](/guides/watch-only-nostr-account) |\n| Identidade em um assinador externo NIP-46 | **Nostr Connect** | [Conectar por QR](/guides/connect-nostr-signer) |\n\nCriar uma identidade não exige e-mail nem telefone. Suas chaves identificam você no Nostr. Importar restaura a identidade da chave existente; criar outra gera uma identidade diferente.\n\n## O que guardar\n\nA **chave pública (npub)** identifica sua conta e pode ser compartilhada. A **chave privada (nsec) ou frase de recuperação** permite controlar a identidade e deve permanecer privada. A **senha local do cofre** protege as chaves neste navegador; não substitui uma frase perdida.\n\n<Callout type=\"warning\">\nNunca use palavras de recuperação de tutoriais ou demonstrações. Guarde as palavras geradas pela sua própria extensão antes de continuar.\n</Callout>\n\n## Após a configuração\n\nConfira se a chave pública corresponde à identidade desejada. Com uma conta que assina, abra um cliente Nostr e revise as solicitações de permissão. Contas somente leitura não assinam publicações.\n\nContinue com [gerenciamento de identidade](/guides/gerenciar-identidade), [permissões por site](/guides/permissoes-por-site) ou [Web of Trust](/guides/entendendo-web-of-trust). Configure uma [carteira Lightning](/guides/configurar-carteira) separadamente quando quiser usar zaps.\n"
+        },
+        {
+          "slug": "create-nostr-account",
+          "title": "Criar uma conta Nostr com 24 palavras de recuperação",
+          "description": "Crie uma identidade no popup da extensão, verifique seu backup e proteja este navegador com uma senha local do cofre.",
+          "excerpt": "Crie uma identidade no popup da extensão, verifique seu backup e proteja este navegador com uma senha local do cofre.",
+          "date": "2026-09-30T00:00:00.000Z",
+          "author": {
+            "name": "Leon Acosta",
+            "avatar": "/authors/leon-profile.jpg",
+            "npub": "npub1gxdhmu9swqduwhr6zptjy4ya693zp3ql28nemy4hd97kuufyrqdqwe5zfk"
+          },
+          "featuredImage": "/images/guides/getting-started/featured.svg",
+          "previewImage": "/images/guides/getting-started/preview.svg",
+          "tags": [
+            "Extensão",
+            "Identidade",
+            "Configuração"
+          ],
+          "published": true,
+          "readingTime": "2 min read",
+          "locale": "pt",
+          "translationKey": "create-nostr-account",
+          "translations": {
+            "en": "create-nostr-account",
+            "es": "create-nostr-account",
+            "pt": "create-nostr-account",
+            "ru": "create-nostr-account",
+            "it": "create-nostr-account",
+            "fr": "create-nostr-account",
+            "de": "create-nostr-account"
+          },
+          "availableLocales": [
+            "en",
+            "es",
+            "pt",
+            "ru",
+            "it",
+            "fr",
+            "de"
+          ],
+          "seoTitle": "Criar uma conta Nostr com 24 palavras de recuperação",
+          "seoDescription": "Crie uma identidade no popup da extensão, verifique seu backup e proteja este navegador com uma senha local do cofre.",
+          "ogImage": "/images/guides/getting-started/og.jpg",
+          "difficulty": "beginner",
+          "order": 1.1,
+          "content": "\nEscolha **Create New** para criar uma identidade Nostr. A extensão gera 24 palavras de recuperação e deriva suas chaves delas. Você não precisa informar e-mail nem telefone.\n\n## Crie e faça backup da identidade\n\n1. Abra a extensão. Na configuração inicial, selecione **Continue** e depois **Create New**.\n2. Revele a frase em um local privado. Anote as **24 palavras na ordem exata** e guarde-as com segurança.\n3. Use os controles de backup se quiser uma cópia em arquivo. O download em texto simples contém a frase sem criptografia; proteja-o adequadamente. O backup criptografado precisa de sua própria senha.\n4. Confirme que salvou a frase. Preencha as palavras ausentes usando sua cópia guardada para concluir a verificação.\n\n<Callout type=\"warning\">\nQualquer pessoa com suas palavras pode recuperar esta identidade. Mantenha-as privadas. Não use palavras de vídeos, capturas ou contas de outras pessoas. Não existe redefinição por e-mail que substitua uma frase perdida.\n</Callout>\n\n## Proteja este navegador\n\n5. Escolha o intervalo do bloqueio automático, defina e confirme a senha local do cofre. Guarde-a onde possa recuperá-la.\n6. Conclua a configuração restante. As sugestões de perfis para seguir são opcionais; pule-as se preferir escolher depois.\n7. Na tela final, selecione **Get Started**. Confira sua chave pública no popup e bloqueie o cofre ao terminar.\n\nA senha desbloqueia as chaves guardadas neste navegador. A frase de recuperação restaura a identidade. Guarde ambas: uma não substitui a outra.\n\nJá tem a identidade desejada? Use [Import Key or Backup](/guides/import-nostr-account). [Compare os quatro métodos](/guides/primeiros-passos).\n"
+        },
+        {
+          "slug": "import-nostr-account",
+          "title": "Importar uma chave privada ou backup Nostr",
+          "description": "Restaure uma identidade existente com nsec, chave privada hexadecimal, frase de recuperação, ncryptsec ou backup criptografado compatível.",
+          "excerpt": "Restaure uma identidade existente com nsec, chave privada hexadecimal, frase de recuperação, ncryptsec ou backup criptografado compatível.",
+          "date": "2026-09-30T00:00:00.000Z",
+          "author": {
+            "name": "Leon Acosta",
+            "avatar": "/authors/leon-profile.jpg",
+            "npub": "npub1gxdhmu9swqduwhr6zptjy4ya693zp3ql28nemy4hd97kuufyrqdqwe5zfk"
+          },
+          "featuredImage": "/images/guides/getting-started/featured.svg",
+          "previewImage": "/images/guides/getting-started/preview.svg",
+          "tags": [
+            "Extensão",
+            "Identidade",
+            "Configuração"
+          ],
+          "published": true,
+          "readingTime": "2 min read",
+          "locale": "pt",
+          "translationKey": "import-nostr-account",
+          "translations": {
+            "en": "import-nostr-account",
+            "es": "import-nostr-account",
+            "pt": "import-nostr-account",
+            "ru": "import-nostr-account",
+            "it": "import-nostr-account",
+            "fr": "import-nostr-account",
+            "de": "import-nostr-account"
+          },
+          "availableLocales": [
+            "en",
+            "es",
+            "pt",
+            "ru",
+            "it",
+            "fr",
+            "de"
+          ],
+          "seoTitle": "Importar uma chave privada ou backup Nostr",
+          "seoDescription": "Restaure uma identidade existente com nsec, chave privada hexadecimal, frase de recuperação, ncryptsec ou backup criptografado compatível.",
+          "ogImage": "/images/guides/getting-started/og.jpg",
+          "difficulty": "beginner",
+          "order": 1.2,
+          "content": "\nEscolha **Import Key or Backup** para trazer uma identidade existente para este navegador. Você precisa da chave privada, frase de recuperação ou backup criptografado compatível. Uma npub é pública e deve ser usada em [Watch-Only](/guides/watch-only-nostr-account).\n\n## Restaure sua identidade\n\n1. Abra a extensão e selecione **Import Key or Backup**.\n2. Cole sua **nsec**, chave privada hexadecimal ou frase de recuperação, ou carregue um arquivo compatível. A extensão detecta o formato.\n3. Para **ncryptsec** ou backup criptografado, informe a senha usada na criptografia. Ela pode ser diferente da senha do cofre do navegador.\n4. Continue quando o formato for reconhecido. Se houver erro, confira os dados e a senha antes de tentar novamente. Preserve o backup original.\n5. Guarde seu backup de recuperação existente com segurança. Defina a senha local quando solicitado. Se já houver um cofre neste navegador, desbloqueie-o com a senha existente quando necessário.\n6. Conclua e compare a chave pública exibida com a npub da identidade que pretendia restaurar.\n\n## Frases e arquivos criptografados\n\nVocê pode importar frases existentes de 12 ou 24 palavras. Novas identidades usam 24. Se utilizou um caminho de derivação personalizado, guarde-o e a chave pública esperada com seus registros; consulte [caminhos de identidade](/guides/custom-identity-paths).\n\nA importação de uma frase começa pela primeira chave Nostr; não restaura automaticamente todas as subcontas ou caminhos personalizados. Leia o aviso na tela de importação: se o cofre desbloqueado já tem uma frase principal, apenas a primeira chave da frase adicional é importada, sem armazená-la como outra frase principal.\n\nA senha de um arquivo protege esse arquivo. Definir outra senha local não altera a senha de um backup existente.\n\n<Callout type=\"warning\">\nInsira chaves privadas e palavras apenas na interface de importação da extensão. Nunca as envie a quem oferece ajuda para recuperar sua conta.\n</Callout>\n\nPrefere assinar em outro aplicativo? Use [Nostr Connect](/guides/connect-nostr-signer). [Compare os quatro métodos](/guides/primeiros-passos).\n"
+        },
+        {
+          "slug": "watch-only-nostr-account",
+          "title": "Adicionar uma conta Nostr somente leitura",
+          "description": "Explore uma identidade com sua npub sem importar a chave privada. Entenda as possibilidades e os limites do modo somente leitura.",
+          "excerpt": "Explore uma identidade com sua npub sem importar a chave privada. Entenda as possibilidades e os limites do modo somente leitura.",
+          "date": "2026-09-30T00:00:00.000Z",
+          "author": {
+            "name": "Leon Acosta",
+            "avatar": "/authors/leon-profile.jpg",
+            "npub": "npub1gxdhmu9swqduwhr6zptjy4ya693zp3ql28nemy4hd97kuufyrqdqwe5zfk"
+          },
+          "featuredImage": "/images/guides/getting-started/featured.svg",
+          "previewImage": "/images/guides/getting-started/preview.svg",
+          "tags": [
+            "Extensão",
+            "Identidade",
+            "Configuração"
+          ],
+          "published": true,
+          "readingTime": "2 min read",
+          "locale": "pt",
+          "translationKey": "watch-only-nostr-account",
+          "translations": {
+            "en": "watch-only-nostr-account",
+            "es": "watch-only-nostr-account",
+            "pt": "watch-only-nostr-account",
+            "ru": "watch-only-nostr-account",
+            "it": "watch-only-nostr-account",
+            "fr": "watch-only-nostr-account",
+            "de": "watch-only-nostr-account"
+          },
+          "availableLocales": [
+            "en",
+            "es",
+            "pt",
+            "ru",
+            "it",
+            "fr",
+            "de"
+          ],
+          "seoTitle": "Adicionar uma conta Nostr somente leitura",
+          "seoDescription": "Explore uma identidade com sua npub sem importar a chave privada. Entenda as possibilidades e os limites do modo somente leitura.",
+          "ogImage": "/images/guides/getting-started/og.jpg",
+          "difficulty": "beginner",
+          "order": 1.3,
+          "content": "\nEscolha **Watch-Only** quando tiver uma chave pública e quiser visualizar uma identidade sem importar sua chave privada. É útil para explorar um perfil e sua rede de confiança antes de conectar uma conta capaz de assinar.\n\n## Adicione a chave pública\n\n1. Copie a **npub** da identidade que deseja visualizar. Confira se pertence ao perfil correto.\n2. Abra o popup da extensão e selecione **Watch-Only**.\n3. Cole a chave pública e selecione **Continue**. Se a validação falhar, confira se copiou a chave completa.\n4. Termine a configuração e confirme que a identidade exibida corresponde à npub informada. Aguarde o carregamento do perfil pelos relays.\n\n## Entenda os limites\n\nUma chave pública identifica a conta, mas não autoriza ações em seu nome. O modo somente leitura não assina eventos, publica mensagens nem aprova solicitações de assinatura para essa identidade. Adicionar a chave pública de outra pessoa não dá controle sobre a conta dela.\n\nVocê não precisa da chave privada para visualizar a identidade pública. Nunca peça uma nsec ou frase de recuperação para isso.\n\n## Quando quiser assinar\n\nSe a identidade for sua, use [Import Key or Backup](/guides/import-nostr-account) com o material privado, ou [Nostr Connect](/guides/connect-nostr-signer) com o assinador que a controla. Confira a chave pública após conectar para não confundir identidades diferentes.\n\nSe ainda não tem sua própria identidade, [crie uma conta](/guides/create-nostr-account). [Compare os quatro métodos](/guides/primeiros-passos).\n"
+        },
+        {
+          "slug": "connect-nostr-signer",
+          "title": "Conectar um assinador Nostr por código QR",
+          "description": "Use Nostr Connect para conectar a extensão a um assinador externo NIP-46. Escaneie o QR, aprove a conexão e mantenha a assinatura no assinador.",
+          "excerpt": "Use Nostr Connect para conectar a extensão a um assinador externo NIP-46. Escaneie o QR, aprove a conexão e mantenha a assinatura no assinador.",
+          "date": "2026-09-30T00:00:00.000Z",
+          "author": {
+            "name": "Leon Acosta",
+            "avatar": "/authors/leon-profile.jpg",
+            "npub": "npub1gxdhmu9swqduwhr6zptjy4ya693zp3ql28nemy4hd97kuufyrqdqwe5zfk"
+          },
+          "featuredImage": "/images/guides/getting-started/featured.svg",
+          "previewImage": "/images/guides/getting-started/preview.svg",
+          "tags": [
+            "Extensão",
+            "Identidade",
+            "Configuração"
+          ],
+          "published": true,
+          "readingTime": "2 min read",
+          "locale": "pt",
+          "translationKey": "connect-nostr-signer",
+          "translations": {
+            "en": "connect-nostr-signer",
+            "es": "connect-nostr-signer",
+            "pt": "connect-nostr-signer",
+            "ru": "connect-nostr-signer",
+            "it": "connect-nostr-signer",
+            "fr": "connect-nostr-signer",
+            "de": "connect-nostr-signer"
+          },
+          "availableLocales": [
+            "en",
+            "es",
+            "pt",
+            "ru",
+            "it",
+            "fr",
+            "de"
+          ],
+          "seoTitle": "Conectar um assinador Nostr por código QR",
+          "seoDescription": "Use Nostr Connect para conectar a extensão a um assinador externo NIP-46. Escaneie o QR, aprove a conexão e mantenha a assinatura no assinador.",
+          "ogImage": "/images/guides/getting-started/og.jpg",
+          "difficulty": "beginner",
+          "order": 1.4,
+          "content": "\nEscolha **Nostr Connect** quando sua identidade estiver em um assinador externo NIP-46. A extensão se conecta a ele; a chave de assinatura permanece no assinador.\n\n## Antes de começar\n\nTenha o assinador disponível e desbloqueado com a identidade desejada. Ele deve aceitar o método NIP-46 oferecido aqui. Você não precisa colar a chave privada na extensão.\n\n## Conecte por QR\n\n1. Abra a extensão e selecione **Nostr Connect**.\n2. Mantenha a aba **QR Code** selecionada. Aguarde o código e o estado **Waiting for connection...**.\n3. Abra a função de conexão ou leitura de QR no assinador e escaneie o código da extensão. Consulte as instruções dele se os controles tiverem outros nomes.\n4. Revise a solicitação no assinador, confirme a identidade e aprove a conexão ali.\n5. Aguarde a extensão reconhecer a conexão e avançar. Defina ou desbloqueie o cofre local quando solicitado, conclua e confira se a chave pública corresponde à identidade do assinador.\n\n## Se não puder escanear\n\n**Copy URI** fornece a mesma solicitação para assinadores que abrem URIs Nostr Connect. Se o assinador fornecer um endereço `bunker://`, use a aba **Bunker URL**. Escolha a aba correspondente ao método aceito pelo seu assinador.\n\n## Se a conexão expirar\n\nMantenha o assinador disponível e confira as solicitações pendentes. Se houver falha ou tempo esgotado, selecione **Try again** e escaneie o novo código. Uma captura antiga não é um backup de recuperação reutilizável.\n\nMantenha acesso ao assinador e ao backup dele. A senha da extensão não recupera uma chave privada guardada em um assinador externo.\n\n[Compare os quatro métodos](/guides/primeiros-passos) ou revise as [permissões por site](/guides/permissoes-por-site).\n"
         },
         {
           "slug": "gerenciar-identidade",
@@ -2545,11 +3110,11 @@
         "Carteira",
         "Chaves",
         "Conceitos",
-        "Configuracao",
         "Configuracoes",
+        "Configuração",
         "Contas",
         "Endereco Lightning",
-        "Extensao",
+        "Extensão",
         "Formula",
         "Grafo de Confianca",
         "Identidade",
@@ -2717,10 +3282,10 @@
         },
         {
           "slug": "nachalo-raboty",
-          "title": "Начало работы с Nostr WoT",
-          "description": "Установите браузерное расширение Nostr WoT в Chrome, Brave, Edge, Opera или Firefox. Настройте свою идентичность Nostr и начните строить Web of Trust за считанные минуты.",
-          "excerpt": "Всё, что нужно для установки расширения Nostr WoT и запуска вашей первой сети доверия.",
-          "date": "2026-03-11T00:00:00.000Z",
+          "title": "Первые шаги: выберите способ настройки аккаунта Nostr",
+          "description": "Установите Nostr WoT и выберите новую идентичность, существующий ключ или резервную копию, режим просмотра либо QR-подключение к внешнему подписывающему приложению.",
+          "excerpt": "Установите Nostr WoT и выберите новую идентичность, существующий ключ или резервную копию, режим просмотра либо QR-подключение к внешнему подписывающему приложению.",
+          "date": "2026-09-30T00:00:00.000Z",
           "author": {
             "name": "Leon Acosta",
             "avatar": "/authors/leon-profile.jpg",
@@ -2730,11 +3295,11 @@
           "previewImage": "/images/guides/getting-started/preview.svg",
           "tags": [
             "Расширение",
-            "Настройка",
-            "Начинающий"
+            "Идентичность",
+            "Настройка"
           ],
           "published": true,
-          "readingTime": "3 min read",
+          "readingTime": "2 min read",
           "locale": "ru",
           "translationKey": "getting-started",
           "translations": {
@@ -2755,12 +3320,200 @@
             "fr",
             "de"
           ],
-          "seoTitle": "Начало работы с Nostr WoT — руководство по расширению",
-          "seoDescription": "Установите браузерное расширение Nostr WoT в Chrome, Brave, Edge, Opera или Firefox. Настройте свою идентичность Nostr и начните строить Web of Trust за считанные минуты.",
+          "seoTitle": "Первые шаги: выберите способ настройки аккаунта Nostr",
+          "seoDescription": "Установите Nostr WoT и выберите новую идентичность, существующий ключ или резервную копию, режим просмотра либо QR-подключение к внешнему подписывающему приложению.",
           "ogImage": "/images/guides/getting-started/og.jpg",
           "difficulty": "beginner",
           "order": 1,
-          "content": "\nЭто руководство проведёт вас через установку расширения Nostr WoT, настройку идентичности и запуск вашей сети доверия. Весь процесс занимает около двух минут.\n\n## Установка расширения\n\nРасширение поддерживает все основные браузеры на базе Chromium и Firefox. Выберите свой браузер и следуйте шагам ниже.\n\n### Chrome, Brave, Edge и Opera\n\n1. Перейдите на [страницу загрузки](/download) и нажмите ссылку для Chrome Web Store.\n2. Нажмите **Добавить в Chrome** (или аналогичную кнопку в вашем браузере).\n3. Подтвердите установку при появлении запроса.\n4. Закрепите расширение на панели инструментов для быстрого доступа — нажмите значок пазла в браузере и переключите булавку рядом с Nostr WoT.\n\n{/* TODO: Screenshot of the Chrome Web Store listing with the Add to Chrome button highlighted */}\n\n### Firefox\n\n1. Перейдите на [страницу загрузки](/download) и нажмите ссылку для дополнений Firefox.\n2. Нажмите **Добавить в Firefox** и подтвердите запрос на разрешения.\n3. Закрепите расширение на панели инструментов, щёлкнув правой кнопкой по значку и выбрав **Закрепить на панели инструментов**.\n\n{/* TODO: Screenshot of the Firefox Add-ons page for Nostr WoT */}\n\n<Callout type=\"tip\">\nПосле установки значок расширения появится на панели инструментов браузера. Серый значок означает, что вы ещё не вошли. Он становится фиолетовым, когда ваша идентичность активна.\n</Callout>\n\n## Первоначальная настройка\n\nКогда вы впервые откроете расширение, мастер настройки проведёт вас через основные этапы. Вам предложат либо создать новую идентичность Nostr, либо импортировать существующую. Регистрация у каких-либо третьих сторон не требуется.\n\n{/* TODO: Screenshot of the first-time setup wizard welcome screen */}\n\n## Создание нового ключа Nostr\n\nЕсли вы новичок в Nostr, выберите **Создать новые ключи**. Расширение сгенерирует для вас приватный ключ (nsec) и публичный ключ (npub).\n\n1. Нажмите **Создать новые ключи** в мастере настройки.\n2. Сохраните резервную копию приватного ключа. Запишите его или сохраните в менеджере паролей. Если вы потеряете этот ключ, восстановить аккаунт будет невозможно.\n3. Установите локальный пароль для шифрования ключей внутри расширения. Этот пароль никуда не отправляется.\n4. По желанию заполните данные профиля — отображаемое имя, биографию и аватар.\n\n{/* TODO: Screenshot of the key creation screen with the backup prompt */}\n\n<Callout type=\"tip\">\nВаш приватный ключ — это мастер-пароль вашей идентичности Nostr. Никогда не делитесь им, не вставляйте его на веб-сайты и не храните в открытом виде. Расширение шифрует его локально, чтобы сайты никогда не видели его напрямую.\n</Callout>\n\n## Импорт существующего ключа\n\nУже есть идентичность Nostr? Выберите **Импортировать существующий ключ** и вставьте свой nsec или используйте совместимое с NIP-07 расширение-подписант.\n\n1. Нажмите **Импортировать существующий ключ**.\n2. Вставьте свой приватный ключ nsec или подключите аппаратный подписант.\n3. Установите локальный пароль шифрования.\n4. Расширение автоматически загрузит ваш профиль с реле Nostr.\n\n{/* TODO: Screenshot of the import key screen */}\n\n## Проверка настройки\n\nКогда ваша идентичность активна, нажмите на значок расширения. Вы должны увидеть данные вашего профиля, ваш npub и начальный граф доверия, который начинает строиться на основе вашего списка подписок. Расширение загружает ваши контакты с реле и начинает формировать ваш Web of Trust.\n\nДайте ему минуту-две для начальной синхронизации. После этого ваша сеть доверия обновляется в фоновом режиме, пока вы просматриваете сайты.\n\n## Что дальше?\n\nТеперь, когда расширение установлено, узнайте, как [управлять своей идентичностью](/guides/managing-identity) и понять, как работает [Web of Trust](/guides/understanding-wot).\n"
+          "content": "\nNostr WoT предлагает четыре способа настройки идентичности. Для первого аккаунта Nostr выберите **Create New**. Если идентичность уже есть, выберите способ, соответствующий вашим данным.\n\n## Установите и откройте расширение\n\n1. Откройте [страницу загрузки](/download) и перейдите в магазин своего браузера.\n2. Установите расширение и закрепите его на панели инструментов.\n3. Откройте всплывающее окно Nostr WoT и нажмите **Continue**, чтобы увидеть способы настройки.\n\n## Выберите способ\n\n| Что у вас есть | Способ | Инструкция |\n|---|---|---|\n| Идентичности Nostr пока нет | **Create New** | [Создать аккаунт и сохранить 24 слова](/guides/create-nostr-account) |\n| Закрытый ключ, фраза восстановления или зашифрованная копия | **Import Key or Backup** | [Восстановить идентичность](/guides/import-nostr-account) |\n| Только открытый ключ для просмотра | **Watch-Only** | [Добавить аккаунт для чтения](/guides/watch-only-nostr-account) |\n| Идентичность во внешнем приложении NIP-46 | **Nostr Connect** | [Подключить через QR-код](/guides/connect-nostr-signer) |\n\nДля новой идентичности не нужны почта или телефон. В Nostr вас определяют ключи. Импорт восстанавливает идентичность существующего ключа; создание новой даёт другую идентичность.\n\n## Что нужно сохранить\n\n**Открытый ключ (npub)** определяет аккаунт, им можно делиться. **Закрытый ключ (nsec) или фраза восстановления** позволяет управлять идентичностью и должен оставаться в тайне. **Локальный пароль хранилища** защищает ключи в этом браузере; он не заменяет потерянную фразу.\n\n<Callout type=\"warning\">\nНикогда не используйте слова из инструкций или демонстраций. Перед продолжением сохраните слова, созданные вашим расширением.\n</Callout>\n\n## После настройки\n\nПроверьте, что открытый ключ соответствует нужной идентичности. С аккаунтом, способным подписывать, откройте клиент Nostr и проверьте запросы разрешений. Аккаунты для просмотра не подписывают публикации.\n\nДалее изучите [управление идентичностью](/guides/upravlenie-identichnostyu), [разрешения сайтов](/guides/razresheniya-saitov) или [Web of Trust](/guides/ponimanie-web-of-trust). Для запов можно отдельно настроить [кошелёк Lightning](/guides/nastroika-koshelka).\n"
+        },
+        {
+          "slug": "create-nostr-account",
+          "title": "Создать аккаунт Nostr с 24 словами восстановления",
+          "description": "Создайте идентичность в окне расширения, проверьте резервную копию и защитите этот браузер локальным паролем хранилища.",
+          "excerpt": "Создайте идентичность в окне расширения, проверьте резервную копию и защитите этот браузер локальным паролем хранилища.",
+          "date": "2026-09-30T00:00:00.000Z",
+          "author": {
+            "name": "Leon Acosta",
+            "avatar": "/authors/leon-profile.jpg",
+            "npub": "npub1gxdhmu9swqduwhr6zptjy4ya693zp3ql28nemy4hd97kuufyrqdqwe5zfk"
+          },
+          "featuredImage": "/images/guides/getting-started/featured.svg",
+          "previewImage": "/images/guides/getting-started/preview.svg",
+          "tags": [
+            "Расширение",
+            "Идентичность",
+            "Настройка"
+          ],
+          "published": true,
+          "readingTime": "2 min read",
+          "locale": "ru",
+          "translationKey": "create-nostr-account",
+          "translations": {
+            "en": "create-nostr-account",
+            "es": "create-nostr-account",
+            "pt": "create-nostr-account",
+            "ru": "create-nostr-account",
+            "it": "create-nostr-account",
+            "fr": "create-nostr-account",
+            "de": "create-nostr-account"
+          },
+          "availableLocales": [
+            "en",
+            "es",
+            "pt",
+            "ru",
+            "it",
+            "fr",
+            "de"
+          ],
+          "seoTitle": "Создать аккаунт Nostr с 24 словами восстановления",
+          "seoDescription": "Создайте идентичность в окне расширения, проверьте резервную копию и защитите этот браузер локальным паролем хранилища.",
+          "ogImage": "/images/guides/getting-started/og.jpg",
+          "difficulty": "beginner",
+          "order": 1.1,
+          "content": "\nВыберите **Create New**, чтобы создать идентичность Nostr. Расширение генерирует 24 слова восстановления и получает из них ключи. Вводить почту или телефон не нужно.\n\n## Создайте и сохраните идентичность\n\n1. Откройте расширение. При первой настройке нажмите **Continue**, затем **Create New**.\n2. Покажите фразу там, где её никто не увидит. Запишите все **24 слова в точном порядке** и храните их безопасно.\n3. При необходимости сохраните файл через элементы резервного копирования. Обычный текстовый файл содержит незашифрованную фразу: защитите его соответствующим образом. Зашифрованной копии нужен отдельный пароль.\n4. Подтвердите сохранение фразы. Заполните пропущенные слова по своей сохранённой копии, чтобы пройти проверку.\n\n<Callout type=\"warning\">\nЛюбой, у кого есть эти слова, может восстановить идентичность. Храните их в тайне. Не используйте слова из видео, снимков экрана или чужих аккаунтов. Восстановление по почте не заменит потерянную фразу.\n</Callout>\n\n## Защитите этот браузер\n\n5. Выберите интервал автоблокировки, задайте и подтвердите локальный пароль хранилища. Сохраните его там, где сможете найти.\n6. Завершите настройку. Рекомендации подписок необязательны; их можно пропустить и выбрать людей позже.\n7. На финальном экране нажмите **Get Started**. Проверьте открытый ключ в окне расширения и заблокируйте хранилище после работы.\n\nПароль открывает доступ к ключам в этом браузере. Фраза восстановления восстанавливает идентичность. Сохраните оба: одно не заменяет другое.\n\nНужная идентичность уже есть? Используйте [Import Key or Backup](/guides/import-nostr-account). [Сравните четыре способа](/guides/nachalo-raboty).\n"
+        },
+        {
+          "slug": "import-nostr-account",
+          "title": "Импортировать закрытый ключ или резервную копию Nostr",
+          "description": "Восстановите идентичность из nsec, закрытого ключа в hex, фразы восстановления, ncryptsec или совместимой зашифрованной копии.",
+          "excerpt": "Восстановите идентичность из nsec, закрытого ключа в hex, фразы восстановления, ncryptsec или совместимой зашифрованной копии.",
+          "date": "2026-09-30T00:00:00.000Z",
+          "author": {
+            "name": "Leon Acosta",
+            "avatar": "/authors/leon-profile.jpg",
+            "npub": "npub1gxdhmu9swqduwhr6zptjy4ya693zp3ql28nemy4hd97kuufyrqdqwe5zfk"
+          },
+          "featuredImage": "/images/guides/getting-started/featured.svg",
+          "previewImage": "/images/guides/getting-started/preview.svg",
+          "tags": [
+            "Расширение",
+            "Идентичность",
+            "Настройка"
+          ],
+          "published": true,
+          "readingTime": "2 min read",
+          "locale": "ru",
+          "translationKey": "import-nostr-account",
+          "translations": {
+            "en": "import-nostr-account",
+            "es": "import-nostr-account",
+            "pt": "import-nostr-account",
+            "ru": "import-nostr-account",
+            "it": "import-nostr-account",
+            "fr": "import-nostr-account",
+            "de": "import-nostr-account"
+          },
+          "availableLocales": [
+            "en",
+            "es",
+            "pt",
+            "ru",
+            "it",
+            "fr",
+            "de"
+          ],
+          "seoTitle": "Импортировать закрытый ключ или резервную копию Nostr",
+          "seoDescription": "Восстановите идентичность из nsec, закрытого ключа в hex, фразы восстановления, ncryptsec или совместимой зашифрованной копии.",
+          "ogImage": "/images/guides/getting-started/og.jpg",
+          "difficulty": "beginner",
+          "order": 1.2,
+          "content": "\nВыберите **Import Key or Backup**, чтобы использовать существующую идентичность в этом браузере. Нужен закрытый ключ, фраза восстановления или совместимая зашифрованная копия. Открытый ключ npub предназначен для [Watch-Only](/guides/watch-only-nostr-account).\n\n## Восстановите идентичность\n\n1. Откройте расширение и выберите **Import Key or Backup**.\n2. Вставьте **nsec**, закрытый ключ в hex или фразу либо загрузите совместимый файл. Расширение определит формат.\n3. Для **ncryptsec** или зашифрованной копии введите пароль, использованный при шифровании. Он может отличаться от пароля хранилища.\n4. Продолжите после распознавания формата. При ошибке проверьте данные и пароль перед повтором. Сохраните оригинал без изменений.\n5. Берегите имеющуюся резервную копию. Задайте локальный пароль по запросу. Если хранилище уже существует, разблокируйте его текущим паролем, когда потребуется.\n6. Завершите настройку и сравните показанный открытый ключ с ожидаемым npub.\n\n## Фразы и зашифрованные файлы\n\nМожно импортировать существующие фразы из 12 или 24 слов. Новые идентичности используют 24 слова. Сохраните нестандартный путь деривации и ожидаемый открытый ключ; см. [пути идентичностей](/guides/custom-identity-paths).\n\nИмпорт фразы начинается с её первого ключа Nostr и не восстанавливает автоматически все дополнительные аккаунты или нестандартные пути. Прочитайте предупреждение: если в разблокированном хранилище уже есть основная фраза, импортируется только первый ключ дополнительной фразы. Она не сохраняется как ещё одна основная фраза.\n\nНовый локальный пароль не меняет пароль существующего файла резервной копии.\n\n<Callout type=\"warning\">\nВводите секретные данные только в интерфейсе импорта расширения. Не отправляйте их людям, предлагающим восстановить аккаунт.\n</Callout>\n\nДля подписания в другом приложении используйте [Nostr Connect](/guides/connect-nostr-signer). [Сравните способы](/guides/nachalo-raboty).\n"
+        },
+        {
+          "slug": "watch-only-nostr-account",
+          "title": "Добавить аккаунт Nostr только для просмотра",
+          "description": "Изучайте идентичность по npub без импорта закрытого ключа. Узнайте возможности и ограничения режима просмотра.",
+          "excerpt": "Изучайте идентичность по npub без импорта закрытого ключа. Узнайте возможности и ограничения режима просмотра.",
+          "date": "2026-09-30T00:00:00.000Z",
+          "author": {
+            "name": "Leon Acosta",
+            "avatar": "/authors/leon-profile.jpg",
+            "npub": "npub1gxdhmu9swqduwhr6zptjy4ya693zp3ql28nemy4hd97kuufyrqdqwe5zfk"
+          },
+          "featuredImage": "/images/guides/getting-started/featured.svg",
+          "previewImage": "/images/guides/getting-started/preview.svg",
+          "tags": [
+            "Расширение",
+            "Идентичность",
+            "Настройка"
+          ],
+          "published": true,
+          "readingTime": "1 min read",
+          "locale": "ru",
+          "translationKey": "watch-only-nostr-account",
+          "translations": {
+            "en": "watch-only-nostr-account",
+            "es": "watch-only-nostr-account",
+            "pt": "watch-only-nostr-account",
+            "ru": "watch-only-nostr-account",
+            "it": "watch-only-nostr-account",
+            "fr": "watch-only-nostr-account",
+            "de": "watch-only-nostr-account"
+          },
+          "availableLocales": [
+            "en",
+            "es",
+            "pt",
+            "ru",
+            "it",
+            "fr",
+            "de"
+          ],
+          "seoTitle": "Добавить аккаунт Nostr только для просмотра",
+          "seoDescription": "Изучайте идентичность по npub без импорта закрытого ключа. Узнайте возможности и ограничения режима просмотра.",
+          "ogImage": "/images/guides/getting-started/og.jpg",
+          "difficulty": "beginner",
+          "order": 1.3,
+          "content": "\nВыберите **Watch-Only**, если у вас есть открытый ключ и вы хотите просматривать идентичность без импорта закрытого ключа. Это позволяет изучить профиль и его сеть доверия перед подключением аккаунта, способного подписывать.\n\n## Добавьте открытый ключ\n\n1. Скопируйте **npub** нужной идентичности. Проверьте, что он принадлежит правильному профилю.\n2. Откройте окно расширения и выберите **Watch-Only**.\n3. Вставьте открытый ключ и нажмите **Continue**. Если проверка не проходит, убедитесь, что ключ скопирован полностью.\n4. Завершите настройку и проверьте, что показанная идентичность соответствует введённому npub. Дождитесь загрузки профиля с реле.\n\n## Учитывайте ограничения\n\nОткрытый ключ определяет аккаунт, но не разрешает действовать от его имени. Режим просмотра не подписывает события, не публикует сообщения и не одобряет запросы подписи для этой идентичности. Добавление чужого открытого ключа не даёт контроля над чужим аккаунтом.\n\nДля просмотра публичной идентичности закрытый ключ не нужен. Никогда не просите nsec или фразу восстановления для этой цели.\n\n## Когда понадобится подпись\n\nЕсли идентичность ваша, используйте [Import Key or Backup](/guides/import-nostr-account) с её секретными данными либо [Nostr Connect](/guides/connect-nostr-signer) с приложением, которое ею управляет. После подключения проверьте открытый ключ, чтобы не перепутать разные идентичности.\n\nЕсли собственной идентичности пока нет, [создайте аккаунт](/guides/create-nostr-account). [Сравните четыре способа](/guides/nachalo-raboty).\n"
+        },
+        {
+          "slug": "connect-nostr-signer",
+          "title": "Подключить приложение для подписи Nostr по QR-коду",
+          "description": "Соедините расширение с внешним приложением NIP-46 через Nostr Connect. Сканируйте QR-код, одобрите соединение и оставьте подпись во внешнем приложении.",
+          "excerpt": "Соедините расширение с внешним приложением NIP-46 через Nostr Connect. Сканируйте QR-код, одобрите соединение и оставьте подпись во внешнем приложении.",
+          "date": "2026-09-30T00:00:00.000Z",
+          "author": {
+            "name": "Leon Acosta",
+            "avatar": "/authors/leon-profile.jpg",
+            "npub": "npub1gxdhmu9swqduwhr6zptjy4ya693zp3ql28nemy4hd97kuufyrqdqwe5zfk"
+          },
+          "featuredImage": "/images/guides/getting-started/featured.svg",
+          "previewImage": "/images/guides/getting-started/preview.svg",
+          "tags": [
+            "Расширение",
+            "Идентичность",
+            "Настройка"
+          ],
+          "published": true,
+          "readingTime": "2 min read",
+          "locale": "ru",
+          "translationKey": "connect-nostr-signer",
+          "translations": {
+            "en": "connect-nostr-signer",
+            "es": "connect-nostr-signer",
+            "pt": "connect-nostr-signer",
+            "ru": "connect-nostr-signer",
+            "it": "connect-nostr-signer",
+            "fr": "connect-nostr-signer",
+            "de": "connect-nostr-signer"
+          },
+          "availableLocales": [
+            "en",
+            "es",
+            "pt",
+            "ru",
+            "it",
+            "fr",
+            "de"
+          ],
+          "seoTitle": "Подключить приложение для подписи Nostr по QR-коду",
+          "seoDescription": "Соедините расширение с внешним приложением NIP-46 через Nostr Connect. Сканируйте QR-код, одобрите соединение и оставьте подпись во внешнем приложении.",
+          "ogImage": "/images/guides/getting-started/og.jpg",
+          "difficulty": "beginner",
+          "order": 1.4,
+          "content": "\nВыберите **Nostr Connect**, если вашей идентичностью управляет внешнее приложение для подписи NIP-46. Расширение подключается к нему; ключ подписи остаётся там.\n\n## Перед началом\n\nПодготовьте и разблокируйте приложение с нужной идентичностью. Оно должно поддерживать предлагаемый способ NIP-46. Вставлять закрытый ключ в расширение не требуется.\n\n## Подключение по QR-коду\n\n1. Откройте расширение и выберите **Nostr Connect**.\n2. Оставьте выбранной вкладку **QR Code**. Дождитесь кода и статуса **Waiting for connection...**.\n3. В приложении для подписи откройте подключение или сканер QR и отсканируйте код расширения. Если элементы называются иначе, используйте инструкцию приложения.\n4. Проверьте запрос в приложении, подтвердите нужную идентичность и одобрите соединение там.\n5. Дождитесь, пока расширение распознает соединение и перейдёт дальше. По запросу настройте или разблокируйте локальное хранилище. Завершите настройку и сравните открытый ключ с идентичностью приложения.\n\n## Если сканирование недоступно\n\n**Copy URI** предоставляет тот же запрос для приложений, открывающих URI Nostr Connect. Если приложение выдаёт адрес `bunker://`, используйте вкладку **Bunker URL**. Выберите вкладку для поддерживаемого приложением способа подключения.\n\n## Если время подключения истекло\n\nДержите приложение доступным и проверьте ожидающие запросы. При ошибке или истечении времени нажмите **Try again** и отсканируйте новый код. Старый снимок экрана не является многоразовой резервной копией.\n\nСохраните доступ к приложению и его резервной копии. Пароль расширения не восстанавливает закрытый ключ, хранящийся во внешнем приложении.\n\n[Сравните способы](/guides/nachalo-raboty) или изучите [разрешения сайтов](/guides/razresheniya-saitov).\n"
         },
         {
           "slug": "upravlenie-identichnostyu",
@@ -3554,10 +4307,10 @@
         },
         {
           "slug": "guida-introduttiva",
-          "title": "Iniziare con Nostr WoT",
-          "description": "Installa l'estensione browser Nostr WoT su Chrome, Brave, Edge, Opera o Firefox. Configura la tua identità Nostr e inizia a costruire il tuo Web of Trust in pochi minuti.",
-          "excerpt": "Tutto ciò che ti serve per installare l'Estensione Nostr WoT e avviare la tua prima rete di fiducia.",
-          "date": "2026-03-11T00:00:00.000Z",
+          "title": "Primi passi: scegli come configurare il tuo account Nostr",
+          "description": "Installa Nostr WoT e scegli una nuova identità, una chiave o un backup esistente, un account in sola lettura o il collegamento QR a un firmatario esterno.",
+          "excerpt": "Installa Nostr WoT e scegli una nuova identità, una chiave o un backup esistente, un account in sola lettura o il collegamento QR a un firmatario esterno.",
+          "date": "2026-09-30T00:00:00.000Z",
           "author": {
             "name": "Leon Acosta",
             "avatar": "/authors/leon-profile.jpg",
@@ -3567,11 +4320,11 @@
           "previewImage": "/images/guides/getting-started/preview.svg",
           "tags": [
             "Estensione",
-            "Configurazione",
-            "Principiante"
+            "Identità",
+            "Configurazione"
           ],
           "published": true,
-          "readingTime": "3 min read",
+          "readingTime": "2 min read",
           "locale": "it",
           "translationKey": "getting-started",
           "translations": {
@@ -3592,12 +4345,200 @@
             "fr",
             "de"
           ],
-          "seoTitle": "Iniziare con Nostr WoT — Guida all'Estensione",
-          "seoDescription": "Installa l'estensione browser Nostr WoT su Chrome, Brave, Edge, Opera o Firefox. Configura la tua identità Nostr e inizia a costruire il tuo Web of Trust in pochi minuti.",
+          "seoTitle": "Primi passi: scegli come configurare il tuo account Nostr",
+          "seoDescription": "Installa Nostr WoT e scegli una nuova identità, una chiave o un backup esistente, un account in sola lettura o il collegamento QR a un firmatario esterno.",
           "ogImage": "/images/guides/getting-started/og.jpg",
           "difficulty": "beginner",
           "order": 1,
-          "content": "\nQuesta guida ti accompagna nell'installazione dell'Estensione Nostr WoT, nella configurazione della tua identità e nell'avvio della tua rete di fiducia. L'intero processo richiede circa due minuti.\n\n## Installare l'Estensione\n\nL'estensione supporta tutti i principali browser basati su Chromium e Firefox. Scegli il tuo browser e segui i passaggi seguenti.\n\n### Chrome, Brave, Edge e Opera\n\n1. Visita la [pagina di download](/download) e clicca il link per il Chrome Web Store.\n2. Clicca **Aggiungi a Chrome** (o il pulsante equivalente nel tuo browser).\n3. Conferma l'installazione quando richiesto.\n4. Fissa l'estensione alla barra degli strumenti per un accesso rapido — clicca l'icona del puzzle nel browser e attiva il pin accanto a Nostr WoT.\n\n{/* TODO: Screenshot della pagina del Chrome Web Store con il pulsante Aggiungi a Chrome evidenziato */}\n\n### Firefox\n\n1. Visita la [pagina di download](/download) e clicca il link per i Componenti aggiuntivi di Firefox.\n2. Clicca **Aggiungi a Firefox** e conferma la richiesta dei permessi.\n3. Fissa l'estensione alla barra degli strumenti facendo clic destro sull'icona e selezionando **Fissa alla barra degli strumenti**.\n\n{/* TODO: Screenshot della pagina dei Componenti aggiuntivi di Firefox per Nostr WoT */}\n\n<Callout type=\"tip\">\nDopo l'installazione, l'icona dell'estensione apparirà nella barra degli strumenti del tuo browser. Un'icona grigia significa che non hai ancora effettuato l'accesso. Diventa viola una volta che la tua identità è attiva.\n</Callout>\n\n## Configurazione Iniziale\n\nQuando apri l'estensione per la prima volta, la procedura guidata ti accompagna attraverso le operazioni essenziali. Ti verrà chiesto di creare una nuova identità Nostr o importarne una esistente. Non è richiesta la registrazione di account presso terze parti.\n\n{/* TODO: Screenshot della schermata di benvenuto della procedura guidata */}\n\n## Creare una Nuova Chiave Nostr\n\nSe sei nuovo su Nostr, seleziona **Crea Nuove Chiavi**. L'estensione genera una chiave privata (nsec) e una chiave pubblica (npub) per te.\n\n1. Clicca **Crea Nuove Chiavi** nella procedura guidata.\n2. Salva il backup della tua chiave privata. Scrivilo o conservalo in un gestore di password. Se perdi questa chiave, non c'è modo di recuperare il tuo account.\n3. Imposta una password locale per crittografare le tue chiavi all'interno dell'estensione. Questa password non viene mai inviata da nessuna parte.\n4. Opzionalmente compila i dettagli del tuo profilo — nome visualizzato, bio e avatar.\n\n{/* TODO: Screenshot della schermata di creazione chiave con il prompt di backup */}\n\n<Callout type=\"tip\">\nLa tua chiave privata è la password principale della tua identità Nostr. Non condividerla mai, non incollarla in un sito web e non conservarla in testo non crittografato. L'estensione la crittografa localmente così i siti non la vedono mai direttamente.\n</Callout>\n\n## Importare una Chiave Esistente\n\nHai già un'identità Nostr? Seleziona **Importa Chiave Esistente** e incolla la tua nsec o usa un'estensione signer compatibile NIP-07.\n\n1. Clicca **Importa Chiave Esistente**.\n2. Incolla la tua chiave privata nsec o collega un signer hardware.\n3. Imposta una password di crittografia locale.\n4. L'estensione recupera automaticamente il tuo profilo dai relay Nostr.\n\n{/* TODO: Screenshot della schermata di importazione chiave */}\n\n## Verificare la Configurazione\n\nUna volta che la tua identità è attiva, clicca l'icona dell'estensione. Dovresti vedere i dettagli del tuo profilo, il tuo npub e un grafo di fiducia iniziale che inizia a costruirsi dalla tua lista di follow. L'estensione recupera i tuoi contatti dai relay e inizia a mappare il tuo Web of Trust.\n\nConcedigli un minuto o due per la sincronizzazione iniziale. Dopodiché, la tua rete di fiducia si aggiorna in background mentre navighi.\n\n## Cosa Fare Dopo?\n\nOra che l'estensione è installata, impara come [gestire la tua identità](/guides/gestione-identita) e comprendi come funziona il [Web of Trust](/guides/comprendere-web-of-trust).\n"
+          "content": "\nNostr WoT offre quattro modi per configurare un’identità. Per il tuo primo account Nostr, scegli **Create New**. Se hai già un’identità, scegli il metodo adatto ai dati che possiedi.\n\n## Installa e apri l’estensione\n\n1. Apri la [pagina di download](/download) e segui il collegamento allo store del browser.\n2. Installa l’estensione e fissala alla barra degli strumenti.\n3. Apri il popup di Nostr WoT e seleziona **Continue** per visualizzare i metodi.\n\n## Scegli un metodo\n\n| Cosa possiedi | Metodo | Guida |\n|---|---|---|\n| Nessuna identità Nostr | **Create New** | [Crea un account e conserva 24 parole](/guides/create-nostr-account) |\n| Chiave privata, frase di recupero o backup cifrato | **Import Key or Backup** | [Ripristina un’identità](/guides/import-nostr-account) |\n| Solo una chiave pubblica per esplorare | **Watch-Only** | [Aggiungi un account in sola lettura](/guides/watch-only-nostr-account) |\n| Identità in un firmatario esterno NIP-46 | **Nostr Connect** | [Collega tramite QR](/guides/connect-nostr-signer) |\n\nCreare un’identità non richiede e-mail o telefono. Le chiavi ti identificano su Nostr. L’importazione ripristina l’identità della chiave esistente; crearne un’altra produce un’identità diversa.\n\n## Cosa conservare\n\nLa **chiave pubblica (npub)** identifica l’account e può essere condivisa. La **chiave privata (nsec) o frase di recupero** permette di controllare l’identità e deve restare segreta. La **password locale del vault** protegge le chiavi in questo browser; non sostituisce una frase persa.\n\n<Callout type=\"warning\">\nNon usare mai parole di recupero tratte da tutorial o dimostrazioni. Conserva quelle generate dalla tua estensione prima di continuare.\n</Callout>\n\n## Dopo la configurazione\n\nVerifica che la chiave pubblica corrisponda all’identità desiderata. Con un account capace di firmare, apri un client Nostr e controlla le richieste di autorizzazione. Gli account in sola lettura non firmano pubblicazioni.\n\nProsegui con [gestione dell’identità](/guides/gestione-identita), [permessi dei siti](/guides/permessi-sito) o [Web of Trust](/guides/comprendere-web-of-trust). Puoi configurare separatamente un [wallet Lightning](/guides/configurare-portafoglio) quando vuoi usare gli zap.\n"
+        },
+        {
+          "slug": "create-nostr-account",
+          "title": "Creare un account Nostr con 24 parole di recupero",
+          "description": "Crea un’identità nel popup dell’estensione, verifica il backup e proteggi questo browser con una password locale del vault.",
+          "excerpt": "Crea un’identità nel popup dell’estensione, verifica il backup e proteggi questo browser con una password locale del vault.",
+          "date": "2026-09-30T00:00:00.000Z",
+          "author": {
+            "name": "Leon Acosta",
+            "avatar": "/authors/leon-profile.jpg",
+            "npub": "npub1gxdhmu9swqduwhr6zptjy4ya693zp3ql28nemy4hd97kuufyrqdqwe5zfk"
+          },
+          "featuredImage": "/images/guides/getting-started/featured.svg",
+          "previewImage": "/images/guides/getting-started/preview.svg",
+          "tags": [
+            "Estensione",
+            "Identità",
+            "Configurazione"
+          ],
+          "published": true,
+          "readingTime": "2 min read",
+          "locale": "it",
+          "translationKey": "create-nostr-account",
+          "translations": {
+            "en": "create-nostr-account",
+            "es": "create-nostr-account",
+            "pt": "create-nostr-account",
+            "ru": "create-nostr-account",
+            "it": "create-nostr-account",
+            "fr": "create-nostr-account",
+            "de": "create-nostr-account"
+          },
+          "availableLocales": [
+            "en",
+            "es",
+            "pt",
+            "ru",
+            "it",
+            "fr",
+            "de"
+          ],
+          "seoTitle": "Creare un account Nostr con 24 parole di recupero",
+          "seoDescription": "Crea un’identità nel popup dell’estensione, verifica il backup e proteggi questo browser con una password locale del vault.",
+          "ogImage": "/images/guides/getting-started/og.jpg",
+          "difficulty": "beginner",
+          "order": 1.1,
+          "content": "\nScegli **Create New** per creare un’identità Nostr. L’estensione genera 24 parole di recupero e ne deriva le tue chiavi. Non devi inserire e-mail o numero di telefono.\n\n## Crea e salva l’identità\n\n1. Apri l’estensione. Alla prima configurazione, seleziona **Continue**, poi **Create New**.\n2. Mostra la frase in un luogo privato. Scrivi tutte le **24 parole nell’ordine esatto** e conservale al sicuro.\n3. Usa i controlli di backup per una copia su file. Il download in testo semplice contiene la frase non cifrata: proteggilo di conseguenza. Un backup cifrato richiede una propria password.\n4. Conferma di avere salvato la frase. Completa la verifica inserendo le parole mancanti dalla copia conservata.\n\n<Callout type=\"warning\">\nChiunque possieda le parole può recuperare questa identità. Tienile segrete. Non usare parole da video, immagini o account altrui. Un ripristino via e-mail non può sostituire una frase persa.\n</Callout>\n\n## Proteggi questo browser\n\n5. Scegli un intervallo di blocco automatico, poi imposta e conferma la password locale del vault. Conservala dove puoi recuperarla.\n6. Completa la configurazione. I suggerimenti di profili da seguire sono facoltativi; puoi ignorarli e scegliere più tardi.\n7. Nella schermata finale, seleziona **Get Started**. Verifica la chiave pubblica nel popup e blocca il vault al termine.\n\nLa password sblocca le chiavi memorizzate nel browser. La frase di recupero ripristina l’identità. Conserva entrambe: una non sostituisce l’altra.\n\nHai già l’identità desiderata? Usa [Import Key or Backup](/guides/import-nostr-account). [Confronta i quattro metodi](/guides/guida-introduttiva).\n"
+        },
+        {
+          "slug": "import-nostr-account",
+          "title": "Importare una chiave privata o un backup Nostr",
+          "description": "Ripristina un’identità da nsec, chiave privata esadecimale, frase di recupero, ncryptsec o backup cifrato compatibile.",
+          "excerpt": "Ripristina un’identità da nsec, chiave privata esadecimale, frase di recupero, ncryptsec o backup cifrato compatibile.",
+          "date": "2026-09-30T00:00:00.000Z",
+          "author": {
+            "name": "Leon Acosta",
+            "avatar": "/authors/leon-profile.jpg",
+            "npub": "npub1gxdhmu9swqduwhr6zptjy4ya693zp3ql28nemy4hd97kuufyrqdqwe5zfk"
+          },
+          "featuredImage": "/images/guides/getting-started/featured.svg",
+          "previewImage": "/images/guides/getting-started/preview.svg",
+          "tags": [
+            "Estensione",
+            "Identità",
+            "Configurazione"
+          ],
+          "published": true,
+          "readingTime": "2 min read",
+          "locale": "it",
+          "translationKey": "import-nostr-account",
+          "translations": {
+            "en": "import-nostr-account",
+            "es": "import-nostr-account",
+            "pt": "import-nostr-account",
+            "ru": "import-nostr-account",
+            "it": "import-nostr-account",
+            "fr": "import-nostr-account",
+            "de": "import-nostr-account"
+          },
+          "availableLocales": [
+            "en",
+            "es",
+            "pt",
+            "ru",
+            "it",
+            "fr",
+            "de"
+          ],
+          "seoTitle": "Importare una chiave privata o un backup Nostr",
+          "seoDescription": "Ripristina un’identità da nsec, chiave privata esadecimale, frase di recupero, ncryptsec o backup cifrato compatibile.",
+          "ogImage": "/images/guides/getting-started/og.jpg",
+          "difficulty": "beginner",
+          "order": 1.2,
+          "content": "\nScegli **Import Key or Backup** per usare un’identità esistente in questo browser. Servono la chiave privata, la frase di recupero o un backup cifrato compatibile. Una npub è pubblica e va usata in [Watch-Only](/guides/watch-only-nostr-account).\n\n## Ripristina l’identità\n\n1. Apri l’estensione e scegli **Import Key or Backup**.\n2. Incolla **nsec**, chiave privata esadecimale o frase di recupero, oppure carica un file compatibile. L’estensione riconosce il formato.\n3. Per **ncryptsec** o backup cifrati, inserisci la password usata per cifrarli. Può essere diversa da quella del vault locale.\n4. Prosegui dopo il riconoscimento. In caso di errore, controlla dati e password prima di riprovare. Conserva intatto l’originale.\n5. Custodisci il backup di recupero esistente. Imposta la password locale quando richiesto. Se esiste già un vault nel browser, sbloccalo con la password attuale quando richiesto.\n6. Completa e confronta la chiave pubblica mostrata con la npub dell’identità attesa.\n\n## Frasi e file cifrati\n\nPuoi importare frasi esistenti di 12 o 24 parole. Le nuove identità usano 24 parole. Conserva eventuali percorsi di derivazione personalizzati e la chiave pubblica attesa; consulta i [percorsi d’identità](/guides/custom-identity-paths).\n\nL’importazione parte dalla prima chiave Nostr della frase; non ripristina automaticamente tutti i sotto-account o percorsi personalizzati. Leggi l’avviso: se il vault sbloccato ha già una frase principale, viene importata solo la prima chiave della frase aggiuntiva, senza memorizzarla come un’altra frase principale.\n\nUna nuova password locale non cambia quella di un file di backup esistente.\n\n<Callout type=\"warning\">\nInserisci i segreti solo nell’interfaccia di importazione dell’estensione. Non inviarli mai a chi offre aiuto per recuperare un account.\n</Callout>\n\nPer firmare in un’altra app, usa [Nostr Connect](/guides/connect-nostr-signer). [Confronta i metodi](/guides/guida-introduttiva).\n"
+        },
+        {
+          "slug": "watch-only-nostr-account",
+          "title": "Aggiungere un account Nostr in sola lettura",
+          "description": "Esplora un’identità con la sua npub senza importarne la chiave privata. Scopri possibilità e limiti della modalità sola lettura.",
+          "excerpt": "Esplora un’identità con la sua npub senza importarne la chiave privata. Scopri possibilità e limiti della modalità sola lettura.",
+          "date": "2026-09-30T00:00:00.000Z",
+          "author": {
+            "name": "Leon Acosta",
+            "avatar": "/authors/leon-profile.jpg",
+            "npub": "npub1gxdhmu9swqduwhr6zptjy4ya693zp3ql28nemy4hd97kuufyrqdqwe5zfk"
+          },
+          "featuredImage": "/images/guides/getting-started/featured.svg",
+          "previewImage": "/images/guides/getting-started/preview.svg",
+          "tags": [
+            "Estensione",
+            "Identità",
+            "Configurazione"
+          ],
+          "published": true,
+          "readingTime": "2 min read",
+          "locale": "it",
+          "translationKey": "watch-only-nostr-account",
+          "translations": {
+            "en": "watch-only-nostr-account",
+            "es": "watch-only-nostr-account",
+            "pt": "watch-only-nostr-account",
+            "ru": "watch-only-nostr-account",
+            "it": "watch-only-nostr-account",
+            "fr": "watch-only-nostr-account",
+            "de": "watch-only-nostr-account"
+          },
+          "availableLocales": [
+            "en",
+            "es",
+            "pt",
+            "ru",
+            "it",
+            "fr",
+            "de"
+          ],
+          "seoTitle": "Aggiungere un account Nostr in sola lettura",
+          "seoDescription": "Esplora un’identità con la sua npub senza importarne la chiave privata. Scopri possibilità e limiti della modalità sola lettura.",
+          "ogImage": "/images/guides/getting-started/og.jpg",
+          "difficulty": "beginner",
+          "order": 1.3,
+          "content": "\nScegli **Watch-Only** se possiedi una chiave pubblica e vuoi visualizzare un’identità senza importare la chiave privata. Puoi esplorare il profilo e la sua rete di fiducia prima di collegare un account capace di firmare.\n\n## Aggiungi la chiave pubblica\n\n1. Copia la **npub** dell’identità desiderata. Controlla che appartenga al profilo corretto.\n2. Apri il popup dell’estensione e seleziona **Watch-Only**.\n3. Incolla la chiave pubblica e seleziona **Continue**. Se la convalida fallisce, verifica di avere copiato l’intera chiave.\n4. Completa la configurazione e controlla che l’identità mostrata corrisponda alla npub inserita. Attendi il caricamento dei dati del profilo dai relay.\n\n## Comprendi i limiti\n\nUna chiave pubblica identifica un account ma non autorizza azioni a suo nome. La modalità sola lettura non firma eventi, pubblica messaggi o approva richieste di firma per quell’identità. Aggiungere la chiave pubblica di un’altra persona non ti dà il controllo del suo account.\n\nPer vedere l’identità pubblica non serve la sua chiave privata. Non chiedere mai una nsec o una frase di recupero per questo scopo.\n\n## Quando vuoi firmare\n\nSe l’identità è tua, usa [Import Key or Backup](/guides/import-nostr-account) con i dati privati oppure [Nostr Connect](/guides/connect-nostr-signer) con il firmatario che la controlla. Verifica la chiave pubblica dopo il collegamento per non confondere identità diverse.\n\nSe non hai ancora un’identità, [crea un account](/guides/create-nostr-account). [Confronta i quattro metodi](/guides/guida-introduttiva).\n"
+        },
+        {
+          "slug": "connect-nostr-signer",
+          "title": "Collegare un firmatario Nostr con un codice QR",
+          "description": "Collega l’estensione a un firmatario esterno NIP-46 con Nostr Connect. Scansiona il QR, approva il collegamento e mantieni le firme nel firmatario.",
+          "excerpt": "Collega l’estensione a un firmatario esterno NIP-46 con Nostr Connect. Scansiona il QR, approva il collegamento e mantieni le firme nel firmatario.",
+          "date": "2026-09-30T00:00:00.000Z",
+          "author": {
+            "name": "Leon Acosta",
+            "avatar": "/authors/leon-profile.jpg",
+            "npub": "npub1gxdhmu9swqduwhr6zptjy4ya693zp3ql28nemy4hd97kuufyrqdqwe5zfk"
+          },
+          "featuredImage": "/images/guides/getting-started/featured.svg",
+          "previewImage": "/images/guides/getting-started/preview.svg",
+          "tags": [
+            "Estensione",
+            "Identità",
+            "Configurazione"
+          ],
+          "published": true,
+          "readingTime": "2 min read",
+          "locale": "it",
+          "translationKey": "connect-nostr-signer",
+          "translations": {
+            "en": "connect-nostr-signer",
+            "es": "connect-nostr-signer",
+            "pt": "connect-nostr-signer",
+            "ru": "connect-nostr-signer",
+            "it": "connect-nostr-signer",
+            "fr": "connect-nostr-signer",
+            "de": "connect-nostr-signer"
+          },
+          "availableLocales": [
+            "en",
+            "es",
+            "pt",
+            "ru",
+            "it",
+            "fr",
+            "de"
+          ],
+          "seoTitle": "Collegare un firmatario Nostr con un codice QR",
+          "seoDescription": "Collega l’estensione a un firmatario esterno NIP-46 con Nostr Connect. Scansiona il QR, approva il collegamento e mantieni le firme nel firmatario.",
+          "ogImage": "/images/guides/getting-started/og.jpg",
+          "difficulty": "beginner",
+          "order": 1.4,
+          "content": "\nScegli **Nostr Connect** se la tua identità è controllata da un firmatario esterno NIP-46. L’estensione si collega al firmatario; la chiave di firma rimane lì.\n\n## Prima di iniziare\n\nTieni il firmatario disponibile e sbloccato con l’identità desiderata. Deve supportare il metodo NIP-46 proposto. Non devi incollare la chiave privata nell’estensione.\n\n## Collegamento tramite QR\n\n1. Apri l’estensione e seleziona **Nostr Connect**.\n2. Mantieni selezionata la scheda **QR Code**. Attendi il codice e lo stato **Waiting for connection...**.\n3. Nel firmatario, apri la funzione di collegamento o scansione QR e scansiona il codice dell’estensione. Consulta le sue istruzioni se i controlli hanno nomi diversi.\n4. Esamina la richiesta nel firmatario, conferma l’identità e approva lì il collegamento.\n5. Attendi che l’estensione riconosca il collegamento e avanzi. Imposta o sblocca il vault locale quando richiesto, termina e controlla che la chiave pubblica corrisponda all’identità del firmatario.\n\n## Se non puoi scansionare\n\n**Copy URI** fornisce la stessa richiesta ai firmatari che aprono URI Nostr Connect. Se il firmatario fornisce un indirizzo `bunker://`, usa la scheda **Bunker URL**. Scegli la scheda corrispondente al metodo supportato dal firmatario.\n\n## Se il collegamento scade\n\nTieni disponibile il firmatario e controlla le richieste in attesa. In caso di errore o timeout, seleziona **Try again** e scansiona il nuovo codice. Una vecchia immagine non è un backup di recupero riutilizzabile.\n\nConserva l’accesso al firmatario e al suo backup. La password dell’estensione non recupera una chiave privata conservata in un firmatario esterno.\n\n[Confronta i metodi](/guides/guida-introduttiva) o consulta i [permessi dei siti](/guides/permessi-sito).\n"
         },
         {
           "slug": "gestione-identita",
@@ -4388,10 +5329,10 @@
         },
         {
           "slug": "guide-de-demarrage",
-          "title": "Premiers pas avec Nostr WoT",
-          "description": "Installez l'extension de navigateur Nostr WoT sur Chrome, Brave, Edge, Opera ou Firefox. Configurez votre identite Nostr et commencez a construire votre Web of Trust en quelques minutes.",
-          "excerpt": "Tout ce dont vous avez besoin pour installer l'extension Nostr WoT et mettre en place votre premier reseau de confiance.",
-          "date": "2026-03-11T00:00:00.000Z",
+          "title": "Premiers pas : choisir la configuration de votre compte Nostr",
+          "description": "Installez Nostr WoT et choisissez une nouvelle identité, une clé ou sauvegarde existante, un compte en lecture seule ou une connexion QR à un signataire externe.",
+          "excerpt": "Installez Nostr WoT et choisissez une nouvelle identité, une clé ou sauvegarde existante, un compte en lecture seule ou une connexion QR à un signataire externe.",
+          "date": "2026-09-30T00:00:00.000Z",
           "author": {
             "name": "Leon Acosta",
             "avatar": "/authors/leon-profile.jpg",
@@ -4401,11 +5342,11 @@
           "previewImage": "/images/guides/getting-started/preview.svg",
           "tags": [
             "Extension",
-            "Installation",
-            "Debutant"
+            "Identité",
+            "Configuration"
           ],
           "published": true,
-          "readingTime": "4 min read",
+          "readingTime": "2 min read",
           "locale": "fr",
           "translationKey": "getting-started",
           "translations": {
@@ -4426,12 +5367,200 @@
             "fr",
             "de"
           ],
-          "seoTitle": "Premiers pas avec Nostr WoT — Guide de l'extension",
-          "seoDescription": "Installez l'extension de navigateur Nostr WoT sur Chrome, Brave, Edge, Opera ou Firefox. Configurez votre identite Nostr et commencez a construire votre Web of Trust en quelques minutes.",
+          "seoTitle": "Premiers pas : choisir la configuration de votre compte Nostr",
+          "seoDescription": "Installez Nostr WoT et choisissez une nouvelle identité, une clé ou sauvegarde existante, un compte en lecture seule ou une connexion QR à un signataire externe.",
           "ogImage": "/images/guides/getting-started/og.jpg",
           "difficulty": "beginner",
           "order": 1,
-          "content": "\nCe guide vous accompagne dans l'installation de l'extension Nostr WoT, la configuration de votre identite et la mise en route de votre reseau de confiance. L'ensemble du processus prend environ deux minutes.\n\n## Installation de l'extension\n\nL'extension est compatible avec tous les principaux navigateurs bases sur Chromium et Firefox. Choisissez votre navigateur et suivez les etapes ci-dessous.\n\n### Chrome, Brave, Edge et Opera\n\n1. Visitez la [page de telechargement](/download) et cliquez sur le lien du Chrome Web Store.\n2. Cliquez sur **Ajouter a Chrome** (ou le bouton equivalent de votre navigateur).\n3. Confirmez l'installation lorsque vous y etes invite.\n4. Epinglez l'extension a votre barre d'outils pour un acces facile — cliquez sur l'icone en forme de puzzle dans votre navigateur et activez l'epingle a cote de Nostr WoT.\n\n{/* TODO: Screenshot of the Chrome Web Store listing with the Add to Chrome button highlighted */}\n\n### Firefox\n\n1. Visitez la [page de telechargement](/download) et cliquez sur le lien des modules complementaires Firefox.\n2. Cliquez sur **Ajouter a Firefox** et confirmez l'invite de permissions.\n3. Epinglez l'extension a votre barre d'outils en faisant un clic droit sur l'icone et en selectionnant **Epingler a la barre d'outils**.\n\n{/* TODO: Screenshot of the Firefox Add-ons page for Nostr WoT */}\n\n<Callout type=\"tip\">\nApres l'installation, l'icone de l'extension apparaitra dans la barre d'outils de votre navigateur. Une icone grise signifie que vous n'etes pas encore connecte. Elle devient violette une fois votre identite active.\n</Callout>\n\n## Premiere configuration\n\nLorsque vous ouvrez l'extension pour la premiere fois, l'assistant de configuration vous guide a travers les etapes essentielles. Il vous sera demande de creer une nouvelle identite Nostr ou d'en importer une existante. Aucune inscription aupres d'un tiers n'est necessaire.\n\n{/* TODO: Screenshot of the first-time setup wizard welcome screen */}\n\n## Creer une nouvelle cle Nostr\n\nSi vous etes nouveau sur Nostr, selectionnez **Creer de nouvelles cles**. L'extension genere une cle privee (nsec) et une cle publique (npub) pour vous.\n\n1. Cliquez sur **Creer de nouvelles cles** dans l'assistant de configuration.\n2. Sauvegardez votre cle privee. Notez-la ou stockez-la dans un gestionnaire de mots de passe. Si vous perdez cette cle, il n'y a aucun moyen de recuperer votre compte.\n3. Definissez un mot de passe local pour chiffrer vos cles dans l'extension. Ce mot de passe n'est jamais envoye nulle part.\n4. Remplissez optionnellement les details de votre profil — nom d'affichage, bio et avatar.\n\n{/* TODO: Screenshot of the key creation screen with the backup prompt */}\n\n<Callout type=\"tip\">\nVotre cle privee est le mot de passe maitre de votre identite Nostr. Ne la partagez jamais, ne la collez jamais dans un site web et ne la stockez jamais en texte clair. L'extension la chiffre localement pour que les sites ne la voient jamais directement.\n</Callout>\n\n## Importer une cle existante\n\nVous avez deja une identite Nostr ? Selectionnez **Importer une cle existante** et collez votre nsec ou utilisez une extension signataire compatible NIP-07.\n\n1. Cliquez sur **Importer une cle existante**.\n2. Collez votre cle privee nsec ou connectez un signataire materiel.\n3. Definissez un mot de passe de chiffrement local.\n4. L'extension recupere automatiquement votre profil depuis les relais Nostr.\n\n{/* TODO: Screenshot of the import key screen */}\n\n## Verification de votre configuration\n\nUne fois votre identite active, cliquez sur l'icone de l'extension. Vous devriez voir les details de votre profil, votre npub et un graphe de confiance initial qui commence a se construire a partir de votre liste de suivis. L'extension recupere vos contacts depuis les relais et commence a cartographier votre Web of Trust.\n\nLaissez-lui une minute ou deux pour la synchronisation initiale. Apres cela, votre reseau de confiance se met a jour en arriere-plan pendant que vous naviguez.\n\n## Et ensuite ?\n\nMaintenant que l'extension est installee, apprenez a [gerer votre identite](/guides/managing-identity) et comprenez comment le [Web of Trust fonctionne](/guides/understanding-wot).\n"
+          "content": "\nNostr WoT propose quatre façons de configurer une identité. Pour votre premier compte Nostr, choisissez **Create New**. Si vous avez déjà une identité, choisissez la méthode adaptée à ce que vous possédez.\n\n## Installer et ouvrir l’extension\n\n1. Ouvrez la [page de téléchargement](/download) et suivez le lien vers la boutique de votre navigateur.\n2. Installez l’extension et épinglez-la dans la barre d’outils.\n3. Ouvrez la fenêtre Nostr WoT et sélectionnez **Continue** pour afficher les méthodes.\n\n## Choisir une méthode\n\n| Ce que vous avez | Méthode | Guide |\n|---|---|---|\n| Aucune identité Nostr | **Create New** | [Créer un compte et conserver 24 mots](/guides/create-nostr-account) |\n| Clé privée, phrase de récupération ou sauvegarde chiffrée | **Import Key or Backup** | [Restaurer une identité](/guides/import-nostr-account) |\n| Une clé publique pour explorer | **Watch-Only** | [Ajouter un compte en lecture seule](/guides/watch-only-nostr-account) |\n| Une identité dans un signataire externe NIP-46 | **Nostr Connect** | [Connecter par QR](/guides/connect-nostr-signer) |\n\nCréer une identité ne demande ni adresse e-mail ni numéro de téléphone. Vos clés vous identifient sur Nostr. Importer restaure l’identité de votre clé existante ; en créer une autre donne une identité différente.\n\n## Ce qu’il faut conserver\n\nLa **clé publique (npub)** identifie le compte et peut être partagée. La **clé privée (nsec) ou phrase de récupération** permet de contrôler l’identité et doit rester secrète. Le **mot de passe local du coffre** protège les clés dans ce navigateur ; il ne remplace pas une phrase perdue.\n\n<Callout type=\"warning\">\nN’utilisez jamais les mots d’un tutoriel ou d’une démonstration. Conservez ceux générés par votre propre extension avant de continuer.\n</Callout>\n\n## Après la configuration\n\nVérifiez que la clé publique correspond à l’identité voulue. Avec un compte capable de signer, ouvrez un client Nostr et examinez les demandes d’autorisation. Un compte en lecture seule ne peut pas signer de publications.\n\nConsultez la [gestion d’identité](/guides/gestion-identite), les [autorisations par site](/guides/permissions-site) ou le [Web of Trust](/guides/comprendre-web-of-trust). Configurez séparément un [portefeuille Lightning](/guides/configurer-portefeuille) pour utiliser les zaps.\n"
+        },
+        {
+          "slug": "create-nostr-account",
+          "title": "Créer un compte Nostr avec 24 mots de récupération",
+          "description": "Créez une identité dans l’extension, vérifiez votre sauvegarde et protégez ce navigateur avec un mot de passe local.",
+          "excerpt": "Créez une identité dans l’extension, vérifiez votre sauvegarde et protégez ce navigateur avec un mot de passe local.",
+          "date": "2026-09-30T00:00:00.000Z",
+          "author": {
+            "name": "Leon Acosta",
+            "avatar": "/authors/leon-profile.jpg",
+            "npub": "npub1gxdhmu9swqduwhr6zptjy4ya693zp3ql28nemy4hd97kuufyrqdqwe5zfk"
+          },
+          "featuredImage": "/images/guides/getting-started/featured.svg",
+          "previewImage": "/images/guides/getting-started/preview.svg",
+          "tags": [
+            "Extension",
+            "Identité",
+            "Configuration"
+          ],
+          "published": true,
+          "readingTime": "2 min read",
+          "locale": "fr",
+          "translationKey": "create-nostr-account",
+          "translations": {
+            "en": "create-nostr-account",
+            "es": "create-nostr-account",
+            "pt": "create-nostr-account",
+            "ru": "create-nostr-account",
+            "it": "create-nostr-account",
+            "fr": "create-nostr-account",
+            "de": "create-nostr-account"
+          },
+          "availableLocales": [
+            "en",
+            "es",
+            "pt",
+            "ru",
+            "it",
+            "fr",
+            "de"
+          ],
+          "seoTitle": "Créer un compte Nostr avec 24 mots de récupération",
+          "seoDescription": "Créez une identité dans l’extension, vérifiez votre sauvegarde et protégez ce navigateur avec un mot de passe local.",
+          "ogImage": "/images/guides/getting-started/og.jpg",
+          "difficulty": "beginner",
+          "order": 1.1,
+          "content": "\nChoisissez **Create New** pour créer une identité Nostr. L’extension génère 24 mots de récupération et en dérive vos clés. Aucune adresse e-mail ni aucun numéro de téléphone n’est nécessaire.\n\n## Créer et sauvegarder votre identité\n\n1. Ouvrez l’extension. Lors de la première configuration, sélectionnez **Continue**, puis **Create New**.\n2. Révélez la phrase dans un endroit privé. Notez les **24 mots dans leur ordre exact** et conservez-les en sécurité.\n3. Utilisez les commandes de sauvegarde pour obtenir un fichier. Le téléchargement en texte brut contient la phrase non chiffrée : protégez-le en conséquence. Une sauvegarde chiffrée nécessite son propre mot de passe.\n4. Confirmez avoir conservé la phrase. Complétez les mots manquants à partir de votre copie pour vérifier la sauvegarde.\n\n<Callout type=\"warning\">\nToute personne possédant ces mots peut récupérer l’identité. Gardez-les secrets. N’utilisez pas les mots d’une vidéo, d’une capture ou d’un autre compte. Aucun rétablissement par e-mail ne remplace une phrase perdue.\n</Callout>\n\n## Protéger ce navigateur\n\n5. Choisissez un délai de verrouillage automatique, puis définissez et confirmez le mot de passe local du coffre. Conservez-le dans un endroit accessible pour vous.\n6. Terminez la configuration. Les suggestions de comptes à suivre sont facultatives ; vous pouvez les ignorer.\n7. À la fin, sélectionnez **Get Started**. Vérifiez la clé publique dans l’extension et verrouillez le coffre après utilisation.\n\nLe mot de passe déverrouille les clés de ce navigateur. La phrase restaure l’identité. Conservez les deux : ils ne sont pas interchangeables.\n\nVous avez déjà l’identité souhaitée ? Utilisez [Import Key or Backup](/guides/import-nostr-account). [Comparez les quatre méthodes](/guides/guide-de-demarrage).\n"
+        },
+        {
+          "slug": "import-nostr-account",
+          "title": "Importer une clé privée ou une sauvegarde Nostr",
+          "description": "Restaurez une identité depuis une nsec, une clé privée hexadécimale, une phrase de récupération, une ncryptsec ou une sauvegarde chiffrée compatible.",
+          "excerpt": "Restaurez une identité depuis une nsec, une clé privée hexadécimale, une phrase de récupération, une ncryptsec ou une sauvegarde chiffrée compatible.",
+          "date": "2026-09-30T00:00:00.000Z",
+          "author": {
+            "name": "Leon Acosta",
+            "avatar": "/authors/leon-profile.jpg",
+            "npub": "npub1gxdhmu9swqduwhr6zptjy4ya693zp3ql28nemy4hd97kuufyrqdqwe5zfk"
+          },
+          "featuredImage": "/images/guides/getting-started/featured.svg",
+          "previewImage": "/images/guides/getting-started/preview.svg",
+          "tags": [
+            "Extension",
+            "Identité",
+            "Configuration"
+          ],
+          "published": true,
+          "readingTime": "2 min read",
+          "locale": "fr",
+          "translationKey": "import-nostr-account",
+          "translations": {
+            "en": "import-nostr-account",
+            "es": "import-nostr-account",
+            "pt": "import-nostr-account",
+            "ru": "import-nostr-account",
+            "it": "import-nostr-account",
+            "fr": "import-nostr-account",
+            "de": "import-nostr-account"
+          },
+          "availableLocales": [
+            "en",
+            "es",
+            "pt",
+            "ru",
+            "it",
+            "fr",
+            "de"
+          ],
+          "seoTitle": "Importer une clé privée ou une sauvegarde Nostr",
+          "seoDescription": "Restaurez une identité depuis une nsec, une clé privée hexadécimale, une phrase de récupération, une ncryptsec ou une sauvegarde chiffrée compatible.",
+          "ogImage": "/images/guides/getting-started/og.jpg",
+          "difficulty": "beginner",
+          "order": 1.2,
+          "content": "\nChoisissez **Import Key or Backup** pour utiliser une identité existante dans ce navigateur. Il vous faut sa clé privée, sa phrase ou une sauvegarde chiffrée compatible. Une npub est publique et s’utilise avec [Watch-Only](/guides/watch-only-nostr-account).\n\n## Restaurer votre identité\n\n1. Ouvrez l’extension et sélectionnez **Import Key or Backup**.\n2. Collez votre **nsec**, clé privée hexadécimale ou phrase de récupération, ou chargez un fichier compatible. L’extension détecte le format.\n3. Pour une **ncryptsec** ou sauvegarde chiffrée, saisissez le mot de passe du chiffrement. Il peut différer de celui du coffre local.\n4. Continuez une fois le format reconnu. En cas d’erreur, vérifiez les données et le mot de passe avant de réessayer. Préservez l’original.\n5. Conservez votre sauvegarde existante en sécurité. Définissez le mot de passe local lorsque demandé. Si un coffre existe déjà, déverrouillez-le avec son mot de passe actuel.\n6. Terminez et comparez la clé publique affichée avec la npub de l’identité attendue.\n\n## Phrases et fichiers chiffrés\n\nLes phrases existantes de 12 ou 24 mots sont acceptées. Une nouvelle identité utilise 24 mots. Conservez tout chemin de dérivation personnalisé et la clé publique attendue ; consultez les [chemins d’identité](/guides/custom-identity-paths).\n\nImporter une phrase commence par sa première clé Nostr, sans restaurer automatiquement tous les sous-comptes ou chemins personnalisés. Lisez l’avertissement de l’écran : si le coffre déverrouillé contient déjà une phrase principale, seule la première clé de la phrase supplémentaire est importée, sans conserver celle-ci comme autre phrase principale.\n\nChanger le mot de passe local ne change pas celui d’un fichier de sauvegarde existant.\n\n<Callout type=\"warning\">\nSaisissez les secrets uniquement dans l’interface d’importation de l’extension. Ne les envoyez jamais à une personne proposant de restaurer votre compte.\n</Callout>\n\nPour signer ailleurs, utilisez [Nostr Connect](/guides/connect-nostr-signer). [Comparez les méthodes](/guides/guide-de-demarrage).\n"
+        },
+        {
+          "slug": "watch-only-nostr-account",
+          "title": "Ajouter un compte Nostr en lecture seule",
+          "description": "Explorez une identité avec sa npub sans importer sa clé privée. Découvrez les possibilités et limites du mode lecture seule.",
+          "excerpt": "Explorez une identité avec sa npub sans importer sa clé privée. Découvrez les possibilités et limites du mode lecture seule.",
+          "date": "2026-09-30T00:00:00.000Z",
+          "author": {
+            "name": "Leon Acosta",
+            "avatar": "/authors/leon-profile.jpg",
+            "npub": "npub1gxdhmu9swqduwhr6zptjy4ya693zp3ql28nemy4hd97kuufyrqdqwe5zfk"
+          },
+          "featuredImage": "/images/guides/getting-started/featured.svg",
+          "previewImage": "/images/guides/getting-started/preview.svg",
+          "tags": [
+            "Extension",
+            "Identité",
+            "Configuration"
+          ],
+          "published": true,
+          "readingTime": "2 min read",
+          "locale": "fr",
+          "translationKey": "watch-only-nostr-account",
+          "translations": {
+            "en": "watch-only-nostr-account",
+            "es": "watch-only-nostr-account",
+            "pt": "watch-only-nostr-account",
+            "ru": "watch-only-nostr-account",
+            "it": "watch-only-nostr-account",
+            "fr": "watch-only-nostr-account",
+            "de": "watch-only-nostr-account"
+          },
+          "availableLocales": [
+            "en",
+            "es",
+            "pt",
+            "ru",
+            "it",
+            "fr",
+            "de"
+          ],
+          "seoTitle": "Ajouter un compte Nostr en lecture seule",
+          "seoDescription": "Explorez une identité avec sa npub sans importer sa clé privée. Découvrez les possibilités et limites du mode lecture seule.",
+          "ogImage": "/images/guides/getting-started/og.jpg",
+          "difficulty": "beginner",
+          "order": 1.3,
+          "content": "\nChoisissez **Watch-Only** si vous possédez une clé publique et souhaitez consulter une identité sans importer sa clé privée. Vous pouvez ainsi explorer un profil et son réseau de confiance avant de connecter un compte capable de signer.\n\n## Ajouter la clé publique\n\n1. Copiez la **npub** de l’identité voulue. Vérifiez qu’elle appartient au bon profil.\n2. Ouvrez l’extension et sélectionnez **Watch-Only**.\n3. Collez la clé publique et sélectionnez **Continue**. Si la validation échoue, vérifiez que la clé est complète.\n4. Terminez la configuration et vérifiez que l’identité affichée correspond à la npub saisie. Laissez le temps aux informations du profil de se charger depuis les relais.\n\n## Comprendre les limites\n\nUne clé publique identifie un compte mais n’autorise pas d’action en son nom. Le mode lecture seule ne peut ni signer des événements, ni publier des messages, ni approuver des demandes de signature pour cette identité. Ajouter la clé publique d’une autre personne ne donne pas le contrôle de son compte.\n\nVous n’avez pas besoin de sa clé privée pour consulter son identité publique. Ne demandez jamais de nsec ou de phrase de récupération dans ce but.\n\n## Pour pouvoir signer\n\nSi l’identité vous appartient, utilisez [Import Key or Backup](/guides/import-nostr-account) avec ses données privées, ou [Nostr Connect](/guides/connect-nostr-signer) avec son signataire. Vérifiez ensuite la clé publique pour éviter de confondre deux identités.\n\nSi vous n’avez pas encore d’identité, [créez un compte](/guides/create-nostr-account). [Comparez les quatre méthodes](/guides/guide-de-demarrage).\n"
+        },
+        {
+          "slug": "connect-nostr-signer",
+          "title": "Connecter un signataire Nostr par code QR",
+          "description": "Associez l’extension à un signataire externe NIP-46 avec Nostr Connect. Scannez le QR, approuvez la connexion et gardez la signature dans votre signataire.",
+          "excerpt": "Associez l’extension à un signataire externe NIP-46 avec Nostr Connect. Scannez le QR, approuvez la connexion et gardez la signature dans votre signataire.",
+          "date": "2026-09-30T00:00:00.000Z",
+          "author": {
+            "name": "Leon Acosta",
+            "avatar": "/authors/leon-profile.jpg",
+            "npub": "npub1gxdhmu9swqduwhr6zptjy4ya693zp3ql28nemy4hd97kuufyrqdqwe5zfk"
+          },
+          "featuredImage": "/images/guides/getting-started/featured.svg",
+          "previewImage": "/images/guides/getting-started/preview.svg",
+          "tags": [
+            "Extension",
+            "Identité",
+            "Configuration"
+          ],
+          "published": true,
+          "readingTime": "2 min read",
+          "locale": "fr",
+          "translationKey": "connect-nostr-signer",
+          "translations": {
+            "en": "connect-nostr-signer",
+            "es": "connect-nostr-signer",
+            "pt": "connect-nostr-signer",
+            "ru": "connect-nostr-signer",
+            "it": "connect-nostr-signer",
+            "fr": "connect-nostr-signer",
+            "de": "connect-nostr-signer"
+          },
+          "availableLocales": [
+            "en",
+            "es",
+            "pt",
+            "ru",
+            "it",
+            "fr",
+            "de"
+          ],
+          "seoTitle": "Connecter un signataire Nostr par code QR",
+          "seoDescription": "Associez l’extension à un signataire externe NIP-46 avec Nostr Connect. Scannez le QR, approuvez la connexion et gardez la signature dans votre signataire.",
+          "ogImage": "/images/guides/getting-started/og.jpg",
+          "difficulty": "beginner",
+          "order": 1.4,
+          "content": "\nChoisissez **Nostr Connect** si votre identité est contrôlée par un signataire externe NIP-46. L’extension s’y connecte ; la clé de signature reste dans le signataire.\n\n## Avant de commencer\n\nGardez votre signataire accessible et déverrouillé avec l’identité voulue. Il doit accepter la méthode NIP-46 proposée. Ce parcours ne demande pas de coller votre clé privée dans l’extension.\n\n## Connexion par QR\n\n1. Ouvrez l’extension et sélectionnez **Nostr Connect**.\n2. Gardez l’onglet **QR Code** sélectionné. Attendez le code et l’état **Waiting for connection...**.\n3. Dans le signataire, ouvrez la fonction de connexion ou de lecture QR et scannez le code de l’extension. Consultez ses instructions si les commandes portent d’autres noms.\n4. Examinez la demande dans le signataire, confirmez l’identité et approuvez la connexion à cet endroit.\n5. Attendez que l’extension reconnaisse la connexion et avance. Définissez ou déverrouillez le coffre local lorsque demandé, terminez, puis vérifiez que la clé publique correspond à votre signataire.\n\n## Sans lecteur QR\n\n**Copy URI** fournit la même demande aux signataires qui ouvrent les URI Nostr Connect. Si votre signataire fournit une adresse `bunker://`, utilisez l’onglet **Bunker URL**. Choisissez l’onglet correspondant à la méthode qu’il prend en charge.\n\n## Si la connexion expire\n\nGardez le signataire accessible et consultez ses demandes en attente. En cas d’échec ou de délai dépassé, sélectionnez **Try again** et scannez le nouveau code. Une ancienne capture n’est pas une sauvegarde réutilisable.\n\nConservez l’accès au signataire et à sa sauvegarde. Le mot de passe de l’extension ne récupère pas une clé privée conservée ailleurs.\n\n[Comparez les méthodes](/guides/guide-de-demarrage) ou consultez les [autorisations par site](/guides/permissions-site).\n"
         },
         {
           "slug": "gestion-identite",
@@ -5052,6 +6181,7 @@
         "Cles",
         "Comptes",
         "Concepts",
+        "Configuration",
         "Debutant",
         "Extension",
         "Formule",
@@ -5222,10 +6352,10 @@
         },
         {
           "slug": "erste-schritte",
-          "title": "Erste Schritte mit Nostr WoT",
-          "description": "Installieren Sie die Nostr WoT Browser-Erweiterung auf Chrome, Brave, Edge, Opera oder Firefox. Richten Sie Ihre Nostr-Identität ein und beginnen Sie in Minuten mit dem Aufbau Ihres Web of Trust.",
-          "excerpt": "Alles, was Sie brauchen, um die Nostr WoT Extension zu installieren und Ihr erstes Vertrauensnetzwerk zum Laufen zu bringen.",
-          "date": "2026-03-11T00:00:00.000Z",
+          "title": "Erste Schritte: Nostr-Konto einrichten",
+          "description": "Installiere Nostr WoT und wähle eine neue Identität, einen vorhandenen Schlüssel oder ein Backup, ein Lesekonto oder die QR-Verbindung zu einem externen Signer.",
+          "excerpt": "Installiere Nostr WoT und wähle eine neue Identität, einen vorhandenen Schlüssel oder ein Backup, ein Lesekonto oder die QR-Verbindung zu einem externen Signer.",
+          "date": "2026-09-30T00:00:00.000Z",
           "author": {
             "name": "Leon Acosta",
             "avatar": "/authors/leon-profile.jpg",
@@ -5235,11 +6365,11 @@
           "previewImage": "/images/guides/getting-started/preview.svg",
           "tags": [
             "Erweiterung",
-            "Einrichtung",
-            "Anfänger"
+            "Identität",
+            "Einrichtung"
           ],
           "published": true,
-          "readingTime": "4 min read",
+          "readingTime": "2 min read",
           "locale": "de",
           "translationKey": "getting-started",
           "translations": {
@@ -5260,12 +6390,200 @@
             "fr",
             "de"
           ],
-          "seoTitle": "Erste Schritte mit Nostr WoT — Erweiterungs-Anleitung",
-          "seoDescription": "Installieren Sie die Nostr WoT Browser-Erweiterung auf Chrome, Brave, Edge, Opera oder Firefox. Richten Sie Ihre Nostr-Identität ein und beginnen Sie in Minuten mit dem Aufbau Ihres Web of Trust.",
+          "seoTitle": "Erste Schritte: Nostr-Konto einrichten",
+          "seoDescription": "Installiere Nostr WoT und wähle eine neue Identität, einen vorhandenen Schlüssel oder ein Backup, ein Lesekonto oder die QR-Verbindung zu einem externen Signer.",
           "ogImage": "/images/guides/getting-started/og.jpg",
           "difficulty": "beginner",
           "order": 1,
-          "content": "\nDiese Anleitung führt Sie durch die Installation der Nostr WoT Extension, die Einrichtung Ihrer Identität und den Start Ihres Vertrauensnetzwerks. Der gesamte Vorgang dauert etwa zwei Minuten.\n\n## Installation der Erweiterung\n\nDie Erweiterung unterstützt alle gängigen Chromium-basierten Browser und Firefox. Wählen Sie Ihren Browser und folgen Sie den untenstehenden Schritten.\n\n### Chrome, Brave, Edge und Opera\n\n1. Besuchen Sie die [Download-Seite](/download) und klicken Sie auf den Link zum Chrome Web Store.\n2. Klicken Sie auf **Zu Chrome hinzufügen** (oder die entsprechende Schaltfläche in Ihrem Browser).\n3. Bestätigen Sie die Installation, wenn Sie dazu aufgefordert werden.\n4. Heften Sie die Erweiterung an Ihre Symbolleiste für einfachen Zugriff — klicken Sie auf das Puzzle-Symbol in Ihrem Browser und aktivieren Sie die Pinnadel neben Nostr WoT.\n\n{/* TODO: Screenshot of the Chrome Web Store listing with the Add to Chrome button highlighted */}\n\n### Firefox\n\n1. Besuchen Sie die [Download-Seite](/download) und klicken Sie auf den Link zu Firefox Add-ons.\n2. Klicken Sie auf **Zu Firefox hinzufügen** und bestätigen Sie die Berechtigungsanfrage.\n3. Heften Sie die Erweiterung an Ihre Symbolleiste, indem Sie mit der rechten Maustaste auf das Symbol klicken und **An Symbolleiste anheften** wählen.\n\n{/* TODO: Screenshot of the Firefox Add-ons page for Nostr WoT */}\n\n<Callout type=\"tip\">\nNach der Installation erscheint das Erweiterungssymbol in Ihrer Browser-Symbolleiste. Ein graues Symbol bedeutet, dass Sie noch nicht angemeldet sind. Es wird lila, sobald Ihre Identität aktiv ist.\n</Callout>\n\n## Ersteinrichtung\n\nWenn Sie die Erweiterung zum ersten Mal öffnen, führt Sie der Einrichtungsassistent durch die wesentlichen Schritte. Sie werden aufgefordert, entweder eine neue Nostr-Identität zu erstellen oder eine bestehende zu importieren. Es ist keine Kontoregistrierung bei einem Drittanbieter erforderlich.\n\n{/* TODO: Screenshot of the first-time setup wizard welcome screen */}\n\n## Einen neuen Nostr-Schlüssel erstellen\n\nWenn Sie neu bei Nostr sind, wählen Sie **Neue Schlüssel erstellen**. Die Erweiterung generiert einen privaten Schlüssel (nsec) und einen öffentlichen Schlüssel (npub) für Sie.\n\n1. Klicken Sie im Einrichtungsassistenten auf **Neue Schlüssel erstellen**.\n2. Sichern Sie Ihren privaten Schlüssel. Schreiben Sie ihn auf oder speichern Sie ihn in einem Passwort-Manager. Wenn Sie diesen Schlüssel verlieren, gibt es keine Möglichkeit, Ihr Konto wiederherzustellen.\n3. Legen Sie ein lokales Passwort fest, um Ihre Schlüssel in der Erweiterung zu verschlüsseln. Dieses Passwort wird nie irgendwohin gesendet.\n4. Optional können Sie Ihre Profildetails ausfüllen — Anzeigename, Bio und Avatar.\n\n{/* TODO: Screenshot of the key creation screen with the backup prompt */}\n\n<Callout type=\"tip\">\nIhr privater Schlüssel ist das Master-Passwort Ihrer Nostr-Identität. Teilen Sie ihn nie, fügen Sie ihn nie auf einer Website ein und speichern Sie ihn nie als Klartext. Die Erweiterung verschlüsselt ihn lokal, sodass Websites ihn nie direkt sehen.\n</Callout>\n\n## Einen bestehenden Schlüssel importieren\n\nHaben Sie bereits eine Nostr-Identität? Wählen Sie **Bestehenden Schlüssel importieren** und fügen Sie Ihren nsec ein oder verwenden Sie eine NIP-07-kompatible Signer-Erweiterung.\n\n1. Klicken Sie auf **Bestehenden Schlüssel importieren**.\n2. Fügen Sie Ihren privaten nsec-Schlüssel ein oder verbinden Sie einen Hardware-Signer.\n3. Legen Sie ein lokales Verschlüsselungspasswort fest.\n4. Die Erweiterung ruft Ihr Profil automatisch von Nostr-Relays ab.\n\n{/* TODO: Screenshot of the import key screen */}\n\n## Überprüfen Ihrer Einrichtung\n\nSobald Ihre Identität aktiv ist, klicken Sie auf das Erweiterungssymbol. Sie sollten Ihre Profildetails, Ihren npub und einen anfänglichen Trust-Graphen sehen, der sich aus Ihrer Follower-Liste aufbaut. Die Erweiterung ruft Ihre Kontakte von Relays ab und beginnt, Ihr Web of Trust zu kartieren.\n\nGeben Sie ihr ein oder zwei Minuten für die Erstsynchronisierung. Danach aktualisiert sich Ihr Vertrauensnetzwerk im Hintergrund, während Sie surfen.\n\n## Wie geht es weiter?\n\nNachdem die Erweiterung installiert ist, erfahren Sie, wie Sie [Ihre Identität verwalten](/guides/identitaet-verwalten) und wie das [Web of Trust funktioniert](/guides/web-of-trust-verstehen).\n"
+          "content": "\nNostr WoT bietet vier Möglichkeiten, eine Identität einzurichten. Für dein erstes Nostr-Konto wählst du **Create New**. Hast du bereits eine Identität, nutze die Methode, die zu deinen vorhandenen Daten passt.\n\n## Erweiterung installieren und öffnen\n\n1. Öffne die [Downloadseite](/download) und folge dem Store-Link für deinen Browser.\n2. Installiere die Erweiterung und hefte sie an die Symbolleiste an.\n3. Öffne das Nostr-WoT-Popup und wähle **Continue**, um die Methoden anzuzeigen.\n\n## Methode auswählen\n\n| Was du hast | Methode | Anleitung |\n|---|---|---|\n| Noch keine Nostr-Identität | **Create New** | [Konto erstellen und 24 Wörter sichern](/guides/create-nostr-account) |\n| Privaten Schlüssel, Wiederherstellungsphrase oder verschlüsseltes Backup | **Import Key or Backup** | [Identität wiederherstellen](/guides/import-nostr-account) |\n| Nur einen öffentlichen Schlüssel zum Erkunden | **Watch-Only** | [Lesekonto hinzufügen](/guides/watch-only-nostr-account) |\n| Identität in einem externen NIP-46-Signer | **Nostr Connect** | [Per QR verbinden](/guides/connect-nostr-signer) |\n\nEine neue Identität benötigt weder E-Mail-Adresse noch Telefonnummer. Deine Schlüssel identifizieren dich auf Nostr. Ein Import stellt die Identität des vorhandenen Schlüssels wieder her; eine Neuerstellung erzeugt eine andere Identität.\n\n## Was du aufbewahren musst\n\nDer **öffentliche Schlüssel (npub)** identifiziert dein Konto und darf geteilt werden. Der **private Schlüssel (nsec) oder die Wiederherstellungsphrase** ermöglicht die Kontrolle über die Identität und muss geheim bleiben. Das **lokale Tresorpasswort** schützt die Schlüssel in diesem Browser; es ersetzt keine verlorene Phrase.\n\n<Callout type=\"warning\">\nVerwende niemals Wörter aus Anleitungen oder Demonstrationen. Sichere vor dem Fortfahren die Wörter, die deine eigene Erweiterung erzeugt.\n</Callout>\n\n## Nach der Einrichtung\n\nPrüfe, ob der öffentliche Schlüssel zur gewünschten Identität gehört. Mit einem signierfähigen Konto kannst du einen Nostr-Client öffnen und Berechtigungsanfragen prüfen. Lesekonten können keine Beiträge signieren.\n\nWeiter geht es mit [Identitätsverwaltung](/guides/identitaet-verwalten), [Website-Berechtigungen](/guides/website-berechtigungen) oder dem [Web of Trust](/guides/web-of-trust-verstehen). Eine [Lightning-Wallet](/guides/wallet-einrichten) kannst du später separat für Zaps einrichten.\n"
+        },
+        {
+          "slug": "create-nostr-account",
+          "title": "Nostr-Konto mit 24 Wiederherstellungswörtern erstellen",
+          "description": "Erstelle eine Identität im Erweiterungs-Popup, prüfe deine Sicherung und schütze diesen Browser mit einem lokalen Tresorpasswort.",
+          "excerpt": "Erstelle eine Identität im Erweiterungs-Popup, prüfe deine Sicherung und schütze diesen Browser mit einem lokalen Tresorpasswort.",
+          "date": "2026-09-30T00:00:00.000Z",
+          "author": {
+            "name": "Leon Acosta",
+            "avatar": "/authors/leon-profile.jpg",
+            "npub": "npub1gxdhmu9swqduwhr6zptjy4ya693zp3ql28nemy4hd97kuufyrqdqwe5zfk"
+          },
+          "featuredImage": "/images/guides/getting-started/featured.svg",
+          "previewImage": "/images/guides/getting-started/preview.svg",
+          "tags": [
+            "Erweiterung",
+            "Identität",
+            "Einrichtung"
+          ],
+          "published": true,
+          "readingTime": "2 min read",
+          "locale": "de",
+          "translationKey": "create-nostr-account",
+          "translations": {
+            "en": "create-nostr-account",
+            "es": "create-nostr-account",
+            "pt": "create-nostr-account",
+            "ru": "create-nostr-account",
+            "it": "create-nostr-account",
+            "fr": "create-nostr-account",
+            "de": "create-nostr-account"
+          },
+          "availableLocales": [
+            "en",
+            "es",
+            "pt",
+            "ru",
+            "it",
+            "fr",
+            "de"
+          ],
+          "seoTitle": "Nostr-Konto mit 24 Wiederherstellungswörtern erstellen",
+          "seoDescription": "Erstelle eine Identität im Erweiterungs-Popup, prüfe deine Sicherung und schütze diesen Browser mit einem lokalen Tresorpasswort.",
+          "ogImage": "/images/guides/getting-started/og.jpg",
+          "difficulty": "beginner",
+          "order": 1.1,
+          "content": "\nWähle **Create New**, um eine Nostr-Identität zu erstellen. Die Erweiterung erzeugt 24 Wiederherstellungswörter und leitet daraus deine Schlüssel ab. E-Mail-Adresse oder Telefonnummer sind nicht erforderlich.\n\n## Identität erstellen und sichern\n\n1. Öffne die Erweiterung. Wähle bei der ersten Einrichtung **Continue**, dann **Create New**.\n2. Zeige die Phrase an einem privaten Ort an. Notiere alle **24 Wörter in der genauen Reihenfolge** und bewahre sie sicher auf.\n3. Nutze die Sicherungsfunktionen für eine Dateikopie. Ein Klartext-Download enthält die unverschlüsselte Phrase; schütze ihn entsprechend. Ein verschlüsseltes Backup benötigt ein eigenes Passwort.\n4. Bestätige, dass du die Phrase gesichert hast. Ergänze die fehlenden Wörter anhand deiner aufbewahrten Kopie, um die Sicherung zu prüfen.\n\n<Callout type=\"warning\">\nWer deine Wörter kennt, kann diese Identität wiederherstellen. Halte sie geheim. Verwende keine Wörter aus Videos, Screenshots oder fremden Konten. Eine verlorene Phrase lässt sich nicht per E-Mail zurücksetzen.\n</Callout>\n\n## Diesen Browser schützen\n\n5. Wähle eine Zeit für die automatische Sperre und lege ein lokales Tresorpasswort fest. Bestätige es und bewahre es wiederauffindbar auf.\n6. Schließe die übrige Einrichtung ab. Folgeempfehlungen sind optional und können übersprungen werden.\n7. Wähle auf der Abschlussseite **Get Started**. Prüfe deinen öffentlichen Schlüssel im Popup und sperre den Tresor nach Gebrauch.\n\nDas Passwort entsperrt die Schlüssel dieses Browsers. Die Wiederherstellungsphrase stellt die Identität wieder her. Bewahre beides auf; keines ersetzt das andere.\n\nHast du die gewünschte Identität bereits? Nutze [Import Key or Backup](/guides/import-nostr-account). [Alle vier Methoden vergleichen](/guides/erste-schritte).\n"
+        },
+        {
+          "slug": "import-nostr-account",
+          "title": "Privaten Nostr-Schlüssel oder Backup importieren",
+          "description": "Stelle eine Identität aus nsec, privatem Hex-Schlüssel, Wiederherstellungsphrase, ncryptsec oder einem unterstützten verschlüsselten Backup wieder her.",
+          "excerpt": "Stelle eine Identität aus nsec, privatem Hex-Schlüssel, Wiederherstellungsphrase, ncryptsec oder einem unterstützten verschlüsselten Backup wieder her.",
+          "date": "2026-09-30T00:00:00.000Z",
+          "author": {
+            "name": "Leon Acosta",
+            "avatar": "/authors/leon-profile.jpg",
+            "npub": "npub1gxdhmu9swqduwhr6zptjy4ya693zp3ql28nemy4hd97kuufyrqdqwe5zfk"
+          },
+          "featuredImage": "/images/guides/getting-started/featured.svg",
+          "previewImage": "/images/guides/getting-started/preview.svg",
+          "tags": [
+            "Erweiterung",
+            "Identität",
+            "Einrichtung"
+          ],
+          "published": true,
+          "readingTime": "2 min read",
+          "locale": "de",
+          "translationKey": "import-nostr-account",
+          "translations": {
+            "en": "import-nostr-account",
+            "es": "import-nostr-account",
+            "pt": "import-nostr-account",
+            "ru": "import-nostr-account",
+            "it": "import-nostr-account",
+            "fr": "import-nostr-account",
+            "de": "import-nostr-account"
+          },
+          "availableLocales": [
+            "en",
+            "es",
+            "pt",
+            "ru",
+            "it",
+            "fr",
+            "de"
+          ],
+          "seoTitle": "Privaten Nostr-Schlüssel oder Backup importieren",
+          "seoDescription": "Stelle eine Identität aus nsec, privatem Hex-Schlüssel, Wiederherstellungsphrase, ncryptsec oder einem unterstützten verschlüsselten Backup wieder her.",
+          "ogImage": "/images/guides/getting-started/og.jpg",
+          "difficulty": "beginner",
+          "order": 1.2,
+          "content": "\nWähle **Import Key or Backup**, um eine vorhandene Identität in diesen Browser zu übernehmen. Dafür brauchst du den privaten Schlüssel, die Phrase oder ein unterstütztes verschlüsseltes Backup. Eine npub ist öffentlich und gehört zu [Watch-Only](/guides/watch-only-nostr-account).\n\n## Identität wiederherstellen\n\n1. Öffne die Erweiterung und wähle **Import Key or Backup**.\n2. Füge **nsec**, privaten Hex-Schlüssel oder Wiederherstellungsphrase ein oder lade eine unterstützte Datei. Die Erweiterung erkennt das Format.\n3. Gib bei **ncryptsec** oder verschlüsseltem Backup dessen Verschlüsselungspasswort ein. Es kann vom Tresorpasswort abweichen.\n4. Fahre nach der Formaterkennung fort. Prüfe bei Fehlern Eingabe und Passwort. Bewahre das Original unverändert auf.\n5. Sichere dein vorhandenes Wiederherstellungsbackup weiterhin. Lege bei Aufforderung das lokale Passwort fest. Existiert bereits ein Tresor, entsperre ihn bei Bedarf mit seinem bisherigen Passwort.\n6. Vergleiche nach Abschluss den angezeigten öffentlichen Schlüssel mit der erwarteten npub.\n\n## Phrasen und verschlüsselte Dateien\n\nVorhandene Phrasen mit 12 oder 24 Wörtern lassen sich importieren. Neue Identitäten verwenden 24 Wörter. Bewahre einen benutzerdefinierten Ableitungspfad und den erwarteten öffentlichen Schlüssel auf; siehe [Identitätspfade](/guides/custom-identity-paths).\n\nEin Phrasenimport beginnt mit dem ersten Nostr-Schlüssel. Er stellt nicht automatisch alle Unterkonten oder eigenen Pfade wieder her. Lies den Hinweis im Importfenster: Hat der entsperrte Tresor bereits eine Hauptphrase, wird nur der erste Schlüssel der zusätzlichen Phrase importiert. Sie wird nicht als weitere Hauptphrase gespeichert.\n\nEin neues Tresorpasswort ändert nicht das Passwort einer vorhandenen Backupdatei.\n\n<Callout type=\"warning\">\nGib Geheimnisse nur in der Importoberfläche der Erweiterung ein. Sende sie niemals an Personen, die Kontowiederherstellung anbieten.\n</Callout>\n\nZum Signieren in einer anderen App nutze [Nostr Connect](/guides/connect-nostr-signer). [Methoden vergleichen](/guides/erste-schritte).\n"
+        },
+        {
+          "slug": "watch-only-nostr-account",
+          "title": "Nostr-Konto zum Mitlesen hinzufügen",
+          "description": "Erkunde eine Identität mit ihrer npub, ohne den privaten Schlüssel zu importieren. Lerne die Möglichkeiten und Grenzen des Lesemodus kennen.",
+          "excerpt": "Erkunde eine Identität mit ihrer npub, ohne den privaten Schlüssel zu importieren. Lerne die Möglichkeiten und Grenzen des Lesemodus kennen.",
+          "date": "2026-09-30T00:00:00.000Z",
+          "author": {
+            "name": "Leon Acosta",
+            "avatar": "/authors/leon-profile.jpg",
+            "npub": "npub1gxdhmu9swqduwhr6zptjy4ya693zp3ql28nemy4hd97kuufyrqdqwe5zfk"
+          },
+          "featuredImage": "/images/guides/getting-started/featured.svg",
+          "previewImage": "/images/guides/getting-started/preview.svg",
+          "tags": [
+            "Erweiterung",
+            "Identität",
+            "Einrichtung"
+          ],
+          "published": true,
+          "readingTime": "2 min read",
+          "locale": "de",
+          "translationKey": "watch-only-nostr-account",
+          "translations": {
+            "en": "watch-only-nostr-account",
+            "es": "watch-only-nostr-account",
+            "pt": "watch-only-nostr-account",
+            "ru": "watch-only-nostr-account",
+            "it": "watch-only-nostr-account",
+            "fr": "watch-only-nostr-account",
+            "de": "watch-only-nostr-account"
+          },
+          "availableLocales": [
+            "en",
+            "es",
+            "pt",
+            "ru",
+            "it",
+            "fr",
+            "de"
+          ],
+          "seoTitle": "Nostr-Konto zum Mitlesen hinzufügen",
+          "seoDescription": "Erkunde eine Identität mit ihrer npub, ohne den privaten Schlüssel zu importieren. Lerne die Möglichkeiten und Grenzen des Lesemodus kennen.",
+          "ogImage": "/images/guides/getting-started/og.jpg",
+          "difficulty": "beginner",
+          "order": 1.3,
+          "content": "\nWähle **Watch-Only**, wenn du einen öffentlichen Schlüssel hast und eine Identität ohne deren privaten Schlüssel ansehen möchtest. So kannst du ein Profil und sein Vertrauensnetzwerk erkunden, bevor du ein signierfähiges Konto verbindest.\n\n## Öffentlichen Schlüssel hinzufügen\n\n1. Kopiere die **npub** der gewünschten Identität. Prüfe, ob sie zum richtigen Profil gehört.\n2. Öffne das Erweiterungs-Popup und wähle **Watch-Only**.\n3. Füge den öffentlichen Schlüssel ein und wähle **Continue**. Schlägt die Prüfung fehl, kontrolliere, ob der Schlüssel vollständig ist.\n4. Schließe die Einrichtung ab und prüfe, ob die angezeigte Identität der eingegebenen npub entspricht. Warte, bis die Profildaten von den Relays geladen sind.\n\n## Grenzen verstehen\n\nEin öffentlicher Schlüssel identifiziert ein Konto, erlaubt aber keine Handlungen in dessen Namen. Der Lesemodus kann keine Ereignisse signieren, Beiträge veröffentlichen oder Signaturanfragen für diese Identität genehmigen. Ein fremder öffentlicher Schlüssel gibt dir keine Kontrolle über das betreffende Konto.\n\nZum Ansehen einer öffentlichen Identität brauchst du keinen privaten Schlüssel. Bitte dafür niemals um eine nsec oder Wiederherstellungsphrase.\n\n## Wenn du signieren möchtest\n\nGehört die Identität dir, nutze [Import Key or Backup](/guides/import-nostr-account) mit den privaten Daten oder [Nostr Connect](/guides/connect-nostr-signer) mit dem zuständigen Signer. Prüfe anschließend den öffentlichen Schlüssel, um keine Identitäten zu verwechseln.\n\nHast du noch keine eigene Identität, [erstelle ein Konto](/guides/create-nostr-account). [Alle vier Methoden vergleichen](/guides/erste-schritte).\n"
+        },
+        {
+          "slug": "connect-nostr-signer",
+          "title": "Nostr-Signer per QR-Code verbinden",
+          "description": "Verbinde die Erweiterung über Nostr Connect mit einem externen NIP-46-Signer. Scanne den QR-Code, genehmige die Verbindung und signiere weiterhin im Signer.",
+          "excerpt": "Verbinde die Erweiterung über Nostr Connect mit einem externen NIP-46-Signer. Scanne den QR-Code, genehmige die Verbindung und signiere weiterhin im Signer.",
+          "date": "2026-09-30T00:00:00.000Z",
+          "author": {
+            "name": "Leon Acosta",
+            "avatar": "/authors/leon-profile.jpg",
+            "npub": "npub1gxdhmu9swqduwhr6zptjy4ya693zp3ql28nemy4hd97kuufyrqdqwe5zfk"
+          },
+          "featuredImage": "/images/guides/getting-started/featured.svg",
+          "previewImage": "/images/guides/getting-started/preview.svg",
+          "tags": [
+            "Erweiterung",
+            "Identität",
+            "Einrichtung"
+          ],
+          "published": true,
+          "readingTime": "2 min read",
+          "locale": "de",
+          "translationKey": "connect-nostr-signer",
+          "translations": {
+            "en": "connect-nostr-signer",
+            "es": "connect-nostr-signer",
+            "pt": "connect-nostr-signer",
+            "ru": "connect-nostr-signer",
+            "it": "connect-nostr-signer",
+            "fr": "connect-nostr-signer",
+            "de": "connect-nostr-signer"
+          },
+          "availableLocales": [
+            "en",
+            "es",
+            "pt",
+            "ru",
+            "it",
+            "fr",
+            "de"
+          ],
+          "seoTitle": "Nostr-Signer per QR-Code verbinden",
+          "seoDescription": "Verbinde die Erweiterung über Nostr Connect mit einem externen NIP-46-Signer. Scanne den QR-Code, genehmige die Verbindung und signiere weiterhin im Signer.",
+          "ogImage": "/images/guides/getting-started/og.jpg",
+          "difficulty": "beginner",
+          "order": 1.4,
+          "content": "\nWähle **Nostr Connect**, wenn ein externer NIP-46-Signer deine Identität verwaltet. Die Erweiterung verbindet sich mit ihm; der Signaturschlüssel bleibt dort.\n\n## Vorbereitung\n\nHalte den Signer mit der gewünschten Identität bereit und entsperrt. Er muss die hier angebotene NIP-46-Methode unterstützen. Du musst deinen privaten Schlüssel nicht in die Erweiterung einfügen.\n\n## Per QR-Code verbinden\n\n1. Öffne die Erweiterung und wähle **Nostr Connect**.\n2. Lass **QR Code** ausgewählt. Warte auf den Code und den Status **Waiting for connection...**.\n3. Öffne im Signer die Verbindungs- oder QR-Scanfunktion und scanne den Code der Erweiterung. Nutze dessen Anleitung, wenn die Bedienelemente anders heißen.\n4. Prüfe die Anfrage im Signer, bestätige die gewünschte Identität und genehmige dort die Verbindung.\n5. Warte, bis die Erweiterung die Verbindung erkennt und fortfährt. Richte bei Aufforderung den lokalen Tresor ein oder entsperre ihn. Schließe die Einrichtung ab und vergleiche den öffentlichen Schlüssel mit der Signer-Identität.\n\n## Wenn Scannen nicht möglich ist\n\n**Copy URI** liefert dieselbe Anfrage für Signer, die Nostr-Connect-URIs öffnen. Liefert dein Signer stattdessen eine `bunker://`-Adresse, nutze **Bunker URL**. Wähle den Reiter passend zur unterstützten Verbindungsmethode.\n\n## Wenn die Verbindung abläuft\n\nHalte den Signer bereit und prüfe offene Anfragen. Wähle bei Zeitüberschreitung oder Fehler **Try again** und scanne den neuen Code. Ein alter Screenshot ist kein wiederverwendbares Wiederherstellungsbackup.\n\nBewahre den Zugang zum Signer und dessen Backup auf. Das Erweiterungspasswort kann keinen privaten Schlüssel aus einem externen Signer wiederherstellen.\n\n[Methoden vergleichen](/guides/erste-schritte) oder [Website-Berechtigungen prüfen](/guides/website-berechtigungen).\n"
         },
         {
           "slug": "identitaet-verwalten",
