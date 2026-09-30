@@ -1,0 +1,59 @@
+---
+title: "NIP-09 deletion requests do not prove erasure"
+description: "A Nostr kind 5 event asks relays and clients to stop serving another event. It cannot prove that every copy has disappeared."
+seoDescription: "Learn how NIP-09 deletion requests work, why author matching matters, and why deleting a Nostr event cannot guarantee erasure from every relay or client."
+excerpt: "Kind 5 is a signed deletion request, not a remote wipe. Relays and clients can honor it, but copies already fetched or stored elsewhere remain outside its reach."
+date: "2026-09-30"
+publishedAt: "2026-09-30"
+backfilled: false
+type: "story"
+tags: ["Nostr", "NIP-09", "Privacy", "Relays"]
+featuredImage: "/images/news/nip-09-deletion-requests-do-not-prove-erasure.svg"
+translationKey: "nip-09-deletion-requests-do-not-prove-erasure"
+sources:
+  - title: "NIP-09: Event Deletion Request at commit 0046368"
+    url: "https://github.com/nostr-protocol/nips/blob/0046368a747c5c25ae2bec28bae0e537744c8f10/09.md"
+    publisher: "nostr-protocol/nips"
+    date: "2026-09-27"
+  - title: "NIP-01: Basic protocol flow at commit 0046368"
+    url: "https://github.com/nostr-protocol/nips/blob/0046368a747c5c25ae2bec28bae0e537744c8f10/01.md"
+    publisher: "nostr-protocol/nips"
+    date: "2026-09-27"
+published: true
+---
+
+Deleting a post in a Nostr client does not send a command that can reach into every relay, cache and device. It publishes another signed event. [NIP-09](https://github.com/nostr-protocol/nips/blob/0046368a747c5c25ae2bec28bae0e537744c8f10/09.md) defines that event as kind `5`, a deletion request that points to one or more events with `e` or `a` tags.
+
+The distinction matters. A valid request gives cooperating software enough information to stop serving or displaying an event. It does not make the referenced bytes impossible to retrieve, and it cannot prove that every earlier recipient erased a copy.
+
+## Kind 5 identifies what the author wants removed
+
+An `e` tag names a specific event ID. An `a` tag addresses a replaceable event by its kind, public key and `d` identifier. NIP-09 also says the request should include a `k` tag for each referenced event kind. Its content may explain why the author wants the event removed.
+
+For an `e` reference, the request is effective only when the referenced event and the kind `5` request have the same public key. A client must check that match before hiding or deleting anything. Without it, anyone could sign a request that makes another author's post disappear from compliant interfaces.
+
+An `a` reference has a wider scope. Relays should delete every version of that replaceable event up to the deletion request's `created_at` timestamp. Newer versions are outside that request, so the timestamp is part of the boundary rather than decorative metadata.
+
+## Relays are asked, not remotely controlled
+
+NIP-09 says relays should delete or stop publishing matching events. It does not say that a relay can be forced to comply. A relay may never receive the request, may not store the referenced event, or may apply a different retention policy.
+
+The protocol also tells relays to keep publishing the deletion request itself indefinitely. That may sound backwards, but it lets clients that already hold the original event learn that its author later disowned it. Clients are encouraged to rebroadcast the request to other relays that may not have seen it.
+
+This creates an intentional asymmetry: the original content should become less available, while the signed request to stop showing it should remain available. A deletion request against another deletion request has no effect. There is no standardized undo operation.
+
+## A signature proves authorship, not global deletion
+
+[NIP-01](https://github.com/nostr-protocol/nips/blob/0046368a747c5c25ae2bec28bae0e537744c8f10/01.md) makes every event an independently signed object with an ID derived from its serialized contents. Once an event has been copied, a later signature cannot alter that earlier object. It can only add a new instruction that other software may honor.
+
+Relays are independent, and clients can receive events through multiple subscriptions. A screenshot, local database, export or archival relay can survive even when the relays an author normally uses all accept the deletion request. NIP-09 therefore explicitly allows clients to warn that deletion cannot be guaranteed across every relay and client.
+
+The same limit applies to encrypted events. Removing ciphertext from cooperative relays reduces future availability, but it does not revoke copies that recipients or observers already downloaded. Encryption and deletion solve different problems.
+
+## What clients can verify
+
+A client can validate the kind `5` signature, check that every `e`-referenced event has the same author, and record which relays accepted the request. It can query those relays again and confirm that they no longer return the target. Those checks produce useful evidence about a defined set of relays.
+
+They do not produce a global deletion receipt. A relay response says nothing about servers that were not queried, clients that are offline, or copies outside the relay network.
+
+The practical rule is to treat Nostr publication as durable. Use kind `5` when content should be withdrawn, broadcast it to the relays that received the original, and let clients hide valid targets. But do not put secrets into an event on the assumption that a later deletion request can retrieve every copy. NIP-09 coordinates removal. It does not turn a distributed network into a remote-wipe system.

@@ -1,0 +1,59 @@
+---
+title: "Las solicitudes de borrado NIP-09 no prueban la eliminación"
+description: "Un evento Nostr de tipo 5 pide a relés y clientes que dejen de servir otro evento. No puede probar que desaparecieron todas las copias."
+seoDescription: "Aprende cómo funcionan las solicitudes de borrado NIP-09, por qué importa validar al autor y por qué no garantizan eliminar un evento de todos los relés y clientes."
+excerpt: "El tipo 5 es una solicitud firmada, no un borrado remoto. Los relés y clientes pueden respetarla, pero las copias ya descargadas quedan fuera de su alcance."
+date: "2026-09-30"
+publishedAt: "2026-09-30"
+backfilled: false
+type: "story"
+tags: ["Nostr", "NIP-09", "Privacidad", "Relés"]
+featuredImage: "/images/news/nip-09-deletion-requests-do-not-prove-erasure.svg"
+translationKey: "nip-09-deletion-requests-do-not-prove-erasure"
+sources:
+  - title: "NIP-09: Event Deletion Request en el commit 0046368"
+    url: "https://github.com/nostr-protocol/nips/blob/0046368a747c5c25ae2bec28bae0e537744c8f10/09.md"
+    publisher: "nostr-protocol/nips"
+    date: "2026-09-27"
+  - title: "NIP-01: Basic protocol flow en el commit 0046368"
+    url: "https://github.com/nostr-protocol/nips/blob/0046368a747c5c25ae2bec28bae0e537744c8f10/01.md"
+    publisher: "nostr-protocol/nips"
+    date: "2026-09-27"
+published: true
+---
+
+Borrar una publicación desde un cliente Nostr no envía una orden capaz de entrar en cada relé, caché y dispositivo. Publica otro evento firmado. [NIP-09](https://github.com/nostr-protocol/nips/blob/0046368a747c5c25ae2bec28bae0e537744c8f10/09.md) define ese evento como tipo `5`, una solicitud de borrado que señala uno o más eventos mediante etiquetas `e` o `a`.
+
+La diferencia importa. Una solicitud válida da a las aplicaciones cooperantes la información necesaria para dejar de servir o mostrar un evento. No vuelve irrecuperables los bytes referenciados ni demuestra que cada receptor anterior haya borrado su copia.
+
+## El tipo 5 identifica lo que el autor quiere retirar
+
+Una etiqueta `e` nombra un ID de evento concreto. Una etiqueta `a` identifica un evento reemplazable por su tipo, clave pública e identificador `d`. NIP-09 también indica que la solicitud debería incluir una etiqueta `k` por cada tipo de evento referenciado. El contenido puede explicar por qué el autor quiere retirarlo.
+
+Para una referencia `e`, la solicitud solo es válida si el evento referenciado y la solicitud de tipo `5` tienen la misma clave pública. Un cliente debe comprobar esa coincidencia antes de ocultar o borrar nada. Sin esa regla, cualquiera podría firmar una solicitud para hacer desaparecer la publicación de otro autor en interfaces compatibles.
+
+Una referencia `a` tiene un alcance mayor. Los relés deberían borrar todas las versiones de ese evento reemplazable hasta la marca `created_at` de la solicitud. Las versiones posteriores quedan fuera, por lo que la fecha forma parte del límite.
+
+## Los relés reciben una petición, no una orden remota
+
+NIP-09 dice que los relés deberían borrar o dejar de publicar los eventos coincidentes. No afirma que se pueda obligar a un relé. Puede no recibir la solicitud, no guardar el evento citado o aplicar una política de retención distinta.
+
+El protocolo también indica que los relés deberían seguir publicando indefinidamente la propia solicitud. Así, clientes que ya tienen el evento original pueden descubrir que el autor lo retiró. Los clientes pueden retransmitir la solicitud a otros relés que todavía no la hayan visto.
+
+Esto crea una asimetría intencional: el contenido original debería volverse menos accesible, mientras la solicitud firmada para dejar de mostrarlo debería permanecer disponible. Borrar una solicitud de borrado no tiene efecto. No existe una operación estándar para deshacerla.
+
+## Una firma prueba autoría, no un borrado global
+
+[NIP-01](https://github.com/nostr-protocol/nips/blob/0046368a747c5c25ae2bec28bae0e537744c8f10/01.md) convierte cada evento en un objeto firmado independiente cuyo ID depende de su contenido serializado. Cuando un evento ya fue copiado, una firma posterior no puede modificar ese objeto. Solo puede añadir una instrucción nueva que otro software puede respetar.
+
+Los relés son independientes y los clientes pueden recibir eventos desde varias suscripciones. Una captura, base de datos local, exportación o relé de archivo puede conservarlo aunque todos los relés habituales del autor acepten la solicitud. Por eso NIP-09 permite avisar que el borrado no está garantizado en todos los relés y clientes.
+
+El mismo límite se aplica a eventos cifrados. Retirar el texto cifrado de relés cooperantes reduce su disponibilidad futura, pero no revoca las copias ya descargadas por receptores u observadores. Cifrado y borrado resuelven problemas distintos.
+
+## Lo que un cliente sí puede verificar
+
+Un cliente puede validar la firma del evento de tipo `5`, comprobar que cada evento señalado con `e` pertenece al mismo autor y registrar qué relés aceptaron la solicitud. Después puede consultar esos relés y confirmar que ya no devuelven el objetivo. Eso aporta evidencia útil sobre un conjunto definido de relés.
+
+No produce un recibo de borrado global. La respuesta de un relé no dice nada sobre servidores no consultados, clientes desconectados o copias fuera de la red de relés.
+
+La regla práctica es tratar una publicación en Nostr como duradera. Usa el tipo `5` cuando debas retirar contenido, envíalo a los relés que recibieron el original y permite que los clientes oculten objetivos válidos. Pero no publiques secretos suponiendo que una solicitud posterior podrá recuperar cada copia. NIP-09 coordina la retirada. No convierte una red distribuida en un sistema de borrado remoto.

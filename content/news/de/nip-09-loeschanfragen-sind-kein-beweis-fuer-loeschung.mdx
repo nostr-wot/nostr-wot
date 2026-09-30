@@ -1,0 +1,59 @@
+---
+title: "NIP-09-Löschanfragen sind kein Beweis für Löschung"
+description: "Ein Nostr-Ereignis der Art 5 bittet Relays und Clients, ein anderes Ereignis nicht mehr auszuliefern. Es beweist nicht, dass alle Kopien verschwunden sind."
+seoDescription: "So funktionieren NIP-09-Löschanfragen, deshalb ist die Autorenprüfung wichtig, und deshalb garantieren sie keine Löschung bei allen Relays und Clients."
+excerpt: "Kind 5 ist eine signierte Anfrage, kein Fernlöschen. Relays und Clients können sie beachten, doch bereits abgerufene Kopien bleiben außerhalb ihrer Reichweite."
+date: "2026-09-30"
+publishedAt: "2026-09-30"
+backfilled: false
+type: "story"
+tags: ["Nostr", "NIP-09", "Datenschutz", "Relays"]
+featuredImage: "/images/news/nip-09-deletion-requests-do-not-prove-erasure.svg"
+translationKey: "nip-09-deletion-requests-do-not-prove-erasure"
+sources:
+  - title: "NIP-09: Event Deletion Request bei Commit 0046368"
+    url: "https://github.com/nostr-protocol/nips/blob/0046368a747c5c25ae2bec28bae0e537744c8f10/09.md"
+    publisher: "nostr-protocol/nips"
+    date: "2026-09-27"
+  - title: "NIP-01: Basic protocol flow bei Commit 0046368"
+    url: "https://github.com/nostr-protocol/nips/blob/0046368a747c5c25ae2bec28bae0e537744c8f10/01.md"
+    publisher: "nostr-protocol/nips"
+    date: "2026-09-27"
+published: true
+---
+
+Das Löschen eines Beitrags in einem Nostr-Client sendet keinen Befehl, der jedes Relay, jeden Cache und jedes Gerät erreicht. Der Client veröffentlicht ein weiteres signiertes Ereignis. [NIP-09](https://github.com/nostr-protocol/nips/blob/0046368a747c5c25ae2bec28bae0e537744c8f10/09.md) definiert es als Kind `5`, eine Löschanfrage, die mit `e`- oder `a`-Tags auf ein oder mehrere Ereignisse verweist.
+
+Der Unterschied ist wichtig. Eine gültige Anfrage gibt kooperierender Software genug Informationen, um ein Ereignis nicht mehr auszuliefern oder anzuzeigen. Sie macht die referenzierten Daten nicht unwiederbringlich und beweist nicht, dass jeder frühere Empfänger seine Kopie gelöscht hat.
+
+## Kind 5 benennt, was der Autor entfernen möchte
+
+Ein `e`-Tag nennt eine bestimmte Ereignis-ID. Ein `a`-Tag adressiert ein ersetzbares Ereignis über Kind, öffentlichen Schlüssel und `d`-Kennung. NIP-09 sagt außerdem, dass die Anfrage für jede referenzierte Ereignisart ein `k`-Tag enthalten sollte. Der Inhalt kann den Grund für die Löschung beschreiben.
+
+Bei einer `e`-Referenz ist die Anfrage nur gültig, wenn das referenzierte Ereignis und die Kind-`5`-Anfrage denselben öffentlichen Schlüssel tragen. Ein Client muss dies prüfen, bevor er etwas verbirgt oder löscht. Ohne diese Regel könnte jeder eine Anfrage signieren, um den Beitrag eines anderen Autors in regelkonformen Oberflächen verschwinden zu lassen.
+
+Eine `a`-Referenz reicht weiter. Relays sollten alle Versionen des ersetzbaren Ereignisses bis zum `created_at`-Zeitpunkt der Anfrage löschen. Neuere Versionen liegen außerhalb ihrer Reichweite. Der Zeitstempel ist daher Teil der Grenze.
+
+## Relays erhalten eine Bitte, keine Fernsteuerung
+
+NIP-09 sagt, dass Relays passende Ereignisse löschen oder nicht mehr veröffentlichen sollten. Sie sagt nicht, dass ein Relay dazu gezwungen werden kann. Es kann die Anfrage nie erhalten, das Ziel nicht gespeichert haben oder eine andere Aufbewahrungsrichtlinie anwenden.
+
+Das Protokoll fordert Relays außerdem auf, die Löschanfrage selbst dauerhaft weiterzugeben. So erfahren Clients, die das Original bereits besitzen, dass der Autor es später zurückgezogen hat. Clients dürfen die Anfrage an weitere Relays senden, die sie noch nicht gesehen haben.
+
+Die Asymmetrie ist beabsichtigt: Der ursprüngliche Inhalt soll schlechter verfügbar werden, während die signierte Aufforderung, ihn nicht mehr zu zeigen, verfügbar bleiben soll. Eine Löschanfrage gegen eine andere Löschanfrage hat keine Wirkung. Eine standardisierte Rücknahme gibt es nicht.
+
+## Eine Signatur beweist Urheberschaft, keine globale Löschung
+
+[NIP-01](https://github.com/nostr-protocol/nips/blob/0046368a747c5c25ae2bec28bae0e537744c8f10/01.md) macht jedes Ereignis zu einem eigenständig signierten Objekt, dessen ID aus dem serialisierten Inhalt entsteht. Wurde ein Ereignis kopiert, kann eine spätere Signatur dieses frühere Objekt nicht verändern. Sie kann nur eine neue Anweisung hinzufügen, die andere Software beachten kann.
+
+Relays sind unabhängig, und Clients können Ereignisse über mehrere Abonnements empfangen. Ein Bildschirmfoto, eine lokale Datenbank, ein Export oder ein Archiv-Relay kann fortbestehen, obwohl alle üblichen Relays des Autors die Anfrage annehmen. NIP-09 erlaubt deshalb ausdrücklich den Hinweis, dass die Löschung nicht bei allen Relays und Clients garantiert werden kann.
+
+Dieselbe Grenze gilt für verschlüsselte Ereignisse. Das Entfernen des Chiffretexts von kooperierenden Relays verringert seine zukünftige Verfügbarkeit, widerruft aber keine bereits heruntergeladenen Kopien. Verschlüsselung und Löschung lösen verschiedene Probleme.
+
+## Was Clients überprüfen können
+
+Ein Client kann die Kind-`5`-Signatur prüfen, für jedes per `e` referenzierte Ereignis denselben Autor bestätigen und festhalten, welche Relays die Anfrage annahmen. Anschließend kann er diese Relays erneut abfragen und prüfen, ob sie das Ziel nicht mehr liefern. Das ist nützliche Evidenz für eine definierte Gruppe von Relays.
+
+Es ist kein globaler Löschbeleg. Die Antwort eines Relays sagt nichts über nicht abgefragte Server, Offline-Clients oder Kopien außerhalb des Relay-Netzes aus.
+
+Praktisch sollte jede Veröffentlichung auf Nostr als dauerhaft gelten. Verwenden Sie Kind `5`, wenn Inhalte zurückgezogen werden sollen, senden Sie die Anfrage an die Relays des Originals und lassen Sie Clients gültige Ziele verbergen. Veröffentlichen Sie jedoch keine Geheimnisse in der Annahme, eine spätere Anfrage könne jede Kopie zurückholen. NIP-09 koordiniert Entfernung. Sie macht aus einem verteilten Netz kein Fernlöschsystem.
