@@ -22,7 +22,7 @@ const routes: Record<string, SocialArtId> = {
   '/guides': 'guides', '/blog': 'editorial', '/news': 'editorial', '/newsletters': 'editorial',
   '/docs': 'developers', '/docs/getting-started': 'developers', '/docs/sdk': 'developers',
   '/docs/extension': 'extension', '/docs/oracle': 'oracle', '/docs/lnbits-proxy': 'lnbits-wallet-setup',
-  '/media-kit': 'home', '/contact': 'community', '/privacy': 'privacy', '/terms': 'privacy', '/pitch': 'home',
+  '/media-kit': 'home', '/contact': 'community', '/uninstall': 'community', '/privacy': 'privacy', '/terms': 'privacy', '/pitch': 'home',
 };
 export function socialArtForUrl(value: unknown): SocialArtId {
   if (typeof value !== 'string' && !(value instanceof URL)) return 'home';
