@@ -43,22 +43,9 @@ If you previously used another NIP-07 extension like nos2x or Alby, disable it b
 
 ## Managing Your Nostr Profile
 
-Your profile details — display name, bio, avatar, Lightning Address, and NIP-05 identifier — are stored on Nostr relays as a kind 0 event. The extension lets you view and edit these details directly.
+Open the extension and choose **Edit profile** in the Account section. Edit your display name, biography, picture, cover image and optional public fields. The picture and cover controls open the image editor; their high-contrast labels remain visible over both light and dark photos.
 
-### Viewing Your Profile
-
-Click the extension icon and navigate to the **Identity** tab. You will see your current profile information, your npub, and the relays your profile is published to.
-
-
-
-### Editing Your Profile
-
-
-1. Click **Edit Profile** on the Identity tab.
-2. Update any fields you want to change.
-3. Click **Save**. The extension signs a new kind 0 event and publishes it to your relays.
-
-Changes propagate across Nostr clients within seconds as relays distribute the updated event.
+Review the preview before confirming publication. The extension signs and publishes a kind:0 profile event with the active identity and updates its local profile cache. Other clients must fetch the new event before displaying the changes; propagation time depends on their relays and caches. Profile fields are public. Keep recovery words and private keys out of them.
 
 ## Key Security Best Practices
 
