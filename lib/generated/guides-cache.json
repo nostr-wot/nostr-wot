@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-10-01T10:16:32.496Z",
+  "generatedAt": "2026-10-01T10:43:30.182Z",
   "locales": {
     "en": {
       "posts": [
@@ -1077,6 +1077,51 @@
           "content": "\nNostr WoT treats relay authentication as a separate permission. Connecting a\nwebsite to your account, or letting it sign ordinary events, does not silently\nauthorize it to identify you to every relay it chooses.\n\nThis guide covers [Nostr WoT](https://github.com/nostr-wot/nostr-wot-extension).\n\nHTTP APIs have different permission boundaries. See the companion\n[backend authentication guide](/guides/backend-authentication).\n\n## A website and a relay are different parties\n\nA Nostr client at `https://client.example` might connect to\n`wss://relay.example`. The different domain is normal: clients often use multiple\nindependently operated relays.\n\nUnder [NIP-42](https://github.com/nostr-protocol/nips/blob/master/42.md), a relay\nsends a challenge and the client requests a signed authentication event. That\nproof identifies the signing public key to the relay. It does not give the relay\nthe private key or permission to sign other events.\n\nThe extension shows the requesting website and a short sentence naming the relay.\nYou can inspect the complete event with the code button. Relay authentication is\nnot an HTTP request, so it has no HTTP method to display or approve.\n\n## Choose the scope that fits your use\n\n| Choice | What it allows |\n| --- | --- |\n| **Approve** | The current authentication request |\n| **Approve always** | This website authenticating this account to this relay |\n| **Always for all sites** | Any connected site with identity access authenticating this account to this relay |\n| **Deny** | Deny the current request |\n| **Deny always** | Remember a denial for this website, account and relay |\n\nThe remembered options are in the arrow menus beside Approve and Deny. A relay\npermission uses the normalized relay URL, not just the displayed hostname, so a\nshared hostname does not automatically authorize another relay path or port.\n\n**Always for all sites is an explicit convenience option.** If you use several\nclients with the same relay, it avoids granting that relay separately in each\nclient. It remains limited to the approving account and that relay. It does not\nconnect new sites, grant them identity access, cover other accounts, approve\nordinary event signing, or authorize HTTP backends. It can also apply to sites\nyou connect later; choose the site-specific option when you want a smaller scope.\n\nA site-specific remembered denial takes precedence over an all-sites allowance.\nA site's identity access being disabled, or its connection being removed, still\nblocks authentication. These checks also apply when signing is delegated to a\nNIP-46 bunker.\n\n## Review and revoke permissions\n\nOpen **Permissions → Relay authentication** for the active account. This is a menu screen with Back and an information icon, separate from relay read/write settings. Relays are grouped with the approved-site count or all-sites scope, including denial exceptions.\n\nOpen a relay to select connected apps or all connected sites. In all-sites mode, unchecking an app switches to explicit approval for the remaining connected, non-denied sites; future sites are no longer included. Save an empty selection to remove all allows for that relay while preserving denials. Selecting a denied app explicitly replaces its denial; choosing all sites preserves denial exceptions. Changes apply only to this account and relay.\n\nDisconnecting a website removes its site-specific grants; a shared grant can still serve other connected sites. Deleting an account removes its grants. Revocation affects future signatures but does not close an already authenticated WebSocket. The client must close that connection.\n\n## Protection against misleading requests\n\nThe extension obtains the requesting origin from the browser's document identity.\nA page cannot choose a different trusted origin by supplying an RPC field.\nAuthentication requires a top-level frame: even a same-origin iframe cannot use\nthis path. Opaque or inconsistent origins are refused. Secure page and relay\ntransports are required outside explicit loopback development exceptions.\n\nRequired relay and challenge tags must be unambiguous. Invalid URLs, unexpected\ncontent and stale timestamps are rejected, including after a request has waited\nfor approval or unlock. Generic signing grants and ordinary bulk approval cannot\nbypass destination consent. Account-session checks prevent queued work from\nbeing signed under a different account after switching.\n\nRemote signer responses are checked against the exact approved event and expected\naccount signature, so substituting a different relay or challenge is rejected.\nThe [backend guide](/guides/backend-authentication#what-the-extension-verifies) explains\nthe shared request and remote-signature boundaries in more detail.\n\n## The relay must still validate its connection\n\nThe extension signs the relay URL and challenge supplied by the client; it does\nnot own the client's WebSocket. The relay must validate the signature, relay\naddress, freshness, and challenge for the connection being authenticated.\n\nConsequently, a signer cannot prove that a client obtained its challenge honestly\nor prevent every challenge-forwarding scheme. An all-sites grant deliberately\ntrusts connected clients to authenticate this account to the selected relay. It\nis not evidence that every such client is benign.\n\nAuthentication reveals the signing public key to the relay. Reusing an account\nacross clients can make those authenticated connections linkable at that relay.\nUse separate accounts or narrower grants when that distinction matters. CORS is\nnot the protection for this flow: relay connection validation and the extension's\naccount/site/destination permission checks serve different roles.\n\n## Inspect the implementation\n\n- [NIP-42 specification](https://github.com/nostr-protocol/nips/blob/master/42.md).\n- [Authentication parser and scope rules](https://github.com/nostr-wot/nostr-wot-extension/blob/main/src/domain/signing/authentication.ts).\n- [Account/site/relay grant matching and denial precedence](https://github.com/nostr-wot/nostr-wot-extension/blob/main/src/services/permissions/authentication.ts).\n- [Origin checks](https://github.com/nostr-wot/nostr-wot-extension/blob/main/src/domain/signing/requestOrigin.ts) and [signing lifecycle](https://github.com/nostr-wot/nostr-wot-extension/blob/main/src/services/signing/signer.ts).\n- [Authentication tests](https://github.com/nostr-wot/nostr-wot-extension/blob/main/tests/authentication.test.ts) and [approval UI tests](https://github.com/nostr-wot/nostr-wot-extension/blob/main/tests/authentication-ui.test.ts).\n"
         },
         {
+          "slug": "change-language",
+          "title": "Change the Extension Language",
+          "description": "Choose your interface language in Nostr WoT, apply it, and switch back whenever you like.",
+          "excerpt": "Choose your interface language in Nostr WoT, apply it, and switch back whenever you like.",
+          "date": "2026-10-01T00:00:00.000Z",
+          "author": {
+            "name": "Leon Acosta",
+            "avatar": "/authors/leon-profile.jpg"
+          },
+          "featuredImage": "/images/guides/change-language/featured.png",
+          "previewImage": "/images/guides/change-language/featured.png",
+          "tags": [
+            "Settings",
+            "Language"
+          ],
+          "published": true,
+          "readingTime": "2 min read",
+          "locale": "en",
+          "translationKey": "change-language",
+          "translations": {
+            "en": "change-language",
+            "es": "change-language",
+            "pt": "change-language",
+            "ru": "change-language",
+            "it": "change-language",
+            "fr": "change-language",
+            "de": "change-language"
+          },
+          "availableLocales": [
+            "en",
+            "es",
+            "pt",
+            "ru",
+            "it",
+            "fr",
+            "de"
+          ],
+          "seoTitle": "Change the Extension Language | Nostr WoT",
+          "seoDescription": "Choose your interface language in Nostr WoT, apply it, and switch back whenever you like.",
+          "ogImage": "/images/guides/change-language/featured.png",
+          "difficulty": "beginner",
+          "order": 21,
+          "content": "\nChange the language of the Nostr WoT extension from **Settings → Appearance and language → Language**. Choose a language, then select **Confirm**.\n\n## 1. Open Settings\n\nOpen the extension from your browser toolbar. Unlock it if needed, then choose **Settings** using the gear icon. Open **Appearance and language**.\n\n![Settings with Appearance and language near the bottom](/images/guides/change-language/01-settings.png)\n\n## 2. Open the language picker\n\nChoose **Language** below the theme controls. The row shows your current language.\n\n![The Language row below the appearance controls](/images/guides/change-language/02-appearance.png)\n\n## 3. Choose and confirm\n\nScroll or drag the wheel until your language is centered. You can also focus the list and use the up and down arrow keys. The heading previews your choice before you apply it.\n\nThe available languages are **English, Español, Português, Deutsch, Français and Italiano**.\n\n![Español selected in the language wheel, with Confirm below](/images/guides/change-language/03-spanish-selected.png)\n\nSelect **Confirm**. That button uses your current interface language until you confirm; in this English-to-Spanish example it still says “Confirm.” Closing the picker without confirming keeps the previous language.\n\n## 4. Check the result\n\nThe language row now shows **Español**, and translated interface labels update. Your choice is saved for the next time you open the extension. Some appearance labels currently remain in English.\n\n![The saved language is Español and the language label is now Idioma](/images/guides/change-language/04-spanish-applied.png)\n\n## Switch back whenever you like\n\nReturn to the same section, open **Idioma**, select **English**, then choose **Confirmar**. Use the gear icon to find Settings if you do not recognize the current menu language.\n\nChanging the interface language does not translate Nostr posts or messages, or change your accounts, keys or permissions. The website's language selector is separate from the extension's setting.\n\nThe screenshots show an English-to-Spanish change in a demo installation.\n"
+        },
+        {
           "slug": "post-quantum-key",
           "title": "Creating a Post-Quantum Key",
           "description": "Generate post-quantum keys for your Nostr identity with a single command, entirely offline, and publish the attestation that lets others send you post-quantum encrypted messages.",
@@ -1163,6 +1208,7 @@
         "Identity",
         "Keys",
         "LNbits",
+        "Language",
         "Lightning",
         "Lightning Address",
         "NIP-06",
@@ -1175,6 +1221,7 @@
         "Privacy",
         "Resilience",
         "Security",
+        "Settings",
         "Setup",
         "Trust Graph",
         "Trust Settings",
@@ -2258,6 +2305,51 @@
           "difficulty": "intermediate",
           "order": 19,
           "content": "\nEn [Nostr WoT](https://github.com/nostr-wot/nostr-wot-extension), conectar una web o permitir firmas ordinarias no la autoriza automáticamente a identificarte ante cualquier relay. Las API HTTP tienen su propia [guía de autenticación de backends](/guides/backend-authentication).\n\n## Web y relay son partes distintas\n\n`https://client.example` puede conectarse a `wss://relay.example`. Es normal utilizar relays independientes. Con [NIP-42](https://github.com/nostr-protocol/nips/blob/master/42.md), el relay envía un desafío y el cliente solicita un evento de autenticación firmado. Este identifica tu clave pública, sin entregar la privada ni permitir otras firmas.\n\nLa solicitud muestra la web y el relay. El botón de código abre el evento completo. Esta autenticación no tiene método HTTP.\n\n## Elige el alcance\n\n| Opción | Alcance |\n| --- | --- |\n| Aprobar | La solicitud actual |\n| Aprobar siempre | Esta web, esta cuenta y este relay |\n| Siempre para todos los sitios | Los sitios conectados con acceso a tu identidad, para esta cuenta y este relay |\n| Denegar | La solicitud actual |\n| Denegar siempre | Recuerda la denegación para esta web, cuenta y relay |\n\nLas opciones recordadas están en las flechas junto a los botones. El permiso usa la URL normalizada del relay, no solo el nombre mostrado: otra ruta o puerto no queda autorizado automáticamente.\n\nLa opción para todos los sitios evita repetir la autorización al usar el mismo relay en varios clientes. También puede aplicarse a webs que conectes después. No conecta webs nuevas, concede acceso a la identidad, cubre otras cuentas, permite firmas ordinarias ni autoriza backends HTTP. Una denegación específica de un sitio tiene prioridad. Desactivar su acceso a la identidad o desconectarlo sigue bloqueándolo, incluso con un firmante NIP-46.\n\n## Revisar y revocar permisos\n\nAbre **Permisos → Autenticación de relays** para la cuenta activa. Es una pantalla con Volver e información, separada de la configuración de lectura y escritura de relays. Agrupa los permisos por relay e indica el número de sitios aprobados o el alcance para todos, con las excepciones denegadas.\n\nAbre un relay para seleccionar aplicaciones conectadas o todos los sitios conectados. Desmarcar una aplicación en el modo de todos cambia a una selección explícita de los restantes sitios conectados no denegados; los futuros sitios ya no se incluyen. Guardar una selección vacía elimina las autorizaciones de ese relay y conserva las denegaciones. Seleccionar un sitio denegado sustituye esa denegación; elegir todos conserva las excepciones. Solo cambia esa cuenta y ese relay.\n\nDesconectar una web elimina sus permisos particulares; uno compartido sigue sirviendo a otras webs conectadas. Eliminar la cuenta elimina sus permisos. Revocar afecta a firmas futuras, no cierra un WebSocket ya autenticado: debe cerrarlo el cliente.\n\n## Comprobaciones y límites\n\nLa extensión obtiene el origen del navegador y exige un marco principal. Rechaza iframes, orígenes opacos o inconsistentes y transportes inseguros salvo excepciones explícitas de loopback. Valida etiquetas de relay y desafío sin ambigüedades, URL, contenido y vigencia. Repite comprobaciones tras esperar aprobación o desbloqueo. Las autorizaciones generales y masivas no omiten este consentimiento; cambiar de cuenta invalida las solicitudes anteriores. Las respuestas NIP-46 deben coincidir exactamente con el evento aprobado y la cuenta esperada.\n\nLa extensión no controla el WebSocket del cliente. El relay debe validar firma, dirección, fecha y desafío para esa conexión. El firmante no puede demostrar que el cliente obtuvo honestamente el desafío ni impedir todo reenvío.\n\nAutenticarte revela tu clave pública. Usar la misma cuenta en varios clientes permite al relay relacionar esas conexiones. Usa cuentas separadas o permisos por sitio cuando necesites esa separación. CORS no sustituye la validación de la conexión ni los límites de cuenta, sitio y destino.\n\nConsulta las [reglas de permisos](https://github.com/nostr-wot/nostr-wot-extension/blob/main/src/services/permissions/authentication.ts) y las [pruebas](https://github.com/nostr-wot/nostr-wot-extension/blob/main/tests/authentication.test.ts).\n"
+        },
+        {
+          "slug": "change-language",
+          "title": "Cambiar el idioma de la extensión",
+          "description": "Elige el idioma de Nostr WoT, confirma el cambio y vuelve a cambiarlo cuando quieras.",
+          "excerpt": "Elige el idioma de Nostr WoT, confirma el cambio y vuelve a cambiarlo cuando quieras.",
+          "date": "2026-10-01T00:00:00.000Z",
+          "author": {
+            "name": "Leon Acosta",
+            "avatar": "/authors/leon-profile.jpg"
+          },
+          "featuredImage": "/images/guides/change-language/featured.png",
+          "previewImage": "/images/guides/change-language/featured.png",
+          "tags": [
+            "Settings",
+            "Language"
+          ],
+          "published": true,
+          "readingTime": "2 min read",
+          "locale": "es",
+          "translationKey": "change-language",
+          "translations": {
+            "en": "change-language",
+            "es": "change-language",
+            "pt": "change-language",
+            "ru": "change-language",
+            "it": "change-language",
+            "fr": "change-language",
+            "de": "change-language"
+          },
+          "availableLocales": [
+            "en",
+            "es",
+            "pt",
+            "ru",
+            "it",
+            "fr",
+            "de"
+          ],
+          "seoTitle": "Cambiar el idioma de la extensión | Nostr WoT",
+          "seoDescription": "Elige el idioma de Nostr WoT, confirma el cambio y vuelve a cambiarlo cuando quieras.",
+          "ogImage": "/images/guides/change-language/featured.png",
+          "difficulty": "beginner",
+          "order": 21,
+          "content": "\nCambia el idioma de Nostr WoT desde **Configuración → Apariencia e idioma → Idioma**. Elige un idioma y pulsa **Confirmar**.\n\n## 1. Abre Configuración\n\nAbre la extensión desde la barra del navegador y desbloquéala si es necesario. Pulsa el icono de engranaje de **Configuración** y entra en **Apariencia e idioma**.\n\n![Configuración en inglés, con Appearance and language al final](/images/guides/change-language/01-settings.png)\n\n## 2. Abre el selector de idioma\n\nPulsa **Idioma**, debajo de los controles del tema. La fila indica el idioma actual.\n\n![La opción Language debajo de los controles de apariencia](/images/guides/change-language/02-appearance.png)\n\n## 3. Elige y confirma\n\nDesplaza o arrastra la rueda hasta centrar el idioma que quieras. También puedes enfocar la lista y usar las flechas arriba y abajo. El título muestra el idioma elegido antes de aplicarlo.\n\nLos idiomas disponibles son **English, Español, Português, Deutsch, Français e Italiano**.\n\n![Español seleccionado y el botón Confirm debajo](/images/guides/change-language/03-spanish-selected.png)\n\nPulsa **Confirmar**. El botón conserva el idioma anterior hasta confirmar: en este ejemplo, al pasar del inglés al español, dice “Confirm”. Cerrar el selector sin confirmar conserva el idioma anterior.\n\n## 4. Comprueba el cambio\n\nLa fila muestra **Español** y se actualizan los textos traducidos. La elección se guarda para la próxima vez que abras la extensión. Algunas etiquetas de apariencia todavía se muestran en inglés.\n\n![Idioma guardado como Español](/images/guides/change-language/04-spanish-applied.png)\n\n## Vuelve a cambiarlo cuando quieras\n\nPara volver al inglés, abre **Idioma**, selecciona **English** y pulsa **Confirmar**. Si no reconoces el idioma del menú, busca el engranaje de Configuración.\n\nEste ajuste no traduce las publicaciones ni los mensajes de Nostr, ni cambia tus cuentas, claves o permisos. El selector de idioma del sitio web es independiente del de la extensión.\n\nLas capturas muestran el cambio de inglés a español en una instalación de demostración.\n"
         }
       ],
       "tags": [
@@ -2278,6 +2370,7 @@
         "Grafo de Confianza",
         "Identidad",
         "LNbits",
+        "Language",
         "Lightning",
         "NIP-06",
         "NIP-07",
@@ -2291,6 +2384,7 @@
         "Privacidad",
         "Security",
         "Seguridad",
+        "Settings",
         "Visualizacion",
         "Web of Trust",
         "WebLN",
@@ -3370,6 +3464,51 @@
           "difficulty": "intermediate",
           "order": 19,
           "content": "\nNo [Nostr WoT](https://github.com/nostr-wot/nostr-wot-extension), conectar um site ou permitir assinaturas comuns não o autoriza a identificar você em qualquer relay. APIs HTTP seguem o [guia de autenticação de backends](/guides/backend-authentication).\n\n## Site e relay são partes diferentes\n\n`https://client.example` pode se conectar a `wss://relay.example`. Relays independentes são normais. No [NIP-42](https://github.com/nostr-protocol/nips/blob/master/42.md), o relay envia um desafio e o cliente pede um evento de autenticação assinado. A prova identifica sua chave pública, sem entregar a chave privada nem permitir outras assinaturas.\n\nO diálogo mostra o site e o relay; o botão de código abre o evento completo. Autenticação de relay não tem método HTTP.\n\n## Escolha o alcance\n\n| Opção | Alcance |\n| --- | --- |\n| Aprovar | O pedido atual |\n| Aprovar sempre | Este site, esta conta e este relay |\n| Sempre para todos os sites | Sites conectados com acesso à identidade, para esta conta e este relay |\n| Negar | O pedido atual |\n| Negar sempre | Recusa salva para este site, conta e relay |\n\nAs decisões persistentes ficam nas setas dos botões. O escopo usa a URL normalizada do relay, não apenas seu nome. Outra porta ou caminho não é autorizado automaticamente.\n\nA opção para todos os sites evita repetir a autorização ao usar vários clientes no mesmo relay. Ela também pode valer para sites conectados depois. Não conecta novos sites, concede acesso à identidade, cobre outras contas, permite assinaturas comuns ou autoriza APIs HTTP. Uma recusa por site tem prioridade. Desativar acesso à identidade ou desconectar o site continua bloqueando a autenticação, inclusive com NIP-46.\n\n## Revisar e revogar permissões\n\nAbra **Permissões → Autenticação de relays** para a conta ativa. É uma tela com Voltar e informações, separada das configurações de leitura e escrita. Agrupa permissões por relay e mostra o número de sites aprovados ou o alcance para todos, com exceções negadas.\n\nAbra um relay para selecionar apps conectados ou todos os sites conectados. Desmarcar um app no modo todos muda para a seleção explícita dos demais sites conectados não negados; sites futuros deixam de ser incluídos. Salvar uma seleção vazia remove todas as autorizações do relay preservando negativas. Selecionar explicitamente um site negado substitui a negativa; escolher todos preserva exceções. Apenas essa conta e esse relay mudam.\n\nDesconectar um site remove seus próprios vínculos; uma permissão compartilhada continua disponível aos outros sites conectados. Excluir uma conta remove suas permissões. Revogar afeta assinaturas futuras, mas não fecha um WebSocket já autenticado: o cliente deve fechá-lo.\n\n## Verificações e limites\n\nA origem vem do navegador e deve ser de um quadro principal verificado. Iframes, origens opacas ou inconsistentes e transportes inseguros são rejeitados, salvo exceções explícitas de loopback. A extensão verifica tags de relay e desafio, URL, conteúdo e validade temporal, inclusive depois de esperar aprovação ou desbloqueio. Permissões genéricas e aprovação em lote não ignoram esse consentimento. Trocar a conta invalida o trabalho anterior. Respostas NIP-46 precisam coincidir com o evento aprovado e a assinatura da conta esperada.\n\nA extensão não controla o WebSocket do cliente. O relay deve validar assinatura, endereço, timestamp e desafio daquela conexão. O assinante não comprova como o cliente obteve o desafio nem impede todo encaminhamento.\n\nAutenticar revela sua chave pública ao relay. Usar a mesma conta em vários clientes pode vincular essas conexões. Use contas separadas ou permissões menores quando essa distinção importar. CORS não substitui a validação da conexão ou o controle por conta, site e destino.\n\nVeja as [regras de permissões](https://github.com/nostr-wot/nostr-wot-extension/blob/main/src/services/permissions/authentication.ts) e os [testes](https://github.com/nostr-wot/nostr-wot-extension/blob/main/tests/authentication.test.ts).\n"
+        },
+        {
+          "slug": "change-language",
+          "title": "Mudar o idioma da extensão",
+          "description": "Escolha o idioma do Nostr WoT, confirme a alteração e volte a mudar quando quiser.",
+          "excerpt": "Escolha o idioma do Nostr WoT, confirme a alteração e volte a mudar quando quiser.",
+          "date": "2026-10-01T00:00:00.000Z",
+          "author": {
+            "name": "Leon Acosta",
+            "avatar": "/authors/leon-profile.jpg"
+          },
+          "featuredImage": "/images/guides/change-language/featured.png",
+          "previewImage": "/images/guides/change-language/featured.png",
+          "tags": [
+            "Settings",
+            "Language"
+          ],
+          "published": true,
+          "readingTime": "2 min read",
+          "locale": "pt",
+          "translationKey": "change-language",
+          "translations": {
+            "en": "change-language",
+            "es": "change-language",
+            "pt": "change-language",
+            "ru": "change-language",
+            "it": "change-language",
+            "fr": "change-language",
+            "de": "change-language"
+          },
+          "availableLocales": [
+            "en",
+            "es",
+            "pt",
+            "ru",
+            "it",
+            "fr",
+            "de"
+          ],
+          "seoTitle": "Mudar o idioma da extensão | Nostr WoT",
+          "seoDescription": "Escolha o idioma do Nostr WoT, confirme a alteração e volte a mudar quando quiser.",
+          "ogImage": "/images/guides/change-language/featured.png",
+          "difficulty": "beginner",
+          "order": 21,
+          "content": "\nPara mudar o idioma, abra **Configurações → Aparência e idioma → Idioma**, escolha uma opção e confirme.\n\n## 1. Abra as configurações\n\nAbra a extensão na barra do navegador e desbloqueie-a se necessário. Use o ícone de engrenagem e abra a seção de aparência e idioma.\n\n![Configurações em inglês, com Appearance and language no final](/images/guides/change-language/01-settings.png)\n\n## 2. Abra o seletor de idioma\n\nEscolha **Idioma**, abaixo dos controles do tema. Essa linha mostra o idioma atual.\n\n![Language abaixo dos controles de aparência](/images/guides/change-language/02-appearance.png)\n\n## 3. Escolha e confirme\n\nRole ou arraste a roda até centralizar o idioma desejado. Você também pode focar a lista e usar as setas para cima e para baixo. O título antecipa a escolha antes de aplicá-la.\n\nAs opções são **English, Español, Português, Deutsch, Français e Italiano**.\n\n![Español selecionado na roda de idiomas](/images/guides/change-language/03-spanish-selected.png)\n\nPressione o botão de confirmação. Ele permanece no idioma atual até você confirmar: neste exemplo de inglês para espanhol, aparece “Confirm”. Fechar o seletor sem confirmar mantém o idioma anterior.\n\n## 4. Confira o resultado\n\nA linha passa a mostrar **Español** e os textos traduzidos são atualizados. A escolha é salva para a próxima vez que você abrir a extensão. Alguns rótulos de aparência ainda aparecem em inglês.\n\n![Idioma salvo como Español](/images/guides/change-language/04-spanish-applied.png)\n\n## Mude novamente quando quiser\n\nPara voltar ao inglês a partir do espanhol, abra **Idioma**, selecione **English** e pressione **Confirmar**. Se não reconhecer o idioma do menu, procure a engrenagem das configurações.\n\nEssa preferência não traduz publicações ou mensagens do Nostr e não altera contas, chaves ou permissões. O idioma do site é uma configuração separada.\n\nAs capturas mostram a mudança de inglês para espanhol em uma instalação de demonstração.\n"
         }
       ],
       "tags": [
@@ -3391,6 +3530,7 @@
         "Identidade",
         "Iniciante",
         "LNbits",
+        "Language",
         "Lightning",
         "NIP-06",
         "NIP-07",
@@ -3404,6 +3544,7 @@
         "Security",
         "Seguranca",
         "Segurança",
+        "Settings",
         "Visualizacao",
         "Web of Trust",
         "WebLN",
@@ -4484,6 +4625,51 @@
           "difficulty": "intermediate",
           "order": 19,
           "content": "\nВ [Nostr WoT](https://github.com/nostr-wot/nostr-wot-extension) подключение сайта или разрешение обычных подписей не позволяет автоматически идентифицировать вас на любом реле. Для HTTP API есть [отдельное руководство](/guides/backend-authentication).\n\n## Сайт и реле являются разными сторонами\n\n`https://client.example` может подключаться к `wss://relay.example`. По [NIP-42](https://github.com/nostr-protocol/nips/blob/master/42.md) реле отправляет задание, а клиент запрашивает подписанное событие аутентификации. Оно раскрывает публичный ключ, но не передаёт приватный ключ и не разрешает другие подписи.\n\nДиалог показывает сайт и реле. Кнопка кода открывает полное событие. У такой аутентификации нет HTTP-метода.\n\n## Выберите область действия\n\n| Решение | Область действия |\n| --- | --- |\n| Одобрить | Текущий запрос |\n| Всегда одобрять | Этот сайт, аккаунт и реле |\n| Всегда для всех сайтов | Подключённые сайты с доступом к идентичности, для этого аккаунта и реле |\n| Отклонить | Текущий запрос |\n| Всегда отклонять | Сохранённый запрет для сайта, аккаунта и реле |\n\nПостоянные решения находятся в меню со стрелками. Разрешение учитывает нормализованный URL реле, а не только имя хоста. Другой путь или порт не разрешается автоматически.\n\nВариант для всех сайтов избавляет от повторных запросов в разных клиентах и может распространяться на сайты, подключённые позже. Он не подключает новые сайты, не предоставляет доступ к идентичности, не охватывает другие аккаунты, обычные подписи или HTTP-серверы. Запрет для конкретного сайта имеет приоритет. Отключение сайта или его доступа к идентичности продолжает блокировать аутентификацию, в том числе с NIP-46.\n\n## Проверка и отзыв разрешений\n\nОткройте **Permissions → Relay authentication** для активного аккаунта. Это отдельный экран с возвратом и значком информации, не настройки чтения и записи реле. Разрешения сгруппированы по реле с числом одобренных сайтов либо областью «все сайты» и исключениями-запретами.\n\nОткройте реле и выберите подключённые приложения или все подключённые сайты. Снятие отметки с приложения в режиме «все» переключает на явное разрешение оставшимся подключённым незапрещённым сайтам; будущие сайты больше не включаются. Пустой выбор удаляет все разрешения этого реле, сохраняя запреты. Явный выбор запрещённого сайта заменяет его запрет; выбор всех сохраняет исключения. Меняется только данный аккаунт и реле.\n\nОтключение сайта удаляет его собственные разрешения; общее разрешение остаётся другим подключённым сайтам. Удаление аккаунта удаляет его разрешения. Отзыв влияет на будущие подписи, но не закрывает уже аутентифицированный WebSocket: это должен сделать клиент.\n\n## Проверки и ограничения\n\nРасширение требует источник, подтверждённый браузером, и основной фрейм. Iframe, непрозрачные или противоречивые источники и незащищённый транспорт отклоняются, кроме явных исключений loopback. Проверяются теги реле и задания, URL, содержимое и время, в том числе после ожидания. Общие разрешения и групповое одобрение не обходят согласие для назначения. Смена аккаунта делает предыдущие запросы недействительными. Ответ NIP-46 должен точно совпадать с одобренным событием и подписью ожидаемого аккаунта.\n\nРасширение не управляет WebSocket клиента. Реле обязано проверить подпись, адрес, актуальность и задание именно этого соединения. Подписывающая сторона не может доказать, как клиент получил задание, или предотвратить любую пересылку.\n\nОдин публичный ключ позволяет реле связать подключения разных клиентов. Используйте отдельные аккаунты или более узкие разрешения, когда важно разделение. CORS не заменяет проверку соединения и ограничения по аккаунту, сайту и назначению.\n\nСм. [правила разрешений](https://github.com/nostr-wot/nostr-wot-extension/blob/main/src/services/permissions/authentication.ts) и [тесты](https://github.com/nostr-wot/nostr-wot-extension/blob/main/tests/authentication.test.ts).\n"
+        },
+        {
+          "slug": "change-language",
+          "title": "Как изменить язык расширения",
+          "description": "Выберите язык интерфейса Nostr WoT, подтвердите выбор и при необходимости переключитесь обратно.",
+          "excerpt": "Выберите язык интерфейса Nostr WoT, подтвердите выбор и при необходимости переключитесь обратно.",
+          "date": "2026-10-01T00:00:00.000Z",
+          "author": {
+            "name": "Leon Acosta",
+            "avatar": "/authors/leon-profile.jpg"
+          },
+          "featuredImage": "/images/guides/change-language/featured.png",
+          "previewImage": "/images/guides/change-language/featured.png",
+          "tags": [
+            "Settings",
+            "Language"
+          ],
+          "published": true,
+          "readingTime": "2 min read",
+          "locale": "ru",
+          "translationKey": "change-language",
+          "translations": {
+            "en": "change-language",
+            "es": "change-language",
+            "pt": "change-language",
+            "ru": "change-language",
+            "it": "change-language",
+            "fr": "change-language",
+            "de": "change-language"
+          },
+          "availableLocales": [
+            "en",
+            "es",
+            "pt",
+            "ru",
+            "it",
+            "fr",
+            "de"
+          ],
+          "seoTitle": "Как изменить язык расширения | Nostr WoT",
+          "seoDescription": "Выберите язык интерфейса Nostr WoT, подтвердите выбор и при необходимости переключитесь обратно.",
+          "ogImage": "/images/guides/change-language/featured.png",
+          "difficulty": "beginner",
+          "order": 21,
+          "content": "\nОткройте настройки расширения, затем раздел внешнего вида и языка. Выберите нужный язык и подтвердите изменение.\n\n## 1. Откройте настройки\n\nОткройте расширение на панели браузера и при необходимости разблокируйте его. Нажмите значок шестерёнки. В английском интерфейсе нужный раздел называется **Appearance and language**.\n\n![Настройки на английском с пунктом Appearance and language внизу](/images/guides/change-language/01-settings.png)\n\n## 2. Откройте выбор языка\n\nНажмите **Language** под настройками темы. В этой строке указан текущий язык.\n\n![Пункт Language под настройками внешнего вида](/images/guides/change-language/02-appearance.png)\n\n## 3. Выберите язык и подтвердите\n\nПрокрутите или перетащите колесо, чтобы нужный язык оказался в центре. Можно также установить фокус на списке и использовать стрелки вверх и вниз. Заголовок показывает выбранный язык ещё до применения.\n\nДоступны **English, Español, Português, Deutsch, Français и Italiano**. Русского языка в расширении пока нет, хотя эта инструкция доступна на русском.\n\n![В колесе выбора языка выделен Español](/images/guides/change-language/03-spanish-selected.png)\n\nНажмите кнопку подтверждения. До подтверждения она остаётся на прежнем языке: в примере перехода с английского на испанский написано «Confirm». Если закрыть окно без подтверждения, прежний язык сохранится.\n\n## 4. Проверьте результат\n\nВ строке появится **Español**, а переведённые подписи обновятся. Выбор сохранится при следующем открытии расширения. Некоторые подписи настроек внешнего вида пока остаются на английском.\n\n![Сохранённый язык: Español](/images/guides/change-language/04-spanish-applied.png)\n\n## Как переключиться обратно\n\nВ испанском интерфейсе откройте **Idioma**, выберите **English** и нажмите **Confirmar**. Если язык меню вам незнаком, ищите значок шестерёнки.\n\nЭта настройка не переводит публикации или сообщения Nostr и не меняет аккаунты, ключи или разрешения. Язык сайта выбирается отдельно от языка расширения.\n\nСнимки экрана показывают переход с английского на испанский в демонстрационной установке.\n"
         }
       ],
       "tags": [
@@ -4492,6 +4678,7 @@
         "Authentication",
         "BIP-32",
         "LNbits",
+        "Language",
         "Lightning",
         "Lightning-адрес",
         "NIP-06",
@@ -4501,6 +4688,7 @@
         "Permissions",
         "Playground",
         "Security",
+        "Settings",
         "Web of Trust",
         "WebLN",
         "Аккаунты",
@@ -5600,6 +5788,51 @@
           "difficulty": "intermediate",
           "order": 19,
           "content": "\nIn [Nostr WoT](https://github.com/nostr-wot/nostr-wot-extension), collegare un sito o consentire firme ordinarie non lo autorizza a identificarti presso ogni relay. Le API HTTP hanno una [guida distinta](/guides/backend-authentication).\n\n## Sito e relay sono soggetti distinti\n\n`https://client.example` può collegarsi a `wss://relay.example`. Con [NIP-42](https://github.com/nostr-protocol/nips/blob/master/42.md), il relay invia una challenge e il client richiede un evento di autenticazione firmato. La prova rivela la chiave pubblica, senza consegnare quella privata o permettere altre firme.\n\nIl dialogo mostra sito e relay; il pulsante del codice apre l’evento completo. L’autenticazione del relay non ha un metodo HTTP.\n\n## Scegli l’ambito\n\n| Scelta | Ambito |\n| --- | --- |\n| Approva | Richiesta attuale |\n| Approva sempre | Questo sito, account e relay |\n| Sempre per tutti i siti | Siti collegati con accesso all’identità, per questo account e relay |\n| Nega | Richiesta attuale |\n| Nega sempre | Rifiuto memorizzato per sito, account e relay |\n\nLe opzioni memorizzate sono nei menu a freccia. Il permesso usa l’URL normalizzato del relay, non solo il nome mostrato. Un percorso o una porta diversi non sono automaticamente autorizzati.\n\nL’opzione per tutti i siti evita conferme ripetute tra client e può valere anche per siti collegati in seguito. Non collega nuovi siti, concede accesso all’identità, copre altri account, autorizza firme ordinarie o backend HTTP. Un rifiuto specifico del sito prevale. Disabilitare l’accesso all’identità o scollegare il sito continua a bloccarlo, anche con NIP-46.\n\n## Esaminare e revocare i permessi\n\nApri **Permessi → Autenticazione relay** per l’account attivo. È una schermata con Indietro e informazioni, separata dalla configurazione di lettura e scrittura. I permessi sono raggruppati per relay, con numero di siti approvati o ambito per tutti e relative eccezioni negate.\n\nApri un relay per scegliere app collegate o tutti i siti collegati. Deselezionare un’app in modalità tutti passa ai soli altri siti collegati non negati; i futuri siti non sono più inclusi. Salvare una selezione vuota elimina le autorizzazioni del relay conservando i rifiuti. Selezionare esplicitamente un sito negato sostituisce il rifiuto; scegliere tutti conserva le eccezioni. Cambiano solo questo account e relay.\n\nScollegare un sito rimuove i suoi permessi specifici; un permesso condiviso resta disponibile agli altri siti collegati. Eliminare un account elimina i suoi permessi. La revoca riguarda firme future, non chiude un WebSocket già autenticato: deve farlo il client.\n\n## Verifiche e limiti\n\nL’estensione richiede l’origine fornita dal browser e un frame principale verificato. Nega iframe, origini opache o incoerenti e trasporti non sicuri salvo eccezioni esplicite di loopback. Verifica tag del relay e challenge, URL, contenuto e timestamp, anche dopo attese. Permessi generici e approvazioni collettive non evitano il consenso alla destinazione. Cambiare account invalida le richieste precedenti. NIP-46 deve restituire esattamente l’evento approvato firmato dall’account previsto.\n\nL’estensione non gestisce il WebSocket del client. Il relay deve verificare firma, indirizzo, data e challenge della connessione. Il firmatario non può dimostrare come il client abbia ottenuto la challenge o impedire ogni inoltro.\n\nLa stessa chiave pubblica può rendere collegabili le connessioni di vari client presso un relay. Usa account separati o permessi più limitati quando serve questa distinzione. CORS non sostituisce la verifica della connessione né i limiti per account, sito e destinazione.\n\nVedi le [regole dei permessi](https://github.com/nostr-wot/nostr-wot-extension/blob/main/src/services/permissions/authentication.ts) e i [test](https://github.com/nostr-wot/nostr-wot-extension/blob/main/tests/authentication.test.ts).\n"
+        },
+        {
+          "slug": "change-language",
+          "title": "Cambiare la lingua dell’estensione",
+          "description": "Scegli la lingua di Nostr WoT, conferma la modifica e cambiala di nuovo quando vuoi.",
+          "excerpt": "Scegli la lingua di Nostr WoT, conferma la modifica e cambiala di nuovo quando vuoi.",
+          "date": "2026-10-01T00:00:00.000Z",
+          "author": {
+            "name": "Leon Acosta",
+            "avatar": "/authors/leon-profile.jpg"
+          },
+          "featuredImage": "/images/guides/change-language/featured.png",
+          "previewImage": "/images/guides/change-language/featured.png",
+          "tags": [
+            "Settings",
+            "Language"
+          ],
+          "published": true,
+          "readingTime": "2 min read",
+          "locale": "it",
+          "translationKey": "change-language",
+          "translations": {
+            "en": "change-language",
+            "es": "change-language",
+            "pt": "change-language",
+            "ru": "change-language",
+            "it": "change-language",
+            "fr": "change-language",
+            "de": "change-language"
+          },
+          "availableLocales": [
+            "en",
+            "es",
+            "pt",
+            "ru",
+            "it",
+            "fr",
+            "de"
+          ],
+          "seoTitle": "Cambiare la lingua dell’estensione | Nostr WoT",
+          "seoDescription": "Scegli la lingua di Nostr WoT, conferma la modifica e cambiala di nuovo quando vuoi.",
+          "ogImage": "/images/guides/change-language/featured.png",
+          "difficulty": "beginner",
+          "order": 21,
+          "content": "\nApri le impostazioni, poi la sezione dedicata all’aspetto e alla lingua. Scegli una lingua e conferma la selezione.\n\n## 1. Apri le impostazioni\n\nApri l’estensione dalla barra del browser e sbloccala se necessario. Premi l’ingranaggio delle impostazioni. Nell’interfaccia inglese, la sezione si chiama **Appearance and language**.\n\n![Impostazioni inglesi con Appearance and language in basso](/images/guides/change-language/01-settings.png)\n\n## 2. Apri il selettore della lingua\n\nScegli **Language** sotto i controlli del tema. La riga mostra la lingua attuale.\n\n![Language sotto i controlli dell’aspetto](/images/guides/change-language/02-appearance.png)\n\n## 3. Scegli e conferma\n\nScorri o trascina la rotella finché la lingua desiderata si trova al centro. Puoi anche portare il focus sulla lista e usare le frecce su e giù. Il titolo anticipa la scelta prima di applicarla.\n\nLe lingue disponibili sono **English, Español, Português, Deutsch, Français e Italiano**.\n\n![Español selezionato nella rotella delle lingue](/images/guides/change-language/03-spanish-selected.png)\n\nPremi il pulsante di conferma. Rimane nella lingua attuale fino alla conferma: nell’esempio da inglese a spagnolo mostra “Confirm”. Chiudendo il selettore senza confermare, mantieni la lingua precedente.\n\n## 4. Controlla il risultato\n\nLa riga mostra **Español** e le etichette tradotte si aggiornano. La scelta viene salvata per la prossima apertura dell’estensione. Alcune etichette dell’aspetto rimangono attualmente in inglese.\n\n![La lingua salvata è Español](/images/guides/change-language/04-spanish-applied.png)\n\n## Cambiala di nuovo quando vuoi\n\nPer tornare all’inglese dall’interfaccia spagnola, apri **Idioma**, seleziona **English** e premi **Confirmar**. Se non riconosci la lingua del menu, cerca l’ingranaggio delle impostazioni.\n\nQuesta preferenza non traduce post o messaggi Nostr e non modifica account, chiavi o permessi. La lingua del sito si imposta separatamente.\n\nLe schermate mostrano il passaggio dall’inglese allo spagnolo in un’installazione dimostrativa.\n"
         }
       ],
       "tags": [
@@ -5619,6 +5852,7 @@
         "Identità",
         "Impostazioni di Fiducia",
         "LNbits",
+        "Language",
         "Lightning",
         "Lightning Address",
         "NIP-06",
@@ -5632,6 +5866,7 @@
         "Privacy",
         "Resilienza",
         "Security",
+        "Settings",
         "Sicurezza",
         "Visualizzazione",
         "Wallet",
@@ -6713,6 +6948,51 @@
           "difficulty": "intermediate",
           "order": 19,
           "content": "\nAvec [Nostr WoT](https://github.com/nostr-wot/nostr-wot-extension), connecter un site ou autoriser des signatures ordinaires ne lui permet pas de vous identifier auprès de tous les relais. Les API HTTP ont un [guide distinct](/guides/backend-authentication).\n\n## Site et relais sont distincts\n\n`https://client.example` peut se connecter à `wss://relay.example`. Avec [NIP-42](https://github.com/nostr-protocol/nips/blob/master/42.md), le relais envoie un défi et le client demande un événement d’authentification signé. La preuve révèle la clé publique, sans communiquer la clé privée ni autoriser d’autres signatures.\n\nLe dialogue nomme le site et le relais. Le bouton de code affiche l’événement complet. Cette authentification n’a pas de méthode HTTP.\n\n## Choisissez la portée\n\n| Choix | Autorisation |\n| --- | --- |\n| Approuver | La demande actuelle |\n| Toujours approuver | Ce site, ce compte et ce relais |\n| Toujours pour tous les sites | Les sites connectés ayant accès à l’identité, pour ce compte et ce relais |\n| Refuser | La demande actuelle |\n| Toujours refuser | Refus mémorisé pour ce site, ce compte et ce relais |\n\nLes décisions mémorisées se trouvent dans les menus fléchés. La portée utilise l’URL normalisée du relais, pas seulement son nom : un autre chemin ou port n’est pas automatiquement couvert.\n\nL’option pour tous les sites évite une autorisation répétée avec plusieurs clients et peut concerner des sites connectés ultérieurement. Elle ne connecte aucun nouveau site, n’accorde pas l’accès à l’identité, ne couvre pas d’autres comptes, signatures ordinaires ou backends HTTP. Un refus spécifique au site est prioritaire. Désactiver son accès à l’identité ou le déconnecter bloque toujours l’authentification, y compris avec NIP-46.\n\n## Examiner et révoquer les permissions\n\nOuvrez **Permissions → Authentification des relais** pour le compte actif. Cet écran dispose d’un retour et d’une icône d’information, séparément des réglages de lecture et d’écriture. Les autorisations sont regroupées par relais, avec le nombre de sites approuvés ou la portée globale et ses refus particuliers.\n\nOuvrez un relais pour choisir des applications connectées ou tous les sites connectés. Décocher une application en mode global passe à une sélection explicite des autres sites connectés non refusés ; les futurs sites ne sont plus inclus. Enregistrer une sélection vide supprime les autorisations de ce relais en conservant les refus. Sélectionner un site refusé remplace son refus ; choisir tous les sites conserve les exceptions. Seuls ce compte et ce relais changent.\n\nDéconnecter un site supprime ses autorisations particulières ; une autorisation partagée reste utilisable par les autres sites connectés. Supprimer le compte efface ses autorisations. La révocation affecte les futures signatures mais ne ferme pas un WebSocket déjà authentifié : le client doit le fermer.\n\n## Vérifications et limites\n\nL’extension exige une origine fournie par le navigateur et un cadre principal vérifié. Elle refuse les iframes, origines opaques ou incohérentes et transports non sécurisés, hors exceptions explicites de loopback. Elle vérifie les tags de relais et défi, l’URL, le contenu et la fraîcheur, également après attente. Les permissions générales et l’approbation groupée ne contournent pas ce consentement. Changer de compte invalide les demandes précédentes. NIP-46 doit retourner exactement l’événement approuvé signé par le compte attendu.\n\nL’extension ne contrôle pas le WebSocket du client. Le relais doit vérifier signature, adresse, fraîcheur et défi de la connexion. Le signataire ne prouve pas comment le client a obtenu le défi et ne bloque pas tout transfert.\n\nLa même clé publique peut relier vos connexions entre clients auprès d’un relais. Utilisez des comptes séparés ou des autorisations plus étroites si nécessaire. CORS ne remplace pas la validation de connexion et les limites par compte, site et destination.\n\nVoir les [règles de permissions](https://github.com/nostr-wot/nostr-wot-extension/blob/main/src/services/permissions/authentication.ts) et les [tests](https://github.com/nostr-wot/nostr-wot-extension/blob/main/tests/authentication.test.ts).\n"
+        },
+        {
+          "slug": "change-language",
+          "title": "Changer la langue de l’extension",
+          "description": "Choisissez la langue de Nostr WoT, confirmez votre choix et changez-la à tout moment.",
+          "excerpt": "Choisissez la langue de Nostr WoT, confirmez votre choix et changez-la à tout moment.",
+          "date": "2026-10-01T00:00:00.000Z",
+          "author": {
+            "name": "Leon Acosta",
+            "avatar": "/authors/leon-profile.jpg"
+          },
+          "featuredImage": "/images/guides/change-language/featured.png",
+          "previewImage": "/images/guides/change-language/featured.png",
+          "tags": [
+            "Settings",
+            "Language"
+          ],
+          "published": true,
+          "readingTime": "2 min read",
+          "locale": "fr",
+          "translationKey": "change-language",
+          "translations": {
+            "en": "change-language",
+            "es": "change-language",
+            "pt": "change-language",
+            "ru": "change-language",
+            "it": "change-language",
+            "fr": "change-language",
+            "de": "change-language"
+          },
+          "availableLocales": [
+            "en",
+            "es",
+            "pt",
+            "ru",
+            "it",
+            "fr",
+            "de"
+          ],
+          "seoTitle": "Changer la langue de l’extension | Nostr WoT",
+          "seoDescription": "Choisissez la langue de Nostr WoT, confirmez votre choix et changez-la à tout moment.",
+          "ogImage": "/images/guides/change-language/featured.png",
+          "difficulty": "beginner",
+          "order": 21,
+          "content": "\nPour changer la langue, ouvrez les paramètres, puis la rubrique d’apparence et de langue. Choisissez **Langue**, sélectionnez une option et confirmez.\n\n## 1. Ouvrez les paramètres\n\nOuvrez l’extension depuis la barre du navigateur et déverrouillez-la si nécessaire. Cliquez sur l’engrenage des paramètres, puis sur la rubrique **Appearance and language** si l’interface est en anglais.\n\n![Paramètres en anglais avec Appearance and language en bas](/images/guides/change-language/01-settings.png)\n\n## 2. Ouvrez le sélecteur de langue\n\nChoisissez **Language** sous les réglages du thème. Cette ligne indique la langue actuelle.\n\n![Language sous les réglages d’apparence](/images/guides/change-language/02-appearance.png)\n\n## 3. Choisissez et confirmez\n\nFaites défiler ou glissez la roue pour centrer la langue souhaitée. Vous pouvez aussi placer le focus sur la liste et utiliser les flèches haut et bas. Le titre donne un aperçu du choix avant son application.\n\nLes langues disponibles sont **English, Español, Português, Deutsch, Français et Italiano**.\n\n![Español sélectionné dans la roue des langues](/images/guides/change-language/03-spanish-selected.png)\n\nAppuyez sur le bouton de confirmation. Il reste dans la langue actuelle jusqu’à la validation : dans cet exemple de l’anglais vers l’espagnol, il affiche « Confirm ». Fermer le sélecteur sans confirmer conserve la langue précédente.\n\n## 4. Vérifiez le résultat\n\nLa ligne indique désormais **Español** et les libellés traduits sont actualisés. Le choix est conservé à la prochaine ouverture de l’extension. Certains libellés d’apparence restent actuellement en anglais.\n\n![La langue enregistrée est Español](/images/guides/change-language/04-spanish-applied.png)\n\n## Changez à nouveau quand vous le souhaitez\n\nPour revenir à l’anglais depuis l’espagnol, ouvrez **Idioma**, sélectionnez **English**, puis **Confirmar**. Si la langue du menu vous est inconnue, repérez l’engrenage des paramètres.\n\nCe réglage ne traduit pas les publications ou messages Nostr et ne modifie pas vos comptes, clés ou permissions. La langue du site se règle séparément.\n\nLes captures montrent le passage de l’anglais à l’espagnol dans une installation de démonstration.\n"
         }
       ],
       "tags": [
@@ -6734,6 +7014,7 @@
         "Identité",
         "Installation",
         "LNbits",
+        "Language",
         "Lightning",
         "NIP-06",
         "NIP-07",
@@ -6745,6 +7026,7 @@
         "Portefeuille",
         "Securite",
         "Security",
+        "Settings",
         "Sécurité",
         "Vie privee",
         "Visualisation",
@@ -7826,6 +8108,51 @@
           "difficulty": "intermediate",
           "order": 19,
           "content": "\nIn [Nostr WoT](https://github.com/nostr-wot/nostr-wot-extension) erlaubt eine Website-Verbindung oder allgemeine Signaturfreigabe nicht automatisch die Identifizierung bei jedem Relay. HTTP-APIs behandelt der [Backend-Leitfaden](/guides/backend-authentication).\n\n## Website und Relay sind verschiedene Parteien\n\n`https://client.example` kann sich mit `wss://relay.example` verbinden. Bei [NIP-42](https://github.com/nostr-protocol/nips/blob/master/42.md) sendet das Relay eine Challenge; der Client fordert ein signiertes Authentifizierungsereignis an. Damit erfährt das Relay den öffentlichen Schlüssel, nicht den privaten Schlüssel oder eine Erlaubnis für andere Signaturen.\n\nDer Dialog nennt Website und Relay. Die Code-Schaltfläche öffnet das gesamte Ereignis. Diese Authentifizierung verwendet keine HTTP-Methode.\n\n## Wähle den Umfang\n\n| Auswahl | Umfang |\n| --- | --- |\n| Genehmigen | Aktuelle Anfrage |\n| Immer genehmigen | Diese Website, dieses Konto und dieses Relay |\n| Immer für alle Websites | Verbundene Websites mit Identitätszugriff, für dieses Konto und Relay |\n| Ablehnen | Aktuelle Anfrage |\n| Immer ablehnen | Gespeicherte Ablehnung für Website, Konto und Relay |\n\nGespeicherte Optionen stehen in den Pfeilmenüs. Der Umfang richtet sich nach der normalisierten Relay-URL, nicht nur dem angezeigten Hostnamen. Ein anderer Pfad oder Port ist nicht automatisch erlaubt.\n\nDie Freigabe für alle Websites spart wiederholte Zustimmung bei mehreren Clients. Sie kann auch später verbundene Websites erfassen. Sie verbindet keine neuen Websites, erteilt keinen Identitätszugriff und gilt nicht für andere Konten, normale Ereignissignaturen oder HTTP-Backends. Eine websitespezifische Ablehnung hat Vorrang. Entzogener Identitätszugriff oder eine getrennte Verbindung blockiert weiterhin die Authentifizierung, auch mit NIP-46.\n\n## Berechtigungen prüfen und widerrufen\n\nÖffne **Berechtigungen → Relay-Authentifizierung** für das aktive Konto. Dieser Menübildschirm hat Zurück und ein Informationssymbol und ist von Lese-/Schreibeinstellungen getrennt. Er gruppiert Berechtigungen nach Relay und zeigt die Zahl genehmigter Websites oder die Freigabe für alle samt Ablehnungsausnahmen.\n\nÖffne ein Relay und wähle verbundene Apps oder alle verbundenen Websites. Entfernst du im Alle-Modus eine App, werden nur die übrigen verbundenen, nicht abgelehnten Websites ausdrücklich erlaubt; zukünftige Websites sind nicht mehr enthalten. Eine leere Auswahl entfernt alle Freigaben dieses Relays, behält aber Ablehnungen. Die ausdrückliche Auswahl einer abgelehnten Website ersetzt deren Ablehnung; Alle wählen behält Ausnahmen. Nur dieses Konto und Relay sind betroffen.\n\nDas Trennen einer Website entfernt ihre eigenen Freigaben; eine gemeinsame Freigabe bleibt anderen verbundenen Websites verfügbar. Kontolöschung entfernt dessen Freigaben. Widerruf betrifft künftige Signaturen und schließt keinen bereits authentifizierten WebSocket. Dies muss der Client tun.\n\n## Prüfungen und Grenzen\n\nDie Erweiterung verlangt eine vom Browser bestätigte Origin im Hauptframe. Iframes, undurchsichtige oder widersprüchliche Origins sowie unsichere Transporte werden abgelehnt, außer bei ausdrücklichen Loopback-Ausnahmen. Relay- und Challenge-Tags, URL, Inhalt und Zeitstempel werden geprüft, auch nach Wartezeiten. Allgemeine Berechtigungen und Sammelgenehmigungen umgehen die Zielzustimmung nicht. Kontowechsel machen vorherige Anfragen ungültig. NIP-46-Antworten müssen exakt zum genehmigten Ereignis und erwarteten Konto passen.\n\nDie Erweiterung kontrolliert nicht den WebSocket des Clients. Das Relay muss Signatur, Adresse, Aktualität und Challenge dieser Verbindung prüfen. Ein Signer kann nicht beweisen, wie der Client die Challenge erhalten hat, oder jede Weiterleitung verhindern.\n\nDerselbe öffentliche Schlüssel kann Verbindungen verschiedener Clients beim Relay verknüpfbar machen. Nutze getrennte Konten oder engere Freigaben, wenn diese Trennung wichtig ist. CORS ersetzt weder die Verbindungsprüfung noch Berechtigungen nach Konto, Website und Ziel.\n\nSiehe [Berechtigungsregeln](https://github.com/nostr-wot/nostr-wot-extension/blob/main/src/services/permissions/authentication.ts) und [Tests](https://github.com/nostr-wot/nostr-wot-extension/blob/main/tests/authentication.test.ts).\n"
+        },
+        {
+          "slug": "change-language",
+          "title": "Die Sprache der Erweiterung ändern",
+          "description": "Wähle die Sprache von Nostr WoT, bestätige sie und ändere sie jederzeit wieder.",
+          "excerpt": "Wähle die Sprache von Nostr WoT, bestätige sie und ändere sie jederzeit wieder.",
+          "date": "2026-10-01T00:00:00.000Z",
+          "author": {
+            "name": "Leon Acosta",
+            "avatar": "/authors/leon-profile.jpg"
+          },
+          "featuredImage": "/images/guides/change-language/featured.png",
+          "previewImage": "/images/guides/change-language/featured.png",
+          "tags": [
+            "Settings",
+            "Language"
+          ],
+          "published": true,
+          "readingTime": "2 min read",
+          "locale": "de",
+          "translationKey": "change-language",
+          "translations": {
+            "en": "change-language",
+            "es": "change-language",
+            "pt": "change-language",
+            "ru": "change-language",
+            "it": "change-language",
+            "fr": "change-language",
+            "de": "change-language"
+          },
+          "availableLocales": [
+            "en",
+            "es",
+            "pt",
+            "ru",
+            "it",
+            "fr",
+            "de"
+          ],
+          "seoTitle": "Die Sprache der Erweiterung ändern | Nostr WoT",
+          "seoDescription": "Wähle die Sprache von Nostr WoT, bestätige sie und ändere sie jederzeit wieder.",
+          "ogImage": "/images/guides/change-language/featured.png",
+          "difficulty": "beginner",
+          "order": 21,
+          "content": "\nÖffne die Einstellungen und dort den Bereich für Darstellung und Sprache. Wähle die gewünschte Sprache und bestätige deine Auswahl.\n\n## 1. Einstellungen öffnen\n\nÖffne die Erweiterung über die Browserleiste und entsperre sie bei Bedarf. Klicke auf das Zahnrad für die Einstellungen. In der englischen Oberfläche heißt der gesuchte Bereich **Appearance and language**.\n\n![Englische Einstellungen mit Appearance and language unten](/images/guides/change-language/01-settings.png)\n\n## 2. Sprachauswahl öffnen\n\nWähle **Language** unter den Theme-Einstellungen. Die Zeile zeigt die aktuelle Sprache.\n\n![Language unter den Darstellungseinstellungen](/images/guides/change-language/02-appearance.png)\n\n## 3. Auswählen und bestätigen\n\nScrolle oder ziehe das Auswahlrad, bis die gewünschte Sprache in der Mitte steht. Du kannst auch die Liste fokussieren und die Pfeiltasten nach oben und unten verwenden. Die Überschrift zeigt deine Auswahl bereits vor dem Bestätigen an.\n\nVerfügbar sind **English, Español, Português, Deutsch, Français und Italiano**.\n\n![Español ist im Auswahlrad ausgewählt](/images/guides/change-language/03-spanish-selected.png)\n\nDrücke die Schaltfläche zum Bestätigen. Sie bleibt bis dahin in der bisherigen Sprache: Beim gezeigten Wechsel von Englisch zu Spanisch steht dort „Confirm“. Wenn du den Dialog ohne Bestätigung schließt, bleibt die bisherige Sprache erhalten.\n\n## 4. Ergebnis prüfen\n\nDie Zeile zeigt nun **Español**, und übersetzte Beschriftungen werden aktualisiert. Die Auswahl bleibt beim nächsten Öffnen der Erweiterung gespeichert. Einige Beschriftungen zur Darstellung bleiben derzeit auf Englisch.\n\n![Die gespeicherte Sprache ist Español](/images/guides/change-language/04-spanish-applied.png)\n\n## Jederzeit zurückwechseln\n\nÖffne in der spanischen Oberfläche **Idioma**, wähle **English** und drücke **Confirmar**. Wenn du die Menüsprache nicht kennst, orientiere dich am Zahnrad für die Einstellungen.\n\nDie Einstellung übersetzt keine Nostr-Beiträge oder Nachrichten und verändert keine Konten, Schlüssel oder Berechtigungen. Die Sprache der Website wird separat eingestellt.\n\nDie Bilder zeigen den Wechsel von Englisch zu Spanisch in einer Demo-Installation.\n"
         }
       ],
       "tags": [
@@ -7844,6 +8171,7 @@
         "Konten",
         "Konzepte",
         "LNbits",
+        "Language",
         "Lightning",
         "Lightning-Adresse",
         "NIP-06",
@@ -7854,6 +8182,7 @@
         "Playground",
         "Schlüssel",
         "Security",
+        "Settings",
         "Sicherheit",
         "Trust-Graph",
         "Vertrauenseinstellungen",
