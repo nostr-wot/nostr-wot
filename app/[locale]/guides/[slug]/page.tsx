@@ -23,6 +23,7 @@ const ogLocaleMap: Record<Locale, string> = {
 
 import { BlogContent } from '@/components/blog';
 import { GuideSidebar, GuidePostWrapper } from '@/components/guides';
+import { GuideMedia } from '@/components/guides/GuideMedia';
 import { GuideCard } from '@/components/guides';
 import { ScrollReveal, Section, LinkButton } from '@/components/ui';
 import { ArrowLeftIcon } from '@/components/icons';
@@ -191,8 +192,10 @@ export default async function GuidePostPage({ params }: Props) {
                   variant="secondary"
                   className="mb-8 inline-flex items-center gap-2 !px-4 !py-2 text-sm"
                 >
-                  <ArrowLeftIcon className="w-4 h-4" />
-                  {t('backToGuides')}
+                  <span className="inline-flex items-center gap-2 whitespace-nowrap">
+                    <ArrowLeftIcon className="w-4 h-4 shrink-0" />
+                    <span>{t('backToGuides')}</span>
+                  </span>
                 </LinkButton>
               </ScrollReveal>
 
@@ -266,6 +269,7 @@ export default async function GuidePostPage({ params }: Props) {
               {/* Main Content */}
               <article className="flex-1 min-w-0 max-w-prose">
                 <BlogContent content={guide.content} />
+                <GuideMedia guideKey={guide.translationKey} />
               </article>
 
               {/* Sidebar */}

@@ -1,7 +1,7 @@
 ---
 title: "Customizing Your Trust Settings"
-description: "Adjust the trust formula, weights, and thresholds in the Nostr WoT Extension to match how you want to evaluate and score connections in your Web of Trust."
-excerpt: "Fine-tune how the extension calculates trust. Adjust weights, thresholds, and strategies to match your preferences."
+description: "Customize Web of Trust scores with hop weights and path bonuses. Choose local, remote or hybrid queries and review the limits of experimental graph results."
+excerpt: "Customize Web of Trust scores with hop weights and path bonuses. Choose local, remote or hybrid queries and review the limits of experimental graph results."
 date: "2026-03-11"
 author:
   name: "Leon Acosta"
@@ -15,87 +15,38 @@ tags:
   - "Advanced"
 published: true
 seoTitle: "Customizing Trust Settings — Nostr WoT Extension Guide"
-seoDescription: "Adjust the trust formula, weights, and thresholds in the Nostr WoT Extension to match how you want to evaluate and score connections in your Web of Trust."
+seoDescription: "Customize Web of Trust scores with hop weights and path bonuses. Choose local, remote or hybrid queries and review the limits of experimental graph results."
 ogImage: "/images/illustrations/customizing-trust.webp"
 translationKey: "customizing-trust"
 difficulty: "intermediate"
 order: 4
+updated: "2026-10-01"
 ---
 
-The default trust settings work well for most people, but the extension gives you full control over how trust is calculated. This guide walks you through the trust formula, how to adjust weights and thresholds, and when different strategies make sense.
+Web of Trust scores describe relationships in the follow graph, not a guarantee that a person is safe or trustworthy. The extension’s Web of Trust feature is experimental; results may be incomplete or outdated.
 
-## The Trust Formula
+## Open the settings
 
-At its core, the extension assigns each user a trust score based on their relationship to you in the social graph. The formula considers three primary inputs:
+Open **Settings → Web of Trust (experimental)**. Enable it if you want connected sites with identity access to use `window.nostr.wot`.
 
-- **Hop distance** — how many follow-connections separate you from the user.
-- **Path multiplicity** — how many independent paths connect you.
-- **Path bonus** — extra trust credit for each additional path connecting you.
+**Sync settings** controls the query mode and graph limits. Local mode uses your local graph. Remote and hybrid queries may contact the configured oracle. Choose a maximum depth from one to three hops and review the storage limits before syncing.
 
-The result is a normalized score between 0 and 100%.
+![Web of Trust settings and public-key lookup](/images/guides/extension/web-of-trust.png)
 
-<Callout type="tip">
-You do not need to understand the math to use the extension effectively. The defaults are tuned for a balanced trust network. Only adjust these if you have a specific reason.
-</Callout>
+## Customize score calculation
 
-## Adjusting Trust Settings
+Beside **Score calculation**, select the settings icon labelled **Customize scoring**. The current panel has numeric fields, not a sensitivity slider:
 
-Open the extension and click the settings icon to access **Trust Settings**. You'll see two panels: a quick sensitivity slider and detailed numeric controls.
+- **Hop weights** set the contribution for distances of one, two and three hops. Defaults are 1, 0.5 and 0.25.
+- **Path bonuses** for two and three hops default to 0.15 and 0.1.
+- **Maximum path bonus** defaults to 0.5.
 
-![The Trust Settings panel — Base Score per hop distance, Path Bonus per hop, and Max Path Bonus](/images/guides/customizing-trust/trust-settings.jpg)
+Use values from 0 to 1. Valid changes are saved automatically. **Reset scoring** restores the default values. Known muted targets score zero regardless of these weights; private mutes must be decrypted first.
 
-### Trust Sensitivity Slider
+![Current score settings with hop weights, path bonuses and a reset button](/images/guides/extension/trust-scoring.png)
 
-The slider at the top offers a fast way to move between presets:
+## Check the result
 
-- **Strict** — tight trust circle, high standards. Only well-connected users score meaningfully.
-- **Balanced** — the default. Standard scoring for most users. Reasonable trust with path bonus.
-- **Open** — broad trust. Even distant connections carry weight.
+Return to **Score calculation**, enter an npub or hex public key and select **Calculate score**. The lookup uses the saved query mode, scoring settings and mute rules. Review its context before using the number to make a decision.
 
-### Base Score (%)
-
-Controls how much base trust a user receives by hop distance, before any path bonus is applied:
-
-| Distance | Default |
-|---|---|
-| 2 hops | 50% |
-| 3 hops | 25% |
-| 4+ hops | 10% |
-
-Lower these values to tighten your trust circle. Raise them to be more inclusive.
-
-### Path Bonus % (per hop)
-
-Each additional independent path connecting you to a user adds extra trust. The bonus decreases with distance:
-
-| Distance | Default bonus per path |
-|---|---|
-| 2 hops | +15% |
-| 3 hops | +10% |
-| 4+ hops | +5% |
-
-A user reached through 5 different 2nd-degree contacts gets 5 × 15% = 75% path bonus on top of their base score.
-
-### Max Path Bonus (%)
-
-Caps the total path bonus at **50%** by default. This prevents extremely well-connected users from scoring disproportionately high regardless of how many paths connect them.
-
-![The Trust Sensitivity modal — slider from Strict to Open, with Base Score, Path Bonus, and Max Path Bonus fields](/images/guides/customizing-trust/trust-sensitivity.jpg)
-
-## Which Preset Should I Use?
-
-The **Trust Sensitivity** slider maps directly to three usage profiles:
-
-- **Strict** — you want a tight, high-signal feed. Only well-connected users score meaningfully. Good for spam filtering and focused interaction.
-- **Balanced** — the default. Works well for most people. Direct follows + friends-of-friends with reasonable path bonuses.
-- **Open** — you're exploring the network and want broader coverage. More noise, but more discovery.
-
-Start with Balanced. If your feed feels too noisy, move toward Strict. If you want to discover more people, move toward Open. You can always fine-tune the individual values manually after picking a preset.
-
-<Callout type="tip">
-Changes to trust settings recalculate your entire graph. Give the extension a moment to reprocess after adjusting values. If you want to start fresh, use the **Reset to Defaults** button at the bottom of the Trust Settings panel.
-</Callout>
-
-## What's Next?
-
-See your customized trust settings in action by exploring the [WoT Playground](/guides/wot-playground). Or continue setting up the extension by [connecting a wallet](/guides/setting-up-wallet).
+See [Understanding Web of Trust](/guides/understanding-wot) and the [WoT Playground](/guides/wot-playground).

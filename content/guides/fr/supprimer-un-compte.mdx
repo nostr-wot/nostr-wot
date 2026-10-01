@@ -1,7 +1,7 @@
 ---
 title: "Supprimer un Compte"
-description: "Apprenez à supprimer un compte de l'extension Nostr WoT — survolez le compte, cliquez sur la croix et confirmez. Les comptes à graine demandent REMOVE."
-excerpt: "Supprimez un compte de l'extension en toute sécurité. Découvrez ce qui est effacé, ce qui reste sur Nostr et pourquoi les comptes à graine demandent plus."
+description: "Supprimez un compte Nostr après avoir sauvegardé sa clé ou phrase et son chemin. Vérifiez la confirmation et les données conservées sur les relais et ailleurs."
+excerpt: "Supprimez un compte Nostr après avoir sauvegardé sa clé ou phrase et son chemin. Vérifiez la confirmation et les données conservées sur les relais et ailleurs."
 date: "2026-04-22"
 author:
   name: "Leon Acosta"
@@ -15,78 +15,37 @@ tags:
   - "Sécurité"
 published: true
 seoTitle: "Supprimer un Compte — Guide de l'Extension Nostr WoT"
-seoDescription: "Apprenez à supprimer un compte de l'extension Nostr WoT — survolez le compte, cliquez sur la croix et confirmez. Les comptes à graine demandent REMOVE."
+seoDescription: "Supprimez un compte Nostr après avoir sauvegardé sa clé ou phrase et son chemin. Vérifiez la confirmation et les données conservées sur les relais et ailleurs."
 ogImage: "/images/illustrations/removing-accounts.webp"
 translationKey: "removing-accounts"
 difficulty: "beginner"
 order: 2.5
+updated: "2026-10-01"
 ---
 
-Tôt ou tard, vous voudrez faire le ménage dans la liste des comptes de l'extension : une vieille identité, un compte de test ou un compte importé par erreur. L'extension permet de supprimer des comptes depuis le sélecteur en un seul clic, et applique une confirmation plus stricte quand le compte est basé sur une graine générée à l'intérieur de l'extension.
+Supprimer un compte efface son entrée locale dans cette extension. Cela ne supprime ni son profil ni ses publications des relais Nostr, ni l’identité sur vos autres appareils.
 
-## Avant de Supprimer un Compte
+## Sauvegardez d’abord
 
-Supprimer un compte n'affecte que l'extension sur ce navigateur. Votre identité Nostr est une paire de clés, et les événements que vous avez publiés vivent sur les relays du réseau. Ils y resteront même si ce navigateur ne se souvient plus de vous.
+Ouvrez **Paramètres → Sécurité**. Conservez une copie sûre de la clé privée ou une sauvegarde chiffrée. Pour un compte dérivé, conservez la phrase de récupération **et le chemin de dérivation**. Une clé importée doit aussi être sauvegardée ; son importation ne prouve pas qu’une autre copie existe encore.
 
-Ce que la suppression fait :
+![Réglages de sécurité avec export de la phrase et sauvegarde chiffrée](/images/guides/extension/security.png)
 
-- Efface la copie chiffrée des clés stockée localement dans l'extension.
-- Retire le compte du sélecteur de comptes.
-- Nettoie le graphe de confiance local, les permissions et l'état du portefeuille liés à ce compte.
+## Supprimez le compte
 
-Ce que la suppression **ne fait pas** :
+1. Ouvrez le sélecteur de comptes en haut.
+2. Trouvez le compte et sélectionnez son icône **×** à droite.
+3. Lisez la confirmation et vérifiez le nom. Pour un compte dérivé, la fenêtre montre aussi le chemin et explique l’effet sur les autres comptes issus de la même phrase.
+4. Choisissez **Supprimer** pour confirmer ou **Annuler** pour conserver le compte. Il n’est pas nécessaire de saisir REMOVE.
 
-- Elle n'efface pas vos notes, votre profil ou votre liste d'abonnements sur les relays Nostr.
-- Elle n'affecte pas la même identité sur d'autres appareils ni sur d'autres signataires NIP-07.
+![Sélecteur avec une icône de suppression pour chaque compte](/images/guides/extension/accounts.png)
 
-<Callout type="warning">
-Si vous avez généré votre phrase de graine dans l'extension et ne l'avez jamais sauvegardée, supprimer le compte est définitif. Il n'y a pas de récupération. Exportez ou notez vos 24 mots avant de continuer.
-</Callout>
+![Confirmation pour un compte dérivé de démonstration avec son chemin](/images/guides/extension/remove-confirmation.png)
 
-![L'écran Sécurité permet d'exporter votre clé privée (nsec) ou une sauvegarde chiffrée protégée par mot de passe (ncryptsec) avant de supprimer le compte](/images/guides/removing-accounts/backup-security.jpg)
+Supprimer un compte dérivé laisse les autres comptes de la même phrase disponibles. Pour cesser d’utiliser cette phrase dans l’extension, supprimez tous les comptes qui en sont dérivés. Sauvegardez d’abord.
 
-## Comment Supprimer un Compte
+## Restaurez une identité
 
-### 1. Ouvrez le Sélecteur de Comptes
+Dans le sélecteur, choisissez **Ajouter un compte → Importer une clé ou une sauvegarde** et utilisez votre clé ou phrase sauvegardée. Pour retrouver une identité dérivée précise, utilisez son chemin d’origine. Restaurer les clés ne restaure pas nécessairement les permissions locales ou les connexions du portefeuille.
 
-Cliquez sur l'icône de l'extension et ouvrez le sélecteur de comptes en haut du popup. Vous verrez chaque compte géré par l'extension, avec le compte actif mis en évidence.
-
-![Le sélecteur de comptes liste chaque identité stockée dans l'extension, avec le compte actif en tête](/images/guides/removing-accounts/accounts-selector.jpg)
-
-### 2. Survolez le Compte et Cliquez sur la Croix
-
-Placez le curseur sur le compte à supprimer. Une petite icône en croix (×) apparaît à droite de la ligne. Cliquez dessus.
-
-![Survoler une ligne de compte fait apparaître une icône en croix à droite — cliquez pour lancer la suppression](/images/guides/removing-accounts/hover-remove.jpg)
-
-### 3. Confirmez la Suppression
-
-Une fenêtre de confirmation s'ouvre. Pour un compte importé avec une nsec existante, il suffit de confirmer ici : l'extension part du principe que vous avez toujours la clé ailleurs et que vous pourrez restaurer l'accès plus tard.
-
-![Une fenêtre simple vous demande de confirmer que vous voulez retirer le compte de cette extension](/images/guides/removing-accounts/confirm-dialog.jpg)
-
-### 4. Comptes à Graine : Tapez REMOVE
-
-Si le compte a été généré dans l'extension à partir d'une phrase de graine, la confirmation est plus stricte. Vous devez taper le mot **REMOVE** (en majuscules) pour que le bouton s'active. Cette friction en plus existe parce que perdre la seule copie d'une graine, c'est perdre l'identité pour toujours.
-
-Une fois la confirmation faite, le compte disparaît du sélecteur. S'il était actif, l'extension bascule sur un autre compte enregistré, ou affiche l'écran d'accueil s'il n'en reste aucun.
-
-## Pourquoi les Comptes à Graine Demandent Plus
-
-Quand vous générez une nouvelle identité dans l'extension, les 24 mots sont créés localement et affichés une seule fois. L'extension ne les envoie nulle part. Si vous ne les avez pas notés, la copie chiffrée dans l'extension est la seule chose qui vous relie à cette identité. La supprimer sans sauvegarde, c'est perdre la capacité de signer en tant que ce npub à jamais.
-
-Les comptes importés sont différents. Si vous les avez ajoutés avec une nsec ou une graine existante, vous avez déjà ce matériel de clé ailleurs : un autre signataire, un gestionnaire de mots de passe ou sur papier. Les restaurer est simple.
-
-## Restaurer un Compte Supprimé
-
-Pour récupérer un compte supprimé :
-
-1. Ouvrez le sélecteur de comptes et cliquez sur **Ajouter un Compte**.
-2. Choisissez **Importer** et collez votre nsec ou votre phrase de graine de 12 ou 24 mots.
-3. L'extension reconstruit le coffre chiffré, resynchronise le graphe de confiance, et le compte est prêt à être utilisé.
-
-Votre historique local (permissions, règles d'auto-approbation, connexions du portefeuille) n'est pas restauré : il était lié au coffre supprimé. Les données Nostr comme votre profil, vos abonnements et vos notes se resynchronisent automatiquement depuis les relays.
-
-## Et Ensuite ?
-
-Maintenant que vous savez supprimer des comptes en toute sécurité, assurez-vous que ceux que vous gardez sont bien protégés. Revoyez la sécurité des clés dans [Gestion de l'Identité](/fr/guides/gestion-identite), ou revenez au [Guide de Démarrage](/fr/guides/guide-de-demarrage) si vous repartez de zéro.
+Voir [Importer un compte](/guides/import-nostr-account) et [Chemins de dérivation](/guides/custom-identity-paths).
