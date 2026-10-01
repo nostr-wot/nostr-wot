@@ -6,7 +6,7 @@ const withNextIntl = createNextIntlPlugin("./i18n/request.ts");
 const nextConfig: NextConfig = {
   // Include content folder in serverless functions for blog
   outputFileTracingIncludes: {
-    '/*': ['./content/**/*'],
+    '/*': ['./content/**/*', './public/images/illustrations/*.jpg'],
   },
   async headers() {
     const securityHeaders = [

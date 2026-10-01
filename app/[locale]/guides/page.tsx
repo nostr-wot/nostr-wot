@@ -1,3 +1,4 @@
+import { FeaturedArtwork } from '@/components/illustrations/FeaturedArtwork';
 import { serializeJsonLd } from '@/lib/serialize-jsonld';
 import { withMetadataPolicy } from '@/lib/metadata-policy';
 import type { Metadata } from 'next';
@@ -99,6 +100,7 @@ export default async function GuidesPage({ params, searchParams }: Props) {
               <p className="text-lg text-gray-600 dark:text-gray-400">{t('subtitle')}</p>
             </div>
           </ScrollReveal>
+        <FeaturedArtwork art="guides" className="mt-10" />
         </Section>
 
         {/* Main Content with Sidebar */}

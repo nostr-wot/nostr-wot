@@ -1,3 +1,4 @@
+import { FeaturedArtwork } from '@/components/illustrations/FeaturedArtwork';
 import { serializeJsonLd } from '@/lib/serialize-jsonld';
 import { withMetadataPolicy } from '@/lib/metadata-policy';
 import type { Metadata } from "next";
@@ -205,6 +206,7 @@ export default async function FeaturesPage() {
             </p>
           </ScrollReveal>
         </div>
+      <div className="mt-10 px-6"><FeaturedArtwork art="extension" /></div>
       </section>
 
       {/* Extension Overview Section */}
