@@ -27,10 +27,7 @@ body {
 
 /* Button Components */
 .btn {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 0.5rem;
+  display: inline-block;
   padding: 0.75rem 1.5rem;
   border-radius: 0.5rem;
   font-weight: 600;
@@ -59,6 +56,17 @@ body {
   border: 1px solid #e5e7eb;
 }
 
+@media (prefers-color-scheme: dark) {
+  .btn-secondary {
+    background-color: #1f2937;
+    color: #f3f4f6;
+    border-color: #374151;
+  }
+
+  .btn-secondary:hover {
+    background-color: #374151;
+  }
+}
 
 .btn-secondary:hover {
   background-color: #e5e7eb;
@@ -70,27 +78,19 @@ body {
   border: 1px solid #e5e7eb;
 }
 
+@media (prefers-color-scheme: dark) {
+  .btn-outline {
+    color: #f3f4f6;
+    border-color: #374151;
+  }
+
+  .btn-outline:hover {
+    background-color: #1f2937;
+  }
+}
 
 .btn-outline:hover {
   background-color: #f3f4f6;
-}
-
-.dark .btn-secondary {
-  background-color: #1f2937;
-  color: #f3f4f6;
-  border-color: #374151;
-}
-.dark .btn-outline {
-  color: #f3f4f6;
-  border-color: #4b5563;
-}
-.dark .btn-secondary:hover,
-.dark .btn-outline:hover {
-  background-color: #374151;
-}
-.btn:focus-visible {
-  outline: 2px solid var(--color-primary);
-  outline-offset: 4px;
 }
 
 .btn:disabled {

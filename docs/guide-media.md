@@ -63,4 +63,4 @@ all localized guide mappings, captions and assets, validate embed IDs and ensure
 each published English guide has an instructional image or diagram. Verify the
 Back control, gallery and video at desktop and mobile widths before deploying.
 
-The theme contribution guide (`create-extension-theme`, all seven locales) reuses the appearance-settings screenshot and the published appearance video. Its JSON starter palette is checked against the extension’s `parseCustomThemeJson` parser. The homepage uses the accounts, permissions and zap-review demo captures alongside the existing illustrations.
+The theme contribution guide (`create-extension-theme`, all seven locales) reuses the appearance-settings screenshot and the published appearance video. Its JSON starter palette is checked against the extension’s `parseCustomThemeJson` parser.

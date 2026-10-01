@@ -1,10 +1,10 @@
 import { FeaturedArtwork } from '@/components/illustrations/FeaturedArtwork';
+import { serializeJsonLd } from '@/lib/serialize-jsonld';
 import { withMetadataPolicy } from '@/lib/metadata-policy';
 import type { Metadata } from "next";
 import { getTranslations } from "next-intl/server";
 import { Link } from "@/i18n/routing";
-import { LinkButton, ExternalLinkButton } from "@/components/ui";
-import { ArrowRightIcon } from "@/components/icons";
+import { CodeBlock, InlineCode, ScrollReveal } from "@/components/ui";
 import { generateAlternates, generateOpenGraph, generateTwitter } from "@/lib/metadata";
 import { type Locale } from "@/i18n/config";
 
@@ -33,33 +33,164 @@ async function pageMetadata({ params }: Props): Promise<Metadata> {
   };
 }
 
-export default async function DocsOverviewPage({ params }: Props) {
-  await params;
-  const t = await getTranslations("docs.hub");
-  const entries = [
-    { key: "signer", href: "/docs/extension" },
-    { key: "sdk", href: "/docs/sdk" },
-    { key: "oracle", href: "/docs/oracle" },
-    { key: "proxy", href: "/docs/lnbits-proxy" },
-  ] as const;
-  return <article>
-    <h1 className="text-4xl font-bold tracking-tight sm:text-5xl">{t("title")}</h1>
-    <p className="mt-6 max-w-2xl text-xl leading-relaxed text-gray-600 dark:text-gray-300">{t("intro")}</p>
-    <div className="mt-7"><LinkButton href="/docs/getting-started">{t("start")}</LinkButton></div>
-    <FeaturedArtwork art="developers" className="my-10" />
-    <h2 className="mb-3 text-2xl font-bold">{t("integrate")}</h2>
-    <div className="divide-y divide-gray-200 border-y border-gray-200 dark:divide-gray-800 dark:border-gray-800">
-      {entries.map(({key, href}) => <Link key={key} href={href} className="group flex items-center justify-between gap-6 py-6">
-        <div><h3 className="text-xl font-semibold text-indigo-700 group-hover:underline dark:text-indigo-300">{t(`${key}Title`)}</h3><p className="mt-2 text-gray-600 dark:text-gray-300">{t(`${key}Body`)}</p></div>
-        <ArrowRightIcon className="h-5 w-5 shrink-0" />
-      </Link>)}
-    </div>
-    <section className="mt-12 rounded-2xl bg-indigo-50 p-6 sm:p-8 dark:bg-indigo-950/30">
-      <h2 className="text-2xl font-bold">{t("contribute")}</h2>
-      <p className="mt-4 leading-relaxed text-gray-600 dark:text-gray-300">{t("themeBody")}</p>
-      <div className="mt-6 flex flex-wrap gap-3"><LinkButton href="/guides/create-extension-theme">{t("themeTitle")}</LinkButton><ExternalLinkButton variant="outline" href="https://github.com/nostr-wot/nostr-wot-extension/blob/main/CONTRIBUTING.md">{t("contributing")}</ExternalLinkButton></div>
-    </section>
-  </article>;
+export default async function DocsOverviewPage() {
+  const t = await getTranslations("docs");
+
+  // JSON-LD structured data
+  const jsonLd = {
+    "@context": "https://schema.org",
+    "@type": "TechArticle",
+    "name": t("labels.structuredTitle"),
+    "description": t("labels.structuredDescription"),
+    "url": "https://nostr-wot.com/docs",
+    "author": {
+      "@type": "Organization",
+      "name": "Nostr Web of Trust",
+      "url": "https://nostr-wot.com",
+    },
+  };
+
+  return (
+    <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: serializeJsonLd(jsonLd) }}
+      />
+
+      <article className="prose prose-gray dark:prose-invert max-w-none">
+        <ScrollReveal animation="fade-up">
+          <h1>{t("overview.title")}</h1>
+
+          <p className="lead text-xl text-gray-600 dark:text-gray-400">
+            {t("overview.description")}
+          </p>
+        </ScrollReveal>
+
+        <ScrollReveal animation="fade-up" delay={100}>
+        <div className="grid md:grid-cols-2 gap-6 not-prose my-8">
+          <Link
+            href="/docs/extension"
+            className="block p-6 bg-gray-50 dark:bg-gray-900 rounded-xl border border-gray-200 dark:border-gray-800 hover:border-primary dark:hover:border-primary transition-colors"
+          >
+            <h3 className="font-semibold text-lg mb-2">{t("overview.extension.title")}</h3>
+            <p className="text-gray-600 dark:text-gray-400 text-sm">
+              {t("overview.extension.description")} <InlineCode>{t("overview.extension.api")}</InlineCode> {t("overview.extension.forClientSide")}
+            </p>
+          </Link>
+
+          <Link
+            href="/docs/oracle"
+            className="block p-6 bg-gray-50 dark:bg-gray-900 rounded-xl border border-gray-200 dark:border-gray-800 hover:border-primary dark:hover:border-primary transition-colors"
+          >
+            <h3 className="font-semibold text-lg mb-2">{t("overview.oracle.title")}</h3>
+            <p className="text-gray-600 dark:text-gray-400 text-sm">
+              {t("overview.oracle.description")}
+            </p>
+          </Link>
+
+          <Link
+            href="/docs/lnbits-proxy"
+            className="block p-6 bg-gray-50 dark:bg-gray-900 rounded-xl border border-gray-200 dark:border-gray-800 hover:border-primary dark:hover:border-primary transition-colors"
+          >
+            <h3 className="font-semibold text-lg mb-2">{t("overview.lnbitsProxy.title")}</h3>
+            <p className="text-gray-600 dark:text-gray-400 text-sm">
+              {t("overview.lnbitsProxy.description")}
+            </p>
+          </Link>
+        </div>
+        </ScrollReveal>
+
+        <FeaturedArtwork art="developers" className="my-10" />
+
+        <ScrollReveal animation="fade-up" delay={150}>
+        <p>
+          {t("overview.fundamentalQuestion")} <em>&quot;{t("overview.question")}&quot;</em>
+        </p>
+
+        <h2>{t("integration.choose")}</h2>
+        </ScrollReveal>
+
+        <ScrollReveal animation="fade-up" delay={200}>
+        <div className="not-prose space-y-4 my-6">
+          <div className="flex items-start gap-4 p-4 bg-blue-50 dark:bg-blue-950/30 rounded-lg border border-blue-200 dark:border-blue-900">
+            <div className="flex-shrink-0 w-10 h-10 bg-blue-100 dark:bg-blue-900 rounded-lg flex items-center justify-center">
+              <svg className="w-5 h-5 text-blue-600 dark:text-blue-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+              </svg>
+            </div>
+            <div>
+              <h4 className="font-semibold mb-1">{t("integration.extensionTitle")}</h4>
+              <p className="text-sm text-gray-600 dark:text-gray-400 mb-2">{t("integration.extensionDescription")}</p>
+              <Link href="/docs/extension" className="text-sm text-primary hover:underline">{t("integration.extensionLink")}</Link>
+            </div>
+          </div>
+
+          <div className="flex items-start gap-4 p-4 bg-green-50 dark:bg-green-950/30 rounded-lg border border-green-200 dark:border-green-900">
+            <div className="flex-shrink-0 w-10 h-10 bg-green-100 dark:bg-green-900 rounded-lg flex items-center justify-center">
+              <svg className="w-5 h-5 text-green-600 dark:text-green-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 12h14M5 12a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v4a2 2 0 01-2 2M5 12a2 2 0 00-2 2v4a2 2 0 002 2h14a2 2 0 002-2v-4a2 2 0 00-2-2" />
+              </svg>
+            </div>
+            <div>
+              <h4 className="font-semibold mb-1">{t("integration.oracleTitle")}</h4>
+              <p className="text-sm text-gray-600 dark:text-gray-400 mb-2">{t("integration.oracleDescription")}</p>
+              <Link href="/docs/oracle" className="text-sm text-primary hover:underline">{t("integration.oracleLink")}</Link>
+            </div>
+          </div>
+
+          <div className="flex items-start gap-4 p-4 bg-purple-50 dark:bg-purple-950/30 rounded-lg border border-purple-200 dark:border-purple-900">
+            <div className="flex-shrink-0 w-10 h-10 bg-purple-100 dark:bg-purple-900 rounded-lg flex items-center justify-center">
+              <svg className="w-5 h-5 text-purple-600 dark:text-purple-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 9l3 3-3 3m5 0h3M5 20h14a2 2 0 002-2V6a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+              </svg>
+            </div>
+            <div>
+              <h4 className="font-semibold mb-1">{t("integration.sdkTitle")}</h4>
+              <p className="text-sm text-gray-600 dark:text-gray-400 mb-2">{t("integration.sdkDescription")}</p>
+              <Link href="/docs/sdk" className="text-sm text-primary hover:underline">{t("integration.sdkLink")}</Link>
+            </div>
+          </div>
+        </div>
+        </ScrollReveal>
+
+        <ScrollReveal animation="fade-up" delay={250}>
+        <h2>{t("integration.exampleTitle")}</h2>
+
+        <p>{t("integration.exampleDescription")}</p>
+
+        <CodeBlock
+          language="typescript"
+          code={`const from = "a".repeat(64); // Replace with your public key
+const to = "b".repeat(64); // Replace with the target public key
+const query = new URLSearchParams({ from, to, max_hops: "2" });
+const response = await fetch(
+  "https://wot-oracle.mappingbitcoin.com/distance?" + query
+);
+if (!response.ok) throw new Error("Oracle HTTP " + response.status);
+const { hops } = await response.json();
+console.log(hops === null ? "No indexed path within 2 hops" : hops);
+// Follow distance is evidence of a connection, not a trust score.
+// Use /trust for separate public mute evidence.`}
+        />
+        <p>{t.rich("integration.sdkCompatibilityLink", { link0: chunks => <Link href="/docs/sdk#wot">{chunks}</Link> })}</p>
+        </ScrollReveal>
+
+        <ScrollReveal animation="fade-up" delay={300}>
+        <div className="not-prose mt-8 flex gap-4">
+          <Link
+            href="/docs/getting-started"
+            className="inline-flex items-center gap-2 px-6 py-3 bg-primary text-white rounded-lg hover:bg-primary/90 transition-colors"
+          >
+            {t("labels.getStarted")}
+            <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+            </svg>
+          </Link>
+        </div>
+        </ScrollReveal>
+      </article>
+    </>
+  );
 }
 
 export const generateMetadata = withMetadataPolicy(pageMetadata);
