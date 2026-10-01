@@ -17,6 +17,7 @@ export interface GuideMedia {
 
 // Key by translationKey so every localized guide gets the same verified media.
 export const GUIDE_MEDIA: Record<string, GuideMedia> = {
+  'create-extension-theme': { screenshots: [], videos: ['appearance'] },
   'getting-started': { screenshots: ['account-methods'], videos: ['account'] },
   'create-nostr-account': { screenshots: ['account-methods', 'security'], videos: ['account'] },
   'import-nostr-account': { screenshots: ['import-key'], videos: ['backup'] },

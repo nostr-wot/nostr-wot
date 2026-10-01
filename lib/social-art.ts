@@ -13,6 +13,8 @@ export type SocialArtId = typeof GUIDE_ART_IDS[number] | typeof PAGE_ART_IDS[num
 export function isSocialArtId(value: unknown): value is SocialArtId {
   return typeof value === 'string' && [...GUIDE_ART_IDS, ...PAGE_ART_IDS].some(id => id === value);
 }
+/** Contributor guides can reuse the developer illustration without duplicating assets. */
+export const GUIDE_ART_ALIASES: Record<string, SocialArtId> = { 'create-extension-theme': 'developers' };
 const routes: Record<string, SocialArtId> = {
   '/': 'home', '/features': 'extension', '/download': 'extension', '/about': 'community',
   '/oracle': 'oracle', '/widgets': 'developers', '/projects': 'community',
@@ -30,6 +32,7 @@ export function socialArtForUrl(value: unknown): SocialArtId {
   if (routes[pathname]) return routes[pathname];
   if (pathname.startsWith('/guides/')) {
     const id = pathname.slice('/guides/'.length);
+    if (Object.hasOwn(GUIDE_ART_ALIASES, id)) return GUIDE_ART_ALIASES[id];
     return GUIDE_ART_IDS.some(candidate => candidate === id) ? id as SocialArtId : 'guides';
   }
   if (/^\/(blog|news|newsletters)(\/|$)/.test(pathname)) return 'editorial';

@@ -1,37 +1,16 @@
-import { FeaturedArtwork } from '@/components/illustrations/FeaturedArtwork';
-import { serializeJsonLd } from '@/lib/serialize-jsonld';
-import { withMetadataPolicy } from '@/lib/metadata-policy';
+import Image from "next/image";
 import type { Metadata } from "next";
-import { Link } from "@/i18n/routing";
 import { getTranslations } from "next-intl/server";
-import HeroAnimation from "@/components/HeroAnimation";
-import {
-  ScrollReveal,
-  LinkButton,
-  ExternalLinkButton,
-  Section,
-  SectionHeader,
-  FeatureCard,
-  FeatureList,
-  AccordionList,
-} from "@/components/ui";
-import {
-  ShieldIcon,
-  SpeedIcon,
-  LockIcon,
-  PuzzleIcon,
-  ServerIcon,
-  ArrowRightIcon,
-  NostrLogo,
-  ExtensionPopupIllustration,
-  CodeBracketsIcon,
-  LightningIcon,
-  KeyIcon,
-} from "@/components/icons";
-import { CodeBlock } from "@/components/ui";
-import { generateAlternates, generateOpenGraph, generateTwitter, getFullUrl } from "@/lib/metadata";
+import { Link } from "@/i18n/routing";
 import { type Locale } from "@/i18n/config";
+import { FeaturedArtwork } from "@/components/illustrations/FeaturedArtwork";
+import { LinkButton, ExternalLinkButton } from "@/components/ui";
+import { ArrowRightIcon } from "@/components/icons";
 import { NewsletterSection } from "@/components/layout/NewsletterSection";
+import { generateAlternates, generateOpenGraph, generateTwitter, getFullUrl } from "@/lib/metadata";
+import { withMetadataPolicy } from "@/lib/metadata-policy";
+import { serializeJsonLd } from "@/lib/serialize-jsonld";
+import { getGuideTranslations } from "@/lib/guides";
 import { getAllNews } from "@/lib/news";
 
 type Props = {
@@ -59,601 +38,87 @@ async function pageMetadata({ params }: Props): Promise<Metadata> {
   };
 }
 
+
 export default async function Home({ params }: Props) {
   const { locale } = await params;
-  const t = await getTranslations("home");
-  const u = await getTranslations("ui");
+  const t = await getTranslations("home.experience");
   const common = await getTranslations("common");
-  const localUrl = (path: string) => getFullUrl(path, locale as Locale);
-  const tNews = await getTranslations("news");
-
-  // The newsroom strip is the homepage half of the spec's Discoverability
-  // requirement. It links to a section that ships empty, so it renders only
-  // when there is something behind the link — an empty shell pointing at an
-  // empty index is worse than no strip at all.
-  const hasNews = getAllNews(locale as Locale).length > 0;
-
-  // JSON-LD structured data
-  const organizationJsonLd = {
-    "@context": "https://schema.org",
-    "@type": "Organization",
-    "name": "Nostr Web of Trust",
-    "alternateName": "Nostr WoT",
-    "url": localUrl("/"),
-    "logo": "https://nostr-wot.com/icon-512.png",
-    "description": t("meta.description"),
-    "sameAs": [
-      "https://github.com/nostr-wot",
-      "https://twitter.com/nostr_wot",
+  const guide = (key: string) => {
+    const slug = getGuideTranslations(key)[locale as Locale];
+    return slug ? `/guides/${slug}` : "/guides";
+  };
+  const playlist = "https://www.youtube.com/playlist?list=PLEmTf_Ex3n7c";
+  const schema = {
+    "@context": "https://schema.org", "@graph": [
+      { "@type": "Organization", "@id": "https://nostr-wot.com/#organization", name: "Nostr WoT", url: "https://nostr-wot.com", logo: "https://nostr-wot.com/icon-512.png", sameAs: ["https://github.com/nostr-wot", "https://www.youtube.com/@nostr-wot"] },
+      { "@type": "WebSite", name: "Nostr WoT", url: getFullUrl("/", locale as Locale), description: t("intro"), inLanguage: locale },
     ],
   };
-
-  const websiteJsonLd = {
-    "@context": "https://schema.org",
-    "@type": "WebSite",
-    "name": "Nostr Web of Trust",
-    "url": localUrl("/"),
-    "description": t("meta.description"),
-    "potentialAction": {
-      "@type": "SearchAction",
-      "target": `${localUrl("/news")}?q={search_term_string}`,
-      "query-input": "required name=search_term_string",
-    },
-  };
-
-  const navigationJsonLd = {
-    "@context": "https://schema.org",
-    "@type": "ItemList",
-    "itemListElement": [
-      {
-        "@type": "SiteNavigationElement",
-        "position": 1,
-        "name": common("buttons.downloadExtension"),
-        "description": t("howItWorks.step1.description"),
-        "url": localUrl("/download"),
-      },
-      {
-        "@type": "SiteNavigationElement",
-        "position": 2,
-        "name": common("nav.features"),
-        "description": t("identity.description"),
-        "url": localUrl("/features"),
-      },
-      {
-        "@type": "SiteNavigationElement",
-        "position": 3,
-        "name": common("nav.docs"),
-        "description": t("developers.description"),
-        "url": localUrl("/docs"),
-      },
-      {
-        "@type": "SiteNavigationElement",
-        "position": 4,
-        "name": t("playground.title"),
-        "description": t("playground.description"),
-        "url": localUrl("/playground"),
-      },
-      {
-        "@type": "SiteNavigationElement",
-        "position": 5,
-        "name": t("postQuantum.exploreButton"),
-        "description": t("postQuantum.description"),
-        "url": localUrl("/pqc"),
-      },
-    ],
-  };
-
-  const breadcrumbJsonLd = {
-    "@context": "https://schema.org",
-    "@type": "BreadcrumbList",
-    "itemListElement": [
-      {
-        "@type": "ListItem",
-        "position": 1,
-        "name": "Nostr WoT",
-        "item": localUrl("/"),
-      },
-    ],
-  };
-
-  const capabilityCards = [
-    { icon: <KeyIcon className="w-7 h-7 text-indigo-600 dark:text-indigo-400" />, title: t("capabilities.identity.title"), description: t("capabilities.identity.description"), iconBg: "bg-indigo-100 dark:bg-indigo-900/40" },
-    { icon: <LightningIcon className="w-7 h-7 text-amber-600 dark:text-amber-400" />, title: t("capabilities.wallet.title"), description: t("capabilities.wallet.description"), iconBg: "bg-amber-100 dark:bg-amber-900/40" },
-    { icon: <ShieldIcon className="w-7 h-7" />, title: t("capabilities.profile.title"), description: t("capabilities.profile.description"), iconBg: "bg-purple-100 dark:bg-purple-900/40" },
-    { icon: <SpeedIcon className="w-7 h-7 text-emerald-600 dark:text-emerald-400" />, title: t("capabilities.upcoming.title"), description: t("capabilities.upcoming.description"), iconBg: "bg-emerald-100 dark:bg-emerald-900/40" },
-  ];
-
-  const identityFeatures = [
-    { title: t("identity.features.signer.title"), description: t("identity.features.signer.description") },
-    { title: t("identity.features.multiAccount.title"), description: t("identity.features.multiAccount.description") },
-    { title: t("identity.features.vault.title"), description: t("identity.features.vault.description") },
-    { title: t("identity.features.permissions.title"), description: t("identity.features.permissions.description") },
-  ];
-
-  const walletFeatures = [
-    { title: t("wallet.features.nwc.title"), description: t("wallet.features.nwc.description") },
-    { title: t("wallet.features.lnbits.title"), description: t("wallet.features.lnbits.description") },
-    { title: t("wallet.features.quickSetup.title"), description: t("wallet.features.quickSetup.description") },
-    { title: t("wallet.features.webln.title"), description: t("wallet.features.webln.description") },
-  ];
-
-  const profileFeatures = [
-    { title: t("profile.features.metadata.title"), description: t("profile.features.metadata.description") },
-    { title: t("profile.features.relays.title"), description: t("profile.features.relays.description") },
-    { title: t("profile.features.mutes.title"), description: t("profile.features.mutes.description") },
-    { title: t("profile.features.sync.title"), description: t("profile.features.sync.description") },
-  ];
-
-  const postQuantumFeatures = [
-    { title: t("postQuantum.features.hybrid.title"), description: t("postQuantum.features.hybrid.description") },
-    { title: t("postQuantum.features.seed.title"), description: t("postQuantum.features.seed.description") },
-    { title: t("postQuantum.features.relays.title"), description: t("postQuantum.features.relays.description") },
-    { title: t("postQuantum.features.attestation.title"), description: t("postQuantum.features.attestation.description") },
-  ];
-
-  const howItWorksSteps = [
-    { title: t("howItWorks.step1.title"), description: t("howItWorks.step1.description") },
-    { title: t("howItWorks.step2.title"), description: t("howItWorks.step2.description") },
-    { title: t("howItWorks.step3.title"), description: t("howItWorks.step3.description") },
-  ];
-
-  const faqItems = [
-    { question: t("faq.items.whatIsExtension.question"), answer: t("faq.items.whatIsExtension.answer") },
-    { question: t("faq.items.whatDoesItManage.question"), answer: t("faq.items.whatDoesItManage.answer") },
-    { question: t("faq.items.howDoesWalletWork.question"), answer: t("faq.items.howDoesWalletWork.answer") },
-    { question: t("faq.items.isItPrivate.question"), answer: t("faq.items.isItPrivate.answer") },
-    { question: t("faq.items.whichBrowsers.question"), answer: t("faq.items.whichBrowsers.answer") },
-    { question: t("faq.items.whatAreTrustAssertions.question"), answer: t("faq.items.whatAreTrustAssertions.answer") },
-    { question: t("faq.items.isFree.question"), answer: t("faq.items.isFree.answer") },
-  ];
-
-  const faqJsonLd = {
-    "@context": "https://schema.org",
-    "@type": "FAQPage",
-    "mainEntity": faqItems.map((item) => ({
-      "@type": "Question",
-      "name": item.question,
-      "acceptedAnswer": {
-        "@type": "Answer",
-        "text": item.answer,
-      },
-    })),
-  };
-
-  return (
-    <>
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: serializeJsonLd(organizationJsonLd) }}
-      />
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: serializeJsonLd(websiteJsonLd) }}
-      />
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: serializeJsonLd(navigationJsonLd) }}
-      />
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: serializeJsonLd(faqJsonLd) }}
-      />
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: serializeJsonLd(breadcrumbJsonLd) }}
-      />
-      <main>
-        {/* Hero Section — Extension-focused */}
-        <section className="relative min-h-[90vh] flex items-center justify-center overflow-hidden -mt-16 pt-16">
-          <HeroAnimation />
-          <div className="relative z-10 max-w-4xl mx-auto px-6 text-center py-20">
-            <ScrollReveal animation="fade-down" delay={100}>
-              <div className="inline-flex items-center gap-2 bg-primary/10 text-primary px-4 py-2 rounded-full text-sm font-medium mb-8">
-                <span className="relative flex h-2 w-2">
-                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary opacity-75" />
-                  <span className="relative inline-flex rounded-full h-2 w-2 bg-primary" />
-                </span>
-                {t("hero.badge")}
-              </div>
-            </ScrollReveal>
-            <ScrollReveal animation="zoom-in" delay={200}>
-              <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-6 text-gray-900 dark:text-white leading-tight">
-                <span className="text-primary">{t("hero.titleHighlight")}</span>
-                <br />
-                {t("hero.title")}
-              </h1>
-            </ScrollReveal>
-            <ScrollReveal animation="fade-up" delay={300}>
-              <p className="text-xl md:text-2xl text-gray-600 dark:text-gray-300 mb-10 max-w-2xl mx-auto leading-relaxed">
-                {t("hero.description")}
-              </p>
-            </ScrollReveal>
-            <ScrollReveal animation="fade-up" delay={400}>
-              <div className="flex flex-col sm:flex-row gap-4 justify-center mb-8">
-                <LinkButton href="/download" className="hover-lift">{t("hero.downloadButton")}</LinkButton>
-                <LinkButton href="/playground" variant="secondary" className="hover-lift">{t("hero.playgroundButton")}</LinkButton>
-              </div>
-            </ScrollReveal>
-            <ScrollReveal animation="fade-up" delay={500}>
-              <a href="https://nostr.com" target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 text-gray-500 dark:text-gray-400 hover:text-nostr transition-colors text-sm">
-                <span>{t("hero.builtFor")}</span>
-                <NostrLogo className="w-6 h-6 text-nostr" />
-                <span>Nostr</span>
-              </a>
-            </ScrollReveal>
+  const stories = [
+    { key: "identity", image: "accounts", href: guide("create-nostr-account") },
+    { key: "rules", image: "permissions", href: guide("site-permissions") },
+    { key: "zap", image: "zap-review", href: guide("zapping-auto-approve") },
+  ] as const;
+  return <>
+    <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: serializeJsonLd(schema) }} />
+    <section className="mx-auto max-w-7xl px-6 pb-16 pt-16 lg:pb-24 lg:pt-24">
+      <div className="grid items-center gap-12 lg:grid-cols-[1fr_1.05fr]">
+        <div>
+          <p className="mb-5 font-semibold text-indigo-700 dark:text-indigo-300">{t("eyebrow")}</p>
+          <h1 className="max-w-2xl text-5xl font-bold leading-[1.06] tracking-tight sm:text-6xl lg:text-7xl">{t("title")}</h1>
+          <p className="mt-7 max-w-lg text-xl leading-relaxed text-gray-600 dark:text-gray-300">{t("intro")}</p>
+          <div className="mt-8 flex flex-wrap gap-3">
+            <LinkButton href="/download">{t("install")}<ArrowRightIcon className="h-5 w-5" /></LinkButton>
+            <ExternalLinkButton href={playlist} variant="outline">{t("watch")}</ExternalLinkButton>
           </div>
-        </section>
-
-        {/* Capabilities Overview — 4 Pillars */}
-        <Section background="gray" padding="md">
-          <ScrollReveal animation="fade-up">
-            <SectionHeader title={t("capabilities.title")} description={t("capabilities.description")} />
-          </ScrollReveal>
-          <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
-            {capabilityCards.map((card, i) => (
-              <ScrollReveal key={i} animation="zoom-in" delay={100 + i * 80}>
-                <FeatureCard
-                  icon={card.icon}
-                  title={card.title}
-                  description={card.description}
-                  iconBg={card.iconBg}
-                  className="card-interactive"
-                />
-              </ScrollReveal>
-            ))}
-          </div>
-        </Section>
-
-        {/* Identity Section */}
-        <Section padding="lg" className="overflow-hidden">
-          <div className="grid lg:grid-cols-3 gap-12 lg:gap-16 items-center">
-            <ScrollReveal animation="fade-right" className="lg:col-span-2">
-              <div>
-                <div className="inline-flex items-center gap-2 bg-indigo-100 dark:bg-indigo-900/30 text-indigo-700 dark:text-indigo-300 px-3 py-1 rounded-full text-sm font-medium mb-6">
-                  <KeyIcon className="w-4 h-4" />
-                  {t("identity.badge")}
-                </div>
-                <h2 className="text-3xl md:text-4xl font-bold mb-6">{t("identity.title")}</h2>
-                <p className="text-lg text-gray-600 dark:text-gray-400 mb-8">
-                  {t("identity.description")}
-                </p>
-                <div className="grid md:grid-cols-2 gap-x-8 mb-8">
-                  <FeatureList items={identityFeatures.slice(0, 2)} iconColor="text-indigo-600 dark:text-indigo-400" />
-                  <FeatureList items={identityFeatures.slice(2)} iconColor="text-indigo-600 dark:text-indigo-400" />
-                </div>
-                <LinkButton href="/download" className="hover-lift">{t("hero.downloadButton")}</LinkButton>
-              </div>
-            </ScrollReveal>
-            <ScrollReveal animation="fade-left" delay={200}>
-              <div className="relative">
-                <div className="absolute inset-0 bg-gradient-to-br from-indigo-500/20 to-purple-500/20 rounded-3xl blur-3xl" />
-                <div className="relative bg-gradient-to-br from-indigo-50 to-purple-50 dark:from-indigo-900/40 dark:to-purple-900/40 rounded-3xl p-8 border border-indigo-200 dark:border-indigo-800">
-                  <FeaturedArtwork art="extension" />
-                </div>
-              </div>
-            </ScrollReveal>
-          </div>
-        </Section>
-
-        {/* Lightning Wallet Section */}
-        <Section background="gray" padding="lg" className="overflow-hidden">
-          <div className="grid lg:grid-cols-3 gap-12 lg:gap-16 items-center">
-            <ScrollReveal animation="fade-right" className="order-2 lg:order-1">
-              <div className="relative">
-                <div className="absolute inset-0 bg-gradient-to-br from-amber-500/20 to-orange-500/20 rounded-3xl blur-3xl" />
-                <div className="relative bg-gradient-to-br from-amber-50 to-orange-50 dark:from-amber-900/40 dark:to-orange-900/40 rounded-3xl p-8 border border-amber-200 dark:border-amber-800">
-                  <ExtensionPopupIllustration />
-                </div>
-              </div>
-            </ScrollReveal>
-            <ScrollReveal animation="fade-left" delay={200} className="order-1 lg:order-2 lg:col-span-2">
-              <div>
-                <div className="inline-flex items-center gap-2 bg-amber-100 dark:bg-amber-900/30 text-amber-700 dark:text-amber-300 px-3 py-1 rounded-full text-sm font-medium mb-6">
-                  <LightningIcon className="w-4 h-4" />
-                  {t("wallet.badge")}
-                </div>
-                <h2 className="text-3xl md:text-4xl font-bold mb-6">{t("wallet.title")}</h2>
-                <p className="text-lg text-gray-600 dark:text-gray-400 mb-8">
-                  {t("wallet.description")}
-                </p>
-                <div className="grid md:grid-cols-2 gap-x-8 mb-8">
-                  <FeatureList items={walletFeatures.slice(0, 2)} iconColor="text-amber-600 dark:text-amber-400" />
-                  <FeatureList items={walletFeatures.slice(2)} iconColor="text-amber-600 dark:text-amber-400" />
-                </div>
-                <LinkButton href="/download" className="hover-lift">{t("hero.downloadButton")}</LinkButton>
-              </div>
-            </ScrollReveal>
-          </div>
-        </Section>
-
-        {/* Profile, Relays & Mutes Section */}
-        <Section padding="lg" className="overflow-hidden">
-          <div className="grid lg:grid-cols-3 gap-12 lg:gap-16 items-center">
-            <ScrollReveal animation="fade-right" className="lg:col-span-2">
-              <div>
-                <div className="inline-flex items-center gap-2 bg-purple-100 dark:bg-purple-900/30 text-purple-700 dark:text-purple-300 px-3 py-1 rounded-full text-sm font-medium mb-6">
-                  <ShieldIcon className="w-4 h-4" />
-                  {t("profile.badge")}
-                </div>
-                <h2 className="text-3xl md:text-4xl font-bold mb-6">{t("profile.title")}</h2>
-                <p className="text-lg text-gray-600 dark:text-gray-400 mb-8">
-                  {t("profile.description")}
-                </p>
-                <div className="grid md:grid-cols-2 gap-x-8 mb-8">
-                  <FeatureList items={profileFeatures.slice(0, 2)} iconColor="text-purple-600 dark:text-purple-400" />
-                  <FeatureList items={profileFeatures.slice(2)} iconColor="text-purple-600 dark:text-purple-400" />
-                </div>
-                <LinkButton href="/download" className="hover-lift">{t("profile.downloadButton")}</LinkButton>
-              </div>
-            </ScrollReveal>
-            <ScrollReveal animation="fade-left" delay={200}>
-              <div className="relative">
-                <div className="absolute inset-0 bg-gradient-to-br from-purple-500/20 to-indigo-500/20 rounded-3xl blur-3xl" />
-                <div className="relative bg-gradient-to-br from-purple-50 to-indigo-50 dark:from-purple-900/40 dark:to-indigo-900/40 rounded-3xl p-8 border border-purple-200 dark:border-purple-800">
-                  <FeaturedArtwork art="oracle" />
-                </div>
-              </div>
-            </ScrollReveal>
-          </div>
-        </Section>
-
-        {/* Post-Quantum — hybrid PQC, built with QuantaKrypto */}
-        <Section background="gradient" padding="lg">
-          <ScrollReveal animation="fade-up">
-            <SectionHeader
-              badgeIcon={<LockIcon className="w-4 h-4" />}
-              badge={t("postQuantum.badge")}
-              title={t("postQuantum.title")}
-              description={t("postQuantum.description")}
-            />
-          </ScrollReveal>
-          <div className="grid md:grid-cols-2 gap-x-12 gap-y-2 max-w-4xl mx-auto mb-12">
-            <ScrollReveal animation="fade-right" delay={100}>
-              <FeatureList items={postQuantumFeatures.slice(0, 2)} iconColor="text-cyan-600 dark:text-cyan-400" />
-            </ScrollReveal>
-            <ScrollReveal animation="fade-left" delay={200}>
-              <FeatureList items={postQuantumFeatures.slice(2)} iconColor="text-cyan-600 dark:text-cyan-400" />
-            </ScrollReveal>
-          </div>
-          <ScrollReveal animation="fade-up" delay={300}>
-            <div className="flex flex-col sm:flex-row gap-4 justify-center mb-12">
-              <LinkButton href="/pqc" className="hover-lift">{t("postQuantum.exploreButton")}</LinkButton>
-              <LinkButton href="/pqc/chat" variant="secondary" className="hover-lift">{t("postQuantum.chatButton")}</LinkButton>
+        </div>
+        <FeaturedArtwork art="home" priority className="lg:rotate-2" />
+      </div>
+    </section>
+    {stories.map(({ key, image, href }, index) => <section key={key} className="border-t border-gray-200 dark:border-gray-800">
+      <div className="mx-auto grid max-w-6xl items-center gap-10 px-6 py-16 md:grid-cols-2 lg:gap-24 lg:py-24">
+        <div className={index % 2 ? "md:order-2" : ""}>
+          <h2 className="text-3xl font-bold tracking-tight sm:text-4xl lg:text-5xl">{t(`${key}Title`)}</h2>
+          <p className="mt-6 text-lg leading-relaxed text-gray-600 dark:text-gray-300">{t(`${key}Body`)}</p>
+          {key === "rules" && <p className="mt-4 text-lg leading-relaxed text-gray-600 dark:text-gray-300">{t("rulesDetail")}</p>}
+          <Link href={href} className="mt-7 inline-flex items-center gap-2 font-semibold text-indigo-700 underline-offset-4 hover:underline dark:text-indigo-300">{t(`${key}Link`)}<ArrowRightIcon className="h-5 w-5 shrink-0" /></Link>
+        </div>
+        <figure className={`mx-auto w-full max-w-[320px] ${index % 2 ? "md:order-1" : ""}`}>
+          <Image src={`/images/guides/extension/${image}.png`} alt={t(`${key}Alt`)} width={760} height={1200} sizes="(max-width: 380px) calc(100vw - 48px), 320px" className="h-auto w-full rounded-2xl border border-gray-200 shadow-xl dark:border-gray-800" />
+          <figcaption className="mt-4 text-center text-xs text-gray-500 dark:text-gray-400">{t("screenshot")}</figcaption>
+        </figure>
+      </div>
+      {key === "rules" && <div className="bg-indigo-50 dark:bg-indigo-950/30">
+        <div className="mx-auto grid max-w-6xl items-center gap-10 px-6 py-14 md:grid-cols-2 lg:gap-24">
+          <FeaturedArtwork art="relay-authentication" />
+          <div><h2 className="text-3xl font-bold tracking-tight">{t("authTitle")}</h2>
+            <p className="mt-5 leading-relaxed text-gray-600 dark:text-gray-300">{t("authBody")}</p>
+            <div className="mt-6 flex flex-wrap gap-x-6 gap-y-3 font-semibold text-indigo-700 dark:text-indigo-300">
+              <Link className="underline underline-offset-4" href={guide("backend-authentication")}>{t("backendLink")}</Link>
+              <Link className="underline underline-offset-4" href={guide("relay-authentication")}>{t("relayLink")}</Link>
             </div>
-          </ScrollReveal>
-          <ScrollReveal animation="fade-up" delay={400}>
-            <div className="mx-auto max-w-3xl rounded-xl border border-gray-200 p-8 text-center dark:border-gray-800">
-              <p className="text-sm uppercase tracking-wider text-gray-500 dark:text-gray-400">
-                {t("postQuantum.collab.eyebrow")}
-              </p>
-              <a
-                href="https://quantakrypto.com"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="mt-5 inline-block"
-                aria-label="QuantaKrypto"
-              >
-                {/* Two files rather than one CSS-filtered logo: the mark is not monochrome,
-                    so recolouring it would misrepresent the brand. The -light file carries
-                    dark ink (#0E1626) for light backgrounds; -dark carries white. */}
-                <img
-                  src="/brand/quantakrypto-logo-light.svg"
-                  alt="QuantaKrypto"
-                  className="h-10 w-auto dark:hidden"
-                />
-                <img
-                  src="/brand/quantakrypto-logo-dark.svg"
-                  alt="QuantaKrypto"
-                  className="hidden h-10 w-auto dark:block"
-                />
-              </a>
-              <p className="mx-auto mt-5 max-w-xl text-gray-600 dark:text-gray-300">
-                {t("postQuantum.collab.body")}
-              </p>
-            </div>
-          </ScrollReveal>
-        </Section>
-
-        {/* Coming Soon — Trust Assertions & Services Integration */}
-        <Section background="gray" padding="lg">
-          <ScrollReveal animation="fade-up">
-            <SectionHeader title={t("upcoming.title")} description={t("upcoming.description")} />
-          </ScrollReveal>
-          <div className="grid lg:grid-cols-2 gap-8">
-            {/* Trust Assertions */}
-            <ScrollReveal animation="fade-right" delay={100}>
-              <div className="relative bg-white dark:bg-gray-800 rounded-2xl p-8 shadow-sm border border-emerald-200 dark:border-emerald-800 h-full hover:shadow-lg hover:border-emerald-400/50 transition-all duration-300">
-                <div className="absolute top-4 right-4">
-                  <span className="inline-flex items-center gap-1 bg-emerald-100 dark:bg-emerald-900/40 text-emerald-700 dark:text-emerald-300 px-2.5 py-1 rounded-full text-xs font-medium">
-                    <span className="relative flex h-1.5 w-1.5">
-                      <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-500 opacity-75" />
-                      <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-emerald-500" />
-                    </span>
-                    {u("inDevelopment")}
-                  </span>
-                </div>
-                <div className="w-12 h-12 rounded-2xl bg-emerald-100 dark:bg-emerald-900/40 flex items-center justify-center mb-6">
-                  <svg className="w-6 h-6 text-emerald-600 dark:text-emerald-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75L11.25 15 15 9.75m-3-7.036A11.959 11.959 0 013.598 6 11.99 11.99 0 003 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285z" />
-                  </svg>
-                </div>
-                <h3 className="text-2xl font-bold mb-4">{t("upcoming.assertions.title")}</h3>
-                <p className="text-gray-600 dark:text-gray-400 mb-6 leading-relaxed">{t("upcoming.assertions.description")}</p>
-                <ul className="space-y-3">
-                  {["typed", "contextual", "verifiable", "aggregated"].map((key) => (
-                    <li key={key} className="flex items-start gap-3 text-sm text-gray-600 dark:text-gray-400">
-                      <svg className="w-5 h-5 text-emerald-500 shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                        <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
-                      </svg>
-                      <span>{t(`upcoming.assertions.features.${key}`)}</span>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            </ScrollReveal>
-
-            {/* Services Integration */}
-            <ScrollReveal animation="fade-left" delay={200}>
-              <div className="relative bg-white dark:bg-gray-800 rounded-2xl p-8 shadow-sm border border-blue-200 dark:border-blue-800 h-full hover:shadow-lg hover:border-blue-400/50 transition-all duration-300">
-                <div className="absolute top-4 right-4">
-                  <span className="inline-flex items-center gap-1 bg-blue-100 dark:bg-blue-900/40 text-blue-700 dark:text-blue-300 px-2.5 py-1 rounded-full text-xs font-medium">
-                    <span className="relative flex h-1.5 w-1.5">
-                      <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-blue-500 opacity-75" />
-                      <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-blue-500" />
-                    </span>
-                    {u("planned")}
-                  </span>
-                </div>
-                <div className="w-12 h-12 rounded-2xl bg-blue-100 dark:bg-blue-900/40 flex items-center justify-center mb-6">
-                  <svg className="w-6 h-6 text-blue-600 dark:text-blue-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M13.19 8.688a4.5 4.5 0 011.242 7.244l-4.5 4.5a4.5 4.5 0 01-6.364-6.364l1.757-1.757m9.928-3.374a4.5 4.5 0 00-1.242-7.244l4.5-4.5a4.5 4.5 0 016.364 6.364l-1.757 1.757" />
-                  </svg>
-                </div>
-                <h3 className="text-2xl font-bold mb-4">{t("upcoming.services.title")}</h3>
-                <p className="text-gray-600 dark:text-gray-400 mb-6 leading-relaxed">{t("upcoming.services.description")}</p>
-                <ul className="space-y-3">
-                  {["discovery", "verification", "marketplaces", "ecosystem"].map((key) => (
-                    <li key={key} className="flex items-start gap-3 text-sm text-gray-600 dark:text-gray-400">
-                      <svg className="w-5 h-5 text-blue-500 shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                        <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
-                      </svg>
-                      <span>{t(`upcoming.services.features.${key}`)}</span>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            </ScrollReveal>
           </div>
-        </Section>
-
-        {/* How It Works */}
-        <Section padding="md">
-          <ScrollReveal animation="fade-up">
-            <SectionHeader title={t("howItWorks.title")} description={t("howItWorks.description")} />
-          </ScrollReveal>
-          <div className="grid md:grid-cols-3 gap-8">
-            {howItWorksSteps.map((step, i) => (
-              <ScrollReveal key={i} animation="zoom-in" delay={100 + i * 100}>
-                <div className="text-center">
-                  <div className="w-16 h-16 rounded-full bg-primary text-white text-2xl font-bold flex items-center justify-center mx-auto mb-6 animate-pulse-glow">
-                    {i + 1}
-                  </div>
-                  <h3 className="text-xl font-semibold mb-3">{step.title}</h3>
-                  <p className="text-gray-600 dark:text-gray-400">{step.description}</p>
-                </div>
-              </ScrollReveal>
-            ))}
-          </div>
-          <ScrollReveal animation="fade-up" delay={400}>
-            <div className="text-center mt-12">
-              <Link href="/about" className="inline-flex items-center gap-2 text-primary font-medium hover:underline link-underline">
-                {t("howItWorks.learnMoreLink")}
-                <ArrowRightIcon className="w-4 h-4" />
-              </Link>
-            </div>
-          </ScrollReveal>
-        </Section>
-
-        {/* For Developers — Condensed Oracle + SDK */}
-        <Section background="gray" padding="lg">
-          <ScrollReveal animation="fade-up">
-            <SectionHeader title={t("developers.title")} description={t("developers.description")} />
-          </ScrollReveal>
-          <div className="grid lg:grid-cols-2 gap-8">
-            {/* Oracle */}
-            <ScrollReveal animation="fade-right" delay={100}>
-              <div className="bg-white dark:bg-gray-800 rounded-2xl p-8 shadow-sm border border-gray-200 dark:border-gray-700 h-full hover:shadow-lg hover:border-violet-400/30 transition-all duration-300">
-                <div className="inline-flex items-center gap-2 bg-violet-100 dark:bg-violet-900/30 text-violet-700 dark:text-violet-300 px-3 py-1 rounded-full text-sm font-medium mb-4">
-                  <ServerIcon className="w-4 h-4" />
-                  {t("developers.oracle.badge")}
-                </div>
-                <h3 className="text-2xl font-bold mb-3">{t("developers.oracle.title")}</h3>
-                <p className="text-gray-600 dark:text-gray-400 mb-6">{t("developers.oracle.description")}</p>
-                <LinkButton href="/oracle" variant="secondary" className="hover-lift">{t("developers.oracle.learnMoreButton")}</LinkButton>
-              </div>
-            </ScrollReveal>
-
-            {/* SDK */}
-            <ScrollReveal animation="fade-left" delay={200}>
-              <div className="bg-white dark:bg-gray-800 rounded-2xl p-8 shadow-sm border border-gray-200 dark:border-gray-700 h-full hover:shadow-lg hover:border-emerald-400/30 transition-all duration-300">
-                <div className="inline-flex items-center gap-2 bg-emerald-100 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-300 px-3 py-1 rounded-full text-sm font-medium mb-4">
-                  <CodeBracketsIcon className="w-4 h-4" />
-                  {t("developers.sdk.badge")}
-                </div>
-                <h3 className="text-2xl font-bold mb-3">{t("developers.sdk.title")}</h3>
-                <p className="text-gray-600 dark:text-gray-400 mb-6">{t("developers.sdk.description")}</p>
-                <div className="flex flex-col sm:flex-row gap-3">
-                  <LinkButton href="/docs/sdk#setup" variant="secondary" className="hover-lift">{t("developers.sdk.viewDocsButton")}</LinkButton>
-                  <ExternalLinkButton href="https://www.npmjs.com/package/nostr-wot-sdk" variant="secondary" className="hover-lift">
-                    {t("developers.sdk.npmButton")}
-                  </ExternalLinkButton>
-                </div>
-              </div>
-            </ScrollReveal>
-          </div>
-        </Section>
-
-        {/* Newsroom — hidden entirely while the section has no entries */}
-        {hasNews && (
-          <Section padding="sm">
-            <ScrollReveal animation="fade-up">
-              <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
-                <div>
-                  <h2 className="text-2xl md:text-3xl font-bold mb-2">{tNews("title")}</h2>
-                  <p className="text-gray-600 dark:text-gray-400">{tNews("subtitle")}</p>
-                </div>
-                <Link
-                  href="/news"
-                  className="inline-flex items-center gap-2 text-primary font-medium hover:underline link-underline shrink-0"
-                >
-                  {tNews("home.cta")}
-                  <ArrowRightIcon className="w-4 h-4" />
-                </Link>
-              </div>
-            </ScrollReveal>
-          </Section>
-        )}
-
-        {/* FAQ Section */}
-        <Section padding="lg">
-          <ScrollReveal animation="fade-up">
-            <SectionHeader title={t("faq.title")} description={t("faq.description")} />
-          </ScrollReveal>
-          <AccordionList items={faqItems} />
-        </Section>
-
-        {/* CTA & Newsletter */}
-        <section className="py-24 bg-gradient-to-b from-white via-gray-50 to-gray-100 dark:from-gray-950 dark:via-gray-900 dark:to-gray-900 border-t border-gray-200 dark:border-gray-800">
-          <div className="max-w-6xl mx-auto px-6">
-            <div className="grid lg:grid-cols-2 gap-12 lg:gap-16 items-center">
-              <ScrollReveal animation="fade-right">
-                <div>
-                  <h2 className="text-3xl md:text-4xl font-bold mb-4 text-gray-900 dark:text-white">{t("cta.title")}</h2>
-                  <p className="text-lg text-gray-600 dark:text-gray-400 mb-8">{t("cta.description")}</p>
-                  <div className="flex flex-col sm:flex-row gap-4">
-                    <LinkButton href="/download" className="hover-lift">{t("cta.getExtensionButton")}</LinkButton>
-                    <ExternalLinkButton href="https://github.com/nostr-wot/nostr-wot-extension" variant="secondary" className="hover-lift">
-                      {t("cta.viewGithubButton")}
-                    </ExternalLinkButton>
-                  </div>
-                </div>
-              </ScrollReveal>
-              <ScrollReveal animation="fade-left" delay={200}>
-                <div className="relative flex items-center justify-center">
-                  <div className="absolute inset-0 bg-gradient-to-br from-primary/10 to-nostr/10 rounded-full blur-3xl" />
-                  <FeaturedArtwork art="home" />
-                </div>
-              </ScrollReveal>
-            </div>
-
-            <ScrollReveal animation="fade-up" delay={300}>
-              <NewsletterSection />
-            </ScrollReveal>
-          </div>
-        </section>
-      </main>
-    </>
-  );
+        </div>
+      </div>}
+    </section>)}
+    <section className="border-y border-gray-200 dark:border-gray-800">
+      <div className="mx-auto flex max-w-6xl flex-col justify-between gap-8 px-6 py-12 md:flex-row md:items-center">
+        <div className="max-w-2xl"><h2 className="text-2xl font-bold">{t("moreTitle")}</h2><p className="mt-3 leading-relaxed text-gray-600 dark:text-gray-300">{t("moreBody")}</p></div>
+        <LinkButton href="/features" variant="outline" className="shrink-0 self-start md:self-auto">{t("moreLink")}</LinkButton>
+      </div>
+    </section>
+    <section className="mx-auto grid max-w-6xl items-center gap-10 px-6 py-16 md:grid-cols-2 lg:gap-24 lg:py-24">
+      <div><h2 className="text-3xl font-bold tracking-tight sm:text-4xl">{t("learnTitle")}</h2><p className="mt-5 text-lg leading-relaxed text-gray-600 dark:text-gray-300">{t("learnBody")}</p>
+        <div className="mt-7 flex flex-wrap gap-3"><LinkButton href="/guides">{t("guides")}</LinkButton><ExternalLinkButton href={playlist} variant="outline">{t("watch")}</ExternalLinkButton></div>
+      </div><FeaturedArtwork art="guides" />
+    </section>
+    <section className="bg-gray-50 dark:bg-gray-900/50">
+      <div className="mx-auto max-w-6xl px-6 py-14">
+        <div className="flex flex-col justify-between gap-6 md:flex-row md:items-center"><div className="max-w-2xl"><h2 className="text-2xl font-bold">{t("developersTitle")}</h2><p className="mt-3 leading-relaxed text-gray-600 dark:text-gray-300">{t("developersBody")}</p></div><LinkButton href="/docs" variant="outline" className="shrink-0 self-start md:self-auto">{t("developersLink")}</LinkButton></div>
+        {getAllNews(locale as Locale).length > 0 && <Link href="/news" className="mt-8 inline-flex items-center gap-2 text-indigo-700 underline underline-offset-4 dark:text-indigo-300">{common("nav.news")}<ArrowRightIcon className="h-4 w-4" /></Link>}
+        <NewsletterSection />
+      </div>
+    </section>
+  </>;
 }
-
 export const generateMetadata = withMetadataPolicy(pageMetadata);

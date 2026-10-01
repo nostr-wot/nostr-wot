@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-10-01T12:06:47.667Z",
+  "generatedAt": "2026-10-01T13:54:08.184Z",
   "locales": {
     "en": {
       "posts": [
@@ -1122,6 +1122,49 @@
           "content": "\nChange the language of the Nostr WoT extension from **Settings → Appearance and language → Language**. Choose a language, then select **Confirm**.\n\n## 1. Open Settings\n\nOpen the extension from your browser toolbar. Unlock it if needed, then choose **Settings** using the gear icon. Open **Appearance and language**.\n\n![Settings with Appearance and language near the bottom](/images/guides/change-language/01-settings.png)\n\n## 2. Open the language picker\n\nChoose **Language** below the theme controls. The row shows your current language.\n\n![The Language row below the appearance controls](/images/guides/change-language/02-appearance.png)\n\n## 3. Choose and confirm\n\nScroll or drag the wheel until your language is centered. You can also focus the list and use the up and down arrow keys. The heading previews your choice before you apply it.\n\nThe available languages are **English, Español, Português, Deutsch, Français and Italiano**.\n\n![Español selected in the language wheel, with Confirm below](/images/guides/change-language/03-spanish-selected.png)\n\nSelect **Confirm**. That button uses your current interface language until you confirm; in this English-to-Spanish example it still says “Confirm.” Closing the picker without confirming keeps the previous language.\n\n## 4. Check the result\n\nThe language row now shows **Español**, and translated interface labels update. Your choice is saved for the next time you open the extension. Some appearance labels currently remain in English.\n\n![The saved language is Español and the language label is now Idioma](/images/guides/change-language/04-spanish-applied.png)\n\n## Switch back whenever you like\n\nReturn to the same section, open **Idioma**, select **English**, then choose **Confirmar**. Use the gear icon to find Settings if you do not recognize the current menu language.\n\nChanging the interface language does not translate Nostr posts or messages, or change your accounts, keys or permissions. The website's language selector is separate from the extension's setting.\n\nThe screenshots show an English-to-Spanish change in a demo installation.\n"
         },
         {
+          "slug": "create-extension-theme",
+          "title": "Create Light and Dark Themes for Nostr WoT",
+          "description": "Build a custom palette, add a paired light and dark theme, and contribute your changes to the Nostr WoT extension.",
+          "excerpt": "Build a custom palette, add a paired light and dark theme, and contribute your changes to the Nostr WoT extension.",
+          "date": "2026-10-01T00:00:00.000Z",
+          "author": {
+            "name": "Leon Acosta",
+            "avatar": "/authors/leon-profile.jpg"
+          },
+          "featuredImage": "/images/illustrations/developers.webp",
+          "previewImage": "/images/illustrations/developers.webp",
+          "tags": [
+            "Development",
+            "Themes"
+          ],
+          "published": true,
+          "readingTime": "3 min read",
+          "locale": "en",
+          "translationKey": "create-extension-theme",
+          "translations": {
+            "en": "create-extension-theme",
+            "es": "create-extension-theme",
+            "pt": "create-extension-theme",
+            "ru": "create-extension-theme",
+            "it": "create-extension-theme",
+            "fr": "create-extension-theme",
+            "de": "create-extension-theme"
+          },
+          "availableLocales": [
+            "en",
+            "es",
+            "pt",
+            "ru",
+            "it",
+            "fr",
+            "de"
+          ],
+          "ogImage": "/images/illustrations/developers.webp",
+          "difficulty": "advanced",
+          "order": 30,
+          "content": "\n## Choose the right route\n\nFor your own installation, open **Settings → Appearance and language → Create custom theme**. Paste the JSON below, choose **Parse JSON**, then **Apply custom theme**. Custom JSON stores one palette. It does not switch automatically between light and dark. To offer both modes, contribute a built-in theme as described below.\n\n![Appearance settings in a demo installation, shown in English.](/images/guides/change-language/02-appearance.png)\n\n## A complete custom palette\n\nThis is the editor’s dark starter palette. Keep all 20 keys. Use six-digit hexadecimal colors for a straightforward starting point. Unknown keys, missing colors and arbitrary CSS are rejected. The editor also accepts eight-digit hex and the supported rgb/rgba syntax. A theme changes appearance, not permissions.\n\n```json\n{\n  \"bgPage\": \"#0b0d12\",\n  \"bgPageSolid\": \"#0b0d12\",\n  \"bgHtml\": \"#07090d\",\n  \"bgElevated\": \"#151922\",\n  \"surfaceHover\": \"#252c38\",\n  \"inputBg\": \"#1c222c\",\n  \"textHeading\": \"#ffffff\",\n  \"textBody\": \"#e8eaf0\",\n  \"textSecondary\": \"#c4c8d2\",\n  \"textMuted\": \"#9da4b2\",\n  \"brand\": \"#818cf8\",\n  \"brandHover\": \"#a5b4fc\",\n  \"textOnBrand\": \"#080b12\",\n  \"cardBg\": \"#151922\",\n  \"cardBorder\": \"#343c4a\",\n  \"controlBorder\": \"#687386\",\n  \"success\": \"#6ee7b7\",\n  \"error\": \"#ff909b\",\n  \"warning\": \"#fcd17a\",\n  \"info\": \"#93c5fd\"\n}\n```\n\n## Add a built-in theme with two modes\n\nFork the extension repository and create a focused branch. Use Node **24.15+ in the 24.x line**, then install and build:\n\n```bash\nnpm ci\nnpm run build\n```\n\n### Use the existing theme system\n\n1. Add your theme ID to `THEME_OPTIONS` in `src/constants/appearance.ts` and to `ProjectTheme` in `src/domain/appearance/theme.ts`. The resolver uses your ID for dark mode and `your-theme-light` for light mode. Keep the existing Light, Dark and System behavior.\n2. Add the display name to `PROJECT_LABELS` in `src/screens/Settings/AppearanceSection.tsx`. Presets are generated from `THEME_OPTIONS`; reuse the existing selector and storage service.\n3. Define both selectors in `src/styles/theme.css`, following an existing paired theme such as Coracle. Set the semantic colors for backgrounds, text, controls, focus, borders and status states. Check inherited tokens too. Do not simply invert a dark palette or add per-component color exceptions.\n\nTheme and mode are stored separately as `appearanceTheme` and `appearanceMode`. System mode follows the operating system, including changes while the extension is open. Custom JSON and La Crypta are fixed palettes. Do not replace this behavior with another persistence mechanism.\n\n## Check the result\n\nLoad `dist/` as an unpacked extension in Chrome. Check the popup, onboarding, settings, approval requests and dialogs in Light, Dark and System. Check keyboard focus, hover, selected, disabled and error states, QR codes, long text and narrow windows. Aim for at least 4.5:1 contrast for normal text and 3:1 for large text and meaningful controls. Test actual foreground/background pairs, including translucent surfaces.\n\nExtend the existing tests for your theme, then run the checks:\n\n```bash\nnode --import tsx --test tests/custom-theme.test.ts tests/theme-tokens.test.ts tests/theme-handoff.test.ts\nnpm run typecheck\nnpm run lint\nnpm run build\n./tests/run.sh\n```\n\n## Open a contribution\n\nOpen a pull request with a short description, your palette sources or licensing, screenshots of both modes using demo accounts, and the commands you ran. Include collapsed and expanded controls. Keep generated builds, archives, real account details and private keys out of the commit. Follow the repository’s contribution and component standards.\n\n### Optional install links\n\nIf your theme needs an installation link, update the website’s theme allowlist as well as the extension and cover the handoff tests. A custom JSON palette cannot be supplied in the URL. Existing choices must never be overwritten. Read the handoff documentation before changing this flow.\n\n## References\n\n- [CONTRIBUTING.md](https://github.com/nostr-wot/nostr-wot-extension/blob/main/CONTRIBUTING.md)\n- [Component standards](https://github.com/nostr-wot/nostr-wot-extension/blob/main/docs/component-standards.md)\n- [Theme CSS](https://github.com/nostr-wot/nostr-wot-extension/blob/main/src/styles/theme.css)\n- [Theme resolver and JSON validation](https://github.com/nostr-wot/nostr-wot-extension/blob/main/src/domain/appearance/theme.ts)\n- [Theme handoff](https://github.com/nostr-wot/nostr-wot-extension/blob/main/docs/theme-handoff.md)\n"
+        },
+        {
           "slug": "post-quantum-key",
           "title": "Creating a Post-Quantum Key",
           "description": "Generate post-quantum keys for your Nostr identity with a single command, entirely offline, and publish the attestation that lets others send you post-quantum encrypted messages.",
@@ -1202,6 +1245,7 @@
         "Beginner",
         "Concepts",
         "Decentralization",
+        "Development",
         "Extension",
         "Formula",
         "Getting Started",
@@ -1223,6 +1267,7 @@
         "Security",
         "Settings",
         "Setup",
+        "Themes",
         "Trust Graph",
         "Trust Settings",
         "Visualization",
@@ -2350,6 +2395,49 @@
           "difficulty": "beginner",
           "order": 21,
           "content": "\nCambia el idioma de Nostr WoT desde **Configuración → Apariencia e idioma → Idioma**. Elige un idioma y pulsa **Confirmar**.\n\n## 1. Abre Configuración\n\nAbre la extensión desde la barra del navegador y desbloquéala si es necesario. Pulsa el icono de engranaje de **Configuración** y entra en **Apariencia e idioma**.\n\n![Configuración en inglés, con Appearance and language al final](/images/guides/change-language/01-settings.png)\n\n## 2. Abre el selector de idioma\n\nPulsa **Idioma**, debajo de los controles del tema. La fila indica el idioma actual.\n\n![La opción Language debajo de los controles de apariencia](/images/guides/change-language/02-appearance.png)\n\n## 3. Elige y confirma\n\nDesplaza o arrastra la rueda hasta centrar el idioma que quieras. También puedes enfocar la lista y usar las flechas arriba y abajo. El título muestra el idioma elegido antes de aplicarlo.\n\nLos idiomas disponibles son **English, Español, Português, Deutsch, Français e Italiano**.\n\n![Español seleccionado y el botón Confirm debajo](/images/guides/change-language/03-spanish-selected.png)\n\nPulsa **Confirmar**. El botón conserva el idioma anterior hasta confirmar: en este ejemplo, al pasar del inglés al español, dice “Confirm”. Cerrar el selector sin confirmar conserva el idioma anterior.\n\n## 4. Comprueba el cambio\n\nLa fila muestra **Español** y se actualizan los textos traducidos. La elección se guarda para la próxima vez que abras la extensión. Algunas etiquetas de apariencia todavía se muestran en inglés.\n\n![Idioma guardado como Español](/images/guides/change-language/04-spanish-applied.png)\n\n## Vuelve a cambiarlo cuando quieras\n\nPara volver al inglés, abre **Idioma**, selecciona **English** y pulsa **Confirmar**. Si no reconoces el idioma del menú, busca el engranaje de Configuración.\n\nEste ajuste no traduce las publicaciones ni los mensajes de Nostr, ni cambia tus cuentas, claves o permisos. El selector de idioma del sitio web es independiente del de la extensión.\n\nLas capturas muestran el cambio de inglés a español en una instalación de demostración.\n"
+        },
+        {
+          "slug": "create-extension-theme",
+          "title": "Crear temas claros y oscuros para Nostr WoT",
+          "description": "Crea una paleta personalizada, añade un tema con modos claro y oscuro y contribuye a la extensión Nostr WoT.",
+          "excerpt": "Crea una paleta personalizada, añade un tema con modos claro y oscuro y contribuye a la extensión Nostr WoT.",
+          "date": "2026-10-01T00:00:00.000Z",
+          "author": {
+            "name": "Leon Acosta",
+            "avatar": "/authors/leon-profile.jpg"
+          },
+          "featuredImage": "/images/illustrations/developers.webp",
+          "previewImage": "/images/illustrations/developers.webp",
+          "tags": [
+            "Desarrollo",
+            "Temas"
+          ],
+          "published": true,
+          "readingTime": "3 min read",
+          "locale": "es",
+          "translationKey": "create-extension-theme",
+          "translations": {
+            "en": "create-extension-theme",
+            "es": "create-extension-theme",
+            "pt": "create-extension-theme",
+            "ru": "create-extension-theme",
+            "it": "create-extension-theme",
+            "fr": "create-extension-theme",
+            "de": "create-extension-theme"
+          },
+          "availableLocales": [
+            "en",
+            "es",
+            "pt",
+            "ru",
+            "it",
+            "fr",
+            "de"
+          ],
+          "ogImage": "/images/illustrations/developers.webp",
+          "difficulty": "advanced",
+          "order": 30,
+          "content": "\n## Elige el camino adecuado\n\nPara tu instalación, abre **Ajustes → Apariencia e idioma → Create custom theme**. Pega el JSON, pulsa **Parse JSON** y después **Apply custom theme**. El JSON guarda una sola paleta y no alterna automáticamente entre claro y oscuro. Para ofrecer ambos modos, contribuye con un tema integrado siguiendo los pasos de abajo.\n\n![Ajustes de apariencia en una instalación de demostración, en inglés.](/images/guides/change-language/02-appearance.png)\n\n## Una paleta personalizada completa\n\nEsta es la paleta oscura inicial del editor. Conserva las 20 claves. Empieza con colores hexadecimales de seis dígitos. Se rechazan claves desconocidas, colores ausentes y CSS arbitrario. También se acepta hexadecimal de ocho dígitos y la sintaxis rgb/rgba admitida. Un tema cambia la apariencia, no los permisos.\n\n```json\n{\n  \"bgPage\": \"#0b0d12\",\n  \"bgPageSolid\": \"#0b0d12\",\n  \"bgHtml\": \"#07090d\",\n  \"bgElevated\": \"#151922\",\n  \"surfaceHover\": \"#252c38\",\n  \"inputBg\": \"#1c222c\",\n  \"textHeading\": \"#ffffff\",\n  \"textBody\": \"#e8eaf0\",\n  \"textSecondary\": \"#c4c8d2\",\n  \"textMuted\": \"#9da4b2\",\n  \"brand\": \"#818cf8\",\n  \"brandHover\": \"#a5b4fc\",\n  \"textOnBrand\": \"#080b12\",\n  \"cardBg\": \"#151922\",\n  \"cardBorder\": \"#343c4a\",\n  \"controlBorder\": \"#687386\",\n  \"success\": \"#6ee7b7\",\n  \"error\": \"#ff909b\",\n  \"warning\": \"#fcd17a\",\n  \"info\": \"#93c5fd\"\n}\n```\n\n## Añade un tema integrado con dos modos\n\nHaz un fork del repositorio y crea una rama específica. Usa Node **24.15+ de la serie 24.x** e instala y compila:\n\n```bash\nnpm ci\nnpm run build\n```\n\n### Usa el sistema de temas existente\n\n1. Añade el identificador a `THEME_OPTIONS` en `src/constants/appearance.ts` y a `ProjectTheme` en `src/domain/appearance/theme.ts`. El resolvedor usa ese ID para oscuro y `your-theme-light` para claro. Mantén el comportamiento de Claro, Oscuro y Sistema.\n2. Añade el nombre a `PROJECT_LABELS` en `src/screens/Settings/AppearanceSection.tsx`. Los temas se generan desde `THEME_OPTIONS`; reutiliza el selector y el servicio de almacenamiento existentes.\n3. Define ambos selectores en `src/styles/theme.css`, siguiendo un tema emparejado como Coracle. Configura colores semánticos para fondos, texto, controles, foco, bordes y estados. Revisa también los valores heredados. No inviertas simplemente la paleta ni añadas excepciones por componente.\n\nTema y modo se guardan por separado como `appearanceTheme` y `appearanceMode`. Sistema sigue al sistema operativo, incluso con la extensión abierta. JSON personalizado y La Crypta tienen paletas fijas. No crees otro mecanismo de persistencia.\n\n## Comprueba el resultado\n\nCarga `dist/` como extensión descomprimida en Chrome. Revisa el popup, la bienvenida, ajustes, solicitudes y diálogos en Claro, Oscuro y Sistema. Comprueba foco de teclado, hover, selección, deshabilitado, errores, QR, textos largos y ventanas estrechas. Busca al menos 4.5:1 para texto normal y 3:1 para texto grande y controles significativos. Mide las combinaciones reales, incluidas superficies translúcidas.\n\nAmplía las pruebas existentes para tu tema y ejecuta:\n\n```bash\nnode --import tsx --test tests/custom-theme.test.ts tests/theme-tokens.test.ts tests/theme-handoff.test.ts\nnpm run typecheck\nnpm run lint\nnpm run build\n./tests/run.sh\n```\n\n## Envía tu contribución\n\nAbre un pull request con una descripción breve, fuentes o licencia de la paleta, capturas de ambos modos con cuentas de demostración y los comandos ejecutados. Incluye controles abiertos y cerrados. No incluyas compilaciones, archivos comprimidos, datos de cuentas reales ni claves privadas. Sigue las normas de contribución y componentes.\n\n### Enlaces de instalación opcionales\n\nSi el tema necesita un enlace de instalación, actualiza la lista permitida del sitio web y la extensión, y cubre las pruebas de transferencia. Una paleta JSON no puede enviarse por URL. Nunca sobrescribas elecciones existentes. Lee la documentación de transferencia antes de cambiar este flujo.\n\n## Referencias\n\n- [CONTRIBUTING.md](https://github.com/nostr-wot/nostr-wot-extension/blob/main/CONTRIBUTING.md)\n- [Component standards](https://github.com/nostr-wot/nostr-wot-extension/blob/main/docs/component-standards.md)\n- [Theme CSS](https://github.com/nostr-wot/nostr-wot-extension/blob/main/src/styles/theme.css)\n- [Theme resolver and JSON validation](https://github.com/nostr-wot/nostr-wot-extension/blob/main/src/domain/appearance/theme.ts)\n- [Theme handoff](https://github.com/nostr-wot/nostr-wot-extension/blob/main/docs/theme-handoff.md)\n"
         }
       ],
       "tags": [
@@ -2364,6 +2452,7 @@
         "Configuracion",
         "Configuración",
         "Cuentas",
+        "Desarrollo",
         "Direccion Lightning",
         "Extensión",
         "Formula",
@@ -2385,6 +2474,7 @@
         "Security",
         "Seguridad",
         "Settings",
+        "Temas",
         "Visualizacion",
         "Web of Trust",
         "WebLN",
@@ -3509,6 +3599,49 @@
           "difficulty": "beginner",
           "order": 21,
           "content": "\nPara mudar o idioma, abra **Configurações → Aparência e idioma → Idioma**, escolha uma opção e confirme.\n\n## 1. Abra as configurações\n\nAbra a extensão na barra do navegador e desbloqueie-a se necessário. Use o ícone de engrenagem e abra a seção de aparência e idioma.\n\n![Configurações em inglês, com Appearance and language no final](/images/guides/change-language/01-settings.png)\n\n## 2. Abra o seletor de idioma\n\nEscolha **Idioma**, abaixo dos controles do tema. Essa linha mostra o idioma atual.\n\n![Language abaixo dos controles de aparência](/images/guides/change-language/02-appearance.png)\n\n## 3. Escolha e confirme\n\nRole ou arraste a roda até centralizar o idioma desejado. Você também pode focar a lista e usar as setas para cima e para baixo. O título antecipa a escolha antes de aplicá-la.\n\nAs opções são **English, Español, Português, Deutsch, Français e Italiano**.\n\n![Español selecionado na roda de idiomas](/images/guides/change-language/03-spanish-selected.png)\n\nPressione o botão de confirmação. Ele permanece no idioma atual até você confirmar: neste exemplo de inglês para espanhol, aparece “Confirm”. Fechar o seletor sem confirmar mantém o idioma anterior.\n\n## 4. Confira o resultado\n\nA linha passa a mostrar **Español** e os textos traduzidos são atualizados. A escolha é salva para a próxima vez que você abrir a extensão. Alguns rótulos de aparência ainda aparecem em inglês.\n\n![Idioma salvo como Español](/images/guides/change-language/04-spanish-applied.png)\n\n## Mude novamente quando quiser\n\nPara voltar ao inglês a partir do espanhol, abra **Idioma**, selecione **English** e pressione **Confirmar**. Se não reconhecer o idioma do menu, procure a engrenagem das configurações.\n\nEssa preferência não traduz publicações ou mensagens do Nostr e não altera contas, chaves ou permissões. O idioma do site é uma configuração separada.\n\nAs capturas mostram a mudança de inglês para espanhol em uma instalação de demonstração.\n"
+        },
+        {
+          "slug": "create-extension-theme",
+          "title": "Criar temas claros e escuros para Nostr WoT",
+          "description": "Crie uma paleta personalizada, adicione um tema claro e escuro e contribua com a extensão Nostr WoT.",
+          "excerpt": "Crie uma paleta personalizada, adicione um tema claro e escuro e contribua com a extensão Nostr WoT.",
+          "date": "2026-10-01T00:00:00.000Z",
+          "author": {
+            "name": "Leon Acosta",
+            "avatar": "/authors/leon-profile.jpg"
+          },
+          "featuredImage": "/images/illustrations/developers.webp",
+          "previewImage": "/images/illustrations/developers.webp",
+          "tags": [
+            "Desenvolvimento",
+            "Temas"
+          ],
+          "published": true,
+          "readingTime": "3 min read",
+          "locale": "pt",
+          "translationKey": "create-extension-theme",
+          "translations": {
+            "en": "create-extension-theme",
+            "es": "create-extension-theme",
+            "pt": "create-extension-theme",
+            "ru": "create-extension-theme",
+            "it": "create-extension-theme",
+            "fr": "create-extension-theme",
+            "de": "create-extension-theme"
+          },
+          "availableLocales": [
+            "en",
+            "es",
+            "pt",
+            "ru",
+            "it",
+            "fr",
+            "de"
+          ],
+          "ogImage": "/images/illustrations/developers.webp",
+          "difficulty": "advanced",
+          "order": 30,
+          "content": "\n## Escolha o caminho certo\n\nPara sua instalação, abra **Configurações → Aparência e idioma → Create custom theme**. Cole o JSON, escolha **Parse JSON** e depois **Apply custom theme**. O JSON salva uma paleta e não alterna automaticamente entre claro e escuro. Para oferecer os dois modos, contribua com um tema integrado seguindo os passos abaixo.\n\n![Configurações de aparência em uma instalação de demonstração em inglês.](/images/guides/change-language/02-appearance.png)\n\n## Uma paleta personalizada completa\n\nEsta é a paleta escura inicial do editor. Mantenha as 20 chaves. Comece com cores hexadecimais de seis dígitos. Chaves desconhecidas, cores ausentes e CSS arbitrário são rejeitados. Hexadecimal de oito dígitos e a sintaxe rgb/rgba suportada também são aceitos. Um tema muda a aparência, não as permissões.\n\n```json\n{\n  \"bgPage\": \"#0b0d12\",\n  \"bgPageSolid\": \"#0b0d12\",\n  \"bgHtml\": \"#07090d\",\n  \"bgElevated\": \"#151922\",\n  \"surfaceHover\": \"#252c38\",\n  \"inputBg\": \"#1c222c\",\n  \"textHeading\": \"#ffffff\",\n  \"textBody\": \"#e8eaf0\",\n  \"textSecondary\": \"#c4c8d2\",\n  \"textMuted\": \"#9da4b2\",\n  \"brand\": \"#818cf8\",\n  \"brandHover\": \"#a5b4fc\",\n  \"textOnBrand\": \"#080b12\",\n  \"cardBg\": \"#151922\",\n  \"cardBorder\": \"#343c4a\",\n  \"controlBorder\": \"#687386\",\n  \"success\": \"#6ee7b7\",\n  \"error\": \"#ff909b\",\n  \"warning\": \"#fcd17a\",\n  \"info\": \"#93c5fd\"\n}\n```\n\n## Adicione um tema integrado com dois modos\n\nFaça um fork e crie uma branch específica. Use Node **24.15+ da série 24.x**, instale e compile:\n\n```bash\nnpm ci\nnpm run build\n```\n\n### Use o sistema de temas existente\n\n1. Adicione o ID a `THEME_OPTIONS` em `src/constants/appearance.ts` e a `ProjectTheme` em `src/domain/appearance/theme.ts`. O resolvedor usa o ID para escuro e `your-theme-light` para claro. Preserve Claro, Escuro e Sistema.\n2. Adicione o nome a `PROJECT_LABELS` em `src/screens/Settings/AppearanceSection.tsx`. Os temas vêm de `THEME_OPTIONS`; reutilize o seletor e o serviço de armazenamento.\n3. Defina os dois seletores em `src/styles/theme.css`, seguindo um tema como Coracle. Configure cores semânticas para fundos, texto, controles, foco, bordas e estados. Verifique valores herdados. Não inverta simplesmente a paleta nem adicione exceções por componente.\n\nTema e modo são armazenados separadamente em `appearanceTheme` e `appearanceMode`. Sistema acompanha o sistema operacional, inclusive com a extensão aberta. JSON personalizado e La Crypta têm paletas fixas. Não crie outro mecanismo de persistência.\n\n## Confira o resultado\n\nCarregue `dist/` como extensão descompactada no Chrome. Confira popup, introdução, configurações, aprovações e diálogos em Claro, Escuro e Sistema. Verifique foco, hover, seleção, desativado, erros, QR, textos longos e janelas estreitas. Busque contraste mínimo de 4.5:1 para texto normal e 3:1 para texto grande e controles relevantes. Meça pares reais, incluindo superfícies translúcidas.\n\nAmplie os testes existentes para seu tema e execute:\n\n```bash\nnode --import tsx --test tests/custom-theme.test.ts tests/theme-tokens.test.ts tests/theme-handoff.test.ts\nnpm run typecheck\nnpm run lint\nnpm run build\n./tests/run.sh\n```\n\n## Envie sua contribuição\n\nAbra um pull request com descrição, fontes ou licença da paleta, capturas dos dois modos com contas de demonstração e comandos executados. Mostre controles abertos e fechados. Não inclua builds, arquivos compactados, contas reais ou chaves privadas. Siga os padrões de contribuição e componentes.\n\n### Links de instalação opcionais\n\nSe o tema precisar de um link de instalação, atualize a lista permitida do site e a extensão, cobrindo os testes de transferência. JSON personalizado não pode vir pela URL. Preserve as escolhas existentes. Leia a documentação antes de alterar esse fluxo.\n\n## Referências\n\n- [CONTRIBUTING.md](https://github.com/nostr-wot/nostr-wot-extension/blob/main/CONTRIBUTING.md)\n- [Component standards](https://github.com/nostr-wot/nostr-wot-extension/blob/main/docs/component-standards.md)\n- [Theme CSS](https://github.com/nostr-wot/nostr-wot-extension/blob/main/src/styles/theme.css)\n- [Theme resolver and JSON validation](https://github.com/nostr-wot/nostr-wot-extension/blob/main/src/domain/appearance/theme.ts)\n- [Theme handoff](https://github.com/nostr-wot/nostr-wot-extension/blob/main/docs/theme-handoff.md)\n"
         }
       ],
       "tags": [
@@ -3523,6 +3656,7 @@
         "Configuracoes",
         "Configuração",
         "Contas",
+        "Desenvolvimento",
         "Endereco Lightning",
         "Extensão",
         "Formula",
@@ -3545,6 +3679,7 @@
         "Seguranca",
         "Segurança",
         "Settings",
+        "Temas",
         "Visualizacao",
         "Web of Trust",
         "WebLN",
@@ -4670,6 +4805,49 @@
           "difficulty": "beginner",
           "order": 21,
           "content": "\nОткройте настройки расширения, затем раздел внешнего вида и языка. Выберите нужный язык и подтвердите изменение.\n\n## 1. Откройте настройки\n\nОткройте расширение на панели браузера и при необходимости разблокируйте его. Нажмите значок шестерёнки. В английском интерфейсе нужный раздел называется **Appearance and language**.\n\n![Настройки на английском с пунктом Appearance and language внизу](/images/guides/change-language/01-settings.png)\n\n## 2. Откройте выбор языка\n\nНажмите **Language** под настройками темы. В этой строке указан текущий язык.\n\n![Пункт Language под настройками внешнего вида](/images/guides/change-language/02-appearance.png)\n\n## 3. Выберите язык и подтвердите\n\nПрокрутите или перетащите колесо, чтобы нужный язык оказался в центре. Можно также установить фокус на списке и использовать стрелки вверх и вниз. Заголовок показывает выбранный язык ещё до применения.\n\nДоступны **English, Español, Português, Deutsch, Français и Italiano**. Русского языка в расширении пока нет, хотя эта инструкция доступна на русском.\n\n![В колесе выбора языка выделен Español](/images/guides/change-language/03-spanish-selected.png)\n\nНажмите кнопку подтверждения. До подтверждения она остаётся на прежнем языке: в примере перехода с английского на испанский написано «Confirm». Если закрыть окно без подтверждения, прежний язык сохранится.\n\n## 4. Проверьте результат\n\nВ строке появится **Español**, а переведённые подписи обновятся. Выбор сохранится при следующем открытии расширения. Некоторые подписи настроек внешнего вида пока остаются на английском.\n\n![Сохранённый язык: Español](/images/guides/change-language/04-spanish-applied.png)\n\n## Как переключиться обратно\n\nВ испанском интерфейсе откройте **Idioma**, выберите **English** и нажмите **Confirmar**. Если язык меню вам незнаком, ищите значок шестерёнки.\n\nЭта настройка не переводит публикации или сообщения Nostr и не меняет аккаунты, ключи или разрешения. Язык сайта выбирается отдельно от языка расширения.\n\nСнимки экрана показывают переход с английского на испанский в демонстрационной установке.\n"
+        },
+        {
+          "slug": "create-extension-theme",
+          "title": "Создание светлых и тёмных тем для Nostr WoT",
+          "description": "Создайте палитру, добавьте светлый и тёмный варианты темы и внесите вклад в расширение Nostr WoT.",
+          "excerpt": "Создайте палитру, добавьте светлый и тёмный варианты темы и внесите вклад в расширение Nostr WoT.",
+          "date": "2026-10-01T00:00:00.000Z",
+          "author": {
+            "name": "Leon Acosta",
+            "avatar": "/authors/leon-profile.jpg"
+          },
+          "featuredImage": "/images/illustrations/developers.webp",
+          "previewImage": "/images/illustrations/developers.webp",
+          "tags": [
+            "Разработка",
+            "Темы"
+          ],
+          "published": true,
+          "readingTime": "3 min read",
+          "locale": "ru",
+          "translationKey": "create-extension-theme",
+          "translations": {
+            "en": "create-extension-theme",
+            "es": "create-extension-theme",
+            "pt": "create-extension-theme",
+            "ru": "create-extension-theme",
+            "it": "create-extension-theme",
+            "fr": "create-extension-theme",
+            "de": "create-extension-theme"
+          },
+          "availableLocales": [
+            "en",
+            "es",
+            "pt",
+            "ru",
+            "it",
+            "fr",
+            "de"
+          ],
+          "ogImage": "/images/illustrations/developers.webp",
+          "difficulty": "advanced",
+          "order": 30,
+          "content": "\n## Выберите подходящий путь\n\nДля своей установки откройте **Настройки → Оформление и язык → Create custom theme**. Вставьте JSON, выберите **Parse JSON**, затем **Apply custom theme**. JSON сохраняет одну палитру без автоматического переключения. Чтобы предложить оба режима, добавьте встроенную тему по шагам ниже.\n\n![Настройки оформления в демонстрационной установке на английском.](/images/guides/change-language/02-appearance.png)\n\n## Полная пользовательская палитра\n\nЭто начальная тёмная палитра редактора. Сохраните все 20 ключей. Начните с шестизначных HEX-цветов. Неизвестные ключи, отсутствующие цвета и произвольный CSS отклоняются. Также поддерживаются восьмизначные HEX-цвета и допустимый синтаксис rgb/rgba. Тема меняет оформление, а не разрешения.\n\n```json\n{\n  \"bgPage\": \"#0b0d12\",\n  \"bgPageSolid\": \"#0b0d12\",\n  \"bgHtml\": \"#07090d\",\n  \"bgElevated\": \"#151922\",\n  \"surfaceHover\": \"#252c38\",\n  \"inputBg\": \"#1c222c\",\n  \"textHeading\": \"#ffffff\",\n  \"textBody\": \"#e8eaf0\",\n  \"textSecondary\": \"#c4c8d2\",\n  \"textMuted\": \"#9da4b2\",\n  \"brand\": \"#818cf8\",\n  \"brandHover\": \"#a5b4fc\",\n  \"textOnBrand\": \"#080b12\",\n  \"cardBg\": \"#151922\",\n  \"cardBorder\": \"#343c4a\",\n  \"controlBorder\": \"#687386\",\n  \"success\": \"#6ee7b7\",\n  \"error\": \"#ff909b\",\n  \"warning\": \"#fcd17a\",\n  \"info\": \"#93c5fd\"\n}\n```\n\n## Добавьте встроенную тему с двумя режимами\n\nСоздайте форк и отдельную ветку. Используйте Node **24.15+ из серии 24.x**, установите зависимости и соберите проект:\n\n```bash\nnpm ci\nnpm run build\n```\n\n### Используйте существующую систему\n\n1. Добавьте ID в `THEME_OPTIONS` в `src/constants/appearance.ts` и в `ProjectTheme` в `src/domain/appearance/theme.ts`. Для тёмного режима используется ID, для светлого `your-theme-light`. Сохраните режимы Светлый, Тёмный и Системный.\n2. Добавьте название в `PROJECT_LABELS` в `src/screens/Settings/AppearanceSection.tsx`. Список строится из `THEME_OPTIONS`; используйте готовый селектор и сервис хранения.\n3. Задайте оба селектора в `src/styles/theme.css` по примеру Coracle. Настройте семантические цвета фонов, текста, элементов управления, фокуса, границ и состояний. Проверьте наследуемые значения. Не ограничивайтесь инверсией палитры и не добавляйте исключения для отдельных компонентов.\n\nТема и режим сохраняются отдельно в `appearanceTheme` и `appearanceMode`. Системный режим следует ОС, в том числе при открытом расширении. Пользовательский JSON и La Crypta имеют фиксированные палитры. Не создавайте другое хранилище.\n\n## Проверьте результат\n\nЗагрузите `dist/` как распакованное расширение в Chrome. Проверьте popup, начало работы, настройки, запросы и диалоги во всех трёх режимах. Проверьте клавиатурный фокус, наведение, выбор, отключённые состояния, ошибки, QR, длинный текст и узкие окна. Стремитесь к контрасту 4.5:1 для обычного текста и 3:1 для крупного текста и значимых элементов управления. Измеряйте реальные пары цветов, включая полупрозрачные поверхности.\n\nРасширьте существующие тесты для своей темы и выполните:\n\n```bash\nnode --import tsx --test tests/custom-theme.test.ts tests/theme-tokens.test.ts tests/theme-handoff.test.ts\nnpm run typecheck\nnpm run lint\nnpm run build\n./tests/run.sh\n```\n\n## Отправьте вклад\n\nОткройте pull request с описанием, источниками или лицензией палитры, скриншотами обоих режимов с демонстрационными аккаунтами и выполненными командами. Покажите раскрытые и закрытые элементы. Не добавляйте сборки, архивы, реальные данные аккаунтов или приватные ключи. Следуйте правилам участия и стандартам компонентов.\n\n### Необязательные ссылки установки\n\nЕсли теме нужна ссылка установки, обновите разрешённые темы сайта и расширение, а также тесты передачи. Пользовательский JSON нельзя передавать через URL. Существующие настройки должны сохраняться. Перед изменением прочитайте документацию.\n\n## Источники\n\n- [CONTRIBUTING.md](https://github.com/nostr-wot/nostr-wot-extension/blob/main/CONTRIBUTING.md)\n- [Component standards](https://github.com/nostr-wot/nostr-wot-extension/blob/main/docs/component-standards.md)\n- [Theme CSS](https://github.com/nostr-wot/nostr-wot-extension/blob/main/src/styles/theme.css)\n- [Theme resolver and JSON validation](https://github.com/nostr-wot/nostr-wot-extension/blob/main/src/domain/appearance/theme.ts)\n- [Theme handoff](https://github.com/nostr-wot/nostr-wot-extension/blob/main/docs/theme-handoff.md)\n"
         }
       ],
       "tags": [
@@ -4708,8 +4886,10 @@
         "Начало работы",
         "Начинающий",
         "Продвинутый",
+        "Разработка",
         "Разрешения",
         "Расширение",
+        "Темы",
         "Устойчивость",
         "Формула"
       ]
@@ -5833,6 +6013,49 @@
           "difficulty": "beginner",
           "order": 21,
           "content": "\nApri le impostazioni, poi la sezione dedicata all’aspetto e alla lingua. Scegli una lingua e conferma la selezione.\n\n## 1. Apri le impostazioni\n\nApri l’estensione dalla barra del browser e sbloccala se necessario. Premi l’ingranaggio delle impostazioni. Nell’interfaccia inglese, la sezione si chiama **Appearance and language**.\n\n![Impostazioni inglesi con Appearance and language in basso](/images/guides/change-language/01-settings.png)\n\n## 2. Apri il selettore della lingua\n\nScegli **Language** sotto i controlli del tema. La riga mostra la lingua attuale.\n\n![Language sotto i controlli dell’aspetto](/images/guides/change-language/02-appearance.png)\n\n## 3. Scegli e conferma\n\nScorri o trascina la rotella finché la lingua desiderata si trova al centro. Puoi anche portare il focus sulla lista e usare le frecce su e giù. Il titolo anticipa la scelta prima di applicarla.\n\nLe lingue disponibili sono **English, Español, Português, Deutsch, Français e Italiano**.\n\n![Español selezionato nella rotella delle lingue](/images/guides/change-language/03-spanish-selected.png)\n\nPremi il pulsante di conferma. Rimane nella lingua attuale fino alla conferma: nell’esempio da inglese a spagnolo mostra “Confirm”. Chiudendo il selettore senza confermare, mantieni la lingua precedente.\n\n## 4. Controlla il risultato\n\nLa riga mostra **Español** e le etichette tradotte si aggiornano. La scelta viene salvata per la prossima apertura dell’estensione. Alcune etichette dell’aspetto rimangono attualmente in inglese.\n\n![La lingua salvata è Español](/images/guides/change-language/04-spanish-applied.png)\n\n## Cambiala di nuovo quando vuoi\n\nPer tornare all’inglese dall’interfaccia spagnola, apri **Idioma**, seleziona **English** e premi **Confirmar**. Se non riconosci la lingua del menu, cerca l’ingranaggio delle impostazioni.\n\nQuesta preferenza non traduce post o messaggi Nostr e non modifica account, chiavi o permessi. La lingua del sito si imposta separatamente.\n\nLe schermate mostrano il passaggio dall’inglese allo spagnolo in un’installazione dimostrativa.\n"
+        },
+        {
+          "slug": "create-extension-theme",
+          "title": "Creare temi chiari e scuri per Nostr WoT",
+          "description": "Crea una palette personalizzata, aggiungi un tema chiaro e scuro e contribuisci all’estensione Nostr WoT.",
+          "excerpt": "Crea una palette personalizzata, aggiungi un tema chiaro e scuro e contribuisci all’estensione Nostr WoT.",
+          "date": "2026-10-01T00:00:00.000Z",
+          "author": {
+            "name": "Leon Acosta",
+            "avatar": "/authors/leon-profile.jpg"
+          },
+          "featuredImage": "/images/illustrations/developers.webp",
+          "previewImage": "/images/illustrations/developers.webp",
+          "tags": [
+            "Sviluppo",
+            "Temi"
+          ],
+          "published": true,
+          "readingTime": "3 min read",
+          "locale": "it",
+          "translationKey": "create-extension-theme",
+          "translations": {
+            "en": "create-extension-theme",
+            "es": "create-extension-theme",
+            "pt": "create-extension-theme",
+            "ru": "create-extension-theme",
+            "it": "create-extension-theme",
+            "fr": "create-extension-theme",
+            "de": "create-extension-theme"
+          },
+          "availableLocales": [
+            "en",
+            "es",
+            "pt",
+            "ru",
+            "it",
+            "fr",
+            "de"
+          ],
+          "ogImage": "/images/illustrations/developers.webp",
+          "difficulty": "advanced",
+          "order": 30,
+          "content": "\n## Scegli il percorso giusto\n\nPer la tua installazione, apri **Impostazioni → Aspetto e lingua → Create custom theme**. Incolla il JSON, scegli **Parse JSON** e poi **Apply custom theme**. Il JSON salva una sola palette, senza cambio automatico. Per offrire entrambi i modi, contribuisci con un tema integrato come descritto sotto.\n\n![Impostazioni di aspetto in un’installazione dimostrativa in inglese.](/images/guides/change-language/02-appearance.png)\n\n## Una palette personalizzata completa\n\nQuesta è la palette scura iniziale dell’editor. Mantieni tutte le 20 chiavi. Inizia con colori esadecimali di sei cifre. Chiavi sconosciute, colori mancanti e CSS arbitrario vengono rifiutati. Sono accettati anche esadecimali di otto cifre e la sintassi rgb/rgba supportata. Il tema cambia l’aspetto, non i permessi.\n\n```json\n{\n  \"bgPage\": \"#0b0d12\",\n  \"bgPageSolid\": \"#0b0d12\",\n  \"bgHtml\": \"#07090d\",\n  \"bgElevated\": \"#151922\",\n  \"surfaceHover\": \"#252c38\",\n  \"inputBg\": \"#1c222c\",\n  \"textHeading\": \"#ffffff\",\n  \"textBody\": \"#e8eaf0\",\n  \"textSecondary\": \"#c4c8d2\",\n  \"textMuted\": \"#9da4b2\",\n  \"brand\": \"#818cf8\",\n  \"brandHover\": \"#a5b4fc\",\n  \"textOnBrand\": \"#080b12\",\n  \"cardBg\": \"#151922\",\n  \"cardBorder\": \"#343c4a\",\n  \"controlBorder\": \"#687386\",\n  \"success\": \"#6ee7b7\",\n  \"error\": \"#ff909b\",\n  \"warning\": \"#fcd17a\",\n  \"info\": \"#93c5fd\"\n}\n```\n\n## Aggiungi un tema integrato con due modi\n\nCrea un fork e un branch dedicato. Usa Node **24.15+ della serie 24.x**, poi installa e compila:\n\n```bash\nnpm ci\nnpm run build\n```\n\n### Usa il sistema esistente\n\n1. Aggiungi l’ID a `THEME_OPTIONS` in `src/constants/appearance.ts` e a `ProjectTheme` in `src/domain/appearance/theme.ts`. Il risolutore usa l’ID per scuro e `your-theme-light` per chiaro. Conserva Chiaro, Scuro e Sistema.\n2. Aggiungi il nome a `PROJECT_LABELS` in `src/screens/Settings/AppearanceSection.tsx`. I temi derivano da `THEME_OPTIONS`; riutilizza selettore e servizio di archiviazione.\n3. Definisci entrambi i selettori in `src/styles/theme.css`, seguendo un tema come Coracle. Imposta colori semantici per sfondi, testo, controlli, focus, bordi e stati. Controlla anche i valori ereditati. Non invertire semplicemente la palette e non aggiungere eccezioni per componente.\n\nTema e modo sono salvati separatamente in `appearanceTheme` e `appearanceMode`. Sistema segue il sistema operativo anche con l’estensione aperta. JSON personalizzato e La Crypta hanno palette fisse. Non creare un’altra persistenza.\n\n## Controlla il risultato\n\nCarica `dist/` come estensione non pacchettizzata in Chrome. Controlla popup, benvenuto, impostazioni, approvazioni e dialoghi in Chiaro, Scuro e Sistema. Verifica focus, hover, selezione, disabilitato, errori, QR, testi lunghi e finestre strette. Punta a 4.5:1 per testo normale e 3:1 per testo grande e controlli significativi. Misura le coppie reali, incluse le superfici traslucide.\n\nEstendi i test esistenti per il tuo tema ed esegui:\n\n```bash\nnode --import tsx --test tests/custom-theme.test.ts tests/theme-tokens.test.ts tests/theme-handoff.test.ts\nnpm run typecheck\nnpm run lint\nnpm run build\n./tests/run.sh\n```\n\n## Invia il contributo\n\nApri una pull request con descrizione, fonti o licenza della palette, schermate di entrambi i modi con account dimostrativi e comandi eseguiti. Mostra controlli aperti e chiusi. Escludi build, archivi, account reali e chiavi private. Segui gli standard di contribuzione e componenti.\n\n### Link di installazione facoltativi\n\nSe serve un link di installazione, aggiorna la lista consentita del sito e l’estensione, con i test di passaggio. Il JSON personalizzato non può arrivare via URL. Mantieni sempre le scelte esistenti. Leggi la documentazione prima di modificare il flusso.\n\n## Riferimenti\n\n- [CONTRIBUTING.md](https://github.com/nostr-wot/nostr-wot-extension/blob/main/CONTRIBUTING.md)\n- [Component standards](https://github.com/nostr-wot/nostr-wot-extension/blob/main/docs/component-standards.md)\n- [Theme CSS](https://github.com/nostr-wot/nostr-wot-extension/blob/main/src/styles/theme.css)\n- [Theme resolver and JSON validation](https://github.com/nostr-wot/nostr-wot-extension/blob/main/src/domain/appearance/theme.ts)\n- [Theme handoff](https://github.com/nostr-wot/nostr-wot-extension/blob/main/docs/theme-handoff.md)\n"
         }
       ],
       "tags": [
@@ -5868,6 +6091,8 @@
         "Security",
         "Settings",
         "Sicurezza",
+        "Sviluppo",
+        "Temi",
         "Visualizzazione",
         "Wallet",
         "Web of Trust",
@@ -6993,6 +7218,49 @@
           "difficulty": "beginner",
           "order": 21,
           "content": "\nPour changer la langue, ouvrez les paramètres, puis la rubrique d’apparence et de langue. Choisissez **Langue**, sélectionnez une option et confirmez.\n\n## 1. Ouvrez les paramètres\n\nOuvrez l’extension depuis la barre du navigateur et déverrouillez-la si nécessaire. Cliquez sur l’engrenage des paramètres, puis sur la rubrique **Appearance and language** si l’interface est en anglais.\n\n![Paramètres en anglais avec Appearance and language en bas](/images/guides/change-language/01-settings.png)\n\n## 2. Ouvrez le sélecteur de langue\n\nChoisissez **Language** sous les réglages du thème. Cette ligne indique la langue actuelle.\n\n![Language sous les réglages d’apparence](/images/guides/change-language/02-appearance.png)\n\n## 3. Choisissez et confirmez\n\nFaites défiler ou glissez la roue pour centrer la langue souhaitée. Vous pouvez aussi placer le focus sur la liste et utiliser les flèches haut et bas. Le titre donne un aperçu du choix avant son application.\n\nLes langues disponibles sont **English, Español, Português, Deutsch, Français et Italiano**.\n\n![Español sélectionné dans la roue des langues](/images/guides/change-language/03-spanish-selected.png)\n\nAppuyez sur le bouton de confirmation. Il reste dans la langue actuelle jusqu’à la validation : dans cet exemple de l’anglais vers l’espagnol, il affiche « Confirm ». Fermer le sélecteur sans confirmer conserve la langue précédente.\n\n## 4. Vérifiez le résultat\n\nLa ligne indique désormais **Español** et les libellés traduits sont actualisés. Le choix est conservé à la prochaine ouverture de l’extension. Certains libellés d’apparence restent actuellement en anglais.\n\n![La langue enregistrée est Español](/images/guides/change-language/04-spanish-applied.png)\n\n## Changez à nouveau quand vous le souhaitez\n\nPour revenir à l’anglais depuis l’espagnol, ouvrez **Idioma**, sélectionnez **English**, puis **Confirmar**. Si la langue du menu vous est inconnue, repérez l’engrenage des paramètres.\n\nCe réglage ne traduit pas les publications ou messages Nostr et ne modifie pas vos comptes, clés ou permissions. La langue du site se règle séparément.\n\nLes captures montrent le passage de l’anglais à l’espagnol dans une installation de démonstration.\n"
+        },
+        {
+          "slug": "create-extension-theme",
+          "title": "Créer des thèmes clairs et sombres pour Nostr WoT",
+          "description": "Créez une palette personnalisée, ajoutez un thème clair et sombre et contribuez à l’extension Nostr WoT.",
+          "excerpt": "Créez une palette personnalisée, ajoutez un thème clair et sombre et contribuez à l’extension Nostr WoT.",
+          "date": "2026-10-01T00:00:00.000Z",
+          "author": {
+            "name": "Leon Acosta",
+            "avatar": "/authors/leon-profile.jpg"
+          },
+          "featuredImage": "/images/illustrations/developers.webp",
+          "previewImage": "/images/illustrations/developers.webp",
+          "tags": [
+            "Développement",
+            "Thèmes"
+          ],
+          "published": true,
+          "readingTime": "3 min read",
+          "locale": "fr",
+          "translationKey": "create-extension-theme",
+          "translations": {
+            "en": "create-extension-theme",
+            "es": "create-extension-theme",
+            "pt": "create-extension-theme",
+            "ru": "create-extension-theme",
+            "it": "create-extension-theme",
+            "fr": "create-extension-theme",
+            "de": "create-extension-theme"
+          },
+          "availableLocales": [
+            "en",
+            "es",
+            "pt",
+            "ru",
+            "it",
+            "fr",
+            "de"
+          ],
+          "ogImage": "/images/illustrations/developers.webp",
+          "difficulty": "advanced",
+          "order": 30,
+          "content": "\n## Choisir la bonne méthode\n\nPour votre installation, ouvrez **Paramètres → Apparence et langue → Create custom theme**. Collez le JSON, choisissez **Parse JSON**, puis **Apply custom theme**. Le JSON enregistre une seule palette, sans bascule automatique. Pour proposer les deux modes, contribuez à un thème intégré ci-dessous.\n\n![Paramètres d’apparence dans une installation de démonstration en anglais.](/images/guides/change-language/02-appearance.png)\n\n## Une palette personnalisée complète\n\nVoici la palette sombre initiale de l’éditeur. Gardez les 20 clés. Commencez avec des couleurs hexadécimales à six chiffres. Les clés inconnues, couleurs manquantes et CSS arbitraire sont refusés. L’hexadécimal à huit chiffres et la syntaxe rgb/rgba prise en charge sont aussi acceptés. Un thème change l’apparence, pas les permissions.\n\n```json\n{\n  \"bgPage\": \"#0b0d12\",\n  \"bgPageSolid\": \"#0b0d12\",\n  \"bgHtml\": \"#07090d\",\n  \"bgElevated\": \"#151922\",\n  \"surfaceHover\": \"#252c38\",\n  \"inputBg\": \"#1c222c\",\n  \"textHeading\": \"#ffffff\",\n  \"textBody\": \"#e8eaf0\",\n  \"textSecondary\": \"#c4c8d2\",\n  \"textMuted\": \"#9da4b2\",\n  \"brand\": \"#818cf8\",\n  \"brandHover\": \"#a5b4fc\",\n  \"textOnBrand\": \"#080b12\",\n  \"cardBg\": \"#151922\",\n  \"cardBorder\": \"#343c4a\",\n  \"controlBorder\": \"#687386\",\n  \"success\": \"#6ee7b7\",\n  \"error\": \"#ff909b\",\n  \"warning\": \"#fcd17a\",\n  \"info\": \"#93c5fd\"\n}\n```\n\n## Ajouter un thème intégré à deux modes\n\nCréez un fork et une branche dédiée. Utilisez Node **24.15+ dans la série 24.x**, puis installez et compilez :\n\n```bash\nnpm ci\nnpm run build\n```\n\n### Utiliser le système existant\n\n1. Ajoutez l’identifiant à `THEME_OPTIONS` dans `src/constants/appearance.ts` et à `ProjectTheme` dans `src/domain/appearance/theme.ts`. Le résolveur utilise cet ID pour sombre et `your-theme-light` pour clair. Conservez Clair, Sombre et Système.\n2. Ajoutez le nom à `PROJECT_LABELS` dans `src/screens/Settings/AppearanceSection.tsx`. Les choix viennent de `THEME_OPTIONS` ; réutilisez le sélecteur et le service de stockage.\n3. Définissez les deux sélecteurs dans `src/styles/theme.css`, en suivant un thème comme Coracle. Définissez les couleurs sémantiques des fonds, textes, contrôles, focus, bordures et états. Vérifiez aussi les valeurs héritées. Évitez l’inversion automatique et les exceptions par composant.\n\nThème et mode sont stockés séparément dans `appearanceTheme` et `appearanceMode`. Système suit le système d’exploitation, même quand l’extension reste ouverte. JSON personnalisé et La Crypta ont une palette fixe. Ne créez pas un autre stockage.\n\n## Vérifier le résultat\n\nChargez `dist/` comme extension non empaquetée dans Chrome. Vérifiez popup, accueil, paramètres, demandes et dialogues en Clair, Sombre et Système. Testez focus clavier, survol, sélection, désactivation, erreurs, QR, textes longs et fenêtres étroites. Visez 4.5:1 pour le texte normal et 3:1 pour le grand texte et les contrôles significatifs. Mesurez les paires réelles, y compris les surfaces translucides.\n\nComplétez les tests existants pour votre thème, puis lancez :\n\n```bash\nnode --import tsx --test tests/custom-theme.test.ts tests/theme-tokens.test.ts tests/theme-handoff.test.ts\nnpm run typecheck\nnpm run lint\nnpm run build\n./tests/run.sh\n```\n\n## Proposer votre contribution\n\nOuvrez une pull request avec description, sources ou licence de la palette, captures des deux modes sur des comptes de démonstration et commandes exécutées. Montrez les contrôles ouverts et fermés. Excluez builds, archives, comptes réels et clés privées. Suivez les conventions de contribution et de composants.\n\n### Liens d’installation facultatifs\n\nSi votre thème nécessite un lien d’installation, mettez à jour la liste autorisée du site et l’extension, avec les tests de transfert. Le JSON personnalisé ne peut pas passer par l’URL. Préservez toujours les choix existants. Lisez la documentation avant de modifier ce parcours.\n\n## Références\n\n- [CONTRIBUTING.md](https://github.com/nostr-wot/nostr-wot-extension/blob/main/CONTRIBUTING.md)\n- [Component standards](https://github.com/nostr-wot/nostr-wot-extension/blob/main/docs/component-standards.md)\n- [Theme CSS](https://github.com/nostr-wot/nostr-wot-extension/blob/main/src/styles/theme.css)\n- [Theme resolver and JSON validation](https://github.com/nostr-wot/nostr-wot-extension/blob/main/src/domain/appearance/theme.ts)\n- [Theme handoff](https://github.com/nostr-wot/nostr-wot-extension/blob/main/docs/theme-handoff.md)\n"
         }
       ],
       "tags": [
@@ -7007,6 +7275,7 @@
         "Concepts",
         "Configuration",
         "Debutant",
+        "Développement",
         "Extension",
         "Formule",
         "Graphe de confiance",
@@ -7028,6 +7297,7 @@
         "Security",
         "Settings",
         "Sécurité",
+        "Thèmes",
         "Vie privee",
         "Visualisation",
         "Web of Trust",
@@ -8153,6 +8423,49 @@
           "difficulty": "beginner",
           "order": 21,
           "content": "\nÖffne die Einstellungen und dort den Bereich für Darstellung und Sprache. Wähle die gewünschte Sprache und bestätige deine Auswahl.\n\n## 1. Einstellungen öffnen\n\nÖffne die Erweiterung über die Browserleiste und entsperre sie bei Bedarf. Klicke auf das Zahnrad für die Einstellungen. In der englischen Oberfläche heißt der gesuchte Bereich **Appearance and language**.\n\n![Englische Einstellungen mit Appearance and language unten](/images/guides/change-language/01-settings.png)\n\n## 2. Sprachauswahl öffnen\n\nWähle **Language** unter den Theme-Einstellungen. Die Zeile zeigt die aktuelle Sprache.\n\n![Language unter den Darstellungseinstellungen](/images/guides/change-language/02-appearance.png)\n\n## 3. Auswählen und bestätigen\n\nScrolle oder ziehe das Auswahlrad, bis die gewünschte Sprache in der Mitte steht. Du kannst auch die Liste fokussieren und die Pfeiltasten nach oben und unten verwenden. Die Überschrift zeigt deine Auswahl bereits vor dem Bestätigen an.\n\nVerfügbar sind **English, Español, Português, Deutsch, Français und Italiano**.\n\n![Español ist im Auswahlrad ausgewählt](/images/guides/change-language/03-spanish-selected.png)\n\nDrücke die Schaltfläche zum Bestätigen. Sie bleibt bis dahin in der bisherigen Sprache: Beim gezeigten Wechsel von Englisch zu Spanisch steht dort „Confirm“. Wenn du den Dialog ohne Bestätigung schließt, bleibt die bisherige Sprache erhalten.\n\n## 4. Ergebnis prüfen\n\nDie Zeile zeigt nun **Español**, und übersetzte Beschriftungen werden aktualisiert. Die Auswahl bleibt beim nächsten Öffnen der Erweiterung gespeichert. Einige Beschriftungen zur Darstellung bleiben derzeit auf Englisch.\n\n![Die gespeicherte Sprache ist Español](/images/guides/change-language/04-spanish-applied.png)\n\n## Jederzeit zurückwechseln\n\nÖffne in der spanischen Oberfläche **Idioma**, wähle **English** und drücke **Confirmar**. Wenn du die Menüsprache nicht kennst, orientiere dich am Zahnrad für die Einstellungen.\n\nDie Einstellung übersetzt keine Nostr-Beiträge oder Nachrichten und verändert keine Konten, Schlüssel oder Berechtigungen. Die Sprache der Website wird separat eingestellt.\n\nDie Bilder zeigen den Wechsel von Englisch zu Spanisch in einer Demo-Installation.\n"
+        },
+        {
+          "slug": "create-extension-theme",
+          "title": "Helle und dunkle Themes für Nostr WoT erstellen",
+          "description": "Erstelle eine eigene Palette, ergänze ein helles und dunkles Theme und trage zur Nostr-WoT-Erweiterung bei.",
+          "excerpt": "Erstelle eine eigene Palette, ergänze ein helles und dunkles Theme und trage zur Nostr-WoT-Erweiterung bei.",
+          "date": "2026-10-01T00:00:00.000Z",
+          "author": {
+            "name": "Leon Acosta",
+            "avatar": "/authors/leon-profile.jpg"
+          },
+          "featuredImage": "/images/illustrations/developers.webp",
+          "previewImage": "/images/illustrations/developers.webp",
+          "tags": [
+            "Entwicklung",
+            "Themes"
+          ],
+          "published": true,
+          "readingTime": "3 min read",
+          "locale": "de",
+          "translationKey": "create-extension-theme",
+          "translations": {
+            "en": "create-extension-theme",
+            "es": "create-extension-theme",
+            "pt": "create-extension-theme",
+            "ru": "create-extension-theme",
+            "it": "create-extension-theme",
+            "fr": "create-extension-theme",
+            "de": "create-extension-theme"
+          },
+          "availableLocales": [
+            "en",
+            "es",
+            "pt",
+            "ru",
+            "it",
+            "fr",
+            "de"
+          ],
+          "ogImage": "/images/illustrations/developers.webp",
+          "difficulty": "advanced",
+          "order": 30,
+          "content": "\n## Den passenden Weg wählen\n\nÖffne für deine Installation **Einstellungen → Darstellung und Sprache → Create custom theme**. Füge das JSON ein, wähle **Parse JSON** und dann **Apply custom theme**. JSON speichert eine einzelne Palette ohne automatischen Wechsel. Für beide Modi kannst du wie unten beschrieben ein integriertes Theme beitragen.\n\n![Darstellungseinstellungen einer Demo-Installation auf Englisch.](/images/guides/change-language/02-appearance.png)\n\n## Eine vollständige eigene Palette\n\nDies ist die dunkle Startpalette des Editors. Behalte alle 20 Schlüssel. Beginne mit sechsstelligen Hex-Farben. Unbekannte Schlüssel, fehlende Farben und beliebiges CSS werden abgelehnt. Auch achtstellige Hex-Farben und die unterstützte rgb/rgba-Syntax sind erlaubt. Ein Theme verändert die Darstellung, nicht die Berechtigungen.\n\n```json\n{\n  \"bgPage\": \"#0b0d12\",\n  \"bgPageSolid\": \"#0b0d12\",\n  \"bgHtml\": \"#07090d\",\n  \"bgElevated\": \"#151922\",\n  \"surfaceHover\": \"#252c38\",\n  \"inputBg\": \"#1c222c\",\n  \"textHeading\": \"#ffffff\",\n  \"textBody\": \"#e8eaf0\",\n  \"textSecondary\": \"#c4c8d2\",\n  \"textMuted\": \"#9da4b2\",\n  \"brand\": \"#818cf8\",\n  \"brandHover\": \"#a5b4fc\",\n  \"textOnBrand\": \"#080b12\",\n  \"cardBg\": \"#151922\",\n  \"cardBorder\": \"#343c4a\",\n  \"controlBorder\": \"#687386\",\n  \"success\": \"#6ee7b7\",\n  \"error\": \"#ff909b\",\n  \"warning\": \"#fcd17a\",\n  \"info\": \"#93c5fd\"\n}\n```\n\n## Ein integriertes Theme mit zwei Modi ergänzen\n\nErstelle einen Fork und einen eigenen Branch. Verwende Node **24.15+ aus der Reihe 24.x**, installiere und baue:\n\n```bash\nnpm ci\nnpm run build\n```\n\n### Das vorhandene System verwenden\n\n1. Ergänze die ID in `THEME_OPTIONS` unter `src/constants/appearance.ts` und in `ProjectTheme` unter `src/domain/appearance/theme.ts`. Der Resolver nutzt die ID für dunkel und `your-theme-light` für hell. Behalte Hell, Dunkel und System bei.\n2. Ergänze den Namen in `PROJECT_LABELS` unter `src/screens/Settings/AppearanceSection.tsx`. Die Auswahl entsteht aus `THEME_OPTIONS`; verwende den vorhandenen Selektor und Speicherdienst.\n3. Definiere beide Selektoren in `src/styles/theme.css` nach einem Theme wie Coracle. Setze semantische Farben für Hintergründe, Text, Bedienelemente, Fokus, Ränder und Zustände. Prüfe geerbte Werte. Invertiere die Palette nicht einfach und vermeide Ausnahmen pro Komponente.\n\nTheme und Modus liegen getrennt in `appearanceTheme` und `appearanceMode`. System folgt dem Betriebssystem auch bei geöffneter Erweiterung. Eigenes JSON und La Crypta haben feste Paletten. Führe keinen zweiten Speichermechanismus ein.\n\n## Das Ergebnis prüfen\n\nLade `dist/` als entpackte Erweiterung in Chrome. Prüfe Popup, Einführung, Einstellungen, Freigaben und Dialoge in Hell, Dunkel und System. Prüfe Tastaturfokus, Hover, Auswahl, deaktivierte Zustände, Fehler, QR-Codes, lange Texte und schmale Fenster. Ziele auf 4.5:1 für normalen Text und 3:1 für großen Text und bedeutungstragende Bedienelemente. Miss echte Farbpaare samt halbtransparenten Flächen.\n\nErweitere die vorhandenen Tests für dein Theme und führe sie aus:\n\n```bash\nnode --import tsx --test tests/custom-theme.test.ts tests/theme-tokens.test.ts tests/theme-handoff.test.ts\nnpm run typecheck\nnpm run lint\nnpm run build\n./tests/run.sh\n```\n\n## Deinen Beitrag einreichen\n\nÖffne einen Pull Request mit Beschreibung, Quellen oder Lizenz der Palette, Screenshots beider Modi mit Demo-Konten und ausgeführten Befehlen. Zeige geöffnete und geschlossene Bedienelemente. Keine Builds, Archive, echten Kontodaten oder privaten Schlüssel committen. Beachte die Beitrags- und Komponentenstandards.\n\n### Optionale Installationslinks\n\nBraucht das Theme einen Installationslink, aktualisiere auch die erlaubten Themes der Website und die Übergabetests. Eigenes JSON darf nicht per URL übergeben werden. Bestehende Einstellungen bleiben erhalten. Lies die Dokumentation, bevor du den Ablauf änderst.\n\n## Quellen\n\n- [CONTRIBUTING.md](https://github.com/nostr-wot/nostr-wot-extension/blob/main/CONTRIBUTING.md)\n- [Component standards](https://github.com/nostr-wot/nostr-wot-extension/blob/main/docs/component-standards.md)\n- [Theme CSS](https://github.com/nostr-wot/nostr-wot-extension/blob/main/src/styles/theme.css)\n- [Theme resolver and JSON validation](https://github.com/nostr-wot/nostr-wot-extension/blob/main/src/domain/appearance/theme.ts)\n- [Theme handoff](https://github.com/nostr-wot/nostr-wot-extension/blob/main/docs/theme-handoff.md)\n"
         }
       ],
       "tags": [
@@ -8164,6 +8477,7 @@
         "Berechtigungen",
         "Datenschutz",
         "Einrichtung",
+        "Entwicklung",
         "Erweiterung",
         "Formel",
         "Fortgeschritten",
@@ -8184,6 +8498,7 @@
         "Security",
         "Settings",
         "Sicherheit",
+        "Themes",
         "Trust-Graph",
         "Vertrauenseinstellungen",
         "Visualisierung",

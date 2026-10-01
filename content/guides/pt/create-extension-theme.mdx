@@ -1,0 +1,105 @@
+---
+{
+  "title": "Criar temas claros e escuros para Nostr WoT",
+  "description": "Crie uma paleta personalizada, adicione um tema claro e escuro e contribua com a extensão Nostr WoT.",
+  "excerpt": "Crie uma paleta personalizada, adicione um tema claro e escuro e contribua com a extensão Nostr WoT.",
+  "date": "2026-10-01",
+  "author": {
+    "name": "Leon Acosta",
+    "avatar": "/authors/leon-profile.jpg"
+  },
+  "featuredImage": "/images/illustrations/developers.webp",
+  "previewImage": "/images/illustrations/developers.webp",
+  "ogImage": "/images/illustrations/developers.webp",
+  "tags": [
+    "Desenvolvimento",
+    "Temas"
+  ],
+  "published": true,
+  "translationKey": "create-extension-theme",
+  "difficulty": "advanced",
+  "order": 30
+}
+---
+
+## Escolha o caminho certo
+
+Para sua instalação, abra **Configurações → Aparência e idioma → Create custom theme**. Cole o JSON, escolha **Parse JSON** e depois **Apply custom theme**. O JSON salva uma paleta e não alterna automaticamente entre claro e escuro. Para oferecer os dois modos, contribua com um tema integrado seguindo os passos abaixo.
+
+![Configurações de aparência em uma instalação de demonstração em inglês.](/images/guides/change-language/02-appearance.png)
+
+## Uma paleta personalizada completa
+
+Esta é a paleta escura inicial do editor. Mantenha as 20 chaves. Comece com cores hexadecimais de seis dígitos. Chaves desconhecidas, cores ausentes e CSS arbitrário são rejeitados. Hexadecimal de oito dígitos e a sintaxe rgb/rgba suportada também são aceitos. Um tema muda a aparência, não as permissões.
+
+```json
+{
+  "bgPage": "#0b0d12",
+  "bgPageSolid": "#0b0d12",
+  "bgHtml": "#07090d",
+  "bgElevated": "#151922",
+  "surfaceHover": "#252c38",
+  "inputBg": "#1c222c",
+  "textHeading": "#ffffff",
+  "textBody": "#e8eaf0",
+  "textSecondary": "#c4c8d2",
+  "textMuted": "#9da4b2",
+  "brand": "#818cf8",
+  "brandHover": "#a5b4fc",
+  "textOnBrand": "#080b12",
+  "cardBg": "#151922",
+  "cardBorder": "#343c4a",
+  "controlBorder": "#687386",
+  "success": "#6ee7b7",
+  "error": "#ff909b",
+  "warning": "#fcd17a",
+  "info": "#93c5fd"
+}
+```
+
+## Adicione um tema integrado com dois modos
+
+Faça um fork e crie uma branch específica. Use Node **24.15+ da série 24.x**, instale e compile:
+
+```bash
+npm ci
+npm run build
+```
+
+### Use o sistema de temas existente
+
+1. Adicione o ID a `THEME_OPTIONS` em `src/constants/appearance.ts` e a `ProjectTheme` em `src/domain/appearance/theme.ts`. O resolvedor usa o ID para escuro e `your-theme-light` para claro. Preserve Claro, Escuro e Sistema.
+2. Adicione o nome a `PROJECT_LABELS` em `src/screens/Settings/AppearanceSection.tsx`. Os temas vêm de `THEME_OPTIONS`; reutilize o seletor e o serviço de armazenamento.
+3. Defina os dois seletores em `src/styles/theme.css`, seguindo um tema como Coracle. Configure cores semânticas para fundos, texto, controles, foco, bordas e estados. Verifique valores herdados. Não inverta simplesmente a paleta nem adicione exceções por componente.
+
+Tema e modo são armazenados separadamente em `appearanceTheme` e `appearanceMode`. Sistema acompanha o sistema operacional, inclusive com a extensão aberta. JSON personalizado e La Crypta têm paletas fixas. Não crie outro mecanismo de persistência.
+
+## Confira o resultado
+
+Carregue `dist/` como extensão descompactada no Chrome. Confira popup, introdução, configurações, aprovações e diálogos em Claro, Escuro e Sistema. Verifique foco, hover, seleção, desativado, erros, QR, textos longos e janelas estreitas. Busque contraste mínimo de 4.5:1 para texto normal e 3:1 para texto grande e controles relevantes. Meça pares reais, incluindo superfícies translúcidas.
+
+Amplie os testes existentes para seu tema e execute:
+
+```bash
+node --import tsx --test tests/custom-theme.test.ts tests/theme-tokens.test.ts tests/theme-handoff.test.ts
+npm run typecheck
+npm run lint
+npm run build
+./tests/run.sh
+```
+
+## Envie sua contribuição
+
+Abra um pull request com descrição, fontes ou licença da paleta, capturas dos dois modos com contas de demonstração e comandos executados. Mostre controles abertos e fechados. Não inclua builds, arquivos compactados, contas reais ou chaves privadas. Siga os padrões de contribuição e componentes.
+
+### Links de instalação opcionais
+
+Se o tema precisar de um link de instalação, atualize a lista permitida do site e a extensão, cobrindo os testes de transferência. JSON personalizado não pode vir pela URL. Preserve as escolhas existentes. Leia a documentação antes de alterar esse fluxo.
+
+## Referências
+
+- [CONTRIBUTING.md](https://github.com/nostr-wot/nostr-wot-extension/blob/main/CONTRIBUTING.md)
+- [Component standards](https://github.com/nostr-wot/nostr-wot-extension/blob/main/docs/component-standards.md)
+- [Theme CSS](https://github.com/nostr-wot/nostr-wot-extension/blob/main/src/styles/theme.css)
+- [Theme resolver and JSON validation](https://github.com/nostr-wot/nostr-wot-extension/blob/main/src/domain/appearance/theme.ts)
+- [Theme handoff](https://github.com/nostr-wot/nostr-wot-extension/blob/main/docs/theme-handoff.md)

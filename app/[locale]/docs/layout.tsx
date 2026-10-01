@@ -80,6 +80,7 @@ export default async function DocsLayout({ children }: DocsLayoutProps) {
     {
       title: t("sidebar.resources"),
       links: [
+        { href: "/guides/create-extension-theme", label: t("hub.themeTitle") },
         { href: "/download", label: t("sidebar.extensionGuide") },
         { href: "/oracle", label: t("sidebar.oracleGuide") },
       ],
