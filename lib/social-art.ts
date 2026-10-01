@@ -6,7 +6,7 @@ export const GUIDE_ART_IDS = [
   'site-permissions', 'turn-on-post-quantum-keys', 'understanding-wot', 'what-is-nostr',
   'why-nostr-is-resilient', 'wot-playground', 'zapping-auto-approve',
   'create-nostr-account', 'import-nostr-account', 'watch-only-nostr-account',
-  'connect-nostr-signer', 'backend-authentication', 'relay-authentication',
+  'connect-nostr-signer', 'backend-authentication', 'relay-authentication', 'change-language',
 ] as const;
 export const PAGE_ART_IDS = ['home', 'guides', 'extension', 'oracle', 'developers', 'community', 'editorial', 'privacy'] as const;
 export type SocialArtId = typeof GUIDE_ART_IDS[number] | typeof PAGE_ART_IDS[number];
