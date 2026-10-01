@@ -1,5 +1,7 @@
 "use client";
 
+import { FeaturedArtwork } from '@/components/illustrations/FeaturedArtwork';
+
 import { useState, useEffect, useCallback } from "react";
 import { useTranslations } from "next-intl";
 import { Input, TextArea, Button, Card, Badge, ScrollReveal } from "@/components/ui";
@@ -111,11 +113,14 @@ export default function ContactContent() {
       {/* Hero */}
       <section className="py-16 bg-gradient-to-b from-gray-50 to-white dark:from-gray-900 dark:to-gray-950">
         <ScrollReveal animation="fade-up">
-          <div className="max-w-4xl mx-auto px-6 text-center">
-            <h1 className="text-4xl font-bold mb-4">{t("hero.title")}</h1>
-            <p className="text-xl text-gray-600 dark:text-gray-400">
-              {t("hero.subtitle")}
-            </p>
+          <div className="max-w-4xl mx-auto px-6 grid items-center gap-8 md:grid-cols-[1fr_280px] text-center md:text-left">
+            <div>
+              <h1 className="text-4xl font-bold mb-4">{t("hero.title")}</h1>
+              <p className="text-xl text-gray-600 dark:text-gray-400">
+                {t("hero.subtitle")}
+              </p>
+            </div>
+            <FeaturedArtwork art="community" />
           </div>
         </ScrollReveal>
       </section>

@@ -1,3 +1,4 @@
+import { FeaturedArtwork } from '@/components/illustrations/FeaturedArtwork';
 import { serializeJsonLd } from '@/lib/serialize-jsonld';
 import { withMetadataPolicy } from '@/lib/metadata-policy';
 import type { Metadata } from "next";
@@ -168,6 +169,7 @@ export default async function OraclePage() {
             <LinkButton href="/docs/oracle" variant="secondary">{t("hero.apiDocs")}</LinkButton>
           </div>
         </div>
+      <div className="mt-10 px-6"><FeaturedArtwork art="oracle" /></div>
       </section>
 
       {/* What It Does */}

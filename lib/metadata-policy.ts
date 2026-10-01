@@ -1,4 +1,5 @@
 import type { Metadata } from 'next';
+import { socialArtForUrl, type SocialArtId } from '@/lib/social-art';
 import { defaultLocale, locales, type Locale } from '@/i18n/config';
 
 // Editorial limits requested for this site, including social cards. These are
@@ -59,10 +60,10 @@ export function seoText(title: string, description: string, locale: Locale = def
   };
 }
 
-export function previewImageUrl(title: string, description: string, locale: Locale = defaultLocale) {
+export function previewImageUrl(title: string, description: string, locale: Locale = defaultLocale, art: SocialArtId = 'home') {
   const base = process.env.NEXT_PUBLIC_BASE_URL || 'https://nostr-wot.com';
   const copy = seoText(title, description, locale);
-  return `${base}/social-preview.png?${new URLSearchParams({ ...copy, locale })}`;
+  return `${base}/social-preview.png?${new URLSearchParams({ ...copy, locale, art })}`;
 }
 
 function titleText(title: Metadata['title']): string {
@@ -74,9 +75,12 @@ function titleText(title: Metadata['title']): string {
 
 export function normalizeMetadata(metadata: Metadata, locale: Locale): Metadata {
   const { title, description } = seoText(titleText(metadata.title), metadata.description || '', locale);
-  const image = previewImageUrl(title, description, locale);
   const canonical = metadata.alternates?.canonical;
   const canonicalUrl = canonical && typeof canonical === 'object' && 'url' in canonical ? canonical.url : canonical;
+  const english = metadata.alternates?.languages?.en;
+  const englishUrl = english && typeof english === 'object' && 'url' in english ? english.url : english;
+  const art = socialArtForUrl(englishUrl || canonicalUrl);
+  const image = previewImageUrl(title, description, locale, art);
   return {
     ...metadata,
     // An absolute title prevents a parent template silently exceeding 57.
