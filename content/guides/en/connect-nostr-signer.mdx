@@ -1,0 +1,46 @@
+---
+title: "Connect a Nostr signer with a QR code"
+description: "Use Nostr Connect to pair the extension with an external NIP-46 signer. Scan the QR code, approve the connection and keep signing in your signer."
+excerpt: "Use Nostr Connect to pair the extension with an external NIP-46 signer. Scan the QR code, approve the connection and keep signing in your signer."
+date: "2026-09-30"
+author: {"name": "Leon Acosta", "avatar": "/authors/leon-profile.jpg", "npub": "npub1gxdhmu9swqduwhr6zptjy4ya693zp3ql28nemy4hd97kuufyrqdqwe5zfk"}
+featuredImage: "/images/guides/getting-started/featured.svg"
+previewImage: "/images/guides/getting-started/preview.svg"
+tags: ["Extension", "Identity", "Setup"]
+published: true
+seoTitle: "Connect a Nostr signer with a QR code"
+seoDescription: "Use Nostr Connect to pair the extension with an external NIP-46 signer. Scan the QR code, approve the connection and keep signing in your signer."
+ogImage: "/images/guides/getting-started/og.jpg"
+translationKey: "connect-nostr-signer"
+difficulty: "beginner"
+order: 1.4
+updated: "2026-10-01"
+---
+
+Choose **Nostr Connect** when your Nostr identity is controlled by an external NIP-46 signer. The extension connects to that signer; your identity's signing key stays with it.
+
+## Before you begin
+
+Have your signer available and unlocked, with the identity you intend to use. It must support the NIP-46 connection method offered here. You do not need to paste your private key into the extension for this flow.
+
+## Connect by scanning the QR code
+
+1. Open the extension popup and select **Nostr Connect** from the setup methods.
+2. Keep the **QR Code** tab selected. Wait for the code to appear and the **Waiting for connection...** status.
+3. In your signer, open its connection or QR-scanning function and scan the code displayed by this extension. Use the signer's instructions if its controls have different names.
+4. Review the connection request in your signer, confirm the intended identity and approve it there.
+5. Wait for the extension to recognize the connection and advance. Set or unlock the local vault when prompted, then finish setup and check that the displayed public key matches your signer identity.
+
+## If scanning is not available
+
+**Copy URI** provides the same connection request for a signer that supports opening a Nostr Connect URI. If your signer supplies a `bunker://` connection address instead, use the separate **Bunker URL** tab. Choose the tab that matches the connection method supported by your signer.
+
+## If the connection expires
+
+Keep the signer available and check its pending requests. If the extension displays a timeout or failure, select **Try again** and scan the fresh code. An old screenshot is not a reusable recovery backup.
+
+Keep your signer and its own recovery backup accessible. An extension vault password cannot recover a private key held by an external signer.
+
+[Compare all four setup methods](/guides/getting-started), or learn how to [review site permissions](/guides/site-permissions).
+
+QR Code and Bunker URL are separate tabs, with space before their content. Switch to Bunker URL to paste the connection supplied by your signer. Never paste an nsec or recovery phrase into that field.

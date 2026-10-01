@@ -20,88 +20,37 @@ ogImage: "/images/guides/site-permissions/og.jpg"
 translationKey: "site-permissions"
 difficulty: "intermediate"
 order: 8
+updated: "2026-10-01"
 ---
 
-Ogni sito web che interagisce con l'estensione ha bisogno del tuo permesso. L'estensione non concede accesso indiscriminato alle tue chiavi o al portafoglio — ogni sito ottiene il proprio ambito di permessi. Questa guida spiega come gestire questi permessi in modo efficace.
+Consenso di connessione, regole di firma e permessi di autenticazione sono controlli distinti. Apri **Permessi** per l’account attivo.
 
-## Come Funzionano i Permessi
+## Regole globali e sito attuale
 
-Quando un sito web tenta di accedere al signer NIP-07 o al provider WebLN dell'estensione, l'estensione verifica se quel sito ha il permesso. Se non lo ha, vedi un prompt che ti chiede di approvare o negare la richiesta.
+**Regole globali** definisce valori predefiniti per siti collegati e account. **Regole per sito** apre la pagina della scheda attuale, non un elenco di siti salvati. Visita una pagina web se richiesto. Il collegamento di gestione permessi nella dashboard apre lo stesso editor.
 
-Ogni decisione sui permessi è memorizzata per sito. Approvare la firma su Primal non concede automaticamente la firma su Snort. Costruisci una whitelist di siti fidati, uno alla volta.
+Regole globali precede Regole per sito nel menu. **Aggiungi regola** è a destra del nome del sito. Il pulsante **Regole globali** in basso apre i valori condivisi; **Vai alle regole del sito attuale** appare sotto il loro contenuto. Indietro torna a Permessi se sei entrato da quel menu.
 
-{/* TODO: Screenshot del popup di richiesta permesso per un nuovo sito */}
+Le righe grigie ereditano regole globali visibili; quelle colorate sono eccezioni per account e sito. Modificare una regola ereditata crea un’eccezione; usare il valore ereditato la rimuove. Le vecchie regole condivise migrano una volta; scelte diverse per sito restano eccezioni visibili.
 
-## Tipi di Permesso
+## Modificare o ripristinare
 
-L'estensione gestisce diversi permessi distinti per ogni sito.
+Aggiungi un’azione con **Consenti**, **Nega** o **Chiedi**. Un’eccezione sostituisce la regola globale corrispondente. Un rifiuto più ampio può ancora valere e va modificato separatamente. Le regole riguardano chiavi pubbliche, tipi di eventi e cifratura; non collegano nuovi siti né sostituiscono l’autenticazione backend o relay.
 
-### Lettura della Chiave Pubblica
+Ripristinare le eccezioni del sito richiede conferma, elimina quelle dell’account attivo e mantiene aperto l’editor con le sole globali in grigio. Questo può riattivare un permesso globale. Ripristinare tutte le eccezioni degli account nelle Regole globali richiede conferma e conserva le globali. I permessi di autenticazione restano separati.
 
-Permette al sito di vedere la tua chiave pubblica (npub). Questo è il permesso più basilare — il sito può identificarti ma non può fare nulla per tuo conto.
+Un sito attuale rifiutato apre l’editor della durata: una settimana, un mese, un anno o per sempre. Rimuovere il rifiuto permette nuove richieste; non collega né autorizza il sito.
 
-### Firma degli Eventi
+## Esaminare le richieste
 
-Permette al sito di richiedere firme di eventi tramite NIP-07. Ciò significa che il sito può chiederti di firmare note, aggiornamenti del profilo, reazioni e altri eventi Nostr. Vedrai comunque un prompt di conferma per ogni richiesta di firma a meno che non abiliti l'approvazione automatica per quel sito.
+**Approva una volta** e **Nega** risolvono la richiesta attuale, non l’intera sessione del browser. Le frecce offrono decisioni salvate. Nei gruppi scegli quali richieste approvare o nega il gruppo visualizzato. Richieste nuove o non selezionate non vengono incluse automaticamente.
 
-### Cifratura e Decifratura
+La revisione descrive l’azione e mostra il contenuto delle note o anteprime supportate. L’icona del codice apre l’evento completo. I messaggi privati sono raggruppati per mittente quando possibile. Fare clic sul contenuto sfocato lo rivela localmente per 30 secondi, senza approvarne la consegna al sito.
 
-Permette al sito di richiedere messaggi diretti crittografati NIP-04 o NIP-44. Il sito può chiedere all'estensione di cifrare un messaggio per un destinatario specifico o decifrare un messaggio in arrivo.
+## Backend, relay e pagamenti
 
-### Pagamenti WebLN
+**Autenticazione backend predefinita** parte disattivata per account. Attivata permette NIP-98 ai siti collegati con la stessa origine HTTPS esatta o coppie verificate del registro. I rifiuti espliciti prevalgono. **Autenticazione del backend** mostra stato, regole e permessi espliciti. Le decisioni automatiche non creano righe. Vedi la [guida backend](/guides/backend-authentication).
 
-Permette al sito di richiedere pagamenti Lightning tramite il provider WebLN. Quando concesso, il sito può presentare fatture da pagare — soggetto alla tua [soglia di approvazione automatica](/guides/zap-e-approvazione-automatica).
+**Autenticazione relay** gestisce app scelte o tutti i siti collegati per relay e account, separatamente dalla configurazione di lettura/scrittura. Vedi la [guida relay](/guides/relay-authentication).
 
-{/* TODO: Screenshot del pannello permessi che mostra tutti e quattro i tipi di permesso per un sito */}
-
-<Callout type="tip">
-Puoi concedere alcuni permessi negandone altri. Ad esempio, potresti permettere a un sito di leggere la tua chiave pubblica e richiedere firme, ma negargli l'accesso WebLN se non vuoi che richieda pagamenti.
-</Callout>
-
-## Gestire i Permessi del Sito
-
-### Visualizzare i Permessi Concessi
-
-1. Apri l'estensione e clicca **Impostazioni**.
-2. Naviga a **Permessi del Sito** (o **Permessi**).
-3. Vedrai una lista di tutti i siti a cui è stato concesso qualsiasi permesso, insieme a ciò che ogni sito può fare.
-
-{/* TODO: Screenshot della lista dei permessi del sito che mostra più siti con i loro permessi concessi */}
-
-### Revocare i Permessi
-
-Se vuoi rimuovere l'accesso di un sito:
-
-1. Trova il sito nella lista dei permessi.
-2. Clicca il nome del sito per espandere i dettagli.
-3. Disattiva i singoli permessi o clicca **Revoca Tutti** per rimuovere ogni accesso.
-4. La modifica ha effetto immediato. Il sito dovrà richiedere nuovamente il permesso al prossimo tentativo.
-
-### Permessi Temporanei vs. Permanenti
-
-Quando vedi un prompt di permesso, tipicamente hai due opzioni:
-
-- **Consenti una volta** — concede il permesso solo per questa sessione. Quando chiudi la scheda o riavvii il browser, il sito dovrà chiedere di nuovo.
-- **Consenti sempre** — concede permanentemente il permesso per questo sito. Persiste tra le sessioni.
-
-Usa "Consenti una volta" per i siti che non visiti regolarmente. Usa "Consenti sempre" per i client Nostr che usi quotidianamente.
-
-## Best Practice per la Sicurezza
-
-Concedi solo i permessi di cui un sito ha effettivamente bisogno. Un client Nostr necessita dell'accesso alla firma, ma un explorer in sola lettura necessita solo della tua chiave pubblica. Rivedi periodicamente la tua lista dei permessi e revoca l'accesso ai siti che non usi più.
-
-Se un sito di cui non hai mai sentito parlare richiede permessi di firma o pagamento, negalo e indaga prima. I client Nostr legittimi sono ben noti.
-
-{/* TODO: Screenshot di una richiesta di permesso sospetta con l'azione "Nega" evidenziata */}
-
-<Callout type="tip">
-Se un sito si comporta in modo inaspettato dopo aver concesso i permessi — come attivare pagamenti che non hai iniziato — revoca immediatamente tutti i suoi permessi e abbassa la soglia di approvazione automatica.
-</Callout>
-
-### Solo Connessioni Sicure
-
-L'estensione espone le API NIP-07 e WebLN solo su connessioni sicure (HTTPS). Questo previene attacchi man-in-the-middle dall'intercettare la comunicazione tra il sito e l'estensione.
-
-## Cosa Fare Dopo?
-
-Con i tuoi permessi blindati, esplora il [WoT Playground](/guides/wot-playground) per visualizzare la tua rete di fiducia. Oppure rivedi la [gestione della tua identità](/guides/gestione-identita) per verificare le tue pratiche di sicurezza delle chiavi.
+I pagamenti Lightning conservano conferme, limiti e [impostazioni automatiche](/guides/zapping-auto-approve). Consentire firme Nostr non permette pagamenti illimitati.

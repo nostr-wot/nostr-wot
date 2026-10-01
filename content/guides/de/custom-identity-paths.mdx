@@ -14,13 +14,10 @@ ogImage: "/images/guides/custom-identity-paths/de.png"
 translationKey: "custom-identity-paths"
 difficulty: "advanced"
 order: 2.6
+updated: "2026-10-01"
 ---
 
 Eine Identität für die Arbeit, eine für ein Projekt und eine für Tests lassen sich durch lokale Namen leichter unterscheiden. Nostr WoT erlaubt beim Erstellen einer Identität aus deiner Seed-Phrase einen eigenen Namen und unter **Erweitert** einen eigenen Ableitungspfad. Die automatische Auswahl reicht aus, wenn du keinen bestimmten Pfad benötigst.
-
-## Welche Version unterstützt das?
-
-Diese Anleitung beschreibt Version **0.7.0**, verfügbar als [GitHub-Download](https://github.com/nostr-wot/nostr-wot-extension/releases/tag/v0.7.0). Die Freigabe dieser Version in den Chrome- und Firefox-Stores war bei der Vorbereitung nicht bestätigt. Prüfe deine installierte Version.
 
 ## Name und Pfad sind unterschiedliche Einstellungen
 
@@ -33,7 +30,7 @@ Diese Anleitung beschreibt Version **0.7.0**, verfügbar als [GitHub-Download](h
 ## Identität erstellen
 
 1. Entsperre die Erweiterung, öffne die Kontenauswahl und füge ein **HD-Unterkonto** hinzu. Dafür muss eine Wiederherstellungsphrase im Tresor vorhanden sein. Ein einzelner importierter nsec reicht nicht aus.
-2. Prüfe den angezeigten Quell-Seed. Die Erweiterung schlägt den nächsten freien Pfad ihrer bisherigen Folge vor.
+2. Die Erweiterung schlägt den nächsten freien Pfad aus der Hauptphrase vor. Diese Beziehung steht unter dem Formular; eine separate Quellkontozeile gibt es nicht.
 3. Vergib optional einen Namen wie „Projekt“ oder „Tests“. Ein leeres Feld behält den vorgeschlagenen Namen.
 4. Öffne **Erweitert**, wenn du einen bestimmten Pfad brauchst. Gib ihn exakt ein und warte auf die aktualisierte Vorschau.
 5. Prüfe Pfad und npub. Bei ungültigen Pfaden, Fehlern oder einer noch laufenden Vorschau ist das Fortfahren gesperrt.
@@ -54,3 +51,11 @@ Sichere die Wiederherstellungsphrase zusammen mit dem exakten Pfad und der erwar
 Mehrere Pfade helfen bei der Organisation. Sie schützen die Identitäten nicht vor einer Kompromittierung des gemeinsamen Seeds und garantieren keine Anonymität. Ein anderer Pfad überträgt weder Beiträge noch Follower oder Profildaten. Bestehende Schlüssel bleiben unverändert.
 
 Für den reinen Kontowechsel genügt die [Identitätsverwaltung](/de/guides/managing-identity). Nutze eigene Pfade für einen konkreten, dokumentierten Organisations- oder Wiederherstellungsbedarf.
+
+## Vorschau und Abschluss
+
+Wenn bereits eine Haupt-Wiederherstellungsphrase vorhanden ist, öffnet **Neu erstellen** ein **Neues Unterkonto**. Es verwendet dieselbe Phrase mit einem anderen Ableitungspfad und erzeugt keine zweite Phrase. Der Name ist editierbar. Öffentliche npub- und Hex-Schlüssel stehen unter ihren Bezeichnungen in Akzentfarbe, in der Mitte gekürzt. Kopiersymbole kopieren den vollständigen Wert. **Erweitert** steht unter den Schlüsseln und öffnet den Pfadeditor; behalte den Vorschlag ohne besonderen Grund bei.
+
+Folgevorschläge zeigen Namen und kleine Bilder verifizierter öffentlicher Profile, soweit verfügbar. Der gemeinsame Cache gilt 30 Minuten für höchstens 500 Profile; fehlende Metadaten werden bei purplepag.es abgefragt. Dabei wird der öffentliche Autorenschlüssel gesendet; Bilder kommen separat vom Bildhost. Ohne Profil erscheint der gekürzte Schlüssel. Laden blockiert weder Auswahl noch **Vorerst überspringen**.
+
+Der Abschluss zeigt Zusammenfassung und **Loslegen** unten. Name und kopierbarer öffentlicher Schlüssel ersetzen eine Tabelle; nur abgeleitete Unterkonten nennen die gemeinsame Hauptphrase. Neue Konten können globale Regeln verwenden oder Website-Ausnahmen eines anderen Kontos kopieren. Authentifizierungsfreigaben bleiben getrennt.

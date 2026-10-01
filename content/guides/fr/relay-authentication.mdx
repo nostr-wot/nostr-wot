@@ -3,6 +3,7 @@ title: "Choisissez les relais qui peuvent authentifier votre compte"
 description: "Autorisez un relais par site ou pour les sites connectés, puis contrôlez et révoquez ces permissions."
 excerpt: "Autorisez un relais par site ou pour les sites connectés, puis contrôlez et révoquez ces permissions."
 date: "2026-09-30"
+updated: "2026-10-01"
 featuredImage: "/images/guides/site-permissions/featured.svg"
 previewImage: "/images/guides/site-permissions/preview.svg"
 ogImage: "/images/guides/site-permissions/og.jpg"
@@ -19,7 +20,7 @@ tags:
   - "Authentication"
 ---
 
-Avec [Nostr WoT 0.8.7](https://github.com/nostr-wot/nostr-wot-extension/releases/tag/v0.8.7), connecter un site ou autoriser des signatures ordinaires ne lui permet pas de vous identifier auprès de tous les relais. Les API HTTP ont un [guide distinct](/guides/backend-authentication).
+Avec [Nostr WoT](https://github.com/nostr-wot/nostr-wot-extension), connecter un site ou autoriser des signatures ordinaires ne lui permet pas de vous identifier auprès de tous les relais. Les API HTTP ont un [guide distinct](/guides/backend-authentication).
 
 ## Site et relais sont distincts
 
@@ -41,11 +42,13 @@ Les décisions mémorisées se trouvent dans les menus fléchés. La portée uti
 
 L’option pour tous les sites évite une autorisation répétée avec plusieurs clients et peut concerner des sites connectés ultérieurement. Elle ne connecte aucun nouveau site, n’accorde pas l’accès à l’identité, ne couvre pas d’autres comptes, signatures ordinaires ou backends HTTP. Un refus spécifique au site est prioritaire. Désactiver son accès à l’identité ou le déconnecter bloque toujours l’authentification, y compris avec NIP-46.
 
-## Révoquez les permissions
+## Examiner et révoquer les permissions
 
-Dans **Permissions**, la section d’authentification en bas suit le compte actif. Sa table affiche les permissions par site. Le lien dessous ouvre la table des relais autorisés pour tous les sites connectés. Chaque entrée peut être révoquée.
+Ouvrez **Permissions → Authentification des relais** pour le compte actif. Cet écran dispose d’un retour et d’une icône d’information, séparément des réglages de lecture et d’écriture. Les autorisations sont regroupées par relais, avec le nombre de sites approuvés ou la portée globale et ses refus particuliers.
 
-Déconnecter un site supprime ses permissions propres. Une autorisation partagée reste valable pour les autres sites connectés, jamais pour le site déconnecté. Supprimer un compte efface ses permissions. Révoquer bloque les signatures futures ; cela ne retire pas une preuve envoyée ni ne ferme un WebSocket déjà authentifié. Le client doit fermer cette connexion.
+Ouvrez un relais pour choisir des applications connectées ou tous les sites connectés. Décocher une application en mode global passe à une sélection explicite des autres sites connectés non refusés ; les futurs sites ne sont plus inclus. Enregistrer une sélection vide supprime les autorisations de ce relais en conservant les refus. Sélectionner un site refusé remplace son refus ; choisir tous les sites conserve les exceptions. Seuls ce compte et ce relais changent.
+
+Déconnecter un site supprime ses autorisations particulières ; une autorisation partagée reste utilisable par les autres sites connectés. Supprimer le compte efface ses autorisations. La révocation affecte les futures signatures mais ne ferme pas un WebSocket déjà authentifié : le client doit le fermer.
 
 ## Vérifications et limites
 
@@ -55,4 +58,4 @@ L’extension ne contrôle pas le WebSocket du client. Le relais doit vérifier 
 
 La même clé publique peut relier vos connexions entre clients auprès d’un relais. Utilisez des comptes séparés ou des autorisations plus étroites si nécessaire. CORS ne remplace pas la validation de connexion et les limites par compte, site et destination.
 
-Voir les [règles de permissions](https://github.com/nostr-wot/nostr-wot-extension/blob/v0.8.7/src/services/permissions/authentication.ts) et les [tests](https://github.com/nostr-wot/nostr-wot-extension/blob/v0.8.7/tests/authentication.test.ts).
+Voir les [règles de permissions](https://github.com/nostr-wot/nostr-wot-extension/blob/main/src/services/permissions/authentication.ts) et les [tests](https://github.com/nostr-wot/nostr-wot-extension/blob/main/tests/authentication.test.ts).

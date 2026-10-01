@@ -1,92 +1,55 @@
 ---
-title: "Iniziare con Nostr WoT"
-description: "Installa l'estensione browser Nostr WoT su Chrome, Brave, Edge, Opera o Firefox. Configura la tua identità Nostr e inizia a costruire il tuo Web of Trust in pochi minuti."
-excerpt: "Tutto ciò che ti serve per installare l'Estensione Nostr WoT e avviare la tua prima rete di fiducia."
-date: "2026-03-11"
-author:
-  name: "Leon Acosta"
-  avatar: "/authors/leon-profile.jpg"
-  npub: "npub1gxdhmu9swqduwhr6zptjy4ya693zp3ql28nemy4hd97kuufyrqdqwe5zfk"
+title: "Primi passi: scegli come configurare il tuo account Nostr"
+description: "Installa Nostr WoT e scegli una nuova identità, una chiave o un backup esistente, un account in sola lettura o il collegamento QR a un firmatario esterno."
+excerpt: "Installa Nostr WoT e scegli una nuova identità, una chiave o un backup esistente, un account in sola lettura o il collegamento QR a un firmatario esterno."
+date: "2026-09-30"
+author: {"name": "Leon Acosta", "avatar": "/authors/leon-profile.jpg", "npub": "npub1gxdhmu9swqduwhr6zptjy4ya693zp3ql28nemy4hd97kuufyrqdqwe5zfk"}
 featuredImage: "/images/guides/getting-started/featured.svg"
 previewImage: "/images/guides/getting-started/preview.svg"
-tags:
-  - "Estensione"
-  - "Configurazione"
-  - "Principiante"
+tags: ["Estensione", "Identità", "Configurazione"]
 published: true
-seoTitle: "Iniziare con Nostr WoT — Guida all'Estensione"
-seoDescription: "Installa l'estensione browser Nostr WoT su Chrome, Brave, Edge, Opera o Firefox. Configura la tua identità Nostr e inizia a costruire il tuo Web of Trust in pochi minuti."
+seoTitle: "Primi passi: scegli come configurare il tuo account Nostr"
+seoDescription: "Installa Nostr WoT e scegli una nuova identità, una chiave o un backup esistente, un account in sola lettura o il collegamento QR a un firmatario esterno."
 ogImage: "/images/guides/getting-started/og.jpg"
 translationKey: "getting-started"
 difficulty: "beginner"
 order: 1
+updated: "2026-10-01"
 ---
 
-Questa guida ti accompagna nell'installazione dell'Estensione Nostr WoT, nella configurazione della tua identità e nell'avvio della tua rete di fiducia. L'intero processo richiede circa due minuti.
+Nostr WoT offre quattro modi per configurare un’identità. Per il tuo primo account Nostr, scegli **Create New**. Se hai già un’identità, scegli il metodo adatto ai dati che possiedi.
 
-## Installare l'Estensione
+## Installa e apri l’estensione
 
-L'estensione supporta tutti i principali browser basati su Chromium e Firefox. Scegli il tuo browser e segui i passaggi seguenti.
+1. Apri la [pagina di download](/download) e segui il collegamento allo store del browser.
+2. Installa l’estensione e fissala alla barra degli strumenti.
+3. Apri il popup di Nostr WoT e seleziona **Continue** per visualizzare i metodi.
 
-### Chrome, Brave, Edge e Opera
+## Scegli un metodo
 
-1. Visita la [pagina di download](/download) e clicca il link per il Chrome Web Store.
-2. Clicca **Aggiungi a Chrome** (o il pulsante equivalente nel tuo browser).
-3. Conferma l'installazione quando richiesto.
-4. Fissa l'estensione alla barra degli strumenti per un accesso rapido — clicca l'icona del puzzle nel browser e attiva il pin accanto a Nostr WoT.
+| Cosa possiedi | Metodo | Guida |
+|---|---|---|
+| Nessuna identità Nostr | **Create New** | [Crea un account e conserva 24 parole](/guides/create-nostr-account) |
+| Chiave privata, frase di recupero o backup cifrato | **Import Key or Backup** | [Ripristina un’identità](/guides/import-nostr-account) |
+| Solo una chiave pubblica per esplorare | **Watch-Only** | [Aggiungi un account in sola lettura](/guides/watch-only-nostr-account) |
+| Identità in un firmatario esterno NIP-46 | **Nostr Connect** | [Collega tramite QR](/guides/connect-nostr-signer) |
 
-{/* TODO: Screenshot della pagina del Chrome Web Store con il pulsante Aggiungi a Chrome evidenziato */}
+Creare un’identità non richiede e-mail o telefono. Le chiavi ti identificano su Nostr. L’importazione ripristina l’identità della chiave esistente; crearne un’altra produce un’identità diversa.
 
-### Firefox
+## Cosa conservare
 
-1. Visita la [pagina di download](/download) e clicca il link per i Componenti aggiuntivi di Firefox.
-2. Clicca **Aggiungi a Firefox** e conferma la richiesta dei permessi.
-3. Fissa l'estensione alla barra degli strumenti facendo clic destro sull'icona e selezionando **Fissa alla barra degli strumenti**.
+La **chiave pubblica (npub)** identifica l’account e può essere condivisa. La **chiave privata (nsec) o frase di recupero** permette di controllare l’identità e deve restare segreta. La **password locale del vault** protegge le chiavi in questo browser; non sostituisce una frase persa.
 
-{/* TODO: Screenshot della pagina dei Componenti aggiuntivi di Firefox per Nostr WoT */}
-
-<Callout type="tip">
-Dopo l'installazione, l'icona dell'estensione apparirà nella barra degli strumenti del tuo browser. Un'icona grigia significa che non hai ancora effettuato l'accesso. Diventa viola una volta che la tua identità è attiva.
+<Callout type="warning">
+Non usare mai parole di recupero tratte da tutorial o dimostrazioni. Conserva quelle generate dalla tua estensione prima di continuare.
 </Callout>
 
-## Configurazione Iniziale
+## Dopo la configurazione
 
-Quando apri l'estensione per la prima volta, la procedura guidata ti accompagna attraverso le operazioni essenziali. Ti verrà chiesto di creare una nuova identità Nostr o importarne una esistente. Non è richiesta la registrazione di account presso terze parti.
+Verifica che la chiave pubblica corrisponda all’identità desiderata. Con un account capace di firmare, apri un client Nostr e controlla le richieste di autorizzazione. Gli account in sola lettura non firmano pubblicazioni.
 
-{/* TODO: Screenshot della schermata di benvenuto della procedura guidata */}
+Prosegui con [gestione dell’identità](/guides/gestione-identita), [permessi dei siti](/guides/permessi-sito) o [Web of Trust](/guides/comprendere-web-of-trust). Puoi configurare separatamente un [wallet Lightning](/guides/configurare-portafoglio) quando vuoi usare gli zap.
 
-## Creare una Nuova Chiave Nostr
+## Anteprima e completamento
 
-Se sei nuovo su Nostr, seleziona **Crea Nuove Chiavi**. L'estensione genera una chiave privata (nsec) e una chiave pubblica (npub) per te.
-
-1. Clicca **Crea Nuove Chiavi** nella procedura guidata.
-2. Salva il backup della tua chiave privata. Scrivilo o conservalo in un gestore di password. Se perdi questa chiave, non c'è modo di recuperare il tuo account.
-3. Imposta una password locale per crittografare le tue chiavi all'interno dell'estensione. Questa password non viene mai inviata da nessuna parte.
-4. Opzionalmente compila i dettagli del tuo profilo — nome visualizzato, bio e avatar.
-
-{/* TODO: Screenshot della schermata di creazione chiave con il prompt di backup */}
-
-<Callout type="tip">
-La tua chiave privata è la password principale della tua identità Nostr. Non condividerla mai, non incollarla in un sito web e non conservarla in testo non crittografato. L'estensione la crittografa localmente così i siti non la vedono mai direttamente.
-</Callout>
-
-## Importare una Chiave Esistente
-
-Hai già un'identità Nostr? Seleziona **Importa Chiave Esistente** e incolla la tua nsec o usa un'estensione signer compatibile NIP-07.
-
-1. Clicca **Importa Chiave Esistente**.
-2. Incolla la tua chiave privata nsec o collega un signer hardware.
-3. Imposta una password di crittografia locale.
-4. L'estensione recupera automaticamente il tuo profilo dai relay Nostr.
-
-{/* TODO: Screenshot della schermata di importazione chiave */}
-
-## Verificare la Configurazione
-
-Una volta che la tua identità è attiva, clicca l'icona dell'estensione. Dovresti vedere i dettagli del tuo profilo, il tuo npub e un grafo di fiducia iniziale che inizia a costruirsi dalla tua lista di follow. L'estensione recupera i tuoi contatti dai relay e inizia a mappare il tuo Web of Trust.
-
-Concedigli un minuto o due per la sincronizzazione iniziale. Dopodiché, la tua rete di fiducia si aggiorna in background mentre navighi.
-
-## Cosa Fare Dopo?
-
-Ora che l'estensione è installata, impara come [gestire la tua identità](/guides/gestione-identita) e comprendi come funziona il [Web of Trust](/guides/comprendere-web-of-trust).
+La schermata finale dispone riepilogo e **Inizia** in basso. Mostra nome e chiave pubblica copiabile; solo i sotto-account derivati citano la frase principale. I nuovi account possono usare regole globali o copiare eccezioni per sito di un altro account. I permessi di autenticazione restano separati.

@@ -40,7 +40,7 @@ What removal does **not** do:
 - It does not affect the same identity on other devices or other NIP-07 signers.
 
 <Callout type="warning">
-If you generated your seed phrase inside the extension and never backed it up, removing the account is permanent. There is no recovery. Export or write down your 12-word seed before continuing.
+If you generated your seed phrase inside the extension and never backed it up, removing the account is permanent. There is no recovery. Export or write down your 24-word seed before continuing.
 </Callout>
 
 ![The Security screen lets you export your private key (nsec) or a password-protected encrypted backup (ncryptsec) before removing the account](/images/guides/removing-accounts/backup-security.jpg)
@@ -73,7 +73,7 @@ Once you confirm, the account disappears from the selector and, if it was the ac
 
 ## Why Seed-Based Accounts Need a Stricter Confirmation
 
-When you generate a new identity inside the extension, the 12-word seed is created locally and shown to you once. The extension never sends it anywhere. If you did not copy it down, the encrypted copy in the extension is the only thing that links you to that identity. Removing it without a backup means losing the ability to sign as that npub ever again.
+When you generate a new identity inside the extension, the 24-word seed is created locally and shown to you once. The extension never sends it anywhere. If you did not copy it down, the encrypted copy in the extension is the only thing that links you to that identity. Removing it without a backup means losing the ability to sign as that npub ever again.
 
 Imported accounts are different. If you added them using an existing nsec or seed, you already have that key material stored elsewhere — in another signer, a password manager, or on paper. Restoring is straightforward.
 
@@ -82,7 +82,7 @@ Imported accounts are different. If you added them using an existing nsec or see
 To bring back a removed account:
 
 1. Open the accounts selector and click **Add Account**.
-2. Choose **Import** and paste your nsec or 12-word seed phrase.
+2. Choose **Import** and paste your nsec or your 12- or 24-word seed phrase.
 3. The extension rebuilds the encrypted keystore, resyncs the trust graph, and the account is ready to use again.
 
 Your local history (permissions, auto-approve rules, wallet connections) is not restored — it was tied to the deleted keystore. Nostr data like your profile, follows, and notes re-syncs from relays automatically.

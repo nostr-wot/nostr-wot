@@ -14,13 +14,10 @@ ogImage: "/images/guides/custom-identity-paths/es.png"
 translationKey: "custom-identity-paths"
 difficulty: "advanced"
 order: 2.6
+updated: "2026-10-01"
 ---
 
 Una identidad de trabajo, otra de un proyecto y otra de pruebas pueden tener etiquetas claras en tu lista. Nostr WoT permite dar un nombre local a una nueva identidad derivada de tu semilla y elegir su ruta en **Avanzado**. Conserva la ruta automática si no necesitas otra.
-
-## ¿Qué versión lo incluye?
-
-Esta guía describe la extensión **0.7.0**, disponible en la [versión descargable de GitHub](https://github.com/nostr-wot/nostr-wot-extension/releases/tag/v0.7.0). Al preparar la guía no se había confirmado su aprobación en las tiendas de Chrome y Firefox. Comprueba tu versión instalada.
 
 ## El nombre y la ruta cumplen funciones distintas
 
@@ -33,7 +30,7 @@ Esta guía describe la extensión **0.7.0**, disponible en la [versión descarga
 ## Crear la identidad
 
 1. Desbloquea la extensión, abre el selector de cuentas y añade una **subcuenta HD**. Necesitas una frase de recuperación existente en la bóveda; una nsec importada por sí sola no es esa frase.
-2. En la pantalla de nueva subcuenta, comprueba la semilla de origen. Se propone la siguiente ruta libre de la secuencia existente.
+2. La extensión propone la siguiente ruta libre de la frase principal. La relación se explica debajo del formulario; no hay una fila separada de cuenta semilla.
 3. Introduce un nombre opcional, como «Proyecto» o «Pruebas». Si lo dejas vacío, se conserva el nombre propuesto.
 4. Abre **Avanzado** si necesitas otra ruta. Escríbela exactamente y espera a que se actualice la vista previa.
 5. Comprueba la ruta y la npub. Una ruta inválida, un error o una vista previa pendiente impiden continuar.
@@ -54,3 +51,11 @@ Guarda de forma segura la frase, la ruta exacta y la npub esperada. El nombre ay
 Varias rutas permiten organizar identidades, pero todas dependen de la seguridad de la misma semilla. Tampoco garantizan anonimato. Cambiar de ruta no transfiere publicaciones, seguidores ni el perfil. Esta función no modifica tus claves existentes.
 
 Empieza por [gestionar identidades](/es/guides/managing-identity) si solo necesitas cambiar de cuenta. Usa rutas personalizadas cuando tengas una necesidad concreta de organización o recuperación que puedas documentar.
+
+## Vista previa y finalización
+
+Cuando ya existe una frase de recuperación principal, **Crear nueva** abre **Nueva subcuenta**. Usa esa frase con otra ruta de derivación; no genera una segunda frase. Puedes cambiar el nombre. Las claves públicas npub y hex aparecen debajo de sus etiquetas, en color de acento y abreviadas en el centro. Sus iconos copian el valor completo. **Avanzado** está debajo de las claves y abre el editor de ruta; conserva la propuesta salvo que necesites otra.
+
+Las sugerencias muestran nombres y fotos pequeñas de perfiles públicos verificados cuando están disponibles. Comparten una caché de 30 minutos y hasta 500 perfiles; los datos que faltan se consultan en purplepag.es. Se envía la clave pública del autor al directorio; las imágenes se cargan desde su propio servidor. Sin perfil se muestra la clave abreviada. La carga no bloquea la selección ni **Omitir por ahora**.
+
+La pantalla final coloca el resumen y **Comenzar** abajo. Muestra nombre y clave pública copiable; solo las subcuentas derivadas se describen como procedentes de la frase principal. Una cuenta nueva puede usar reglas globales o copiar excepciones por sitio de otra cuenta. Los permisos de autenticación siguen separados.

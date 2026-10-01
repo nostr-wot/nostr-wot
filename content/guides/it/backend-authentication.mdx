@@ -3,6 +3,7 @@ title: "Controlla a quale backend ti stai autenticando"
 description: "Gestisci il consenso per sito, account, URL e metodo anche quando l’API usa un dominio diverso."
 excerpt: "Gestisci il consenso per sito, account, URL e metodo anche quando l’API usa un dominio diverso."
 date: "2026-09-30"
+updated: "2026-10-01"
 featuredImage: "/images/guides/site-permissions/featured.svg"
 previewImage: "/images/guides/site-permissions/preview.svg"
 ogImage: "/images/guides/site-permissions/og.jpg"
@@ -19,21 +20,21 @@ tags:
   - "Authentication"
 ---
 
-[Nostr WoT 0.8.7](https://github.com/nostr-wot/nostr-wot-extension/releases/tag/v0.8.7) distingue l’accesso di un sito alla tua identità dal permesso di autenticarla presso un servizio HTTP. Per WebSocket consulta la [guida ai relay](/guides/relay-authentication).
+[Nostr WoT](https://github.com/nostr-wot/nostr-wot-extension) distingue l’accesso di un sito alla tua identità dal permesso di autenticarla presso un servizio HTTP. Per WebSocket consulta la [guida ai relay](/guides/relay-authentication).
 
-## Un’API può avere un dominio diverso
+## Autorizzazioni precise e automazione facoltativa
 
-Un sito di esempio `https://client.example` può usare `https://api.client.example/session`. È normale. L’estensione distingue il sito che richiede la firma dal servizio che riceve la prova.
+Un sito come `https://client.example` può usare `https://api.client.example`. Un’autorizzazione HTTP salvata lega account attivo, origine del sito, URL firmato esatto con query e metodo HTTP. Non copre altre destinazioni, metodi, siti o account. Le vecchie autorizzazioni per origine richiedono nuovo consenso; i rifiuti restano validi.
 
-Un permesso HTTP memorizzato riguarda **account, origine del sito, URL firmato esatto e metodo HTTP**, per esempio `POST`. Comprende il testo della query. Percorso, porta, query, metodo, sito o account diversi richiedono un altro consenso. La regola vale anche se sito e API condividono l’origine. Le vecchie autorizzazioni HTTP generiche richiedono un nuovo consenso; i rifiuti restano validi.
+**Autenticazione backend predefinita** è inizialmente disattivata per account. Attivandola in **Permessi**, i siti collegati possono usare NIP-98 automaticamente per la stessa origine HTTPS esatta o una coppia sito/backend marcata `nip98` nel [registro e nelle regole](https://github.com/nostr-wot/nostr-wot-extension/blob/main/docs/auth-client-registry.md). Sono inclusi percorsi e metodi validi di tali origini. Una voce informativa, non verificata o con caratteri jolly non basta. I rifiuti espliciti prevalgono. I relay hanno permessi separati.
 
-Il [registro di client e backend](https://github.com/nostr-wot/nostr-wot-extension/blob/v0.8.7/docs/auth-client-registry.md) è informativo: aggiungere una voce non concede permessi.
+## Esaminare e gestire l’autenticazione
 
-## Decidi e revoca
+La richiesta indica sito, destinazione e metodo. **Approva** e **Nega** riguardano solo questa richiesta. Le frecce memorizzano la decisione per account, sito, URL e metodo. L’icona del codice apre l’evento completo. L’approvazione collettiva di firme ordinarie non concede un permesso permanente di autenticazione.
 
-La richiesta mostra sito e destinazione. **Approva** e **Rifiuta** riguardano la richiesta attuale. I menu a freccia permettono di ricordare la decisione per quella combinazione esatta. HTTP non offre un’autorizzazione per tutti i siti.
+Apri **Permessi → Autenticazione del backend**. Se la politica è attiva, un avviso ne spiega l’ambito e collega regole e registro. Le approvazioni automatiche non creano righe: una tabella vuota non significa che la politica sia disattivata. La tabella mostra le decisioni esplicite dell’account attivo.
 
-Il pulsante del codice mostra l’evento completo. L’approvazione collettiva delle firme ordinarie esclude l’autenticazione. La tabella in fondo a **Permessi** segue l’account attivo e permette la revoca. Revocare impedisce firme future; non ritira prove inviate e non chiude sessioni già aperte sul backend.
+Revoca una voce oppure disattiva la politica in Permessi. Disattivarla conserva i permessi espliciti. La revoca riguarda firme future, non prove inviate o sessioni già create. HTTP non offre autorizzazioni per tutti i siti.
 
 ## Verifiche dell’estensione
 
@@ -53,4 +54,4 @@ La prova vincola URL, metodo e hash dei byte esatti del corpo. Una challenge del
 
 CORS limita i browser, non le richieste tra server. Un tag di origine non è un’attestazione crittografica del browser. Codice malevolo nel sito principale autorizzato ne condivide i poteri. Questi controlli limitano il consenso, ma non eliminano ogni phishing o inoltro di autenticazione.
 
-Consulta il [contratto v2](https://github.com/nostr-wot/nostr-wot-extension/blob/v0.8.7/docs/wallet-auth-v2.md) e i [test](https://github.com/nostr-wot/nostr-wot-extension/blob/v0.8.7/tests/authentication.test.ts).
+Consulta il [contratto v2](https://github.com/nostr-wot/nostr-wot-extension/blob/main/docs/wallet-auth-v2.md) e i [test](https://github.com/nostr-wot/nostr-wot-extension/blob/main/tests/authentication.test.ts).

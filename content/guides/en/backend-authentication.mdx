@@ -3,6 +3,7 @@ title: "Know which backend you are authenticating to"
 description: "Understand exact URL and method permissions, separate API domains, iframe protection and the limits of authentication forwarding."
 excerpt: "Understand exact URL and method permissions, separate API domains, iframe protection and the limits of authentication forwarding."
 date: "2026-09-30"
+updated: "2026-10-01"
 featuredImage: "/images/guides/site-permissions/featured.svg"
 previewImage: "/images/guides/site-permissions/preview.svg"
 ogImage: "/images/guides/site-permissions/og.jpg"
@@ -24,50 +25,24 @@ authenticate that identity to an HTTP service. A website and its API can live on
 different domains. The approval must describe the service receiving the proof,
 not assume that it is the website in your address bar.
 
-This guide covers [Nostr WoT 0.8.7](https://github.com/nostr-wot/nostr-wot-extension/releases/tag/v0.8.7).
+This guide covers [Nostr WoT](https://github.com/nostr-wot/nostr-wot-extension).
 
 For WebSocket relay authentication, read the separate
 [relay authentication guide](/guides/relay-authentication).
 
-## Different domains are legitimate; permission still has a destination
+## Exact approvals and optional automatic authentication
 
-Consider a fictional client at `https://client.example` whose API is
-`https://api.client.example`. A request to authenticate a `POST` to
-`https://api.client.example/session` can be legitimate. Blocking every different
-hostname would break this architecture.
+A website such as `https://client.example` can legitimately use `https://api.client.example`. A remembered HTTP approval binds the active account, requesting website origin, exact signed URL including query text, and HTTP method. It does not authorize another endpoint, method, site or account. Older origin-wide allows require fresh consent; saved denials remain effective.
 
-Instead, Nostr WoT keeps the requesting website and the signed destination
-separate. A remembered HTTP approval is specific to:
+**Default backend auth** starts off for each account. When enabled in **Permissions**, connected sites can use NIP-98 automatically for the exact same HTTPS origin or an exact website/backend pair marked `nip98` in the [registry and policy rules](https://github.com/nostr-wot/nostr-wot-extension/blob/main/docs/auth-client-registry.md). This covers valid paths and methods at those origins. Listing a client alone is insufficient; unverified entries and wildcard domains do not qualify. Explicit denials win. Relays have separate permissions.
 
-| Permission boundary | Example |
-| --- | --- |
-| Your account | The account approving the request |
-| Requesting website origin | `https://client.example` |
-| Exact signed URL, including query text | `https://api.client.example/session` |
-| HTTP method | `POST` |
+## Review and manage backend authentication
 
-That approval does not also authorize `/delete-account`, another method, another
-port, another website or another account. A different query string requires its
-own approval. Same-origin authentication follows the same rule. Older saved
-origin-wide HTTP allows require consent again; older denials remain effective.
+Prompts show the requesting website, destination and method. **Approve** and **Deny** affect only that request. Arrow menus remember a decision for the exact account/site/URL/method. The code icon opens the raw event. Generic bulk signing approval does not grant standing authentication permission.
 
-The [client/backend directory](https://github.com/nostr-wot/nostr-wot-extension/blob/v0.8.7/docs/auth-client-registry.md) helps explain familiar
-services. It is informational: adding an entry cannot authorize a backend or skip
-consent. Contributors can [propose registry entries](https://github.com/nostr-wot/nostr-wot-extension/blob/v0.8.7/CONTRIBUTING.md).
+Open **Permissions → Backend authentication**. When the default policy is enabled, a notice explains its scope and links to the rules and registry. Automatic policy approvals do not create saved rows, so an empty table does not mean automatic authentication is disabled. The table lists explicit saved backend decisions for the active account.
 
-## What you see and control
-
-The prompt identifies the requesting site and the authentication destination.
-Use **Approve** or **Reject** for the current request. The arrow menu offers
-**Approve always** for this exact site/account/URL/method, or **Reject always**.
-HTTP authentication has no “all sites” allowance.
-
-The code button opens the raw event for inspection. Ordinary bulk signing
-approval excludes authentication requests so destination-specific consent is not
-lost in a mixed queue. At the bottom of **Permissions**, the authentication table
-shows remembered decisions for the active account and lets you revoke them.
-Revoking permission prevents future use; it cannot recall a proof already sent or
-log you out of a session the backend has already created.
+Revoke a saved entry there, or disable **Default backend auth** in Permissions to stop policy-based approvals. Turning it off leaves explicit saved grants intact. Revocation affects future signing, not proofs already sent or backend sessions already established. HTTP authentication has no all-sites grant.
 
 ## What the extension verifies
 
@@ -104,7 +79,7 @@ Browser requests use an exact configured HTTPS origin allowlist and a matching
 signed client-origin value. The native flow still requires the proof and separate
 transaction token. Public LNURL discovery retains its separate policy. This is
 an application-specific contract, not a new requirement imposed on all Nostr APIs.
-The [wire specification and rollout guide](https://github.com/nostr-wot/nostr-wot-extension/blob/v0.8.7/docs/wallet-auth-v2.md) has the developer
+The [wire specification and rollout guide](https://github.com/nostr-wot/nostr-wot-extension/blob/main/docs/wallet-auth-v2.md) has the developer
 details. Deploy the compatible backend before publishing the extension: retired
 routes return HTTP 426, and the client deliberately does not downgrade.
 
@@ -128,7 +103,7 @@ compromised sites, or every form of authentication forwarding.
 
 ## Inspect the implementation
 
-- [Origin boundary](https://github.com/nostr-wot/nostr-wot-extension/blob/v0.8.7/src/domain/signing/requestOrigin.ts), [event parser](https://github.com/nostr-wot/nostr-wot-extension/blob/v0.8.7/src/domain/signing/authentication.ts), and [saved grants](https://github.com/nostr-wot/nostr-wot-extension/blob/v0.8.7/src/services/permissions/authentication.ts).
-- [Remote event verifier](https://github.com/nostr-wot/nostr-wot-extension/blob/v0.8.7/src/services/signing/remoteEventVerifier.ts).
-- [Authentication regression tests](https://github.com/nostr-wot/nostr-wot-extension/blob/v0.8.7/tests/authentication.test.ts) and [remote signature tests](https://github.com/nostr-wot/nostr-wot-extension/blob/v0.8.7/tests/remote-signer-integrity.test.ts).
+- [Origin boundary](https://github.com/nostr-wot/nostr-wot-extension/blob/main/src/domain/signing/requestOrigin.ts), [event parser](https://github.com/nostr-wot/nostr-wot-extension/blob/main/src/domain/signing/authentication.ts), and [saved grants](https://github.com/nostr-wot/nostr-wot-extension/blob/main/src/services/permissions/authentication.ts).
+- [Remote event verifier](https://github.com/nostr-wot/nostr-wot-extension/blob/main/src/services/signing/remoteEventVerifier.ts).
+- [Authentication regression tests](https://github.com/nostr-wot/nostr-wot-extension/blob/main/tests/authentication.test.ts) and [remote signature tests](https://github.com/nostr-wot/nostr-wot-extension/blob/main/tests/remote-signer-integrity.test.ts).
 - [Backend validator and tests](https://github.com/nostr-wot/LNbits-proxy): exact request binding, local HTTP integration, and nonce consumption across processes sharing the database.

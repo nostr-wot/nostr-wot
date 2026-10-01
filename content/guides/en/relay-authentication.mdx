@@ -3,6 +3,7 @@ title: "Choose which relays can authenticate your account"
 description: "Choose account-specific relay permissions, allow a relay across connected sites, and revoke access with clear privacy boundaries."
 excerpt: "Choose account-specific relay permissions, allow a relay across connected sites, and revoke access with clear privacy boundaries."
 date: "2026-09-30"
+updated: "2026-10-01"
 featuredImage: "/images/guides/site-permissions/featured.svg"
 previewImage: "/images/guides/site-permissions/preview.svg"
 ogImage: "/images/guides/site-permissions/og.jpg"
@@ -23,7 +24,7 @@ Nostr WoT treats relay authentication as a separate permission. Connecting a
 website to your account, or letting it sign ordinary events, does not silently
 authorize it to identify you to every relay it chooses.
 
-This guide covers [Nostr WoT 0.8.7](https://github.com/nostr-wot/nostr-wot-extension/releases/tag/v0.8.7).
+This guide covers [Nostr WoT](https://github.com/nostr-wot/nostr-wot-extension).
 
 HTTP APIs have different permission boundaries. See the companion
 [backend authentication guide](/guides/backend-authentication).
@@ -50,10 +51,10 @@ not an HTTP request, so it has no HTTP method to display or approve.
 | **Approve** | The current authentication request |
 | **Approve always** | This website authenticating this account to this relay |
 | **Always for all sites** | Any connected site with identity access authenticating this account to this relay |
-| **Reject** | Reject the current request |
-| **Reject always** | Remember a denial for this website, account and relay |
+| **Deny** | Deny the current request |
+| **Deny always** | Remember a denial for this website, account and relay |
 
-The remembered options are in the arrow menus beside Approve and Reject. A relay
+The remembered options are in the arrow menus beside Approve and Deny. A relay
 permission uses the normalized relay URL, not just the displayed hostname, so a
 shared hostname does not automatically authorize another relay path or port.
 
@@ -71,19 +72,11 @@ NIP-46 bunker.
 
 ## Review and revoke permissions
 
-Open **Permissions** for the active account and scroll to the authentication
-section at the bottom. The table contains site-specific backend and relay grants.
-The link below it opens a separate table for relay authentication allowed across
-all connected sites. Each entry can be revoked individually; there is no second
-account selector because these views follow the active account.
+Open **Permissions → Relay authentication** for the active account. This is a menu screen with Back and an information icon, separate from relay read/write settings. Relays are grouped with the approved-site count or all-sites scope, including denial exceptions.
 
-Disconnecting a website removes its site-specific grants. An intentionally shared
-relay grant remains available to other connected sites, but cannot serve the
-disconnected site. Deleting an account clears its authentication grants.
+Open a relay to select connected apps or all connected sites. In all-sites mode, unchecking an app switches to explicit approval for the remaining connected, non-denied sites; future sites are no longer included. Save an empty selection to remove all allows for that relay while preserving denials. Selecting a denied app explicitly replaces its denial; choosing all sites preserves denial exceptions. Changes apply only to this account and relay.
 
-Revocation affects subsequent signing decisions. It does not undo a proof already
-sent or close a WebSocket session that the client has already authenticated. To
-end that connection, the client must disconnect from the relay.
+Disconnecting a website removes its site-specific grants; a shared grant can still serve other connected sites. Deleting an account removes its grants. Revocation affects future signatures but does not close an already authenticated WebSocket. The client must close that connection.
 
 ## Protection against misleading requests
 
@@ -124,7 +117,7 @@ account/site/destination permission checks serve different roles.
 ## Inspect the implementation
 
 - [NIP-42 specification](https://github.com/nostr-protocol/nips/blob/master/42.md).
-- [Authentication parser and scope rules](https://github.com/nostr-wot/nostr-wot-extension/blob/v0.8.7/src/domain/signing/authentication.ts).
-- [Account/site/relay grant matching and denial precedence](https://github.com/nostr-wot/nostr-wot-extension/blob/v0.8.7/src/services/permissions/authentication.ts).
-- [Origin checks](https://github.com/nostr-wot/nostr-wot-extension/blob/v0.8.7/src/domain/signing/requestOrigin.ts) and [signing lifecycle](https://github.com/nostr-wot/nostr-wot-extension/blob/v0.8.7/src/services/signing/signer.ts).
-- [Authentication tests](https://github.com/nostr-wot/nostr-wot-extension/blob/v0.8.7/tests/authentication.test.ts) and [approval UI tests](https://github.com/nostr-wot/nostr-wot-extension/blob/v0.8.7/tests/authentication-ui.test.ts).
+- [Authentication parser and scope rules](https://github.com/nostr-wot/nostr-wot-extension/blob/main/src/domain/signing/authentication.ts).
+- [Account/site/relay grant matching and denial precedence](https://github.com/nostr-wot/nostr-wot-extension/blob/main/src/services/permissions/authentication.ts).
+- [Origin checks](https://github.com/nostr-wot/nostr-wot-extension/blob/main/src/domain/signing/requestOrigin.ts) and [signing lifecycle](https://github.com/nostr-wot/nostr-wot-extension/blob/main/src/services/signing/signer.ts).
+- [Authentication tests](https://github.com/nostr-wot/nostr-wot-extension/blob/main/tests/authentication.test.ts) and [approval UI tests](https://github.com/nostr-wot/nostr-wot-extension/blob/main/tests/authentication-ui.test.ts).

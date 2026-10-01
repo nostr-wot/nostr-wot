@@ -20,88 +20,37 @@ ogImage: "/images/guides/site-permissions/og.jpg"
 translationKey: "site-permissions"
 difficulty: "intermediate"
 order: 8
+updated: "2026-10-01"
 ---
 
-Jede Website, die mit der Erweiterung interagiert, benötigt Ihre Erlaubnis. Die Erweiterung gewährt keinen pauschalen Zugriff auf Ihre Schlüssel oder Ihr Wallet — jede Website erhält ihren eigenen Berechtigungsbereich. Diese Anleitung erklärt, wie Sie diese Berechtigungen effektiv verwalten.
+Verbindung, gewöhnliche Signierregeln und Authentifizierung haben getrennte Berechtigungen. Öffne **Berechtigungen** für das aktive Konto.
 
-## Wie Berechtigungen funktionieren
+## Globale Regeln und aktuelle Website
 
-Wenn eine Website versucht, auf den NIP-07-Signer oder WebLN-Anbieter der Erweiterung zuzugreifen, prüft die Erweiterung, ob diese Website eine Berechtigung hat. Wenn nicht, sehen Sie eine Aufforderung, die Anfrage zu genehmigen oder abzulehnen.
+**Globale Regeln** legt Standards für verbundene Websites und Konten fest. **Website-Regeln** öffnet die Website im aktuellen Tab, keine Liste gespeicherter Websites. Besuche bei Bedarf zuerst eine normale Webseite. Der Dashboard-Einstieg zur Berechtigungsverwaltung öffnet denselben Editor.
 
-Jede Berechtigungsentscheidung wird pro Website gespeichert. Die Genehmigung von Signierung auf Primal gewährt nicht automatisch Signierung auf Snort. Sie bauen eine Whitelist vertrauenswürdiger Websites auf, eine nach der anderen.
+Globale Regeln steht im Menü zuerst. **Regel hinzufügen** steht rechts neben dem Website-Namen. Unten führt **Globale Regeln** zu den gemeinsamen Standards; dort steht unter dem Inhalt **Zu den Regeln der aktuellen Website**. Zurück führt beim Einstieg aus dem Menü wieder zu Berechtigungen.
 
-{/* TODO: Screenshot of the permission request popup for a new site */}
+Graue Zeilen erben sichtbare globale Regeln. Farbige Zeilen sind Ausnahmen dieses Kontos für diese Website. Bearbeiten einer geerbten Regel erzeugt eine Ausnahme; der geerbte Standard entfernt sie wieder. Alte gemeinsame Regeln werden einmal migriert; abweichende Website-Entscheidungen bleiben sichtbare Ausnahmen.
 
-## Berechtigungstypen
+## Regeln ändern und zurücksetzen
 
-Die Erweiterung verwaltet mehrere verschiedene Berechtigungen für jede Website.
+Füge eine Aktion mit **Erlauben**, **Ablehnen** oder **Fragen** hinzu. Eine Website-Ausnahme ersetzt ihren passenden globalen Standard. Eine umfassendere Ablehnung kann weiterhin gelten und muss separat geändert werden. Diese Regeln betreffen öffentliche Schlüssel, Ereignisarten und Verschlüsselung, nicht neue Website-Verbindungen oder Backend-/Relay-Authentifizierung.
 
-### Öffentlichen Schlüssel lesen
+Das Zurücksetzen von Website-Ausnahmen verlangt Bestätigung und entfernt die Regeln dieses Kontos für die aktuelle Website. Der Editor bleibt offen, nur globale Regeln bleiben grau. Dadurch kann eine globale Freigabe wieder gelten. Das Zurücksetzen aller Kontoausnahmen in Globale Regeln verlangt ebenfalls Bestätigung und behält globale Regeln. Authentifizierungsfreigaben bleiben getrennt bestehen.
 
-Erlaubt der Website, Ihren öffentlichen Schlüssel (npub) zu sehen. Dies ist die grundlegendste Berechtigung — die Website kann Sie identifizieren, aber nichts in Ihrem Namen tun.
+Eine abgelehnte aktuelle Website öffnet ihren Dauer-Editor: eine Woche, ein Monat, ein Jahr oder dauerhaft. Aufheben erlaubt eine neue Anfrage, erteilt aber keine Verbindung oder Signierfreigabe.
 
-### Events signieren
+## Anfragen prüfen
 
-Erlaubt der Website, Event-Signaturen über NIP-07 anzufordern. Das bedeutet, die Website kann Sie bitten, Beiträge, Profilaktualisierungen, Reaktionen und andere Nostr-Events zu signieren. Sie sehen weiterhin eine Bestätigungsaufforderung für jede Signieranfrage, es sei denn, Sie aktivieren die automatische Genehmigung für diese Website.
+**Einmal genehmigen** und **Ablehnen** lösen die aktuelle Anfrage, nicht eine ganze Browsersitzung. Pfeilmenüs speichern Entscheidungen. Bei Gruppen wählst du Anfragen zur Genehmigung aus oder lehnst die angezeigte Gruppe ab. Neue oder nicht gewählte Anfragen werden nicht automatisch einbezogen.
 
-### Verschlüsseln und Entschlüsseln
+Die Prüfung beschreibt die Aktion und zeigt Notizinhalte oder unterstützte Ereignisvorschauen. Das Code-Symbol öffnet das rohe Ereignis. Private Nachrichten werden soweit möglich nach Absender gruppiert. Ein Klick auf unscharfen Inhalt zeigt ihn lokal für 30 Sekunden; das gibt ihn nicht an die Website frei.
 
-Erlaubt der Website, NIP-04- oder NIP-44-verschlüsselte Direktnachrichten anzufordern. Die Website kann die Erweiterung bitten, eine Nachricht an einen bestimmten Empfänger zu verschlüsseln oder eine eingehende Nachricht zu entschlüsseln.
+## Backends, Relays und Zahlungen
 
-### WebLN-Zahlungen
+**Standard-Backend-Authentifizierung** ist zunächst pro Konto aus. Aktiviert erlaubt sie NIP-98 für verbundene Websites am gleichen exakten HTTPS-Origin oder für geprüfte Registerpaare. Explizite Ablehnungen haben Vorrang. **Backend-Authentifizierung** zeigt Status, Regeln und explizite Freigaben. Automatische Entscheidungen erzeugen keine Tabellenzeilen. Siehe [Backend-Anleitung](/guides/backend-authentication).
 
-Erlaubt der Website, Lightning-Zahlungen über den WebLN-Anbieter anzufordern. Wenn gewährt, kann die Website Rechnungen zur Zahlung präsentieren — unter Berücksichtigung Ihres [Auto-Genehmigungs-Schwellenwerts](/guides/zaps-und-automatische-genehmigung).
+**Relay-Authentifizierung** verwaltet ausgewählte Apps oder alle verbundenen Websites je Relay und Konto, getrennt von Lese-/Schreibeinstellungen. Siehe [Relay-Anleitung](/guides/relay-authentication).
 
-{/* TODO: Screenshot of the permissions panel showing all four permission types for a site */}
-
-<Callout type="tip">
-Sie können einige Berechtigungen gewähren und andere verweigern. Zum Beispiel könnten Sie einer Website erlauben, Ihren öffentlichen Schlüssel zu lesen und Signaturen anzufordern, ihr aber den WebLN-Zugriff verweigern, wenn Sie nicht möchten, dass sie Zahlungen anfordert.
-</Callout>
-
-## Website-Berechtigungen verwalten
-
-### Gewährte Berechtigungen anzeigen
-
-1. Öffnen Sie die Erweiterung und klicken Sie auf **Einstellungen**.
-2. Navigieren Sie zu **Website-Berechtigungen** (oder **Berechtigungen**).
-3. Sie sehen eine Liste aller Websites, denen eine Berechtigung gewährt wurde, zusammen mit dem, was jede Website tun darf.
-
-{/* TODO: Screenshot of the site permissions list showing multiple sites with their granted permissions */}
-
-### Berechtigungen widerrufen
-
-Wenn Sie den Zugriff einer Website entfernen möchten:
-
-1. Finden Sie die Website in der Berechtigungsliste.
-2. Klicken Sie auf den Website-Namen, um die Details aufzuklappen.
-3. Deaktivieren Sie einzelne Berechtigungen oder klicken Sie auf **Alle widerrufen**, um den gesamten Zugriff zu entfernen.
-4. Die Änderung tritt sofort in Kraft. Die Website muss beim nächsten Versuch erneut eine Berechtigung anfordern.
-
-### Temporäre vs. permanente Berechtigungen
-
-Wenn Sie eine Berechtigungsanfrage sehen, haben Sie typischerweise zwei Optionen:
-
-- **Einmal erlauben** — gewährt die Berechtigung nur für diese Sitzung. Wenn Sie den Tab schließen oder den Browser neu starten, muss die Website erneut fragen.
-- **Immer erlauben** — gewährt die Berechtigung dauerhaft für diese Website. Sie bleibt über Sitzungen hinweg bestehen.
-
-Verwenden Sie „Einmal erlauben" für Websites, die Sie nicht regelmäßig besuchen. Verwenden Sie „Immer erlauben" für Ihre täglich genutzten Nostr-Clients.
-
-## Best Practices für Sicherheit
-
-Gewähren Sie nur die Berechtigungen, die eine Website tatsächlich benötigt. Ein Nostr-Client braucht Signier-Zugriff, aber ein Nur-Lese-Explorer braucht nur Ihren öffentlichen Schlüssel. Überprüfen Sie Ihre Berechtigungsliste regelmäßig und entziehen Sie den Zugriff für Websites, die Sie nicht mehr nutzen.
-
-Wenn eine Website, von der Sie noch nie gehört haben, Signier- oder Zahlungsberechtigungen anfordert, lehnen Sie ab und untersuchen Sie zuerst. Legitime Nostr-Clients sind allgemein bekannt.
-
-{/* TODO: Screenshot of a suspicious permission request with a "Deny" action highlighted */}
-
-<Callout type="tip">
-Wenn sich eine Website nach der Berechtigungserteilung unerwartet verhält — etwa Zahlungen auslöst, die Sie nicht initiiert haben — widerrufen Sie sofort alle ihre Berechtigungen und senken Sie Ihren Auto-Genehmigungs-Schwellenwert.
-</Callout>
-
-### Nur sichere Verbindungen
-
-Die Erweiterung stellt die NIP-07- und WebLN-APIs nur über sichere (HTTPS-) Verbindungen bereit. Dies verhindert Man-in-the-Middle-Angriffe, die die Kommunikation zwischen Website und Erweiterung abfangen könnten.
-
-## Wie geht es weiter?
-
-Nachdem Ihre Berechtigungen gesichert sind, erkunden Sie den [WoT Playground](/guides/wot-playground), um Ihr Vertrauensnetzwerk zu visualisieren. Oder besuchen Sie erneut [Ihre Identität verwalten](/guides/identitaet-verwalten), um Ihre Schlüsselsicherheitspraktiken zu überprüfen.
+Lightning-Zahlungen behalten ihre Bestätigungen, Limits und [Automatikeinstellungen](/guides/zapping-auto-approve). Nostr-Signierfreigaben erlauben keine unbegrenzten Zahlungen.

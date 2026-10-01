@@ -20,13 +20,13 @@ ogImage: "/images/guides/managing-identity/og.jpg"
 translationKey: "managing-identity"
 difficulty: "beginner"
 order: 2
+updated: "2026-10-01"
 ---
 
 Your Nostr identity is the anchor for everything else in the extension — your trust network, your wallet, your permissions. This guide covers how to manage that identity, keep your keys secure, and use the NIP-07 signer that lets websites interact with your Nostr account.
 
 ## NIP-07 Signer Support
 
-![The extension popup shows your identity status, trust graph sync state, and quick access to permissions and trust settings](/images/guides/managing-identity/extension-main.jpg)
 
 NIP-07 is the standard that allows Nostr web applications to request signatures from a browser extension without ever seeing your private key. When you visit a Nostr client like Primal, Snort, or Coracle, it can ask the extension to sign events on your behalf.
 
@@ -49,13 +49,10 @@ Your profile details — display name, bio, avatar, Lightning Address, and NIP-0
 
 Click the extension icon and navigate to the **Identity** tab. You will see your current profile information, your npub, and the relays your profile is published to.
 
-![The Identity tab shows your npub, profile setup status, trust graph sync state, and quick links to manage permissions and recent activity](/images/guides/managing-identity/identity-tab.jpg)
 
-![Your profile preview shows display name, bio, NIP-05 identifier, Lightning address, and website — exactly how other Nostr users will see you](/images/guides/managing-identity/view-profile.jpg)
 
 ### Editing Your Profile
 
-![Review your profile before publishing — confirm display name, bio, NIP-05, Lightning address, and website, then click Confirm & Publish to sign and broadcast your kind 0 event](/images/guides/managing-identity/edit-profile.jpg)
 
 1. Click **Edit Profile** on the Identity tab.
 2. Update any fields you want to change.
@@ -70,20 +67,19 @@ Your seed phrase and nsec (private key) are the single most important pieces of 
 ### Storage
 
 - The extension encrypts your keys locally using your encryption password. They are never stored in plain text.
-- Back up your 12-word seed phrase in a password manager or write it on paper and store it somewhere safe.
+- Back up your 24-word seed phrase in a password manager or write it on paper and store it somewhere safe.
 - Never share your seed phrase or nsec with anyone, paste them into a website, or send them in a DM.
 
 ### Encryption Password
 
 - Choose a strong, unique password when setting up the extension.
 - The extension locks after a period of inactivity. You will need this password to unlock it.
-- If you forget this password, you can restore access using your 12-word seed phrase.
+- If you forget this password, you can restore access using your 24-word seed phrase.
 
-![When the vault is locked, enter your encryption password to unlock — your private keys never leave the extension](/images/guides/managing-identity/lock-screen.jpg)
 
 ### Multiple Devices
 
-If you use the extension on multiple browsers or machines, restore from your 12-word seed phrase on each one. Your identity is tied to your key pair, not to any single device.
+If you use the extension on multiple browsers or machines, restore from your 24-word seed phrase on each one. Your identity is tied to your key pair, not to any single device.
 
 <Callout type="tip">
 Your seed phrase works independently of any single browser or device. Keep it in a safe place and you can always restore your full Nostr identity.
@@ -96,3 +92,11 @@ The extension supports multiple identities. If you manage more than one Nostr ac
 ## What's Next?
 
 With your identity secured, it is time to understand how the extension uses it to build your [Web of Trust](/guides/understanding-wot). If you want to connect a wallet, jump to [Setting Up Your Wallet](/guides/setting-up-wallet).
+
+## Account previews and finishing setup
+
+When a main recovery phrase already exists, **Create New** opens **New Sub-Account**. It uses that phrase with another derivation path; it does not generate a second recovery phrase. Edit the name if needed. The npub and hex public keys appear below their labels in accent color, shortened in the middle. Copy icons copy the complete values. **Advanced** sits below the keys and opens the path editor; leave the proposed path unless you need a specific one.
+
+Follow suggestions show names and small pictures from verified public profiles when available. The extension reuses a shared cache for 30 minutes, keeping at most 500 profiles, and looks up missing metadata at purplepag.es. The public author key is sent to that directory; images load separately from the profile's image host. Missing profiles fall back to a shortened key. Loading does not block selection or **Skip for now**.
+
+The completion screen puts the account summary and **Get Started** at the bottom. It shows the account name and a copyable public key; only derived sub-accounts are described as sharing the main seed phrase. New accounts can use global rules or copy site overrides from another account. Authentication grants stay separate.

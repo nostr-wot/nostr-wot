@@ -20,84 +20,37 @@ ogImage: "/images/guides/site-permissions/og.jpg"
 translationKey: "site-permissions"
 difficulty: "intermediate"
 order: 8
+updated: "2026-10-01"
 ---
 
-A extensao Nostr WoT permite controlar individualmente o que cada site pode fazer com sua identidade e carteira. Este guia explica como o sistema de permissoes funciona e como configura-lo.
+Consentimento de conexão, regras de assinatura e permissões de autenticação são controles separados. Abra **Permissões** para a conta ativa.
 
-## Como as Permissoes Funcionam
+## Regras globais e site atual
 
-Quando um site tenta interagir com a extensao -- seja para ler sua chave publica, solicitar uma assinatura ou fazer um pagamento -- a extensao verifica as permissoes configuradas para aquele dominio especifico.
+**Regras globais** define padrões para sites conectados e contas. **Regras por site** abre a página da aba atual, não uma lista de sites salvos. Visite uma página web se solicitado. O atalho de gerenciar permissões no painel abre o mesmo editor.
 
-Existem tres niveis de permissao para cada tipo de acao:
+Regras globais vem antes de Regras por site no menu. **Adicionar regra** fica à direita do nome do site. O botão **Regras globais** no rodapé abre os padrões; abaixo deles está **Ir às regras do site atual**. Voltar retorna a Permissões quando você entrou por esse menu.
 
-- **Sempre permitir** -- A acao e executada automaticamente sem perguntar.
-- **Sempre perguntar** -- A extensao mostra um popup de confirmacao toda vez.
-- **Sempre negar** -- A solicitacao e rejeitada silenciosamente.
+Linhas cinzas herdam regras globais visíveis. Linhas coloridas são exceções da conta para o site. Editar uma herdada cria uma exceção; usar o padrão herdado a remove. Regras compartilhadas antigas migram uma vez; decisões diferentes por site continuam como exceções visíveis.
 
-{/* TODO: Captura de tela do popup de solicitacao de permissao */}
+## Alterar ou redefinir regras
 
-## Tipos de Permissao
+Adicione uma ação com **Permitir**, **Negar** ou **Perguntar**. Uma exceção substitui o padrão global correspondente. Uma negativa mais ampla pode continuar valendo e deve ser alterada separadamente. Essas regras tratam de chave pública, tipos de evento e criptografia; não conectam novos sites nem substituem autenticação de backend ou relay.
 
-A extensao gerencia permissoes para varias categorias de acoes:
+Redefinir exceções do site pede confirmação, remove as da conta ativa e mantém o editor aberto com apenas as globais em cinza. Isso pode fazer uma autorização global valer novamente. Redefinir todas as exceções de contas em Regras globais também exige confirmação e preserva globais. Nenhuma opção remove permissões de autenticação.
 
-### Identidade (NIP-07)
+Um site atual recusado abre o editor de duração: uma semana, um mês, um ano ou para sempre. Remover a recusa permite novas solicitações, sem conectar ou autorizar o site.
 
-- **Ler chave publica** -- O site pode ver sua npub. Isso e necessario para identificar voce.
-- **Assinar eventos** -- O site pode solicitar que a extensao assine eventos Nostr em seu nome.
-- **Criptografar/descriptografar** -- O site pode solicitar operacoes de criptografia para mensagens diretas (NIP-04/NIP-44).
+## Revisar solicitações
 
-### Carteira (WebLN)
+**Aprovar uma vez** e **Negar** resolvem a solicitação atual, não toda a sessão do navegador. As setas oferecem decisões salvas. Nos grupos, selecione o que aprovar ou negue o grupo exibido. Solicitações novas ou não selecionadas não são incluídas automaticamente.
 
-- **Pagamentos** -- O site pode solicitar que voce envie sats.
-- **Consultar saldo** -- O site pode ver o saldo da sua carteira.
-- **Criar invoices** -- O site pode gerar invoices para voce receber pagamentos.
+A revisão descreve a ação e mostra o conteúdo da nota ou uma prévia compatível. O ícone de código abre o evento completo. Mensagens privadas são agrupadas por remetente quando possível. Clique no conteúdo desfocado para revelá-lo localmente durante 30 segundos; isso não aprova sua entrega ao site.
 
-{/* TODO: Captura de tela da lista de permissoes por tipo */}
+## Backend, relays e pagamentos
 
-## Gerenciando Permissoes por Site
+**Autenticação padrão do backend** começa desativada por conta. Ativada permite NIP-98 a sites conectados na mesma origem HTTPS exata ou em pares verificados do registro. Negativas explícitas prevalecem. **Autenticação do backend** mostra estado, regras e permissões explícitas. Decisões automáticas não criam linhas. Veja o [guia de backend](/guides/backend-authentication).
 
-### Visualizando Permissoes Existentes
+**Autenticação de relays** gerencia apps selecionados ou todos os sites conectados por relay e conta, separadamente da configuração de leitura/escrita. Veja o [guia de relays](/guides/relay-authentication).
 
-1. Abra a extensao e va para a aba **Permissoes** ou **Configuracoes**.
-2. Voce vera uma lista de todos os sites que ja solicitaram alguma permissao.
-3. Cada site mostra quais permissoes estao ativas e em qual nivel.
-
-### Editando Permissoes
-
-1. Clique no dominio que voce quer configurar.
-2. Ajuste cada tipo de permissao individualmente.
-3. Salve as alteracoes.
-
-### Removendo um Site
-
-Se voce quer revogar todas as permissoes de um site, clique no botao de remover ao lado do dominio. Na proxima vez que o site solicitar acesso, voce vera o popup de confirmacao novamente.
-
-{/* TODO: Captura de tela da tela de edicao de permissoes de um site */}
-
-<Callout type="tip">
-Revise suas permissoes periodicamente. Se voce nao visita mais um site, remova suas permissoes. Menos sites com acesso significa menos superficie de ataque.
-</Callout>
-
-## Boas Praticas de Seguranca
-
-### Seja Seletivo com Assinaturas
-
-Assinar eventos e o ato mais sensivel que a extensao faz. Quando voce aprova uma assinatura, esta publicando algo como sua identidade Nostr. Conceda permissao permanente de assinatura apenas para clientes Nostr que voce conhece e confia.
-
-### Cuidado com Pagamentos Automaticos
-
-Se voce configurou aprovacao automatica de pagamentos, preste atencao a quais sites tem essa permissao. Um site malicioso poderia drenar seus fundos se tiver permissao de pagamento automatico.
-
-### Verifique o Dominio
-
-Antes de aprovar qualquer permissao, verifique se o dominio no popup corresponde ao site que voce esta visitando. Ataques de phishing podem tentar se passar por clientes Nostr legitimos.
-
-### Use a Web of Trust
-
-A extensao pode usar sua Web of Trust para ajudar nas decisoes de permissao. Sites associados a pessoas dentro da sua rede de confianca podem receber tratamento diferenciado nas solicitacoes.
-
-{/* TODO: Video demonstrando o gerenciamento de permissoes */}
-
-## O Que Vem a Seguir?
-
-Com suas permissoes configuradas, explore o [Playground da Web of Trust](/guides/playground-wot) para visualizar e testar sua rede de confianca. Se ainda nao configurou sua carteira, volte para [Configurar Carteira Lightning](/guides/configurar-carteira).
+Pagamentos Lightning mantêm confirmações, limites e [configurações automáticas](/guides/zapping-auto-approve). Permitir assinaturas Nostr não autoriza pagamentos ilimitados.

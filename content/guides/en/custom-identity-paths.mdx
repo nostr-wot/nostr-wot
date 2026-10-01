@@ -14,13 +14,10 @@ ogImage: "/images/guides/custom-identity-paths/en.png"
 translationKey: "custom-identity-paths"
 difficulty: "advanced"
 order: 2.6
+updated: "2026-10-01"
 ---
 
 A work identity, a project identity and a testing identity do not have to look identical in your account list. Nostr WoT lets you give a new seed-derived identity a useful local name and, under **Advanced**, choose the derivation path yourself. Leave the path alone if the automatic choice suits you.
-
-## Which version includes this?
-
-This guide describes extension **0.7.0**, available as a downloadable [GitHub release](https://github.com/nostr-wot/nostr-wot-extension/releases/tag/v0.7.0). Chrome and Firefox store approval of this version was not confirmed when this guide was prepared. Check your installed version before looking for these controls.
 
 ## A name and a path do different jobs
 
@@ -33,7 +30,7 @@ This guide describes extension **0.7.0**, available as a downloadable [GitHub re
 ## Create the identity
 
 1. Unlock the extension and open the account selector. Start adding an account and choose **HD Sub-Account**. This requires an existing recovery phrase in the vault; an imported nsec alone is not that phrase.
-2. Check the source seed shown on **New Sub-Account**. The extension proposes the next unused path in its existing sequence.
+2. The extension proposes the next unused path from your main recovery phrase. The relationship is explained below the form; there is no separate source-seed row.
 3. Optionally enter a name such as “Project” or “Testing”. Leaving it blank keeps the proposed name.
 4. Open **Advanced** only if you need a specific path. Enter the exact path and wait for the public-key preview to refresh.
 5. Check both the path and the displayed npub. An invalid path, failed preview or preview still loading prevents continuation.
@@ -54,3 +51,11 @@ Store your recovery phrase securely, together with the exact path and the public
 Different paths are useful for organizing identities, not for isolating them from compromise of their shared seed. They do not guarantee anonymity either. Changing the path does not transfer posts, followers or profile information to the new identity. Existing keys are not changed by this feature.
 
 Start with [identity management](/guides/managing-identity) if you only need account switching. Use custom paths when you have a recovery or organization requirement you can document.
+
+## Account previews and finishing setup
+
+When a main recovery phrase already exists, **Create New** opens **New Sub-Account**. It uses that phrase with another derivation path; it does not generate a second recovery phrase. Edit the name if needed. The npub and hex public keys appear below their labels in accent color, shortened in the middle. Copy icons copy the complete values. **Advanced** sits below the keys and opens the path editor; leave the proposed path unless you need a specific one.
+
+Follow suggestions show names and small pictures from verified public profiles when available. The extension reuses a shared cache for 30 minutes, keeping at most 500 profiles, and looks up missing metadata at purplepag.es. The public author key is sent to that directory; images load separately from the profile's image host. Missing profiles fall back to a shortened key. Loading does not block selection or **Skip for now**.
+
+The completion screen puts the account summary and **Get Started** at the bottom. It shows the account name and a copyable public key; only derived sub-accounts are described as sharing the main seed phrase. New accounts can use global rules or copy site overrides from another account. Authentication grants stay separate.

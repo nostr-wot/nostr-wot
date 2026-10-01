@@ -3,6 +3,7 @@ title: "Vérifiez le backend auquel vous vous authentifiez"
 description: "Comprenez les autorisations par site, compte, URL et méthode lorsque votre application utilise une API distincte."
 excerpt: "Comprenez les autorisations par site, compte, URL et méthode lorsque votre application utilise une API distincte."
 date: "2026-09-30"
+updated: "2026-10-01"
 featuredImage: "/images/guides/site-permissions/featured.svg"
 previewImage: "/images/guides/site-permissions/preview.svg"
 ogImage: "/images/guides/site-permissions/og.jpg"
@@ -19,21 +20,21 @@ tags:
   - "Authentication"
 ---
 
-[Nostr WoT 0.8.7](https://github.com/nostr-wot/nostr-wot-extension/releases/tag/v0.8.7) distingue l’accès d’un site à votre identité de l’autorisation de vous authentifier auprès d’un service HTTP. Pour WebSocket, consultez le [guide des relais](/guides/relay-authentication).
+[Nostr WoT](https://github.com/nostr-wot/nostr-wot-extension) distingue l’accès d’un site à votre identité de l’autorisation de vous authentifier auprès d’un service HTTP. Pour WebSocket, consultez le [guide des relais](/guides/relay-authentication).
 
-## Une API peut avoir un autre domaine
+## Autorisations précises et automatisation facultative
 
-Un site fictif `https://client.example` peut utiliser `https://api.client.example/session`. Cette architecture est normale. L’extension distingue le site demandeur du service destinataire de la preuve.
+Un site comme `https://client.example` peut utiliser `https://api.client.example`. Une autorisation HTTP mémorisée lie le compte actif, l’origine du site, l’URL signée exacte avec sa requête et la méthode HTTP. Elle ne couvre pas d’autres destinations, méthodes, sites ou comptes. Les anciennes autorisations par origine demandent un nouveau consentement ; les refus restent valables.
 
-Une autorisation HTTP mémorisée concerne **le compte, l’origine du site, l’URL signée exacte et la méthode HTTP**, par exemple `POST`. Le texte de la requête dans l’URL compte aussi. Une autre route, un autre port, une autre méthode, un autre site ou compte exige son propre consentement. La règle vaut également pour une API de même origine. Les anciennes autorisations HTTP générales nécessitent un nouveau consentement ; les refus restent applicables.
+**Authentification backend par défaut** est désactivée initialement pour chaque compte. Activée dans **Permissions**, elle permet aux sites connectés d’utiliser NIP-98 automatiquement pour la même origine HTTPS exacte ou une paire site/backend marquée `nip98` dans le [registre et ses règles](https://github.com/nostr-wot/nostr-wot-extension/blob/main/docs/auth-client-registry.md). Les chemins et méthodes valides de ces origines sont couverts. Une entrée informative, non vérifiée ou avec joker ne suffit pas. Les refus explicites priment. Les relais restent séparés.
 
-Le [répertoire des clients et backends](https://github.com/nostr-wot/nostr-wot-extension/blob/v0.8.7/docs/auth-client-registry.md) est informatif et ne peut accorder aucun droit.
+## Examiner et gérer les autorisations
 
-## Décider et révoquer
+La demande indique le site, la destination et la méthode. **Approuver** et **Refuser** concernent cette demande seulement. Les flèches mémorisent une décision pour ce compte, site, URL et méthode. L’icône de code ouvre l’événement brut. L’approbation groupée de signatures ordinaires n’accorde pas d’autorisation permanente d’authentification.
 
-Le dialogue affiche le site et la destination. **Approuver** ou **Refuser** traite la demande actuelle. Les menus fléchés permettent de mémoriser la décision pour cette combinaison précise. HTTP n’offre pas d’autorisation pour tous les sites.
+Ouvrez **Permissions → Authentification du backend**. Un avis indique quand la politique est activée, explique sa portée et donne accès aux règles et au registre. Ses approbations automatiques ne créent pas de lignes : un tableau vide ne signifie pas qu’elle est désactivée. Le tableau contient les décisions explicites du compte actif.
 
-Le bouton de code affiche l’événement complet. L’approbation groupée des signatures ordinaires exclut l’authentification. La table située en bas de **Permissions** suit le compte actif et permet la révocation. Celle-ci bloque les signatures futures, sans retirer une preuve déjà envoyée ni fermer une session ouverte sur le backend.
+Révoquez une ligne ici ou désactivez la politique dans Permissions. La désactivation conserve les autorisations explicites. La révocation concerne les futures signatures, pas les preuves envoyées ni les sessions déjà créées. HTTP ne propose pas d’autorisation pour tous les sites.
 
 ## Vérifications de l’extension
 
@@ -53,4 +54,4 @@ La preuve lie URL, méthode et hash des octets exacts du corps. Un défi de 60 s
 
 CORS limite les navigateurs, pas les appels entre serveurs. Un tag d’origine ne constitue pas une attestation cryptographique du navigateur. Du code malveillant dans un site principal autorisé partage ses droits. Ces contrôles limitent le consentement sans éliminer tout hameçonnage ou transfert d’authentification.
 
-Consultez le [contrat v2](https://github.com/nostr-wot/nostr-wot-extension/blob/v0.8.7/docs/wallet-auth-v2.md) et les [tests](https://github.com/nostr-wot/nostr-wot-extension/blob/v0.8.7/tests/authentication.test.ts).
+Consultez le [contrat v2](https://github.com/nostr-wot/nostr-wot-extension/blob/main/docs/wallet-auth-v2.md) et les [tests](https://github.com/nostr-wot/nostr-wot-extension/blob/main/tests/authentication.test.ts).

@@ -14,13 +14,10 @@ ogImage: "/images/guides/custom-identity-paths/pt.png"
 translationKey: "custom-identity-paths"
 difficulty: "advanced"
 order: 2.6
+updated: "2026-10-01"
 ---
 
 Uma identidade de trabalho, uma de projeto e outra de testes podem ter nomes locais fáceis de reconhecer. O Nostr WoT permite nomear uma nova identidade derivada da frase de recuperação e escolher o caminho em **Avançado**. Mantenha a escolha automática se não precisar de um caminho específico.
-
-## Qual versão inclui esta função?
-
-Este guia descreve a extensão **0.7.0**, disponível na [versão para download no GitHub](https://github.com/nostr-wot/nostr-wot-extension/releases/tag/v0.7.0). A aprovação desta versão nas lojas do Chrome e Firefox não estava confirmada quando o guia foi preparado. Verifique a versão instalada.
 
 ## Nome e caminho têm funções diferentes
 
@@ -33,7 +30,7 @@ Este guia descreve a extensão **0.7.0**, disponível na [versão para download 
 ## Criar a identidade
 
 1. Desbloqueie a extensão, abra o seletor de contas e adicione uma **subconta HD**. É necessária uma frase de recuperação já existente no cofre; uma nsec importada sozinha não substitui essa frase.
-2. Confira a semente de origem apresentada. A extensão propõe o próximo caminho livre da sua sequência existente.
+2. A extensão propõe o próximo caminho livre da frase principal. A relação aparece abaixo do formulário, sem uma linha separada para a conta de origem.
 3. Digite um nome opcional, como «Projeto» ou «Testes». Um campo vazio mantém o nome proposto.
 4. Abra **Avançado** se precisar de outro caminho. Digite-o exatamente e aguarde a atualização da prévia.
 5. Confira o caminho e a npub. Caminhos inválidos, erros ou uma prévia ainda em processamento impedem continuar.
@@ -54,3 +51,11 @@ Guarde em segurança a frase, o caminho exato e a npub esperada. O nome local aj
 Caminhos diferentes organizam identidades, mas não as isolam de um comprometimento da semente comum nem garantem anonimato. Alterar o caminho não transfere publicações, seguidores ou o perfil. As chaves existentes permanecem iguais.
 
 Para apenas alternar contas, consulte a [gestão de identidades](/pt/guides/managing-identity). Use caminhos personalizados quando houver uma necessidade concreta de organização ou recuperação que consiga documentar.
+
+## Prévia e conclusão
+
+Quando já existe uma frase de recuperação principal, **Criar nova** abre **Nova subconta**. Usa essa frase com outro caminho de derivação, sem gerar uma segunda frase. O nome pode ser alterado. As chaves públicas npub e hex ficam abaixo dos rótulos, em cor de destaque e abreviadas no meio. Os ícones copiam o valor completo. **Avançado** fica abaixo das chaves e abre o editor de caminho; mantenha a sugestão salvo necessidade específica.
+
+Sugestões mostram nomes e pequenas fotos de perfis públicos verificados quando disponíveis. Compartilham cache de 30 minutos com até 500 perfis; metadados ausentes são buscados em purplepag.es. O diretório recebe a chave pública do autor; as imagens vêm de seu próprio servidor. Sem perfil, aparece a chave abreviada. A carga não bloqueia seleção nem **Pular por enquanto**.
+
+A tela final coloca resumo e **Começar** embaixo. Mostra nome e chave pública copiável; só subcontas derivadas mencionam a frase principal. Novas contas podem usar regras globais ou copiar exceções por site de outra conta. Permissões de autenticação ficam separadas.

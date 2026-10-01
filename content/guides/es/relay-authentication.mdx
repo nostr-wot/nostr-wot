@@ -3,6 +3,7 @@ title: "Elige qué relays pueden autenticar tu cuenta"
 description: "Autoriza un relay para una web o para todos los sitios conectados y aprende a revocar ese acceso."
 excerpt: "Autoriza un relay para una web o para todos los sitios conectados y aprende a revocar ese acceso."
 date: "2026-09-30"
+updated: "2026-10-01"
 featuredImage: "/images/guides/site-permissions/featured.svg"
 previewImage: "/images/guides/site-permissions/preview.svg"
 ogImage: "/images/guides/site-permissions/og.jpg"
@@ -19,7 +20,7 @@ tags:
   - "Authentication"
 ---
 
-En [Nostr WoT 0.8.7](https://github.com/nostr-wot/nostr-wot-extension/releases/tag/v0.8.7), conectar una web o permitir firmas ordinarias no la autoriza automáticamente a identificarte ante cualquier relay. Las API HTTP tienen su propia [guía de autenticación de backends](/guides/backend-authentication).
+En [Nostr WoT](https://github.com/nostr-wot/nostr-wot-extension), conectar una web o permitir firmas ordinarias no la autoriza automáticamente a identificarte ante cualquier relay. Las API HTTP tienen su propia [guía de autenticación de backends](/guides/backend-authentication).
 
 ## Web y relay son partes distintas
 
@@ -34,18 +35,20 @@ La solicitud muestra la web y el relay. El botón de código abre el evento comp
 | Aprobar | La solicitud actual |
 | Aprobar siempre | Esta web, esta cuenta y este relay |
 | Siempre para todos los sitios | Los sitios conectados con acceso a tu identidad, para esta cuenta y este relay |
-| Rechazar | La solicitud actual |
-| Rechazar siempre | Recuerda la denegación para esta web, cuenta y relay |
+| Denegar | La solicitud actual |
+| Denegar siempre | Recuerda la denegación para esta web, cuenta y relay |
 
 Las opciones recordadas están en las flechas junto a los botones. El permiso usa la URL normalizada del relay, no solo el nombre mostrado: otra ruta o puerto no queda autorizado automáticamente.
 
 La opción para todos los sitios evita repetir la autorización al usar el mismo relay en varios clientes. También puede aplicarse a webs que conectes después. No conecta webs nuevas, concede acceso a la identidad, cubre otras cuentas, permite firmas ordinarias ni autoriza backends HTTP. Una denegación específica de un sitio tiene prioridad. Desactivar su acceso a la identidad o desconectarlo sigue bloqueándolo, incluso con un firmante NIP-46.
 
-## Revoca el acceso
+## Revisar y revocar permisos
 
-Abre **Permisos** para la cuenta activa y ve a la sección de autenticación al final. La tabla contiene permisos por sitio. El enlace inferior abre la tabla de relays autorizados para todos los sitios conectados. Puedes revocar cada entrada.
+Abre **Permisos → Autenticación de relays** para la cuenta activa. Es una pantalla con Volver e información, separada de la configuración de lectura y escritura de relays. Agrupa los permisos por relay e indica el número de sitios aprobados o el alcance para todos, con las excepciones denegadas.
 
-Desconectar una web elimina sus permisos particulares. Un permiso compartido continúa para otras webs conectadas, pero no sirve a la desconectada. Eliminar una cuenta borra sus permisos. La revocación afecta a firmas futuras; no deshace una prueba enviada ni cierra un WebSocket ya autenticado. El cliente debe cerrar esa conexión.
+Abre un relay para seleccionar aplicaciones conectadas o todos los sitios conectados. Desmarcar una aplicación en el modo de todos cambia a una selección explícita de los restantes sitios conectados no denegados; los futuros sitios ya no se incluyen. Guardar una selección vacía elimina las autorizaciones de ese relay y conserva las denegaciones. Seleccionar un sitio denegado sustituye esa denegación; elegir todos conserva las excepciones. Solo cambia esa cuenta y ese relay.
+
+Desconectar una web elimina sus permisos particulares; uno compartido sigue sirviendo a otras webs conectadas. Eliminar la cuenta elimina sus permisos. Revocar afecta a firmas futuras, no cierra un WebSocket ya autenticado: debe cerrarlo el cliente.
 
 ## Comprobaciones y límites
 
@@ -55,4 +58,4 @@ La extensión no controla el WebSocket del cliente. El relay debe validar firma,
 
 Autenticarte revela tu clave pública. Usar la misma cuenta en varios clientes permite al relay relacionar esas conexiones. Usa cuentas separadas o permisos por sitio cuando necesites esa separación. CORS no sustituye la validación de la conexión ni los límites de cuenta, sitio y destino.
 
-Consulta las [reglas de permisos](https://github.com/nostr-wot/nostr-wot-extension/blob/v0.8.7/src/services/permissions/authentication.ts) y las [pruebas](https://github.com/nostr-wot/nostr-wot-extension/blob/v0.8.7/tests/authentication.test.ts).
+Consulta las [reglas de permisos](https://github.com/nostr-wot/nostr-wot-extension/blob/main/src/services/permissions/authentication.ts) y las [pruebas](https://github.com/nostr-wot/nostr-wot-extension/blob/main/tests/authentication.test.ts).

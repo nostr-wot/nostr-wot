@@ -3,6 +3,7 @@ title: "Escolha quais relays podem autenticar sua conta"
 description: "Autorize um relay por site ou entre sites conectados, com controle por conta e revogação."
 excerpt: "Autorize um relay por site ou entre sites conectados, com controle por conta e revogação."
 date: "2026-09-30"
+updated: "2026-10-01"
 featuredImage: "/images/guides/site-permissions/featured.svg"
 previewImage: "/images/guides/site-permissions/preview.svg"
 ogImage: "/images/guides/site-permissions/og.jpg"
@@ -19,7 +20,7 @@ tags:
   - "Authentication"
 ---
 
-No [Nostr WoT 0.8.7](https://github.com/nostr-wot/nostr-wot-extension/releases/tag/v0.8.7), conectar um site ou permitir assinaturas comuns não o autoriza a identificar você em qualquer relay. APIs HTTP seguem o [guia de autenticação de backends](/guides/backend-authentication).
+No [Nostr WoT](https://github.com/nostr-wot/nostr-wot-extension), conectar um site ou permitir assinaturas comuns não o autoriza a identificar você em qualquer relay. APIs HTTP seguem o [guia de autenticação de backends](/guides/backend-authentication).
 
 ## Site e relay são partes diferentes
 
@@ -34,18 +35,20 @@ O diálogo mostra o site e o relay; o botão de código abre o evento completo. 
 | Aprovar | O pedido atual |
 | Aprovar sempre | Este site, esta conta e este relay |
 | Sempre para todos os sites | Sites conectados com acesso à identidade, para esta conta e este relay |
-| Rejeitar | O pedido atual |
-| Rejeitar sempre | Recusa salva para este site, conta e relay |
+| Negar | O pedido atual |
+| Negar sempre | Recusa salva para este site, conta e relay |
 
 As decisões persistentes ficam nas setas dos botões. O escopo usa a URL normalizada do relay, não apenas seu nome. Outra porta ou caminho não é autorizado automaticamente.
 
 A opção para todos os sites evita repetir a autorização ao usar vários clientes no mesmo relay. Ela também pode valer para sites conectados depois. Não conecta novos sites, concede acesso à identidade, cobre outras contas, permite assinaturas comuns ou autoriza APIs HTTP. Uma recusa por site tem prioridade. Desativar acesso à identidade ou desconectar o site continua bloqueando a autenticação, inclusive com NIP-46.
 
-## Revise e revogue
+## Revisar e revogar permissões
 
-Abra **Permissões** na conta ativa e vá à seção de autenticação no final. A tabela contém permissões por site. O link abaixo abre uma tabela separada de relays permitidos para todos os sites conectados. Revogue cada entrada conforme necessário.
+Abra **Permissões → Autenticação de relays** para a conta ativa. É uma tela com Voltar e informações, separada das configurações de leitura e escrita. Agrupa permissões por relay e mostra o número de sites aprovados ou o alcance para todos, com exceções negadas.
 
-Desconectar um site remove seus próprios escopos. Uma autorização compartilhada continua disponível para outros sites conectados, nunca para o desconectado. Excluir uma conta apaga suas autorizações. Revogar impede novas assinaturas; não desfaz provas enviadas nem fecha um WebSocket já autenticado. O cliente precisa encerrar essa conexão.
+Abra um relay para selecionar apps conectados ou todos os sites conectados. Desmarcar um app no modo todos muda para a seleção explícita dos demais sites conectados não negados; sites futuros deixam de ser incluídos. Salvar uma seleção vazia remove todas as autorizações do relay preservando negativas. Selecionar explicitamente um site negado substitui a negativa; escolher todos preserva exceções. Apenas essa conta e esse relay mudam.
+
+Desconectar um site remove seus próprios vínculos; uma permissão compartilhada continua disponível aos outros sites conectados. Excluir uma conta remove suas permissões. Revogar afeta assinaturas futuras, mas não fecha um WebSocket já autenticado: o cliente deve fechá-lo.
 
 ## Verificações e limites
 
@@ -55,4 +58,4 @@ A extensão não controla o WebSocket do cliente. O relay deve validar assinatur
 
 Autenticar revela sua chave pública ao relay. Usar a mesma conta em vários clientes pode vincular essas conexões. Use contas separadas ou permissões menores quando essa distinção importar. CORS não substitui a validação da conexão ou o controle por conta, site e destino.
 
-Veja as [regras de permissões](https://github.com/nostr-wot/nostr-wot-extension/blob/v0.8.7/src/services/permissions/authentication.ts) e os [testes](https://github.com/nostr-wot/nostr-wot-extension/blob/v0.8.7/tests/authentication.test.ts).
+Veja as [regras de permissões](https://github.com/nostr-wot/nostr-wot-extension/blob/main/src/services/permissions/authentication.ts) e os [testes](https://github.com/nostr-wot/nostr-wot-extension/blob/main/tests/authentication.test.ts).

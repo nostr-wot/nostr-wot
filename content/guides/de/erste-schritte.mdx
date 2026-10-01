@@ -1,92 +1,55 @@
 ---
-title: "Erste Schritte mit Nostr WoT"
-description: "Installieren Sie die Nostr WoT Browser-Erweiterung auf Chrome, Brave, Edge, Opera oder Firefox. Richten Sie Ihre Nostr-Identität ein und beginnen Sie in Minuten mit dem Aufbau Ihres Web of Trust."
-excerpt: "Alles, was Sie brauchen, um die Nostr WoT Extension zu installieren und Ihr erstes Vertrauensnetzwerk zum Laufen zu bringen."
-date: "2026-03-11"
-author:
-  name: "Leon Acosta"
-  avatar: "/authors/leon-profile.jpg"
-  npub: "npub1gxdhmu9swqduwhr6zptjy4ya693zp3ql28nemy4hd97kuufyrqdqwe5zfk"
+title: "Erste Schritte: Nostr-Konto einrichten"
+description: "Installiere Nostr WoT und wähle eine neue Identität, einen vorhandenen Schlüssel oder ein Backup, ein Lesekonto oder die QR-Verbindung zu einem externen Signer."
+excerpt: "Installiere Nostr WoT und wähle eine neue Identität, einen vorhandenen Schlüssel oder ein Backup, ein Lesekonto oder die QR-Verbindung zu einem externen Signer."
+date: "2026-09-30"
+author: {"name": "Leon Acosta", "avatar": "/authors/leon-profile.jpg", "npub": "npub1gxdhmu9swqduwhr6zptjy4ya693zp3ql28nemy4hd97kuufyrqdqwe5zfk"}
 featuredImage: "/images/guides/getting-started/featured.svg"
 previewImage: "/images/guides/getting-started/preview.svg"
-tags:
-  - "Erweiterung"
-  - "Einrichtung"
-  - "Anfänger"
+tags: ["Erweiterung", "Identität", "Einrichtung"]
 published: true
-seoTitle: "Erste Schritte mit Nostr WoT — Erweiterungs-Anleitung"
-seoDescription: "Installieren Sie die Nostr WoT Browser-Erweiterung auf Chrome, Brave, Edge, Opera oder Firefox. Richten Sie Ihre Nostr-Identität ein und beginnen Sie in Minuten mit dem Aufbau Ihres Web of Trust."
+seoTitle: "Erste Schritte: Nostr-Konto einrichten"
+seoDescription: "Installiere Nostr WoT und wähle eine neue Identität, einen vorhandenen Schlüssel oder ein Backup, ein Lesekonto oder die QR-Verbindung zu einem externen Signer."
 ogImage: "/images/guides/getting-started/og.jpg"
 translationKey: "getting-started"
 difficulty: "beginner"
 order: 1
+updated: "2026-10-01"
 ---
 
-Diese Anleitung führt Sie durch die Installation der Nostr WoT Extension, die Einrichtung Ihrer Identität und den Start Ihres Vertrauensnetzwerks. Der gesamte Vorgang dauert etwa zwei Minuten.
+Nostr WoT bietet vier Möglichkeiten, eine Identität einzurichten. Für dein erstes Nostr-Konto wählst du **Create New**. Hast du bereits eine Identität, nutze die Methode, die zu deinen vorhandenen Daten passt.
 
-## Installation der Erweiterung
+## Erweiterung installieren und öffnen
 
-Die Erweiterung unterstützt alle gängigen Chromium-basierten Browser und Firefox. Wählen Sie Ihren Browser und folgen Sie den untenstehenden Schritten.
+1. Öffne die [Downloadseite](/download) und folge dem Store-Link für deinen Browser.
+2. Installiere die Erweiterung und hefte sie an die Symbolleiste an.
+3. Öffne das Nostr-WoT-Popup und wähle **Continue**, um die Methoden anzuzeigen.
 
-### Chrome, Brave, Edge und Opera
+## Methode auswählen
 
-1. Besuchen Sie die [Download-Seite](/download) und klicken Sie auf den Link zum Chrome Web Store.
-2. Klicken Sie auf **Zu Chrome hinzufügen** (oder die entsprechende Schaltfläche in Ihrem Browser).
-3. Bestätigen Sie die Installation, wenn Sie dazu aufgefordert werden.
-4. Heften Sie die Erweiterung an Ihre Symbolleiste für einfachen Zugriff — klicken Sie auf das Puzzle-Symbol in Ihrem Browser und aktivieren Sie die Pinnadel neben Nostr WoT.
+| Was du hast | Methode | Anleitung |
+|---|---|---|
+| Noch keine Nostr-Identität | **Create New** | [Konto erstellen und 24 Wörter sichern](/guides/create-nostr-account) |
+| Privaten Schlüssel, Wiederherstellungsphrase oder verschlüsseltes Backup | **Import Key or Backup** | [Identität wiederherstellen](/guides/import-nostr-account) |
+| Nur einen öffentlichen Schlüssel zum Erkunden | **Watch-Only** | [Lesekonto hinzufügen](/guides/watch-only-nostr-account) |
+| Identität in einem externen NIP-46-Signer | **Nostr Connect** | [Per QR verbinden](/guides/connect-nostr-signer) |
 
-{/* TODO: Screenshot of the Chrome Web Store listing with the Add to Chrome button highlighted */}
+Eine neue Identität benötigt weder E-Mail-Adresse noch Telefonnummer. Deine Schlüssel identifizieren dich auf Nostr. Ein Import stellt die Identität des vorhandenen Schlüssels wieder her; eine Neuerstellung erzeugt eine andere Identität.
 
-### Firefox
+## Was du aufbewahren musst
 
-1. Besuchen Sie die [Download-Seite](/download) und klicken Sie auf den Link zu Firefox Add-ons.
-2. Klicken Sie auf **Zu Firefox hinzufügen** und bestätigen Sie die Berechtigungsanfrage.
-3. Heften Sie die Erweiterung an Ihre Symbolleiste, indem Sie mit der rechten Maustaste auf das Symbol klicken und **An Symbolleiste anheften** wählen.
+Der **öffentliche Schlüssel (npub)** identifiziert dein Konto und darf geteilt werden. Der **private Schlüssel (nsec) oder die Wiederherstellungsphrase** ermöglicht die Kontrolle über die Identität und muss geheim bleiben. Das **lokale Tresorpasswort** schützt die Schlüssel in diesem Browser; es ersetzt keine verlorene Phrase.
 
-{/* TODO: Screenshot of the Firefox Add-ons page for Nostr WoT */}
-
-<Callout type="tip">
-Nach der Installation erscheint das Erweiterungssymbol in Ihrer Browser-Symbolleiste. Ein graues Symbol bedeutet, dass Sie noch nicht angemeldet sind. Es wird lila, sobald Ihre Identität aktiv ist.
+<Callout type="warning">
+Verwende niemals Wörter aus Anleitungen oder Demonstrationen. Sichere vor dem Fortfahren die Wörter, die deine eigene Erweiterung erzeugt.
 </Callout>
 
-## Ersteinrichtung
+## Nach der Einrichtung
 
-Wenn Sie die Erweiterung zum ersten Mal öffnen, führt Sie der Einrichtungsassistent durch die wesentlichen Schritte. Sie werden aufgefordert, entweder eine neue Nostr-Identität zu erstellen oder eine bestehende zu importieren. Es ist keine Kontoregistrierung bei einem Drittanbieter erforderlich.
+Prüfe, ob der öffentliche Schlüssel zur gewünschten Identität gehört. Mit einem signierfähigen Konto kannst du einen Nostr-Client öffnen und Berechtigungsanfragen prüfen. Lesekonten können keine Beiträge signieren.
 
-{/* TODO: Screenshot of the first-time setup wizard welcome screen */}
+Weiter geht es mit [Identitätsverwaltung](/guides/identitaet-verwalten), [Website-Berechtigungen](/guides/website-berechtigungen) oder dem [Web of Trust](/guides/web-of-trust-verstehen). Eine [Lightning-Wallet](/guides/wallet-einrichten) kannst du später separat für Zaps einrichten.
 
-## Einen neuen Nostr-Schlüssel erstellen
+## Vorschau und Abschluss
 
-Wenn Sie neu bei Nostr sind, wählen Sie **Neue Schlüssel erstellen**. Die Erweiterung generiert einen privaten Schlüssel (nsec) und einen öffentlichen Schlüssel (npub) für Sie.
-
-1. Klicken Sie im Einrichtungsassistenten auf **Neue Schlüssel erstellen**.
-2. Sichern Sie Ihren privaten Schlüssel. Schreiben Sie ihn auf oder speichern Sie ihn in einem Passwort-Manager. Wenn Sie diesen Schlüssel verlieren, gibt es keine Möglichkeit, Ihr Konto wiederherzustellen.
-3. Legen Sie ein lokales Passwort fest, um Ihre Schlüssel in der Erweiterung zu verschlüsseln. Dieses Passwort wird nie irgendwohin gesendet.
-4. Optional können Sie Ihre Profildetails ausfüllen — Anzeigename, Bio und Avatar.
-
-{/* TODO: Screenshot of the key creation screen with the backup prompt */}
-
-<Callout type="tip">
-Ihr privater Schlüssel ist das Master-Passwort Ihrer Nostr-Identität. Teilen Sie ihn nie, fügen Sie ihn nie auf einer Website ein und speichern Sie ihn nie als Klartext. Die Erweiterung verschlüsselt ihn lokal, sodass Websites ihn nie direkt sehen.
-</Callout>
-
-## Einen bestehenden Schlüssel importieren
-
-Haben Sie bereits eine Nostr-Identität? Wählen Sie **Bestehenden Schlüssel importieren** und fügen Sie Ihren nsec ein oder verwenden Sie eine NIP-07-kompatible Signer-Erweiterung.
-
-1. Klicken Sie auf **Bestehenden Schlüssel importieren**.
-2. Fügen Sie Ihren privaten nsec-Schlüssel ein oder verbinden Sie einen Hardware-Signer.
-3. Legen Sie ein lokales Verschlüsselungspasswort fest.
-4. Die Erweiterung ruft Ihr Profil automatisch von Nostr-Relays ab.
-
-{/* TODO: Screenshot of the import key screen */}
-
-## Überprüfen Ihrer Einrichtung
-
-Sobald Ihre Identität aktiv ist, klicken Sie auf das Erweiterungssymbol. Sie sollten Ihre Profildetails, Ihren npub und einen anfänglichen Trust-Graphen sehen, der sich aus Ihrer Follower-Liste aufbaut. Die Erweiterung ruft Ihre Kontakte von Relays ab und beginnt, Ihr Web of Trust zu kartieren.
-
-Geben Sie ihr ein oder zwei Minuten für die Erstsynchronisierung. Danach aktualisiert sich Ihr Vertrauensnetzwerk im Hintergrund, während Sie surfen.
-
-## Wie geht es weiter?
-
-Nachdem die Erweiterung installiert ist, erfahren Sie, wie Sie [Ihre Identität verwalten](/guides/identitaet-verwalten) und wie das [Web of Trust funktioniert](/guides/web-of-trust-verstehen).
+Der Abschluss zeigt Zusammenfassung und **Loslegen** unten. Name und kopierbarer öffentlicher Schlüssel ersetzen eine Tabelle; nur abgeleitete Unterkonten nennen die gemeinsame Hauptphrase. Neue Konten können globale Regeln verwenden oder Website-Ausnahmen eines anderen Kontos kopieren. Authentifizierungsfreigaben bleiben getrennt.

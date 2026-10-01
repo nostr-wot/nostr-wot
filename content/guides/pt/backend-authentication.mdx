@@ -3,6 +3,7 @@ title: "Saiba em qual backend está se autenticando"
 description: "Controle a autenticação por site, conta, URL e método, mesmo quando a API usa outro domínio."
 excerpt: "Controle a autenticação por site, conta, URL e método, mesmo quando a API usa outro domínio."
 date: "2026-09-30"
+updated: "2026-10-01"
 featuredImage: "/images/guides/site-permissions/featured.svg"
 previewImage: "/images/guides/site-permissions/preview.svg"
 ogImage: "/images/guides/site-permissions/og.jpg"
@@ -19,21 +20,21 @@ tags:
   - "Authentication"
 ---
 
-O [Nostr WoT 0.8.7](https://github.com/nostr-wot/nostr-wot-extension/releases/tag/v0.8.7) separa o acesso de um site à sua identidade da autorização para autenticá-la em um serviço HTTP. Para WebSocket, consulte o [guia de autenticação de relays](/guides/relay-authentication).
+O [Nostr WoT](https://github.com/nostr-wot/nostr-wot-extension) separa o acesso de um site à sua identidade da autorização para autenticá-la em um serviço HTTP. Para WebSocket, consulte o [guia de autenticação de relays](/guides/relay-authentication).
 
-## APIs em domínios diferentes
+## Permissões exatas e automação opcional
 
-Um site fictício `https://client.example` pode usar `https://api.client.example/session`. Isso é normal. A extensão distingue o site que pede a assinatura do serviço que receberá a prova.
+Um site como `https://client.example` pode usar `https://api.client.example`. Uma permissão HTTP salva vincula conta ativa, origem do site, URL assinada exata com consulta e método HTTP. Não autoriza outros destinos, métodos, sites ou contas. Permissões antigas por origem exigem novo consentimento; negativas continuam válidas.
 
-Uma autorização HTTP salva vale apenas para **a conta, a origem do site, a URL assinada exata e o método HTTP**, como `POST`. Inclui o texto da consulta. Outra rota, porta, consulta, método, conta ou site exige autorização própria. A regra também vale quando site e API têm a mesma origem. Permissões antigas abrangentes exigem novo consentimento; recusas continuam válidas.
+**Autenticação padrão do backend** começa desativada por conta. Ativada em **Permissões**, permite NIP-98 automático para sites conectados na mesma origem HTTPS exata ou num par site/backend marcado `nip98` no [registro e suas regras](https://github.com/nostr-wot/nostr-wot-extension/blob/main/docs/auth-client-registry.md). Inclui caminhos e métodos válidos dessas origens. Entradas apenas informativas, não verificadas ou com curingas não bastam. Negativas explícitas prevalecem. Relays têm permissões separadas.
 
-O [diretório de clientes e backends](https://github.com/nostr-wot/nostr-wot-extension/blob/v0.8.7/docs/auth-client-registry.md) apenas informa. Uma entrada não concede acesso nem dispensa consentimento.
+## Revisar e gerenciar a autenticação
 
-## Revise o pedido
+A solicitação mostra site, destino e método. **Aprovar** e **Negar** afetam apenas essa solicitação. As setas salvam decisões para conta, site, URL e método. O ícone de código abre o evento completo. Aprovação em lote de assinaturas comuns não concede permissão permanente de autenticação.
 
-O diálogo identifica site e destino. **Aprovar** e **Rejeitar** afetam o pedido atual. Os menus das setas permitem lembrar a decisão para aquela combinação exata. HTTP não oferece autorização para todos os sites.
+Abra **Permissões → Autenticação do backend**. Quando a política está ativa, um aviso explica o alcance e oferece links para as regras e o registro. Aprovações automáticas não criam linhas: uma tabela vazia não significa política desativada. A tabela mostra decisões explícitas da conta ativa.
 
-O botão de código mostra o evento completo. A aprovação em lote de assinaturas comuns exclui autenticações. A tabela no final de **Permissões** acompanha a conta ativa e permite revogar decisões. Revogar impede assinaturas futuras; não recolhe provas já enviadas nem encerra sessões no backend.
+Revogue uma entrada ou desative a política em Permissões. Desativá-la mantém permissões explícitas. A revogação afeta assinaturas futuras, não provas enviadas nem sessões já criadas. HTTP não oferece permissão para todos os sites.
 
 ## O que a extensão verifica
 
@@ -53,4 +54,4 @@ A prova vincula URL, método e hash dos bytes exatos do corpo. O desafio do back
 
 CORS restringe navegadores, não chamadas entre servidores. Uma tag de origem não comprova criptograficamente o navegador. Código malicioso dentro de um site principal autorizado compartilha sua autoridade. Esses controles limitam o consentimento, mas não eliminam todo phishing ou encaminhamento de autenticação.
 
-Veja o [contrato v2](https://github.com/nostr-wot/nostr-wot-extension/blob/v0.8.7/docs/wallet-auth-v2.md) e os [testes de autenticação](https://github.com/nostr-wot/nostr-wot-extension/blob/v0.8.7/tests/authentication.test.ts).
+Veja o [contrato v2](https://github.com/nostr-wot/nostr-wot-extension/blob/main/docs/wallet-auth-v2.md) e os [testes de autenticação](https://github.com/nostr-wot/nostr-wot-extension/blob/main/tests/authentication.test.ts).

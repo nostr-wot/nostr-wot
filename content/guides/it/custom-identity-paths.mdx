@@ -14,13 +14,10 @@ ogImage: "/images/guides/custom-identity-paths/it.png"
 translationKey: "custom-identity-paths"
 difficulty: "advanced"
 order: 2.6
+updated: "2026-10-01"
 ---
 
 Un’identità per il lavoro, una per un progetto e una per le prove possono avere nomi locali riconoscibili. Nostr WoT permette di nominare una nuova identità derivata dalla frase di recupero e scegliere il percorso in **Avanzate**. Mantieni la scelta automatica se non hai bisogno di un percorso preciso.
-
-## Quale versione include la funzione?
-
-La guida descrive l’estensione **0.7.0**, disponibile nella [release scaricabile su GitHub](https://github.com/nostr-wot/nostr-wot-extension/releases/tag/v0.7.0). Alla preparazione della guida non era confermata l’approvazione di questa versione negli store Chrome e Firefox. Controlla la versione installata.
 
 ## Nome e percorso hanno funzioni diverse
 
@@ -33,7 +30,7 @@ La guida descrive l’estensione **0.7.0**, disponibile nella [release scaricabi
 ## Crea l’identità
 
 1. Sblocca l’estensione, apri il selettore degli account e aggiungi un **sottoaccount HD**. Serve una frase di recupero già presente nel vault; una sola nsec importata non è sufficiente.
-2. Controlla il seed di origine mostrato. L’estensione propone il prossimo percorso libero della sequenza esistente.
+2. L’estensione propone il successivo percorso libero dalla frase principale. La relazione è spiegata sotto il modulo, senza una riga separata per l’account sorgente.
 3. Inserisci un nome facoltativo, come «Progetto» o «Prove». Lasciando vuoto il campo si mantiene il nome proposto.
 4. Apri **Avanzate** per scegliere un altro percorso. Inseriscilo esattamente e attendi l’aggiornamento dell’anteprima.
 5. Controlla percorso e npub. Un percorso non valido, un errore o un’anteprima ancora in caricamento impediscono di continuare.
@@ -54,3 +51,11 @@ Conserva al sicuro la frase, il percorso esatto e la npub attesa. Il nome locale
 Percorsi diversi organizzano le identità, ma non le isolano dalla compromissione del seed comune e non garantiscono anonimato. Cambiare percorso non trasferisce post, follower o profilo. Le chiavi esistenti restano invariate.
 
 Per cambiare soltanto account, leggi la [gestione delle identità](/it/guides/managing-identity). Usa percorsi personalizzati per una necessità concreta e documentabile di organizzazione o recupero.
+
+## Anteprima e completamento
+
+Se esiste già una frase di recupero principale, **Crea nuovo** apre **Nuovo sotto-account**. Riutilizza quella frase con un altro percorso di derivazione; non genera una seconda frase. Puoi cambiare il nome. Le chiavi pubbliche npub e hex appaiono sotto le etichette, nel colore di accento e abbreviate al centro. Le icone copiano il valore completo. **Avanzate** è sotto le chiavi e apre il percorso; mantieni quello proposto salvo esigenze specifiche.
+
+I suggerimenti mostrano nomi e piccole foto di profili pubblici verificati, quando disponibili. Usano una cache condivisa di 30 minuti con massimo 500 profili; i dati mancanti vengono cercati su purplepag.es. La directory riceve la chiave pubblica dell’autore; le immagini provengono dal loro host. Senza profilo compare la chiave abbreviata. Il caricamento non blocca selezione o **Salta per ora**.
+
+La schermata finale dispone riepilogo e **Inizia** in basso. Mostra nome e chiave pubblica copiabile; solo i sotto-account derivati citano la frase principale. I nuovi account possono usare regole globali o copiare eccezioni per sito di un altro account. I permessi di autenticazione restano separati.

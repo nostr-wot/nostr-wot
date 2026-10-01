@@ -20,95 +20,37 @@ ogImage: "/images/guides/site-permissions/og.jpg"
 translationKey: "site-permissions"
 difficulty: "intermediate"
 order: 8
+updated: "2026-10-01"
 ---
 
-La extension Nostr WoT gestiona tu identidad, tu red de confianza y tu billetera. Eso es mucho poder, y no todos los sitios web deberian tener el mismo nivel de acceso. Por eso la extension implementa un sistema de permisos por sitio que te da control granular sobre que puede hacer cada aplicacion.
+El consentimiento de conexión, las reglas de firma y los permisos de autenticación son controles distintos. Abre **Permisos** para la cuenta activa.
 
-## Como Funcionan los Permisos
+## Reglas globales y sitio actual
 
-Cada vez que un sitio web solicita algo a la extension — leer tu clave publica, firmar un evento, enviar un pago — la extension verifica si ese sitio tiene permiso. Si no lo tiene, te muestra un popup de autorizacion para que decidas.
+**Reglas globales** define valores predeterminados para sitios conectados y cuentas. **Reglas por sitio** abre la web de la pestaña actual, no una lista de sitios guardados. Visita una página web si la extensión te lo pide. El acceso Gestionar permisos del panel abre el mismo editor.
 
-Los permisos se guardan por dominio. Si apruebas un permiso para `primal.net`, esa aprobacion solo aplica a ese sitio. Otro sitio necesitara su propia autorizacion.
+Reglas globales aparece antes que Reglas por sitio. **Añadir regla** está junto al nombre del sitio. El botón **Reglas globales** del pie abre los valores compartidos; allí, **Ir a las reglas del sitio actual** aparece debajo del contenido. Volver regresa a Permisos al entrar desde ese menú.
 
-{/* TODO: Captura de pantalla del popup de solicitud de permisos */}
+Las filas grises heredan las reglas globales visibles. Las coloreadas son excepciones para esa cuenta y web. Editar una heredada crea una excepción; **Usar valor heredado** la elimina. Las antiguas reglas compartidas se migran una sola vez; las decisiones distintas de un sitio se conservan como excepciones.
 
-## Tipos de Permisos
+## Añadir, cambiar o restablecer
 
-La extension maneja varios tipos de permisos:
+Usa **Añadir regla** para elegir una acción y **Permitir**, **Denegar** o **Preguntar**. La excepción por sitio sustituye al valor global de esa acción. Una denegación más amplia puede seguir afectando y debe modificarse por separado. Son reglas para leer la clave pública, firmar tipos de eventos y cifrar o descifrar mensajes; no conectan una web nueva ni sustituyen los permisos de backend o relay.
 
-### Identidad (NIP-07)
+**Restablecer excepciones del sitio** pide confirmación y elimina las de esta cuenta y web sin salir del editor. Solo quedan las globales en gris. Eliminar una excepción puede volver a aplicar un permiso global. El restablecimiento de todas las excepciones de cuentas en Reglas globales también pide confirmación y conserva las globales. Ninguno elimina permisos de autenticación.
 
-- **Leer clave publica:** El sitio puede ver tu npub para identificarte.
-- **Firmar eventos:** El sitio puede solicitar que la extension firme notas, reacciones, follows y otros eventos.
-- **Cifrar/descifrar mensajes:** El sitio puede solicitar cifrado NIP-04 o NIP-44 para mensajes directos.
+Si el sitio actual está rechazado, se abre su editor de duración: una semana, un mes, un año o para siempre. Quitar el rechazo permite que vuelva a preguntar; no conecta ni autoriza el sitio.
 
-### Billetera (WebLN)
+## Revisar solicitudes
 
-- **Enviar pagos:** El sitio puede solicitar que envies sats a traves de invoices Lightning.
-- **Crear invoices:** El sitio puede generar invoices para que recibas pagos.
-- **Leer balance:** Algunos sitios solicitan ver tu balance (opcional y raro).
+**Aprobar una vez** y **Denegar** resuelven la solicitud actual; una vez no significa toda la sesión del navegador. Las flechas ofrecen decisiones recordadas. En grupos puedes seleccionar qué aprobar o denegar el grupo mostrado. No se incluyen automáticamente solicitudes nuevas ni sin seleccionar.
 
-### Web of Trust
+La revisión describe la acción y muestra el contenido de notas o una vista del evento compatible. El icono de código abre el evento completo. Los mensajes privados se agrupan por remitente cuando es posible. Pulsar el contenido difuminado lo revela localmente durante 30 segundos; no autoriza su entrega a la web.
 
-- **Consultar confianza:** El sitio puede preguntar si una pubkey esta en tu Web of Trust y obtener su puntaje.
+## Backend, relay y pagos
 
-<Callout type="tip">
-El permiso mas comun es la lectura de clave publica y la firma de eventos. La mayoria de los clientes Nostr necesitan ambos para funcionar correctamente. Los permisos de billetera son independientes y puedes otorgarlos solo a los sitios que uses para zaps.
-</Callout>
+**Autenticación predeterminada de backend** empieza desactivada por cuenta. Activada, permite NIP-98 a sitios conectados con el mismo origen HTTPS exacto o pares verificados del registro. Las denegaciones explícitas tienen prioridad. **Autenticación del backend** muestra el estado, el enlace a las reglas y los permisos explícitos. La política automática no añade filas. Consulta la [guía de backends](/guides/backend-authentication).
 
-## Gestionar Permisos
+**Autenticación de relays** gestiona aplicaciones seleccionadas o todos los sitios conectados por relay y cuenta, separadamente de la configuración de lectura y escritura. Consulta la [guía de relays](/guides/relay-authentication).
 
-### Ver Permisos Actuales
-
-1. Abre la extension y ve a la configuracion.
-2. Navega a la seccion **Permisos** o **Site Permissions**.
-3. Veras una lista de todos los sitios con sus permisos activos.
-
-{/* TODO: Captura de pantalla de la lista de permisos por sitio */}
-
-### Revocar Permisos
-
-Si quieres retirar el acceso a un sitio:
-
-1. Busca el sitio en la lista de permisos.
-2. Haz clic en el sitio para ver los detalles.
-3. Desactiva los permisos que quieras revocar, o haz clic en **Revocar Todos** para eliminar todo el acceso.
-
-La proxima vez que ese sitio solicite algo, veras el popup de autorizacion de nuevo.
-
-### Aprobar Siempre vs. Aprobar Una Vez
-
-Cuando un sitio solicita un permiso, tienes dos opciones:
-
-- **Aprobar Siempre:** El permiso se guarda y no vuelve a preguntarte para ese sitio.
-- **Aprobar Una Vez:** El permiso aplica solo para esta sesion. Cuando cierres la pestana, necesitaras aprobarlo de nuevo.
-
-Para sitios en los que confias y usas frecuentemente — tu cliente Nostr principal, por ejemplo — aprobar siempre es comodo. Para sitios que pruebas por primera vez, aprobar una vez es mas seguro.
-
-## Mejores Practicas de Seguridad
-
-### Principio de Minimo Privilegio
-
-Otorga solo los permisos que un sitio realmente necesita. Un lector de feeds solo necesita acceso a tu clave publica. Un cliente completo necesita firma de eventos. Solo los sitios donde haces zaps necesitan permisos de billetera.
-
-### Revisa Periodicamente
-
-De vez en cuando, revisa la lista de sitios con permisos. Si hay dominios que ya no usas, revoca sus permisos.
-
-### Cuidado con Sitios Desconocidos
-
-Si un sitio que no reconoces solicita permisos de firma o de billetera, rechaza la solicitud. Los sitios legitimos siempre te explican por que necesitan acceso.
-
-<Callout type="tip">
-Los permisos de billetera estan aislados de los permisos de identidad. Un sitio que tenga permiso para firmar eventos no tiene automaticamente permiso para enviar pagos. Cada tipo de acceso se autoriza por separado.
-</Callout>
-
-### Conexiones Seguras
-
-La extension solo funciona en conexiones HTTPS. Si un sitio intenta solicitar permisos a traves de HTTP sin cifrar, la extension rechaza la solicitud automaticamente. Esto protege contra ataques de intermediario.
-
-{/* TODO: Video mostrando la gestion de permisos */}
-
-## Que Sigue?
-
-Con tus permisos bien configurados, tu experiencia en Nostr es segura y fluida. Para explorar tu red de confianza de forma visual, prueba el [Playground de la Web of Trust](/guides/playground-wot).
+Los pagos Lightning mantienen sus confirmaciones, límites y [ajustes automáticos](/guides/zapping-auto-approve). Permitir firmas Nostr no autoriza pagos ilimitados.

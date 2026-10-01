@@ -3,6 +3,7 @@ title: "Wähle, welche Relays dein Konto authentifizieren dürfen"
 description: "Erlaube Relays pro Website oder für verbundene Websites und widerrufe den Zugriff gezielt."
 excerpt: "Erlaube Relays pro Website oder für verbundene Websites und widerrufe den Zugriff gezielt."
 date: "2026-09-30"
+updated: "2026-10-01"
 featuredImage: "/images/guides/site-permissions/featured.svg"
 previewImage: "/images/guides/site-permissions/preview.svg"
 ogImage: "/images/guides/site-permissions/og.jpg"
@@ -19,7 +20,7 @@ tags:
   - "Authentication"
 ---
 
-In [Nostr WoT 0.8.7](https://github.com/nostr-wot/nostr-wot-extension/releases/tag/v0.8.7) erlaubt eine Website-Verbindung oder allgemeine Signaturfreigabe nicht automatisch die Identifizierung bei jedem Relay. HTTP-APIs behandelt der [Backend-Leitfaden](/guides/backend-authentication).
+In [Nostr WoT](https://github.com/nostr-wot/nostr-wot-extension) erlaubt eine Website-Verbindung oder allgemeine Signaturfreigabe nicht automatisch die Identifizierung bei jedem Relay. HTTP-APIs behandelt der [Backend-Leitfaden](/guides/backend-authentication).
 
 ## Website und Relay sind verschiedene Parteien
 
@@ -41,11 +42,13 @@ Gespeicherte Optionen stehen in den Pfeilmenüs. Der Umfang richtet sich nach de
 
 Die Freigabe für alle Websites spart wiederholte Zustimmung bei mehreren Clients. Sie kann auch später verbundene Websites erfassen. Sie verbindet keine neuen Websites, erteilt keinen Identitätszugriff und gilt nicht für andere Konten, normale Ereignissignaturen oder HTTP-Backends. Eine websitespezifische Ablehnung hat Vorrang. Entzogener Identitätszugriff oder eine getrennte Verbindung blockiert weiterhin die Authentifizierung, auch mit NIP-46.
 
-## Prüfen und widerrufen
+## Berechtigungen prüfen und widerrufen
 
-Öffne **Berechtigungen** für das aktive Konto und die Authentifizierungssektion unten. Die Tabelle enthält websitespezifische Freigaben. Der Link darunter öffnet die separate Tabelle der für alle verbundenen Websites erlaubten Relays. Einträge lassen sich einzeln widerrufen.
+Öffne **Berechtigungen → Relay-Authentifizierung** für das aktive Konto. Dieser Menübildschirm hat Zurück und ein Informationssymbol und ist von Lese-/Schreibeinstellungen getrennt. Er gruppiert Berechtigungen nach Relay und zeigt die Zahl genehmigter Websites oder die Freigabe für alle samt Ablehnungsausnahmen.
 
-Eine Website zu trennen entfernt ihre eigenen Freigaben. Eine gemeinsame Relay-Freigabe bleibt für andere verbundene Websites erhalten, gilt aber nicht für die getrennte Website. Das Löschen eines Kontos entfernt dessen Freigaben. Widerruf verhindert künftige Signaturen, schließt aber keine bereits authentifizierte WebSocket-Verbindung. Dafür muss der Client die Verbindung beenden.
+Öffne ein Relay und wähle verbundene Apps oder alle verbundenen Websites. Entfernst du im Alle-Modus eine App, werden nur die übrigen verbundenen, nicht abgelehnten Websites ausdrücklich erlaubt; zukünftige Websites sind nicht mehr enthalten. Eine leere Auswahl entfernt alle Freigaben dieses Relays, behält aber Ablehnungen. Die ausdrückliche Auswahl einer abgelehnten Website ersetzt deren Ablehnung; Alle wählen behält Ausnahmen. Nur dieses Konto und Relay sind betroffen.
+
+Das Trennen einer Website entfernt ihre eigenen Freigaben; eine gemeinsame Freigabe bleibt anderen verbundenen Websites verfügbar. Kontolöschung entfernt dessen Freigaben. Widerruf betrifft künftige Signaturen und schließt keinen bereits authentifizierten WebSocket. Dies muss der Client tun.
 
 ## Prüfungen und Grenzen
 
@@ -55,4 +58,4 @@ Die Erweiterung kontrolliert nicht den WebSocket des Clients. Das Relay muss Sig
 
 Derselbe öffentliche Schlüssel kann Verbindungen verschiedener Clients beim Relay verknüpfbar machen. Nutze getrennte Konten oder engere Freigaben, wenn diese Trennung wichtig ist. CORS ersetzt weder die Verbindungsprüfung noch Berechtigungen nach Konto, Website und Ziel.
 
-Siehe [Berechtigungsregeln](https://github.com/nostr-wot/nostr-wot-extension/blob/v0.8.7/src/services/permissions/authentication.ts) und [Tests](https://github.com/nostr-wot/nostr-wot-extension/blob/v0.8.7/tests/authentication.test.ts).
+Siehe [Berechtigungsregeln](https://github.com/nostr-wot/nostr-wot-extension/blob/main/src/services/permissions/authentication.ts) und [Tests](https://github.com/nostr-wot/nostr-wot-extension/blob/main/tests/authentication.test.ts).

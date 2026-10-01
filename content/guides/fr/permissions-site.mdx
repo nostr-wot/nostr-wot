@@ -20,88 +20,37 @@ ogImage: "/images/guides/site-permissions/og.jpg"
 translationKey: "site-permissions"
 difficulty: "intermediate"
 order: 8
+updated: "2026-10-01"
 ---
 
-Chaque site web qui interagit avec l'extension a besoin de votre permission. L'extension ne donne pas un acces global a vos cles ou a votre portefeuille — chaque site a son propre perimetre de permissions. Ce guide explique comment gerer ces permissions efficacement.
+Le consentement de connexion, les règles de signature et les permissions d’authentification sont distincts. Ouvrez **Permissions** pour le compte actif.
 
-## Comment fonctionnent les permissions
+## Règles globales et site actuel
 
-Quand un site web tente d'acceder au signataire NIP-07 ou au fournisseur WebLN de l'extension, l'extension verifie si ce site a la permission. S'il ne l'a pas, vous voyez une invite vous demandant d'approuver ou de refuser la demande.
+**Règles globales** définit les valeurs par défaut pour les sites connectés et les comptes. **Règles par site** ouvre le site de l’onglet actuel, sans liste de sites enregistrés. Visitez une page web si nécessaire. Le raccourci de gestion des permissions du tableau de bord ouvre le même éditeur.
 
-Chaque decision de permission est stockee par site. Approuver la signature sur Primal ne donne pas automatiquement la signature sur Snort. Vous construisez une liste blanche de sites de confiance, un a la fois.
+Règles globales précède Règles par site. **Ajouter une règle** se trouve à droite du nom du site. Le bouton **Règles globales** en bas ouvre les valeurs partagées ; **Aller aux règles du site actuel** se trouve sous leur contenu. Retour mène à Permissions lorsque vous venez de ce menu.
 
-{/* TODO: Screenshot of the permission request popup for a new site */}
+Les lignes grises héritent des règles globales visibles. Les lignes colorées sont des exceptions propres au compte et au site. Modifier une règle héritée crée une exception ; revenir à la valeur héritée la supprime. Les anciennes règles partagées migrent une seule fois ; les choix spécifiques restent des exceptions visibles.
 
-## Types de permissions
+## Modifier ou réinitialiser
 
-L'extension gere plusieurs permissions distinctes pour chaque site.
+Ajoutez une règle pour une action et choisissez **Autoriser**, **Refuser** ou **Demander**. Une exception remplace la valeur globale correspondante. Un refus plus large peut encore s’appliquer et doit être modifié séparément. Ces règles concernent les clés publiques, types d’événements et opérations de chiffrement ; elles ne connectent pas de nouveaux sites et ne remplacent pas l’authentification backend ou relais.
 
-### Lire la cle publique
+La réinitialisation des exceptions du site demande confirmation, supprime celles du compte actif et vous laisse dans le même éditeur avec les seules règles globales grisées. Cela peut réactiver une autorisation globale. La réinitialisation de toutes les exceptions de comptes dans Règles globales demande aussi confirmation et conserve les règles globales. Aucun de ces resets ne supprime les autorisations d’authentification.
 
-Autorise le site a voir votre cle publique (npub). C'est la permission la plus basique — le site peut vous identifier mais ne peut rien faire en votre nom.
+Un site actuel refusé ouvre son éditeur de durée : une semaine, un mois, un an ou toujours. Retirer le refus lui permet de redemander, sans le connecter ni l’autoriser.
 
-### Signer des evenements
+## Examiner une demande
 
-Autorise le site a demander des signatures d'evenements via NIP-07. Cela signifie que le site peut vous demander de signer des notes, des mises a jour de profil, des reactions et d'autres evenements Nostr. Vous voyez toujours une invite de confirmation pour chaque demande de signature, sauf si vous activez l'approbation automatique pour ce site.
+**Approuver une fois** et **Refuser** concernent la demande actuelle, pas toute la session du navigateur. Les flèches proposent des décisions mémorisées. Dans un groupe, sélectionnez les demandes à approuver ou refusez le groupe affiché. Les nouvelles demandes et celles non sélectionnées ne sont pas ajoutées silencieusement.
 
-### Chiffrer et dechiffrer
+La vue décrit l’action et affiche le contenu d’une note ou un aperçu pris en charge. L’icône de code ouvre l’événement brut. Les messages privés sont regroupés par expéditeur lorsque possible. Cliquez sur le contenu flouté pour le révéler localement pendant 30 secondes ; cela ne l’envoie pas au site.
 
-Autorise le site a demander des messages directs chiffres NIP-04 ou NIP-44. Le site peut demander a l'extension de chiffrer un message pour un destinataire specifique ou de dechiffrer un message entrant.
+## Backend, relais et paiements
 
-### Paiements WebLN
+**Authentification backend par défaut** commence désactivée par compte. Activée, elle permet NIP-98 aux sites connectés pour la même origine HTTPS exacte ou une paire vérifiée du registre. Les refus explicites priment. **Authentification du backend** affiche l’état, les règles et les autorisations explicites. Les décisions automatiques ne créent pas de lignes. Consultez le [guide backend](/guides/backend-authentication).
 
-Autorise le site a demander des paiements Lightning via le fournisseur WebLN. Quand c'est accorde, le site peut presenter des factures pour que vous les payiez — sous reserve de votre [seuil d'approbation automatique](/guides/zapping-auto-approve).
+**Authentification des relais** gère les applications choisies ou tous les sites connectés pour chaque relais et compte, séparément des réglages de lecture/écriture. Consultez le [guide des relais](/guides/relay-authentication).
 
-{/* TODO: Screenshot of the permissions panel showing all four permission types for a site */}
-
-<Callout type="tip">
-Vous pouvez accorder certaines permissions tout en en refusant d'autres. Par exemple, vous pourriez laisser un site lire votre cle publique et demander des signatures, mais lui refuser l'acces WebLN si vous ne voulez pas qu'il propose des paiements.
-</Callout>
-
-## Gerer les permissions des sites
-
-### Voir les permissions accordees
-
-1. Ouvrez l'extension et cliquez sur **Parametres**.
-2. Naviguez vers **Permissions des sites** (ou **Permissions**).
-3. Vous verrez une liste de tous les sites qui ont recu une permission, ainsi que ce que chaque site peut faire.
-
-{/* TODO: Screenshot of the site permissions list showing multiple sites with their granted permissions */}
-
-### Revoquer des permissions
-
-Si vous souhaitez supprimer l'acces d'un site :
-
-1. Trouvez le site dans la liste des permissions.
-2. Cliquez sur le nom du site pour developper ses details.
-3. Desactivez les permissions individuelles ou cliquez sur **Tout revoquer** pour supprimer tous les acces.
-4. Le changement prend effet immediatement. Le site devra demander a nouveau la permission lors de sa prochaine tentative.
-
-### Permissions temporaires vs. permanentes
-
-Quand vous voyez une invite de permission, vous avez generalement deux options :
-
-- **Autoriser une fois** — accorde la permission pour cette session uniquement. Quand vous fermez l'onglet ou redemarrez le navigateur, le site devra redemander.
-- **Toujours autoriser** — accorde la permission de facon permanente pour ce site. Elle persiste entre les sessions.
-
-Utilisez « Autoriser une fois » pour les sites que vous ne visitez pas regulierement. Utilisez « Toujours autoriser » pour vos clients Nostr quotidiens.
-
-## Bonnes pratiques de securite
-
-N'accordez que les permissions dont un site a reellement besoin. Un client Nostr a besoin d'un acces de signature, mais un explorateur en lecture seule n'a besoin que de votre cle publique. Passez en revue votre liste de permissions periodiquement et revoquez l'acces des sites que vous n'utilisez plus.
-
-Si un site que vous ne connaissez pas demande des permissions de signature ou de paiement, refusez et enquetez d'abord. Les clients Nostr legitimes sont bien connus.
-
-{/* TODO: Screenshot of a suspicious permission request with a "Deny" action highlighted */}
-
-<Callout type="tip">
-Si un site se comporte de maniere inattendue apres avoir accorde des permissions — comme declenchant des paiements que vous n'avez pas inities — revoquez immediatement toutes ses permissions et baissez votre seuil d'approbation automatique.
-</Callout>
-
-### Connexions securisees uniquement
-
-L'extension n'expose les API NIP-07 et WebLN que sur les connexions securisees (HTTPS). Cela empeche les attaques de l'homme du milieu d'intercepter la communication entre le site et l'extension.
-
-## Et ensuite ?
-
-Maintenant que vos permissions sont verrouillees, explorez le [WoT Playground](/guides/wot-playground) pour visualiser votre reseau de confiance. Ou revisitez [la gestion de votre identite](/guides/managing-identity) pour revoir vos pratiques de securite des cles.
+Les paiements Lightning gardent leurs confirmations, limites et [réglages automatiques](/guides/zapping-auto-approve). Autoriser des signatures Nostr ne donne pas un droit illimité de paiement.

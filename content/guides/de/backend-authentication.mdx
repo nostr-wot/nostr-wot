@@ -3,6 +3,7 @@ title: "Prüfe, bei welchem Backend du dich authentifizierst"
 description: "Verstehe Berechtigungen für Website, Konto, genaue URL und HTTP-Methode bei getrennten API-Domains."
 excerpt: "Verstehe Berechtigungen für Website, Konto, genaue URL und HTTP-Methode bei getrennten API-Domains."
 date: "2026-09-30"
+updated: "2026-10-01"
 featuredImage: "/images/guides/site-permissions/featured.svg"
 previewImage: "/images/guides/site-permissions/preview.svg"
 ogImage: "/images/guides/site-permissions/og.jpg"
@@ -19,21 +20,21 @@ tags:
   - "Authentication"
 ---
 
-[Nostr WoT 0.8.7](https://github.com/nostr-wot/nostr-wot-extension/releases/tag/v0.8.7) trennt den Zugriff einer Website auf deine Identität von der Erlaubnis, dich bei einem HTTP-Dienst zu authentifizieren. Für WebSocket gibt es den [Relay-Leitfaden](/guides/relay-authentication).
+[Nostr WoT](https://github.com/nostr-wot/nostr-wot-extension) trennt den Zugriff einer Website auf deine Identität von der Erlaubnis, dich bei einem HTTP-Dienst zu authentifizieren. Für WebSocket gibt es den [Relay-Leitfaden](/guides/relay-authentication).
 
-## Eine API darf eine andere Domain verwenden
+## Genaue Freigaben und optionale Automatik
 
-Die fiktive Website `https://client.example` kann `https://api.client.example/session` nutzen. Das ist eine übliche Architektur. Entscheidend sind sowohl die anfragende Website als auch das Ziel des signierten Nachweises.
+Eine Website wie `https://client.example` darf `https://api.client.example` verwenden. Eine gespeicherte HTTP-Freigabe bindet das aktive Konto, den Website-Origin, die genaue signierte URL samt Abfrage und die HTTP-Methode. Sie gilt nicht für andere Ziele, Methoden, Websites oder Konten. Ältere originweite Freigaben verlangen neue Zustimmung; Ablehnungen bleiben wirksam.
 
-Eine gespeicherte HTTP-Erlaubnis gilt für **Konto, Website-Origin, exakte signierte URL und HTTP-Methode**, etwa `POST`. Auch der Query-Text gehört dazu. Andere Pfade, Ports, Methoden, Websites oder Konten benötigen eine eigene Erlaubnis. Das gilt ebenfalls für APIs mit derselben Origin. Frühere pauschale HTTP-Freigaben benötigen neue Zustimmung; Ablehnungen bleiben wirksam.
+**Standard-Backend-Authentifizierung** ist anfangs pro Konto ausgeschaltet. In **Berechtigungen** aktiviert, erlaubt sie verbundenen Websites NIP-98 automatisch für denselben exakten HTTPS-Origin oder ein im [Register und Regelwerk](https://github.com/nostr-wot/nostr-wot-extension/blob/main/docs/auth-client-registry.md) mit `nip98` markiertes Website/Backend-Paar. Gültige Pfade und Methoden dieser Origins sind eingeschlossen. Rein informative, ungeprüfte oder Wildcard-Einträge reichen nicht. Explizite Ablehnungen haben Vorrang. Relays bleiben getrennt.
 
-Das [Client- und Backend-Verzeichnis](https://github.com/nostr-wot/nostr-wot-extension/blob/v0.8.7/docs/auth-client-registry.md) erklärt bekannte Dienste. Ein Eintrag erteilt keine Berechtigung.
+## Authentifizierung prüfen und verwalten
 
-## Entscheiden und widerrufen
+Die Anfrage zeigt Website, Ziel und Methode. **Genehmigen** und **Ablehnen** gelten nur für diese Anfrage. Die Pfeilmenüs speichern Entscheidungen für Konto, Website, URL und Methode. Das Code-Symbol öffnet das rohe Ereignis. Sammelfreigaben für gewöhnliche Signaturen erteilen keine dauerhafte Authentifizierungsfreigabe.
 
-Der Dialog zeigt Website und Ziel. **Genehmigen** und **Ablehnen** betreffen die aktuelle Anfrage. Über die Pfeilmenüs kannst du die Entscheidung für die genaue Kombination speichern. HTTP bietet keine Freigabe für alle Websites.
+Öffne **Berechtigungen → Backend-Authentifizierung**. Bei aktiver Automatik erklärt ein Hinweis den Umfang und verlinkt Regeln und Register. Automatische Freigaben erzeugen keine einzelnen Zeilen: Eine leere Tabelle bedeutet nicht, dass die Automatik aus ist. Die Tabelle zeigt explizite Entscheidungen des aktiven Kontos.
 
-Die Code-Schaltfläche zeigt das vollständige Ereignis. Sammelgenehmigungen gewöhnlicher Signaturen schließen Authentifizierung aus. Die Authentifizierungstabelle unten in **Berechtigungen** folgt dem aktiven Konto. Ein Widerruf verhindert weitere Signaturen; er holt versendete Nachweise nicht zurück und beendet keine bestehende Backend-Sitzung.
+Widerrufe dort einen Eintrag oder deaktiviere die Automatik in Berechtigungen. Gespeicherte explizite Freigaben bleiben beim Abschalten erhalten. Widerruf betrifft zukünftige Signaturen, nicht versandte Nachweise oder bestehende Sitzungen. HTTP bietet keine Freigabe für alle Websites.
 
 ## Was die Erweiterung prüft
 
@@ -53,4 +54,4 @@ Der Nachweis bindet URL, Methode und Hash der exakten Body-Bytes. Eine Backend-C
 
 CORS beschränkt Browser, nicht Server-zu-Server-Aufrufe. Ein Origin-Tag ist kein kryptografischer Browsernachweis. Bösartiger Code innerhalb einer vertrauten Hauptseite teilt deren Befugnisse. Diese Kontrollen begrenzen die Zustimmung, verhindern aber nicht jedes Phishing oder Weiterleiten von Authentifizierungsnachweisen.
 
-Siehe [v2-Vertrag](https://github.com/nostr-wot/nostr-wot-extension/blob/v0.8.7/docs/wallet-auth-v2.md) und [Tests](https://github.com/nostr-wot/nostr-wot-extension/blob/v0.8.7/tests/authentication.test.ts).
+Siehe [v2-Vertrag](https://github.com/nostr-wot/nostr-wot-extension/blob/main/docs/wallet-auth-v2.md) und [Tests](https://github.com/nostr-wot/nostr-wot-extension/blob/main/tests/authentication.test.ts).
