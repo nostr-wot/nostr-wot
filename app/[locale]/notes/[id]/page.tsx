@@ -40,7 +40,7 @@ function buildArticleJsonLd(
     author?.displayName?.trim() ||
     author?.name?.trim() ||
     `${authorNpub.slice(0, 12)}…`;
-  const authorUrl = `https://nostr-wot.com/profile/${authorNpub}`;
+  const authorUrl = `https://nostrwot.com/profile/${authorNpub}`;
   const personSchema: Record<string, unknown> = {
     "@type": "Person",
     name: authorName,
@@ -65,7 +65,7 @@ function buildArticleJsonLd(
     publisher: {
       "@type": "Organization",
       name: "Nostr WoT",
-      url: "https://nostr-wot.com",
+      url: "https://nostrwot.com",
     },
     identifier: event.nevent,
     ...(reactionCount > 0
@@ -151,7 +151,7 @@ export default async function NotePage({ params }: NotePageProps) {
       ? await fetchNoteAuthorMetadata(parentEvent.pubkey).catch(() => null)
       : parentAuthor;
 
-  const canonical = `https://nostr-wot.com${locale === "en" ? "" : `/${locale}`}/notes/${event.nevent}`;
+  const canonical = `https://nostrwot.com${locale === "en" ? "" : `/${locale}`}/notes/${event.nevent}`;
   const reactionCount = reactionCounts[event.id] ?? 0;
   const jsonLd = buildArticleJsonLd(event, author, canonical, reactionCount);
 

@@ -13,7 +13,7 @@ import { getFullUrl, generateOpenGraph, generateTwitter } from "@/lib/metadata";
 import "../globals.css";
 import "@nostr-wot/ui/styles.css";
 
-const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || 'https://nostr-wot.com';
+const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || 'https://nostrwot.com';
 
 async function pageMetadata({ params }: { params: Promise<{ locale: string }> }): Promise<Metadata> {
   const { locale } = await params;

@@ -34,7 +34,9 @@ jobs:
       - name: Write runtime environment
         env:
           PRODUCTION_ENV: ${{ secrets.ENV_PRODUCTION }}
-        run: printf '%s\n' "$PRODUCTION_ENV" > .env
+        run: |
+          printf '%s\n' "$PRODUCTION_ENV" > .env
+          printf '\nNEXT_PUBLIC_BASE_URL=https://nostrwot.com\nSITE_BASE_URL=https://nostrwot.com\n' >> .env
 
       - name: Upload production files via SCP
         uses: appleboy/scp-action@v0.1.4
@@ -65,8 +67,8 @@ jobs:
 
       - name: Verify the live homepage and refreshed sitemap
         run: |
-          curl --fail --retry 12 --retry-delay 5 --retry-all-errors https://nostr-wot.com/ -o /dev/null
-          curl --fail --retry 6 --retry-delay 5 --retry-all-errors https://nostr-wot.com/sitemap.xml -o "$RUNNER_TEMP/live-sitemap.xml"
+          curl --fail --retry 12 --retry-delay 5 --retry-all-errors https://nostrwot.com/ -o /dev/null
+          curl --fail --retry 6 --retry-delay 5 --retry-all-errors https://nostrwot.com/sitemap.xml -o "$RUNNER_TEMP/live-sitemap.xml"
           python3 -c 'import os, xml.etree.ElementTree as E; r=E.parse(os.environ["RUNNER_TEMP"]+"/live-sitemap.xml"); assert len(r.findall("{*}url")) > 0'
 
       - name: Restore IndexNow state

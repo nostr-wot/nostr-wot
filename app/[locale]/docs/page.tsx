@@ -42,11 +42,11 @@ export default async function DocsOverviewPage() {
     "@type": "TechArticle",
     "name": t("labels.structuredTitle"),
     "description": t("labels.structuredDescription"),
-    "url": "https://nostr-wot.com/docs",
+    "url": "https://nostrwot.com/docs",
     "author": {
       "@type": "Organization",
       "name": "Nostr Web of Trust",
-      "url": "https://nostr-wot.com",
+      "url": "https://nostrwot.com",
     },
   };
 

@@ -42,11 +42,11 @@ export default async function PrivacyPage() {
     "@type": "WebPage",
     "name": t("meta.title"),
     "description": t("meta.description"),
-    "url": "https://nostr-wot.com/privacy",
+    "url": "https://nostrwot.com/privacy",
     "publisher": {
       "@type": "Organization",
       "name": "Nostr Web of Trust",
-      "url": "https://nostr-wot.com",
+      "url": "https://nostrwot.com",
     },
   };
 

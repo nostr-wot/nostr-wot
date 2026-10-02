@@ -11,7 +11,7 @@ import { getAllBlogPosts } from '../lib/blog';
 import { getAllGuides } from '../lib/guides';
 import { getAllNews, getNewsArchiveMonths } from '../lib/news';
 
-const base = process.env.NEXT_PUBLIC_BASE_URL || 'https://nostr-wot.com';
+const base = process.env.NEXT_PUBLIC_BASE_URL || 'https://nostrwot.com';
 const url = (route: string, locale: string) => `${base}${locale === 'en' ? '' : `/${locale}`}${route}`;
 
 test('every application page is covered or has an explicit dynamic-content policy', () => {

@@ -73,7 +73,7 @@ export default async function BlogPage({ params, searchParams }: Props) {
       'name': 'Nostr Web of Trust',
       'logo': {
         '@type': 'ImageObject',
-        'url': 'https://nostr-wot.com/icon-512.png',
+        'url': 'https://nostrwot.com/icon-512.png',
       },
     },
     'blogPost': posts.map((post) => ({

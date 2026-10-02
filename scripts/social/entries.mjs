@@ -37,7 +37,7 @@ export const ROOT = new URL("../..", import.meta.url).pathname;
 export const SOCIAL_DIR = join(ROOT, "social");
 /** Copy is English only, so only the `en` articles are ever joined against. */
 export const NEWS_DIR = join(ROOT, "content/news/en");
-export const BASE_URL = (process.env.SITE_BASE_URL || "https://nostr-wot.com").replace(/\/$/, "");
+export const BASE_URL = (process.env.SITE_BASE_URL || "https://nostrwot.com").replace(/\/$/, "");
 
 /** Only these keys are recognised in a social/<slug>.json file. */
 export const KNOWN_CHANNELS = ["linkedin", "x", "xThread", "nostr"];

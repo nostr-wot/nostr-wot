@@ -52,7 +52,7 @@ export default function Footer() {
                 <LinkedInIcon className="w-5 h-5" />
               </a>
               <a
-                href="https://nostr-wot.com/profile/npub1gxdhmu9swqduwhr6zptjy4ya693zp3ql28nemy4hd97kuufyrqdqwe5zfk"
+                href="https://nostrwot.com/profile/npub1gxdhmu9swqduwhr6zptjy4ya693zp3ql28nemy4hd97kuufyrqdqwe5zfk"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="text-gray-500 dark:text-gray-500 hover:text-[#8B5CF6] transition-colors"

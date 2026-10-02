@@ -27,7 +27,7 @@ const routes: Record<string, SocialArtId> = {
 export function socialArtForUrl(value: unknown): SocialArtId {
   if (typeof value !== 'string' && !(value instanceof URL)) return 'home';
   let pathname: string;
-  try { pathname = new URL(String(value), 'https://nostr-wot.com').pathname; } catch { return 'home'; }
+  try { pathname = new URL(String(value), 'https://nostrwot.com').pathname; } catch { return 'home'; }
   pathname = pathname.replace(/^\/(en|es|pt|ru|it|fr|de)(?=\/|$)/, '').replace(/\/$/, '') || '/';
   if (routes[pathname]) return routes[pathname];
   if (pathname.startsWith('/guides/')) {

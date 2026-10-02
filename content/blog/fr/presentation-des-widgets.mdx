@@ -1,7 +1,7 @@
 ---
 title: "Présentation des Nostr Widgets"
 description: "Intégrez un profil Nostr, un bouton de suivi ou un fil récent dans n'importe quel site avec une seule ligne de HTML. Pas de JavaScript, pas d'iframes, pas de tracking — juste un SVG rendu côté serveur qui fonctionne partout."
-excerpt: "Nous lançons Nostr Widgets : un petit ensemble de composants SVG intégrables, rendus côté serveur, pour n'importe quel site web. Un snippet <a><img></a> pose une carte de profil, un bouton de suivi ou un fil en direct dans votre blog, votre README ou votre landing — et le lien renvoie vers nostr-wot.com."
+excerpt: "Nous lançons Nostr Widgets : un petit ensemble de composants SVG intégrables, rendus côté serveur, pour n'importe quel site web. Un snippet <a><img></a> pose une carte de profil, un bouton de suivi ou un fil en direct dans votre blog, votre README ou votre landing — et le lien renvoie vers nostrwot.com."
 date: "2026-04-27"
 author:
   name: "Leon Acosta"
@@ -36,9 +36,9 @@ Aucune des deux n'est satisfaisante. Alors nous avons construit **Nostr Widgets*
 Un widget est un SVG rendu côté serveur. Vous l'intégrez avec une ligne de HTML :
 
 ```html
-<a href="https://nostr-wot.com/profile/npub1gxdhmu9..." target="_blank" rel="noopener">
+<a href="https://nostrwot.com/profile/npub1gxdhmu9..." target="_blank" rel="noopener">
   <img
-    src="https://nostr-wot.com/widgets/profile/npub1gxdhmu9..."
+    src="https://nostrwot.com/widgets/profile/npub1gxdhmu9..."
     alt="Leon Acosta sur Nostr"
     width="320"
     height="220"
@@ -60,7 +60,7 @@ Une carte autonome avec l'avatar, le nom, le NIP-05, la bio et un appel à l'act
 
 ### 2. Bouton de suivi
 
-Un bouton en forme de pilule qui pointe directement vers le profil de l'utilisateur sur `nostr-wot.com`. 220×44. À placer à côté de vos autres boutons sociaux (Twitter, LinkedIn, GitHub).
+Un bouton en forme de pilule qui pointe directement vers le profil de l'utilisateur sur `nostrwot.com`. 220×44. À placer à côté de vos autres boutons sociaux (Twitter, LinkedIn, GitHub).
 
 ### 3. Fil de notes
 
@@ -68,7 +68,7 @@ Les 1 à 5 dernières notes courtes de l'auteur, en liste verticale. Chaque note
 
 ## Pourquoi c'est important pour le SEO
 
-Quand vous intégrez un widget, le `<a>` qui l'entoure pointe vers `nostr-wot.com`. Pour les crawlers des moteurs de recherche, c'est un lien entrant de votre domaine vers le nôtre. À mesure que de plus en plus de sites adoptent Nostr Widgets, le graphe de liens qui alimente Web of Trust sur Nostr accumule aussi de l'autorité de lien sur le web ouvert — ce qui rend les profils Nostr plus faciles à découvrir via Google, pas seulement à l'intérieur des clients Nostr.
+Quand vous intégrez un widget, le `<a>` qui l'entoure pointe vers `nostrwot.com`. Pour les crawlers des moteurs de recherche, c'est un lien entrant de votre domaine vers le nôtre. À mesure que de plus en plus de sites adoptent Nostr Widgets, le graphe de liens qui alimente Web of Trust sur Nostr accumule aussi de l'autorité de lien sur le web ouvert — ce qui rend les profils Nostr plus faciles à découvrir via Google, pas seulement à l'intérieur des clients Nostr.
 
 Ce n'est pas un accident. Le but même des widgets est qu'ils soient **link-friendly** : de vraies balises `<a>` pointant vers de vraies URL, pas des iframes qui cachent la destination aux crawlers.
 
@@ -84,7 +84,7 @@ Les widgets sont du SVG statique. Il n'y a pas de pixel de tracking, pas de fing
 
 ## Comment ça marche sous le capot
 
-Le service de widgets est un petit processus Node derrière nginx, sur le même VPS qui sert `nostr-wot.com`. Quand un crawler ou un navigateur demande `/widgets/profile/<npub>` :
+Le service de widgets est un petit processus Node derrière nginx, sur le même VPS qui sert `nostrwot.com`. Quand un crawler ou un navigateur demande `/widgets/profile/<npub>` :
 
 1. Nous résolvons le npub en pubkey hex.
 2. Nous récupérons le dernier kind 0 (profil) et kind 3 (liste de follows) de l'utilisateur depuis un SimplePool de relays Nostr.
@@ -95,18 +95,18 @@ Un petit LRU en mémoire absorbe les requêtes en double. Le pool de relays est 
 
 ## Open source
 
-Le renderer (`@nostr-widgets/renderer`) et le serveur (`apps/server`) sont tous deux sous licence MIT et vivent dans le dépôt [`nostr-widgets`](https://github.com/Fabricio333/nostr-widgets). Vous pouvez auto-héberger le service si vous préférez ne pas dépendre de `nostr-wot.com`, ou contribuer une nouvelle variante de widget (badge zap ? carte Lightning Address ? fil filtré par tag ?) via PR.
+Le renderer (`@nostr-widgets/renderer`) et le serveur (`apps/server`) sont tous deux sous licence MIT et vivent dans le dépôt [`nostr-widgets`](https://github.com/Fabricio333/nostr-widgets). Vous pouvez auto-héberger le service si vous préférez ne pas dépendre de `nostrwot.com`, ou contribuer une nouvelle variante de widget (badge zap ? carte Lightning Address ? fil filtré par tag ?) via PR.
 
 ## Pour commencer
 
 Choisissez votre npub, choisissez un widget, collez le snippet :
 
-- **Carte de profil** — `https://nostr-wot.com/widgets/profile/<npub>`
-- **Bouton de suivi** — `https://nostr-wot.com/widgets/follow/<npub>`
-- **Fil de notes** — `https://nostr-wot.com/widgets/feed/<npub>?limit=3`
+- **Carte de profil** — `https://nostrwot.com/widgets/profile/<npub>`
+- **Bouton de suivi** — `https://nostrwot.com/widgets/follow/<npub>`
+- **Fil de notes** — `https://nostrwot.com/widgets/feed/<npub>?limit=3`
 
 Visitez la [galerie de widgets](/widgets) pour des aperçus en direct et des snippets prêts à copier-coller.
 
 ---
 
-*Des retours ? Répondez sur [Nostr](https://nostr-wot.com/profile/npub1gxdhmu9swqduwhr6zptjy4ya693zp3ql28nemy4hd97kuufyrqdqwe5zfk) ou ouvrez une issue sur [GitHub](https://github.com/Fabricio333/nostr-widgets).*
+*Des retours ? Répondez sur [Nostr](https://nostrwot.com/profile/npub1gxdhmu9swqduwhr6zptjy4ya693zp3ql28nemy4hd97kuufyrqdqwe5zfk) ou ouvrez une issue sur [GitHub](https://github.com/Fabricio333/nostr-widgets).*

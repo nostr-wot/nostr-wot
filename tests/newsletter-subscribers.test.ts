@@ -34,8 +34,8 @@ test('newsletter persistence, validation and delivery boundaries', async (t) => 
     const handle = interval(...args); handle.unref(); return handle;
   });
   let client = 0;
-  function request(body: string, origin = 'https://nostr-wot.com', id = String(++client)) {
-    return new NextRequest('https://nostr-wot.com/api/newsletter', {
+  function request(body: string, origin = 'https://nostrwot.com', id = String(++client)) {
+    return new NextRequest('https://nostrwot.com/api/newsletter', {
       method: 'POST', headers: { origin, 'x-forwarded-for': `test-${id}`, 'content-type': 'application/json' }, body,
     });
   }

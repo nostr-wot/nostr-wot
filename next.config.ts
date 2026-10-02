@@ -149,14 +149,22 @@ const nextConfig: NextConfig = {
       { locale: "ru", oldSlug: "2026-08-01-nip-47-uproshchaet-yadro-i-dobavlyaet-rasshireniya", newSlug: "nip-47-uproshchaet-yadro-i-dobavlyaet-rasshireniya" },
     ];
 
-    return newsSlugRedirects.map(({ locale, oldSlug, newSlug }) => {
-      const prefix = locale === "en" ? "" : `/${locale}`;
-      return {
-        source: `${prefix}/news/${oldSlug}`,
-        destination: `${prefix}/news/${newSlug}`,
-        permanent: true,
-      };
-    });
+    return [
+      ...['nostr-wot.com', 'www.nostr-wot.com', 'www.nostrwot.com'].map(host => ({
+        source: '/:path*',
+        has: [{ type: 'host' as const, value: host }],
+        destination: 'https://nostrwot.com/:path*',
+        statusCode: 301 as const,
+      })),
+      ...newsSlugRedirects.map(({ locale, oldSlug, newSlug }) => {
+        const prefix = locale === "en" ? "" : `/${locale}`;
+        return {
+          source: `${prefix}/news/${oldSlug}`,
+          destination: `${prefix}/news/${newSlug}`,
+          permanent: true,
+        };
+      }),
+    ];
   },
 };
 

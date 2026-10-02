@@ -38,8 +38,8 @@ test('legacy audit recovers recipient without sending or inventing past attempts
 
 test('branded template has real logo, social links, localized footer and escaped copy',async()=>{
  const {newsletterTemplate}=await import('../scripts/newsletters/template.mjs');
- const rendered=newsletterTemplate({edition:{subject:'<script>test</script>',preheader:'Preview',body:'## Heading\n\nContent'},locale:'es',issueId:'weekly-test-v1',date:'2026-01-08T00:00:00Z',unsubscribeUrl:'https://nostr-wot.com/api/newsletter/unsubscribe?token=test'});
- assert.ok(rendered.html.includes('https://nostr-wot.com/icon-192.png'));assert.ok(rendered.html.includes('#6366f1'));assert.ok(rendered.html.includes('Cancelar suscripción'));assert.ok(rendered.html.includes('https://github.com/nostr-wot'));assert.ok(rendered.html.includes('https://www.linkedin.com/company/nostr-wot'));assert.ok(!rendered.html.includes('<script>'));assert.ok(rendered.html.includes('role="presentation"'));assert.ok(rendered.text.includes('Cancelar suscripción'));
+ const rendered=newsletterTemplate({edition:{subject:'<script>test</script>',preheader:'Preview',body:'## Heading\n\nContent'},locale:'es',issueId:'weekly-test-v1',date:'2026-01-08T00:00:00Z',unsubscribeUrl:'https://nostrwot.com/api/newsletter/unsubscribe?token=test'});
+ assert.ok(rendered.html.includes('https://nostrwot.com/icon-192.png'));assert.ok(rendered.html.includes('#6366f1'));assert.ok(rendered.html.includes('Cancelar suscripción'));assert.ok(rendered.html.includes('https://github.com/nostr-wot'));assert.ok(rendered.html.includes('https://www.linkedin.com/company/nostr-wot'));assert.ok(!rendered.html.includes('<script>'));assert.ok(rendered.html.includes('role="presentation"'));assert.ok(rendered.text.includes('Cancelar suscripción'));
 });
 
 test('template preview sends only to Leon, keeps private history and never archives',async t=>{

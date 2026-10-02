@@ -4,7 +4,7 @@ Last updated: 2026-03-21
 
 ## Key
 
-- **Live on nostr-wot.com** = merged into upstream `nostr-wot/nostr-wot`
+- **Live on nostrwot.com** = merged into upstream `nostr-wot/nostr-wot`
 - **In PR #3** = exists in fork `topolino-claw/nostr-wot` branch `main`, pending merge
 - **In PR #3 (new file)** = guide doesn't exist upstream at all yet — new guide added by PR
 - Screenshots column counts **inline** images only (not featured/preview/og which all guides have)
@@ -13,7 +13,7 @@ Last updated: 2026-03-21
 
 ## Status Table
 
-| # | Guide | Difficulty | Live on nostr-wot.com | PR #3 Status | Last Reviewed | Inline Images | Screenshot Status |
+| # | Guide | Difficulty | Live on nostrwot.com | PR #3 Status | Last Reviewed | Inline Images | Screenshot Status |
 |---|-------|-----------|----------------------|-------------|--------------|---------------|------------------|
 | 0.1 | [what-is-nostr](https://preview-nostr-wot.fabri.lat/guides/what-is-nostr) | beginner | ❌ Not live | 🟡 New file in PR | 2026-03-21 | 2 SVG diagrams | ✅ Ready to publish — ✅ relay-nodes.svg label overlap fixed (2026-03-21) |
 | 0.2 | [why-nostr-is-resilient](https://preview-nostr-wot.fabri.lat/guides/why-nostr-is-resilient) | beginner | ❌ Not live | 🟡 New file in PR | 2026-03-19 10:00 | 2 SVG diagrams | ✅ Ready to publish |
@@ -67,5 +67,5 @@ Preview: https://preview-nostr-wot.fabri.lat/guides
 ## Notes
 
 - All screenshots added on 2026-03-18 are only in the fork — **not live until PR is merged**
-- `nostr-for-beginners`, `what-is-nostr`, `why-nostr-is-resilient` will be **new pages** on nostr-wot.com after merge
+- `nostr-for-beginners`, `what-is-nostr`, `why-nostr-is-resilient` will be **new pages** on nostrwot.com after merge
 - wot-playground screenshots can be taken from the preview URL (no extension needed)

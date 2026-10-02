@@ -129,7 +129,7 @@ export default async function OraclePage() {
     "applicationSubCategory": "API Server",
     "operatingSystem": "Linux, Docker",
     "description": t("meta.description"),
-    "url": "https://nostr-wot.com/oracle",
+    "url": "https://nostrwot.com/oracle",
     "downloadUrl": "https://github.com/nostr-wot/nostr-wot-oracle/releases",
     "softwareVersion": "0.3.0",
     "offers": {
@@ -147,7 +147,7 @@ export default async function OraclePage() {
     "author": {
       "@type": "Organization",
       "name": "Nostr Web of Trust",
-      "url": "https://nostr-wot.com",
+      "url": "https://nostrwot.com",
     },
   };
 

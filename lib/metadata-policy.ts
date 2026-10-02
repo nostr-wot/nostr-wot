@@ -61,7 +61,7 @@ export function seoText(title: string, description: string, locale: Locale = def
 }
 
 export function previewImageUrl(title: string, description: string, locale: Locale = defaultLocale, art: SocialArtId = 'home') {
-  const base = process.env.NEXT_PUBLIC_BASE_URL || 'https://nostr-wot.com';
+  const base = process.env.NEXT_PUBLIC_BASE_URL || 'https://nostrwot.com';
   const copy = seoText(title, description, locale);
   return `${base}/social-preview.png?${new URLSearchParams({ ...copy, locale, art })}`;
 }

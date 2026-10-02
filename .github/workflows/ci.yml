@@ -72,7 +72,9 @@ jobs:
         if: github.event_name == 'push' && steps.changes.outputs.site == 'true'
         env:
           PRODUCTION_ENV: ${{ secrets.ENV_PRODUCTION }}
-        run: printf '%s\n' "$PRODUCTION_ENV" > .env
+        run: |
+          printf '%s\n' "$PRODUCTION_ENV" > .env
+          printf '\nNEXT_PUBLIC_BASE_URL=https://nostrwot.com\nSITE_BASE_URL=https://nostrwot.com\n' >> .env
 
       - name: Build
         if: steps.changes.outputs.site == 'true'

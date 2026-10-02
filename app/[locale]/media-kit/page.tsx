@@ -89,12 +89,12 @@ export default async function MediaKitPage() {
     "@type": "WebPage",
     "name": t("meta.title"),
     "description": t("meta.description"),
-    "url": "https://nostr-wot.com/media-kit",
+    "url": "https://nostrwot.com/media-kit",
     "publisher": {
       "@type": "Organization",
       "name": "Nostr Web of Trust",
-      "url": "https://nostr-wot.com",
-      "logo": "https://nostr-wot.com/icon-512.png",
+      "url": "https://nostrwot.com",
+      "logo": "https://nostrwot.com/icon-512.png",
     },
   };
 

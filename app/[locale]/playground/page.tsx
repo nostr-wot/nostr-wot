@@ -40,7 +40,7 @@ export default async function PlaygroundPage() {
     "@type": "WebApplication",
     "name": t("title"),
     "description": t("description"),
-    "url": "https://nostr-wot.com/playground",
+    "url": "https://nostrwot.com/playground",
     "applicationCategory": "DeveloperApplication",
     "operatingSystem": "Web Browser",
     "offers": {
@@ -56,7 +56,7 @@ export default async function PlaygroundPage() {
     "provider": {
       "@type": "Organization",
       "name": "Nostr Web of Trust",
-      "url": "https://nostr-wot.com",
+      "url": "https://nostrwot.com",
     },
   };
 
