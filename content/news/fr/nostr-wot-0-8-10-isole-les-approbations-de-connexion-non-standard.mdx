@@ -1,0 +1,61 @@
+---
+title: "Nostr WoT 0.8.10 isole les approbations de connexion non standard"
+description: "L'extension conserve une compatibilité étroite, mais affiche un avertissement et exige une nouvelle décision pour chaque demande."
+seoDescription: "Comment Nostr WoT 0.8.10 traite les connexions web héritées de type 22242, pourquoi NIP-98 lie plus de données et quelles limites subsistent."
+excerpt: "La version 0.8.10 permet une connexion héritée prise en charge sans la transformer en autorisation réutilisable. Chaque demande reste séparée."
+date: "2026-10-02"
+publishedAt: "2026-10-02"
+backfilled: false
+type: "story"
+tags: ["Nostr", "Nostr WoT", "NIP-98", "Sécurité"]
+featuredImage: "/images/news/nostr-wot-0-8-10-isolates-nonstandard-login-approvals.svg"
+translationKey: "nostr-wot-0-8-10-isolates-nonstandard-login-approvals"
+sources:
+  - title: "Version 0.8.10 de l'extension Nostr WoT"
+    url: "https://github.com/nostr-wot/nostr-wot-extension/releases/tag/v0.8.10"
+    publisher: "nostr-wot/nostr-wot-extension"
+    date: "2026-10-01"
+  - title: "Changements entre v0.8.9 et v0.8.10"
+    url: "https://github.com/nostr-wot/nostr-wot-extension/compare/v0.8.9...v0.8.10"
+    publisher: "nostr-wot/nostr-wot-extension"
+    date: "2026-10-01"
+  - title: "NIP-98 : HTTP Auth au commit 0046368"
+    url: "https://github.com/nostr-protocol/nips/blob/0046368a747c5c25ae2bec28bae0e537744c8f10/98.md"
+    publisher: "nostr-protocol/nips"
+    date: "2026-09-27"
+published: true
+---
+
+[Nostr WoT extension 0.8.10](https://github.com/nostr-wot/nostr-wot-extension/releases/tag/v0.8.10) maintient la connexion web pour un client explicitement pris en charge qui envoie un événement d'authentification non standard. Le chemin est volontairement étroit : l'extension classe la demande comme connexion héritée, affiche un avertissement de risque et exige à chaque fois une nouvelle approbation à usage unique.
+
+La version a été publiée le 1er octobre avec des archives Chrome et Firefox, le code source correspondant et des sommes de contrôle. Ces fichiers prouvent que `0.8.10` est disponible sur GitHub. Ils ne prouvent pas que les boutiques des navigateurs ont approuvé ou distribué la même version.
+
+## Le format hérité n'est pas traité comme NIP-98
+
+La demande prise en charge utilise le type `22242` avec les tags `domain` et `challenge`. Ce n'est pas une authentification de relais NIP-42 et elle ne suit pas [NIP-98](https://github.com/nostr-protocol/nips/blob/0046368a747c5c25ae2bec28bae0e537744c8f10/98.md).
+
+NIP-98 utilise le type `27235`. Son tag obligatoire `u` indique l'URL absolue, paramètres de requête compris, et `method` indique la méthode HTTP. Le serveur vérifie aussi un horodatage récent, et une requête avec corps peut inclure un hash `payload`. Ces champs lient la signature à une action HTTP plus précise qu'un simple domaine.
+
+La version 0.8.10 ne présente pas l'événement hérité comme conforme. L'écran avertit que sa liaison au domaine est plus faible, car la signature ne désigne ni une URL exacte du serveur ni une méthode HTTP. Il demande aussi de contacter les développeurs du site pour adopter NIP-98.
+
+## Chaque demande reste une décision distincte
+
+La [comparaison avec 0.8.9](https://github.com/nostr-wot/nostr-wot-extension/compare/v0.8.9...v0.8.10) montre la limite dans le code. Une demande héritée ne peut pas reprendre une autorisation enregistrée. La recherche des permissions ne renvoie aucune décision réutilisable pour ce protocole, donc la file doit redemander l'accord.
+
+L'interface ne propose que deux choix : approuver cette demande une fois ou la refuser. L'approbation persistante du site et celle des sites connectés sont absentes. Deux demandes de la même origine restent deux éléments à examiner plutôt qu'une action groupée.
+
+L'automatisation du serveur et les autorisations de relais enregistrées ne peuvent pas valider le format hérité. Les contrôles du frame, de l'origine vérifiée, du compte actif et de l'horodatage restent en place. Les clients inconnus, domaines incompatibles, tags dupliqués, challenges vides et événements contenant une URL ou une méthode dans le mauvais format sont rejetés.
+
+Cette séparation empêche la compatibilité de devenir une politique permanente par accident. Une personne peut terminer une connexion sans accorder au site une capacité indéfinie à demander d'autres signatures héritées.
+
+## La version ajoute aussi un retour facultatif après désinstallation
+
+Le second changement visible enregistre `https://nostr-wot.com/uninstall` avec l'API du navigateur. Les navigateurs compatibles peuvent ouvrir cette page après la suppression. L'URL ne contient aucun identifiant de compte, donnée de portefeuille ou paramètre de suivi.
+
+L'ouverture produit tout de même une requête web normale, et l'envoi d'un avis reste facultatif. Seul le formulaire envoyé transmet le texte et l'adresse e-mail facultative saisis. Les navigateurs sans cette API ignorent l'enregistrement, et une erreur n'arrête pas le worker.
+
+## Ce que la version ne prouve pas
+
+La version fournit les paquets, le code source et les sommes de contrôle, et le diff ajoute des tests sur l'approbation répétée, les restrictions d'origine et l'URL de désinstallation. Elle ne transforme pas le type `22242` en standard et ne lui donne pas la liaison par requête de NIP-98.
+
+Le résultat est une exception contenue, pas une recommandation. Les utilisateurs voient l'avertissement et décident pour une demande. Les développeurs ont toujours besoin de NIP-98 lorsqu'une connexion doit lier la signature à une destination HTTP et à une méthode exactes.

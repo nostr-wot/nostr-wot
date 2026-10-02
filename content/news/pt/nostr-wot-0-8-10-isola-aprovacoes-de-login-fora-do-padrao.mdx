@@ -1,0 +1,61 @@
+---
+title: "Nostr WoT 0.8.10 isola aprovações de login fora do padrão"
+description: "A extensão mantém uma rota estreita de compatibilidade, mas exige um aviso e uma nova decisão para cada solicitação."
+seoDescription: "Entenda como o Nostr WoT 0.8.10 trata logins web legados de tipo 22242, por que o NIP-98 vincula mais dados e quais limites permanecem."
+excerpt: "A versão 0.8.10 permite um login legado compatível sem transformá-lo em permissão reutilizável. Cada solicitação continua separada."
+date: "2026-10-02"
+publishedAt: "2026-10-02"
+backfilled: false
+type: "story"
+tags: ["Nostr", "Nostr WoT", "NIP-98", "Segurança"]
+featuredImage: "/images/news/nostr-wot-0-8-10-isolates-nonstandard-login-approvals.svg"
+translationKey: "nostr-wot-0-8-10-isolates-nonstandard-login-approvals"
+sources:
+  - title: "Lançamento 0.8.10 da extensão Nostr WoT"
+    url: "https://github.com/nostr-wot/nostr-wot-extension/releases/tag/v0.8.10"
+    publisher: "nostr-wot/nostr-wot-extension"
+    date: "2026-10-01"
+  - title: "Mudanças da v0.8.9 para a v0.8.10"
+    url: "https://github.com/nostr-wot/nostr-wot-extension/compare/v0.8.9...v0.8.10"
+    publisher: "nostr-wot/nostr-wot-extension"
+    date: "2026-10-01"
+  - title: "NIP-98: HTTP Auth no commit 0046368"
+    url: "https://github.com/nostr-protocol/nips/blob/0046368a747c5c25ae2bec28bae0e537744c8f10/98.md"
+    publisher: "nostr-protocol/nips"
+    date: "2026-09-27"
+published: true
+---
+
+A [extensão Nostr WoT 0.8.10](https://github.com/nostr-wot/nostr-wot-extension/releases/tag/v0.8.10) mantém o login web para um cliente explicitamente compatível que envia um evento de autenticação fora do padrão. A rota é estreita: a extensão classifica a solicitação como login legado, exibe um aviso de risco e exige uma nova aprovação de uso único em todas as tentativas.
+
+O lançamento ocorreu em 1º de outubro com arquivos para Chrome e Firefox, fonte correspondente e somas de verificação. Esses artefatos provam que a versão `0.8.10` está disponível no GitHub. Eles não provam que as lojas dos navegadores aprovaram ou distribuíram a mesma versão.
+
+## O formato legado não é tratado como NIP-98
+
+A solicitação compatível usa o tipo `22242` com tags `domain` e `challenge`. Ela não é autenticação de relay NIP-42 e não segue o [NIP-98](https://github.com/nostr-protocol/nips/blob/0046368a747c5c25ae2bec28bae0e537744c8f10/98.md).
+
+O NIP-98 usa o tipo `27235`. A tag obrigatória `u` identifica a URL absoluta, inclusive parâmetros de consulta, e `method` identifica o método HTTP. O servidor também verifica um timestamp recente, e solicitações com corpo podem incluir um hash `payload`. Esses campos vinculam a assinatura a uma ação HTTP mais específica do que apenas um domínio.
+
+A versão 0.8.10 não chama o evento legado de compatível com o padrão. A tela avisa que o vínculo por domínio é mais fraco, pois a assinatura não identifica uma URL exata do backend nem um método HTTP. Ela também orienta o usuário a pedir que os desenvolvedores adotem o NIP-98.
+
+## Cada solicitação continua sendo uma decisão separada
+
+A [comparação com a 0.8.9](https://github.com/nostr-wot/nostr-wot-extension/compare/v0.8.9...v0.8.10) mostra o limite no código. Uma solicitação legada não herda uma concessão de autenticação salva. A consulta de permissões não devolve uma decisão reutilizável para esse protocolo, então a fila deve perguntar novamente.
+
+A interface oferece apenas aprovar uma vez ou negar. Aprovação persistente para o site e aprovação para sites conectados não aparecem nessa rota. Duas solicitações da mesma origem permanecem como duas revisões, em vez de serem agrupadas atrás de uma ação.
+
+Automação de backend e concessões salvas para relays não podem autorizar o formato legado. Continuam válidas as verificações de frame, origem confirmada, conta ativa e timestamp. Clientes desconhecidos, domínios incompatíveis, tags duplicadas, desafios vazios e eventos com campos de URL ou método no formato errado são rejeitados.
+
+Essa separação impede que compatibilidade vire política por acidente. O usuário pode concluir um login específico sem dar ao site uma capacidade indefinida de pedir outras assinaturas legadas.
+
+## O lançamento também adiciona feedback opcional na desinstalação
+
+A segunda mudança visível registra `https://nostr-wot.com/uninstall` pela API de desinstalação do navegador. Navegadores compatíveis podem abrir a página depois da remoção. A URL registrada não contém identificador de conta, dados de carteira nem parâmetros de rastreamento.
+
+Abrir a página ainda gera uma solicitação web normal, e enviar feedback é opcional. Apenas o formulário enviado transmite o texto e o e-mail opcional informados. Navegadores sem a API ignoram o registro, e uma falha não interrompe o worker.
+
+## O que o lançamento não prova
+
+O lançamento fornece pacotes, fonte e checksums, e o diff inclui testes de aprovação repetida, restrições de origem e URL de desinstalação. Ele não transforma o tipo `22242` em padrão nem fornece o vínculo por solicitação do NIP-98.
+
+O resultado é uma exceção contida, não uma recomendação. Usuários podem reconhecer o aviso e decidir sobre uma solicitação. Desenvolvedores ainda precisam do NIP-98 quando o login deve vincular a assinatura a um destino HTTP e a um método exatos.
