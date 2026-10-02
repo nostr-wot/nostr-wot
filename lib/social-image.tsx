@@ -16,7 +16,7 @@ export async function renderSocialImage(title: string, description: string, art:
         <div style={{ display: 'flex', alignItems: 'center', gap: 14, fontSize: 31, fontWeight: 700, marginBottom: 36 }}><SocialLogo />Nostr WoT</div>
         <div style={{ display: 'flex', fontSize: 53, lineHeight: 1.08, fontWeight: 700, letterSpacing: '-1.5px', maxWidth: 555 }}>{title}</div>
         <div style={{ display: 'flex', fontSize: 22, lineHeight: 1.35, color: '#57556d', marginTop: 24, maxWidth: 485 }}>{description}</div>
-        <div style={{ display: 'flex', fontSize: 18, color: '#6366f1', marginTop: 'auto', paddingTop: 20 }}>nostr-wot.com</div>
+        <div style={{ display: 'flex', fontSize: 18, color: '#6366f1', marginTop: 'auto', paddingTop: 20 }}>nostrwot.com</div>
       </div>
     </div>,
     { width: 1200, height: 630, headers: { 'Cache-Control': 'public, max-age=86400', 'X-Robots-Tag': 'noindex' } },

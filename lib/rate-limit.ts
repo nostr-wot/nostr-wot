@@ -5,8 +5,8 @@
 
 // Allowed origins for CSRF protection
 const ALLOWED_ORIGINS = [
-  "https://nostr-wot.com",
-  "https://www.nostr-wot.com",
+  "https://nostrwot.com",
+  "https://www.nostrwot.com",
 ];
 
 // Development origins

@@ -33,7 +33,7 @@ test('endpoint validates origin and body, escapes feedback, and reports delivery
   const sent: SendEmailOptions[] = [];
   const mail = mock.method(emailService, 'send', async (data: SendEmailOptions) => { sent.push(data); return { success: true }; });
   let ip = 0;
-  const request = (body: string, origin = 'https://nostr-wot.com', client = String(++ip)) => new NextRequest('https://nostr-wot.com/api/uninstall-feedback', {
+  const request = (body: string, origin = 'https://nostrwot.com', client = String(++ip)) => new NextRequest('https://nostrwot.com/api/uninstall-feedback', {
     method: 'POST', headers: { origin, 'x-forwarded-for': client, 'Content-Type': 'application/json' }, body,
   });
   try {
@@ -52,8 +52,8 @@ test('endpoint validates origin and body, escapes feedback, and reports delivery
     assert.equal(sent[1].replyTo,'me@example.com');
     mail.mock.mockImplementation(async () => ({ success: false, error: 'Provider unavailable' }));
     assert.equal((await POST(request('{"reason":"x"}'))).status, 503);
-    for (let i=0;i<5;i++) await POST(request('{}', 'https://nostr-wot.com', 'rate-test'));
-    const limited = await POST(request('{}', 'https://nostr-wot.com', 'rate-test'));
+    for (let i=0;i<5;i++) await POST(request('{}', 'https://nostrwot.com', 'rate-test'));
+    const limited = await POST(request('{}', 'https://nostrwot.com', 'rate-test'));
     assert.equal(limited.status, 429);
     assert.ok(Number(limited.headers.get('Retry-After')) > 0);
   } finally { mail.mock.restore(); timer.mock.restore(); }

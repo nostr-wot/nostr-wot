@@ -146,7 +146,7 @@ export default async function OgImage({ params }: Props) {
               letterSpacing: "0.02em",
             }}
           >
-            nostr-wot.com
+            nostrwot.com
           </div>
         </div>
       </div>

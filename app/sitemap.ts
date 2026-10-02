@@ -11,7 +11,7 @@ import { listSentNewsletters } from "@/lib/newsletter-archive";
 // Sent editions are runtime records and can appear without a code deployment.
 export const dynamic = "force-dynamic";
 
-const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || "https://nostr-wot.com";
+const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || "https://nostrwot.com";
 
 // Helper to generate URL with locale prefix only for non-default locales
 // This matches the 'localePrefix: as-needed' routing configuration

@@ -80,7 +80,7 @@ export default async function Home({ params }: Props) {
     "name": "Nostr Web of Trust",
     "alternateName": "Nostr WoT",
     "url": localUrl("/"),
-    "logo": "https://nostr-wot.com/icon-512.png",
+    "logo": "https://nostrwot.com/icon-512.png",
     "description": t("meta.description"),
     "sameAs": [
       "https://github.com/nostr-wot",

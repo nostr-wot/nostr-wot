@@ -146,7 +146,7 @@ export default async function FeaturesPage() {
     "@type": "WebPage",
     "name": `${t("hero.badge")} | Nostr WoT`,
     "description": t("meta.description"),
-    "url": "https://nostr-wot.com/features",
+    "url": "https://nostrwot.com/features",
     "mainEntity": {
       "@type": "SoftwareApplication",
       "name": u("extension"),

@@ -21,7 +21,7 @@ test('only known illustration identifiers are accepted', () => {
 test('main pages and locale prefixes select meaningful artwork', () => {
   const examples = { '/': 'home', '/features': 'extension', '/download': 'extension', '/about': 'community', '/oracle': 'oracle', '/widgets': 'developers', '/projects': 'community', '/playground': 'wot-playground', '/pqc': 'post-quantum-key', '/pqc/chat': 'post-quantum-key', '/guides': 'guides', '/blog': 'editorial', '/news': 'editorial', '/newsletters': 'editorial', '/docs': 'developers', '/docs/getting-started': 'developers', '/docs/sdk': 'developers', '/docs/extension': 'extension', '/docs/oracle': 'oracle', '/docs/lnbits-proxy': 'lnbits-wallet-setup', '/media-kit': 'home', '/contact': 'community', '/privacy': 'privacy', '/terms': 'privacy', '/pitch': 'home' };
   for (const locale of locales) for (const [route, art] of Object.entries(examples)) {
-    assert.equal(socialArtForUrl(`https://nostr-wot.com/${locale}${route}`), art);
+    assert.equal(socialArtForUrl(`https://nostrwot.com/${locale}${route}`), art);
   }
 });
 
@@ -31,7 +31,7 @@ test('translated guide metadata resolves original English artwork without changi
     assert.ok(english, `${locale}/${guide.slug} has English translation`);
     const art = GUIDE_ART_ALIASES[english!] ?? english;
     assert.equal(isSocialArtId(art), true, english);
-    const result = normalizeMetadata({ title: guide.seoTitle || guide.title, description: guide.seoDescription || guide.excerpt, alternates: { canonical: `https://nostr-wot.com/${locale}/guides/${guide.slug}`, languages: { en: `https://nostr-wot.com/guides/${english}` } } }, locale) as any;
+    const result = normalizeMetadata({ title: guide.seoTitle || guide.title, description: guide.seoDescription || guide.excerpt, alternates: { canonical: `https://nostrwot.com/${locale}/guides/${guide.slug}`, languages: { en: `https://nostrwot.com/guides/${english}` } } }, locale) as any;
     const preview = new URL(result.openGraph.images[0].url);
     assert.equal(preview.searchParams.get('art'), art);
     assert.equal(preview.searchParams.get('locale'), locale);

@@ -84,11 +84,11 @@ export default async function AboutPage() {
     "@type": "AboutPage",
     "name": t("meta.title"),
     "description": t("meta.description"),
-    "url": "https://nostr-wot.com/about",
+    "url": "https://nostrwot.com/about",
     "mainEntity": {
       "@type": "Organization",
       "name": "Nostr Web of Trust",
-      "url": "https://nostr-wot.com",
+      "url": "https://nostrwot.com",
     },
   };
 

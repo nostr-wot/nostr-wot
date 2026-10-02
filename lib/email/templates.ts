@@ -46,7 +46,7 @@ function baseLayout(content: string): string {
                 &copy; ${new Date().getFullYear()} Nostr Web of Trust. All rights reserved.
               </p>
               <p style="margin: 8px 0 0; font-size: 12px; color: #6b7280; text-align: center;">
-                <a href="https://nostr-wot.com" style="color: #8b5cf6; text-decoration: none;">nostr-wot.com</a>
+                <a href="https://nostrwot.com" style="color: #8b5cf6; text-decoration: none;">nostrwot.com</a>
               </p>
             </td>
           </tr>
@@ -190,7 +190,7 @@ Sent from the Nostr WoT contact form on ${new Date().toISOString()}
       <table role="presentation" style="width: 100%; border-collapse: collapse;">
         <tr>
           <td style="text-align: center; padding: 8px 0;">
-            <a href="https://nostr-wot.com/docs" style="display: inline-block; padding: 12px 24px; background: linear-gradient(135deg, #8b5cf6 0%, #6366f1 100%); color: #ffffff; text-decoration: none; border-radius: 8px; font-weight: 600; font-size: 14px;">View Documentation</a>
+            <a href="https://nostrwot.com/docs" style="display: inline-block; padding: 12px 24px; background: linear-gradient(135deg, #8b5cf6 0%, #6366f1 100%); color: #ffffff; text-decoration: none; border-radius: 8px; font-weight: 600; font-size: 14px;">View Documentation</a>
           </td>
         </tr>
       </table>
@@ -206,7 +206,7 @@ Hi ${data.name},
 
 Thank you for reaching out to us. We've received your ${typeLabel} and our team will review it shortly.
 
-We typically respond within 24-48 hours. In the meantime, feel free to explore our documentation at https://nostr-wot.com/docs
+We typically respond within 24-48 hours. In the meantime, feel free to explore our documentation at https://nostrwot.com/docs
 
 Best regards,
 The Nostr WoT Team
@@ -293,14 +293,14 @@ Subscribed via the Nostr WoT website.
 
       <div style="background-color: #f0fdf4; border: 1px solid #bbf7d0; padding: 16px; border-radius: 8px; margin-bottom: 24px;">
         <p style="margin: 0; color: #166534; font-size: 14px;">
-          <strong>Get started:</strong> If you haven't already, <a href="https://nostr-wot.com/download" style="color: #15803d; text-decoration: underline;">download the extension</a> to filter spam and find trusted content on Nostr.
+          <strong>Get started:</strong> If you haven't already, <a href="https://nostrwot.com/download" style="color: #15803d; text-decoration: underline;">download the extension</a> to filter spam and find trusted content on Nostr.
         </p>
       </div>
 
       <table role="presentation" style="width: 100%; border-collapse: collapse;">
         <tr>
           <td style="text-align: center; padding: 8px 0;">
-            <a href="https://nostr-wot.com/features" style="display: inline-block; padding: 12px 24px; background: linear-gradient(135deg, #8b5cf6 0%, #6366f1 100%); color: #ffffff; text-decoration: none; border-radius: 8px; font-weight: 600; font-size: 14px;">Explore Features</a>
+            <a href="https://nostrwot.com/features" style="display: inline-block; padding: 12px 24px; background: linear-gradient(135deg, #8b5cf6 0%, #6366f1 100%); color: #ffffff; text-decoration: none; border-radius: 8px; font-weight: 600; font-size: 14px;">Explore Features</a>
           </td>
         </tr>
       </table>
@@ -324,7 +324,7 @@ We'll keep you updated on:
 
 We respect your inbox and only send relevant updates. No spam, ever.
 
-Get started: If you haven't already, download the extension at https://nostr-wot.com/download
+Get started: If you haven't already, download the extension at https://nostrwot.com/download
 
 Welcome aboard!
 The Nostr WoT Team

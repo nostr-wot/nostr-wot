@@ -9,7 +9,7 @@ import { generateBlogAlternates, getFullUrl } from '@/lib/metadata';
 import { type Locale, locales } from '@/i18n/config';
 import { JsonLd, blogPostingJsonLd, breadcrumbJsonLd } from '@/lib/jsonld';
 
-const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || 'https://nostr-wot.com';
+const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || 'https://nostrwot.com';
 
 // Locale to OpenGraph locale format mapping
 const ogLocaleMap: Record<Locale, string> = {
@@ -99,13 +99,13 @@ export default async function BlogPostPage({ params }: Props) {
     image: post.featuredImage,
     datePublished: post.date,
     authorName: post.author.name,
-    authorUrl: post.author.npub ? `https://nostr-wot.com/profile/${post.author.npub}` : undefined,
+    authorUrl: post.author.npub ? `https://nostrwot.com/profile/${post.author.npub}` : undefined,
     authorSameAs: post.author.socials
       ? ([
           post.author.socials.twitter && `https://twitter.com/${post.author.socials.twitter}`,
           post.author.socials.github && `https://github.com/${post.author.socials.github}`,
           post.author.socials.linkedin && `https://linkedin.com/in/${post.author.socials.linkedin}`,
-          post.author.npub && `https://nostr-wot.com/profile/${post.author.npub}`,
+          post.author.npub && `https://nostrwot.com/profile/${post.author.npub}`,
         ].filter(Boolean) as string[])
       : undefined,
     tags: post.tags,
@@ -113,7 +113,7 @@ export default async function BlogPostPage({ params }: Props) {
   });
 
   const crumbsLd = breadcrumbJsonLd([
-    { name: 'Home', url: 'https://nostr-wot.com' },
+    { name: 'Home', url: 'https://nostrwot.com' },
     { name: 'Blog', url: getFullUrl('/blog', locale as Locale) },
     { name: post.title, url: getFullUrl(`/blog/${slug}`, locale as Locale) },
   ]);
@@ -232,7 +232,7 @@ export default async function BlogPostPage({ params }: Props) {
                       </p>
                       {post.author.npub && (
                         <a
-                          href={`https://nostr-wot.com/profile/${post.author.npub}`}
+                          href={`https://nostrwot.com/profile/${post.author.npub}`}
                           target="_blank"
                           rel="noopener noreferrer"
                           className="text-sm text-primary hover:underline mt-1 inline-block"

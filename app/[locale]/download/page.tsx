@@ -86,7 +86,7 @@ export default async function DownloadPage() {
     "applicationCategory": "BrowserApplication",
     "operatingSystem": "Chrome, Brave, Edge, Opera, Firefox, Safari (coming soon)",
     "description": t("meta.description"),
-    "url": "https://nostr-wot.com/download",
+    "url": "https://nostrwot.com/download",
     "downloadUrl": "https://chromewebstore.google.com/detail/nostr-wot-extension/gfmefgdkmjpjinecjchlangpamhclhdo",
     "offers": {
       "@type": "Offer",
@@ -108,11 +108,11 @@ export default async function DownloadPage() {
       home("wallet.description"),
       home("wallet.features.webln.title"),
     ],
-    "screenshot": "https://nostr-wot.com/og-image.png",
+    "screenshot": "https://nostrwot.com/og-image.png",
     "author": {
       "@type": "Organization",
       "name": "Nostr Web of Trust",
-      "url": "https://nostr-wot.com",
+      "url": "https://nostrwot.com",
     },
   };
 

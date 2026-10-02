@@ -72,7 +72,7 @@ export async function sendIssue({issue,dataDir,apiKey,unsubscribeSecret=apiKey,s
    const locale=record?.locale || current.locale,e=issue.editions[locale];
    const payload=Buffer.from(current.email).toString('base64url');
    const signature=createHmac('sha256',unsubscribeSecret).update('newsletter-unsubscribe:'+payload).digest('base64url');
-   const url='https://nostr-wot.com/api/newsletter/unsubscribe?token='+payload+'.'+signature+'&lang='+locale;
+   const url='https://nostrwot.com/api/newsletter/unsubscribe?token='+payload+'.'+signature+'&lang='+locale;
    const rendered=newsletterTemplate({edition:e,locale,issueId:issue.id,date:issue.coverageEnd,unsubscribeUrl:url});
    const message={from:'Nostr WoT <noreply@nostr-wot.com>',to:[current.email],subject:e.subject,text:rendered.text,html:rendered.html,headers:{'List-Unsubscribe':`<${url}>`,'List-Unsubscribe-Post':'List-Unsubscribe=One-Click'}};
    const idempotencyKey=`newsletter-${issue.id}-${key}`;

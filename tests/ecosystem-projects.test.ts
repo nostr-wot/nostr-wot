@@ -30,8 +30,8 @@ test('external links permit only absolute HTTP(S) without credentials', () => {
 });
 test('collection JSON-LD uses actual directory entries and escapes script delimiters', () => {
   const data = { checkedAt: '2026-09-08', projects: [{ ...project, name: '</script><script>alert(1)</script>' }], news: [], security: [] };
-  const ld = ecosystemJsonLd(data, 'https://nostr-wot.com/es/projects');
-  assert.equal(ld.url, 'https://nostr-wot.com/es/projects');
+  const ld = ecosystemJsonLd(data, 'https://nostrwot.com/es/projects');
+  assert.equal(ld.url, 'https://nostrwot.com/es/projects');
   assert.equal(ld.mainEntity.itemListElement.length, 1);
   assert.equal(ld.mainEntity.itemListElement[0].item.name, data.projects[0].name);
   const serialized = serializeJsonLd(ld);
@@ -129,8 +129,8 @@ test('Spanish and French empty states and JSON-LD honor their page language', as
   const french = renderToStaticMarkup(createElement(Directory, { locale: 'fr', data, blogHref: '/fr/blog', newsHref: '/fr/news' }));
   assert.match(french, /lang="fr"/);
   assert.doesNotMatch(french, /Curated content · English/);
-  assert.equal(ecosystemJsonLd(data, 'https://nostr-wot.com/es/projects', 'es').inLanguage, 'es');
-  assert.equal(ecosystemJsonLd(data, 'https://nostr-wot.com/fr/projects', 'fr').inLanguage, 'fr');
+  assert.equal(ecosystemJsonLd(data, 'https://nostrwot.com/es/projects', 'es').inLanguage, 'es');
+  assert.equal(ecosystemJsonLd(data, 'https://nostrwot.com/fr/projects', 'fr').inLanguage, 'fr');
 });
 
 test('Spanish dataset preserves the English source URLs and dated evidence', async () => {
@@ -155,7 +155,7 @@ test('directory UI and structured data honor all seven page languages', async ()
     const data = { checkedAt: '2026-09-08', projects: [project], news: [], security: [] };
     const html = renderToStaticMarkup(createElement(Directory, { data, locale, blogHref: '/blog', newsHref: '/news' }));
     assert.ok(html.includes(`lang="${locale}"`), locale);
-    assert.equal(ecosystemJsonLd(data, `https://nostr-wot.com/${locale}/projects`, locale).inLanguage, locale);
+    assert.equal(ecosystemJsonLd(data, `https://nostrwot.com/${locale}/projects`, locale).inLanguage, locale);
     if (locale !== 'en') assert.notEqual(ecosystemCopy(locale).heading, ecosystemCopy('en').heading, locale);
   }
 });

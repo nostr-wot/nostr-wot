@@ -9,7 +9,7 @@ import { getGuide, getGuideSlugs, getRelatedGuides, getAllGuideTags, getAllGuide
 import { generateBlogAlternates, getFullUrl } from '@/lib/metadata';
 import { type Locale, locales } from '@/i18n/config';
 
-const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || 'https://nostr-wot.com';
+const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || 'https://nostrwot.com';
 
 const ogLocaleMap: Record<Locale, string> = {
   en: 'en_US',
@@ -114,11 +114,11 @@ export default async function GuidePostPage({ params }: Props) {
     'author': {
       '@type': 'Person',
       'name': guide.author.name,
-      'url': guide.author.npub ? `https://nostr-wot.com/profile/${guide.author.npub}` : undefined,
+      'url': guide.author.npub ? `https://nostrwot.com/profile/${guide.author.npub}` : undefined,
       'affiliation': {
         '@type': 'Organization',
         'name': 'Nostr Web of Trust',
-        'url': 'https://nostr-wot.com',
+        'url': 'https://nostrwot.com',
       },
     },
     'publisher': {
@@ -126,7 +126,7 @@ export default async function GuidePostPage({ params }: Props) {
       'name': 'Nostr Web of Trust',
       'logo': {
         '@type': 'ImageObject',
-        'url': 'https://nostr-wot.com/icon-512.png',
+        'url': 'https://nostrwot.com/icon-512.png',
       },
     },
     'mainEntityOfPage': {
@@ -144,7 +144,7 @@ export default async function GuidePostPage({ params }: Props) {
         '@type': 'ListItem',
         'position': 1,
         'name': 'Home',
-        'item': 'https://nostr-wot.com',
+        'item': 'https://nostrwot.com',
       },
       {
         '@type': 'ListItem',

@@ -13,7 +13,7 @@ type Props = {
 
 const REPO_URL = "https://github.com/nostr-wot/nostr-widgets";
 const DEMO_NPUB = "npub1gxdhmu9swqduwhr6zptjy4ya693zp3ql28nemy4hd97kuufyrqdqwe5zfk";
-const SITE_URL = "https://nostr-wot.com";
+const SITE_URL = "https://nostrwot.com";
 
 async function pageMetadata({ params }: Props): Promise<Metadata> {
   const { locale } = await params;

@@ -41,11 +41,11 @@ export default async function TermsPage() {
     "@type": "WebPage",
     "name": t("meta.title"),
     "description": t("meta.description"),
-    "url": "https://nostr-wot.com/terms",
+    "url": "https://nostrwot.com/terms",
     "publisher": {
       "@type": "Organization",
       "name": "Nostr Web of Trust",
-      "url": "https://nostr-wot.com",
+      "url": "https://nostrwot.com",
     },
   };
 

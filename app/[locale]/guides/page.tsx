@@ -71,7 +71,7 @@ export default async function GuidesPage({ params, searchParams }: Props) {
       'name': 'Nostr Web of Trust',
       'logo': {
         '@type': 'ImageObject',
-        'url': 'https://nostr-wot.com/icon-512.png',
+        'url': 'https://nostrwot.com/icon-512.png',
       },
     },
     'hasPart': guides.map((guide) => ({

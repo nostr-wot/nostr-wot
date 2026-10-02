@@ -22,7 +22,7 @@ The Nostr WoT Extension is an all-in-one identity provider for your browser — 
 
 - **Repository:** [github.com/nostr-wot/nostr-wot-sdk](https://github.com/nostr-wot/nostr-wot-sdk)
 - **NPM:** [nostr-wot-sdk 1.0.1](https://www.npmjs.com/package/nostr-wot-sdk/v/1.0.1)
-- **Documentation:** [SDK reference](https://nostr-wot.com/docs/sdk)
+- **Documentation:** [SDK reference](https://nostrwot.com/docs/sdk)
 - **Compatibility:** Published `@nostr-wot/wot@1.0.0` uses the older Oracle HTTP contract and is not compatible with Oracle 0.3.0 simply by changing its base URL. Use direct `fetch` for Oracle 0.3.0 or provide a local source from `@nostr-wot/graph`. Version 1.0.0 removed extension detection and the WoT trust-score API.
 
 ### WoT Oracle
@@ -96,7 +96,7 @@ Organizations supporting the development of Nostr Web of Trust:
 |--------------|---------|
 | Dandelion Labs | [dandelionlabs.io](https://dandelionlabs.io) |
 | We Are Bitcoin | [wearebitcoin.org](https://wearebitcoin.org) |
-| Nostr WoT | [nostr-wot.com](https://nostr-wot.com) |
+| Nostr WoT | [nostrwot.com](https://nostrwot.com) |
 
 ## Run Your Own
 

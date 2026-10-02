@@ -10,12 +10,12 @@ const copy={
  ru:['Еженедельная рассылка','Открыть в браузере','Оставайтесь на связи','Вы получили это письмо, потому что подписались на Nostr WoT.','Отписаться','Предпросмотр письма'],
 };
 // Links match the website footer. X and Nostr currently use the profiles linked there.
-export const SOCIAL_LINKS=[['Nostr','https://nostr-wot.com/profile/npub1gxdhmu9swqduwhr6zptjy4ya693zp3ql28nemy4hd97kuufyrqdqwe5zfk'],['GitHub','https://github.com/nostr-wot'],['LinkedIn','https://www.linkedin.com/company/nostr-wot'],['X','https://x.com/leonacosta_'],['Facebook','https://facebook.com/nostr.wot']];
+export const SOCIAL_LINKS=[['Nostr','https://nostrwot.com/profile/npub1gxdhmu9swqduwhr6zptjy4ya693zp3ql28nemy4hd97kuufyrqdqwe5zfk'],['GitHub','https://github.com/nostr-wot'],['LinkedIn','https://www.linkedin.com/company/nostr-wot'],['X','https://x.com/leonacosta_'],['Facebook','https://facebook.com/nostr.wot']];
 export function newsletterTemplate({edition,locale='en',issueId,date,unsubscribeUrl,preview=false}){
  const c=copy[locale];if(!c)throw Error('Unsupported template locale');
  if(!/^[a-z0-9-]+$/.test(issueId))throw Error('Invalid issue ID');
- if(!preview){const u=new URL(unsubscribeUrl);if(u.origin!=='https://nostr-wot.com'||u.pathname!=='/api/newsletter/unsubscribe')throw Error('Invalid unsubscribe URL');}
- const archive=`https://nostr-wot.com${locale==='en'?'':'/'+locale}/newsletters${preview?'':'/'+issueId}`;
+ if(!preview){const u=new URL(unsubscribeUrl);if(u.origin!=='https://nostrwot.com'||u.pathname!=='/api/newsletter/unsubscribe')throw Error('Invalid unsubscribe URL');}
+ const archive=`https://nostrwot.com${locale==='en'?'':'/'+locale}/newsletters${preview?'':'/'+issueId}`;
  const formattedDate=new Intl.DateTimeFormat(locale,{day:'numeric',month:'long',year:'numeric',timeZone:'Europe/Zurich'}).format(new Date(date));
  const body=editorialHtml(edition.body)
   .replaceAll('<h2>','<h2 style="margin:34px 0 14px;font-size:22px;line-height:1.35;font-weight:700;color:#25234a;">')
@@ -33,7 +33,7 @@ export function newsletterTemplate({edition,locale='en',issueId,date,unsubscribe
 <table class="card" role="presentation" width="100%" cellpadding="0" cellspacing="0" style="max-width:640px;background-color:#ffffff;border:1px solid #e5e3f1;border-radius:16px;overflow:hidden;">
 <tr><td style="height:6px;background-color:#6366f1;font-size:0;line-height:0;">&nbsp;</td></tr>
 <tr><td class="inner" style="padding:28px 40px;background-color:#ffffff;">
-<table role="presentation" width="100%" cellpadding="0" cellspacing="0"><tr><td width="54" style="vertical-align:middle;"><a href="https://nostr-wot.com"><img src="https://nostr-wot.com/icon-192.png" width="42" height="42" alt="Nostr WoT" style="display:block;border:0;border-radius:10px;"></a></td><td style="vertical-align:middle;font-size:22px;font-weight:700;letter-spacing:-0.6px;color:#25234a;">Nostr WoT<br><span style="font-size:12px;letter-spacing:0;font-weight:400;color:#73708c;">${c[0]}</span></td></tr></table>
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0"><tr><td width="54" style="vertical-align:middle;"><a href="https://nostrwot.com"><img src="https://nostrwot.com/icon-192.png" width="42" height="42" alt="Nostr WoT" style="display:block;border:0;border-radius:10px;"></a></td><td style="vertical-align:middle;font-size:22px;font-weight:700;letter-spacing:-0.6px;color:#25234a;">Nostr WoT<br><span style="font-size:12px;letter-spacing:0;font-weight:400;color:#73708c;">${c[0]}</span></td></tr></table>
 </td></tr>
 <tr><td class="inner" style="padding:34px 40px 36px;background-color:#eeecff;border-top:1px solid #e6e2fc;border-bottom:1px solid #e6e2fc;">
 <p style="margin:0 0 18px;font-size:13px;line-height:1.5;color:#5b5097;">${preview?c[5]+' · ':''}${escapeHtml(formattedDate)}</p>
@@ -45,7 +45,7 @@ export function newsletterTemplate({edition,locale='en',issueId,date,unsubscribe
 <tr><td class="inner" align="center" style="padding:28px 32px;background-color:#f7f6fc;border-top:1px solid #e8e5f3;">
 <p style="margin:0 0 10px;font-size:16px;font-weight:700;color:#30284e;">${c[2]}</p><p style="margin:0 0 16px;line-height:1.6;">${socials}</p>
 <p style="margin:0 0 10px;font-size:12px;line-height:1.7;color:#706c83;">${preview?c[5]:c[3]}</p>
-<p style="margin:0;font-size:12px;line-height:1.7;"><a href="https://nostr-wot.com" style="color:#5c5481;">nostr-wot.com</a>${preview?'':` &nbsp;·&nbsp; <a href="${escapeHtml(unsubscribeUrl)}" style="color:#5c5481;">${c[4]}</a>`}</p>
+<p style="margin:0;font-size:12px;line-height:1.7;"><a href="https://nostrwot.com" style="color:#5c5481;">nostrwot.com</a>${preview?'':` &nbsp;·&nbsp; <a href="${escapeHtml(unsubscribeUrl)}" style="color:#5c5481;">${c[4]}</a>`}</p>
 </td></tr></table><!--[if mso]></td></tr></table><![endif]-->
 </td></tr></table></body></html>`;
  const text=`${edition.preheader}\n\n${edition.body}\n\n${c[1]}: ${archive}\n\n${c[2]}\n${SOCIAL_LINKS.map(([l,u])=>l+': '+u).join('\n')}\n\n${preview?c[5]:c[3]+'\n'+c[4]+': '+unsubscribeUrl}`;

@@ -1,7 +1,7 @@
 ---
 title: "Представляем Nostr-виджеты"
 description: "Встройте профиль Nostr, кнопку подписки или ленту последних заметок на любой сайт одной строкой HTML. Никакого JavaScript, никаких iframe, никакого трекинга — просто SVG, отрендеренный на сервере, который работает везде."
-excerpt: "Мы запустили Nostr-виджеты: компактный набор встраиваемых, серверно-отрендеренных SVG-компонентов для любого сайта. Один <a><img></a>-фрагмент размещает карточку профиля, кнопку подписки или живую ленту в вашем блоге, README или лендинге — а ссылка ведёт обратно на nostr-wot.com."
+excerpt: "Мы запустили Nostr-виджеты: компактный набор встраиваемых, серверно-отрендеренных SVG-компонентов для любого сайта. Один <a><img></a>-фрагмент размещает карточку профиля, кнопку подписки или живую ленту в вашем блоге, README или лендинге — а ссылка ведёт обратно на nostrwot.com."
 date: "2026-04-27"
 author:
   name: "Leon Acosta"
@@ -36,9 +36,9 @@ translationKey: "introducing-widgets"
 Виджет — это SVG, отрендеренный на сервере. Вы встраиваете его одной строкой HTML:
 
 ```html
-<a href="https://nostr-wot.com/profile/npub1gxdhmu9..." target="_blank" rel="noopener">
+<a href="https://nostrwot.com/profile/npub1gxdhmu9..." target="_blank" rel="noopener">
   <img
-    src="https://nostr-wot.com/widgets/profile/npub1gxdhmu9..."
+    src="https://nostrwot.com/widgets/profile/npub1gxdhmu9..."
     alt="Leon Acosta в Nostr"
     width="320"
     height="220"
@@ -60,7 +60,7 @@ translationKey: "introducing-widgets"
 
 ### 2. Кнопка подписки
 
-Кнопка-таблетка, ведущая прямо на профиль пользователя на `nostr-wot.com`. 220×44. Поставьте рядом с другими социальными кнопками (Twitter, LinkedIn, GitHub).
+Кнопка-таблетка, ведущая прямо на профиль пользователя на `nostrwot.com`. 220×44. Поставьте рядом с другими социальными кнопками (Twitter, LinkedIn, GitHub).
 
 ### 3. Лента заметок
 
@@ -68,7 +68,7 @@ translationKey: "introducing-widgets"
 
 ## Почему это важно для SEO
 
-Когда вы встраиваете виджет, окружающий `<a>` указывает на `nostr-wot.com`. Для краулеров поисковиков это входящая ссылка с вашего домена на наш. По мере того как всё больше сайтов внедряют Nostr-виджеты, граф ссылок, питающий Web of Trust в Nostr, накапливает и авторитет ссылок в открытой сети — а значит, профили Nostr становятся легче находимыми через Google, а не только внутри Nostr-клиентов.
+Когда вы встраиваете виджет, окружающий `<a>` указывает на `nostrwot.com`. Для краулеров поисковиков это входящая ссылка с вашего домена на наш. По мере того как всё больше сайтов внедряют Nostr-виджеты, граф ссылок, питающий Web of Trust в Nostr, накапливает и авторитет ссылок в открытой сети — а значит, профили Nostr становятся легче находимыми через Google, а не только внутри Nostr-клиентов.
 
 Это не случайно. Сама суть виджетов в том, чтобы они были **link-friendly**: настоящие `<a>`-теги, ведущие на настоящие URL, а не iframe, прячущие назначение от краулеров.
 
@@ -84,7 +84,7 @@ translationKey: "introducing-widgets"
 
 ## Как это устроено
 
-Сервис виджетов — это маленький Node-процесс за nginx, на той же VPS, что обслуживает `nostr-wot.com`. Когда краулер или браузер запрашивает `/widgets/profile/<npub>`:
+Сервис виджетов — это маленький Node-процесс за nginx, на той же VPS, что обслуживает `nostrwot.com`. Когда краулер или браузер запрашивает `/widgets/profile/<npub>`:
 
 1. Преобразуем npub в hex-pubkey.
 2. Получаем последнее событие kind 0 (профиль) и kind 3 (список подписок) пользователя из SimplePool релеев Nostr.
@@ -95,18 +95,18 @@ translationKey: "introducing-widgets"
 
 ## Open source
 
-Рендерер (`@nostr-widgets/renderer`) и сервер (`apps/server`) — оба под MIT и живут в репозитории [`nostr-widgets`](https://github.com/Fabricio333/nostr-widgets). Вы можете поднять сервис у себя, если не хотите зависеть от `nostr-wot.com`, или прислать новый тип виджета (zap-бейдж? карточку Lightning Address? ленту заметок по тегу?) через PR.
+Рендерер (`@nostr-widgets/renderer`) и сервер (`apps/server`) — оба под MIT и живут в репозитории [`nostr-widgets`](https://github.com/Fabricio333/nostr-widgets). Вы можете поднять сервис у себя, если не хотите зависеть от `nostrwot.com`, или прислать новый тип виджета (zap-бейдж? карточку Lightning Address? ленту заметок по тегу?) через PR.
 
 ## Начните
 
 Возьмите свой npub, выберите виджет, вставьте сниппет:
 
-- **Карточка профиля** — `https://nostr-wot.com/widgets/profile/<npub>`
-- **Кнопка подписки** — `https://nostr-wot.com/widgets/follow/<npub>`
-- **Лента заметок** — `https://nostr-wot.com/widgets/feed/<npub>?limit=3`
+- **Карточка профиля** — `https://nostrwot.com/widgets/profile/<npub>`
+- **Кнопка подписки** — `https://nostrwot.com/widgets/follow/<npub>`
+- **Лента заметок** — `https://nostrwot.com/widgets/feed/<npub>?limit=3`
 
 Загляните в [галерею виджетов](/widgets) — там живые превью и готовые сниппеты для копирования.
 
 ---
 
-*Есть отзыв? Ответьте в [Nostr](https://nostr-wot.com/profile/npub1gxdhmu9swqduwhr6zptjy4ya693zp3ql28nemy4hd97kuufyrqdqwe5zfk) или откройте issue на [GitHub](https://github.com/Fabricio333/nostr-widgets).*
+*Есть отзыв? Ответьте в [Nostr](https://nostrwot.com/profile/npub1gxdhmu9swqduwhr6zptjy4ya693zp3ql28nemy4hd97kuufyrqdqwe5zfk) или откройте issue на [GitHub](https://github.com/Fabricio333/nostr-widgets).*
