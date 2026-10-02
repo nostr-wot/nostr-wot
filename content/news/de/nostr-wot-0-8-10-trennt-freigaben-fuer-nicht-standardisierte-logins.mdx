@@ -1,0 +1,63 @@
+---
+title: "Nostr WoT 0.8.10 trennt Freigaben für nicht standardisierte Logins"
+description: "Die Erweiterung behält einen engen Kompatibilitätspfad, verlangt aber für jede Anfrage eine Warnung und eine neue Entscheidung."
+seoDescription: "Wie Nostr WoT 0.8.10 ältere Web-Logins mit kind 22242 behandelt, warum NIP-98 mehr Daten bindet und welche Grenzen bleiben."
+excerpt: "Version 0.8.10 lässt einen unterstützten älteren Login zu, ohne daraus eine wiederverwendbare Berechtigung zu machen."
+date: "2026-10-02"
+publishedAt: "2026-10-02"
+backfilled: false
+type: "story"
+tags: ["Nostr", "Nostr WoT", "NIP-98", "Sicherheit"]
+featuredImage: "/images/news/nostr-wot-0-8-10-isolates-nonstandard-login-approvals.svg"
+translationKey: "nostr-wot-0-8-10-isolates-nonstandard-login-approvals"
+sources:
+  - title: "Nostr-WoT-Erweiterung v0.8.10"
+    url: "https://github.com/nostr-wot/nostr-wot-extension/releases/tag/v0.8.10"
+    publisher: "nostr-wot/nostr-wot-extension"
+    date: "2026-10-01"
+  - title: "Änderungen von v0.8.9 bis v0.8.10"
+    url: "https://github.com/nostr-wot/nostr-wot-extension/compare/v0.8.9...v0.8.10"
+    publisher: "nostr-wot/nostr-wot-extension"
+    date: "2026-10-01"
+  - title: "NIP-98: HTTP Auth bei Commit 0046368"
+    url: "https://github.com/nostr-protocol/nips/blob/0046368a747c5c25ae2bec28bae0e537744c8f10/98.md"
+    publisher: "nostr-protocol/nips"
+    date: "2026-09-27"
+published: true
+---
+
+[Nostr WoT extension 0.8.10](https://github.com/nostr-wot/nostr-wot-extension/releases/tag/v0.8.10) lässt Web-Logins für einen ausdrücklich unterstützten Client weiter zu, der ein nicht standardisiertes Authentifizierungsereignis sendet. Der Kompatibilitätspfad ist bewusst eng: Die Erweiterung kennzeichnet die Anfrage als älteren Login, zeigt eine Risikowarnung und verlangt jedes Mal eine neue einmalige Freigabe.
+
+Die Version wurde am 1. Oktober mit Archiven für Chrome und Firefox, passendem Quellcode und Prüfsummen veröffentlicht. Diese Dateien belegen, dass `0.8.10` auf GitHub verfügbar ist. Sie belegen nicht, dass die Browser-Stores dieselbe Version bereits genehmigt oder verteilt haben.
+
+## Das ältere Format wird nicht als NIP-98 behandelt
+
+Die unterstützte Anfrage verwendet kind `22242` mit den Tags `domain` und `challenge`. Sie ist keine NIP-42-Relay-Authentifizierung und folgt nicht [NIP-98](https://github.com/nostr-protocol/nips/blob/0046368a747c5c25ae2bec28bae0e537744c8f10/98.md).
+
+NIP-98 verwendet kind `27235`. Der Pflicht-Tag `u` nennt die absolute URL einschließlich Query-Parametern, `method` die HTTP-Methode. Der Server prüft außerdem einen aktuellen Zeitstempel, und Anfragen mit Body können einen `payload`-Hash enthalten. Diese Felder binden die Signatur an eine genauere HTTP-Aktion als nur an einen Domainnamen.
+
+Version 0.8.10 stellt das ältere Ereignis nicht als standardkonform dar. Der Freigabedialog warnt, dass die Domainbindung schwächer ist, weil die Signatur weder eine exakte Backend-URL noch eine HTTP-Methode nennt. Er fordert außerdem dazu auf, die Website-Entwickler um die Einführung von NIP-98 zu bitten.
+
+## Jede Anfrage bleibt eine eigene Entscheidung
+
+Der [Vergleich mit 0.8.9](https://github.com/nostr-wot/nostr-wot-extension/compare/v0.8.9...v0.8.10) zeigt die Grenze im Code. Eine ältere Anfrage kann keine gespeicherte Authentifizierungsfreigabe übernehmen. Die Berechtigungsabfrage liefert für dieses Protokoll keine wiederverwendbare Entscheidung, daher muss die Warteschlange erneut fragen.
+
+Die Oberfläche bietet nur einmaliges Genehmigen oder Ablehnen. Dauerhafte Website-Freigaben und Freigaben für verbundene Websites fehlen auf diesem Pfad. Zwei Anfragen derselben Origin bleiben zwei Prüfelemente, statt hinter einer gemeinsamen Aktion gebündelt zu werden.
+
+Backend-Automatisierung und gespeicherte Relay-Freigaben können das ältere Format nicht autorisieren. Prüfungen für Frame, verifizierte Origin, aktives Konto und Zeitstempel bleiben erhalten. Unbekannte Clients, falsche Domains, doppelte Tags, leere Challenges und Ereignisse mit URL- oder Methodendaten im falschen Format werden abgelehnt.
+
+Diese Trennung verhindert, dass Kompatibilität versehentlich zu einer dauerhaften Richtlinie wird. Nutzer können einen einzelnen Login abschließen, ohne der Website unbegrenzt weitere ältere Signaturanfragen zu erlauben.
+
+Auch der Wortlaut der Warnung macht den Unterschied sichtbar: Die Signatur nennt eine Domain, bindet aber keine genaue Serveradresse und keine HTTP-Methode. Die Schaltfläche beschreibt deshalb eine einmalige ältere Anmeldung statt einer allgemeinen Berechtigung. Wiederholt die Website die Anfrage, erscheint die Prüfung erneut.
+
+## Die Version ergänzt optionales Feedback nach der Deinstallation
+
+Die zweite sichtbare Änderung registriert `https://nostr-wot.com/uninstall` über die Browser-API. Unterstützte Browser können die Seite nach dem Entfernen öffnen. Die URL enthält keine Konto-ID, Wallet-Daten oder Tracking-Parameter.
+
+Das Öffnen erzeugt weiterhin eine normale Webanfrage, und das Absenden von Feedback ist optional. Erst das abgesendete Formular überträgt den eingegebenen Text und die optionale E-Mail-Adresse. Browser ohne API überspringen die Registrierung, und ein Fehler stoppt den Worker nicht.
+
+## Was die Version nicht belegt
+
+Die Version liefert Pakete, Quellcode und Prüfsummen, und der Diff ergänzt Tests für wiederholte Einzelfreigaben, Origin-Beschränkungen und die Deinstallations-URL. Sie macht kind `22242` nicht zum Standard und verleiht ihm nicht die anfragebezogene Bindung von NIP-98.
+
+Das Ergebnis ist eine eingegrenzte Ausnahme, keine Empfehlung. Nutzer erkennen die Warnung und entscheiden über eine Anfrage. Entwickler benötigen weiterhin NIP-98, wenn ein Login die Signatur an ein genaues HTTP-Ziel und eine Methode binden soll.

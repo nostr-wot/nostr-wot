@@ -1,0 +1,61 @@
+---
+title: "Nostr WoT 0.8.10 isolates nonstandard login approvals"
+description: "The extension keeps a narrow compatibility path for one nonstandard login format, but requires a warning and a fresh decision for every request."
+seoDescription: "See how Nostr WoT 0.8.10 handles legacy kind 22242 website logins, why NIP-98 kind 27235 binds more request details, and what remains unverified."
+excerpt: "Version 0.8.10 lets an explicitly supported legacy login continue without turning it into a reusable permission. Every request stays separate."
+date: "2026-10-02"
+publishedAt: "2026-10-02"
+backfilled: false
+type: "story"
+tags: ["Nostr", "Nostr WoT", "NIP-98", "Security"]
+featuredImage: "/images/news/nostr-wot-0-8-10-isolates-nonstandard-login-approvals.svg"
+translationKey: "nostr-wot-0-8-10-isolates-nonstandard-login-approvals"
+sources:
+  - title: "Nostr WoT extension v0.8.10 release"
+    url: "https://github.com/nostr-wot/nostr-wot-extension/releases/tag/v0.8.10"
+    publisher: "nostr-wot/nostr-wot-extension"
+    date: "2026-10-01"
+  - title: "Changes from v0.8.9 to v0.8.10"
+    url: "https://github.com/nostr-wot/nostr-wot-extension/compare/v0.8.9...v0.8.10"
+    publisher: "nostr-wot/nostr-wot-extension"
+    date: "2026-10-01"
+  - title: "NIP-98: HTTP Auth at commit 0046368"
+    url: "https://github.com/nostr-protocol/nips/blob/0046368a747c5c25ae2bec28bae0e537744c8f10/98.md"
+    publisher: "nostr-protocol/nips"
+    date: "2026-09-27"
+published: true
+---
+
+[Nostr WoT extension 0.8.10](https://github.com/nostr-wot/nostr-wot-extension/releases/tag/v0.8.10) keeps website login working for an explicitly supported client that sends a nonstandard authentication event. The compatibility path is deliberately narrow: the extension labels the request as a legacy login, displays a risk warning and requires a new one-time approval every time.
+
+The release was published on 1 October with downloadable Chrome, Firefox and matching source archives plus checksums. Those GitHub assets establish that version `0.8.10` is available from the project. They do not establish that either browser store has approved or distributed the same version.
+
+## The legacy format is not treated as NIP-98
+
+The supported legacy request uses kind `22242` with `domain` and `challenge` tags for website login. It is not NIP-42 relay authentication, and it does not follow [NIP-98](https://github.com/nostr-protocol/nips/blob/0046368a747c5c25ae2bec28bae0e537744c8f10/98.md).
+
+NIP-98 uses kind `27235`. Its required `u` tag names the absolute request URL, including query parameters, while `method` names the HTTP method. Servers also check a recent timestamp, and requests with a body may include a `payload` hash. Those fields bind the signature to a more specific HTTP action than a domain name alone.
+
+Version 0.8.10 does not relabel the legacy event as standards-compliant. The approval screen warns that its domain-level binding is weaker because the signature does not identify an exact backend URL or HTTP method. It also asks users to contact the site developers about adopting NIP-98.
+
+## Every request remains a separate decision
+
+The [comparison with 0.8.9](https://github.com/nostr-wot/nostr-wot-extension/compare/v0.8.9...v0.8.10) shows the important boundary in code. A legacy request cannot inherit a saved authentication grant. The permission lookup returns no reusable decision for this protocol, so the approval queue must ask again.
+
+The interface offers only two outcomes: approve this request once, or deny it. It removes persistent site approval and connected-site approval from this path. Two requests from the same origin are kept as two review items rather than grouped behind one action.
+
+Backend automation and saved relay grants cannot authorize the legacy format. The change also preserves checks for the browser frame, verified origin, active account and timestamp. Unknown clients, mismatched domains, duplicate tags, blank challenges and events carrying URL or HTTP-method tags in the wrong format are rejected rather than routed through the exception.
+
+This separation matters because compatibility can otherwise become policy by accident. A user may decide to complete one login without granting the same site an open-ended way to request more legacy signatures later.
+
+## The release also adds optional uninstall feedback
+
+The second visible change registers `https://nostr-wot.com/uninstall` with the browser's uninstall URL API. Supported browsers can open that page after removal. The registered URL contains no account identifier, wallet data or tracking parameter.
+
+Opening a page still creates a normal web request to the site, and sending feedback is optional. The release notes say only a submitted form sends the text and optional email address entered by the user. Browsers without the API skip registration, and an API failure does not stop the extension worker.
+
+## What the release does not prove
+
+The release provides packages, source and checksums, and the diff adds tests for repeated one-time review, origin restrictions and the uninstall URL. It does not turn kind `22242` into a Nostr standard, and it does not give that format the request-level binding of NIP-98.
+
+The practical outcome is a contained exception, not an endorsement. Users can recognize the warning and decide on one request. Client developers still need NIP-98 when a website login should bind a signature to an exact HTTP destination and method.
