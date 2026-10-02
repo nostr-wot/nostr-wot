@@ -1,5 +1,7 @@
 'use client';
 
+import { newsPath } from '@/lib/news-path.mjs';
+
 import ReadingTime from '@/components/ui/ReadingTime';
 
 import Image from 'next/image';
@@ -17,6 +19,7 @@ export interface NewsCardMeta {
   excerpt: string;
   /** EVENT date — this is what gets displayed. */
   date: string;
+  publishedAt: string;
   featuredImage: string;
   previewImage: string;
   tags: string[];
@@ -55,7 +58,7 @@ export function NewsCard({ post, featured = false, variant = 'card' }: NewsCardP
 
   if (variant === 'compact' || variant === 'headline') {
     return (
-      <Link href={`/news/${post.slug}`} className="group block rounded-lg focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-primary">
+      <Link href={newsPath(post)} className="group block rounded-lg focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-primary">
         <article className="flex items-start gap-4 py-4">
           <div className="min-w-0 flex-1">
             <p className="mb-2 text-xs font-medium text-primary">{post.tags[0] || typeLabel}</p>
@@ -77,7 +80,7 @@ export function NewsCard({ post, featured = false, variant = 'card' }: NewsCardP
 
   if (variant === 'lead') {
     return (
-      <Link href={`/news/${post.slug}`} className="group block rounded-xl focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-primary">
+      <Link href={newsPath(post)} className="group block rounded-xl focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-primary">
         <article>
           <div className="relative mb-5 aspect-[1200/630] overflow-hidden rounded-xl">
             <Image src={post.featuredImage} alt="" fill priority sizes="(min-width: 1280px) 32vw, (min-width: 768px) 45vw, 100vw" className="object-cover" />
@@ -99,7 +102,7 @@ export function NewsCard({ post, featured = false, variant = 'card' }: NewsCardP
 
   if (featured) {
     return (
-      <Link href={`/news/${post.slug}`} className="group block">
+      <Link href={newsPath(post)} className="group block">
         <article className="relative overflow-hidden rounded-2xl bg-white dark:bg-gray-800/50 border border-gray-200 dark:border-gray-700/50 shadow-sm hover:shadow-lg transition-all duration-300">
           <div className="grid md:grid-cols-2 gap-0">
             <div className="relative aspect-[16/10] md:aspect-auto overflow-hidden">
@@ -147,7 +150,7 @@ export function NewsCard({ post, featured = false, variant = 'card' }: NewsCardP
   }
 
   return (
-    <Link href={`/news/${post.slug}`} className="group block h-full">
+    <Link href={newsPath(post)} className="group block h-full">
       <article className="h-full overflow-hidden rounded-xl bg-white dark:bg-gray-800/50 border border-gray-200 dark:border-gray-700/50 shadow-sm hover:shadow-md transition-all duration-300 flex flex-col">
         <div className="relative aspect-[16/9] overflow-hidden">
           <Image

@@ -125,8 +125,7 @@ Publish in all seven: `en, es, pt, ru, it, fr, de`. `pt` is Brazilian Portuguese
 
 - Slug: a short kebab-case phrase from the headline. **No date prefix.**
   `nip-47-simplifies-core-adds-extensions`, never `2026-08-01-nip-47-...`.
-  The date already lives in the `date` frontmatter field and on the page; it does
-  not belong in the URL.
+  The route adds the first publication date as a separate segment: `/news/YYYY-MM-DD/slug`, with `/{locale}` before `/news` for non-English editions. Keep `publishedAt` stable after publication.
 - Digests need a descriptive slug from their own headline too. A generic
   `week-in-review` collides with every other digest, in every locale.
 - Non-English slugs come from that locale's own translated headline, not from a

@@ -1,5 +1,6 @@
-import { getAllNews } from '@/lib/news';
-import { getFullUrl } from '@/lib/metadata';
+import { newsPath } from '@/lib/news-path.mjs';
+import { getAllNews, getNewsTranslationPaths } from '@/lib/news';
+import { getFullUrl, generateBlogAlternates } from '@/lib/metadata';
 import { escapeXml, isNewsSitemapEligible } from '@/lib/feeds';
 import { locales, type Locale } from '@/i18n/config';
 
@@ -26,9 +27,14 @@ export async function GET() {
     const l = locale as Locale;
     for (const post of getAllNews(l)) {
       if (!isNewsSitemapEligible(post, now)) continue;
-      const url = getFullUrl(`/news/${post.slug}`, l);
+      const url = getFullUrl(newsPath(post), l);
+      const languages = generateBlogAlternates('/news', getNewsTranslationPaths(post), l)!.languages!;
+      const alternates = Object.entries(languages).map(([language, href]) =>
+        `    <xhtml:link rel="alternate" hreflang="${language}" href="${escapeXml(String(href))}" />`
+      ).join('\n');
       entries.push(`  <url>
     <loc>${escapeXml(url)}</loc>
+${alternates}
     <news:news>
       <news:publication>
         <news:name>Nostr WoT News</news:name>
@@ -43,6 +49,7 @@ export async function GET() {
 
   const xml = `<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+        xmlns:xhtml="http://www.w3.org/1999/xhtml"
         xmlns:news="http://www.google.com/schemas/sitemap-news/0.9">
 ${entries.join('\n')}
 </urlset>`;

@@ -1,11 +1,14 @@
 'use client';
 
+import { newsPath } from '@/lib/news-path.mjs';
+
 import { useState, useEffect, useRef } from 'react';
 import { Link, useRouter } from '@/i18n/routing';
 import { useLocale, useTranslations } from 'next-intl';
 
 interface SearchableNewsPost {
   slug: string;
+  publishedAt: string;
   title: string;
   excerpt: string;
   tags: string[];
@@ -15,6 +18,7 @@ interface NewsSidebarProps {
   tags: string[];
   relatedPosts?: {
     slug: string;
+    publishedAt: string;
     title: string;
     date: string;
   }[];
@@ -94,7 +98,7 @@ export function NewsSidebar({
       case 'Enter':
         e.preventDefault();
         if (selectedIndex >= 0 && suggestions[selectedIndex]) {
-          router.push(`/news/${suggestions[selectedIndex].slug}`);
+          router.push(newsPath(suggestions[selectedIndex]));
           setShowSuggestions(false);
           setSearchQuery('');
         } else if (searchQuery.trim()) {
@@ -109,8 +113,8 @@ export function NewsSidebar({
     }
   };
 
-  const handleSuggestionClick = (slug: string) => {
-    router.push(`/news/${slug}`);
+  const handleSuggestionClick = (post: SearchableNewsPost) => {
+    router.push(newsPath(post));
     setShowSuggestions(false);
     setSearchQuery('');
   };
@@ -143,7 +147,7 @@ export function NewsSidebar({
               {suggestions.map((post, index) => (
                 <button
                   key={post.slug}
-                  onClick={() => handleSuggestionClick(post.slug)}
+                  onClick={() => handleSuggestionClick(post)}
                   className={`w-full px-4 py-3 text-left transition-colors ${
                     index === selectedIndex
                       ? 'bg-primary/10 text-primary'
@@ -206,7 +210,7 @@ export function NewsSidebar({
             {relatedPosts.map((post) => (
               <Link
                 key={post.slug}
-                href={`/news/${post.slug}`}
+                href={newsPath(post)}
                 className="block group"
               >
                 <h4 className="text-sm font-medium text-gray-900 dark:text-white group-hover:text-primary transition-colors line-clamp-2">

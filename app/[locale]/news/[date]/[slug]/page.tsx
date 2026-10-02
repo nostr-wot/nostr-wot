@@ -1,9 +1,10 @@
+import { newsPath } from '@/lib/news-path.mjs';
 import { withMetadataPolicy } from '@/lib/metadata-policy';
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import Image from 'next/image';
 import { getTranslations } from 'next-intl/server';
-import { getNewsPost, getNewsSlugs, getRelatedNews, getAllNews, getAllNewsTags } from '@/lib/news';
+import { getNewsPost, getNewsTranslationPaths, getRelatedNews, getAllNews, getAllNewsTags } from '@/lib/news';
 import { formatDate } from '@/lib/blog';
 import { generateBlogAlternates, getFullUrl } from '@/lib/metadata';
 import { type Locale, locales } from '@/i18n/config';
@@ -31,16 +32,15 @@ const ogLocaleMap: Record<Locale, string> = {
 };
 
 type Props = {
-  params: Promise<{ locale: string; slug: string }>;
+  params: Promise<{ locale: string; date: string; slug: string }>;
 };
 
 export async function generateStaticParams() {
-  const params: { locale: string; slug: string }[] = [];
+  const params: { locale: string; date: string; slug: string }[] = [];
 
   for (const locale of locales) {
-    const slugs = getNewsSlugs(locale);
-    for (const slug of slugs) {
-      params.push({ locale, slug });
+    for (const post of getAllNews(locale)) {
+      params.push({ locale, date: new Date(post.publishedAt).toISOString().slice(0, 10), slug: post.slug });
     }
   }
 
@@ -48,14 +48,10 @@ export async function generateStaticParams() {
 }
 
 async function pageMetadata({ params }: Props): Promise<Metadata> {
-  const { locale, slug } = await params;
+  const { locale, date, slug } = await params;
   const post = getNewsPost(slug, locale as Locale);
 
-  if (!post) {
-    return {
-      title: 'Post Not Found',
-    };
-  }
+  if (!post?.published || newsPath(post) !== `/news/${date}/${slug}`) notFound();
 
   const title = post.seoTitle || post.title;
   const description = post.seoDescription || post.excerpt;
@@ -64,11 +60,11 @@ async function pageMetadata({ params }: Props): Promise<Metadata> {
     title,
     description,
     keywords: post.tags,
-    alternates: generateBlogAlternates('/news', post.translations, locale as Locale),
+    alternates: generateBlogAlternates('/news', getNewsTranslationPaths(post), locale as Locale),
     openGraph: {
       title,
       description,
-      url: getFullUrl(`/news/${slug}`, locale as Locale),
+      url: getFullUrl(newsPath(post), locale as Locale),
       siteName: 'Nostr WoT',
       locale: ogLocaleMap[locale as Locale],
       type: 'article',
@@ -87,18 +83,18 @@ async function pageMetadata({ params }: Props): Promise<Metadata> {
 }
 
 export default async function NewsPostPage({ params }: Props) {
-  const { locale, slug } = await params;
+  const { locale, date, slug } = await params;
   const t = await getTranslations('news');
   const post = getNewsPost(slug, locale as Locale);
 
-  if (!post || !post.published) {
+  if (!post?.published || newsPath(post) !== `/news/${date}/${slug}`) {
     notFound();
   }
 
   const relatedNews = getRelatedNews(slug, 3, locale as Locale);
   const allTags = getAllNewsTags(locale as Locale);
   const allPosts = getAllNews(locale as Locale);
-  const url = getFullUrl(`/news/${slug}`, locale as Locale);
+  const url = getFullUrl(newsPath(post), locale as Locale);
 
   const articleLd = newsArticleJsonLd({
     headline: post.title,
@@ -125,7 +121,7 @@ export default async function NewsPostPage({ params }: Props) {
       : [articleLd, crumbsLd];
 
   return (
-    <BlogPostWrapper translations={post.translations}>
+    <BlogPostWrapper translations={getNewsTranslationPaths(post)}>
       <JsonLd data={graphs} />
       <main className="py-4 mb-14">
         <article>
@@ -297,11 +293,13 @@ export default async function NewsPostPage({ params }: Props) {
                     tags={allTags}
                     relatedPosts={relatedNews.map((p) => ({
                       slug: p.slug,
+                      publishedAt: p.publishedAt,
                       title: p.title,
                       date: p.date,
                     }))}
                     allPosts={allPosts.map((p) => ({
                       slug: p.slug,
+                      publishedAt: p.publishedAt,
                       title: p.title,
                       excerpt: p.excerpt,
                       tags: p.tags,

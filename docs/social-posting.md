@@ -89,21 +89,14 @@ differences, both structural:
    no module to parse and no server-only boundary to work around. A copy file
    that names a slug with no matching `content/news/en/<slug>.mdx` is a lint
    error.
-2. **The URL has no date segment.** quantakrypto routes news at
-   `/news/<date>/<slug>`. This site routes it at `/news/<slug>`, per
-   `getFullUrl()` in `lib/metadata.ts` and `app/news-sitemap.xml/route.ts`, and
-   the newsroom playbook says the same thing from the other side: slugs carry
-   no date prefix, because the date already lives in frontmatter and on the
-   page. If that routing rule ever changes, update `entries.mjs` with it.
+2. **News URLs carry the first publication date.** `lib/news-path.mjs` supplies `/news/YYYY-MM-DD/slug` to the website and social scripts. The filename remains the translated slug without a date prefix.
 
-`date` and `type` are still read from the frontmatter, but neither one is part
-of the URL: `date` orders a batch newest-first, and `type` (`story` or
-`digest`) is carried for reporting.
+`date` orders the batch, `publishedAt` supplies the URL date, and `type` (`story` or `digest`) is carried for reporting.
 
 **Copy is English only**, even though every article ships in seven locales. The
 social accounts post in one language, so the derived link is the English one,
 which for the default locale takes no locale prefix
-(`https://nostr-wot.com/news/<slug>`).
+(`https://nostrwot.com/news/<publication-date>/<slug>`).
 
 `lint-social.mjs` **rejects hard-coded `http(s)://` links** in a copy field,
 except the exact verified community credit URL documented below:
