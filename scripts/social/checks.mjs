@@ -59,6 +59,7 @@ export const HASHTAG = /^#[A-Za-z][A-Za-z0-9]*$/;
  */
 function buildKnownPaths(newsIndex) {
   const known = new Set([...newsIndex.values()].map((p) => new URL(p.url).pathname));
+  for (const slug of newsIndex.keys()) known.add(`/news/${slug}`);
   for (const collection of LINKABLE_COLLECTIONS) {
     if (collection === "news") continue; // already indexed above
     const dir = join(ROOT, "content", collection, "en");

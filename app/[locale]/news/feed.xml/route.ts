@@ -1,3 +1,4 @@
+import { newsPath } from '@/lib/news-path.mjs';
 import { getTranslations } from 'next-intl/server';
 import { getAllNews } from '@/lib/news';
 import { getFullUrl } from '@/lib/metadata';
@@ -34,7 +35,7 @@ export async function GET(
 
   const items = posts
     .map((p) => {
-      const url = getFullUrl(`/news/${p.slug}`, l);
+      const url = getFullUrl(newsPath(p), l);
       // HTML body, escaped once by the builder and once more on the way into
       // the XML text node. Both passes are required and neither is redundant.
       const html = feedItemContentHtml({

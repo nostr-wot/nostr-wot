@@ -1,3 +1,4 @@
+import { newsPath } from '@/lib/news-path.mjs';
 import { getTranslations } from 'next-intl/server';
 import { getAllNews } from '@/lib/news';
 import { getFullUrl } from '@/lib/metadata';
@@ -31,8 +32,8 @@ export async function GET(
     description: t('meta.description'),
     language: l,
     items: posts.map((p) => ({
-      id: getFullUrl(`/news/${p.slug}`, l),
-      url: getFullUrl(`/news/${p.slug}`, l),
+      id: getFullUrl(newsPath(p), l),
+      url: getFullUrl(newsPath(p), l),
       title: p.title,
       summary: p.excerpt || p.description,
       // Carries the archive notice and the AI-provenance disclosure, which a

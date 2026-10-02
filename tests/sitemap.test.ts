@@ -17,7 +17,7 @@ const url = (route: string, locale: string) => `${base}${locale === 'en' ? '' : 
 test('every application page is covered or has an explicit dynamic-content policy', () => {
   const root = path.join(process.cwd(), 'app/[locale]');
   const dynamic = new Set([
-    '/blog/[slug]', '/guides/[slug]', '/news/[slug]',
+    '/blog/[slug]', '/guides/[slug]', '/news/[date]', '/news/[date]/[slug]',
     '/news/archive/[year]/[month]', '/newsletters/[id]',
     // Relay-backed viewers have no finite, owned inventory of public IDs.
     '/profile/[pubkey]', '/notes/[id]',
@@ -35,7 +35,7 @@ test('generated sitemap covers every published locale and contains only public c
   for (const locale of locales) {
     for (const route of routes) expected.add(url(route.path, locale));
     for (const [section, getAll] of Object.entries({ blog: getAllBlogPosts, guides: getAllGuides, news: getAllNews })) {
-      for (const post of getAll(locale)) expected.add(url(`/${section}/${post.slug}`, locale));
+      for (const post of getAll(locale)) expected.add(url(section === "news" && "publishedAt" in post ? `/news/${String(post.publishedAt).slice(0, 10)}/${post.slug}` : `/${section}/${post.slug}`, locale));
     }
     for (let page = 2; page <= Math.ceil(getAllNews(locale).length / 12); page++) expected.add(url(`/news?page=${page}`, locale));
     for (const { year, month } of getNewsArchiveMonths(locale)) {
@@ -79,11 +79,11 @@ test('locale-only publications are included and draft translations are excluded'
       encoding: 'utf8',
     }));
     for (const section of ['blog', 'guides', 'news']) {
-      assert.ok(entries.some((entry: { url: string }) => entry.url === url(`/${section}/solo`, 'es')), `${section}: locale-only content missing`);
-      assert.ok(!entries.some((entry: { url: string }) => entry.url === url(`/${section}/brouillon`, 'fr')), `${section}: draft leaked`);
-      const translated = entries.find((entry: { url: string }) => entry.url === url(`/${section}/compartido`, 'es'));
+      assert.ok(entries.some((entry: { url: string }) => entry.url === url(`/${section}/${section === "news" ? "2026-02-01/" : ""}solo`, 'es')), `${section}: locale-only content missing`);
+      assert.ok(!entries.some((entry: { url: string }) => entry.url === url(`/${section}/${section === "news" ? "2026-02-03/" : ""}brouillon`, 'fr')), `${section}: draft leaked`);
+      const translated = entries.find((entry: { url: string }) => entry.url === url(`/${section}/${section === "news" ? "2026-02-02/" : ""}compartido`, 'es'));
       assert.equal(translated.lastModified, '2026-02-02T00:00:00.000Z');
-      assert.deepEqual(translated.alternates.languages, { en: url(`/${section}/shared`, 'en'), es: url(`/${section}/compartido`, 'es') });
+      assert.deepEqual(translated.alternates.languages, { en: url(`/${section}/${section === "news" ? "2026-01-01/" : ""}shared`, 'en'), es: url(`/${section}/${section === "news" ? "2026-02-02/" : ""}compartido`, 'es') });
     }
   } finally {
     fs.rmSync(directory, { recursive: true, force: true });

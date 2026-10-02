@@ -1,4 +1,6 @@
 import path from 'path';
+import { newsPath } from '@/lib/news-path.mjs';
+import { locales } from '@/i18n/config';
 import { createContentCollection } from '@/lib/content/collection';
 import { newsShape, newsSort } from '@/lib/content/shapes';
 import type { ContentMeta, ContentDoc } from '@/lib/content/types';
@@ -53,4 +55,16 @@ export function getNewsArchiveMonths(locale?: Locale): { year: number; month: nu
     else buckets.set(key, { year, month, count: 1 });
   }
   return [...buckets.values()].sort((a, b) => (b.year - a.year) || (b.month - a.month));
+}
+
+/** Published translations carry their own publication date and localized slug. */
+export function getNewsTranslationPaths(post: NewsPostMeta): Partial<Record<Locale, string>> {
+  const paths: Partial<Record<Locale, string>> = {};
+  for (const locale of locales) {
+    const slug = post.translations[locale];
+    if (!slug) continue;
+    const translation = getNewsPost(slug, locale);
+    if (translation?.published) paths[locale] = newsPath(translation).slice('/news/'.length);
+  }
+  return paths;
 }

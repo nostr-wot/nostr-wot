@@ -1,3 +1,4 @@
+import { newsPath } from '@/lib/news-path.mjs';
 import { pageCount } from '@/lib/news-pagination';
 import { MetadataRoute } from "next";
 import { locales, defaultLocale } from "@/i18n/config";
@@ -91,7 +92,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     const translations = new Map<string, Record<string, string>>();
     for (const { locale, post } of published) {
       const alternates = translations.get(post.translationKey) || {};
-      alternates[locale] = getLocalizedUrl(`/${section}/${post.slug}`, locale);
+      alternates[locale] = getLocalizedUrl(section === "news" && "publishedAt" in post ? newsPath({ slug: post.slug, publishedAt: post.publishedAt }) : `/${section}/${post.slug}`, locale);
       translations.set(post.translationKey, alternates);
     }
     for (const { locale, post } of published) {
@@ -99,7 +100,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
         ? post.updated || post.publishedAt
         : post.date;
       sitemapEntries.push({
-        url: getLocalizedUrl(`/${section}/${post.slug}`, locale),
+        url: getLocalizedUrl(section === "news" && "publishedAt" in post ? newsPath({ slug: post.slug, publishedAt: post.publishedAt }) : `/${section}/${post.slug}`, locale),
         lastModified: new Date(modified),
         changeFrequency: "monthly",
         priority,

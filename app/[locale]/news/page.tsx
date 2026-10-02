@@ -1,3 +1,4 @@
+import { newsPath } from '@/lib/news-path.mjs';
 import { FeaturedArtwork } from '@/components/illustrations/FeaturedArtwork';
 import { withMetadataPolicy } from '@/lib/metadata-policy';
 import type { Metadata } from 'next';
@@ -173,7 +174,7 @@ export default async function NewsPage({ params, searchParams }: Props) {
     url: pageUrl,
     items: posts.map((post) => ({
       name: post.title,
-      url: getFullUrl(`/news/${post.slug}`, locale as Locale),
+      url: getFullUrl(newsPath(post), locale as Locale),
     })),
   });
 
