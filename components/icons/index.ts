@@ -45,6 +45,8 @@ export {
   NostrIcon,
   XTwitterIcon,
   LinkedInIcon,
+  MediumIcon,
+  YouTubeIcon,
   KeyIcon,
   BunkerIcon,
   QRCodeIcon,

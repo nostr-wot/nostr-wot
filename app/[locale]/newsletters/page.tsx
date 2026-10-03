@@ -1,4 +1,3 @@
-import { FeaturedArtwork } from '@/components/illustrations/FeaturedArtwork';
 import { withMetadataPolicy } from '@/lib/metadata-policy';
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
@@ -34,7 +33,6 @@ export default async function NewslettersPage({ params }: Props) {
       <h1 className="text-3xl font-bold sm:text-4xl">{copy.title}</h1>
       <p className="mt-4 text-lg text-gray-600 dark:text-gray-300">{copy.description}</p>
     </header>
-    <FeaturedArtwork art="editorial" className="mb-10" />
     <NewsletterList records={records} locale={locale} />
     <NewsletterSection />
   </main>;

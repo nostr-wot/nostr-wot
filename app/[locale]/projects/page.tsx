@@ -1,4 +1,3 @@
-import { FeaturedArtwork } from '@/components/illustrations/FeaturedArtwork';
 import { withMetadataPolicy } from '@/lib/metadata-policy';
 import type { Metadata } from "next";
 import { getTranslations } from "next-intl/server";
@@ -86,7 +85,6 @@ export default async function ProjectsPage({ params }: Props) {
               <p className="text-xl text-gray-600 dark:text-gray-300 max-w-3xl mx-auto">{t("hero.subtitle")}</p>
             </ScrollReveal>
           </div>
-          <div className="mt-10 px-6"><FeaturedArtwork art="community" /></div>
         </section>
 
         <EcosystemDirectory locale={locale} data={data} blogHref={localPath("/blog")} newsHref={localPath("/news")} />

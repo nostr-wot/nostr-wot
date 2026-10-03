@@ -2,7 +2,11 @@
 
 import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/routing";
-import { LogoIcon, GitHubIcon, NostrIcon, XTwitterIcon, LinkedInIcon, FacebookIcon } from "@/components/icons";
+import { LogoIcon, GitHubIcon, LinkedInIcon, MediumIcon, YouTubeIcon } from "@/components/icons";
+
+import { socialLinks } from "@/lib/social-links";
+
+const socialIcons = { GitHub: GitHubIcon, LinkedIn: LinkedInIcon, Medium: MediumIcon, YouTube: YouTubeIcon };
 
 export default function Footer() {
   const u = useTranslations("ui");
@@ -24,51 +28,21 @@ export default function Footer() {
             </p>
             {/* Social Links */}
             <div className="flex items-center gap-4">
-              <a
-                href="https://github.com/nostr-wot"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-gray-500 dark:text-gray-500 hover:text-gray-900 dark:hover:text-white transition-colors"
-                aria-label="GitHub"
-              >
-                <GitHubIcon className="w-5 h-5" />
-              </a>
-              <a
-                href="https://x.com/leonacosta_"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-gray-500 dark:text-gray-500 hover:text-gray-900 dark:hover:text-white transition-colors"
-                aria-label="X (Twitter)"
-              >
-                <XTwitterIcon className="w-5 h-5" />
-              </a>
-              <a
-                href="https://www.linkedin.com/company/nostr-wot"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-gray-500 dark:text-gray-500 hover:text-[#0077B5] transition-colors"
-                aria-label="LinkedIn"
-              >
-                <LinkedInIcon className="w-5 h-5" />
-              </a>
-              <a
-                href="https://nostrwot.com/profile/npub1gxdhmu9swqduwhr6zptjy4ya693zp3ql28nemy4hd97kuufyrqdqwe5zfk"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-gray-500 dark:text-gray-500 hover:text-[#8B5CF6] transition-colors"
-                aria-label="Nostr"
-              >
-                <NostrIcon className="w-5 h-5" />
-              </a>
-              <a
-                href="https://facebook.com/nostr.wot"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-gray-500 dark:text-gray-500 hover:text-[#1877F2] transition-colors"
-                aria-label="Facebook"
-              >
-                <FacebookIcon className="w-5 h-5" />
-              </a>
+              {socialLinks.map(({ name, href }) => {
+                const Icon = socialIcons[name];
+                return (
+                  <a
+                    key={name}
+                    href={href}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-gray-500 dark:text-gray-500 hover:text-gray-900 dark:hover:text-white transition-colors"
+                    aria-label={name}
+                  >
+                    <Icon className="w-5 h-5" />
+                  </a>
+                );
+              })}
             </div>
           </div>
 

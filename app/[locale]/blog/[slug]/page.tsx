@@ -102,7 +102,6 @@ export default async function BlogPostPage({ params }: Props) {
     authorUrl: post.author.npub ? `https://nostrwot.com/profile/${post.author.npub}` : undefined,
     authorSameAs: post.author.socials
       ? ([
-          post.author.socials.twitter && `https://twitter.com/${post.author.socials.twitter}`,
           post.author.socials.github && `https://github.com/${post.author.socials.github}`,
           post.author.socials.linkedin && `https://linkedin.com/in/${post.author.socials.linkedin}`,
           post.author.npub && `https://nostrwot.com/profile/${post.author.npub}`,

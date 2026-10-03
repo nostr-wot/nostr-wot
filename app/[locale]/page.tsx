@@ -1,4 +1,4 @@
-import { FeaturedArtwork } from '@/components/illustrations/FeaturedArtwork';
+import { socialLinks } from "@/lib/social-links";
 import { serializeJsonLd } from '@/lib/serialize-jsonld';
 import { withMetadataPolicy } from '@/lib/metadata-policy';
 import type { Metadata } from "next";
@@ -24,6 +24,9 @@ import {
   ArrowRightIcon,
   NostrLogo,
   ExtensionPopupIllustration,
+  ExtensionIllustration,
+  OracleIllustration,
+  CTAIllustration,
   CodeBracketsIcon,
   LightningIcon,
   KeyIcon,
@@ -82,10 +85,7 @@ export default async function Home({ params }: Props) {
     "url": localUrl("/"),
     "logo": "https://nostrwot.com/icon-512.png",
     "description": t("meta.description"),
-    "sameAs": [
-      "https://github.com/nostr-wot",
-      "https://twitter.com/nostr_wot",
-    ],
+    "sameAs": socialLinks.map(({ href }) => href),
   };
 
   const websiteJsonLd = {
@@ -328,7 +328,7 @@ export default async function Home({ params }: Props) {
               <div className="relative">
                 <div className="absolute inset-0 bg-gradient-to-br from-indigo-500/20 to-purple-500/20 rounded-3xl blur-3xl" />
                 <div className="relative bg-gradient-to-br from-indigo-50 to-purple-50 dark:from-indigo-900/40 dark:to-purple-900/40 rounded-3xl p-8 border border-indigo-200 dark:border-indigo-800">
-                  <FeaturedArtwork art="extension" />
+                  <ExtensionIllustration />
                 </div>
               </div>
             </ScrollReveal>
@@ -390,7 +390,7 @@ export default async function Home({ params }: Props) {
               <div className="relative">
                 <div className="absolute inset-0 bg-gradient-to-br from-purple-500/20 to-indigo-500/20 rounded-3xl blur-3xl" />
                 <div className="relative bg-gradient-to-br from-purple-50 to-indigo-50 dark:from-purple-900/40 dark:to-indigo-900/40 rounded-3xl p-8 border border-purple-200 dark:border-purple-800">
-                  <FeaturedArtwork art="oracle" />
+                  <OracleIllustration />
                 </div>
               </div>
             </ScrollReveal>
@@ -641,7 +641,7 @@ export default async function Home({ params }: Props) {
               <ScrollReveal animation="fade-left" delay={200}>
                 <div className="relative flex items-center justify-center">
                   <div className="absolute inset-0 bg-gradient-to-br from-primary/10 to-nostr/10 rounded-full blur-3xl" />
-                  <FeaturedArtwork art="home" />
+                  <CTAIllustration className="w-64 h-64 md:w-80 md:h-80 text-primary relative" />
                 </div>
               </ScrollReveal>
             </div>

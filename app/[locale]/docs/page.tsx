@@ -1,4 +1,3 @@
-import { FeaturedArtwork } from '@/components/illustrations/FeaturedArtwork';
 import { serializeJsonLd } from '@/lib/serialize-jsonld';
 import { withMetadataPolicy } from '@/lib/metadata-policy';
 import type { Metadata } from "next";
@@ -99,8 +98,6 @@ export default async function DocsOverviewPage() {
           </Link>
         </div>
         </ScrollReveal>
-
-        <FeaturedArtwork art="developers" className="my-10" />
 
         <ScrollReveal animation="fade-up" delay={150}>
         <p>

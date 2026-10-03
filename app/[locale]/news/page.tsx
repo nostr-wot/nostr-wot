@@ -1,5 +1,4 @@
 import { newsPath } from '@/lib/news-path.mjs';
-import { FeaturedArtwork } from '@/components/illustrations/FeaturedArtwork';
 import { withMetadataPolicy } from '@/lib/metadata-policy';
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
@@ -188,12 +187,9 @@ export default async function NewsPage({ params, searchParams }: Props) {
       <JsonLd data={[collectionLd, crumbsLd]} />
       <main>
         <header className="border-b border-gray-200 dark:border-gray-800">
-          <div className="mx-auto flex max-w-screen-2xl flex-col gap-8 px-6 py-10 md:flex-row md:items-center lg:px-8">
-            <div className="flex-1">
+          <div className="mx-auto max-w-screen-2xl px-6 py-10 lg:px-8">
             <h1 className="mb-3 text-3xl font-bold md:text-4xl">{t('title')}</h1>
             <p className="max-w-2xl text-lg text-gray-600 dark:text-gray-400">{t('subtitle')}</p>
-            </div>
-            <div className="w-full md:w-64 lg:w-80"><FeaturedArtwork art="editorial" /></div>
           </div>
         </header>
 

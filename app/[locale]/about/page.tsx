@@ -1,4 +1,3 @@
-import { FeaturedArtwork } from '@/components/illustrations/FeaturedArtwork';
 import { serializeJsonLd } from '@/lib/serialize-jsonld';
 import { withMetadataPolicy } from '@/lib/metadata-policy';
 import type { Metadata } from "next";
@@ -117,7 +116,6 @@ export default async function AboutPage() {
             </p>
           </ScrollReveal>
         </div>
-      <div className="mt-10 px-6"><FeaturedArtwork art="community" /></div>
       </section>
 
       {/* Problem Section */}
