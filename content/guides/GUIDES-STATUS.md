@@ -47,7 +47,7 @@ Preview: https://preview-nostr-wot.fabri.lat/guides
 - `site-permissions` — 5 screenshots added (pending request, request details, permission request, permissions list, permissions detail)
 
 ### Firefox URL fix
-- `app/[locale]/download/page.tsx` — updated Firefox addon URL to `https://addons.mozilla.org/en-US/firefox/addon/nostr-wot/`
+- `app/[locale]/download/page.tsx` — updated Firefox addon URL to `https://addons.mozilla.org/en-US/firefox/addon/nostr-wot-extension/`
 
 ---
 

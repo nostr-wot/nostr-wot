@@ -53,7 +53,7 @@ async function pageMetadata({ params }: Props): Promise<Metadata> {
 }
 
 const CHROME_STORE_URL = "https://chromewebstore.google.com/detail/nostr-wot-extension/gfmefgdkmjpjinecjchlangpamhclhdo";
-const FIREFOX_STORE_URL = "https://addons.mozilla.org/en-US/firefox/addon/nostr-wot/";
+const FIREFOX_STORE_URL = "https://addons.mozilla.org/en-US/firefox/addon/nostr-wot-extension/";
 
 const BROWSERS = [
   { key: "chrome", Icon: ChromeIcon, url: CHROME_STORE_URL },
