@@ -25,153 +25,363 @@
     "account": {
       "title": "Creare un nuovo account",
       "steps": [
-        "Installa e apri l’estensione. Scegli Crea nuovo.",
-        "Conserva tutte le 24 parole di recupero nell’ordine corretto e completa la verifica del backup.",
-        "Imposta password e blocco automatico, completa la configurazione e inizia."
+        "Alla prima configurazione, seleziona Continue, poi Create New. Per ripristinare un account esistente, scegli invece Import Key or Backup.",
+        "Mostra la frase di recupero senza che altri possano vederla. Annota tutte le 24 parole nell’ordine esatto e completa la verifica del backup usando la copia salvata.",
+        "Scegli un intervallo di blocco automatico, poi imposta e conferma la password della cassaforte. Conservala anche fuori dal browser.",
+        "Prosegui con la configurazione. I suggerimenti su chi seguire sono facoltativi: usa Skip for now se preferisci scegliere in seguito.",
+        "Seleziona Get Started e controlla il nome dell’account e la chiave pubblica mostrati nell’estensione."
+      ],
+      "overview": "Crea una nuova identità Nostr se non hai già l’account che vuoi usare. Le parole di recupero ripristinano l’identità; la password della cassaforte sblocca questo browser.",
+      "before": [
+        "Installa l’estensione e aprila dalla barra degli strumenti del browser.",
+        "Prepara un luogo riservato in cui annotare tutte le 24 parole di recupero e un posto sicuro in cui conservarle."
+      ],
+      "checks": [
+        "L’account dovrebbe comparire nel selettore, con una chiave pubblica che puoi copiare.",
+        "Se Create New apre New Sub-Account, la cassaforte contiene già una frase di recupero principale. La nuova identità condividerà quella frase."
       ]
     },
     "subAccounts": {
       "title": "Aggiungere un’identità",
       "steps": [
-        "Prima assicurati di aver salvato la tua frase di recupero principale. Apri il selettore degli account e scegli Aggiungi account → Crea nuovo.",
-        "Assegna un nome al sottoaccount. Mantieni il percorso di derivazione proposto se non ne serve uno specifico. Usa la frase di recupero principale.",
-        "Completa e cambia identità dal selettore. Conserva la frase e il percorso di derivazione di ogni account."
+        "Sblocca l’estensione, apri il selettore degli account e scegli Add Account → Create New.",
+        "Inserisci un nome che ti aiuti a riconoscere l’identità. Il nome locale dell’account non pubblica un nuovo nome del profilo.",
+        "Mantieni il percorso di derivazione suggerito, a meno che ne serva uno specifico. Apri Advanced solo per inserire il percorso esatto che intendi usare.",
+        "Controlla l’anteprima della chiave pubblica, completa la configurazione e seleziona la nuova identità nel selettore degli account.",
+        "Annota il percorso di derivazione esatto e la chiave pubblica insieme ai dati di recupero. La sola frase non indica a un altro programma quale percorso ripristinare."
+      ],
+      "overview": "Crea un’altra identità per uno scopo diverso senza generare una nuova frase di recupero. Ogni identità derivata ha la propria chiave pubblica, ma tutte le identità della stessa frase dipendono da quel backup condiviso.",
+      "before": [
+        "La cassaforte deve contenere già una frase di recupero principale; una sola chiave privata importata non basta.",
+        "Conserva una copia sicura della frase prima di aggiungere altre identità."
+      ],
+      "checks": [
+        "Il selettore dovrebbe mostrare l’identità aggiuntiva e, selezionandola, la sua chiave pubblica.",
+        "Cambiare percorso crea un’identità diversa: non trasferisce post, follower o informazioni del profilo da un altro account."
       ]
     },
     "backup": {
       "title": "Eseguire il backup del tuo account",
       "steps": [
-        "Seleziona l’account e apri Impostazioni → Sicurezza per esportare chiave o backup. Non incollare mai una chiave privata su un sito.",
-        "Conserva il backup al sicuro. Per un’identità derivata, conserva frase di recupero e percorso di derivazione.",
-        "Per ripristinare, scegli Aggiungi account → Importa chiave o backup. Verifica che la chiave pubblica corrisponda all’originale."
+        "Apri i controlli per le chiavi o il backup dell’account. Le opzioni dipendono dall’uso di una frase di recupero, di una chiave privata importata o di un firmatario remoto.",
+        "Salva la chiave privata o il backup di recupero in un luogo sicuro. Non incollare mai chiavi private o parole di recupero in un sito o in un messaggio all’assistenza.",
+        "Per un’identità derivata, conserva sia la frase di recupero principale sia il percorso di derivazione esatto. Includi anche la chiave pubblica attesa nei dati di recupero.",
+        "Se crei un backup cifrato, conserva la relativa password in modo da poterla ritrovare. Cambiare la password della cassaforte del browser non cambia quella di un backup esistente."
+      ],
+      "overview": "Un backup di recupero permette di ripristinare l’account se perdi questo browser o dispositivo. Conserva tutte le informazioni necessarie per ripristinare l’identità esatta, incluso il percorso di derivazione se condivide una frase di recupero.",
+      "before": [
+        "Sblocca l’estensione e seleziona l’account di cui vuoi fare il backup.",
+        "Prepara un archivio privato e annota la chiave pubblica dell’account per riconoscerlo dopo il ripristino."
+      ],
+      "checks": [
+        "Verifica che la copia salvata sia completa e leggibile prima di rimuovere l’account o cancellare i dati del browser.",
+        "Quando ripristini l’account, confronta la chiave pubblica recuperata con quella salvata. Importare una frase non ricrea automaticamente tutti i sottoaccount."
       ]
     },
     "remove": {
       "title": "Rimuovere un account",
       "steps": [
-        "Salva prima un backup recuperabile, incluso il percorso di derivazione per i sottoaccount.",
-        "Apri il selettore e scegli l’icona × dell’account.",
-        "Leggi la conferma, verifica il nome e scegli Rimuovi. Questo elimina l’account locale, non i suoi post su Nostr."
+        "Apri il selettore degli account in alto nella finestra dell’estensione.",
+        "Trova l’account da rimuovere e seleziona la sua icona ×.",
+        "Leggi la conferma e controlla il nome dell’account. Per un account derivato, controlla il percorso e la spiegazione sugli altri account che condividono la frase.",
+        "Scegli Remove per confermare oppure Cancel per mantenere l’account."
+      ],
+      "overview": "Rimuovere un account elimina la sua voce da questa estensione. Il profilo e i post pubblicati restano su Nostr e l’identità può continuare a esistere sugli altri tuoi dispositivi.",
+      "before": [
+        "Prima di rimuovere l’account, salva una copia utilizzabile della chiave privata o un backup di recupero.",
+        "Per un’identità derivata da una frase, annota anche il percorso di derivazione esatto e la chiave pubblica."
+      ],
+      "checks": [
+        "L’account rimosso non dovrebbe più comparire nel selettore di questa estensione.",
+        "Rimuovere un account derivato lascia disponibili le altre identità della stessa frase. Dopo un ripristino delle chiavi potresti dover riconnettere i wallet e configurare i permessi."
       ]
     },
     "approvals": {
       "title": "Esaminare una richiesta",
       "steps": [
-        "Quando un sito chiede di collegarsi o usare l’account, apri la richiesta in attesa nell’estensione.",
-        "Controlla sito, azione e contenuto o destinazione. Il pulsante del codice mostra l’evento originale.",
-        "Scegli Approva o Nega. Usa il menu con la freccia solo per ricordare la decisione; controlla poi l’attività recente."
+        "Apri la richiesta in attesa dell’estensione quando un sito chiede di connettersi, firmare, decifrare o autenticarsi.",
+        "Controlla il sito richiedente e l’azione. Leggi il contenuto o la destinazione mostrati; il pulsante del codice apre i dati grezzi dell’evento per un esame più approfondito.",
+        "Scegli Approve o Deny per la richiesta corrente. Apri il menu a freccia solo se vuoi memorizzare la decisione.",
+        "Per le richieste raggruppate, controlla quali sono selezionate prima di approvare il gruppo. Mostrare il contenuto sfocato di un messaggio non autorizza di per sé l’invio al sito."
+      ],
+      "overview": "Una richiesta di approvazione mostra cosa vuole fare un sito con l’account attivo. Una decisione singola riguarda quella richiesta; una decisione salvata può riguardare anche richieste future.",
+      "before": [
+        "Assicurati che l’account attivo sia l’identità che vuoi far usare al sito.",
+        "Controlla quale sito stai usando e quale azione hai appena avviato."
+      ],
+      "checks": [
+        "Torna al sito e controlla se l’azione è stata completata; consulta Recent activity se devi identificare la richiesta.",
+        "Puoi rifiutare richieste inattese. Controlla i permessi salvati del sito o di autenticazione se richieste simili vengono consentite senza la verifica che ti aspetti."
       ]
     },
     "permissions": {
       "title": "Modificare regole globali e del sito",
       "steps": [
-        "Apri Permessi → Regole globali per impostare i valori predefiniti dei siti collegati.",
-        "Per un sito specifico, visitalo, apri l’estensione e scegli Permessi → Regole del sito.",
-        "Le regole ereditate sono grigie. Le regole del sito sostituiscono le regole globali corrispondenti, ma una regola di rifiuto più ampia può ancora bloccare una richiesta. Modifica una regola o conferma il ripristino per tornare ai valori globali."
+        "Apri Permissions → Global rules per esaminare le impostazioni predefinite dei siti connessi.",
+        "Per modificare il sito corrente, apri Permissions → Site rules. Le righe grigie sono valori ereditati; quelle colorate sono eccezioni del sito.",
+        "Usa Add rule o modifica una regola esistente per scegliere Allow, Deny o Ask per l’azione desiderata. Una regola Deny più ampia può ancora bloccare una richiesta consentita da una regola più specifica.",
+        "Usa Use inherited default per rimuovere una singola eccezione. Per rimuoverle tutte per questo account e sito, scegli Reset site overrides e leggi la conferma."
+      ],
+      "overview": "Le regole globali forniscono impostazioni predefinite condivise, mentre quelle del sito personalizzano le azioni ordinarie dell’account attivo su un singolo sito. Il consenso alla connessione e gli accessi a backend o relay hanno controlli separati.",
+      "before": [
+        "Seleziona l’account di cui vuoi modificare i permessi del sito.",
+        "Apri il sito interessato nella scheda corrente del browser prima di modificarne le regole."
+      ],
+      "checks": [
+        "Riapri l’editor del sito e verifica che mostri l’eccezione o la regola ereditata desiderata.",
+        "Il ripristino delle eccezioni può far tornare valido un Allow globale. Non rimuove i rifiuti di connessione separati né le decisioni di autenticazione a backend e relay."
       ]
     },
     "authentication": {
       "title": "Esaminare le autorizzazioni di accesso salvate",
       "steps": [
-        "Apri Permessi dell’account attivo, poi Autenticazione backend o Autenticazione relay.",
-        "Controlla le decisioni salvate o scegli quali siti possono autenticarsi su un relay. Revoca gli accessi non necessari.",
-        "L’autenticazione backend predefinita è facoltativa e inizialmente disattivata. Copre la stessa origine e le coppie del registro approvato; leggi le regole prima di attivarla."
+        "Apri Permissions, poi Backend authentication per esaminare le decisioni esplicite salvate per il backend dell’account attivo.",
+        "Revoca una decisione per il backend che non vuoi più mantenere. Il suo ambito include il sito richiedente, l’URL esatto e il metodo.",
+        "Apri Relay authentication per esaminare le app connesse consentite per un relay. Seleziona quelle desiderate o controlla bene l’ambito prima di scegliere tutti i siti connessi.",
+        "Esamina separatamente Default backend auth. È inizialmente disattivata e può autorizzare automaticamente la stessa origine o coppie sito/backend verificate; leggi il collegamento alla politica prima di attivarla."
+      ],
+      "overview": "Un sito può chiedere di identificarti presso il suo backend o un relay Nostr. Questi permessi di accesso sono separati dal permesso di firmare normali post o messaggi.",
+      "before": [
+        "Seleziona l’account di cui vuoi esaminare le decisioni di accesso salvate.",
+        "Identifica il sito e la destinazione backend o relay della richiesta."
+      ],
+      "checks": [
+        "Un elenco backend vuoto non dimostra che l’autenticazione automatica sia disattivata. Controlla anche Default backend auth.",
+        "La revoca riguarda le approvazioni future: non ti disconnette da una sessione esistente del sito e non chiude una connessione relay già autenticata."
       ]
     },
     "wallet": {
       "title": "Collegare un wallet Lightning",
       "steps": [
-        "Apri Wallet e scegli Configurazione rapida, NWC o LNbits. La configurazione rapida usa un fornitore che custodisce i fondi.",
-        "Per NWC, incolla l’URI di connessione. Per LNbits, inserisci URL e chiave Admin API del wallet. Mantieni private queste credenziali.",
-        "Collega e verifica il saldo. Usa Deposita per creare una fattura quando vuoi aggiungere sats."
+        "Apri Wallet e scegli Quick Setup, NWC o LNbits. Quick Setup crea un wallet custodial presso un fornitore che detiene i fondi.",
+        "Per NWC, crea una connessione dedicata nel tuo wallet e copia il segreto nostr+walletconnect:// completo. Consenti le informazioni sul wallet e le operazioni necessarie.",
+        "Per LNbits, inserisci l’URL HTTPS dell’istanza e la chiave Admin API del wallet. È una credenziale che permette di spendere dal wallet, non la password di accesso dell’amministratore.",
+        "Connetti il wallet e controlla saldo e attività. Usa Deposit per creare una fattura quando vuoi aggiungere sats."
+      ],
+      "overview": "L’estensione si collega a un wallet Lightning per controllare i fondi, ricevere sats e approvare pagamenti. Scegli il metodo di connessione supportato dal tuo wallet.",
+      "before": [
+        "Sblocca l’estensione e seleziona l’account che deve usare il wallet.",
+        "Per un wallet esistente, prepara il segreto di connessione NWC oppure l’URL HTTPS di LNbits e la chiave Admin API del wallet."
+      ],
+      "checks": [
+        "Il wallet connesso dovrebbe mostrare il saldo disponibile e le funzioni consentite dalla connessione.",
+        "Se saldo, creazione delle fatture o cronologia non sono disponibili, controlla permessi e scadenza della connessione nel wallet. L’accesso NWC o LNbits da solo non determina chi custodisce i fondi."
       ]
     },
     "zaps": {
       "title": "Inviare uno zap",
       "steps": [
-        "Collega un wallet con saldo e scegli il pulsante zap o Lightning in un’app Nostr compatibile.",
-        "Scegli l’importo. Verifica destinatario, sats, commissioni mostrate e richieste di firma o pagamento prima di approvare.",
-        "Controlla l’attività del wallet. Se abiliti pagamenti automatici, imposta un limite di spesa adatto."
+        "Scegli il pulsante zap o Lightning sul profilo o sul post che vuoi sostenere.",
+        "Inserisci l’importo in sats e controlla il destinatario mostrato dall’app.",
+        "Esamina le richieste di firma e pagamento nell’estensione. Prima di approvare, controlla importo, destinatario e commissioni, se mostrate.",
+        "Torna a Wallet e controlla l’attività per verificare l’esito del pagamento."
+      ],
+      "overview": "Uno zap invia sats a una persona tramite un’app Nostr compatibile. L’app richiede un pagamento Lightning al wallet connesso all’estensione.",
+      "before": [
+        "Connetti un wallet Lightning con saldo sufficiente per il pagamento e le eventuali commissioni.",
+        "Usa un’app Nostr che supporti i pagamenti tramite l’estensione e controlla il destinatario prima di iniziare."
+      ],
+      "checks": [
+        "Un pagamento completato dovrebbe comparire nell’attività del wallet. Il risultato dello zap mostrato dall’app può dipendere dai suoi aggiornamenti.",
+        "Se l’esito è incerto, controlla la cronologia del wallet prima di riprovare. I piccoli pagamenti possono non richiedere conferma quando l’approvazione automatica è attiva e i suoi controlli sono superati."
       ]
     },
     "appearance": {
       "title": "Cambiare l’aspetto",
       "steps": [
-        "Apri Impostazioni → Aspetto e lingua.",
-        "Scegli modalità chiara, scura o di sistema e un tema disponibile.",
-        "Torna alla dashboard per verificare. Puoi cambiare ancora dalle stesse impostazioni."
+        "Apri Settings → Appearance and language.",
+        "Scegli l’aspetto chiaro, scuro o di sistema e uno dei temi disponibili.",
+        "Torna alla dashboard e controlla testi, schede e pulsanti con l’aspetto selezionato."
+      ],
+      "overview": "Modifica l’aspetto dell’estensione usando i controlli di visualizzazione e dei temi. Queste impostazioni riguardano l’interfaccia dell’estensione, non il design dei siti che visiti.",
+      "before": [
+        "Apri l’estensione dalla barra degli strumenti del browser e sbloccala se necessario.",
+        "Decidi se vuoi un aspetto chiaro o scuro fisso, oppure uno che segua il sistema."
+      ],
+      "checks": [
+        "L’estensione dovrebbe usare l’aspetto scelto quando torni alle sue schermate.",
+        "Se il risultato è poco leggibile o diverso da quello desiderato, torna agli stessi controlli e scegli un altro tema o aspetto."
       ]
     },
     "language": {
       "title": "Cambiare la lingua",
       "steps": [
-        "Apri Impostazioni → Aspetto e lingua → Lingua.",
-        "Scegli la lingua e conferma. Chiudere senza confermare mantiene quella precedente.",
-        "L’interfaccia cambia e salva la scelta. Usa l’ingranaggio per ritrovare le impostazioni se necessario."
+        "Apri Settings → Appearance and language → Language.",
+        "Scorri o trascina la ruota finché la tua lingua è al centro. Quando l’elenco ha il focus, puoi usare anche i tasti freccia su e giù.",
+        "Seleziona Confirm per applicare la scelta. Il pulsante resta nella lingua attuale dell’interfaccia fino alla conferma.",
+        "Torna all’interfaccia e controlla le nuove etichette. Chiudere il selettore senza confermare mantiene la lingua precedente."
+      ],
+      "overview": "Scegli la lingua dei controlli e dei messaggi dell’estensione. Questo non traduce i post Nostr e non modifica l’impostazione separata della lingua del sito.",
+      "before": [
+        "Apri l’estensione e sbloccala se necessario.",
+        "Trova Settings tramite l’icona dell’ingranaggio, utile anche quando non conosci la lingua attuale."
+      ],
+      "checks": [
+        "Riaprendo la riga della lingua, dovresti vedere la scelta salvata.",
+        "Alcune etichette possono restare in inglese. Per tornare indietro, usa l’ingranaggio e riapri lo stesso selettore della lingua."
       ]
     },
     "security": {
       "title": "Impostare password e blocco automatico",
       "steps": [
-        "Apri Impostazioni → Sicurezza.",
-        "Proteggi la cassaforte locale con il controllo della password e scegli un intervallo di blocco automatico.",
-        "Blocca la cassaforte quando hai finito. Conserva il backup separatamente: la password non lo sostituisce."
+        "Sblocca l’estensione e apri Settings → Security.",
+        "Scegli un intervallo di blocco automatico. Se stai attivando il blocco temporizzato, imposta e conferma la password quando richiesto.",
+        "Per sostituire una password esistente, usa Change password e compila i campi richiesti.",
+        "Al termine blocca la cassaforte, poi sbloccala con la password salvata."
+      ],
+      "overview": "La password della cassaforte protegge l’accesso alle chiavi salvate in questo browser. Il blocco automatico temporizzato richiede di sbloccarla dopo un periodo di inattività; non sostituisce un backup di recupero.",
+      "before": [
+        "Conserva un backup recuperabile dell’account prima di modificare la protezione della cassaforte.",
+        "Prepara un luogo sicuro in cui conservare la password necessaria a sbloccare questo browser."
+      ],
+      "checks": [
+        "L’intervallo scelto dovrebbe restare visibile quando riapri Security.",
+        "La password della cassaforte non è una frase di recupero né la password di un backup cifrato. Mantieni questi dati di recupero accessibili indipendentemente dal browser."
       ]
     },
     "import": {
       "title": "Importare un account esistente",
       "steps": [
-        "Scegli Aggiungi account → Importa chiave o backup. Incolla la chiave privata o la frase di recupero, oppure carica un file di backup; il formato viene rilevato automaticamente.",
-        "Inserisci il backup privatamente nell’estensione. Verifica la chiave pubblica ripristinata prima di usare l’account."
+        "Scegli Import Key or Backup durante la configurazione, oppure Add Account → Import Key or Backup dal selettore degli account.",
+        "Incolla in privato nsec, chiave privata esadecimale o frase di recupero nell’estensione, oppure carica il file di backup supportato.",
+        "Per un backup cifrato o ncryptsec, inserisci la password del backup. Conserva intatto l’originale se formato o password vengono rifiutati.",
+        "Prosegui quando il formato viene riconosciuto. Imposta una password locale quando richiesto oppure sblocca la cassaforte esistente con la sua password attuale.",
+        "Completa la configurazione e confronta la chiave pubblica mostrata con l’identità che volevi ripristinare."
+      ],
+      "overview": "Ripristina un’identità esistente con la sua chiave privata, frase di recupero o un backup cifrato supportato. L’estensione rileva il formato; un npub è soltanto una chiave pubblica e va usato in Watch-Only.",
+      "before": [
+        "Prepara il backup esistente e, se cifrato, la password usata per cifrarlo.",
+        "Tieni disponibili la chiave pubblica attesa e l’eventuale percorso di derivazione personalizzato per verificare l’identità ripristinata."
+      ],
+      "checks": [
+        "La chiave pubblica ripristinata dovrebbe corrispondere all’account salvato. Una chiave diversa può indicare che serve il percorso di derivazione originale.",
+        "L’importazione di una frase inizia dalla sua prima chiave Nostr: non ripristina automaticamente ogni identità derivata o percorso personalizzato."
       ]
     },
     "switch": {
       "title": "Cambiare account",
       "steps": [
-        "Apri il selettore degli account e scegli l’identità da usare.",
-        "Controlla l’account attivo prima di approvare una richiesta. Se un sito mostra ancora l’identità precedente, esci dal sito e accedi nuovamente."
+        "Sblocca l’estensione e apri il selettore degli account in alto nella finestra.",
+        "Seleziona l’identità desiderata e controlla il nome e la chiave pubblica mostrati.",
+        "Torna al sito. Se mostra ancora l’identità precedente, esci dal sito e riconnettiti tramite l’estensione."
+      ],
+      "overview": "Cambia l’identità attiva prima di usare un altro account Nostr. I siti possono mantenere una propria sessione, quindi dopo la selezione nell’estensione potresti doverti riconnettere anche sul sito.",
+      "before": [
+        "Aggiungi o importa tutte le identità tra cui vuoi passare.",
+        "Controlla il nome dell’account o la chiave pubblica che intendi usare."
+      ],
+      "checks": [
+        "Controlla nuovamente l’account attivo prima di approvare una nuova richiesta.",
+        "Se il sito continua a mostrare un altro profilo, verifica l’account della sua sessione senza presumere che la selezione nell’estensione l’abbia cambiato."
       ]
     },
     "receive": {
       "title": "Ricevere sats",
       "steps": [
-        "Apri Wallet → Deposita e inserisci l’importo per creare una fattura Lightning.",
-        "Condividi la fattura con chi deve pagare. Controlla attività e saldo per confermare il pagamento."
+        "Apri Wallet → Deposit.",
+        "Inserisci l’importo in sats e crea la fattura Lightning.",
+        "Condividi la fattura con chi deve pagare. Mantieni privati il segreto NWC e la chiave API.",
+        "Dopo l’invio del pagamento, controlla attività e saldo del wallet."
+      ],
+      "overview": "Crea una fattura Lightning per ricevere un importo scelto nel wallet connesso. Puoi condividerla con chi paga senza rivelare le credenziali di connessione del wallet.",
+      "before": [
+        "Connetti un wallet e seleziona l’account che lo usa.",
+        "Per NWC, assicurati che la connessione permetta la creazione di fatture e l’accesso alle informazioni necessarie per verificare il pagamento."
+      ],
+      "checks": [
+        "Cerca una fattura pagata o un pagamento in entrata nel wallet: creare una fattura non significa che sia stata pagata.",
+        "Se la creazione fallisce, controlla connessione e permessi del wallet prima di riprovare."
       ]
     },
     "limits": {
       "title": "Cambiare l’approvazione automatica dei pagamenti",
       "steps": [
-        "Apri Wallet → Impostazioni e controlla la soglia di approvazione automatica.",
-        "Scegli una soglia per ogni singolo pagamento; non è un budget di spesa totale. Usa zero per confermare ogni pagamento. Controlla regolarmente l’attività del wallet."
+        "Apri Wallet → Settings e trova Auto-Approve Threshold.",
+        "Inserisci un numero intero di sats. Usa zero se vuoi confermare ogni pagamento.",
+        "Salva la modifica, poi riapri le impostazioni per controllare il valore memorizzato.",
+        "Esamina regolarmente l’attività del wallet e riduci la soglia o revoca il permesso di pagamento del sito se noti richieste inattese."
+      ],
+      "overview": "L’approvazione automatica può consentire piccoli pagamenti idonei senza una finestra di conferma. La soglia determina l’idoneità; altri controlli di sicurezza e permessi possono comunque richiedere conferma.",
+      "before": [
+        "Connetti il wallet che vuoi configurare e controlla l’account attivo.",
+        "Scegli un importo in sats che sei disposto a consentire senza esaminare ogni richiesta."
+      ],
+      "checks": [
+        "I pagamenti oltre la soglia dovrebbero richiedere conferma; anche quelli inferiori possono richiedere una verifica.",
+        "Questa impostazione non concede da sola a un sito il permesso di usare il wallet. Controlla separatamente l’accesso del sito e i permessi della connessione presso il fornitore del wallet."
       ]
     },
     "loginFailed": {
       "title": "Non riesco ad accedere",
       "steps": [
-        "Sblocca l’estensione, controlla l’account attivo e le richieste in attesa. Leggi eventuali errori prima di riprovare.",
-        "Controlla le regole del sito e i permessi backend o relay dell’account. Se il formato non è supportato, condividi l’errore con gli sviluppatori del sito, mai le tue chiavi."
+        "Apri e sblocca l’estensione, poi controlla l’account attivo.",
+        "Cerca una richiesta in attesa. Leggi il sito richiedente e la destinazione e approva solo se corrispondono all’accesso che hai avviato.",
+        "Controlla in Permissions → Site rules se il sito è stato respinto o c’è un rifiuto pertinente. Esamina Backend authentication o Relay authentication se la richiesta riguarda quelle destinazioni.",
+        "Torna al sito e riprova dopo aver risolto il problema specifico. Se mostra un vecchio account, esci prima di riconnetterti."
+      ],
+      "overview": "L’accesso può interrompersi perché la cassaforte è bloccata, è selezionato l’account sbagliato o una richiesta di connessione o autenticazione è bloccata. Parti dalla richiesta in attesa e dal messaggio di errore esatto.",
+      "before": [
+        "Apri il sito interessato nella scheda corrente e annota eventuali errori.",
+        "Identifica l’account con cui vuoi accedere."
+      ],
+      "checks": [
+        "Dopo un accesso riuscito, il sito dovrebbe mostrare l’account desiderato.",
+        "Se l’errore persiste o indica un formato di richiesta non supportato, conserva il testo esatto e l’URL del sito per l’assistenza. Non includere mai chiavi private o parole di recupero."
       ]
     },
     "denied": {
       "title": "Una richiesta viene negata",
       "steps": [
-        "Visita il sito e apri Permessi → Regole del sito. Controlla le regole specifiche e i divieti globali ereditati.",
-        "Modifica solo la regola desiderata. L’autenticazione ha permessi separati; reimpostare le regole del sito non elimina quelle decisioni."
+        "Apri Permissions → Site rules per il sito corrente.",
+        "Se il sito è stato respinto, esamina o rimuovi quel rifiuto affinché possa chiedere nuovamente di connettersi.",
+        "Per un’azione ordinaria, controlla sia le eccezioni del sito sia le regole globali ereditate. Modifica il rifiuto pertinente; potrebbe servire modificare anche un Deny più ampio.",
+        "Per accessi a backend o relay, esamina le rispettive schermate di autenticazione. Riprova l’azione sul sito dopo la modifica desiderata."
+      ],
+      "overview": "Un rifiuto memorizzato può bloccare una richiesta senza un nuovo avviso. Il controllo da modificare dipende dal fatto che sia stato respinto il sito, negata un’azione ordinaria o bloccata una destinazione di accesso.",
+      "before": [
+        "Seleziona l’account interessato e visita il sito che invia la richiesta.",
+        "Annota l’azione o l’errore per modificare il permesso pertinente."
+      ],
+      "checks": [
+        "Rimuovere il rifiuto consente al sito di chiedere di nuovo: non lo connette automaticamente e non autorizza la firma.",
+        "Ripristinare le eccezioni del sito mantiene le impostazioni globali e le decisioni di autenticazione separate. Controllale se la richiesta viene ancora negata."
       ]
     },
     "walletFailed": {
       "title": "Il mio wallet non si connette",
       "steps": [
-        "Controlla che il wallet sia online e il metodo corretto: URI NWC oppure URL e chiave Admin API di LNbits.",
-        "Per NWC, controlla permessi e scadenza della connessione nel wallet. Non condividere mai il segreto di connessione o la chiave API chiedendo aiuto."
+        "Nell’estensione, controlla di aver scelto NWC o LNbits in base alle credenziali disponibili.",
+        "Per NWC, incolla il segreto nostr+walletconnect:// completo. Controlla la scadenza e consenti le informazioni del wallet necessarie alla verifica della connessione.",
+        "Per LNbits, usa l’URL HTTPS dell’istanza e la chiave Admin API di questo wallet. Una chiave di lettura/fatturazione o una password amministratore non la sostituiscono.",
+        "Riprova la connessione e controlla quali funzioni operano. Se falliscono solo alcune operazioni, verifica i permessi per saldo, fatture, pagamenti e cronologia presso il fornitore."
+      ],
+      "overview": "I problemi di connessione spesso dipendono da credenziali non adatte, una connessione NWC scaduta o un wallet non disponibile. Controlla il metodo di connessione prima di sostituire le credenziali.",
+      "before": [
+        "Apri l’interfaccia del fornitore del wallet e verifica che il wallet sia disponibile.",
+        "Lascia visibile l’errore di connessione o copiane il testo senza valori segreti."
+      ],
+      "checks": [
+        "Una connessione riuscita dovrebbe mostrare il wallet e le informazioni consentite dai suoi permessi.",
+        "Se il problema continua, comunica all’assistenza il metodo di connessione e il testo dell’errore. Rimuovi segreti NWC e chiavi API da messaggi e schermate."
       ]
     },
     "zapFailed": {
       "title": "Uno zap è fallito",
       "steps": [
-        "Controlla la cronologia prima di riprovare per non pagare due volte. Verifica che il saldo copra anche le commissioni.",
-        "Sblocca l’estensione e controlla connessione del wallet e permessi del sito. Se WebLN non viene rilevato, ricarica la pagina. Conserva l’errore se il problema persiste."
+        "Prima di riprovare, controlla l’attività del wallet e la cronologia del fornitore. Se il pagamento è completato, non inviarlo di nuovo solo perché l’app non si è aggiornata.",
+        "Se nessun pagamento è stato completato, controlla che il saldo copra importo e commissioni.",
+        "Sblocca l’estensione e controlla connessione del wallet, richieste in attesa e permesso di pagamento del sito.",
+        "Se l’app non trova un fornitore WebLN, aggiorna la pagina dopo aver sbloccato e connesso il wallet.",
+        "Riprova solo dopo aver accertato l’esito del tentativo precedente. Conserva il testo dell’errore se la richiesta continua a fallire."
+      ],
+      "overview": "La mancanza di un messaggio di successo non significa sempre che il pagamento non sia avvenuto. Controlla l’esito effettivo nel wallet prima di inviare di nuovo lo stesso zap.",
+      "before": [
+        "Tieni disponibili l’importo richiesto e il messaggio di errore dell’app.",
+        "Apri il wallet usato per il tentativo di pagamento."
+      ],
+      "checks": [
+        "Una registrazione completata nel wallet conferma il pagamento; la visualizzazione dello zap nell’app può aggiornarsi separatamente.",
+        "Se l’esito resta sconosciuto, continua a controllare il wallet o contatta il fornitore prima di pagare ancora. Non condividere mai segreti di connessione quando chiedi aiuto."
       ]
     }
   },
@@ -193,5 +403,10 @@
     "payments": "Collega un wallet, ricevi sats e invia zap.",
     "settings": "Scegli la lingua e proteggi la tua estensione.",
     "troubleshooting": "Risolvi i problemi di accesso, richieste e pagamenti."
-  }
+  },
+  "beforeTitle": "Prima di iniziare",
+  "checksTitle": "Verifica il risultato",
+  "screenshotsTitle": "Sullo schermo",
+  "onThisPage": "In questa pagina",
+  "breadcrumb": "Percorso di navigazione"
 }

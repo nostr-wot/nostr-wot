@@ -5,6 +5,7 @@ Usage: python3 scripts/audit-seo.py --origin http://localhost:3100 --output audi
 import argparse
 import concurrent.futures
 import json
+import re
 import struct
 import urllib.parse
 import urllib.request
@@ -16,8 +17,11 @@ class Page(HTMLParser):
         super().__init__(convert_charrefs=True)
         self.meta, self.links, self.graphs, self.titles = {}, [], [], []
         self.title, self.script, self.svg = None, None, 0
+        self.in_main, self.heading, self.headings = False, None, []
     def handle_starttag(self, tag, attrs):
         attrs = dict(attrs)
+        if tag == 'main': self.in_main = True
+        if self.in_main and re.fullmatch(r'h[1-6]', tag): self.heading = [int(tag[1]), '']
         if tag == 'svg': self.svg += 1
         if tag == 'title' and not self.svg: self.title = ''
         if tag == 'script' and attrs.get('type') == 'application/ld+json': self.script = ''
@@ -25,9 +29,13 @@ class Page(HTMLParser):
             self.meta.setdefault(attrs.get('property', attrs.get('name')), []).append(attrs.get('content', ''))
         if tag == 'link': self.links.append(attrs)
     def handle_data(self, data):
+        if self.heading is not None: self.heading[1] += data
         if self.title is not None: self.title += data
         if self.script is not None: self.script += data
     def handle_endtag(self, tag):
+        if self.heading is not None and tag == f'h{self.heading[0]}':
+            self.headings.append(self.heading); self.heading = None
+        if tag == 'main': self.in_main = False
         if tag == 'svg': self.svg -= 1
         if tag == 'title' and self.title is not None:
             self.titles.append(self.title); self.title = None
@@ -99,6 +107,33 @@ def audit(url):
                         else: images.add(value)
                     if isinstance(value, (dict, list)): graph_check(value)
         for graph in page.graphs: graph_check(graph)
+        help_path = re.sub(r'^/(es|pt|fr|de|it|ru)(?=/)', '', urllib.parse.urlsplit(url).path)
+        if help_path == '/help' or help_path.startswith('/help/'):
+            h1 = [text.strip() for level, text in page.headings if level == 1]
+            if len(h1) != 1 or not h1[0]: issues.append('Help requires exactly one nonempty H1')
+            previous = 0
+            for level, text in page.headings:
+                if level > previous + 1: issues.append(f'Help heading skips from H{previous} to H{level}')
+                if not text.strip(): issues.append('Empty help heading')
+                previous = level
+            expected = 'CollectionPage' if help_path == '/help' else 'TechArticle'
+            matching = [g for g in page.graphs if isinstance(g, dict) and g.get('@type') == expected]
+            crumbs = [g for g in page.graphs if isinstance(g, dict) and g.get('@type') == 'BreadcrumbList']
+            if len(matching) != 1: issues.append('Help requires one ' + expected)
+            if len(crumbs) != 1: issues.append('Help requires one breadcrumb graph')
+            if matching:
+                graph = matching[0]
+                for key in ['url', 'inLanguage', 'description']:
+                    if not graph.get(key): issues.append('Help schema missing ' + key)
+                if graph.get('url') != url: issues.append('Help schema canonical mismatch')
+                if expected == 'TechArticle':
+                    for key in ['headline', 'articleBody', 'publisher', 'mainEntityOfPage']:
+                        if not graph.get(key): issues.append('Help article missing ' + key)
+                    if h1 and graph.get('headline') != h1[0]: issues.append('Help headline differs from H1')
+                else:
+                    items = graph.get('mainEntity', {}).get('itemListElement', [])
+                    if len(items) != 20 or len({item.get('url') for item in items}) != 20: issues.append('Help index must list all 20 unique tasks')
+            if crumbs and crumbs[0].get('itemListElement', [{}])[-1].get('item') != url: issues.append('Help breadcrumb canonical mismatch')
         return {'url': url, 'titles': values, 'jsonldGraphs': len(page.graphs), 'issues': issues}, images
     except Exception as error:
         return {'url': url, 'issues': [str(error)]}, images

@@ -48,7 +48,7 @@ export default function Footer() {
 
           {/* Product */}
           <div>
-            <h4 className="font-semibold text-gray-900 dark:text-white mb-4">{t("footer.product")}</h4>
+            <h2 className="font-semibold text-gray-900 dark:text-white mb-4">{t("footer.product")}</h2>
             <ul className="space-y-3">
               <li>
                 <Link href="/download" className="text-gray-600 dark:text-gray-400 text-sm hover:text-primary transition-colors">
@@ -75,7 +75,7 @@ export default function Footer() {
 
           {/* Resources */}
           <div>
-            <h4 className="font-semibold text-gray-900 dark:text-white mb-4">{t("footer.resources")}</h4>
+            <h2 className="font-semibold text-gray-900 dark:text-white mb-4">{t("footer.resources")}</h2>
             <ul className="space-y-3">
               <li>
                 <Link href="/newsletters" className="text-gray-600 dark:text-gray-400 text-sm hover:text-primary transition-colors">
@@ -127,7 +127,7 @@ export default function Footer() {
 
           {/* Company & Legal */}
           <div>
-            <h4 className="font-semibold text-gray-900 dark:text-white mb-4">{t("footer.company")}</h4>
+            <h2 className="font-semibold text-gray-900 dark:text-white mb-4">{t("footer.company")}</h2>
             <ul className="space-y-3">
               <li>
                 <Link href="/about" className="text-gray-600 dark:text-gray-400 text-sm hover:text-primary transition-colors">

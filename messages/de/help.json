@@ -25,153 +25,363 @@
     "account": {
       "title": "Ein neues Konto erstellen",
       "steps": [
-        "Installiere und öffne die Erweiterung. Wähle Neu erstellen.",
-        "Sichere alle 24 Wiederherstellungswörter in der richtigen Reihenfolge und schließe die Backup-Prüfung ab.",
-        "Lege Passwort und automatische Sperre fest, schließe die Einrichtung ab und starte."
+        "Wähle bei der ersten Einrichtung Continue und dann Create New. Wenn du ein vorhandenes Konto wiederherstellen möchtest, wähle stattdessen Import Key or Backup.",
+        "Zeige die Wiederherstellungsphrase unbeobachtet an. Schreibe alle 24 Wörter in der richtigen Reihenfolge auf und absolviere die Sicherungsprüfung anhand deiner gespeicherten Kopie.",
+        "Wähle eine zeitgesteuerte automatische Sperre und lege ein Tresorpasswort fest. Bestätige es und bewahre es außerhalb des Browsers auf.",
+        "Schließe die Einrichtung ab. Folgeempfehlungen sind optional; mit Skip for now kannst du später Personen auswählen.",
+        "Wähle Get Started und überprüfe den Kontonamen und den öffentlichen Schlüssel in der Erweiterung."
+      ],
+      "overview": "Erstelle eine neue Nostr-Identität, wenn du noch kein Konto hast, das du verwenden möchtest. Die Wiederherstellungswörter stellen die Identität wieder her; das Tresorpasswort entsperrt diesen Browser.",
+      "before": [
+        "Installiere die Erweiterung und öffne sie über die Browser-Symbolleiste.",
+        "Halte einen privaten Ort zum Aufschreiben aller 24 Wiederherstellungswörter und einen sicheren Aufbewahrungsort bereit."
+      ],
+      "checks": [
+        "Dein Konto sollte in der Kontoauswahl erscheinen, mit einem kopierbaren öffentlichen Schlüssel.",
+        "Wenn Create New die Ansicht New Sub-Account öffnet, enthält dieser Tresor bereits eine Haupt-Wiederherstellungsphrase. Die neue Identität verwendet dieselbe Phrase."
       ]
     },
     "subAccounts": {
       "title": "Weitere Identität hinzufügen",
       "steps": [
-        "Stelle zuerst sicher, dass du deine Haupt-Wiederherstellungsphrase gesichert hast. Öffne die Kontoauswahl und wähle Konto hinzufügen → Neu erstellen.",
-        "Benenne das Unterkonto. Behalte den vorgeschlagenen Ableitungspfad, sofern du keinen bestimmten brauchst. Es nutzt deine bestehende Wiederherstellungsphrase.",
-        "Schließe die Einrichtung ab und wechsle über die Kontoauswahl. Sichere die Phrase und den Ableitungspfad jedes Kontos."
+        "Entsperre die Erweiterung, öffne die Kontoauswahl und wähle Add Account → Create New.",
+        "Gib einen Namen ein, an dem du die Identität erkennst. Der lokale Kontoname veröffentlicht keinen neuen Profilnamen.",
+        "Behalte den vorgeschlagenen Ableitungspfad bei, wenn du keinen bestimmten benötigst. Öffne Advanced nur, um einen genauen gewünschten Pfad einzugeben.",
+        "Prüfe die Vorschau des öffentlichen Schlüssels, schließe die Einrichtung ab und wähle die neue Identität in der Kontoauswahl.",
+        "Notiere den genauen Ableitungspfad und den öffentlichen Schlüssel bei deinen Wiederherstellungsunterlagen. Die Phrase allein sagt einem anderen Programm nicht, welchen Pfad es wiederherstellen soll."
+      ],
+      "overview": "Erstelle eine weitere Identität für einen anderen Zweck, ohne eine zusätzliche Wiederherstellungsphrase zu erzeugen. Jede abgeleitete Identität hat einen eigenen öffentlichen Schlüssel, aber alle Identitäten derselben Phrase hängen von dieser gemeinsamen Sicherung ab.",
+      "before": [
+        "Der Tresor muss bereits eine Haupt-Wiederherstellungsphrase enthalten; ein importierter privater Schlüssel allein reicht nicht.",
+        "Bewahre eine sichere Kopie dieser Phrase auf, bevor du weitere Identitäten hinzufügst."
+      ],
+      "checks": [
+        "Die zusätzliche Identität sollte in der Kontoauswahl erscheinen und bei Auswahl ihren eigenen öffentlichen Schlüssel zeigen.",
+        "Ein anderer Pfad erzeugt eine andere Identität. Beiträge, Follower und Profilinformationen werden nicht von einem anderen Konto übernommen."
       ]
     },
     "backup": {
       "title": "Dein Konto sichern",
       "steps": [
-        "Wähle das Konto und öffne Einstellungen → Sicherheit zum Export von Schlüssel oder Backup. Füge private Schlüssel niemals auf Websites ein.",
-        "Bewahre das Backup sicher auf. Sichere bei abgeleiteten Identitäten sowohl Phrase als auch Ableitungspfad.",
-        "Wähle zur Wiederherstellung Konto hinzufügen → Schlüssel oder Backup importieren. Prüfe, dass der öffentliche Schlüssel dem Original entspricht."
+        "Öffne die Schlüssel- oder Sicherungsfunktionen des Kontos. Die verfügbaren Optionen hängen davon ab, ob es eine Wiederherstellungsphrase, einen importierten privaten Schlüssel oder einen entfernten Signer verwendet.",
+        "Speichere den privaten Schlüssel oder die Wiederherstellungssicherung an einem sicheren Ort. Füge private Schlüssel oder Wiederherstellungswörter niemals in eine Website oder Supportnachricht ein.",
+        "Sichere bei einer abgeleiteten Identität sowohl die Haupt-Wiederherstellungsphrase als auch den genauen Ableitungspfad. Notiere auch den erwarteten öffentlichen Schlüssel.",
+        "Bewahre bei einer verschlüsselten Sicherung das zugehörige Passwort wiederauffindbar auf. Eine Änderung des Tresorpassworts im Browser ändert nicht das Passwort einer bestehenden Sicherung."
+      ],
+      "overview": "Mit einer Wiederherstellungssicherung kannst du ein Konto nach Verlust dieses Browsers oder Geräts wiederherstellen. Bewahre alle Angaben für genau diese Identität auf, einschließlich des Ableitungspfads bei einer gemeinsam verwendeten Wiederherstellungsphrase.",
+      "before": [
+        "Entsperre die Erweiterung und wähle das zu sichernde Konto.",
+        "Bereite einen privaten Aufbewahrungsort vor und notiere den öffentlichen Schlüssel, damit du das Konto nach der Wiederherstellung erkennst."
+      ],
+      "checks": [
+        "Prüfe, ob deine gespeicherte Kopie vollständig und lesbar ist, bevor du ein Konto entfernst oder Browserdaten löschst.",
+        "Vergleiche bei einer späteren Wiederherstellung den öffentlichen Schlüssel mit deiner gespeicherten Angabe. Der Import einer Phrase erstellt nicht automatisch alle Unterkonten erneut."
       ]
     },
     "remove": {
       "title": "Konto entfernen",
       "steps": [
-        "Erstelle zuerst ein wiederherstellbares Backup, bei Unterkonten einschließlich Ableitungspfad.",
-        "Öffne die Kontoauswahl und wähle das × des Kontos.",
-        "Lies die Bestätigung, prüfe den Namen und wähle Entfernen. Das löscht das lokale Konto, nicht seine Nostr-Beiträge."
+        "Öffne die Kontoauswahl oben im Erweiterungsfenster.",
+        "Suche das zu entfernende Konto und wähle sein ×-Symbol.",
+        "Lies die Bestätigung und prüfe den Kontonamen. Prüfe bei einem abgeleiteten Konto den Pfad und die Erklärung zu anderen Konten mit derselben Phrase.",
+        "Wähle Remove zum Bestätigen oder Cancel, um das Konto zu behalten."
+      ],
+      "overview": "Das Entfernen eines Kontos löscht seinen Eintrag aus dieser Erweiterung. Das veröffentlichte Profil und die Beiträge bleiben auf Nostr; die Identität kann auch auf deinen anderen Geräten weiter bestehen.",
+      "before": [
+        "Sichere vor dem Entfernen den privaten Schlüssel oder eine nutzbare Wiederherstellungssicherung.",
+        "Notiere bei einer aus einer Phrase abgeleiteten Identität außerdem den genauen Ableitungspfad und den öffentlichen Schlüssel."
+      ],
+      "checks": [
+        "Das entfernte Konto sollte nicht mehr in der Kontoauswahl dieser Erweiterung erscheinen.",
+        "Das Entfernen eines abgeleiteten Kontos lässt andere Identitäten derselben Phrase bestehen. Nach einer späteren Schlüsselwiederherstellung musst du gegebenenfalls Wallets erneut verbinden und Berechtigungen einrichten."
       ]
     },
     "approvals": {
       "title": "Anfrage einer App prüfen",
       "steps": [
-        "Wenn eine Website dein Konto verbinden oder verwenden möchte, öffne die ausstehende Anfrage in der Erweiterung.",
-        "Prüfe Website, Aktion und Inhalt oder Ziel. Über die Code-Schaltfläche kannst du das rohe Ereignis ansehen.",
-        "Wähle Genehmigen oder Ablehnen. Nutze das Pfeilmenü nur zum Speichern einer Entscheidung und prüfe anschließend die letzten Aktivitäten."
+        "Öffne die ausstehende Anfrage der Erweiterung, wenn eine Website sich verbinden, signieren, entschlüsseln oder authentifizieren möchte.",
+        "Prüfe die anfragende Website und die Aktion. Lies den angezeigten Inhalt oder das Ziel; die Code-Schaltfläche öffnet die rohen Ereignisdaten zur genaueren Prüfung.",
+        "Wähle Approve oder Deny für die aktuelle Anfrage. Öffne ein Pfeilmenü nur, wenn du die Entscheidung speichern möchtest.",
+        "Prüfe bei gruppierten Anfragen vor der Freigabe, welche ausgewählt sind. Das Anzeigen eines unscharfen Nachrichteninhalts erlaubt noch nicht dessen Weitergabe an die Website."
+      ],
+      "overview": "Eine Freigabeanfrage zeigt dir, was eine Website mit dem aktiven Konto tun möchte. Eine einmalige Entscheidung gilt für diese Anfrage; eine gespeicherte Entscheidung kann auch zukünftige Anfragen betreffen.",
+      "before": [
+        "Vergewissere dich, dass das aktive Konto die Identität ist, die die Website verwenden soll.",
+        "Prüfe, welche Website du verwendest und welche Aktion du dort gerade gestartet hast."
+      ],
+      "checks": [
+        "Kehre zur Website zurück und prüfe, ob die Aktion abgeschlossen wurde. Bei Bedarf findest du die Anfrage unter Recent activity.",
+        "Unerwartete Anfragen kannst du ablehnen. Prüfe gespeicherte Website- oder Authentifizierungsberechtigungen, wenn ähnliche Anfragen ohne die erwartete Prüfung erlaubt werden."
       ]
     },
     "permissions": {
       "title": "Globale Regeln und Website-Regeln ändern",
       "steps": [
-        "Öffne Berechtigungen → Globale Regeln für die Standardregeln verbundener Websites.",
-        "Besuche für eine einzelne Website diese Seite und öffne die Erweiterung, dann Berechtigungen → Website-Regeln.",
-        "Geerbte Regeln sind grau. Website-Regeln ersetzen die entsprechenden globalen Regeln, aber eine umfassendere Ablehnungsregel kann eine Anfrage weiterhin blockieren. Ändere eine Regel oder bestätige das Zurücksetzen auf die globalen Standards."
+        "Öffne Permissions → Global rules, um die Vorgaben für verbundene Websites zu prüfen.",
+        "Öffne Permissions → Site rules, um die aktuelle Website zu bearbeiten. Graue Zeilen sind geerbte Vorgaben, farbige Zeilen sind Website-Ausnahmen.",
+        "Wähle über Add rule oder eine vorhandene Regel Allow, Deny oder Ask für die gewünschte Aktion. Eine umfassendere Deny-Regel kann eine Anfrage weiterhin blockieren, auch wenn eine engere Regel sie erlaubt.",
+        "Mit Use inherited default entfernst du eine einzelne Ausnahme. Wähle Reset site overrides und lies die Bestätigung, um alle Ausnahmen für dieses Konto und diese Website zu entfernen."
+      ],
+      "overview": "Globale Regeln liefern gemeinsame Vorgaben; Website-Regeln passen gewöhnliche Aktionen für das aktive Konto auf einer bestimmten Website an. Verbindungszustimmung und Backend- oder Relay-Anmeldungen werden separat gesteuert.",
+      "before": [
+        "Wähle das Konto, dessen Website-Berechtigungen du ändern möchtest.",
+        "Öffne die betroffene Website im aktuellen Browser-Tab, bevor du ihre Regeln bearbeitest."
+      ],
+      "checks": [
+        "Öffne den Website-Editor erneut und prüfe, ob die gewünschte Ausnahme oder geerbte Regel angezeigt wird.",
+        "Durch das Zurücksetzen kann ein globales Allow wieder gelten. Separate Verbindungsablehnungen sowie Backend- und Relay-Authentifizierungsentscheidungen werden dadurch nicht entfernt."
       ]
     },
     "authentication": {
       "title": "Gespeicherte Anmeldeberechtigungen prüfen",
       "steps": [
-        "Öffne Berechtigungen des aktiven Kontos, dann Backend-Authentifizierung oder Relay-Authentifizierung.",
-        "Prüfe gespeicherte Entscheidungen oder wähle die für ein Relay zugelassenen Websites. Widerrufe nicht mehr benötigte Zugriffe.",
-        "Die standardmäßige Backend-Authentifizierung ist optional und zunächst aus. Sie gilt für dieselbe Origin und freigegebene Registerpaare; lies vor Aktivierung die Richtlinie."
+        "Öffne Permissions und dann Backend authentication, um ausdrücklich gespeicherte Backend-Entscheidungen des aktiven Kontos zu prüfen.",
+        "Widerrufe eine nicht mehr gewünschte Backend-Entscheidung. Ihr Geltungsbereich umfasst die anfragende Website, die genaue URL und die Methode.",
+        "Öffne Relay authentication, um die erlaubten verbundenen Apps eines Relays zu prüfen. Wähle die gewünschten Apps oder prüfe den Umfang sorgfältig, bevor du alle verbundenen Websites erlaubst.",
+        "Prüfe Default backend auth separat. Die Funktion ist anfangs aus und kann dieselbe Herkunft oder verifizierte Website/Backend-Paare automatisch erlauben. Lies vor dem Aktivieren den Link zur Richtlinie."
+      ],
+      "overview": "Eine Website kann dich bitten, dich gegenüber ihrem Backend oder einem Nostr-Relay auszuweisen. Diese Anmeldeberechtigungen sind von der Erlaubnis zum Signieren gewöhnlicher Beiträge und Nachrichten getrennt.",
+      "before": [
+        "Wähle das Konto, dessen gespeicherte Anmeldeentscheidungen du prüfen möchtest.",
+        "Bestimme die Website und das Backend- oder Relay-Ziel der Anfrage."
+      ],
+      "checks": [
+        "Eine leere Backend-Liste beweist nicht, dass automatische Authentifizierung deaktiviert ist. Prüfe zusätzlich Default backend auth.",
+        "Ein Widerruf betrifft zukünftige Freigaben. Er meldet dich nicht aus bestehenden Website-Sitzungen ab und schließt keine bereits authentifizierte Relay-Verbindung."
       ]
     },
     "wallet": {
       "title": "Lightning-Wallet verbinden",
       "steps": [
-        "Öffne Wallet und wähle Schnelleinrichtung, NWC oder LNbits. Bei der Schnelleinrichtung verwahrt ein Anbieter das Guthaben.",
-        "Füge für NWC die Verbindungs-URI ein. Gib für LNbits die Instanz-URL und den Admin-API-Schlüssel der Wallet ein. Halte diese Zugangsdaten geheim.",
-        "Verbinde die Wallet und prüfe das Guthaben. Erstelle über Einzahlen eine Rechnung, um Sats hinzuzufügen."
+        "Öffne Wallet und wähle Quick Setup, NWC oder LNbits. Quick Setup erstellt eine verwahrte Wallet bei einem Anbieter, der die Gelder hält.",
+        "Erstelle für NWC in deiner Wallet eine eigene Verbindung und kopiere das vollständige nostr+walletconnect://-Geheimnis. Erlaube Wallet-Informationen und die benötigten Vorgänge.",
+        "Gib für LNbits die HTTPS-URL der Instanz und den Admin-API-Schlüssel der Wallet ein. Dieser Schlüssel erlaubt Ausgaben aus der Wallet und ist nicht dein Administrator-Anmeldepasswort.",
+        "Verbinde die Wallet und prüfe Guthaben und Aktivität. Mit Deposit erstellst du eine Rechnung, um Sats einzuzahlen."
+      ],
+      "overview": "Die Erweiterung verbindet sich mit einer Lightning-Wallet, damit du Guthaben prüfen, Sats empfangen und Zahlungen freigeben kannst. Wähle eine von deiner Wallet unterstützte Verbindungsmethode.",
+      "before": [
+        "Entsperre die Erweiterung und wähle das Konto, das die Wallet verwenden soll.",
+        "Halte für eine vorhandene Wallet ihr NWC-Verbindungsgeheimnis oder die HTTPS-URL von LNbits und den Admin-API-Schlüssel der Wallet bereit."
+      ],
+      "checks": [
+        "Die verbundene Wallet sollte das verfügbare Guthaben und die durch ihre Verbindung erlaubten Funktionen anzeigen.",
+        "Wenn Guthaben, Rechnungserstellung oder Verlauf fehlen, prüfe Berechtigungen und Ablaufdatum der Verbindung in deiner Wallet. NWC- oder LNbits-Zugriff allein bestimmt nicht, wer die Gelder verwahrt."
       ]
     },
     "zaps": {
       "title": "Zap senden",
       "steps": [
-        "Verbinde eine Wallet mit Guthaben und wähle in einer kompatiblen Nostr-App die Zap- oder Lightning-Schaltfläche.",
-        "Wähle den Betrag. Prüfe Empfänger, Sats, angezeigte Gebühren und Signatur- oder Zahlungsanfragen vor der Freigabe.",
-        "Prüfe die Wallet-Aktivität. Wenn du Zahlungen automatisch genehmigst, lege ein passendes Ausgabenlimit fest."
+        "Wähle die Zap- oder Lightning-Schaltfläche am Profil oder Beitrag, den du unterstützen möchtest.",
+        "Gib den Betrag in Sats ein und prüfe den in der App angezeigten Empfänger.",
+        "Prüfe alle Signatur- und Zahlungsanfragen in der Erweiterung. Kontrolliere vor der Freigabe Betrag, Empfänger und gegebenenfalls angezeigte Gebühren.",
+        "Kehre zu Wallet zurück und prüfe in der Aktivität das Zahlungsergebnis."
+      ],
+      "overview": "Ein Zap sendet über eine kompatible Nostr-App Sats an eine Person. Die App fordert dazu eine Lightning-Zahlung von der mit der Erweiterung verbundenen Wallet an.",
+      "before": [
+        "Verbinde eine Lightning-Wallet mit genug Guthaben für die Zahlung und mögliche Gebühren.",
+        "Verwende eine Nostr-App, die Zahlungen über die Erweiterung unterstützt, und prüfe vorher den Empfänger."
+      ],
+      "checks": [
+        "Eine abgeschlossene Zahlung sollte in der Wallet-Aktivität erscheinen. Die sichtbare Zap-Anzeige der App kann von deren eigener Aktualisierung abhängen.",
+        "Prüfe bei unklarem Ergebnis vor einem erneuten Versuch den Wallet-Verlauf. Kleine Zahlungen können ohne Nachfrage erfolgen, wenn automatische Freigabe aktiv ist und ihre Prüfungen erfolgreich sind."
       ]
     },
     "appearance": {
       "title": "Darstellung ändern",
       "steps": [
-        "Öffne Einstellungen → Darstellung und Sprache.",
-        "Wähle hell, dunkel oder System sowie ein verfügbares Design.",
-        "Prüfe das Ergebnis im Dashboard. Du kannst das Design jederzeit dort wieder ändern."
+        "Öffne Settings → Appearance and language.",
+        "Wähle eine helle, dunkle oder systemabhängige Darstellung und eines der verfügbaren Themes.",
+        "Kehre zum Dashboard zurück und prüfe Texte, Karten und Schaltflächen in der ausgewählten Darstellung."
+      ],
+      "overview": "Ändere das Aussehen der Erweiterung über die Darstellungs- und Theme-Einstellungen. Diese Einstellungen betreffen die Erweiterung, nicht das Design besuchter Websites.",
+      "before": [
+        "Öffne die Erweiterung über die Browser-Symbolleiste und entsperre sie gegebenenfalls.",
+        "Entscheide, ob du eine feste helle oder dunkle Darstellung oder die Systemeinstellung verwenden möchtest."
+      ],
+      "checks": [
+        "Die Erweiterung sollte beim erneuten Öffnen ihrer Ansichten die ausgewählte Darstellung verwenden.",
+        "Wenn das Ergebnis schwer lesbar ist oder nicht deinen Erwartungen entspricht, wähle dort ein anderes Theme oder eine andere Darstellung."
       ]
     },
     "language": {
       "title": "Sprache ändern",
       "steps": [
-        "Öffne Einstellungen → Darstellung und Sprache → Sprache.",
-        "Wähle eine Sprache und bestätige. Ohne Bestätigung bleibt die vorherige Sprache erhalten.",
-        "Die Oberfläche übernimmt und speichert die Auswahl. Über das Zahnrad findest du die Einstellungen wieder."
+        "Öffne Settings → Appearance and language → Language.",
+        "Scrolle oder ziehe das Sprachrad, bis deine Sprache in der Mitte steht. Bei fokussierter Liste kannst du auch die Pfeiltasten nach oben und unten verwenden.",
+        "Wähle Confirm, um die Auswahl anzuwenden. Die Schaltfläche bleibt bis zur Bestätigung in der bisherigen Oberflächensprache.",
+        "Kehre zur Oberfläche zurück und prüfe die neuen Beschriftungen. Wenn du die Auswahl ohne Bestätigung schließt, bleibt die bisherige Sprache erhalten."
+      ],
+      "overview": "Wähle die Sprache der Bedienelemente und Meldungen der Erweiterung. Das übersetzt keine Nostr-Beiträge und ändert nicht die separate Spracheinstellung der Website.",
+      "before": [
+        "Öffne die Erweiterung und entsperre sie bei Bedarf.",
+        "Das Zahnradsymbol führt zu Settings, auch wenn dir die aktuelle Sprache unbekannt ist."
+      ],
+      "checks": [
+        "Beim erneuten Öffnen sollte die Sprachzeile deine gespeicherte Auswahl zeigen.",
+        "Einige Beschriftungen können auf Englisch bleiben. Zum Zurückwechseln erreichst du über das Zahnradsymbol dieselbe Sprachauswahl."
       ]
     },
     "security": {
       "title": "Passwort und automatische Sperre festlegen",
       "steps": [
-        "Öffne Einstellungen → Sicherheit.",
-        "Schütze den lokalen Tresor über die Passworteinstellung und wähle ein Zeitintervall für die automatische Sperre.",
-        "Sperre den Tresor nach Gebrauch. Bewahre das Wiederherstellungsbackup separat auf; das Passwort ersetzt es nicht."
+        "Entsperre die Erweiterung und öffne Settings → Security.",
+        "Wähle ein Zeitintervall für die automatische Sperre. Wenn du die zeitgesteuerte Sperre aktivierst, lege auf Nachfrage ein Passwort fest und bestätige es.",
+        "Verwende Change password und fülle die verlangten Felder aus, um ein bestehendes Passwort zu ersetzen.",
+        "Sperre anschließend den Tresor und entsperre ihn mit deinem gespeicherten Passwort."
+      ],
+      "overview": "Ein Tresorpasswort schützt den Zugriff auf die in diesem Browser gespeicherten Schlüssel. Die zeitgesteuerte Sperre verlangt nach Inaktivität ein erneutes Entsperren; sie ersetzt keine Wiederherstellungssicherung.",
+      "before": [
+        "Bewahre eine nutzbare Kontosicherung auf, bevor du den Tresorschutz änderst.",
+        "Bereite einen sicheren Aufbewahrungsort für das Passwort zum Entsperren dieses Browsers vor."
+      ],
+      "checks": [
+        "Das gewählte Zeitintervall sollte beim erneuten Öffnen von Security weiterhin angezeigt werden.",
+        "Ein Tresorpasswort ist weder eine Wiederherstellungsphrase noch das Passwort einer verschlüsselten Sicherung. Bewahre diese Wiederherstellungsunterlagen unabhängig von diesem Browser auf."
       ]
     },
     "import": {
       "title": "Ein bestehendes Konto importieren",
       "steps": [
-        "Wähle Konto hinzufügen → Schlüssel oder Backup importieren. Füge deinen privaten Schlüssel oder deine Wiederherstellungsphrase ein oder lade eine Backup-Datei; das Format wird automatisch erkannt.",
-        "Gib das Backup nur in der Erweiterung ein. Prüfe den wiederhergestellten öffentlichen Schlüssel, bevor du das Konto nutzt."
+        "Wähle bei der Einrichtung Import Key or Backup oder in der Kontoauswahl Add Account → Import Key or Backup.",
+        "Füge nsec, privaten Hex-Schlüssel oder Wiederherstellungsphrase unbeobachtet in die Erweiterung ein oder lade eine unterstützte Sicherungsdatei.",
+        "Gib bei einer verschlüsselten Sicherung oder ncryptsec ihr Sicherungspasswort ein. Bewahre das Original unverändert auf, falls Format oder Passwort abgelehnt werden.",
+        "Fahre fort, sobald das Format erkannt wurde. Lege bei Aufforderung ein lokales Tresorpasswort fest oder entsperre einen vorhandenen Tresor mit dessen aktuellem Passwort.",
+        "Schließe die Einrichtung ab und vergleiche den angezeigten öffentlichen Schlüssel mit der gewünschten Identität."
+      ],
+      "overview": "Stelle eine vorhandene Identität mit ihrem privaten Schlüssel, ihrer Wiederherstellungsphrase oder einer unterstützten verschlüsselten Sicherung wieder her. Die Erweiterung erkennt das Format; ein npub allein ist ein öffentlicher Schlüssel und gehört zu Watch-Only.",
+      "before": [
+        "Halte die vorhandene Sicherung und bei Verschlüsselung das dafür verwendete Passwort bereit.",
+        "Halte den erwarteten öffentlichen Schlüssel und einen gegebenenfalls benutzerdefinierten Ableitungspfad bereit, um die Identität zu überprüfen."
+      ],
+      "checks": [
+        "Der wiederhergestellte öffentliche Schlüssel sollte deiner gespeicherten Angabe entsprechen. Ein anderer Schlüssel kann bedeuten, dass du den ursprünglichen Ableitungspfad brauchst.",
+        "Der Phrasenimport beginnt mit ihrem ersten Nostr-Schlüssel; er stellt nicht automatisch jede abgeleitete Identität oder jeden eigenen Pfad wieder her."
       ]
     },
     "switch": {
       "title": "Konto wechseln",
       "steps": [
-        "Öffne die Kontoauswahl und wähle die gewünschte Identität.",
-        "Prüfe das aktive Konto, bevor du eine Anfrage genehmigst. Zeigt eine Website noch die alte Identität, melde dich dort ab und erneut an."
+        "Entsperre die Erweiterung und öffne oben im Fenster die Kontoauswahl.",
+        "Wähle die gewünschte Identität und prüfe den angezeigten Namen und öffentlichen Schlüssel.",
+        "Kehre zur Website zurück. Wenn sie noch die alte Identität zeigt, melde dich dort ab und verbinde dich erneut über die Erweiterung."
+      ],
+      "overview": "Wechsle die aktive Identität, bevor du ein anderes Nostr-Konto verwendest. Websites können ihre eigene Sitzung behalten; nach dem Wechsel in der Erweiterung musst du dich dort möglicherweise neu verbinden.",
+      "before": [
+        "Füge alle Identitäten hinzu oder importiere sie, zwischen denen du wechseln möchtest.",
+        "Prüfe den Kontonamen oder öffentlichen Schlüssel der gewünschten Identität."
+      ],
+      "checks": [
+        "Prüfe das aktive Konto erneut, bevor du eine neue Anfrage freigibst.",
+        "Wenn die Website weiterhin ein anderes Profil zeigt, prüfe ihr angemeldetes Konto. Die Auswahl in der Erweiterung ändert ihre Sitzung nicht unbedingt."
       ]
     },
     "receive": {
       "title": "Sats empfangen",
       "steps": [
-        "Öffne Wallet → Einzahlen und gib den Betrag ein, um eine Lightning-Rechnung zu erstellen.",
-        "Teile die Rechnung mit der zahlenden Person. Prüfe Aktivität und Guthaben, um die Zahlung zu bestätigen."
+        "Öffne Wallet → Deposit.",
+        "Gib den Betrag in Sats ein und erstelle die Lightning-Rechnung.",
+        "Teile die Rechnung mit der zahlenden Person. Halte dein NWC-Geheimnis und deinen API-Schlüssel privat.",
+        "Prüfe nach dem Senden der Zahlung Wallet-Aktivität und Guthaben."
+      ],
+      "overview": "Erstelle eine Lightning-Rechnung, um einen bestimmten Betrag in deiner verbundenen Wallet zu empfangen. Du kannst die Rechnung weitergeben, ohne Zugangsdaten deiner Wallet-Verbindung zu teilen.",
+      "before": [
+        "Verbinde eine Wallet und wähle das Konto, das sie verwendet.",
+        "Stelle bei NWC sicher, dass die Verbindung Rechnungserstellung und die zum Prüfen der Zahlung nötigen Informationen erlaubt."
+      ],
+      "checks": [
+        "Suche in der Wallet nach einer bezahlten Rechnung oder einem Zahlungseingang. Das Erstellen einer Rechnung bedeutet noch nicht, dass sie bezahlt wurde.",
+        "Wenn die Rechnungserstellung fehlschlägt, prüfe vor einem erneuten Versuch Wallet-Verbindung und Berechtigungen."
       ]
     },
     "limits": {
       "title": "Automatische Zahlungsfreigabe ändern",
       "steps": [
-        "Öffne Wallet → Einstellungen und prüfe den Grenzwert für automatische Freigaben.",
-        "Wähle einen Grenzwert für jede einzelne Zahlung; er ist kein Gesamtbudget. Verwende null, um jede Zahlung zu bestätigen. Prüfe regelmäßig die Wallet-Aktivität."
+        "Öffne Wallet → Settings und suche Auto-Approve Threshold.",
+        "Gib eine ganze Anzahl Sats ein. Verwende null, wenn jede Zahlung eine Bestätigung verlangen soll.",
+        "Speichere die Änderung und öffne die Einstellungen erneut, um den gespeicherten Wert zu prüfen.",
+        "Prüfe regelmäßig die Wallet-Aktivität. Senke den Schwellenwert oder entziehe einer Website die Zahlungsberechtigung, wenn unerwartete Anfragen auftreten."
+      ],
+      "overview": "Durch automatische Freigabe können geeignete kleine Zahlungen ohne Bestätigungsfenster erfolgen. Der Schwellenwert bestimmt die Eignung; andere Berechtigungs- und Sicherheitsprüfungen können weiterhin eine Bestätigung verlangen.",
+      "before": [
+        "Verbinde die zu konfigurierende Wallet und prüfe das aktive Konto.",
+        "Wähle einen Betrag in Sats, den du ohne Prüfung jeder einzelnen Anfrage erlauben möchtest."
+      ],
+      "checks": [
+        "Zahlungen über dem Schwellenwert sollten eine Bestätigung verlangen; auch darunter kann eine Prüfung erforderlich sein.",
+        "Diese Einstellung allein erlaubt einer Website nicht die Wallet-Nutzung. Prüfe Website-Zugriff und Verbindungsberechtigungen beim Wallet-Anbieter separat."
       ]
     },
     "loginFailed": {
       "title": "Ich kann mich nicht anmelden",
       "steps": [
-        "Entsperre die Erweiterung, prüfe das aktive Konto und ausstehende Anfragen. Lies Fehlermeldungen vor einem neuen Versuch.",
-        "Prüfe Website-Regeln sowie Backend- oder Relay-Berechtigungen des Kontos. Wird das Format nicht unterstützt, teile den Fehler mit den Entwicklern der Website, niemals deine Schlüssel."
+        "Öffne und entsperre die Erweiterung und prüfe das aktive Konto.",
+        "Suche nach einer ausstehenden Anfrage. Lies anfragende Website und Ziel und gib sie nur frei, wenn sie zur gestarteten Anmeldung passen.",
+        "Prüfe Permissions → Site rules auf eine Ablehnung der Website oder eine passende Deny-Regel. Prüfe Backend authentication oder Relay authentication bei Anfragen an solche Ziele.",
+        "Kehre zur Website zurück und wiederhole die Anmeldung nach Behebung des konkreten Problems. Wenn ein altes Konto angezeigt wird, melde dich dort vor dem erneuten Verbinden ab."
+      ],
+      "overview": "Eine Anmeldung kann an einem gesperrten Tresor, dem falschen Konto oder einer blockierten Verbindungs- oder Authentifizierungsanfrage scheitern. Beginne mit der ausstehenden Anfrage und der genauen Fehlermeldung.",
+      "before": [
+        "Öffne die betroffene Website im aktuellen Tab und notiere eine etwaige Fehlermeldung.",
+        "Bestimme das Konto, mit dem du dich anmelden möchtest."
+      ],
+      "checks": [
+        "Nach erfolgreicher Anmeldung sollte die Website das gewünschte Konto anzeigen.",
+        "Wenn der Fehler bleibt oder ein nicht unterstütztes Anfrageformat gemeldet wird, bewahre den genauen Fehlertext und die Website-URL für den Support auf. Private Schlüssel oder Wiederherstellungswörter gehören niemals dazu."
       ]
     },
     "denied": {
       "title": "Eine Anfrage wird abgelehnt",
       "steps": [
-        "Besuche die betroffene Website und öffne Berechtigungen → Website-Regeln. Prüfe eigene Regeln und geerbte globale Ablehnungen.",
-        "Ändere nur die gewünschte Regel. Authentifizierung hat separate Berechtigungen; das Zurücksetzen der Website-Regeln entfernt diese Entscheidungen nicht."
+        "Öffne Permissions → Site rules für die aktuelle Website.",
+        "Wenn die Website abgewiesen wurde, prüfe oder entferne diese Ablehnung, damit sie erneut eine Verbindung anfragen kann.",
+        "Prüfe für gewöhnliche Aktionen sowohl Website-Ausnahmen als auch geerbte globale Regeln. Ändere die relevante Ablehnung; möglicherweise muss auch ein umfassenderes Deny geändert werden.",
+        "Prüfe für Backend- oder Relay-Anmeldungen die separaten Authentifizierungsansichten. Wiederhole nach der gewünschten Änderung die Aktion auf der Website."
+      ],
+      "overview": "Eine gespeicherte Ablehnung kann eine Anfrage ohne neue Rückfrage blockieren. Die richtige Einstellung hängt davon ab, ob die Website abgewiesen, eine gewöhnliche Aktion verboten oder ein Anmeldeziel blockiert ist.",
+      "before": [
+        "Wähle das betroffene Konto und öffne die anfragende Website.",
+        "Notiere die Aktion oder den Fehler, damit du die passende Berechtigung ändern kannst."
+      ],
+      "checks": [
+        "Das Entfernen einer Website-Ablehnung erlaubt erneutes Nachfragen; es verbindet die Website nicht automatisch und erlaubt keine Signaturen.",
+        "Das Zurücksetzen von Website-Ausnahmen behält globale Vorgaben und separate Authentifizierungsentscheidungen. Prüfe diese, wenn die Anfrage weiterhin abgelehnt wird."
       ]
     },
     "walletFailed": {
       "title": "Meine Wallet verbindet sich nicht",
       "steps": [
-        "Prüfe, ob die Wallet online ist und du die richtige Methode nutzt: NWC-URI oder LNbits-URL und Admin-API-Schlüssel.",
-        "Prüfe bei NWC die Berechtigungen und das Ablaufdatum in der Wallet. Teile bei Hilfeanfragen niemals das Verbindungsgeheimnis oder den API-Schlüssel."
+        "Prüfe, ob du in der Erweiterung NWC oder LNbits passend zu deinen Zugangsdaten gewählt hast.",
+        "Füge bei NWC das vollständige nostr+walletconnect://-Verbindungsgeheimnis ein. Prüfe das Ablaufdatum und erlaube Wallet-Informationen zur Verbindungsprüfung.",
+        "Verwende bei LNbits die HTTPS-URL der Instanz und den Admin-API-Schlüssel dieser Wallet. Ein Rechnungs-/Leseschlüssel oder Administratorpasswort ersetzt ihn nicht.",
+        "Verbinde dich erneut und prüfe die verfügbaren Funktionen. Wenn nur bestimmte Vorgänge scheitern, prüfe beim Anbieter Berechtigungen für Guthaben, Rechnungen, Zahlungen und Verlauf."
+      ],
+      "overview": "Verbindungsprobleme entstehen oft durch unpassende Zugangsdaten, eine abgelaufene NWC-Verbindung oder eine nicht erreichbare Wallet. Prüfe die Verbindungsmethode, bevor du Zugangsdaten ersetzt.",
+      "before": [
+        "Öffne die Oberfläche deines Wallet-Anbieters und prüfe, ob die Wallet verfügbar ist.",
+        "Lass den Verbindungsfehler sichtbar oder kopiere seinen Text ohne geheime Werte."
+      ],
+      "checks": [
+        "Nach erfolgreicher Verbindung sollten die Wallet und die durch ihre Berechtigungen erlaubten Informationen angezeigt werden.",
+        "Wenn es weiterhin fehlschlägt, teile dem Support Verbindungsmethode und Fehlertext mit. Entferne NWC-Geheimnisse und API-Schlüssel aus Nachrichten und Screenshots."
       ]
     },
     "zapFailed": {
       "title": "Ein Zap ist fehlgeschlagen",
       "steps": [
-        "Prüfe vor einem erneuten Versuch den Verlauf, damit du nicht zweimal zahlst. Achte auf genug Guthaben einschließlich Gebühren.",
-        "Entsperre die Erweiterung und prüfe Wallet-Verbindung und Website-Berechtigung. Lade die Seite neu, wenn sie WebLN nicht erkennt. Bewahre die Fehlermeldung auf, falls es weiter fehlschlägt."
+        "Prüfe vor einem erneuten Versuch die Wallet-Aktivität und den Verlauf beim Anbieter. Wenn die Zahlung abgeschlossen ist, sende sie nicht erneut, nur weil die App sich nicht aktualisiert hat.",
+        "Wenn keine Zahlung abgeschlossen wurde, prüfe ausreichendes Guthaben für Betrag und Gebühren.",
+        "Entsperre die Erweiterung und prüfe Wallet-Verbindung, ausstehende Anfragen und Zahlungsberechtigung der Website.",
+        "Wenn die App keinen WebLN-Anbieter findet, lade die Seite nach Entsperren und Verbinden der Wallet neu.",
+        "Versuche es erst erneut, wenn das Ergebnis des vorherigen Versuchs feststeht. Bewahre den Fehlertext auf, falls die Anfrage weiterhin fehlschlägt."
+      ],
+      "overview": "Eine fehlende Erfolgsmeldung bedeutet nicht immer, dass keine Zahlung erfolgt ist. Prüfe das tatsächliche Zahlungsergebnis in der Wallet, bevor du denselben Zap erneut sendest.",
+      "before": [
+        "Halte den angefragten Betrag und die Fehlermeldung der App bereit.",
+        "Öffne die für den Zahlungsversuch verwendete Wallet."
+      ],
+      "checks": [
+        "Eine abgeschlossene Wallet-Buchung bestätigt die Zahlung; die Zap-Anzeige der App kann sich separat aktualisieren.",
+        "Bleibt das Ergebnis unbekannt, prüfe weiter die Wallet oder kontaktiere ihren Anbieter, bevor du erneut zahlst. Teile bei Hilfsanfragen niemals Verbindungsgeheimnisse."
       ]
     }
   },
@@ -193,5 +403,10 @@
     "payments": "Verbinde eine Wallet, empfange Sats und sende Zaps.",
     "settings": "Wähle deine Sprache und sichere deine Erweiterung ab.",
     "troubleshooting": "Finde Hilfe bei Problemen mit der Anmeldung, Anfragen und Zahlungen."
-  }
+  },
+  "beforeTitle": "Bevor du beginnst",
+  "checksTitle": "Ergebnis prüfen",
+  "screenshotsTitle": "Auf dem Bildschirm",
+  "onThisPage": "Auf dieser Seite",
+  "breadcrumb": "Brotkrümelnavigation"
 }

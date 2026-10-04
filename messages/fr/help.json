@@ -25,153 +25,363 @@
     "account": {
       "title": "Créer un nouveau compte",
       "steps": [
-        "Installez et ouvrez l’extension. Choisissez Créer.",
-        "Conservez les 24 mots de récupération dans l’ordre et effectuez la vérification de la sauvegarde.",
-        "Définissez un mot de passe et le verrouillage automatique, terminez la configuration, puis commencez."
+        "Lors de la première configuration, sélectionnez Continuer, puis Créer. Si vous avez déjà un compte à restaurer, choisissez Importer une clé ou une sauvegarde.",
+        "Affichez la phrase de récupération à l’abri des regards. Notez les 24 mots dans leur ordre exact, puis effectuez la vérification à l’aide de votre copie.",
+        "Choisissez un délai de verrouillage automatique, puis définissez et confirmez un mot de passe pour le coffre. Conservez ce mot de passe en dehors du navigateur.",
+        "Poursuivez la configuration. Les suggestions de personnes à suivre sont facultatives ; choisissez Ignorer pour le moment si vous préférez décider plus tard.",
+        "Sélectionnez Commencer et vérifiez le nom du compte et la clé publique affichés dans l’extension."
+      ],
+      "overview": "Créez une identité Nostr si vous n’avez pas encore le compte que vous souhaitez utiliser. Les mots de récupération restaurent l’identité ; le mot de passe du coffre déverrouille ce navigateur.",
+      "before": [
+        "Installez l’extension et ouvrez-la depuis la barre d’outils du navigateur.",
+        "Prévoyez un endroit privé pour noter les 24 mots de récupération et un lieu sûr pour les conserver."
+      ],
+      "checks": [
+        "Votre compte devrait apparaître dans le sélecteur, avec une clé publique que vous pouvez copier.",
+        "Si Créer ouvre Nouveau sous-compte, ce coffre possède déjà une phrase de récupération principale. La nouvelle identité partagera cette phrase."
       ]
     },
     "subAccounts": {
       "title": "Ajouter une identité",
       "steps": [
-        "Assurez-vous d’abord d’avoir sauvegardé votre phrase de récupération principale. Ouvrez le sélecteur de comptes et choisissez Ajouter un compte → Créer.",
-        "Nommez le sous-compte. Gardez le chemin de dérivation proposé sauf besoin particulier. Il utilise votre phrase de récupération principale.",
-        "Terminez et changez d’identité avec le sélecteur. Conservez la phrase et le chemin de dérivation de chaque compte."
+        "Déverrouillez l’extension, ouvrez le sélecteur de comptes et choisissez Ajouter un compte → Créer.",
+        "Saisissez un nom qui vous permettra de reconnaître l’identité. Le nom local du compte ne publie pas un nouveau nom de profil.",
+        "Gardez le chemin de dérivation proposé, sauf si vous en avez besoin d’un autre. Ouvrez Avancé uniquement pour saisir le chemin exact que vous souhaitez utiliser.",
+        "Vérifiez l’aperçu de la clé publique, terminez la configuration, puis sélectionnez la nouvelle identité dans le sélecteur.",
+        "Notez son chemin de dérivation exact et sa clé publique avec vos données de récupération. La phrase seule n’indique pas à un autre outil quel chemin restaurer."
+      ],
+      "overview": "Créez une autre identité pour un usage différent sans générer une nouvelle phrase de récupération. Chaque identité dérivée possède sa propre clé publique, mais toutes les identités utilisant la même phrase dépendent de cette sauvegarde commune.",
+      "before": [
+        "Le coffre doit déjà contenir une phrase de récupération principale ; une clé privée importée seule ne suffit pas.",
+        "Conservez une copie sécurisée de cette phrase avant d’ajouter des identités."
+      ],
+      "checks": [
+        "Le sélecteur devrait afficher la nouvelle identité et, lorsque vous la sélectionnez, sa propre clé publique.",
+        "Changer de chemin crée une autre identité ; cela ne transfère pas les publications, abonnés ou informations de profil d’un autre compte."
       ]
     },
     "backup": {
       "title": "Sauvegarder votre compte",
       "steps": [
-        "Sélectionnez le compte et ouvrez Paramètres → Sécurité pour exporter sa clé ou sauvegarde. Ne collez jamais une clé privée sur un site.",
-        "Conservez la sauvegarde en lieu sûr. Pour une identité dérivée, gardez la phrase et le chemin de dérivation.",
-        "Pour restaurer, choisissez Ajouter un compte → Importer une clé ou sauvegarde. Vérifiez que la clé publique correspond à l’originale."
+        "Ouvrez les commandes de clé ou de sauvegarde du compte. Les options dépendent de l’utilisation d’une phrase de récupération, d’une clé privée importée ou d’un signataire distant.",
+        "Conservez la clé privée ou la sauvegarde de récupération en lieu sûr. Ne collez jamais de clés privées ou de mots de récupération sur un site ou dans un message d’assistance.",
+        "Pour une identité dérivée, sauvegardez la phrase de récupération principale et le chemin de dérivation exact. Ajoutez la clé publique attendue à vos données de récupération.",
+        "Si vous créez une sauvegarde chiffrée, assurez-vous de pouvoir retrouver son mot de passe. Changer le mot de passe du coffre du navigateur ne change pas celui d’une sauvegarde existante."
+      ],
+      "overview": "Une sauvegarde de récupération permet de restaurer un compte si vous perdez ce navigateur ou cet appareil. Conservez les informations nécessaires pour restaurer l’identité exacte, notamment son chemin de dérivation si elle partage une phrase de récupération.",
+      "before": [
+        "Déverrouillez l’extension et sélectionnez le compte à sauvegarder.",
+        "Préparez un stockage privé pour la sauvegarde et notez la clé publique du compte afin de le reconnaître après restauration."
+      ],
+      "checks": [
+        "Vérifiez que votre copie est complète et lisible avant de supprimer un compte ou d’effacer les données du navigateur.",
+        "Lors de la restauration, comparez la clé publique récupérée à celle que vous avez conservée. Importer une phrase ne recrée pas automatiquement tous les sous-comptes."
       ]
     },
     "remove": {
       "title": "Supprimer un compte",
       "steps": [
-        "Conservez d’abord une sauvegarde récupérable, avec le chemin de dérivation du sous-compte.",
-        "Ouvrez le sélecteur de comptes et choisissez l’icône × du compte.",
-        "Lisez la confirmation, vérifiez le nom et choisissez Supprimer. Cela supprime le compte local, pas ses publications Nostr."
+        "Ouvrez le sélecteur de comptes en haut de la fenêtre de l’extension.",
+        "Trouvez le compte à supprimer et sélectionnez son icône ×.",
+        "Lisez la confirmation et vérifiez le nom du compte. Pour un compte dérivé, examinez le chemin et l’explication concernant les autres comptes qui partagent sa phrase.",
+        "Choisissez Supprimer pour confirmer ou Annuler pour conserver le compte."
+      ],
+      "overview": "Supprimer un compte retire son entrée de cette extension. Son profil et ses publications restent sur Nostr, et l’identité peut toujours exister sur vos autres appareils.",
+      "before": [
+        "Conservez une sauvegarde permettant de récupérer la clé privée ou l’identité avant de supprimer le compte.",
+        "Pour une identité dérivée d’une phrase, notez aussi son chemin de dérivation exact et sa clé publique."
+      ],
+      "checks": [
+        "Le compte supprimé ne devrait plus apparaître dans le sélecteur de cette extension.",
+        "Supprimer un compte dérivé laisse les autres identités de la même phrase disponibles. Après restauration des clés, vous devrez peut-être reconnecter les portefeuilles et configurer les autorisations."
       ]
     },
     "approvals": {
       "title": "Examiner une demande",
       "steps": [
-        "Quand un site demande une connexion ou l’utilisation du compte, ouvrez la demande en attente dans l’extension.",
-        "Vérifiez le site, l’action et le contenu ou la destination. Le bouton de code affiche l’événement brut.",
-        "Choisissez Approuver ou Refuser. Le menu fléché permet de mémoriser la décision ; consultez ensuite l’activité récente."
+        "Ouvrez la demande en attente de l’extension lorsqu’un site demande à se connecter, signer, déchiffrer ou s’authentifier.",
+        "Vérifiez le site demandeur et l’action. Lisez le contenu ou la destination affichés ; le bouton de code ouvre l’événement brut pour l’examiner en détail.",
+        "Choisissez Approuver ou Refuser pour la demande actuelle. Ouvrez un menu fléché uniquement si vous souhaitez mémoriser la décision.",
+        "Pour des demandes groupées, vérifiez celles qui sont sélectionnées avant d’approuver le groupe. Révéler le contenu flouté d’un message n’autorise pas en soi son envoi au site."
+      ],
+      "overview": "Une demande d’approbation indique ce qu’un site souhaite faire avec le compte actif. Une décision ponctuelle traite cette demande ; une décision mémorisée peut aussi affecter les demandes futures.",
+      "before": [
+        "Vérifiez que le compte actif est l’identité que vous souhaitez utiliser sur le site.",
+        "Vérifiez quel site vous utilisez et quelle action vous venez d’y lancer."
+      ],
+      "checks": [
+        "Retournez sur le site et vérifiez si l’action a abouti ; consultez Activité récente si vous devez identifier la demande.",
+        "Vous pouvez refuser une demande inattendue. Examinez les autorisations de site ou d’authentification mémorisées si des demandes similaires sont acceptées sans l’examen attendu."
       ]
     },
     "permissions": {
       "title": "Modifier les règles globales et par site",
       "steps": [
-        "Ouvrez Autorisations → Règles globales pour définir les valeurs par défaut des sites connectés.",
-        "Pour un site précis, visitez-le, ouvrez l’extension, puis Autorisations → Règles du site.",
-        "Les règles héritées sont grises. Les règles du site remplacent les règles globales correspondantes, mais une règle de refus plus générale peut toujours bloquer une demande. Modifiez une règle ou confirmez leur réinitialisation pour retrouver les valeurs globales."
+        "Ouvrez Autorisations → Règles globales pour examiner les valeurs par défaut des sites connectés.",
+        "Pour modifier le site actuel, ouvrez Autorisations → Règles du site. Les lignes grises sont des valeurs héritées ; les lignes colorées sont des règles propres au site.",
+        "Utilisez Ajouter une règle ou modifiez une règle existante pour choisir Autoriser, Refuser ou Demander pour l’action souhaitée. Un refus plus général peut toujours bloquer une demande malgré une autorisation plus précise.",
+        "Utilisez Utiliser la valeur héritée pour supprimer une règle spécifique. Pour supprimer toutes les règles spécifiques à ce compte et ce site, choisissez Réinitialiser les règles du site et lisez la confirmation."
+      ],
+      "overview": "Les règles globales définissent des valeurs communes, tandis que les règles de site personnalisent les actions ordinaires du compte actif sur un site. Le consentement à la connexion et l’authentification auprès des backends ou relais disposent de commandes séparées.",
+      "before": [
+        "Sélectionnez le compte dont vous souhaitez modifier les autorisations de site.",
+        "Ouvrez le site concerné dans l’onglet actuel avant de modifier ses règles."
+      ],
+      "checks": [
+        "Rouvrez l’éditeur du site et vérifiez que la règle spécifique ou héritée souhaitée est affichée.",
+        "La réinitialisation peut rétablir l’effet d’une autorisation globale. Elle ne supprime pas les refus de connexion ni les décisions d’authentification des backends et relais, qui sont séparés."
       ]
     },
     "authentication": {
       "title": "Examiner les autorisations de connexion enregistrées",
       "steps": [
-        "Ouvrez Autorisations pour le compte actif, puis Authentification backend ou Authentification relais.",
-        "Examinez les décisions sauvegardées ou choisissez les sites autorisés à s’authentifier sur un relais. Révoquez les accès inutiles.",
-        "L’authentification backend par défaut est facultative et désactivée au départ. Elle couvre la même origine et les paires du registre approuvé ; consultez la politique avant activation."
+        "Ouvrez Autorisations, puis Authentification backend pour examiner les décisions explicites enregistrées pour le compte actif.",
+        "Révoquez les décisions que vous ne souhaitez plus conserver. Leur portée comprend le site demandeur, l’URL exacte et la méthode.",
+        "Ouvrez Authentification relais pour examiner les applications connectées autorisées sur un relais. Sélectionnez celles à autoriser ou vérifiez soigneusement la portée avant de choisir tous les sites connectés.",
+        "Examinez séparément l’Authentification backend par défaut. Elle est initialement désactivée et peut autoriser automatiquement la même origine ou des paires site/backend vérifiées ; lisez sa politique avant de l’activer."
+      ],
+      "overview": "Un site peut demander de vous identifier auprès de son backend ou d’un relais Nostr. Ces autorisations de connexion sont distinctes de l’autorisation de signer des publications ou messages ordinaires.",
+      "before": [
+        "Sélectionnez le compte dont vous souhaitez examiner les décisions de connexion enregistrées.",
+        "Identifiez le site et le backend ou relais visé par la demande."
+      ],
+      "checks": [
+        "Une liste de backends vide ne prouve pas que l’authentification automatique est désactivée. Vérifiez aussi l’Authentification backend par défaut.",
+        "Révoquer une autorisation affecte les approbations futures ; cela ne vous déconnecte pas d’une session existante sur un site et ne ferme pas une connexion de relais déjà authentifiée."
       ]
     },
     "wallet": {
       "title": "Connecter un portefeuille Lightning",
       "steps": [
-        "Ouvrez Portefeuille et choisissez Configuration rapide, NWC ou LNbits. La configuration rapide utilise un prestataire qui conserve les fonds.",
-        "Pour NWC, collez l’URI de connexion. Pour LNbits, saisissez l’URL et la clé Admin API du portefeuille. Gardez ces identifiants privés.",
-        "Connectez-vous et vérifiez le solde. Utilisez Déposer pour créer une facture et ajouter des sats."
+        "Ouvrez Portefeuille et choisissez Configuration rapide, NWC ou LNbits. La configuration rapide crée un portefeuille dont les fonds sont conservés par un prestataire.",
+        "Pour NWC, créez une connexion dédiée dans votre portefeuille et copiez le secret nostr+walletconnect:// complet. Autorisez la consultation des informations du portefeuille et les opérations nécessaires.",
+        "Pour LNbits, saisissez l’URL HTTPS de l’instance et la clé Admin API du portefeuille. Il s’agit d’un identifiant permettant de dépenser ses fonds, et non de votre mot de passe administrateur.",
+        "Connectez-vous, puis vérifiez le solde et l’activité du portefeuille. Utilisez Déposer pour créer une facture lorsque vous souhaitez ajouter des sats."
+      ],
+      "overview": "L’extension se connecte à un portefeuille Lightning pour consulter les fonds, recevoir des sats et approuver des paiements. Choisissez la méthode de connexion prise en charge par votre portefeuille.",
+      "before": [
+        "Déverrouillez l’extension et sélectionnez le compte qui utilisera le portefeuille.",
+        "Pour un portefeuille existant, préparez son secret de connexion NWC ou l’URL HTTPS LNbits et la clé Admin API du portefeuille."
+      ],
+      "checks": [
+        "Le portefeuille connecté devrait afficher le solde disponible et les fonctions autorisées par sa connexion.",
+        "Si le solde, la création de factures ou l’historique sont indisponibles, examinez les autorisations et l’expiration de la connexion dans votre portefeuille. L’accès par NWC ou LNbits ne détermine pas à lui seul qui conserve les fonds."
       ]
     },
     "zaps": {
       "title": "Envoyer un zap",
       "steps": [
-        "Connectez un portefeuille approvisionné et choisissez le bouton zap ou Lightning dans une application Nostr compatible.",
-        "Choisissez le montant. Vérifiez le destinataire, les sats, les frais affichés et les demandes de signature ou paiement avant validation.",
-        "Vérifiez l’activité du portefeuille. Si vous activez les paiements automatiques, choisissez une limite de dépense adaptée."
+        "Choisissez le bouton zap ou Lightning du profil ou de la publication que vous souhaitez soutenir.",
+        "Saisissez le montant en sats et vérifiez le destinataire affiché par l’application.",
+        "Examinez les demandes de signature et de paiement dans l’extension. Vérifiez le montant, le destinataire et les frais affichés avant d’approuver.",
+        "Retournez dans Portefeuille et consultez l’activité pour confirmer le résultat du paiement."
+      ],
+      "overview": "Un zap envoie des sats à quelqu’un via une application Nostr compatible. L’application demande un paiement Lightning au portefeuille connecté de l’extension.",
+      "before": [
+        "Connectez un portefeuille Lightning dont le solde couvre le paiement et les frais éventuels.",
+        "Utilisez une application Nostr permettant de payer via l’extension et vérifiez le destinataire avant de commencer."
+      ],
+      "checks": [
+        "Un paiement effectué devrait apparaître dans l’activité du portefeuille. L’affichage du zap dans l’application peut dépendre de ses propres mises à jour.",
+        "Si le résultat n’est pas clair, consultez l’historique du portefeuille avant de réessayer. Les petits paiements peuvent ne pas demander de confirmation si l’approbation automatique est activée et que ses vérifications sont satisfaites."
       ]
     },
     "appearance": {
       "title": "Changer l’apparence",
       "steps": [
         "Ouvrez Paramètres → Apparence et langue.",
-        "Choisissez le mode clair, sombre ou système et un thème disponible.",
-        "Retournez au tableau de bord pour vérifier. Vous pouvez changer à nouveau dans ces paramètres."
+        "Choisissez l’apparence claire, sombre ou système. Sélectionnez un thème parmi les options disponibles.",
+        "Retournez au tableau de bord et examinez les textes, cartes et boutons avec l’apparence choisie."
+      ],
+      "overview": "Modifiez l’aspect de l’extension à l’aide des réglages d’apparence et de thème. Ils affectent l’interface de l’extension, pas le design des sites visités.",
+      "before": [
+        "Ouvrez l’extension depuis la barre d’outils du navigateur et déverrouillez-la si nécessaire.",
+        "Choisissez entre une apparence claire ou sombre fixe et une apparence suivant celle du système."
+      ],
+      "checks": [
+        "L’extension devrait utiliser l’apparence sélectionnée lorsque vous revenez à ses écrans.",
+        "Si le résultat est difficile à lire ou ne vous convient pas, revenez aux mêmes réglages et choisissez un autre thème ou une autre apparence."
       ]
     },
     "language": {
       "title": "Changer la langue",
       "steps": [
         "Ouvrez Paramètres → Apparence et langue → Langue.",
-        "Choisissez une langue et confirmez. Fermer sans confirmer conserve la langue précédente.",
-        "L’interface change et mémorise votre choix. Utilisez l’engrenage pour retrouver les paramètres si nécessaire."
+        "Faites défiler ou glisser la roue des langues jusqu’à centrer la vôtre. Lorsque la liste a le focus, vous pouvez aussi utiliser les flèches haut et bas.",
+        "Sélectionnez Confirmer pour appliquer le choix. Le bouton reste dans la langue actuelle de l’interface jusqu’à confirmation.",
+        "Retournez à l’interface et vérifiez les libellés mis à jour. Fermer le sélecteur sans confirmer conserve la langue précédente."
+      ],
+      "overview": "Choisissez la langue des commandes et messages de l’extension. Cela ne traduit pas les publications Nostr et ne change pas le réglage de langue propre aux sites.",
+      "before": [
+        "Ouvrez et déverrouillez l’extension si nécessaire.",
+        "Repérez Paramètres grâce à l’icône d’engrenage ; cela aide aussi si la langue actuelle vous est inconnue."
+      ],
+      "checks": [
+        "La ligne de langue devrait afficher votre choix enregistré lorsque vous rouvrez les paramètres.",
+        "Certains libellés peuvent rester en anglais. Pour revenir à la langue précédente, utilisez l’engrenage et ouvrez le même sélecteur."
       ]
     },
     "security": {
       "title": "Configurer mot de passe et verrouillage",
       "steps": [
-        "Ouvrez Paramètres → Sécurité.",
-        "Protégez le coffre local avec le réglage du mot de passe et choisissez un délai de verrouillage automatique.",
-        "Verrouillez le coffre en terminant. Conservez la sauvegarde de récupération séparément ; le mot de passe ne la remplace pas."
+        "Déverrouillez l’extension et ouvrez Paramètres → Sécurité.",
+        "Choisissez un délai de verrouillage automatique. Si vous activez le verrouillage temporisé, définissez et confirmez le mot de passe à l’invite.",
+        "Pour remplacer un mot de passe existant, utilisez Changer le mot de passe et remplissez les champs demandés.",
+        "Verrouillez le coffre une fois terminé, puis déverrouillez-le avec votre mot de passe enregistré."
+      ],
+      "overview": "Le mot de passe du coffre protège l’accès aux clés stockées dans ce navigateur. Le verrouillage automatique exige un nouveau déverrouillage après une période d’inactivité ; il ne remplace pas une sauvegarde de récupération.",
+      "before": [
+        "Conservez une sauvegarde récupérable de votre compte avant de modifier la protection du coffre.",
+        "Prévoyez un lieu sûr pour conserver le mot de passe nécessaire au déverrouillage de ce navigateur."
+      ],
+      "checks": [
+        "Le délai choisi devrait rester visible dans Sécurité lorsque vous rouvrez les paramètres.",
+        "Le mot de passe du coffre n’est ni une phrase de récupération ni le mot de passe d’une sauvegarde chiffrée. Gardez ces données de récupération accessibles indépendamment de ce navigateur."
       ]
     },
     "import": {
       "title": "Importer un compte existant",
       "steps": [
-        "Choisissez Ajouter un compte → Importer une clé ou une sauvegarde. Collez votre clé privée ou votre phrase de récupération, ou chargez un fichier de sauvegarde ; le format est détecté automatiquement.",
-        "Saisissez la sauvegarde en privé dans l’extension. Vérifiez la clé publique restaurée avant d’utiliser le compte."
+        "Choisissez Importer une clé ou une sauvegarde pendant la configuration, ou Ajouter un compte → Importer une clé ou une sauvegarde dans le sélecteur de comptes.",
+        "Collez en privé le nsec, la clé privée hexadécimale ou la phrase de récupération dans l’extension, ou chargez un fichier de sauvegarde compatible.",
+        "Pour une sauvegarde chiffrée ou un ncryptsec, saisissez le mot de passe de la sauvegarde. Gardez l’original intact si le format ou le mot de passe est refusé.",
+        "Continuez une fois le format reconnu. Définissez un mot de passe de coffre local à l’invite, ou déverrouillez un coffre existant avec son mot de passe actuel.",
+        "Terminez la configuration et comparez la clé publique affichée avec l’identité que vous souhaitiez restaurer."
+      ],
+      "overview": "Restaurez une identité existante à l’aide de sa clé privée, de sa phrase de récupération ou d’une sauvegarde chiffrée compatible. L’extension détecte le format ; un npub seul est une clé publique et relève du mode Lecture seule.",
+      "before": [
+        "Préparez votre sauvegarde existante et, si elle est chiffrée, le mot de passe utilisé pour la chiffrer.",
+        "Gardez la clé publique attendue et tout chemin de dérivation personnalisé à portée de main pour vérifier l’identité restaurée."
+      ],
+      "checks": [
+        "La clé publique restaurée devrait correspondre au compte sauvegardé. Une clé différente peut signifier que vous avez besoin du chemin de dérivation d’origine.",
+        "Importer une phrase commence par sa première clé Nostr ; cela ne restaure pas automatiquement toutes les identités dérivées ni les chemins personnalisés."
       ]
     },
     "switch": {
       "title": "Changer de compte",
       "steps": [
-        "Ouvrez le sélecteur de comptes et choisissez l’identité à utiliser.",
-        "Vérifiez le compte actif avant d’approuver une demande. Si un site affiche encore l’ancienne identité, déconnectez-vous du site puis reconnectez-vous."
+        "Déverrouillez l’extension et ouvrez le sélecteur de comptes en haut de sa fenêtre.",
+        "Sélectionnez l’identité souhaitée et vérifiez le nom et la clé publique affichés.",
+        "Retournez sur le site. S’il affiche encore l’ancienne identité, déconnectez-vous sur ce site, puis reconnectez-vous avec l’extension."
+      ],
+      "overview": "Changez l’identité active avant d’utiliser un autre compte Nostr. Les sites peuvent conserver leur propre session : changer la sélection de l’extension peut donc nécessiter une reconnexion sur le site.",
+      "before": [
+        "Ajoutez ou importez chacune des identités entre lesquelles vous souhaitez basculer.",
+        "Vérifiez le nom ou la clé publique du compte que vous souhaitez utiliser."
+      ],
+      "checks": [
+        "Vérifiez à nouveau le compte actif avant d’approuver une nouvelle demande.",
+        "Si le site affiche toujours un autre profil, vérifiez sa propre session au lieu de supposer que la sélection dans l’extension l’a modifiée."
       ]
     },
     "receive": {
       "title": "Recevoir des sats",
       "steps": [
-        "Ouvrez Wallet → Déposer et saisissez le montant pour créer une facture Lightning.",
-        "Partagez la facture avec la personne qui paie. Vérifiez l’activité et le solde pour confirmer le paiement."
+        "Ouvrez Portefeuille → Déposer.",
+        "Saisissez le montant en sats et créez la facture Lightning.",
+        "Partagez la facture avec la personne qui paie. Gardez votre secret NWC et votre clé API privés.",
+        "Vérifiez l’activité et le solde du portefeuille après l’envoi du paiement."
+      ],
+      "overview": "Créez une facture Lightning pour recevoir le montant choisi dans votre portefeuille connecté. Vous pouvez la partager avec la personne qui paie sans communiquer les identifiants de connexion du portefeuille.",
+      "before": [
+        "Connectez un portefeuille et sélectionnez le compte qui l’utilise.",
+        "Pour NWC, assurez-vous que la connexion autorise la création de factures et la consultation des informations nécessaires pour vérifier le paiement."
+      ],
+      "checks": [
+        "Cherchez une facture payée ou un paiement reçu dans le portefeuille ; créer une facture ne signifie pas qu’elle a été payée.",
+        "Si la création de facture échoue, examinez la connexion du portefeuille et ses autorisations avant de réessayer."
       ]
     },
     "limits": {
       "title": "Modifier l’approbation automatique des paiements",
       "steps": [
-        "Ouvrez Wallet → Paramètres et consultez le seuil d’approbation automatique.",
-        "Choisissez un seuil pour chaque paiement individuel ; il ne s’agit pas d’un budget de dépenses total. Utilisez zéro pour confirmer chaque paiement. Consultez régulièrement l’activité du portefeuille."
+        "Ouvrez Portefeuille → Paramètres et repérez le Seuil d’approbation automatique.",
+        "Saisissez un nombre entier de sats. Utilisez zéro si vous souhaitez confirmer chaque paiement.",
+        "Enregistrez la modification, puis rouvrez les paramètres pour vérifier la valeur sauvegardée.",
+        "Consultez régulièrement l’activité du portefeuille et réduisez le seuil ou révoquez l’autorisation de paiement d’un site si vous voyez des demandes inattendues."
+      ],
+      "overview": "L’approbation automatique permet à certains petits paiements de se dérouler sans fenêtre de confirmation. Le seuil détermine leur admissibilité ; d’autres vérifications d’autorisation et de sécurité peuvent encore exiger une confirmation.",
+      "before": [
+        "Connectez le portefeuille à configurer et vérifiez le compte actif.",
+        "Choisissez un montant en sats que vous acceptez d’autoriser sans examiner chaque demande."
+      ],
+      "checks": [
+        "Les paiements au-dessus du seuil devraient demander confirmation ; un paiement inférieur peut aussi nécessiter un examen.",
+        "Ce réglage n’autorise pas à lui seul un site à utiliser le portefeuille. Examinez séparément l’accès du site et les autorisations de connexion du prestataire."
       ]
     },
     "loginFailed": {
       "title": "Je ne peux pas me connecter",
       "steps": [
-        "Déverrouillez l’extension, vérifiez le compte actif et les demandes en attente. Lisez toute erreur avant de réessayer.",
-        "Vérifiez les règles du site et les autorisations de backend ou de relais du compte. Si le format n’est pas pris en charge, partagez l’erreur avec les développeurs du site, jamais vos clés."
+        "Ouvrez et déverrouillez l’extension, puis vérifiez le compte actif.",
+        "Cherchez une demande en attente. Lisez le site demandeur et la destination, puis approuvez uniquement s’ils correspondent à la connexion que vous avez lancée.",
+        "Dans Autorisations → Règles du site, cherchez un refus de connexion ou une règle de refus pertinente. Examinez Authentification backend ou Authentification relais si la demande concerne ces destinations.",
+        "Retournez sur le site et réessayez après avoir résolu le problème précis. S’il affiche un ancien compte, déconnectez-vous avant de vous reconnecter."
+      ],
+      "overview": "Une connexion peut échouer parce que le coffre est verrouillé, que le mauvais compte est sélectionné ou qu’une demande de connexion ou d’authentification est bloquée. Commencez par la demande en attente et l’erreur exacte affichée.",
+      "before": [
+        "Ouvrez le site concerné dans l’onglet actuel et notez les messages d’erreur.",
+        "Identifiez le compte avec lequel vous souhaitez vous connecter."
+      ],
+      "checks": [
+        "Le site devrait afficher le compte souhaité une fois la connexion réussie.",
+        "Si l’erreur persiste ou indique un format de demande non pris en charge, conservez l’erreur exacte et l’URL du site pour l’assistance. N’incluez jamais de clés privées ni de mots de récupération."
       ]
     },
     "denied": {
       "title": "Une demande est refusée",
       "steps": [
-        "Visitez le site concerné et ouvrez Autorisations → Règles du site. Vérifiez les règles propres au site et les refus globaux hérités.",
-        "Modifiez seulement la règle souhaitée. L’authentification a ses propres autorisations ; réinitialiser les règles du site ne supprime pas ces décisions."
+        "Ouvrez Autorisations → Règles du site pour le site actuel.",
+        "Si la connexion du site a été refusée, examinez ou retirez ce refus afin qu’il puisse la demander à nouveau.",
+        "Pour une action ordinaire, vérifiez les règles du site et les règles globales héritées. Modifiez le refus pertinent ; un refus plus général peut aussi nécessiter votre attention.",
+        "Pour une connexion à un backend ou relais, examinez les écrans d’authentification séparés. Réessayez l’action sur le site après la modification souhaitée."
+      ],
+      "overview": "Un refus mémorisé peut bloquer une demande sans nouvelle confirmation. Le réglage à modifier dépend de la cause : connexion du site refusée, action ordinaire interdite ou destination d’authentification bloquée.",
+      "before": [
+        "Sélectionnez le compte concerné et visitez le site qui fait la demande.",
+        "Notez l’action ou l’erreur afin de modifier l’autorisation correspondante."
+      ],
+      "checks": [
+        "Retirer un refus permet au site de redemander ; cela ne le connecte pas automatiquement et n’autorise pas les signatures.",
+        "Réinitialiser les règles du site conserve les valeurs globales et les décisions d’authentification séparées. Examinez ces réglages si la demande reste refusée."
       ]
     },
     "walletFailed": {
       "title": "Mon portefeuille ne se connecte pas",
       "steps": [
-        "Vérifiez que le portefeuille est en ligne et que la méthode est correcte : URI NWC ou URL et clé Admin API de LNbits.",
-        "Pour NWC, vérifiez les autorisations et l’expiration dans votre portefeuille. Ne partagez jamais le secret de connexion ou la clé API en demandant de l’aide."
+        "Dans l’extension, vérifiez que vous avez choisi NWC ou LNbits selon les identifiants dont vous disposez.",
+        "Pour NWC, collez le secret nostr+walletconnect:// complet. Vérifiez son expiration et autorisez les informations du portefeuille pour valider la connexion.",
+        "Pour LNbits, utilisez l’URL HTTPS de l’instance et la clé Admin API de ce portefeuille. Une clé de facturation ou de lecture, ou un mot de passe administrateur, ne la remplace pas.",
+        "Réessayez la connexion, puis vérifiez les fonctions disponibles. Examinez chez le prestataire les autorisations de solde, factures, paiements et historique si seules certaines opérations échouent."
+      ],
+      "overview": "Les problèmes de connexion proviennent souvent d’un identifiant inadapté, d’une connexion NWC expirée ou d’un portefeuille indisponible. Vérifiez la méthode avant de remplacer des identifiants.",
+      "before": [
+        "Ouvrez l’interface du prestataire et vérifiez que le portefeuille est disponible.",
+        "Gardez l’erreur de connexion visible ou copiez son texte sans aucune valeur secrète."
+      ],
+      "checks": [
+        "Une connexion réussie devrait afficher le portefeuille et les informations autorisées.",
+        "Si elle échoue encore, indiquez à l’assistance la méthode de connexion et le texte de l’erreur. Retirez les secrets NWC et les clés API des messages et captures d’écran."
       ]
     },
     "zapFailed": {
       "title": "Un zap a échoué",
       "steps": [
-        "Consultez l’historique avant de réessayer pour éviter de payer deux fois. Vérifiez le solde, frais compris.",
-        "Déverrouillez l’extension et vérifiez la connexion du portefeuille et l’autorisation du site. Si WebLN n’est pas détecté, actualisez la page. Conservez le message d’erreur si le problème persiste."
+        "Consultez l’activité du portefeuille et l’historique du prestataire avant de réessayer. Si le paiement est effectué, ne le renvoyez pas simplement parce que l’application ne s’est pas actualisée.",
+        "Si aucun paiement n’a abouti, vérifiez que le solde couvre le montant et les frais.",
+        "Déverrouillez l’extension et vérifiez la connexion du portefeuille, les demandes en attente et l’autorisation de paiement du site.",
+        "Si l’application ne trouve pas de fournisseur WebLN, actualisez la page après avoir déverrouillé et connecté le portefeuille.",
+        "Réessayez uniquement après avoir établi le résultat de la tentative précédente. Conservez l’erreur si la demande échoue encore."
+      ],
+      "overview": "L’absence de message de réussite ne signifie pas toujours qu’aucun paiement n’a eu lieu. Vérifiez le résultat réel dans le portefeuille avant d’envoyer à nouveau le même zap.",
+      "before": [
+        "Gardez le montant demandé et le message d’erreur de l’application à portée de main.",
+        "Ouvrez le portefeuille utilisé pour la tentative de paiement."
+      ],
+      "checks": [
+        "Confirmez le paiement à l’aide d’une opération terminée dans le portefeuille ; l’affichage du zap dans l’application peut se mettre à jour séparément.",
+        "Si le résultat reste inconnu, continuez à vérifier le portefeuille ou contactez son prestataire avant de payer à nouveau. Ne partagez jamais de secrets de connexion en demandant de l’aide."
       ]
     }
   },
@@ -193,5 +403,10 @@
     "payments": "Connectez un portefeuille, recevez des sats et envoyez des zaps.",
     "settings": "Choisissez votre langue et sécurisez votre extension.",
     "troubleshooting": "Résolvez les problèmes de connexion, de demandes et de paiements."
-  }
+  },
+  "beforeTitle": "Avant de commencer",
+  "checksTitle": "Vérifier le résultat",
+  "screenshotsTitle": "À l’écran",
+  "onThisPage": "Sur cette page",
+  "breadcrumb": "Fil d’Ariane"
 }

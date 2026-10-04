@@ -15,12 +15,15 @@ test('help tasks are independent of the complete published video library', () =>
       assert.ok(HELP_CATEGORIES.includes(topic.category));
       assert.ok(copy.topics[topic.id].title);
       for (const related of topic.related ?? []) assert.ok(HELP_TOPICS.some(item => item.id === related));
-      if (topic.screenshot) {
-        assert.ok(fs.existsSync(`public/images/guides/extension/${topic.screenshot}.png`));
+      for (const screenshot of topic.screenshots ?? []) {
+        assert.ok(fs.existsSync(`public/images/guides/extension/${screenshot}.png`));
         const media = JSON.parse(fs.readFileSync(`messages/${locale}/guides.json`, 'utf8')).media;
-        assert.ok(media.captions[topic.screenshot]);
+        assert.ok(media.captions[screenshot]);
       }
-      assert.ok(copy.topics[topic.id].steps.length >= 2);
+      assert.ok(copy.topics[topic.id].overview.length > 50);
+      assert.equal(copy.topics[topic.id].before.length, 2);
+      assert.equal(copy.topics[topic.id].checks.length, 2);
+      assert.ok(copy.topics[topic.id].steps.length >= 3);
       assert.ok(copy.topics[topic.id].steps.every((step: string) => step.trim().length > 20));
       if (topic.video) assert.match(youtubeUrls(GUIDE_VIDEOS[topic.video].id).embed, /^https:\/\/www.youtube-nocookie.com\/embed\//);
     }

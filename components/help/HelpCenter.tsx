@@ -35,7 +35,7 @@ export function HelpCenter() {
     window.history.replaceState(window.history.state, '', `${url.pathname}${url.search}${url.hash}`);
   }
 
-  const results = topics.filter(topic => matchesHelpQuery(query, [t(`topics.${topic.id}.title`), t(`categories.${topic.category}`), ...(t.raw(`topics.${topic.id}.steps`) as string[])].join(' ')));
+  const results = topics.filter(topic => matchesHelpQuery(query, [t(`topics.${topic.id}.title`), t(`categories.${topic.category}`), t(`topics.${topic.id}.overview`), ...(t.raw(`topics.${topic.id}.before`) as string[]), ...(t.raw(`topics.${topic.id}.steps`) as string[]), ...(t.raw(`topics.${topic.id}.checks`) as string[])].join(' ')));
   const returnQuery = query.trim() ? `?q=${encodeURIComponent(query)}` : '';
   const taskLink = (topic: typeof topics[number]) => `${helpTopicHref(topic)}${returnQuery}`;
 
@@ -72,7 +72,7 @@ export function HelpCenter() {
         <Link href={taskLink(topic)} className="block rounded focus-visible:outline-2 focus-visible:outline-primary">
           <p className="mb-1 text-xs text-gray-500 dark:text-gray-400">{t(`categories.${topic.category}`)}</p>
           <h2 className="mb-2 text-lg font-semibold text-primary hover:underline">{t(`topics.${topic.id}.title`)}</h2>
-          <p className="text-sm leading-relaxed text-gray-600 dark:text-gray-400">{(t.raw(`topics.${topic.id}.steps`) as string[])[0]}</p>
+          <p className="text-sm leading-relaxed text-gray-600 dark:text-gray-400">{t(`topics.${topic.id}.overview`)}</p>
         </Link>
       </li>)}</ul>
     </section> : <>

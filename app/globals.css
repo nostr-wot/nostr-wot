@@ -890,6 +890,8 @@ body {
    ============================================ */
 
 @media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+
   *,
   *::before,
   *::after {
@@ -937,3 +939,13 @@ a[href],
 
 .docs-content :where(h2, h3, h4) code { font-size: inherit; }
 .docs-content :where(table):not(.code-block *) { display: table; width: 100%; }
+
+/* Short entry motion for help sections; content stays visible without JavaScript. */
+@keyframes helpSectionEnter {
+  from { opacity: .85; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.help-article .help-section { scroll-margin-top: 6rem; }
+@media (prefers-reduced-motion: no-preference) {
+  .help-article .help-section { animation: helpSectionEnter 300ms ease-out; }
+}

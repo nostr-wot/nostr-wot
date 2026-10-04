@@ -25,153 +25,363 @@
     "account": {
       "title": "Crear una cuenta nueva",
       "steps": [
-        "Instala y abre la extensión. Elige Crear nueva.",
-        "Guarda las 24 palabras de recuperación en orden y completa la comprobación de la copia de seguridad.",
-        "Configura la contraseña y el bloqueo automático, termina la configuración y selecciona Empezar."
+        "En la configuración inicial, pulsa Continuar y luego Crear nueva. Si ya tienes una cuenta que restaurar, elige Importar clave o copia de seguridad.",
+        "Muestra la frase de recuperación en privado. Anota las 24 palabras en su orden exacto y completa la comprobación usando tu copia guardada.",
+        "Elige un intervalo de bloqueo automático y establece y confirma una contraseña para la bóveda. Guarda la contraseña fuera del navegador.",
+        "Continúa con la configuración. Las sugerencias de personas a las que seguir son opcionales; elige Omitir por ahora si prefieres decidir después.",
+        "Pulsa Empezar y comprueba el nombre y la clave pública de la cuenta en la extensión."
+      ],
+      "overview": "Crea una identidad Nostr si aún no tienes la cuenta que quieres usar. Las palabras de recuperación restauran la identidad; la contraseña de la bóveda desbloquea este navegador.",
+      "before": [
+        "Instala la extensión y ábrela desde la barra de herramientas del navegador.",
+        "Prepara un lugar privado para anotar las 24 palabras de recuperación y otro seguro para guardarlas."
+      ],
+      "checks": [
+        "Tu cuenta debería aparecer en el selector, con una clave pública que puedes copiar.",
+        "Si Crear nueva abre Nueva subcuenta, esta bóveda ya tiene una frase de recuperación principal. La nueva identidad compartirá esa frase."
       ]
     },
     "subAccounts": {
       "title": "Añadir otra identidad",
       "steps": [
-        "Primero, asegúrate de haber guardado tu frase de recuperación principal. Abre el selector de cuentas y elige Añadir cuenta → Crear nueva.",
-        "Pon nombre a la subcuenta. Conserva la ruta de derivación propuesta salvo que necesites otra. Utiliza tu frase de recuperación principal.",
-        "Termina la configuración y cambia de identidad desde el selector. Guarda la frase y la ruta de derivación de cada cuenta."
+        "Desbloquea la extensión, abre el selector de cuentas y elige Añadir cuenta → Crear nueva.",
+        "Introduce un nombre que te ayude a reconocer la identidad. El nombre local de la cuenta no publica un nuevo nombre de perfil.",
+        "Conserva la ruta de derivación propuesta salvo que necesites una específica. Abre Avanzado solo para introducir la ruta exacta que quieras usar.",
+        "Comprueba la vista previa de la clave pública, termina la configuración y selecciona la nueva identidad en el selector.",
+        "Anota la ruta de derivación exacta y la clave pública junto con tus datos de recuperación. La frase por sí sola no indica a otra herramienta qué ruta restaurar."
+      ],
+      "overview": "Crea otra identidad para un uso distinto sin generar otra frase de recuperación. Cada identidad derivada tiene su propia clave pública, pero todas las que usan la misma frase dependen de esa copia de seguridad compartida.",
+      "before": [
+        "La bóveda debe contener una frase de recuperación principal; una clave privada importada no basta.",
+        "Guarda una copia segura de esa frase antes de añadir identidades."
+      ],
+      "checks": [
+        "El selector debería mostrar la nueva identidad y, al seleccionarla, su propia clave pública.",
+        "Cambiar la ruta crea otra identidad; no traslada publicaciones, seguidores ni información de perfil desde otra cuenta."
       ]
     },
     "backup": {
       "title": "Hacer una copia de seguridad de tu cuenta",
       "steps": [
-        "Selecciona la cuenta y abre Ajustes → Seguridad para exportar su clave o copia. Nunca pegues una clave privada en una web.",
-        "Guarda la copia de forma segura. Para una identidad derivada, conserva la frase de recuperación y su ruta de derivación.",
-        "Para restaurar, elige Añadir cuenta → Importar clave o copia de seguridad. Comprueba que la clave pública coincide con la original."
+        "Abre los controles de claves o copias de seguridad de la cuenta. Las opciones dependen de si usa una frase de recuperación, una clave privada importada o un firmante remoto.",
+        "Guarda la clave privada o la copia de recuperación en un lugar seguro. Nunca pegues claves privadas ni palabras de recuperación en una web o un mensaje de soporte.",
+        "Para una identidad derivada, guarda la frase de recuperación principal y la ruta de derivación exacta. Incluye la clave pública esperada en tus datos de recuperación.",
+        "Si creas una copia cifrada, asegúrate de poder recuperar su contraseña. Cambiar la contraseña de la bóveda del navegador no cambia la de una copia existente."
+      ],
+      "overview": "Una copia de recuperación permite restaurar una cuenta si pierdes este navegador o dispositivo. Guarda toda la información necesaria para restaurar la identidad exacta, incluida su ruta de derivación si comparte una frase de recuperación.",
+      "before": [
+        "Desbloquea la extensión y selecciona la cuenta que quieres respaldar.",
+        "Prepara un almacenamiento privado para la copia y anota la clave pública de la cuenta para reconocerla tras recuperarla."
+      ],
+      "checks": [
+        "Comprueba que la copia esté completa y sea legible antes de eliminar una cuenta o borrar los datos del navegador.",
+        "Al restaurarla, compara la clave pública recuperada con la guardada. Importar una frase no recrea automáticamente todas las subcuentas."
       ]
     },
     "remove": {
       "title": "Eliminar una cuenta",
       "steps": [
-        "Guarda primero una copia recuperable, incluida la ruta de derivación si es una subcuenta.",
-        "Abre el selector de cuentas y pulsa el icono × de la cuenta.",
-        "Lee la confirmación, verifica el nombre y elige Eliminar. Se elimina la cuenta local, no sus publicaciones en Nostr."
+        "Abre el selector de cuentas en la parte superior de la ventana de la extensión.",
+        "Busca la cuenta que quieres eliminar y pulsa su icono ×.",
+        "Lee la confirmación y comprueba el nombre de la cuenta. Si es derivada, revisa la ruta y la explicación sobre las otras cuentas que comparten su frase.",
+        "Pulsa Eliminar para confirmar o Cancelar para conservar la cuenta."
+      ],
+      "overview": "Eliminar una cuenta borra su entrada de esta extensión. Su perfil y publicaciones permanecen en Nostr, y la identidad puede seguir existiendo en otros dispositivos.",
+      "before": [
+        "Guarda una copia recuperable de la clave privada o de los datos de recuperación antes de eliminar la cuenta.",
+        "Si la identidad deriva de una frase, anota también su ruta de derivación exacta y su clave pública."
+      ],
+      "checks": [
+        "La cuenta eliminada ya no debería aparecer en el selector de esta extensión.",
+        "Eliminar una cuenta derivada conserva las demás identidades de esa frase. Al restaurar las claves, puede que debas volver a conectar billeteras y configurar permisos."
       ]
     },
     "approvals": {
       "title": "Revisar una solicitud",
       "steps": [
-        "Cuando una web quiera conectarse o usar tu cuenta, abre su solicitud pendiente en la extensión.",
-        "Comprueba la web, la acción y el contenido o destino. El botón de código muestra el evento original.",
-        "Elige Aprobar o Denegar. Usa el menú de flecha solo si quieres recordar la decisión; revisa después la actividad reciente."
+        "Abre la solicitud pendiente de la extensión cuando una web pida conectarse, firmar, descifrar o autenticarse.",
+        "Comprueba la web solicitante y la acción. Lee el contenido o destino mostrado; el botón de código abre el evento original para examinarlo.",
+        "Pulsa Aprobar o Denegar para la solicitud actual. Abre un menú de flecha solo si quieres guardar la decisión.",
+        "En solicitudes agrupadas, comprueba cuáles están seleccionadas antes de aprobar el grupo. Mostrar el contenido difuminado de un mensaje no autoriza por sí solo su envío a la web."
+      ],
+      "overview": "Una solicitud de aprobación indica qué quiere hacer una web con la cuenta activa. Una decisión puntual resuelve esa solicitud; una decisión guardada también puede afectar a futuras solicitudes.",
+      "before": [
+        "Asegúrate de que la cuenta activa sea la identidad que quieres usar en la web.",
+        "Comprueba qué web estás usando y qué acción acabas de iniciar allí."
+      ],
+      "checks": [
+        "Vuelve a la web y comprueba si la acción terminó; consulta Actividad reciente si necesitas identificar la solicitud.",
+        "Puedes denegar una solicitud inesperada. Revisa los permisos guardados del sitio o de autenticación si se permiten solicitudes similares sin la revisión que esperas."
       ]
     },
     "permissions": {
       "title": "Cambiar reglas globales y por sitio",
       "steps": [
-        "Abre Permisos → Reglas globales para configurar valores predeterminados de sitios conectados.",
-        "Para cambiar un sitio, visítalo, abre la extensión y elige Permisos → Reglas del sitio.",
-        "Las reglas heredadas aparecen en gris. Las reglas del sitio sustituyen a las globales correspondientes, pero una regla Denegar más amplia puede seguir bloqueando una solicitud. Edita una regla o confirma Restablecer reglas del sitio para volver a los valores globales."
+        "Abre Permisos → Reglas globales para revisar los valores predeterminados de los sitios conectados.",
+        "Para editar la web actual, abre Permisos → Reglas del sitio. Las filas grises son valores heredados; las de color son reglas específicas del sitio.",
+        "Usa Añadir regla o edita una existente para elegir Permitir, Denegar o Preguntar para la acción. Una regla Denegar más amplia puede bloquear una solicitud aunque una regla más específica la permita.",
+        "Usa Usar valor heredado para eliminar una regla específica. Para eliminarlas todas de esta cuenta y web, elige Restablecer reglas del sitio y lee la confirmación."
+      ],
+      "overview": "Las reglas globales establecen valores compartidos; las del sitio personalizan las acciones habituales de la cuenta activa en una web. El consentimiento de conexión y la autenticación en backends o relays tienen controles separados.",
+      "before": [
+        "Selecciona la cuenta cuyos permisos del sitio quieres cambiar.",
+        "Abre la web afectada en la pestaña actual antes de editar sus reglas."
+      ],
+      "checks": [
+        "Vuelve a abrir el editor del sitio y comprueba que aparece la regla específica o heredada prevista.",
+        "Restablecer las reglas puede volver a aplicar un permiso global. No elimina los rechazos de conexión ni las decisiones de autenticación de backends y relays, que se gestionan por separado."
       ]
     },
     "authentication": {
       "title": "Revisar permisos de acceso guardados",
       "steps": [
-        "Abre Permisos para la cuenta activa y entra en Autenticación de backend o Autenticación de relay.",
-        "Revisa las decisiones guardadas o selecciona qué sitios pueden autenticarse en cada relay. Revoca los accesos que ya no quieras.",
-        "La autenticación de backend predeterminada es opcional y empieza desactivada. Cubre el mismo origen y pares del registro aprobado; consulta el enlace de la política antes de activarla."
+        "Abre Permisos y elige Autenticación de backend para revisar las decisiones explícitas guardadas de la cuenta activa.",
+        "Revoca las decisiones que ya no quieras conservar. Su alcance incluye el sitio solicitante, la URL exacta y el método.",
+        "Abre Autenticación de relay para revisar las apps conectadas permitidas en un relay. Selecciona las que quieras permitir o revisa cuidadosamente el alcance antes de elegir todos los sitios conectados.",
+        "Revisa por separado la Autenticación de backend predeterminada. Empieza desactivada y puede permitir automáticamente el mismo origen o pares verificados de web y backend; lee su política antes de activarla."
+      ],
+      "overview": "Una web puede pedir que te identifiques ante su backend o un relay Nostr. Estos permisos de acceso son distintos del permiso para firmar publicaciones o mensajes habituales.",
+      "before": [
+        "Selecciona la cuenta cuyas decisiones de acceso guardadas quieres revisar.",
+        "Identifica la web y el backend o relay de destino de la solicitud."
+      ],
+      "checks": [
+        "Una lista de backends vacía no demuestra que la autenticación automática esté desactivada. Comprueba también la Autenticación de backend predeterminada.",
+        "Revocar un permiso afecta a futuras aprobaciones; no cierra una sesión existente en una web ni una conexión de relay ya autenticada."
       ]
     },
     "wallet": {
       "title": "Conectar una billetera Lightning",
       "steps": [
-        "Abre Billetera y elige Configuración rápida, NWC o LNbits. La configuración rápida usa un proveedor custodial que guarda los fondos.",
-        "En NWC, pega la URI de conexión. En LNbits, introduce la URL y la clave Admin API de la billetera. Mantén estas credenciales privadas.",
-        "Conecta y comprueba el saldo. Usa Depositar para crear una factura cuando quieras añadir sats."
+        "Abre Billetera y elige Configuración rápida, NWC o LNbits. La configuración rápida crea una billetera custodial con un proveedor que guarda los fondos.",
+        "Para NWC, crea una conexión dedicada en tu billetera y copia el secreto nostr+walletconnect:// completo. Permite consultar la información de la billetera y realizar las operaciones necesarias.",
+        "Para LNbits, introduce la URL HTTPS de la instancia y la clave Admin API de la billetera. Es una credencial para gastar desde la billetera, no tu contraseña de administrador.",
+        "Conecta y comprueba el saldo y la actividad. Usa Depositar para crear una factura cuando quieras añadir sats."
+      ],
+      "overview": "La extensión se conecta a una billetera Lightning para consultar fondos, recibir sats y aprobar pagos. Elige el método de conexión que admita tu billetera.",
+      "before": [
+        "Desbloquea la extensión y selecciona la cuenta que usará la billetera.",
+        "Para una billetera existente, ten a mano su secreto de conexión NWC o la URL HTTPS de LNbits y la clave Admin API de la billetera."
+      ],
+      "checks": [
+        "La billetera conectada debería mostrar el saldo disponible y las funciones que permita su conexión.",
+        "Si no puedes consultar el saldo, crear facturas o ver el historial, revisa los permisos y la caducidad de la conexión en tu billetera. Usar NWC o LNbits no determina por sí solo quién custodia los fondos."
       ]
     },
     "zaps": {
       "title": "Enviar un zap",
       "steps": [
-        "Conecta una billetera con saldo y pulsa el botón de zap o Lightning en una app Nostr compatible.",
-        "Elige el importe. Revisa el destinatario, los sats, las comisiones mostradas y las solicitudes de firma o pago antes de aprobar.",
-        "Comprueba el resultado en la actividad de la billetera. Si activas pagos automáticos, establece un límite de gasto adecuado."
+        "Pulsa el botón de zap o Lightning del perfil o publicación que quieras apoyar.",
+        "Introduce el importe en sats y comprueba qué destinatario muestra la app.",
+        "Revisa las solicitudes de firma y pago en la extensión. Comprueba el importe, el destinatario y las comisiones mostradas antes de aprobar.",
+        "Vuelve a Billetera y consulta la actividad para confirmar el resultado del pago."
+      ],
+      "overview": "Un zap envía sats a alguien mediante una app Nostr compatible. La app solicita un pago Lightning a la billetera conectada de la extensión.",
+      "before": [
+        "Conecta una billetera Lightning con saldo suficiente para el pago y las comisiones.",
+        "Usa una app Nostr que permita pagar mediante la extensión y comprueba el destinatario antes de empezar."
+      ],
+      "checks": [
+        "Un pago completado debería aparecer en la actividad de la billetera. La visualización del zap en la app puede depender de sus propias actualizaciones.",
+        "Si el resultado no está claro, consulta el historial de la billetera antes de reintentar. Los pagos pequeños pueden no pedir confirmación si la aprobación automática está activada y se cumplen sus controles."
       ]
     },
     "appearance": {
       "title": "Cambiar la apariencia",
       "steps": [
         "Abre Ajustes → Apariencia e idioma.",
-        "Elige apariencia clara, oscura o del sistema, y uno de los temas disponibles.",
-        "Vuelve al panel para comprobar el resultado. Puedes cambiarlo de nuevo desde los mismos ajustes."
+        "Elige apariencia clara, oscura o del sistema. Selecciona uno de los temas disponibles.",
+        "Vuelve al panel y revisa el texto, las tarjetas y los botones con la apariencia elegida."
+      ],
+      "overview": "Cambia el aspecto de la extensión mediante sus controles de apariencia y temas. Estos ajustes afectan a la interfaz de la extensión, no al diseño de las webs que visitas.",
+      "before": [
+        "Abre la extensión desde la barra de herramientas del navegador y desbloquéala si es necesario.",
+        "Decide si prefieres un aspecto claro u oscuro fijo, o uno que siga el del sistema."
+      ],
+      "checks": [
+        "La extensión debería usar la apariencia seleccionada cuando vuelvas a sus pantallas.",
+        "Si cuesta leer o el resultado no es el esperado, vuelve a los mismos controles y elige otro tema o apariencia."
       ]
     },
     "language": {
       "title": "Cambiar el idioma",
       "steps": [
         "Abre Ajustes → Apariencia e idioma → Idioma.",
-        "Elige el idioma y pulsa Confirmar. Cerrar el selector sin confirmar conserva el idioma anterior.",
-        "La interfaz cambia y guarda tu elección. Usa el engranaje para volver a los ajustes si necesitas deshacer el cambio."
+        "Desplaza o arrastra la rueda de idiomas hasta centrar el tuyo. Si la lista tiene el foco, también puedes usar las flechas arriba y abajo.",
+        "Pulsa Confirmar para aplicar la elección. El botón permanece en el idioma actual de la interfaz hasta que confirmes.",
+        "Vuelve a la interfaz y comprueba los textos actualizados. Cerrar el selector sin confirmar conserva el idioma anterior."
+      ],
+      "overview": "Elige el idioma de los controles y mensajes de la extensión. Esto no traduce las publicaciones Nostr ni cambia el idioma de las webs, que se configura por separado.",
+      "before": [
+        "Abre y desbloquea la extensión si es necesario.",
+        "Busca Ajustes mediante el icono de engranaje; también sirve si no conoces el idioma actual."
+      ],
+      "checks": [
+        "Al abrir de nuevo los ajustes, la fila de idioma debería mostrar tu elección guardada.",
+        "Algunos textos pueden seguir en inglés. Para volver al idioma anterior, usa el engranaje y abre el mismo selector."
       ]
     },
     "security": {
       "title": "Configurar contraseña y bloqueo",
       "steps": [
-        "Abre Ajustes → Seguridad.",
-        "Usa el control de contraseña para proteger la bóveda local y elige un intervalo de bloqueo automático.",
-        "Bloquea la bóveda al terminar. Guarda la copia de recuperación por separado; la contraseña no la sustituye."
+        "Desbloquea la extensión y abre Ajustes → Seguridad.",
+        "Elige un intervalo de bloqueo automático. Si estás activando el bloqueo temporizado, establece y confirma la contraseña cuando se solicite.",
+        "Para sustituir una contraseña existente, usa Cambiar contraseña y completa los campos solicitados.",
+        "Bloquea la bóveda al terminar y luego desbloquéala con la contraseña guardada."
+      ],
+      "overview": "La contraseña de la bóveda protege el acceso a las claves guardadas en este navegador. El bloqueo automático pide desbloquear de nuevo tras un periodo de inactividad; no sustituye una copia de recuperación.",
+      "before": [
+        "Guarda una copia recuperable de tu cuenta antes de cambiar la protección de la bóveda.",
+        "Prepara un lugar seguro para guardar la contraseña que necesitarás para desbloquear este navegador."
+      ],
+      "checks": [
+        "El intervalo seleccionado debería seguir visible en Seguridad al volver a abrirlo.",
+        "La contraseña de la bóveda no es una frase de recuperación ni la contraseña de una copia cifrada. Mantén esos datos de recuperación accesibles fuera de este navegador."
       ]
     },
     "import": {
       "title": "Importar una cuenta existente",
       "steps": [
-        "Elige Añadir cuenta → Importar clave o copia de seguridad. Pega tu clave privada o frase de recuperación, o carga un archivo de copia de seguridad; el formato se detecta automáticamente.",
-        "Introduce la copia de forma privada en la extensión. Comprueba la clave pública restaurada antes de usar la cuenta."
+        "Elige Importar clave o copia de seguridad durante la configuración, o Añadir cuenta → Importar clave o copia de seguridad en el selector de cuentas.",
+        "Pega en privado el nsec, la clave privada hexadecimal o la frase de recuperación en la extensión, o carga un archivo de copia compatible.",
+        "Para una copia cifrada o ncryptsec, introduce su contraseña. Conserva intacta la copia original si se rechaza el formato o la contraseña.",
+        "Continúa cuando se reconozca el formato. Establece una contraseña local para la bóveda cuando se solicite, o desbloquea la bóveda existente con su contraseña actual.",
+        "Termina la configuración y compara la clave pública mostrada con la identidad que querías restaurar."
+      ],
+      "overview": "Restaura una identidad existente con su clave privada, frase de recuperación o una copia cifrada compatible. La extensión detecta el formato; un npub por sí solo es una clave pública y corresponde al modo Solo lectura.",
+      "before": [
+        "Ten a mano tu copia existente y, si está cifrada, la contraseña usada para cifrarla.",
+        "Conserva la clave pública esperada y cualquier ruta de derivación personalizada para verificar la identidad restaurada."
+      ],
+      "checks": [
+        "La clave pública restaurada debería coincidir con tu cuenta guardada. Una clave distinta puede indicar que necesitas la ruta de derivación original.",
+        "Importar una frase empieza por su primera clave Nostr; no restaura automáticamente todas las identidades derivadas ni las rutas personalizadas."
       ]
     },
     "switch": {
       "title": "Cambiar de cuenta",
       "steps": [
-        "Abre el selector de cuentas y elige la identidad que quieres usar.",
-        "Comprueba la cuenta activa antes de aprobar una solicitud. Si una web sigue mostrando la anterior, cierra sesión allí y vuelve a conectarte."
+        "Desbloquea la extensión y abre el selector de cuentas en la parte superior de su ventana.",
+        "Selecciona la identidad que quieres usar y comprueba su nombre y clave pública.",
+        "Vuelve a la web. Si aún muestra la identidad anterior, cierra la sesión allí y vuelve a conectarte con la extensión."
+      ],
+      "overview": "Cambia la identidad activa antes de usar otra cuenta Nostr. Las webs pueden conservar su propia sesión, por lo que cambiar la selección en la extensión puede requerir volver a conectarse allí.",
+      "before": [
+        "Añade o importa las identidades entre las que quieras cambiar.",
+        "Comprueba el nombre o la clave pública de la cuenta que quieras usar."
+      ],
+      "checks": [
+        "Comprueba de nuevo la cuenta activa antes de aprobar otra solicitud.",
+        "Si la web sigue mostrando otro perfil, verifica su propia sesión en lugar de asumir que la selección de la extensión la cambió."
       ]
     },
     "receive": {
       "title": "Recibir sats",
       "steps": [
-        "Abre Wallet → Depositar e introduce el importe para crear una factura Lightning.",
-        "Comparte la factura con quien vaya a pagar. Comprueba la actividad y el saldo para confirmar el pago."
+        "Abre Billetera → Depositar.",
+        "Introduce el importe en sats y crea la factura Lightning.",
+        "Comparte la factura con quien vaya a pagar. Mantén privados el secreto NWC y la clave API.",
+        "Comprueba la actividad y el saldo de la billetera después de que se envíe el pago."
+      ],
+      "overview": "Crea una factura Lightning para recibir el importe elegido en tu billetera conectada. Puedes compartirla con quien vaya a pagar sin revelar las credenciales de conexión de la billetera.",
+      "before": [
+        "Conecta una billetera y selecciona la cuenta que la usa.",
+        "Para NWC, asegúrate de que la conexión permita crear facturas y consultar la información necesaria para comprobar el pago."
+      ],
+      "checks": [
+        "Busca una factura pagada o un pago entrante en la billetera; crear una factura no significa que esté pagada.",
+        "Si falla la creación de la factura, revisa la conexión y sus permisos antes de reintentar."
       ]
     },
     "limits": {
       "title": "Cambiar la aprobación automática de pagos",
       "steps": [
-        "Abre Wallet → Ajustes y revisa el umbral de aprobación automática.",
-        "Elige un umbral para cada pago individual; no es un presupuesto total de gastos. Usa cero para confirmar cada pago. Revisa la actividad de tu wallet con frecuencia."
+        "Abre Billetera → Ajustes y busca el Umbral de aprobación automática.",
+        "Introduce un número entero de sats. Usa cero si quieres confirmar cada pago.",
+        "Guarda el cambio y vuelve a abrir los ajustes para comprobar el valor almacenado.",
+        "Revisa la actividad con frecuencia y reduce el umbral o revoca el permiso de pago de un sitio si ves solicitudes inesperadas."
+      ],
+      "overview": "La aprobación automática permite procesar ciertos pagos pequeños sin una ventana de confirmación. El umbral determina qué pagos pueden optar a ella; otros controles de permisos y seguridad aún pueden exigir confirmación.",
+      "before": [
+        "Conecta la billetera que quieras configurar y comprueba la cuenta activa.",
+        "Elige un importe en sats que aceptes permitir sin revisar cada solicitud."
+      ],
+      "checks": [
+        "Los pagos superiores al umbral deberían exigir confirmación; uno inferior también puede necesitar revisión.",
+        "Este ajuste no concede por sí solo permiso a una web para usar la billetera. Revisa por separado el acceso del sitio y los permisos de conexión del proveedor."
       ]
     },
     "loginFailed": {
       "title": "No puedo iniciar sesión",
       "steps": [
-        "Desbloquea la extensión, comprueba la cuenta activa y busca solicitudes pendientes. Revisa cualquier error antes de reintentar.",
-        "Comprueba las reglas del sitio y los permisos de backend o relay de esa cuenta. Si el formato no es compatible, comparte el error con los desarrolladores del sitio, nunca tus claves."
+        "Abre y desbloquea la extensión y comprueba la cuenta activa.",
+        "Busca una solicitud pendiente. Lee el sitio solicitante y el destino, y aprueba solo si coinciden con el inicio de sesión que comenzaste.",
+        "Comprueba en Permisos → Reglas del sitio si hay un rechazo de conexión o una denegación relevante. Revisa Autenticación de backend o Autenticación de relay cuando la solicitud implique esos destinos.",
+        "Vuelve a la web e intenta iniciar sesión tras resolver el problema concreto. Si muestra una cuenta anterior, cierra esa sesión antes de reconectar."
+      ],
+      "overview": "El inicio de sesión puede detenerse si la bóveda está bloqueada, se seleccionó otra cuenta o se bloqueó una solicitud de conexión o autenticación. Empieza por la solicitud pendiente y el error exacto mostrado.",
+      "before": [
+        "Abre la web afectada en la pestaña actual y anota cualquier error.",
+        "Identifica la cuenta con la que esperas iniciar sesión."
+      ],
+      "checks": [
+        "Tras iniciar sesión, la web debería mostrar la cuenta prevista.",
+        "Si el error persiste o indica un formato de solicitud no compatible, guarda el error exacto y la URL del sitio para soporte. Nunca incluyas claves privadas ni palabras de recuperación."
       ]
     },
     "denied": {
       "title": "Se deniega una solicitud",
       "steps": [
-        "Visita el sitio afectado y abre Permisos → Reglas del sitio. Comprueba las reglas propias y las denegaciones globales heredadas.",
-        "Cambia solo la regla que necesites. La autenticación tiene permisos separados; restablecer las reglas del sitio no elimina esas decisiones."
+        "Abre Permisos → Reglas del sitio para la web actual.",
+        "Si la conexión del sitio está rechazada, revisa o elimina ese rechazo para que pueda volver a solicitarla.",
+        "Para una acción habitual, revisa las reglas específicas y las globales heredadas. Cambia la denegación correspondiente; una regla Denegar más amplia también puede requerir atención.",
+        "Para accesos a backends o relays, revisa sus pantallas de autenticación separadas. Reintenta la acción en la web tras hacer el cambio previsto."
+      ],
+      "overview": "Una denegación guardada puede bloquear una solicitud sin mostrar otra confirmación. El control que debes cambiar depende de si se rechazó la conexión de la web, se denegó una acción habitual o se bloqueó un destino de autenticación.",
+      "before": [
+        "Selecciona la cuenta afectada y visita la web que hace la solicitud.",
+        "Anota la acción o el error para cambiar el permiso correspondiente."
+      ],
+      "checks": [
+        "Eliminar un rechazo permite que la web vuelva a preguntar; no la conecta ni aprueba firmas automáticamente.",
+        "Restablecer las reglas del sitio conserva los valores globales y las decisiones de autenticación separadas. Revisa esos controles si la solicitud sigue denegada."
       ]
     },
     "walletFailed": {
       "title": "Mi wallet no se conecta",
       "steps": [
-        "Comprueba que la wallet esté en línea y que uses el método correcto: URI de NWC o URL y clave Admin API de LNbits.",
-        "En NWC, revisa los permisos y la caducidad de la conexión en tu wallet. Nunca compartas el secreto ni la clave API al pedir ayuda."
+        "En la extensión, comprueba si elegiste NWC o LNbits según las credenciales que tienes.",
+        "Para NWC, pega el secreto nostr+walletconnect:// completo. Comprueba su caducidad y permite consultar la información de la billetera para validar la conexión.",
+        "Para LNbits, usa la URL HTTPS de la instancia y la clave Admin API de esta billetera. Una clave de facturas o lectura, o una contraseña de administrador, no la sustituye.",
+        "Vuelve a conectar y comprueba qué funciones responden. Revisa en el proveedor los permisos de saldo, facturas, pagos e historial si solo fallan algunas operaciones."
+      ],
+      "overview": "Los problemas de conexión suelen deberse a credenciales incorrectas para el método, una conexión NWC caducada o una billetera no disponible. Comprueba el método antes de sustituir credenciales.",
+      "before": [
+        "Abre la interfaz del proveedor y comprueba que la billetera esté disponible.",
+        "Mantén visible el error de conexión o copia su texto sin datos secretos."
+      ],
+      "checks": [
+        "Una conexión correcta debería mostrar la billetera y la información que permitan sus permisos.",
+        "Si sigue fallando, facilita a soporte el método y el error. Elimina secretos NWC y claves API de los mensajes y capturas."
       ]
     },
     "zapFailed": {
       "title": "Ha fallado un zap",
       "steps": [
-        "Consulta el historial antes de reintentar para no pagar dos veces. Comprueba que haya saldo suficiente, incluidas las comisiones.",
-        "Desbloquea la extensión y revisa la conexión y los permisos del sitio. Si no detecta WebLN, recarga la página. Guarda el texto del error si persiste."
+        "Consulta la actividad de la billetera y el historial del proveedor antes de reintentar. Si el pago se completó, no lo repitas solo porque la app no se actualizó.",
+        "Si no se completó ningún pago, comprueba que haya saldo suficiente para el importe y las comisiones.",
+        "Desbloquea la extensión y revisa la conexión de la billetera, las solicitudes pendientes y el permiso de pago del sitio.",
+        "Si la app indica que no encuentra un proveedor WebLN, actualiza la página después de desbloquear y conectar la billetera.",
+        "Reintenta solo cuando hayas confirmado el resultado del intento anterior. Guarda el error si la solicitud vuelve a fallar."
+      ],
+      "overview": "Que no aparezca un mensaje de éxito no siempre significa que no se haya pagado. Comprueba el resultado real en la billetera antes de enviar el mismo zap otra vez.",
+      "before": [
+        "Ten a mano el importe solicitado y el error de la app.",
+        "Abre la billetera usada en el intento de pago."
+      ],
+      "checks": [
+        "Confirma el pago mediante un registro completado de la billetera; la visualización del zap en la app puede actualizarse por separado.",
+        "Si el resultado sigue siendo desconocido, sigue comprobando la billetera o contacta con su proveedor antes de pagar otra vez. Nunca compartas secretos de conexión al pedir ayuda."
       ]
     }
   },
@@ -193,5 +403,10 @@
     "payments": "Conecta una billetera, recibe sats y envía zaps.",
     "settings": "Elige tu idioma y protege tu extensión.",
     "troubleshooting": "Resuelve problemas de inicio de sesión, solicitudes y pagos."
-  }
+  },
+  "beforeTitle": "Antes de empezar",
+  "checksTitle": "Comprueba el resultado",
+  "screenshotsTitle": "En pantalla",
+  "onThisPage": "En esta página",
+  "breadcrumb": "Ruta de navegación"
 }
