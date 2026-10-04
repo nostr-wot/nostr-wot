@@ -1,3 +1,4 @@
+import HeroAnimation from "@/components/HeroAnimation";
 import { serializeJsonLd } from '@/lib/serialize-jsonld';
 import { withMetadataPolicy } from '@/lib/metadata-policy';
 import type { Metadata } from "next";
@@ -178,11 +179,10 @@ export default async function FeaturesPage() {
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: serializeJsonLd(jsonLd) }}
       />
-      <main className="overflow-hidden">
+      <main className="overflow-x-clip">
       {/* Hero Section */}
-      <section className="relative py-24 lg:py-32">
-        <div className="absolute inset-0 bg-gradient-to-b from-purple-500/5 via-transparent to-transparent" />
-        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-primary/10 via-transparent to-transparent" />
+      <section className="relative overflow-hidden -mt-16 pt-40 pb-24 lg:pt-48 lg:pb-32">
+        <HeroAnimation color="#8b5cf6" />
         <div className="relative max-w-4xl mx-auto px-6 text-center">
           <ScrollReveal animation="fade-down">
             <div className="inline-flex items-center gap-2 bg-primary/10 text-primary px-4 py-2 rounded-full text-sm font-medium mb-8 border border-primary/20">

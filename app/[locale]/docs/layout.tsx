@@ -8,6 +8,7 @@ interface DocsLayoutProps {
 
 export default async function DocsLayout({ children }: DocsLayoutProps) {
   const t = await getTranslations("docs");
+  const oracle = await getTranslations("oracle");
 
   const navSections = [
     {
@@ -58,6 +59,8 @@ export default async function DocsLayout({ children }: DocsLayoutProps) {
         { href: "/docs/oracle#distance", label: "GET /distance" },
         { href: "/docs/oracle#batch", label: "POST /distance/batch" },
         { href: "/docs/oracle#errors", label: t("sidebar.oracleErrors") },
+        { href: "/docs/oracle#self-hosting", label: oracle("selfHosting.title") },
+        { href: "/docs/oracle#configuration", label: oracle("configuration.title") },
       ],
     },
     {
@@ -87,7 +90,7 @@ export default async function DocsLayout({ children }: DocsLayoutProps) {
 
   return (
     <>
-      <div className="max-w-7xl mx-auto px-6 lg:px-8">
+      <div className="max-w-6xl mx-auto px-6">
         <div className="flex gap-8 py-8">
           {/* Left sidebar */}
           <DocsNav sections={navSections} />

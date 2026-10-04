@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useId } from "react";
 
 interface Node {
   id: number;
@@ -19,7 +19,16 @@ interface Connection {
   delay: number;
 }
 
-export default function HeroAnimation() {
+export default function HeroAnimation({ color = "#6366f1" }: { color?: string }) {
+  const gradientId = useId();
+  const [reducedMotion, setReducedMotion] = useState(false);
+  useEffect(() => {
+    const query = window.matchMedia("(prefers-reduced-motion: reduce)");
+    const update = () => setReducedMotion(query.matches);
+    update();
+    query.addEventListener("change", update);
+    return () => query.removeEventListener("change", update);
+  }, []);
   const [nodes, setNodes] = useState<Node[]>([]);
   const [connections, setConnections] = useState<Connection[]>([]);
 
@@ -76,21 +85,21 @@ export default function HeroAnimation() {
   }, []);
 
   return (
-    <div className="absolute inset-0 z-0 pointer-events-none overflow-hidden">
+    <div aria-hidden="true" className="absolute inset-0 z-0 pointer-events-none overflow-hidden">
       <svg
         viewBox="0 0 100 100"
         preserveAspectRatio="xMidYMid slice"
         className="w-full h-full opacity-70 dark:opacity-40"
       >
         <defs>
-          <radialGradient id="nodeGradient" cx="50%" cy="50%" r="50%">
-            <stop offset="0%" stopColor="#6366f1" stopOpacity="0.8" />
-            <stop offset="100%" stopColor="#6366f1" stopOpacity="0.2" />
+          <radialGradient id={`${gradientId}-node`} cx="50%" cy="50%" r="50%">
+            <stop offset="0%" stopColor={color} stopOpacity="0.8" />
+            <stop offset="100%" stopColor={color} stopOpacity="0.2" />
           </radialGradient>
-          <linearGradient id="lineGradient" x1="0%" y1="0%" x2="100%" y2="0%">
-            <stop offset="0%" stopColor="#6366f1" stopOpacity="0" />
-            <stop offset="50%" stopColor="#6366f1" stopOpacity="0.4" />
-            <stop offset="100%" stopColor="#6366f1" stopOpacity="0" />
+          <linearGradient id={`${gradientId}-line`} x1="0%" y1="0%" x2="100%" y2="0%">
+            <stop offset="0%" stopColor={color} stopOpacity="0" />
+            <stop offset="50%" stopColor={color} stopOpacity="0.4" />
+            <stop offset="100%" stopColor={color} stopOpacity="0" />
           </linearGradient>
         </defs>
 
@@ -102,7 +111,7 @@ export default function HeroAnimation() {
               y1={`${conn.y1}%`}
               x2={`${conn.x2}%`}
               y2={`${conn.y2}%`}
-              stroke="url(#lineGradient)"
+              stroke={`url(#${gradientId}-line)`}
               strokeWidth="0.15"
               className="hero-connection"
               style={{ animationDelay: `${conn.delay}s` }}
@@ -120,7 +129,7 @@ export default function HeroAnimation() {
                   cy={`${node.y}%`}
                   r={radius * 2}
                   fill="none"
-                  stroke="#6366f1"
+                  stroke={color}
                   strokeWidth="0.1"
                   className="hero-node-pulse"
                   style={{ animationDelay: `${node.delay}s` }}
@@ -129,7 +138,7 @@ export default function HeroAnimation() {
                   cx={`${node.x}%`}
                   cy={`${node.y}%`}
                   r={radius}
-                  fill="url(#nodeGradient)"
+                  fill={`url(#${gradientId}-node)`}
                   className="hero-node"
                   style={{ animationDelay: `${node.delay}s` }}
                 />
@@ -139,11 +148,11 @@ export default function HeroAnimation() {
         </g>
 
         <g>
-          {connections.slice(0, 15).map((conn) => (
+          {!reducedMotion && connections.slice(0, 15).map((conn) => (
             <circle
               key={`pulse-${conn.id}`}
               r="0.4"
-              fill="#6366f1"
+              fill={color}
               className="hero-traveling-pulse"
               style={{ animationDelay: `${conn.delay + 1}s` }}
             >
