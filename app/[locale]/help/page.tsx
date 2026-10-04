@@ -4,6 +4,7 @@ import { withMetadataPolicy } from '@/lib/metadata-policy';
 import { generateAlternates, generateOpenGraph, generateTwitter } from '@/lib/metadata';
 import { getAllGuides } from '@/lib/guides';
 import type { Locale } from '@/i18n/config';
+import { HelpVideoLibrary } from '@/components/help/HelpVideoLibrary';
 import { HelpCenter } from '@/components/help/HelpCenter';
 
 type Props = { params: Promise<{ locale: string }> };
@@ -26,9 +27,9 @@ export default async function HelpPage({ params }: Props) {
     <header className="mb-10">
       <h1 className="text-3xl sm:text-4xl font-bold mb-3">{t('title')}</h1>
       <p className="max-w-2xl text-lg text-gray-600 dark:text-gray-400">{t('description')}</p>
-      <a href="https://www.youtube.com/@nostr-wot" target="_blank" rel="noopener noreferrer" className="mt-4 inline-block text-sm text-primary hover:underline">{t('channel')}</a>
     </header>
     <HelpCenter guides={guides} />
+    <HelpVideoLibrary />
   </main>;
 }
 

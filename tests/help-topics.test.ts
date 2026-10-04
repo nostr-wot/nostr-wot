@@ -1,20 +1,28 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
-import { HELP_TOPICS, HELP_CATEGORIES, matchesHelpQuery } from '../lib/help-topics';
+import { HELP_TOPICS, HELP_VIDEOS, HELP_CATEGORIES, matchesHelpQuery } from '../lib/help-topics';
 import { GUIDE_MEDIA, GUIDE_VIDEOS, youtubeUrls } from '../lib/guide-media';
 
-test('help covers the 12 distinct published videos with complete localized steps', () => {
-  assert.equal(HELP_TOPICS.length, 12);
-  assert.equal(new Set(HELP_TOPICS.map(topic => GUIDE_VIDEOS[topic.id].id)).size, 12);
+test('help tasks are independent of the complete published video library', () => {
+  assert.ok(HELP_TOPICS.length > HELP_VIDEOS.length);
+  assert.ok(HELP_TOPICS.some(topic => !topic.video && topic.category === 'troubleshooting'));
+  assert.equal(new Set(HELP_TOPICS.map(topic => topic.id)).size, HELP_TOPICS.length);
+  assert.equal(new Set(HELP_VIDEOS.map(video => GUIDE_VIDEOS[video.id].id)).size, 12);
   for (const locale of ['en', 'es', 'pt', 'fr', 'de', 'it', 'ru']) {
     const copy = JSON.parse(fs.readFileSync(`messages/${locale}/help.json`, 'utf8'));
     for (const topic of HELP_TOPICS) {
       assert.ok(HELP_CATEGORIES.includes(topic.category));
       assert.ok(copy.topics[topic.id].title);
-      assert.equal(copy.topics[topic.id].steps.length, 3);
+      for (const related of topic.related ?? []) assert.ok(HELP_TOPICS.some(item => item.id === related));
+      if (topic.screenshot) {
+        assert.ok(fs.existsSync(`public/images/guides/extension/${topic.screenshot}.png`));
+        const media = JSON.parse(fs.readFileSync(`messages/${locale}/guides.json`, 'utf8')).media;
+        assert.ok(media.captions[topic.screenshot]);
+      }
+      assert.ok(copy.topics[topic.id].steps.length >= 2);
       assert.ok(copy.topics[topic.id].steps.every((step: string) => step.trim().length > 20));
-      assert.match(youtubeUrls(GUIDE_VIDEOS[topic.id].id).embed, /^https:\/\/www.youtube-nocookie.com\/embed\//);
+      if (topic.video) assert.match(youtubeUrls(GUIDE_VIDEOS[topic.video].id).embed, /^https:\/\/www.youtube-nocookie.com\/embed\//);
     }
   }
 });

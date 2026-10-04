@@ -50,3 +50,5 @@ The theme contribution guide (`create-extension-theme`, all seven locales) reuse
 ## User help
 
 `/help` organizes all 12 published videos into searchable tasks with short steps. `lib/help-topics.ts` owns categories, durations and related guide translation keys; `lib/guide-media.ts` remains the shared video registry. Steps and labels live in `messages/<locale>/help.json`. Related guides resolve from the current locale’s published inventory. Players load when a task opens, and each task has a shareable fragment URL. Keep the steps aligned with the extension when controls change.
+
+Help separates the task directory from its video library. `HELP_TOPICS` accepts tasks without videos, including troubleshooting; `HELP_VIDEOS` keeps all 12 published tutorials in a separate thumbnail grid. Search covers task titles and steps. Screenshots reuse the guide captures and translated captions. Players load only when a visitor chooses a video, either within an expanded task or in the library. New tasks need concise instructions in all seven `help.json` files; a video is optional.
