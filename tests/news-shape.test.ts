@@ -1,7 +1,7 @@
 /**
  * The news integrity rule, enforced at the mapper.
  *
- * `date` is the EVENT date: it drives the slug, the displayed date, sort order
+ * `date` is the EVENT date: it drives the slug, the event date
  * and archive bucketing. `publishedAt` is the REAL ship date and is the only
  * value permitted to appear as `datePublished` in structured data.
  *
@@ -12,7 +12,7 @@
  */
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { newsShape } from '../lib/content/shapes';
+import { newsShape, newsSort } from '../lib/content/shapes';
 import { buildDocument } from '../lib/content/build';
 
 const backfilledNoPublishedAt = {
@@ -101,4 +101,14 @@ test('the real document mapper still builds a backfilled entry that declares pub
   });
   assert.equal(doc.date, new Date('2026-03-11').toISOString());
   assert.equal(doc.publishedAt, new Date('2026-08-21').toISOString());
+});
+
+
+test('news lists sort by publication date, with stable event-date and slug tie breakers', () => {
+  const posts = [
+    { slug: 'new-event', date: '2026-10-03', publishedAt: '2026-10-03' },
+    { slug: 'backfilled', date: '2026-01-01', publishedAt: '2026-10-04' },
+    { slug: 'z', date: '2026-10-03', publishedAt: '2026-10-03' },
+  ];
+  assert.deepEqual(posts.sort((a, b) => newsSort(a as never, b as never)).map(post => post.slug), ['backfilled', 'new-event', 'z']);
 });

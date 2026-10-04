@@ -916,3 +916,18 @@ a[href],
 [role="link"] {
   cursor: pointer;
 }
+
+/* Shared documentation rhythm, including content nested in reveal wrappers. */
+.docs-content { overflow-wrap: anywhere; }
+.docs-content :where(h1, h2, h3, h4) { font-weight: 700; line-height: 1.25; scroll-margin-top: 6rem; }
+.docs-content :where(h1) { font-size: clamp(2rem, 4vw, 2.5rem); margin-bottom: 1.5rem; }
+.docs-content :where(h2):not(.not-prose *) { font-size: 1.75rem; margin-top: 3rem; margin-bottom: 1rem; }
+.docs-content :where(h3):not(.not-prose *) { font-size: 1.25rem; margin-top: 2rem; margin-bottom: .75rem; }
+.docs-content :where(h4):not(.not-prose *) { font-size: 1.125rem; margin-top: 1.5rem; margin-bottom: .75rem; }
+.docs-content :where(p, ul, ol):not(.not-prose *) { margin-bottom: 1.25rem; line-height: 1.75; }
+.docs-content :where(ul, ol):not(.not-prose *) { padding-left: 1.5rem; }
+.docs-content :where(ul):not(.not-prose *) { list-style: disc; }
+.docs-content :where(ol):not(.not-prose *) { list-style: decimal; }
+.docs-content :where(li):not(.not-prose *) { margin-block: .5rem; }
+.docs-content :where(pre) { max-width: 100%; overflow-x: auto; }
+.docs-content :where(table) { display: block; max-width: 100%; overflow-x: auto; margin-block: 1.5rem; }

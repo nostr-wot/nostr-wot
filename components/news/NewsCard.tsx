@@ -17,7 +17,7 @@ export interface NewsCardMeta {
   title: string;
   description: string;
   excerpt: string;
-  /** EVENT date — this is what gets displayed. */
+  /** Event date; cards display the publication date. */
   date: string;
   publishedAt: string;
   featuredImage: string;
@@ -64,7 +64,7 @@ export function NewsCard({ post, featured = false, variant = 'card' }: NewsCardP
             <p className="mb-2 text-xs font-medium text-primary">{post.tags[0] || typeLabel}</p>
             <h3 className="text-sm font-semibold leading-snug text-gray-900 transition-colors group-hover:text-primary dark:text-white">{post.title}</h3>
             <div className="mt-2 flex flex-wrap gap-x-3 gap-y-1 text-xs text-gray-500 dark:text-gray-400">
-              <time dateTime={post.date}>{formatDate(post.date, locale)}</time>
+              <time dateTime={post.publishedAt}>{formatDate(post.publishedAt, locale)}</time>
               {variant === 'compact' && <ReadingTime value={post.readingTime} />}
             </div>
           </div>
@@ -92,7 +92,7 @@ export function NewsCard({ post, featured = false, variant = 'card' }: NewsCardP
           <h3 className="mb-3 text-2xl font-bold leading-tight text-gray-900 transition-colors group-hover:text-primary dark:text-white">{post.title}</h3>
           <p className="mb-4 text-base leading-relaxed text-gray-600 dark:text-gray-400">{post.excerpt}</p>
           <div className="flex flex-wrap gap-3 text-xs text-gray-500 dark:text-gray-400">
-            <time dateTime={post.date}>{formatDate(post.date, locale)}</time>
+            <time dateTime={post.publishedAt}>{formatDate(post.publishedAt, locale)}</time>
             <ReadingTime value={post.readingTime} />
           </div>
         </article>
@@ -138,7 +138,7 @@ export function NewsCard({ post, featured = false, variant = 'card' }: NewsCardP
                 {post.excerpt}
               </p>
               <div className="flex flex-wrap items-center gap-3 text-sm text-gray-500 dark:text-gray-400">
-                <time dateTime={post.date}>{formatDate(post.date, locale)}</time>
+                <time dateTime={post.publishedAt}>{formatDate(post.publishedAt, locale)}</time>
                 <span aria-hidden="true">·</span>
                 <ReadingTime value={post.readingTime} />
               </div>
@@ -185,7 +185,7 @@ export function NewsCard({ post, featured = false, variant = 'card' }: NewsCardP
           </p>
           <div className="pt-4 border-t border-gray-100 dark:border-gray-700/50">
             <div className="flex items-center justify-between text-xs text-gray-500 dark:text-gray-400">
-              <time dateTime={post.date}>{formatDate(post.date, locale)}</time>
+              <time dateTime={post.publishedAt}>{formatDate(post.publishedAt, locale)}</time>
               <ReadingTime value={post.readingTime} />
             </div>
           </div>
