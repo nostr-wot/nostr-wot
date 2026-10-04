@@ -1,0 +1,82 @@
+---
+title: "Nutze NIP-65-Relay-Listen, ohne Beiträge oder Erwähnungen zu verlieren"
+description: "NIP-65 trennt Relays für eigene Veröffentlichungen von Relays für Erwähnungen. Die Richtung bestimmt, wo Clients suchen und zustellen."
+seoDescription: "So funktionieren read- und write-Markierungen in NIP-65-Kind-10002-Listen, die Weiterleitung von Beiträgen und Erwähnungen und typische Fehler."
+excerpt: "Eine NIP-65-Relay-Liste hat eine Richtung. Write-Relays führen eigene Events, Read-Relays empfangen Events, die eine Person erwähnen."
+date: "2026-10-04"
+publishedAt: "2026-10-04"
+backfilled: false
+type: "story"
+tags: ["Nostr", "NIP-65", "Relays", "Leitfaden"]
+featuredImage: "/images/news/use-nip-65-relay-lists-without-losing-posts-or-mentions.svg"
+translationKey: "use-nip-65-relay-lists-without-losing-posts-or-mentions"
+sources:
+  - title: "NIP-65: Relay-Listen-Metadaten bei Commit 0046368"
+    url: "https://github.com/nostr-protocol/nips/blob/0046368a747c5c25ae2bec28bae0e537744c8f10/65.md"
+    publisher: "nostr-protocol/nips"
+    date: "2026-09-27"
+  - title: "NIP-01: Grundlegender Protokollablauf bei Commit 0046368"
+    url: "https://github.com/nostr-protocol/nips/blob/0046368a747c5c25ae2bec28bae0e537744c8f10/01.md"
+    publisher: "nostr-protocol/nips"
+    date: "2026-09-27"
+published: true
+---
+
+Ein Nostr-Client darf nicht annehmen, dass jedes Relay dieselbe Aufgabe erfüllt. Eine Person kann eigene Events auf einer Gruppe von Relays veröffentlichen und eine andere Gruppe für Events beobachten, in denen sie erwähnt wird. [NIP-65](https://github.com/nostr-protocol/nips/blob/0046368a747c5c25ae2bec28bae0e537744c8f10/65.md) macht diese Trennung mit einem signierten, ersetzbaren Event der Art `10002` sichtbar.
+
+Die Richtung lässt sich leicht verwechseln. Die **Write-Relays** einer Person zeigen, wo ihre Events zu finden sind. Ihre **Read-Relays** zeigen anderen Autoren, wohin sie Events mit einer Erwähnung senden sollen. Eine Vertauschung kann wie verlorene Beiträge oder fehlende Erwähnungen aussehen, obwohl die Relay-Infrastruktur funktioniert.
+
+## Read und write beschreiben den Listeninhaber
+
+Ein Event der Art `10002` speichert Relay-URLs in `r`-Tags. Der optionale dritte Wert lautet `read` oder `write`:
+
+```json
+{
+  "kind": 10002,
+  "tags": [
+    ["r", "wss://beitraege.example", "write"],
+    ["r", "wss://erwaehnungen.example", "read"],
+    ["r", "wss://beides.example"]
+  ],
+  "content": ""
+}
+```
+
+Ein Relay ohne Markierung gehört zu beiden Gruppen. Die Begriffe werden aus Sicht des Listeninhabers gelesen. `write` bedeutet „hier veröffentliche ich üblicherweise meine Events“. `read` bedeutet „hier lese ich üblicherweise Erwähnungen“. Es sind keine Berechtigungen und keine Garantie für Annahme, Speicherung oder dauerhafte Aufbewahrung.
+
+Da Kind `10002` im ersetzbaren Bereich von NIP-01 liegt, ersetzt das neueste Event für einen öffentlichen Schlüssel ältere Versionen. Ein Client muss bei einer Änderung eine vollständige neue Liste veröffentlichen, keinen Teil-Patch. Haben zwei Versionen denselben Zeitstempel, gewinnt laut NIP-01 die lexikalisch niedrigere Event-ID.
+
+## Beiträge findet man auf den Write-Relays
+
+Um Events **von** einer Person herunterzuladen, sollen Clients laut NIP-65 deren Write-Relays abfragen. Dort sind gewöhnliche Notizen und andere vom Nutzer erstellte Events zu suchen.
+
+Das wirkt umgekehrt, wenn `write` als Anweisung an den aktuellen Client verstanden wird. Tatsächlich dokumentiert die Markierung, wo der Listeninhaber schreibt, und damit, wo andere dessen Ausgabe lesen sollen.
+
+Wirkt ein Profil leer, sollte zuerst sein `10002`-Event geprüft werden. Der Client kennt vielleicht den öffentlichen Schlüssel, sucht aber nur auf den eigenen Standard-Relays. Die Write-Relays des Autors in den Abrufplan aufzunehmen kann die Inhalte wieder sichtbar machen, ohne die dauerhafte Relay-Konfiguration zu ändern.
+
+## Erwähnungen gehen an die Read-Relays
+
+Beim Veröffentlichen soll ein Client das Event an die Write-Relays des Autors senden. Markiert es eine andere Person, soll es zusätzlich an deren Read-Relays gehen. Die Route verbindet damit Speicherung beim Autor und Zustellung an den Empfänger.
+
+Wenn Alice auf Relay A schreibt und Erwähnungen auf Relay B liest, muss Bobs Client die Antwort an Bobs Write-Relays und an Alices Relay B senden. Auf Relay A lassen sich Alices Beiträge finden, doch es entspricht nicht ihrer angegebenen Eingangsroute.
+
+Eine Zustellung ist nicht garantiert. Ein Relay kann Authentifizierung, Bezahlung oder andere Regeln verlangen. Der Empfänger kann seine Liste ändern, und Clients können NIP-65 unterschiedlich umsetzen. Die Liste ist Routing-Metadaten, keine Empfangsbestätigung.
+
+## Halte die Liste klein und auffindbar
+
+NIP-65 empfiehlt zwei bis vier Relays pro Kategorie. Eine lange Liste vervielfacht Verbindungen, Duplikate und Veröffentlichungsaufwand. Zusätzliche Relays können Redundanz bieten, aber jedes Ziel kostet Ressourcen und kann mehr über das Aktivitätsmuster verraten.
+
+Auch das Listen-Event selbst muss gefunden werden. NIP-65 empfiehlt eine breite Verteilung, einschließlich bekannter öffentlicher Indexer, auf denen andere Clients solche Listen suchen. Das Event soll außerdem zusammen mit Veröffentlichungen an die ausgewählten Relays gesendet werden. Sonst kann eine korrekte Liste unsichtbar bleiben.
+
+## Praktische Prüfreihenfolge
+
+Wenn Beiträge oder Erwähnungen fehlen:
+
+1. Hole das neueste gültige `10002`-Event für den öffentlichen Schlüssel.
+2. Behandle unmarkierte `r`-Tags als read und write.
+3. Frage die Write-Relays nach Events ab, die die Person erstellt hat.
+4. Veröffentliche markierte Events auf den Read-Relays des Empfängers und den Write-Relays des Autors.
+5. Erfasse die Annahme durch ein Relay getrennt von der Routing-Entscheidung.
+6. Nutze Standardwerte vorsichtig, wenn keine Liste auffindbar ist, denn ihr Fehlen beweist nicht, dass ein bestimmtes Relay richtig ist.
+
+NIP-65 schafft keinen globalen Relay-Satz. Es erlaubt jeder Person, Richtungen für zwei verschiedene Datenflüsse zu veröffentlichen. Wer sie beachtet, kann Fehler leichter diagnostizieren und verwechselt ein Routing-Problem seltener mit verlorenen Daten.
