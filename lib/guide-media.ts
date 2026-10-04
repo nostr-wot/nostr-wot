@@ -1,12 +1,17 @@
 /** Published videos verified on youtube.com/@nostr-wot; see docs/guide-media.md. */
 export const GUIDE_VIDEOS = {
-  account: { id: 'pUBd2rgmhNc', title: 'How to Create a Nostr Account with Nostr WoT' },
-  subAccounts: { id: '5nk687W76hE', title: 'How to Create Multiple Nostr Identities from One Seed' },
-  permissions: { id: 'Iu11fK9juzU', title: 'How to Change Nostr Site Permissions & Global Rules' },
-  security: { id: 'pnOollWgs7g', title: 'Nostr WoT Security: Passwords & Auto-Lock' },
-  backup: { id: '2-oTsMLWEd8', title: 'How to Export and Re-Import Your Nostr Keys' },
-  appearance: { id: '-bIhd8BU3kU', title: 'How to Change the Appearance of Nostr WoT' },
-  authentication: { id: '4TmndKyE8D4', title: 'Nostr Backend and Relay Authentication: Choose Who Can Log You In' },
+  account: { id: "pUBd2rgmhNc", title: "How to Create a Nostr Account with Nostr WoT" },
+  subAccounts: { id: "5nk687W76hE", title: "How to Create Multiple Nostr Identities from One Seed" },
+  approvals: { id: "HjK-ygsj4Qs", title: "Nostr Permissions Explained: Approvals & Recent Activity" },
+  permissions: { id: "Iu11fK9juzU", title: "How to Change Nostr Site Permissions & Global Rules" },
+  wallet: { id: "1WgclSqckIk", title: "How to Set Up a Lightning Wallet in Nostr WoT" },
+  zaps: { id: "qxEOM_jAG4I", title: "How to Send Your First Zap on Nostr" },
+  appearance: { id: "-bIhd8BU3kU", title: "How to Change the Appearance of Nostr WoT" },
+  language: { id: "uK5wQDeWJdA", title: "How to Change the Language in Nostr WoT" },
+  security: { id: "pnOollWgs7g", title: "Nostr WoT Security: Passwords & Auto-Lock" },
+  backup: { id: "2-oTsMLWEd8", title: "How to Export and Re-Import Your Nostr Keys" },
+  remove: { id: "U1LZmgQgURA", title: "How to Remove an Account from Nostr WoT" },
+  authentication: { id: "4TmndKyE8D4", title: "Nostr Backend and Relay Authentication: Choose Who Can Log You In" },
 } as const;
 
 export type GuideVideo = keyof typeof GUIDE_VIDEOS;
@@ -25,19 +30,20 @@ export const GUIDE_MEDIA: Record<string, GuideMedia> = {
   'watch-only-nostr-account': { screenshots: ['watch-only'] },
   'custom-identity-paths': { screenshots: ['sub-account'], videos: ['subAccounts'] },
   'managing-identity': { screenshots: ['security'], videos: ['security', 'backup'] },
-  'site-permissions': { screenshots: ['permissions', 'global-rules'], videos: ['permissions'] },
+  'site-permissions': { screenshots: ['permissions', 'global-rules'], videos: ['approvals', 'permissions'] },
   'backend-authentication': { screenshots: ['backend-review', 'permissions'], videos: ['authentication'] },
   'relay-authentication': { screenshots: ['relay-review', 'relay-permissions'], videos: ['authentication'] },
-  'setting-up-wallet': { screenshots: ['wallet-setup', 'wallet-nwc', 'wallet-lnbits'] },
+  'setting-up-wallet': { screenshots: ['wallet-setup', 'wallet-nwc', 'wallet-lnbits'], videos: ['wallet'] },
   'alby-hub-nwc': { screenshots: ['wallet-nwc'] },
   'lnbits-wallet-setup': { screenshots: ['wallet-lnbits'] },
   'nwc-app-connections': { screenshots: ['app-connection'] },
   'lightning-address': { screenshots: ['lightning-address'] },
-  'zapping-auto-approve': { screenshots: ['zap-review', 'zap-limit'] },
+  'zapping-auto-approve': { screenshots: ['zap-review', 'zap-limit'], videos: ['zaps'] },
   'post-quantum-key': { screenshots: ['post-quantum'] },
   'turn-on-post-quantum-keys': { screenshots: ['post-quantum'] },
   'understanding-wot': { screenshots: ['web-of-trust'] },
-  'change-language': { screenshots: [], videos: ['appearance'] },
+  'removing-accounts': { screenshots: [], videos: ['remove'] },
+  'change-language': { screenshots: [], videos: ['language'] },
 };
 
 export function youtubeUrls(id: string) {

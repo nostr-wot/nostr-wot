@@ -1,3 +1,4 @@
+import help from './help.json';
 import uninstall from './uninstall.json';
 import ui from './ui.json';
 import common from './common.json';
@@ -25,6 +26,7 @@ import pqcChat from './pqcChat.json';
 import news from './news.json';
 
 const messages = {
+  help,
   uninstall,
   ui,
   common,

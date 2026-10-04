@@ -7,7 +7,7 @@ import { Link } from "@/i18n/routing";
 import { LinkButton, ThemeToggle, LanguageSwitcher } from "../ui";
 import { LogoIcon } from "@/components/icons";
 
-const navLinkStyles = "text-gray-600 dark:text-gray-400 font-medium hover:text-gray-900 dark:hover:text-white transition-colors hidden sm:block";
+const navLinkStyles = "text-gray-600 dark:text-gray-400 font-medium hover:text-gray-900 dark:hover:text-white transition-colors hidden md:block";
 
 export default function Header() {
   const t = useTranslations("common");
@@ -51,6 +51,9 @@ export default function Header() {
           <Link href="/features" className={navLinkStyles}>
             {t("nav.features")}
           </Link>
+          <Link href="/help" className="text-gray-600 dark:text-gray-400 font-medium hover:text-primary text-sm sm:text-base">
+            {t("nav.help")}
+          </Link>
           <Link href="/docs" className={navLinkStyles}>
             {t("nav.developers")}
           </Link>
@@ -58,9 +61,11 @@ export default function Header() {
             {t("nav.news")}
           </Link>
 
+          <div className="hidden sm:block">
           <LinkButton href="/download" className="hover-lift">
             {t("buttons.download")}
           </LinkButton>
+          </div>
 
           <div className="flex items-center">
             <LanguageSwitcher />

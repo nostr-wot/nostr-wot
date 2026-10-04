@@ -34,6 +34,7 @@ async function pageMetadata({ params }: Props): Promise<Metadata> {
 
 export default async function DocsOverviewPage() {
   const t = await getTranslations("docs");
+  const help = await getTranslations("help");
 
   // JSON-LD structured data
   const jsonLd = {
@@ -59,6 +60,7 @@ export default async function DocsOverviewPage() {
       <article className="prose prose-gray dark:prose-invert max-w-none">
         <ScrollReveal animation="fade-up">
           <h1>{t("overview.title")}</h1>
+          <Link href="/help" className="mb-5 inline-block text-primary hover:underline">{help("title")} →</Link>
 
           <p className="lead text-xl text-gray-600 dark:text-gray-400">
             {t("overview.description")}
