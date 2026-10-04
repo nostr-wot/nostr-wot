@@ -1,0 +1,82 @@
+---
+title: "Utilisez les listes de relais NIP-65 sans perdre publications ni mentions"
+description: "NIP-65 sépare les relais où une personne publie de ceux où elle reçoit ses mentions. La direction change l'endroit où les clients cherchent."
+seoDescription: "Comprenez les marqueurs read et write des listes NIP-65 kind 10002, le routage des publications et mentions, et les erreurs à éviter."
+excerpt: "Une liste de relais NIP-65 est directionnelle. Les relais write servent les événements publiés, les relais read reçoivent les événements qui mentionnent la personne."
+date: "2026-10-04"
+publishedAt: "2026-10-04"
+backfilled: false
+type: "story"
+tags: ["Nostr", "NIP-65", "Relais", "Guide"]
+featuredImage: "/images/news/use-nip-65-relay-lists-without-losing-posts-or-mentions.svg"
+translationKey: "use-nip-65-relay-lists-without-losing-posts-or-mentions"
+sources:
+  - title: "NIP-65 : Métadonnées de liste de relais au commit 0046368"
+    url: "https://github.com/nostr-protocol/nips/blob/0046368a747c5c25ae2bec28bae0e537744c8f10/65.md"
+    publisher: "nostr-protocol/nips"
+    date: "2026-09-27"
+  - title: "NIP-01 : Flux de base du protocole au commit 0046368"
+    url: "https://github.com/nostr-protocol/nips/blob/0046368a747c5c25ae2bec28bae0e537744c8f10/01.md"
+    publisher: "nostr-protocol/nips"
+    date: "2026-09-27"
+published: true
+---
+
+Un client Nostr ne peut pas supposer que tous les relais remplissent le même rôle. Une personne peut publier ses événements sur un ensemble de relais et en surveiller un autre pour les événements qui la mentionnent. [NIP-65](https://github.com/nostr-protocol/nips/blob/0046368a747c5c25ae2bec28bae0e537744c8f10/65.md) permet d'annoncer cette séparation avec un événement remplaçable kind `10002` signé.
+
+La direction est facile à inverser. Les relais **write** d'une personne indiquent où trouver ses événements. Ses relais **read** indiquent où les autres auteurs doivent envoyer les événements qui la taguent. Une erreur peut faire croire à des publications ou mentions perdues alors que les relais fonctionnent.
+
+## Read et write décrivent le propriétaire de la liste
+
+Un événement kind `10002` conserve les URL dans des tags `r`. La troisième valeur facultative est `read` ou `write` :
+
+```json
+{
+  "kind": 10002,
+  "tags": [
+    ["r", "wss://publications.example", "write"],
+    ["r", "wss://mentions.example", "read"],
+    ["r", "wss://les-deux.example"]
+  ],
+  "content": ""
+}
+```
+
+Le relais sans marqueur appartient aux deux groupes. Les mots se lisent du point de vue du propriétaire. `write` signifie « je publie généralement mes événements ici ». `read` signifie « je lis généralement mes mentions ici ». Ce ne sont pas des permissions et ils ne garantissent ni connexion, ni stockage, ni conservation durable.
+
+Comme kind `10002` se trouve dans la plage remplaçable de NIP-01, l'événement le plus récent pour une clé publique remplace les anciennes versions. Un client doit republier une liste complète lors d'une modification, pas un correctif partiel. Si deux versions ont le même horodatage, NIP-01 conserve l'ID le plus bas dans l'ordre lexical.
+
+## Les publications se trouvent sur les relais write
+
+Pour télécharger des événements **d'une** personne, NIP-65 recommande d'interroger ses relais write. On y cherche ses notes ordinaires et les autres événements qu'elle a créés.
+
+Cela peut sembler inversé si `write` est lu comme une instruction adressée au client actuel. Ce marqueur indique en fait où écrit le propriétaire de la liste, donc où les autres doivent lire sa production.
+
+Si un profil paraît vide, inspectez son événement `10002` avant de conclure que les publications ont disparu. Le client connaît peut-être la clé publique mais ne cherche que sur ses relais par défaut. Ajouter les relais write de l'auteur au plan de recherche peut restaurer la découverte sans modifier la configuration permanente.
+
+## Une mention se livre sur les relais read
+
+Lorsqu'il publie un événement, un client doit l'envoyer aux relais write de l'auteur. Si l'événement tague une autre personne, il doit aussi l'envoyer aux relais read de celle-ci. La route combine stockage de l'auteur et livraison au destinataire.
+
+Si Alice écrit sur Relay A et lit ses mentions sur Relay B, le client de Bob doit publier sa réponse sur les relais write de Bob et sur Relay B d'Alice. Relay A permet de trouver les publications d'Alice, mais il ne suit pas la route entrante qu'elle a déclarée.
+
+La livraison n'est pas garantie. Un relais peut exiger une authentification, un paiement ou une autre condition. Le destinataire peut changer sa liste et les clients peuvent implémenter NIP-65 différemment. La liste fournit un routage, pas un reçu.
+
+## Gardez la liste courte et découvrable
+
+NIP-65 recommande deux à quatre relais par catégorie. Une longue liste multiplie les connexions, doublons et opérations de publication. Davantage de relais peuvent améliorer la redondance, mais chaque destination a un coût et peut révéler davantage le comportement de l'utilisateur.
+
+L'événement de liste doit lui aussi être découvert. NIP-65 conseille de le diffuser largement, notamment vers des indexeurs publics connus que les autres clients utilisent. Il doit aussi accompagner les événements publiés sur les relais choisis. Sinon, une liste correcte peut rester invisible.
+
+## Une séquence de vérification pratique
+
+Quand des publications ou mentions semblent manquer :
+
+1. Récupérez l'événement `10002` valide le plus récent pour la clé publique.
+2. Traitez les tags `r` sans marqueur comme read et write.
+3. Interrogez les relais write pour les événements créés par la personne.
+4. Publiez les événements tagués vers les relais read du destinataire et les write de l'auteur.
+5. Enregistrez l'acceptation de chaque relais séparément du choix de routage.
+6. Utilisez les valeurs par défaut avec prudence en l'absence de liste, car cette absence ne prouve pas qu'un relais précis est correct.
+
+NIP-65 ne crée pas un ensemble mondial de relais. Il permet à chaque personne de publier des directions pour deux flux distincts. Les suivre facilite le diagnostic et réduit le risque de confondre un problème de routage avec une perte de données.
