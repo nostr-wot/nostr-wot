@@ -1,3 +1,4 @@
+import { HELP_TOPICS, helpTopicHref } from '@/lib/help-topics';
 import { newsPath } from '@/lib/news-path.mjs';
 import { pageCount } from '@/lib/news-pagination';
 import { MetadataRoute } from "next";
@@ -76,6 +77,12 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
         },
       });
     }
+  }
+
+  for (const topic of HELP_TOPICS) {
+    const path = helpTopicHref(topic);
+    const languages = Object.fromEntries(locales.map(locale => [locale, getLocalizedUrl(path, locale)]));
+    for (const locale of locales) sitemapEntries.push({ url: languages[locale], changeFrequency: 'monthly', priority: 0.6, alternates: { languages } });
   }
 
   // Enumerate each locale's published inventory, rather than using English

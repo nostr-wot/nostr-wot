@@ -1,7 +1,7 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
-import { HELP_TOPICS, HELP_VIDEOS, HELP_CATEGORIES, matchesHelpQuery } from '../lib/help-topics';
+import { HELP_TOPICS, HELP_VIDEOS, HELP_CATEGORIES, matchesHelpQuery, getHelpTopic, helpTopicHref } from '../lib/help-topics';
 import { GUIDE_MEDIA, GUIDE_VIDEOS, youtubeUrls } from '../lib/guide-media';
 
 test('help tasks are independent of the complete published video library', () => {
@@ -37,4 +37,15 @@ test('help search matches words across the task text and ignores accents and cas
 test('language guide points to the dedicated language tutorial', () => {
   assert.deepEqual(GUIDE_MEDIA['change-language'].videos, ['language']);
   assert.equal(GUIDE_VIDEOS.language.id, 'uK5wQDeWJdA');
+});
+
+test('every help task has a unique shareable route and every video has a destination', () => {
+  assert.equal(new Set(HELP_TOPICS.map(topic => topic.slug)).size, HELP_TOPICS.length);
+  for (const topic of HELP_TOPICS) {
+    assert.match(topic.slug, /^[a-z]+(?:-[a-z]+)*$/);
+    assert.equal(getHelpTopic(topic.slug), topic);
+    assert.equal(helpTopicHref(topic), `/help/${topic.slug}`);
+  }
+  assert.equal(getHelpTopic('missing-task'), undefined);
+  for (const video of HELP_VIDEOS) assert.ok(HELP_TOPICS.some(topic => topic.video === video.id));
 });

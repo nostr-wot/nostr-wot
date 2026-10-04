@@ -1,3 +1,4 @@
+import { HELP_TOPICS, helpTopicHref } from '../lib/help-topics';
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
@@ -17,7 +18,7 @@ const url = (route: string, locale: string) => `${base}${locale === 'en' ? '' : 
 test('every application page is covered or has an explicit dynamic-content policy', () => {
   const root = path.join(process.cwd(), 'app/[locale]');
   const dynamic = new Set([
-    '/blog/[slug]', '/guides/[slug]', '/news/[date]', '/news/[date]/[slug]',
+    '/help/[task]', '/blog/[slug]', '/guides/[slug]', '/news/[date]', '/news/[date]/[slug]',
     '/news/archive/[year]/[month]', '/newsletters/[id]',
     // Relay-backed viewers have no finite, owned inventory of public IDs.
     '/profile/[pubkey]', '/notes/[id]',
@@ -34,6 +35,7 @@ test('generated sitemap covers every published locale and contains only public c
   const expected = new Set<string>();
   for (const locale of locales) {
     for (const route of routes) expected.add(url(route.path, locale));
+    for (const topic of HELP_TOPICS) expected.add(url(helpTopicHref(topic), locale));
     for (const [section, getAll] of Object.entries({ blog: getAllBlogPosts, guides: getAllGuides, news: getAllNews })) {
       for (const post of getAll(locale)) expected.add(url(section === "news" && "publishedAt" in post ? `/news/${String(post.publishedAt).slice(0, 10)}/${post.slug}` : `/${section}/${post.slug}`, locale));
     }

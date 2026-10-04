@@ -18,31 +18,39 @@ export const HELP_VIDEOS: { id: GuideVideo; duration: string }[] = [
   { id: 'security', duration: '1:07' },
 ];
 
-export type HelpTopic = { id: string; category: HelpCategory; video?: GuideVideo; screenshot?: string; related?: string[]; guides: string[] };
+export type HelpTopic = { id: string; slug: string; category: HelpCategory; video?: GuideVideo; screenshot?: string; related?: string[]; guides: string[] };
 export const HELP_TOPICS: HelpTopic[] = [
-  { id: 'account', related: ['import', 'backup'], category: 'accounts', video: 'account', guides: ['create-nostr-account', 'import-nostr-account', 'connect-nostr-signer'] },
-  { id: 'subAccounts', related: ['backup', 'switch'], screenshot: 'sub-account', category: 'accounts', video: 'subAccounts', guides: ['custom-identity-paths'] },
-  { id: 'backup', related: ['import', 'remove'], category: 'accounts', video: 'backup', guides: ['import-nostr-account'] },
-  { id: 'remove', related: ['backup', 'switch'], category: 'accounts', video: 'remove', guides: ['removing-accounts'] },
-  { id: 'approvals', related: ['permissions', 'denied'], category: 'permissions', video: 'approvals', guides: ['site-permissions'] },
-  { id: 'permissions', related: ['approvals', 'authentication'], screenshot: 'global-rules', category: 'permissions', video: 'permissions', guides: ['site-permissions'] },
-  { id: 'authentication', related: ['permissions', 'loginFailed'], category: 'permissions', video: 'authentication', guides: ['backend-authentication', 'relay-authentication'] },
-  { id: 'wallet', related: ['receive', 'walletFailed'], screenshot: 'wallet-setup', category: 'payments', video: 'wallet', guides: ['setting-up-wallet'] },
-  { id: 'zaps', related: ['limits', 'zapFailed'], category: 'payments', video: 'zaps', guides: ['zapping-auto-approve'] },
-  { id: 'appearance', related: ['language', 'security'], category: 'settings', video: 'appearance', guides: [] },
-  { id: 'language', related: ['appearance', 'security'], category: 'settings', video: 'language', guides: ['change-language'] },
-  { id: 'security', related: ['backup', 'loginFailed'], screenshot: 'security', category: 'settings', video: 'security', guides: ['managing-identity'] },
-  { id: 'import', related: ['backup', 'switch'], screenshot: 'import-key', category: 'accounts', guides: ['import-nostr-account'] },
-  { id: 'switch', related: ['subAccounts', 'loginFailed'], category: 'accounts', guides: ['managing-identity'] },
-  { id: 'receive', related: ['wallet', 'zaps'], category: 'payments', guides: ['setting-up-wallet'] },
-  { id: 'limits', related: ['zaps', 'permissions'], screenshot: 'zap-limit', category: 'payments', guides: ['zapping-auto-approve'] },
-  { id: 'loginFailed', related: ['authentication', 'denied'], category: 'troubleshooting', guides: ['backend-authentication'] },
-  { id: 'denied', related: ['permissions', 'approvals'], category: 'troubleshooting', guides: ['site-permissions'] },
-  { id: 'walletFailed', related: ['wallet', 'receive'], category: 'troubleshooting', guides: ['setting-up-wallet'] },
-  { id: 'zapFailed', related: ['walletFailed', 'limits'], category: 'troubleshooting', guides: ['zapping-auto-approve'] },
+  { id: 'account', slug: 'create-account', related: ['import', 'backup'], category: 'accounts', video: 'account', guides: ['create-nostr-account', 'import-nostr-account', 'connect-nostr-signer'] },
+  { id: 'subAccounts', slug: 'add-identity', related: ['backup', 'switch'], screenshot: 'sub-account', category: 'accounts', video: 'subAccounts', guides: ['custom-identity-paths'] },
+  { id: 'backup', slug: 'back-up-account', related: ['import', 'remove'], category: 'accounts', video: 'backup', guides: ['import-nostr-account'] },
+  { id: 'remove', slug: 'remove-account', related: ['backup', 'switch'], category: 'accounts', video: 'remove', guides: ['removing-accounts'] },
+  { id: 'approvals', slug: 'review-request', related: ['permissions', 'denied'], category: 'permissions', video: 'approvals', guides: ['site-permissions'] },
+  { id: 'permissions', slug: 'site-and-global-rules', related: ['approvals', 'authentication'], screenshot: 'global-rules', category: 'permissions', video: 'permissions', guides: ['site-permissions'] },
+  { id: 'authentication', slug: 'sign-in-permissions', related: ['permissions', 'loginFailed'], category: 'permissions', video: 'authentication', guides: ['backend-authentication', 'relay-authentication'] },
+  { id: 'wallet', slug: 'connect-wallet', related: ['receive', 'walletFailed'], screenshot: 'wallet-setup', category: 'payments', video: 'wallet', guides: ['setting-up-wallet'] },
+  { id: 'zaps', slug: 'send-zap', related: ['limits', 'zapFailed'], category: 'payments', video: 'zaps', guides: ['zapping-auto-approve'] },
+  { id: 'appearance', slug: 'change-appearance', related: ['language', 'security'], category: 'settings', video: 'appearance', guides: [] },
+  { id: 'language', slug: 'change-language', related: ['appearance', 'security'], category: 'settings', video: 'language', guides: ['change-language'] },
+  { id: 'security', slug: 'password-and-auto-lock', related: ['backup', 'loginFailed'], screenshot: 'security', category: 'settings', video: 'security', guides: ['managing-identity'] },
+  { id: 'import', slug: 'import-account', related: ['backup', 'switch'], screenshot: 'import-key', category: 'accounts', guides: ['import-nostr-account'] },
+  { id: 'switch', slug: 'switch-accounts', related: ['subAccounts', 'loginFailed'], category: 'accounts', guides: ['managing-identity'] },
+  { id: 'receive', slug: 'receive-sats', related: ['wallet', 'zaps'], category: 'payments', guides: ['setting-up-wallet'] },
+  { id: 'limits', slug: 'payment-auto-approval', related: ['zaps', 'permissions'], screenshot: 'zap-limit', category: 'payments', guides: ['zapping-auto-approve'] },
+  { id: 'loginFailed', slug: 'cannot-sign-in', related: ['authentication', 'denied'], category: 'troubleshooting', guides: ['backend-authentication'] },
+  { id: 'denied', slug: 'request-denied', related: ['permissions', 'approvals'], category: 'troubleshooting', guides: ['site-permissions'] },
+  { id: 'walletFailed', slug: 'wallet-not-connecting', related: ['wallet', 'receive'], category: 'troubleshooting', guides: ['setting-up-wallet'] },
+  { id: 'zapFailed', slug: 'zap-failed', related: ['walletFailed', 'limits'], category: 'troubleshooting', guides: ['zapping-auto-approve'] },
 ];
 
 export function matchesHelpQuery(query: string, text: string): boolean {
   const normalize = (value: string) => value.normalize('NFD').replace(/\p{M}/gu, '').toLocaleLowerCase();
   return normalize(query).trim().split(/\s+/).every(word => normalize(text).includes(word));
+}
+
+export function helpTopicHref(topic: HelpTopic): string {
+  return `/help/${topic.slug}`;
+}
+
+export function getHelpTopic(slug: string): HelpTopic | undefined {
+  return HELP_TOPICS.find(topic => topic.slug === slug);
 }
