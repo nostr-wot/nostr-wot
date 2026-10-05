@@ -52,7 +52,10 @@ test('the project page keeps maintainer evidence distinct from an unverified fou
     project, data, locale: 'en', directoryHref: '/projects',
   } as never));
   assert.match(html, /Founder: not verified/);
-  assert.match(html, /maintainer/);
+  // The role label is capitalised in the markup now rather than by CSS: a card
+  // lists every role this project credits the person with, and
+  // `first-letter:uppercase` only reached the first item of a joined list.
+  assert.match(html, /Maintainer/);
   assert.match(html, /href="https:\/\/example.com\/team"/);
   assert.match(html, /lang="en"/);
   assert.match(html, /href="\/projects"/);

@@ -1,4 +1,4 @@
-import { peopleCrumbs, roleLabel, type Person } from '@/lib/people';
+import { peopleCrumbs, roleLabels, type Person } from '@/lib/people';
 import { getPersonProfile } from '@/lib/people-profiles';
 import { focus } from '@/components/projects/shared';
 import { Breadcrumbs, cardShell } from '@/components/ui';
@@ -40,7 +40,7 @@ export default function PeopleIndex({ people, locale, pathPrefix, labels }: {
           const profile = getPersonProfile(person.name);
           // The same role on two projects is still two credits, but the same
           // role name should read once in the summary line.
-          const roles = [...new Set(person.roles.map(role => roleLabel(role.role, locale)))];
+          const roles = roleLabels(person.roles.map(role => role.role), locale);
           return (
             <li key={person.slug}>
               <article className={`group flex h-full gap-4 p-5 ${cardShell}`}>
@@ -58,9 +58,7 @@ export default function PeopleIndex({ people, locale, pathPrefix, labels }: {
                       {person.name}
                     </a>
                   </h2>
-                  <p className="mt-0.5 text-xs first-letter:uppercase text-gray-600 dark:text-gray-300">
-                    {roles.join(', ')}
-                  </p>
+                  <p className="mt-0.5 text-xs text-gray-600 dark:text-gray-300">{roles}</p>
                   {/* The projects are named rather than counted, because the
                     * project is the only thing that makes a credit meaningful.
                     * They are plain text here: each one is a link on the
