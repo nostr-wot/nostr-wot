@@ -168,6 +168,24 @@ export function personDescription(person: Person, locale = 'en'): string {
   return fitText(fitted, min, max, suffixes, ' ');
 }
 
+/** Several role labels, joined for display and each capitalised on its own.
+ *
+ * `first-letter:uppercase` in CSS only reaches the first item, so a joined list
+ * read "Founder, creator" in English, where the authored labels are lowercase
+ * and the capital comes from the stylesheet. Capitalising per label also leaves
+ * a multi-word label alone, which `capitalize` would not: Spanish's
+ * "Responsable de mantenimiento" must not become "Responsable De Mantenimiento".
+ *
+ * Duplicates collapse: the same role credited on two projects is one label. */
+export function roleLabels(roles: string[], locale = 'en'): string {
+  return [...new Set(roles.map(role => roleLabel(role, locale)))]
+    .map(label => {
+      const [first, ...rest] = Array.from(label);
+      return first ? first.toLocaleUpperCase(locale) + rest.join('') : label;
+    })
+    .join(', ');
+}
+
 /** The trail to the people index, as locale-prefixed site paths. Shared by the
  * index page's graph and its `Breadcrumbs`, so the two cannot drift.
  *

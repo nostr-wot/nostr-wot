@@ -1,5 +1,5 @@
 import { type EcosystemProject } from '@/lib/ecosystem-projects';
-import { personSlug, roleLabel } from '@/lib/people';
+import { personSlug, roleLabels } from '@/lib/people';
 import { getPersonProfile, mergeProfileLinks, profileLinkLabel } from '@/lib/people-profiles';
 import { ExternalIconLink, ExternalLink, focus } from '@/components/projects/shared';
 import { Tooltip, cardShell, iconButton } from '@/components/ui';
@@ -8,15 +8,29 @@ import PersonAvatar from './PersonAvatar';
 
 type DatasetPerson = EcosystemProject['people'][number];
 
+/** One person and every role this project credits them with. */
+export type CreditedPerson = {
+  name: string;
+  credits: { role: DatasetPerson['role']; sourceUrl: string }[];
+  profiles: DatasetPerson['profiles'];
+};
+
 /**
- * One credited person, as a card. Used by a project page's People tab.
+ * One credited PERSON, as a card. Used by a project page's People tab.
+ *
+ * Keyed by the person, not by the credit. The dataset records one entry per
+ * credited role, so Obelisk credits Fabricio Acosta as both founder and
+ * creator, and a card per entry rendered him twice side by side as if he were
+ * two people. Each role keeps its own evidence link, because each is evidenced
+ * by a different source: the founder credit by the package manifest, the
+ * creator credit by the contributor list.
  *
  * Every link here comes from the dataset or from the committed profile record,
  * and both carry the source they were taken from. The avatar is the person's
  * own public developer-profile image.
  */
 export default function PersonCard({ person, locale, localePrefix, labels }: {
-  person: DatasetPerson;
+  person: CreditedPerson;
   locale: string;
   /** "" for English, "/<locale>" otherwise. */
   localePrefix: string;
@@ -42,7 +56,9 @@ export default function PersonCard({ person, locale, localePrefix, labels }: {
             {person.name}
           </a>
         </h3>
-        <p className="mt-0.5 text-xs first-letter:uppercase text-gray-600 dark:text-gray-300">{roleLabel(person.role, locale)}</p>
+        <p className="mt-0.5 text-xs text-gray-600 dark:text-gray-300">
+          {roleLabels(person.credits.map(credit => credit.role), locale)}
+        </p>
 
         {profile?.selfDescription && (
           // Their own words. The source is a visible link rather than a
@@ -83,9 +99,19 @@ export default function PersonCard({ person, locale, localePrefix, labels }: {
           )}
         </div>
 
-        <p className="mt-3 text-xs">
-          <ExternalLink locale={locale} url={person.sourceUrl}>{labels.roleEvidence}</ExternalLink>
-        </p>
+        {/* One evidence link per role, labelled by role when there is more than
+            one, so a reader can tell which source backs which credit. */}
+        <ul className="mt-3 space-y-1 text-xs">
+          {person.credits.map(credit => (
+            <li key={`${credit.role}-${credit.sourceUrl}`}>
+              <ExternalLink locale={locale} url={credit.sourceUrl}>
+                {person.credits.length > 1
+                  ? `${labels.roleEvidence}: ${roleLabels([credit.role], locale)}`
+                  : labels.roleEvidence}
+              </ExternalLink>
+            </li>
+          ))}
+        </ul>
       </div>
     </article>
   );

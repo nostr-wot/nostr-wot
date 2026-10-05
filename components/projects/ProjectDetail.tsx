@@ -42,7 +42,19 @@ export default function ProjectDetail({ project, data, locale, snapshot = getPro
   // Distinct people, not credits. Obelisk credits one person with two roles, and
   // "People credited: 3" for two people is wrong. The People tab still shows one
   // card per credited role, which is what a reader wants there.
-  const creditedPeople = new Set(people.map(person => person.name)).size;
+  // Grouped by person, in first-appearance order. The dataset records one entry
+  // per credited ROLE, so a person credited twice on one project appeared as
+  // two identical cards side by side.
+  const credited = people.reduce<{ name: string; credits: { role: typeof people[number]['role']; sourceUrl: string }[]; profiles: typeof people[number]['profiles'] }[]>((all, person) => {
+    const existing = all.find(entry => entry.name === person.name);
+    if (existing) {
+      existing.credits.push({ role: person.role, sourceUrl: person.sourceUrl });
+      existing.profiles = [...existing.profiles, ...person.profiles];
+      return all;
+    }
+    return [...all, { name: person.name, credits: [{ role: person.role, sourceUrl: person.sourceUrl }], profiles: [...person.profiles] }];
+  }, []);
+  const creditedPeople = credited.length;
 
   const prefix = localePrefix(locale);
 
@@ -150,11 +162,11 @@ export default function ProjectDetail({ project, data, locale, snapshot = getPro
       {!people.some(person => person.role === 'founder') && (
         <p className="mt-3 text-sm text-gray-600 dark:text-gray-300">{t.unknownFounder}</p>
       )}
-      {people.length > 0 && (
+      {credited.length > 0 && (
         <div className="mt-4 grid gap-4 sm:grid-cols-2">
-          {people.map((person, index) => (
+          {credited.map(person => (
             <PersonCard
-              key={`${person.name}-${index}`}
+              key={person.name}
               person={person}
               locale={locale}
               localePrefix={prefix}
