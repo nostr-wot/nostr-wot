@@ -9,6 +9,9 @@ import { getAllNews, getNewsArchiveMonths, getNewsForMonth } from "@/lib/news";
 import { routes, resolveRouteLastModified } from "@/lib/sitemap-routes.mjs";
 import routeModified from "@/lib/generated/route-modified.json";
 import { listSentNewsletters } from "@/lib/newsletter-archive";
+import ecosystemProjects from "@/data/ecosystem-projects.json";
+import { getPeople } from "@/lib/people";
+import type { EcosystemData } from "@/lib/ecosystem-projects";
 
 // Sent editions are runtime records and can appear without a code deployment.
 export const dynamic = "force-dynamic";
@@ -39,6 +42,23 @@ function getLocalizedUrl(path: string, locale: string): string {
 // scripts/generate-route-modified.mjs) to an ISO commit date.
 const routeModifiedDates: Record<string, string> = routeModified;
 
+/**
+ * An hreflang set with `x-default` added, pointing at the default locale.
+ *
+ * The page metadata has emitted `x-default` since `generateAlternates` was
+ * written; the sitemap's own alternates did not, so the two advertised
+ * different hreflang sets for the same URL.
+ *
+ * Only added when the default locale is actually in the set: a post published
+ * in Spanish alone has no English URL, and pointing `x-default` at one that
+ * 404s is worse than omitting it.
+ */
+function withDefault(languages: Record<string, string>): Record<string, string> {
+  return languages[defaultLocale]
+    ? { ...languages, 'x-default': languages[defaultLocale] }
+    : languages;
+}
+
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const sitemapEntries: MetadataRoute.Sitemap = [];
 
@@ -48,7 +68,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     for (const locale of languages) {
       const edition = issue.translations[locale as keyof typeof issue.translations];
       if (!edition) continue;
-      sitemapEntries.push({ url: alternates[locale], lastModified: edition.sentAt, changeFrequency: "never", priority: 0.6, alternates: { languages: alternates } });
+      sitemapEntries.push({ url: alternates[locale], lastModified: edition.sentAt, changeFrequency: "never", priority: 0.6, alternates: { languages: withDefault(alternates) } });
     }
   }
 
@@ -71,9 +91,9 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
         changeFrequency: route.changeFrequency,
         priority: route.priority,
         alternates: {
-          languages: Object.fromEntries(
+          languages: withDefault(Object.fromEntries(
             locales.map((l) => [l, getLocalizedUrl(route.path, l)])
-          ),
+          )),
         },
       });
     }
@@ -111,7 +131,51 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
         lastModified: new Date(modified),
         changeFrequency: "monthly",
         priority,
-        alternates: { languages: translations.get(post.translationKey)! },
+        alternates: { languages: withDefault(translations.get(post.translationKey)!) },
+      });
+    }
+  }
+
+  // Every project record exists in all seven locales, so each page's hreflang
+  // set is the full locale list. Priority sits below /projects (0.6) so the
+  // directory stays the primary target and these remain its spokes.
+  for (const project of ecosystemProjects.projects) {
+    const languages = Object.fromEntries(locales.map(locale => [locale, getLocalizedUrl(`/projects/${project.id}`, locale)]));
+    for (const locale of locales) {
+      sitemapEntries.push({
+        url: languages[locale],
+        lastModified: project.lastVerified,
+        changeFrequency: "monthly",
+        priority: 0.5,
+        alternates: { languages: withDefault(languages) },
+      });
+    }
+  }
+
+  // One page per credited person, derived from the same records as the project
+  // pages above, so a person cannot appear here without the role that evidences
+  // them. A person's slug is their kebab-cased name, which is identical in all
+  // seven locale datasets, so each page's hreflang set is the full locale list.
+  // Priority sits below the project pages (0.5): a person page cites one fact
+  // about a project record, so the project record is the better landing page.
+  for (const person of getPeople(ecosystemProjects as unknown as EcosystemData)) {
+    const languages = Object.fromEntries(locales.map(locale => [locale, getLocalizedUrl(`/people/${person.slug}`, locale)]));
+    // Derived, never the clock: a person page says what the project records
+    // credit them with, so it changes when one of those records is re-checked.
+    // The newest check among their roles is the honest date. Omitted entirely
+    // when no role carries one, rather than falling back to today.
+    const checked = person.roles
+      .map(role => ecosystemProjects.projects.find(project => project.id === role.projectId)?.lastVerified)
+      .filter((date): date is string => Boolean(date))
+      .sort();
+    const lastModified = checked.at(-1);
+    for (const locale of locales) {
+      sitemapEntries.push({
+        url: languages[locale],
+        ...(lastModified ? { lastModified } : {}),
+        changeFrequency: "monthly",
+        priority: 0.4,
+        alternates: { languages: withDefault(languages) },
       });
     }
   }
@@ -123,7 +187,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     const path = `/news?page=${page}`;
     const languages = Object.fromEntries(available.map(locale => [locale, getLocalizedUrl(path, locale)]));
     for (const locale of available) {
-      sitemapEntries.push({ url: languages[locale], changeFrequency: "daily", priority: 0.6, alternates: { languages } });
+      sitemapEntries.push({ url: languages[locale], changeFrequency: "daily", priority: 0.6, alternates: { languages: withDefault(languages) } });
     }
   }
 
@@ -179,7 +243,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
         changeFrequency: "monthly",
         priority: 0.6,
         alternates: {
-          languages: alternateLanguages,
+          languages: withDefault(alternateLanguages),
         },
       });
     }

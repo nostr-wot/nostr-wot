@@ -25,20 +25,55 @@ const endings: Record<Locale, string[]> = {
   de: ['Mehr dazu.', 'Mehr erfahren.', 'Mehr auf Nostr WoT.', 'Alle Details auf Nostr WoT.', 'Alle Informationen und weitere Details auf Nostr WoT.'],
 };
 
-const length = (text: string) => Array.from(text).length;
-const clean = (text: string) => text.normalize('NFC').replace(/\s+/gu, ' ').trim();
+/** Counts code points rather than UTF-16 units, so an emoji or an accented
+ * character costs what a reader sees it cost. Exported because a page composing
+ * its own copy has to measure it the same way this policy will. */
+export const length = (text: string) => Array.from(text).length;
+
+/** The normalisation `fitText` applies before measuring. Exported for the same
+ * reason: a caller asking whether its copy fits must normalise identically. */
+export const clean = (text: string) => text.normalize('NFC').replace(/\s+/gu, ' ').trim();
+
+/** Picks the first candidate inside [min, max] from a list written
+ * longest-first; failing that the longest that still fits, and failing that the
+ * shortest. Anything under `min` would be padded with generic filler by this
+ * policy, which is what the ordering exists to avoid.
+ *
+ * Shared by every page that composes its own title and description, because no
+ * single template spans a three-character name and a sixteen-character one
+ * inside the window. */
+export function firstFit(candidates: string[], min: number, max: number): string {
+  const within = candidates.find(candidate => length(candidate) >= min && length(candidate) <= max);
+  if (within) return within;
+  const under = candidates.filter(candidate => length(candidate) <= max);
+  if (under.length) return under.reduce((longest, candidate) => length(candidate) > length(longest) ? candidate : longest);
+  return candidates.reduce((shortest, candidate) => length(candidate) < length(shortest) ? candidate : shortest);
+}
 
 /** Keep authored copy when it fits; extend short copy with localized context.
  * Prefer whole-word excerpts. For an unusually long token, use a Unicode-safe
  * excerpt so external profile/note text cannot violate the hard length limit.
+ * Exported so a page can fit its own copy with its own additions and land
+ * inside the window before this policy sees it.
  */
-function fit(value: string, min: number, max: number, additions: string[], separator = " | "): string {
+export function fitText(value: string, min: number, max: number, additions: string[], separator = " | "): string {
   let text = clean(value);
   while (length(text) < min) {
     const candidates = additions.map(addition => clean(`${text}${text ? separator : ''}${addition}`));
     const fitted = candidates.find(candidate => length(candidate) >= min && length(candidate) <= max);
     if (fitted) return fitted;
-    text = candidates.find(candidate => length(candidate) >= min) || candidates[candidates.length - 1];
+    // Extend only as far as the ceiling allows, taking the longest such
+    // addition so the next pass can add another on top. Reaching `min` by
+    // overshooting `max` is what sent copy that already respected the ceiling
+    // into the cut below and ended it mid-sentence with an ellipsis: a French
+    // summary of 102 took a 56-grapheme sentence to 159 and was cut back to
+    // 157, where a 41 then a 12 would have landed on 157 whole.
+    const room = candidates.filter(candidate => length(candidate) <= max && length(candidate) > length(text));
+    // Nothing fits in the gap. The copy is already inside the ceiling, so it is
+    // returned whole and this policy pads it; a cut here would invent an
+    // ellipsis on text that never exceeded the limit.
+    if (!room.length) break;
+    text = room.reduce((longest, candidate) => length(candidate) > length(longest) ? candidate : longest);
   }
   if (length(text) <= max) return text;
   const chars = Array.from(text);
@@ -55,8 +90,8 @@ export function seoText(title: string, description: string, locale: Locale = def
   const copy = context[locale];
   const labels: Record<Locale, string> = { en: 'Information and resources', es: 'Información y recursos', pt: 'Informações e recursos', ru: 'Информация и материалы', it: 'Informazioni e risorse', fr: 'Informations et ressources', de: 'Informationen und Ressourcen' };
   return {
-    title: fit(title, ...SEO_LIMITS.title, ['Nostr WoT', labels[locale], copy.title, copy.description]),
-    description: fit(description, ...SEO_LIMITS.description, [...endings[locale], copy.description, copy.description], ' '),
+    title: fitText(title, ...SEO_LIMITS.title, ['Nostr WoT', labels[locale], copy.title, copy.description]),
+    description: fitText(description, ...SEO_LIMITS.description, [...endings[locale], copy.description, copy.description], ' '),
   };
 }
 
