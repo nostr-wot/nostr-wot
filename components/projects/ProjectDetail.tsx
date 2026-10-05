@@ -39,6 +39,10 @@ export default function ProjectDetail({ project, data, locale, snapshot = getPro
   const reports = relatedReports(project, data);
   const people = project.people.filter(person => isSafeExternalUrl(person.sourceUrl));
   const similar = similarProjects(project, data);
+  // Distinct people, not credits. Obelisk credits one person with two roles, and
+  // "People credited: 3" for two people is wrong. The People tab still shows one
+  // card per credited role, which is what a reader wants there.
+  const creditedPeople = new Set(people.map(person => person.name)).size;
 
   const prefix = localePrefix(locale);
 
@@ -85,7 +89,7 @@ export default function ProjectDetail({ project, data, locale, snapshot = getPro
         project={project}
         snapshot={snapshot}
         locale={locale}
-        peopleCount={people.length}
+        peopleCount={creditedPeople}
         labels={{
           quickFacts: d.quickFacts, category: d.categoryFact, status: d.statusFact,
           launched: d.launchedLabel, license: d.license, primaryLanguage: d.primaryLanguage,

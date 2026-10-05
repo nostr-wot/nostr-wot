@@ -180,7 +180,7 @@ test('composed copy claims only what every record actually carries', async () =>
   const { readFileSync } = await import('node:fs');
   // The fitter picks a sentence by length alone, with no sight of the project,
   // so an authored sentence may only state what every record holds. These words
-  // name per-project facts most records do not have: 36 of the 41 projects list
+  // name per-project facts most records do not have: 36 of the 42 projects list
   // no people, five have no license and 17 have no published release.
   const perProjectClaims: Record<string, RegExp> = {
     en: /people|maintainer|licen[cs]e|language|release|topic/i,
@@ -274,7 +274,7 @@ test('a project with no related reports omits those sections entirely', async ()
 
 test('the repository-rename row appears only when the snapshot resolves to a different slug', async () => {
   // Task 2 established that no real project's snapshot has a canonicalSlug
-  // different from its slug: all 41 repository URLs were already written
+  // different from its slug: all 42 repository URLs were already written
   // from GitHub's canonical full_name, so this path has no real-data
   // coverage. ProjectDetail accepts an optional `snapshot` prop (defaulting
   // to its own getProjectSnapshot(project.id) lookup when omitted) precisely
@@ -420,7 +420,7 @@ test('the detail page renders the latest recorded update and both verification d
   const { readFileSync } = await import('node:fs');
 
   // The card calls this link the full evidence record, so the page may not show
-  // less dataset evidence than the card's own collapsed block. 16 of the 41
+  // less dataset evidence than the card's own collapsed block. 16 of the 42
   // records carry a `latestUpdate`; `checkedAt` is the directory's own
   // verification date, which the spec requires beside the project's.
   for (const locale of ['en', 'es', 'pt', 'ru', 'it', 'fr', 'de']) {
@@ -615,7 +615,7 @@ test('every project has a logo record, each file exists, and none is a personal 
       `${id}: a personal account avatar is being used as a project logo`
     );
   }
-  assert.equal(withLogo, 37, `expected 37 projects with a logo, found ${withLogo}`);
+  assert.equal(withLogo, 38, `expected 38 projects with a logo, found ${withLogo}`);
 });
 
 test('no shipped project SVG can execute script if opened directly', async () => {

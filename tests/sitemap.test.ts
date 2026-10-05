@@ -24,7 +24,7 @@ test('every application page is covered or has an explicit dynamic-content polic
     '/news/archive/[year]/[month]', '/newsletters/[id]',
     // Relay-backed viewers have no finite, owned inventory of public IDs.
     '/profile/[pubkey]', '/notes/[id]',
-    // 41 project records times 7 locales, enumerated by generateStaticParams
+    // 42 project records times 7 locales, enumerated by generateStaticParams
     // and emitted into the sitemap by app/sitemap.ts, so the path pattern
     // itself is never a URL.
     '/projects/[id]',

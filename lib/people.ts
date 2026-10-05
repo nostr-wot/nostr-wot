@@ -149,7 +149,12 @@ export function personDescription(person: Person, locale = 'en'): string {
   const projectName = person.roles[0]?.projectName ?? '';
   const [min, max] = SEO_LIMITS.description;
   const count = person.roles.length;
-  const templates: string[] = count > 1 ? [copy.descriptionPlural] : copy.descriptionTemplates;
+  // An ordered list for the plural case too, for the same reason the singular
+  // case has one: a single template would need a static length of exactly 141
+  // to span a 3-grapheme name ("v0l") and a 15-grapheme one ("Fabricio
+  // Acosta") inside a 13-grapheme window. The longer entry is preferred and the
+  // shorter one catches the long names.
+  const templates: string[] = count > 1 ? copy.descriptionPlural : copy.descriptionTemplates;
   // The noun has to agree with the numeral beside it; see lib/plural.ts.
   const roles = pluralForm(locale, count, copy.rolesPlural);
   const candidates = templates.map(template => template

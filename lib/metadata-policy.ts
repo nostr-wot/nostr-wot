@@ -58,22 +58,42 @@ export function firstFit(candidates: string[], min: number, max: number): string
  */
 export function fitText(value: string, min: number, max: number, additions: string[], separator = " | "): string {
   let text = clean(value);
-  while (length(text) < min) {
-    const candidates = additions.map(addition => clean(`${text}${text ? separator : ''}${addition}`));
-    const fitted = candidates.find(candidate => length(candidate) >= min && length(candidate) <= max);
-    if (fitted) return fitted;
-    // Extend only as far as the ceiling allows, taking the longest such
-    // addition so the next pass can add another on top. Reaching `min` by
-    // overshooting `max` is what sent copy that already respected the ceiling
-    // into the cut below and ended it mid-sentence with an ellipsis: a French
-    // summary of 102 took a 56-grapheme sentence to 159 and was cut back to
-    // 157, where a 41 then a 12 would have landed on 157 whole.
-    const room = candidates.filter(candidate => length(candidate) <= max && length(candidate) > length(text));
-    // Nothing fits in the gap. The copy is already inside the ceiling, so it is
-    // returned whole and this policy pads it; a cut here would invent an
-    // ellipsis on text that never exceeded the limit.
-    if (!room.length) break;
-    text = room.reduce((longest, candidate) => length(candidate) > length(longest) ? candidate : longest);
+  if (length(text) < min) {
+    // Searched, not grabbed. Taking the longest addition that still fits the
+    // ceiling is greedy and gets stuck: a French page of 80 graphemes jumped to
+    // 144 on a 63-grapheme sentence and then had no room for anything else,
+    // one short of the floor, while four short sentences would have landed on
+    // 148 whole. Walking the combinations breadth-first returns the first chain
+    // inside the window, so the result is always whole authored sentences and
+    // the shortest chain that reaches the floor wins.
+    const seen = new Set([text]);
+    let frontier = [text];
+    for (let depth = 0; depth < 4 && frontier.length; depth++) {
+      const next: string[] = [];
+      for (const current of frontier) {
+        for (const addition of additions) {
+          const candidate = clean(`${current}${current ? separator : ''}${addition}`);
+          const size = length(candidate);
+          // Never past the ceiling, and never a step that does not grow the
+          // text, which would loop on an empty addition.
+          if (size > max || size <= length(current) || seen.has(candidate)) continue;
+          if (size >= min) return candidate;
+          seen.add(candidate);
+          next.push(candidate);
+        }
+      }
+      frontier = next;
+    }
+    // No chain of whole sentences reaches the floor without passing the
+    // ceiling. Overshoot once and cut, which is what the window demands: this
+    // policy's contract is a description inside [min, max], and an excerpt is
+    // the only thing left that satisfies it.
+    const over = additions
+      .map(addition => clean(`${text}${text ? separator : ''}${addition}`))
+      .filter(candidate => length(candidate) >= min);
+    if (over.length) {
+      text = over.reduce((shortest, candidate) => length(candidate) < length(shortest) ? candidate : shortest);
+    }
   }
   if (length(text) <= max) return text;
   const chars = Array.from(text);

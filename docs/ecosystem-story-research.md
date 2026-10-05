@@ -6,7 +6,7 @@ since. Where a field is missing from `story` in `data/ecosystem-projects.json`,
 it is missing because no source states it, not because nobody looked.
 
 This file records what was searched for and not found, so that a later pass
-does not fill a gap with a plausible guess. 35 of the 41 projects have no
+does not fill a gap with a plausible guess. 36 of the 42 projects have no
 published explanation of their name anywhere; the six that do are the six that
 state it themselves, in a README or an interview.
 
@@ -24,3 +24,4 @@ state it themselves, in a README or an interview.
 | `lnbits` | Bitcoin Magazine (2024-09-24) dates the project to 2019 and the company to 2022, but no source gives a month for the first public release, so launched is omitted. Predates Nostr; it is a Lightning project. |
 | `shopstr` | No published explanation of the name. |
 | `njump` | The about page frames the service around the verb (visitors 'jump' to a client; newcomers 'jump in' via search) but never states that this is the name's origin, so nameOrigin is omitted. |
+| `obelisk` | No published explanation of the name. No launch announcement: the repository dates from 2026-04-08 and the first release is tagged `the-comeback` (2026-07-28), which is not a first launch, so no launch date is recorded. The motivation is the project site's own statement of the premise. |

@@ -334,3 +334,72 @@ test('people.json is registered as a namespace and present in all seven locales'
     assert.equal(copy.descriptionSuffixes.length, peopleCopy('en').descriptionSuffixes.length, locale);
   }
 });
+
+test('the multi-role templates span the whole range of names a credit can carry', async () => {
+  const { SEO_LIMITS } = await import('../lib/metadata-policy');
+  const [titleMin, titleMax] = SEO_LIMITS.title;
+  const [descriptionMin, descriptionMax] = SEO_LIMITS.description;
+
+  // WHY THIS EXISTS. The plural templates were tuned when every person credited
+  // on more than one project had a short handle for a name: 3 graphemes ("v0l")
+  // to 11 ("greenart7c3"). Then a 15-grapheme name ("Fabricio Acosta") was
+  // credited with two roles on one project and its description came out at 158,
+  // one over the ceiling, because a SINGLE template would have needed a static
+  // length of exactly 141 to span 3 to 15 inside a 13-grapheme window.
+  //
+  // So this does not test the people who happen to be in the dataset today (the
+  // test above already does that). It tests the templates against the range of
+  // names and role counts a credit could plausibly carry, so the next long name
+  // fails here rather than in production.
+  // 3 to 18 graphemes is what the two plural templates span, and 18 is the
+  // longest name anywhere in the dataset ("Francisco Calderón"). The ceiling is
+  // arithmetic, not a guess: the shorter template's static length is 131 to 138
+  // across the locales, and 138 + 18 + 1 = 157, the top of the window. A name
+  // longer than that needs a THIRD, shorter entry in `descriptionPlural`; until
+  // then the per-person test above is what fails, naming the person and the
+  // length it produced.
+  const names = [
+    'v0l',                      // 3, the shortest in the dataset
+    'hodlbod',                  // 7
+    'greenart7c3',              // 11
+    'Fabricio Acosta',          // 15, the longest that holds several roles
+    'Francisco Calderón',       // 18, the longest in the dataset
+  ];
+  const counts = [2, 3, 6, 9];
+
+  for (const locale of locales) {
+    for (const name of names) {
+      for (const count of counts) {
+        const person = {
+          slug: personSlug(name),
+          name,
+          roles: Array.from({ length: count }, (unused, index) => ({
+            projectId: `p${index}`,
+            projectName: `Project ${index}`,
+            role: 'maintainer' as const,
+            profiles: [],
+            sourceUrl: 'https://example.com/evidence',
+          })),
+        };
+
+        const title = personTitle(person, locale);
+        const titleLength = Array.from(title).length;
+        assert.ok(titleLength >= titleMin && titleLength <= titleMax,
+          `${locale}: a ${name.length}-grapheme name with ${count} roles makes a ${titleLength}-char title: ${title}`);
+
+        const description = personDescription(person, locale);
+        const descriptionLength = Array.from(description).length;
+        assert.ok(descriptionLength >= descriptionMin && descriptionLength <= descriptionMax,
+          `${locale}: a ${name.length}-grapheme name with ${count} roles makes a ${descriptionLength}-char description: ${description}`);
+
+        // The whole point of the plural copy: it must not name one project when
+        // the person holds several, and it must not be cut mid-sentence.
+        for (const role of person.roles) {
+          assert.ok(!description.includes(role.projectName),
+            `${locale}: the plural description names ${role.projectName} as if it were the only one`);
+        }
+        assert.doesNotMatch(description, /…/, `${locale}: ${name} with ${count} roles was truncated`);
+      }
+    }
+  }
+});
