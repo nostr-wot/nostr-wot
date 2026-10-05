@@ -169,12 +169,17 @@ export function personDescription(person: Person, locale = 'en'): string {
 }
 
 /** The trail to the people index, as locale-prefixed site paths. Shared by the
- * index page's graph and its `Breadcrumbs`, so the two cannot drift. */
+ * index page's graph and its `Breadcrumbs`, so the two cannot drift.
+ *
+ * People sit directly under the home page, not under the directory. The URL is
+ * `/people/<slug>`, not `/projects/people/<slug>`, and a BreadcrumbList that
+ * puts Projects in the middle claims a hierarchy the site does not have. The
+ * two sections are siblings: a person is credited ON projects and links to each
+ * of them, which is a relation, not a parent. */
 export function peopleCrumbs(locale = 'en'): { name: string; path: string }[] {
   const prefix = localePrefix(locale);
   return [
     { name: 'Nostr WoT', path: prefix },
-    { name: ecosystemCopy(locale, 'detail').breadcrumbProjects, path: `${prefix}/projects` },
     { name: peopleCopy(locale).breadcrumbPeople, path: `${prefix}/people` },
   ];
 }

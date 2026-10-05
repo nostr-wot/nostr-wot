@@ -217,14 +217,15 @@ test('the Person graph states only what the dataset evidences', () => {
     assert.ok(!(key in graph), key);
   }
 
-  // Four levels, and the people crumb points at the people index. It used to
-  // be named "People in the directory" while pointing at /projects, because no
-  // such index existed; now it does, and the name matches the destination.
+  // Three levels. People sit directly under the home page: the URL is
+  // /people/<slug>, and a trail with Projects in the middle would claim a
+  // hierarchy the site does not have. The people crumb also used to be named
+  // "People in the directory" while pointing at /projects, because no such
+  // index existed; now it does, and the name matches the destination.
   assert.deepEqual(breadcrumbs.itemListElement.map(crumb => [crumb.position, crumb.name, crumb.item]), [
     [1, 'Nostr WoT', 'https://nostrwot.com'],
-    [2, 'Projects', 'https://nostrwot.com/projects'],
-    [3, 'People in the directory', 'https://nostrwot.com/people'],
-    [4, 'Vitor Pamplona', url],
+    [2, 'People in the directory', 'https://nostrwot.com/people'],
+    [3, 'Vitor Pamplona', url],
   ]);
 
   const german = personJsonLd({ person, url, locale: 'de' })[1] as {
@@ -234,8 +235,8 @@ test('the Person graph states only what the dataset evidences', () => {
   // cannot mix a German path with an English one. This used to echo whatever
   // `url` the caller passed, which let the two disagree.
   assert.deepEqual(german.itemListElement.map(crumb => crumb.item), [
-    'https://nostrwot.com/de', 'https://nostrwot.com/de/projects',
-    'https://nostrwot.com/de/people', 'https://nostrwot.com/de/people/vitor-pamplona',
+    'https://nostrwot.com/de', 'https://nostrwot.com/de/people',
+    'https://nostrwot.com/de/people/vitor-pamplona',
   ]);
 
   // The graph and the rendered trail are built from one list, so a change to
@@ -270,8 +271,13 @@ test('PersonDetail renders the role, the project link and the evidence, and noth
   const html = renderToStaticMarkup(createElement(PersonDetail, { person, locale: 'en', pathPrefix: '' }));
   assert.match(html, /<h1[^>]*>greenart7c3<\/h1>/);
   assert.match(html, /maintainer/);
+  // Each credited project is linked by id. The directory index is NOT linked:
+  // people sit beside the directory rather than under it, so /projects is not
+  // an ancestor and the breadcrumb does not claim it is. The route out of a
+  // person page is to a specific project, or up to /people.
   assert.match(html, /href="\/projects\/amber"/);
-  assert.match(html, /href="\/projects"/);
+  assert.match(html, /href="\/people"/);
+  assert.doesNotMatch(html, /href="\/projects"/);
   // Outbound links go through the shared ExternalLink, so they carry the
   // site's new-tab and rel policy rather than a second implementation of it.
   assert.match(html, /href="https:\/\/github\.com\/greenart7c3\/greenart7c3\.com\/blob\/master\/index\.html"[^>]*rel="nofollow noopener"/);
@@ -285,8 +291,9 @@ test('PersonDetail renders the role, the project link and the evidence, and noth
   // The breadcrumb replaced the lone back link, so the German check is that the
   // trail itself is translated and points at the German paths.
   assert.match(german, /aria-label="Brotkrümelnavigation"/);
-  assert.match(german, /href="\/de\/projects"[^>]*>Projekte</);
   assert.match(german, /href="\/de\/people"[^>]*>Personen im Verzeichnis</);
+  // The directory is not an ancestor of a person, so it is not in the trail.
+  assert.doesNotMatch(german, /href="\/de\/projects"[^>]*>Projekte</);
   assert.match(german, /href="\/de\/projects\/amber"/);
   assert.match(german, /Betreuer/);
 });
