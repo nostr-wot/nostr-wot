@@ -42,6 +42,16 @@ export function getFullUrl(path: string, locale: Locale): string {
  * @param path - The path without locale prefix (e.g., '/about', '/docs')
  * @param currentLocale - The current page locale
  */
+/**
+ * The site-relative prefix for a locale under `localePrefix: 'as-needed'`:
+ * empty for the default locale, `/<locale>` otherwise. The same expression was
+ * written out in six places before this existed, which is one rule in six
+ * copies.
+ */
+export function localePrefix(locale: string): string {
+  return locale === defaultLocale ? '' : `/${locale}`;
+}
+
 export function generateAlternates(path: string, currentLocale: Locale): Metadata['alternates'] {
   // Normalize: treat '/' and '' as homepage
   const normalizedPath = path === '/' ? '' : path;

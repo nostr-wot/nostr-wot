@@ -1,66 +1,10 @@
 'use client';
 
-import { useMemo, useState, type ReactNode } from 'react';
-import { coverageLabel, ecosystemCopy, ecosystemDate, isCommitDate, reportTypeLabel, dateBasisLabel, categoryLabel, newsDateLabel, filterProjects, isSafeExternalUrl, PROJECT_STATUSES, type EcosystemData, type EcosystemNews, type EcosystemProject } from '@/lib/ecosystem-projects';
-
-const focus = 'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-violet-500 focus-visible:ring-offset-2 dark:focus-visible:ring-offset-gray-950';
-const statusStyles = {
-  active: 'bg-emerald-100 text-emerald-900 dark:bg-emerald-950 dark:text-emerald-200',
-  beta: 'bg-amber-100 text-amber-900 dark:bg-amber-950 dark:text-amber-200',
-  archived: 'bg-gray-200 text-gray-800 dark:bg-gray-800 dark:text-gray-200',
-  unknown: 'bg-violet-100 text-violet-900 dark:bg-violet-950 dark:text-violet-200',
-};
-
-function ExternalLink({ url, children, locale }: { url: string; children: ReactNode; locale: string }) {
-  const t = ecosystemCopy(locale);
-  return isSafeExternalUrl(url)
-    ? <a href={url} className={`rounded underline underline-offset-4 hover:text-primary break-words ${focus}`}>{children}</a>
-    : <span>{children} ({t.linkUnavailable})</span>;
-}
-
-function ProjectCard({ project, locale }: { project: EcosystemProject; locale: string }) {
-  const t = ecosystemCopy(locale);
-  const evidencedPeople = project.people.filter(person => isSafeExternalUrl(person.sourceUrl));
-  return (
-    <article className="rounded-2xl border border-gray-200 bg-white p-6 dark:border-gray-800 dark:bg-gray-900">
-      <div className="flex flex-wrap items-center justify-between gap-2 text-xs">
-        <span className="text-gray-600 dark:text-gray-300">{categoryLabel(project.category, locale)}</span>
-        <span className={`rounded-full px-3 py-1 font-semibold capitalize ${statusStyles[project.status]}`}>{t.statuses[project.status]}</span>
-      </div>
-      <h3 className="mt-4 text-xl font-bold">{project.name}</h3>
-      <p className="mt-2 text-sm leading-relaxed text-gray-600 dark:text-gray-300">{project.summary}</p>
-      <div className="mt-4 flex flex-wrap gap-x-5 gap-y-2 text-sm font-medium">
-        {project.website && <ExternalLink locale={locale} url={project.website}>{t.website}<span className="sr-only"> {t.for} {project.name}</span></ExternalLink>}
-        {project.repository && <ExternalLink locale={locale} url={project.repository}>{t.repository}<span className="sr-only"> {t.for} {project.name}</span></ExternalLink>}
-      </div>
-      <details className="mt-5 border-t border-gray-200 pt-4 dark:border-gray-800">
-        <summary className={`cursor-pointer rounded py-1 text-sm font-semibold ${focus}`}>{t.cardDetails}<span className="sr-only"> {t.for} {project.name}</span></summary>
-        <div className="mt-4 space-y-4 text-sm leading-relaxed">
-          <p><strong>{t.statusEvidence}</strong> {project.statusNote || t.notVerified}</p>
-          <div>
-            <h4 className="font-semibold">{t.people}</h4>
-            {!evidencedPeople.some(person => person.role === 'founder') && <p className="mt-1 text-gray-600 dark:text-gray-300">{t.unknownFounder}</p>}
-            {evidencedPeople.length > 0 && <ul className="mt-2 space-y-3">{evidencedPeople.map((person, index) => (
-              <li key={`${person.name}-${index}`}>
-                <p><strong>{person.name}</strong> <span className="capitalize">· {t.roles[person.role]}</span></p>
-                <div className="mt-1 flex flex-wrap gap-x-4 gap-y-2">
-                  <ExternalLink locale={locale} url={person.sourceUrl}>{t.roleEvidence}<span className="sr-only"> {t.for} {person.name}</span></ExternalLink>
-                  {person.profiles.map((profile, i) => <ExternalLink locale={locale} key={`${profile.url}-${i}`} url={profile.url}>{profile.label}<span className="sr-only"> {t.for} {person.name}</span></ExternalLink>)}
-                </div>
-              </li>
-            ))}</ul>}
-          </div>
-          {project.latestUpdate && <p><strong>{t.latestUpdate}</strong> <time dateTime={project.latestUpdate.date}>{ecosystemDate(project.latestUpdate.date, locale)}</time> · <ExternalLink locale={locale} url={project.latestUpdate.url}>{project.latestUpdate.title}</ExternalLink></p>}
-          <div>
-            <h4 className="font-semibold">{t.sources}</h4>
-            {project.sources.length ? <ul className="mt-1 space-y-2">{project.sources.map((source, index) => <li key={`${source.url}-${index}`}><ExternalLink locale={locale} url={source.url}>{source.label}</ExternalLink></li>)}</ul> : <p>{t.noSources}</p>}
-          </div>
-          <p className="text-gray-600 dark:text-gray-300">{t.lastChecked} {project.lastVerified ? <time dateTime={project.lastVerified}>{ecosystemDate(project.lastVerified, locale)}</time> : t.unverified}. {t.statusNotice}</p>
-        </div>
-      </details>
-    </article>
-  );
-}
+import { localePrefix } from '@/lib/metadata';
+import { useMemo, useState } from 'react';
+import { coverageLabel, ecosystemCopy, projectCountLine, ecosystemDate, isCommitDate, reportTypeLabel, dateBasisLabel, categoryLabel, newsDateLabel, filterProjects, isSafeExternalUrl, PROJECT_STATUSES, type EcosystemData, type EcosystemNews, type EcosystemProject } from '@/lib/ecosystem-projects';
+import { ExternalLink, focus } from './shared';
+import ProjectCard from './ProjectCard';
 
 function NewsPanel({ title, items, locale }: { title: string; items: EcosystemNews[]; locale: string }) {
   const t = ecosystemCopy(locale);
@@ -87,7 +31,7 @@ function NewsPanel({ title, items, locale }: { title: string; items: EcosystemNe
   </section>;
 }
 
-export default function EcosystemDirectory({ data, blogHref, newsHref, locale = 'en' }: { data: EcosystemData; blogHref: string; newsHref: string; locale?: string }) {
+export default function EcosystemDirectory({ data, blogHref, newsHref, peopleLink, locale = 'en' }: { data: EcosystemData; blogHref: string; newsHref: string; peopleLink: { href: string; label: string }; locale?: string }) {
   const t = ecosystemCopy(locale);
   const [query, setQuery] = useState('');
   const [category, setCategory] = useState('');
@@ -97,25 +41,46 @@ export default function EcosystemDirectory({ data, blogHref, newsHref, locale = 
   const control = `mt-2 w-full rounded-lg border border-gray-300 bg-white px-3 py-3 text-base dark:border-gray-700 dark:bg-gray-900 ${focus}`;
   return <div lang={locale} className="mx-auto max-w-6xl px-6 py-12">
     <section aria-labelledby="ecosystem-heading">
-      <p className="text-xs font-semibold uppercase tracking-wider text-violet-700 dark:text-violet-300">{t.languageNotice}</p>
-      <h2 id="ecosystem-heading" className="mt-3 text-3xl font-bold">{t.heading}</h2>
+      <h2 id="ecosystem-heading" className="text-3xl font-bold">{t.heading}</h2>
       <p className="mt-3 max-w-3xl text-gray-600 dark:text-gray-300">{t.intro}</p>
-      <p className="mt-2 text-sm text-gray-600 dark:text-gray-300">{t.directoryChecked} <time dateTime={data.checkedAt}>{ecosystemDate(data.checkedAt, locale)}</time>. {t.directoryNotice}</p>
-      <div className="mt-6 rounded-xl bg-gray-50 p-5 dark:bg-gray-900">
-        <h3 className="font-semibold">{t.roundup}</h3>
-        <p className="mt-2 text-sm text-gray-600 dark:text-gray-300">{t.roundupStart} <a className={`rounded underline ${focus}`} href={blogHref}>{t.blog}</a> {t.roundupMiddle} <a className={`rounded underline ${focus}`} href={newsHref}>{t.newsroom}</a> {t.roundupEnd}</p>
-      </div>
+      {/* The people credited here each had one inbound link, inside a tab panel
+          on one project page. This is the directory's path to the hub that
+          lists them all. The label is passed in rather than read from
+          `peopleCopy`, so this client component does not pull seven more
+          message files into the browser bundle. */}
+      <p className="mt-3 text-sm">
+        <a className={`rounded underline underline-offset-4 hover:text-primary ${focus}`} href={peopleLink.href}>{peopleLink.label}</a>
+      </p>
       <div role="search" aria-label={t.searchRegion} className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-[2fr_1fr_1fr]">
         <label className="text-sm font-medium" htmlFor="project-search">{t.search}<input id="project-search" type="search" value={query} onChange={event => setQuery(event.target.value)} placeholder={t.placeholder} className={control} /></label>
         <label className="text-sm font-medium" htmlFor="project-category">{t.category}<select id="project-category" value={category} onChange={event => setCategory(event.target.value)} className={control}><option value="">{t.allCategories}</option>{categories.map(value => <option key={value} value={value}>{categoryLabel(value, locale)}</option>)}</select></label>
         <label className="text-sm font-medium" htmlFor="project-status">{t.status}<select id="project-status" value={status} onChange={event => setStatus(event.target.value)} className={control}><option value="">{t.allStatuses}</option>{PROJECT_STATUSES.map(value => <option key={value} value={value}>{t.statuses[value]}</option>)}</select></label>
       </div>
       <div className="my-5 flex min-h-10 flex-wrap items-center justify-between gap-3 text-sm">
-        <p role="status" aria-live="polite" aria-atomic="true">{projects.length} {t.of} {data.projects.length} {t.projects}</p>
-        {(query || category || status) && <button type="button" className={`rounded px-3 py-2 underline ${focus}`} onClick={() => { setQuery(''); setCategory(''); setStatus(''); }}>{t.clear}</button>}
+        <p role="status" aria-live="polite" aria-atomic="true">{projectCountLine(projects.length, data.projects.length, locale)}</p>
+        {(query || category || status) && <button type="button" className={`rounded px-3 py-2 underline ${focus}`} onClick={() => { setQuery(''); setCategory(''); setStatus(''); document.getElementById('project-search')?.focus(); }}>{t.clear}</button>}
       </div>
-      {projects.length ? <div className="grid items-start gap-5 md:grid-cols-2">{projects.map(project => <ProjectCard locale={locale} key={project.id} project={project} />)}</div> : <p className="rounded-xl border border-dashed border-gray-300 p-8 text-center dark:border-gray-700">{data.projects.length ? t.noMatches : t.empty}</p>}
+      {projects.length ? <div className="grid items-stretch gap-5 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">{projects.map((project, index) => (
+        // CSS-only entrance, not ScrollReveal: the cards are the content a
+        // crawler and a no-JS reader came for, and ScrollReveal would ship them
+        // as inline opacity:0 until an observer fired. The delay is capped to
+        // the row, so each row cascades over 180ms rather than the last card
+        // waiting on all forty before it.
+        <div
+          key={project.id}
+          className="reveal-in h-full"
+          style={{ animationDelay: `${(index % 4) * 60}ms` }}
+        >
+          <ProjectCard locale={locale} project={project} projectHref={`${localePrefix(locale)}/projects/${project.id}`} />
+        </div>
+      ))}</div> : <p className="rounded-xl border border-dashed border-gray-300 p-8 text-center dark:border-gray-700">{data.projects.length ? t.noMatches : t.empty}</p>}
     </section>
     {(data.news.length > 0 || data.security.length > 0) && <div className="mt-12 grid items-start gap-6 md:grid-cols-2"><NewsPanel locale={locale} title={t.newsTitle} items={data.news} /><NewsPanel locale={locale} title={t.securityTitle} items={data.security} /></div>}
+    {/* How this directory is maintained. It belongs after the records it
+        describes, not above them, where it pushed the projects below the fold. */}
+    <aside className="mt-12 rounded-xl bg-gray-50 p-5 dark:bg-gray-900">
+      <h3 className="font-semibold">{t.roundup}</h3>
+      <p className="mt-2 text-sm text-gray-600 dark:text-gray-300">{t.roundupStart} <a className={`rounded underline ${focus}`} href={blogHref}>{t.blog}</a> {t.roundupMiddle} <a className={`rounded underline ${focus}`} href={newsHref}>{t.newsroom}</a> {t.roundupEnd}</p>
+    </aside>
   </div>;
 }

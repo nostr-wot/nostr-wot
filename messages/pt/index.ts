@@ -18,6 +18,7 @@ import blog from './blog.json';
 import notFound from './notFound.json';
 import pitch from './pitch.json';
 import guides from './guides.json';
+import people from './people.json';
 import projects from './projects.json';
 import notes from './notes.json';
 import widgets from './widgets.json';
@@ -46,6 +47,7 @@ const messages = {
   notFound,
   pitch,
   guides,
+  people,
   projects,
   notes,
   widgets,

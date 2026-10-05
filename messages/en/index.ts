@@ -19,6 +19,7 @@ import notFound from './notFound.json';
 import pitch from './pitch.json';
 import guides from './guides.json';
 import projects from './projects.json';
+import people from './people.json';
 import notes from './notes.json';
 import widgets from './widgets.json';
 import pqc from './pqc.json';
@@ -47,6 +48,7 @@ const messages = {
   pitch,
   guides,
   projects,
+  people,
   notes,
   widgets,
   pqc,

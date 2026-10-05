@@ -25,20 +25,75 @@ const endings: Record<Locale, string[]> = {
   de: ['Mehr dazu.', 'Mehr erfahren.', 'Mehr auf Nostr WoT.', 'Alle Details auf Nostr WoT.', 'Alle Informationen und weitere Details auf Nostr WoT.'],
 };
 
-const length = (text: string) => Array.from(text).length;
-const clean = (text: string) => text.normalize('NFC').replace(/\s+/gu, ' ').trim();
+/** Counts code points rather than UTF-16 units, so an emoji or an accented
+ * character costs what a reader sees it cost. Exported because a page composing
+ * its own copy has to measure it the same way this policy will. */
+export const length = (text: string) => Array.from(text).length;
+
+/** The normalisation `fitText` applies before measuring. Exported for the same
+ * reason: a caller asking whether its copy fits must normalise identically. */
+export const clean = (text: string) => text.normalize('NFC').replace(/\s+/gu, ' ').trim();
+
+/** Picks the first candidate inside [min, max] from a list written
+ * longest-first; failing that the longest that still fits, and failing that the
+ * shortest. Anything under `min` would be padded with generic filler by this
+ * policy, which is what the ordering exists to avoid.
+ *
+ * Shared by every page that composes its own title and description, because no
+ * single template spans a three-character name and a sixteen-character one
+ * inside the window. */
+export function firstFit(candidates: string[], min: number, max: number): string {
+  const within = candidates.find(candidate => length(candidate) >= min && length(candidate) <= max);
+  if (within) return within;
+  const under = candidates.filter(candidate => length(candidate) <= max);
+  if (under.length) return under.reduce((longest, candidate) => length(candidate) > length(longest) ? candidate : longest);
+  return candidates.reduce((shortest, candidate) => length(candidate) < length(shortest) ? candidate : shortest);
+}
 
 /** Keep authored copy when it fits; extend short copy with localized context.
  * Prefer whole-word excerpts. For an unusually long token, use a Unicode-safe
  * excerpt so external profile/note text cannot violate the hard length limit.
+ * Exported so a page can fit its own copy with its own additions and land
+ * inside the window before this policy sees it.
  */
-function fit(value: string, min: number, max: number, additions: string[], separator = " | "): string {
+export function fitText(value: string, min: number, max: number, additions: string[], separator = " | "): string {
   let text = clean(value);
-  while (length(text) < min) {
-    const candidates = additions.map(addition => clean(`${text}${text ? separator : ''}${addition}`));
-    const fitted = candidates.find(candidate => length(candidate) >= min && length(candidate) <= max);
-    if (fitted) return fitted;
-    text = candidates.find(candidate => length(candidate) >= min) || candidates[candidates.length - 1];
+  if (length(text) < min) {
+    // Searched, not grabbed. Taking the longest addition that still fits the
+    // ceiling is greedy and gets stuck: a French page of 80 graphemes jumped to
+    // 144 on a 63-grapheme sentence and then had no room for anything else,
+    // one short of the floor, while four short sentences would have landed on
+    // 148 whole. Walking the combinations breadth-first returns the first chain
+    // inside the window, so the result is always whole authored sentences and
+    // the shortest chain that reaches the floor wins.
+    const seen = new Set([text]);
+    let frontier = [text];
+    for (let depth = 0; depth < 4 && frontier.length; depth++) {
+      const next: string[] = [];
+      for (const current of frontier) {
+        for (const addition of additions) {
+          const candidate = clean(`${current}${current ? separator : ''}${addition}`);
+          const size = length(candidate);
+          // Never past the ceiling, and never a step that does not grow the
+          // text, which would loop on an empty addition.
+          if (size > max || size <= length(current) || seen.has(candidate)) continue;
+          if (size >= min) return candidate;
+          seen.add(candidate);
+          next.push(candidate);
+        }
+      }
+      frontier = next;
+    }
+    // No chain of whole sentences reaches the floor without passing the
+    // ceiling. Overshoot once and cut, which is what the window demands: this
+    // policy's contract is a description inside [min, max], and an excerpt is
+    // the only thing left that satisfies it.
+    const over = additions
+      .map(addition => clean(`${text}${text ? separator : ''}${addition}`))
+      .filter(candidate => length(candidate) >= min);
+    if (over.length) {
+      text = over.reduce((shortest, candidate) => length(candidate) < length(shortest) ? candidate : shortest);
+    }
   }
   if (length(text) <= max) return text;
   const chars = Array.from(text);
@@ -55,8 +110,8 @@ export function seoText(title: string, description: string, locale: Locale = def
   const copy = context[locale];
   const labels: Record<Locale, string> = { en: 'Information and resources', es: 'Información y recursos', pt: 'Informações e recursos', ru: 'Информация и материалы', it: 'Informazioni e risorse', fr: 'Informations et ressources', de: 'Informationen und Ressourcen' };
   return {
-    title: fit(title, ...SEO_LIMITS.title, ['Nostr WoT', labels[locale], copy.title, copy.description]),
-    description: fit(description, ...SEO_LIMITS.description, [...endings[locale], copy.description, copy.description], ' '),
+    title: fitText(title, ...SEO_LIMITS.title, ['Nostr WoT', labels[locale], copy.title, copy.description]),
+    description: fitText(description, ...SEO_LIMITS.description, [...endings[locale], copy.description, copy.description], ' '),
   };
 }
 

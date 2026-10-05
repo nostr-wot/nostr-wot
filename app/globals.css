@@ -482,6 +482,24 @@ body {
    HOVER ANIMATIONS
    ============================================ */
 
+/* A CSS-only entrance for content that must exist in the server-rendered HTML.
+   ScrollReveal writes inline opacity:0 and waits for an IntersectionObserver,
+   which leaves the markup invisible to a no-JS fetch and before hydration. This
+   animates instead, so the element's resting state is visible, nothing depends
+   on JavaScript, and prefers-reduced-motion turns it off outright. */
+@keyframes revealIn {
+  from { opacity: 0; transform: translateY(16px); }
+  to { opacity: 1; transform: none; }
+}
+
+.reveal-in {
+  animation: revealIn 0.4s cubic-bezier(0.4, 0, 0.2, 1) both;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .reveal-in { animation: none; }
+}
+
 .hover-lift {
   transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
