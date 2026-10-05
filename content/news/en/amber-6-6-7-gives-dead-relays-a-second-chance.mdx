@@ -1,0 +1,89 @@
+---
+title: "Amber 6.6.7 gives dead relays a second chance after fifteen minutes"
+description: "Amber 6.6.7 makes a relay's dead state expire after a 15 minute cooldown, stops counting each failed dial twice, and rebuilds relay sockets when a VPN comes up or the device regains internet access."
+excerpt: "A relay marked dead stayed dead until the app was force closed, and because a failed dial was recorded twice it took five attempts rather than ten to get there."
+date: "2026-10-05"
+publishedAt: "2026-10-05"
+backfilled: false
+type: "story"
+tags: ["Nostr", "Signer", "NIP-55", "Clients"]
+featuredImage: "/images/news/amber-6-6-7-gives-dead-relays-a-second-chance.svg"
+translationKey: "amber-6-6-7-gives-dead-relays-a-second-chance"
+sources:
+  - title: "Amber v6.6.7 release"
+    url: "https://github.com/greenart7c3/Amber/releases/tag/v6.6.7"
+    publisher: "greenart7c3/Amber"
+    date: "2026-10-05"
+  - title: "Comparison v6.6.6...v6.6.7"
+    url: "https://github.com/greenart7c3/Amber/compare/v6.6.6...v6.6.7"
+    publisher: "greenart7c3/Amber"
+    date: "2026-10-05"
+  - title: "NIP-55 Android Signer Application"
+    url: "https://github.com/nostr-protocol/nips/blob/master/55.md"
+    publisher: "nostr-protocol/nips"
+    date: "2026-10-05"
+published: true
+---
+
+[Amber 6.6.7](https://github.com/greenart7c3/Amber/releases/tag/v6.6.7) was published on 5 October 2026. Eight commits and twenty three files separate it from 6.6.6, and the bulk of the change is in how the signer decides a relay is no longer worth dialling.
+
+The reported symptom was that relays stayed disconnected until the app was force closed. The [comparison against 6.6.6](https://github.com/greenart7c3/Amber/compare/v6.6.6...v6.6.7) shows two independent causes, both in the retry accounting rather than in the sockets themselves.
+
+## Dead was permanent
+
+`RelayHealthTracker` keeps a streak of consecutive connection failures per relay and stops retrying once the streak passes `MAX_RECONNECT_ATTEMPTS`, which is 10. A dead relay is also dropped from the subscription relay set, so the periodic refresh stops opening sockets to it.
+
+In 6.6.6 that state was cleared only by a successful connection, an operating system network change, or a manual reconnect. The tracker stored a bare failure count, and `isDead` was a comparison against that count alone. Nothing expired it.
+
+That is survivable when every outage arrives as a network change, and it is not what happens. The new documentation in the file names the cases it misses: a Wi-Fi network that lost internet access and got it back, a weak cell signal, a relay outage. None of those is a change of default network, so none of them reset the tracker, and every relay could be marked dead while the device stayed on one apparently healthy network.
+
+Version 6.6.7 stores a timestamp alongside the count and makes the dead state expire:
+
+```kotlin
+const val DEAD_COOLDOWN_MS = 15 * 60 * 1000L
+
+fun isDead(relay: NormalizedRelayUrl): Boolean {
+    val entry = health[relay] ?: return false
+    return entry.failures > MAX_RECONNECT_ATTEMPTS && clock() - entry.lastFailureAt < DEAD_COOLDOWN_MS
+}
+```
+
+Fifteen minutes after its last failure a relay is eligible again and the periodic refresh re-adds it. The threshold is unchanged; what changed is that exceeding it is now a timed penalty rather than a verdict. A clock function is injected so the expiry can be tested without waiting.
+
+## Each failed dial was counted twice
+
+The second cause is narrower and sharper. Quartz, the library driving the relay pool, reports a failed dial as `onCannotConnect` followed by `onDisconnected`. Both handlers called the same `scheduleReconnect`, which recorded a failure.
+
+So the streak advanced by two per failed dial. The documented threshold of 10 was reached after five. The comment added in 6.6.7 states both halves of the problem: counting both callbacks halved the real threshold, and a plain server-side close is not a connection failure at all.
+
+The repair splits the one function in two. `recordFailureAndScheduleReconnect` records a failure and is called only from `onCannotConnect`. `scheduleReconnect` now checks `isDead` and reconnects without recording anything, which is what `onDisconnected` needs.
+
+## Network changes that were not a change of network
+
+The release also rebuilds relay connections when a VPN comes up or goes down, and when the device regains internet access, rather than only when it switches between Wi-Fi and mobile data.
+
+A new file, `NetworkChangeDetector.kt`, holds that decision in 79 lines with no Android service dependencies. It reduces the default network to a snapshot of three fields: the network handle, the set of reported transports, and whether Android validated that the network actually reaches the internet. Comparing successive snapshots, it reports a reset is needed when the handle changes, when the transport set changes, when an unvalidated network becomes validated, or when a network returns after being lost.
+
+Two of those are the VPN cases. A VPN network reports its own `TRANSPORT_VPN` and its underlying transport, so a VPN taking over as the default network changes the handle, and a VPN moving from Wi-Fi to mobile changes the transport set while the default network stays the same. The detector distinguishes the two directions and labels them, so the reset carries a reason.
+
+It is equally explicit about what is not a change. The first callback after registering is the network the relays are already connecting on, so it is recorded as a baseline and reports nothing. Repeated callbacks for the same state report nothing. Losing a network that had already been replaced reports nothing.
+
+`ConnectivityService` was reworked around it, losing 46 lines and gaining 81. Both `onAvailable` and `onCapabilitiesChanged` now feed one `onNetworkState` function. Resets are debounced by `NETWORK_SETTLE_MS`, one second, because the callbacks arrive in bursts as validation completes and the relays should be rebuilt once, on the final network. Capabilities are tracked even while the kill switch is on, so the baseline is current when relays are allowed back.
+
+## Requests from browsers that are not Chrome
+
+A separate entry restores compatibility with web clients. A `nostrsigner:` request can carry its parameters either in intent extras, which is what [NIP-55](https://github.com/nostr-protocol/nips/blob/master/55.md) describes for native Android callers, or in the URI query string, which is what a web page does. Amber decided between them by looking for a single extra, `Browser.EXTRA_APPLICATION_ID`.
+
+Chrome sets it. Other browsers do not. DuckDuckGo is named in the changelog, and a request from it took the native path and failed with "Unknown signer type".
+
+The new `isWebRequest` accepts three weaker signals in addition to that extra: the `BROWSABLE` intent category, a referrer that resolves to a browser, and a `type=` parameter in the query string, checked both raw and percent decoded. A `type` extra still takes precedence, since it means the caller used the extras API and is native. Resolving a referrer to a browser needs package visibility, so `AndroidManifest.xml` adds a `<queries>` entry for `VIEW` plus `BROWSABLE` on `https`.
+
+## A foreign key that IGNORE did not cover
+
+The last entry fixes a crash when a permission was saved for an application that had just been deleted or reset. `insertPermissions2` was annotated `OnConflictStrategy.IGNORE`, which covers uniqueness conflicts and not foreign key failures, so the insert raised `SQLITE_CONSTRAINT_FOREIGNKEY`. It now reads the surviving application keys first and drops permissions whose parent is gone, and `insertPermissions` was routed through it instead of calling the raw insert directly.
+
+## What the artifacts establish
+
+Version 6.6.7 is a published release tagged at commit `dc3f672e`, with eleven Android packages and a signed checksum manifest. Nineteen test cases arrive with it: four on the cooldown, eight on the change detector, and seven on the web request decision. The changelog and the diff agree on all four entries.
+
+That establishes what the code does. It does not establish that any device is running it, and store and repository channels move at their own pace. Someone whose signer kept losing its relays should check the version actually installed.
