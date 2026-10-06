@@ -26,7 +26,7 @@
 
 Los relays guardan tus notas, cambios de perfil y otros eventos firmados. Pueden dejar de funcionar o de conservar datos antiguos. **Archivo** mantiene una copia local cifrada de los eventos que tus relays todavía pueden devolver. Puedes actualizarla, descargar un archivo independiente y migrar eventos a otro relay.
 
-Disponible en Nostr WoT **0.8.11**. Selecciona la cuenta, desbloquea la extensión y abre **Configuración → Archivo**. Las capturas muestran la interfaz en inglés, una cuenta desechable y relays locales de demostración. Sus direcciones no son recomendaciones de relays.
+Disponible en Nostr WoT **0.8.12**. Selecciona la cuenta, desbloquea la extensión y abre **Configuración → Archivo**. Las capturas muestran la interfaz en inglés, una cuenta desechable y relays locales de demostración. Sus direcciones no son recomendaciones de relays.
 
 ## 1. Sincroniza manualmente o programa actualizaciones
 
@@ -59,17 +59,17 @@ El icono de información explica el error. Reintenta desde la fila afectada sin 
 
 Si el relay exige autenticación, Archivo responde con la cuenta seleccionada. Los fallos recuperables tienen hasta tres intentos limitados. Un error de configuración del servidor requiere que lo corrija su operador. Un firmante remoto debe estar conectado; una cuenta de solo lectura no puede autenticarse.
 
-## 4. Descarga e importa una copia cifrada
+## 4. Guarda una copia fuera del navegador
 
-Pulsa descargar y elige una contraseña independiente de al menos ocho caracteres. Guarda el archivo `.ndjson` y su contraseña de forma segura. La exportación contiene eventos, no tu clave privada ni frase de recuperación.
+Pulsa el icono de descarga y **Download archive**. El archivo `.ndjson` contiene un evento firmado por línea, sin contraseña. Los mensajes privados mantienen su contenido cifrado. No incluye claves privadas ni frases de recuperación.
 
-![Descarga con contraseña de cifrado](/images/guides/account-archive/04-export.png)
+![Descarga de eventos firmados sin contraseña](/images/guides/account-archive/04-export.png)
 
-Desinstalar la extensión o borrar los datos del navegador puede eliminar el archivo local. Conserva una copia fuera del navegador y también tu respaldo de claves: recuperan cosas diferentes.
+Selecciona la cuenta correspondiente, pulsa Importar y elige el archivo. Se verifica que los eventos pertenezcan a esa cuenta y que sus firmas sean válidas antes de combinarlos. No se duplican registros. Los archivos cifrados anteriores siguen siendo compatibles; solo para ellos aparece el campo de contraseña.
 
-Para importar, selecciona la cuenta correspondiente, pulsa el icono de importación, elige el archivo e introduce su contraseña. Se comprueban la cuenta, las firmas y el archivo completo antes de combinar eventos. Los duplicados no crean registros adicionales.
+![Importación con verificación de cuenta y firmas](/images/guides/account-archive/05-import.png)
 
-![Importación del archivo cifrado y su contraseña](/images/guides/account-archive/05-import.png)
+Desinstalar la extensión o borrar los datos del navegador puede eliminar el archivo local. Guarda una copia aparte y conserva por separado tus claves. NDJSON no tiene una marca de integridad del archivo completo: se puede importar un subconjunto válido, pero se rechazan las líneas malformadas.
 
 ## 5. Migra a otro relay
 

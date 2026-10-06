@@ -1,8 +1,8 @@
 ---
 {
   "title": "Bewahre deinen Nostr-Verlauf mit Archiv",
-  "description": "Synchronisiere Ereignisse, exportiere eine verschlüsselte Kopie und migriere zu einem anderen Relay.",
-  "excerpt": "Synchronisiere Ereignisse, exportiere eine verschlüsselte Kopie und migriere zu einem anderen Relay.",
+  "description": "Synchronisiere Ereignisse, exportiere eine Kopie und migriere zu einem anderen Relay.",
+  "excerpt": "Synchronisiere Ereignisse, exportiere eine Kopie und migriere zu einem anderen Relay.",
   "date": "2026-10-06",
   "author": {
     "name": "Leon Acosta",
@@ -16,7 +16,7 @@
   ],
   "published": true,
   "seoTitle": "Bewahre deinen Nostr-Verlauf mit Archiv",
-  "seoDescription": "Synchronisiere Ereignisse, exportiere eine verschlüsselte Kopie und migriere zu einem anderen Relay.",
+  "seoDescription": "Synchronisiere Ereignisse, exportiere eine Kopie und migriere zu einem anderen Relay.",
   "ogImage": "/images/guides/account-archive/featured.png",
   "translationKey": "account-archive",
   "difficulty": "beginner",
@@ -26,7 +26,7 @@
 
 Relays speichern Notizen, Profile und andere signierte Ereignisse. Sie können jedoch ausfallen oder ältere Daten löschen. **Archiv** hält eine verschlüsselte lokale Kopie der noch verfügbaren Ereignisse bereit. Du kannst sie aktualisieren, exportieren und geeignete Ereignisse auf einem anderen Relay veröffentlichen.
 
-Verfügbar in Nostr WoT **0.8.11**. Wähle das Konto, entsperre die Erweiterung und öffne **Einstellungen → Archiv**. Die Bilder zeigen die englische Oberfläche mit einem temporären Konto und lokalen Demo-Relays. Die Adressen sind keine Relay-Empfehlungen.
+Verfügbar in Nostr WoT **0.8.12**. Wähle das Konto, entsperre die Erweiterung und öffne **Einstellungen → Archiv**. Die Bilder zeigen die englische Oberfläche mit einem temporären Konto und lokalen Demo-Relays. Die Adressen sind keine Relay-Empfehlungen.
 
 ## 1. Synchronisierung starten
 
@@ -54,15 +54,17 @@ Du kannst verschlüsselte Nachrichten einbeziehen. Sie bleiben verschlüsselt; A
 
 Archiv beantwortet Authentifizierungsanfragen für das ausgewählte Konto. Behebbare Fehler erhalten bis zu drei begrenzte Versuche. Eine fehlerhafte Serverkonfiguration muss der Betreiber korrigieren. Ein entfernter Signierer muss bereits verbunden sein; reine Lesekonten können sich nicht authentifizieren.
 
-## 4. Verschlüsselte Datei exportieren und importieren
+## 4. Bewahre eine Kopie außerhalb des Browsers auf
 
-Wähle Download und ein separates Passwort mit mindestens acht Zeichen. Bewahre die verschlüsselte `.ndjson`-Datei und das Passwort sicher auf. Die Datei enthält Ereignisse, keinen privaten Schlüssel und keine Wiederherstellungsphrase.
+Wähle das Download-Symbol und **Download archive**. Die `.ndjson`-Datei enthält ein signiertes Ereignis pro Zeile, ohne Dateipasswort. Private Nachrichten bleiben verschlüsselt. Private Schlüssel und Wiederherstellungsphrasen sind nicht enthalten.
 
-![Passwort für den verschlüsselten Export](/images/guides/account-archive/04-export.png)
+![Signierte Ereignisse ohne Passwort herunterladen](/images/guides/account-archive/04-export.png)
 
-Deinstallation oder das Löschen von Browserdaten kann das lokale Archiv entfernen. Bewahre eine externe Kopie und eine getrennte Schlüsselsicherung auf. Zum Import wählst du das passende Konto, die Datei und ihr Passwort. Konto, Signaturen und vollständige Datei werden vor dem Zusammenführen geprüft. Doppelte Ereignisse erzeugen keine zusätzlichen Datensätze.
+Wähle das passende Konto, Importieren und die Datei. Vor dem Zusammenführen wird geprüft, ob die Ereignisse zum Konto gehören und ihre Signaturen gültig sind. Duplikate erzeugen keine zusätzlichen Datensätze. Alte verschlüsselte Dateien bleiben unterstützt; nur bei diesen erscheint ein Passwortfeld.
 
-![Datei und Passwort beim Import](/images/guides/account-archive/05-import.png)
+![Import mit Prüfung von Konto und Signaturen](/images/guides/account-archive/05-import.png)
+
+Eine Deinstallation oder das Löschen von Browserdaten kann das lokale Archiv entfernen. Bewahre eine Kopie anderswo und deine Schlüssel separat auf. NDJSON hat keinen Abschlussmarker für die gesamte Datei: Gültige Teilmengen können importiert werden, fehlerhafte Ereigniszeilen werden abgewiesen.
 
 ## 5. Zu einem anderen Relay migrieren
 

@@ -72,7 +72,7 @@ try {
  await shot('06-migration');
  await page.getByRole('button',{name:'Start migration',exact:true}).click();
  await shot('07-confirmation');
- writeFileSync(join(out,'capture.json'),JSON.stringify({version:'0.8.11',disposableIdentity:true,localDemoRelays:true,screenshots:7},null,2)+'\n');
+ writeFileSync(join(out,'capture.json'),JSON.stringify({version:'0.8.12',disposableIdentity:true,localDemoRelays:true,screenshots:7},null,2)+'\n');
  console.log('Captured seven Archive flow screenshots. No public relay publication.');
 } catch(error){if(page){await page.screenshot({path:'/tmp/archive-guide-capture-error.png'});writeFileSync('/tmp/archive-guide-capture-error.txt',await page.locator('body').innerText());}throw error;}
 finally{await context.close();for(const c of server.clients)c.terminate();await new Promise(resolve=>server.close(resolve));rmSync(profile,{recursive:true,force:true});}

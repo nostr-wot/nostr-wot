@@ -24,9 +24,9 @@
 }
 ---
 
-Your notes, profile updates and other signed events live on relays. A relay can go offline, change its retention policy or stop serving older events. **Account Archive** gives you an encrypted local copy of the events your selected relays can still return. You can keep it up to date, download an independent encrypted file, and publish eligible events to another relay when you need to move.
+Your notes, profile updates and other signed events live on relays. A relay can go offline, change its retention policy or stop serving older events. **Account Archive** gives you an encrypted local copy of the events your selected relays can still return. You can keep it up to date, download an independent event file, and publish eligible events to another relay when you need to move.
 
-Available in Nostr WoT **0.8.11**. Open the extension, unlock your account and go to **Settings → Archive**. If you have several accounts, select the one you want to archive first. The screenshots use the English interface, a disposable account and local demo relays. The local addresses shown are examples, not relay recommendations.
+Available in Nostr WoT **0.8.12**. Open the extension, unlock your account and go to **Settings → Archive**. If you have several accounts, select the one you want to archive first. The screenshots use the English interface, a disposable account and local demo relays. The local addresses shown are examples, not relay recommendations.
 
 ## 1. Start with a manual sync
 
@@ -59,17 +59,17 @@ The information icon shows the reason. Use the retry icon on the affected row; y
 
 A relay may request authentication before returning private events. Archive responds for the selected account and waits for the relay's acknowledgement. Recoverable authentication failures get up to three bounded attempts. A relay configuration error needs the operator's attention; repeatedly signing cannot repair its server. A remote signer must already be connected, and a watch-only account cannot authenticate.
 
-## 4. Keep an encrypted file outside the browser
+## 4. Keep a copy outside the browser
 
-Choose the download icon and set a separate archive password. Use at least eight characters and store it somewhere safe. The downloaded `.ndjson` file is encrypted; you will need that password to import it. The export contains events, not your private key or recovery phrase.
+Choose the download icon, then **Download archive**. The `.ndjson` file contains one signed event per line, without a file password. Private messages retain their encrypted content. No private keys or recovery phrases are included.
 
-![Download archive asks for an encryption password and confirmation](/images/guides/account-archive/04-export.png)
+![Download signed events without a password](/images/guides/account-archive/04-export.png)
 
-Browser storage can be cleared, evicted or removed when you uninstall the extension. An encrypted file saved elsewhere gives you an independent copy. Keep your seed or key backup too: that restores your identity, while Archive preserves event data.
+Select the matching account, choose Import and select your file. Import checks that the events belong to this account and that their signatures are valid before merging them. Duplicates do not create extra records. Older password-encrypted exports remain supported; a password field appears only for those files.
 
-To restore an archive, select the matching account, choose the import icon, select the file and enter its password. Import checks account ownership, signatures and the complete file before merging. Duplicate event IDs do not create extra records. A valid partial merge interrupted by a storage failure can be retried safely.
+![Import checks account ownership and event signatures](/images/guides/account-archive/05-import.png)
 
-![Import archive accepts the encrypted file and its password](/images/guides/account-archive/05-import.png)
+Uninstalling the extension or clearing browser storage can remove the local archive. Keep a copy elsewhere and save your identity recovery material separately. Ordinary NDJSON has no whole-file completion marker: a valid subset can be imported, while malformed event lines are rejected.
 
 ## 5. Migrate to another relay
 
@@ -87,4 +87,4 @@ After the first pass, failed events get one further retry pass. **Failed events*
 
 ## What a complete archive can tell you
 
-A complete result means the requested queries finished. It cannot prove that a relay still has every event you ever created. Add sources you trust, save an encrypted export periodically and keep your identity recovery material separately. Together, these let you recover both control of your account and more of the history associated with it.
+A complete result means the requested queries finished. It cannot prove that a relay still has every event you ever created. Add sources you trust, save an export periodically and keep your identity recovery material separately. Together, these let you recover both control of your account and more of the history associated with it.

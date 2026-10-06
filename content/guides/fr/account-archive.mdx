@@ -1,8 +1,8 @@
 ---
 {
   "title": "Conservez votre historique Nostr avec Archive",
-  "description": "Synchronisez vos événements, exportez une copie chiffrée et migrez vers un autre relais.",
-  "excerpt": "Synchronisez vos événements, exportez une copie chiffrée et migrez vers un autre relais.",
+  "description": "Synchronisez vos événements, exportez une copie et migrez vers un autre relais.",
+  "excerpt": "Synchronisez vos événements, exportez une copie et migrez vers un autre relais.",
   "date": "2026-10-06",
   "author": {
     "name": "Leon Acosta",
@@ -16,7 +16,7 @@
   ],
   "published": true,
   "seoTitle": "Conservez votre historique Nostr avec Archive",
-  "seoDescription": "Synchronisez vos événements, exportez une copie chiffrée et migrez vers un autre relais.",
+  "seoDescription": "Synchronisez vos événements, exportez une copie et migrez vers un autre relais.",
   "ogImage": "/images/guides/account-archive/featured.png",
   "translationKey": "account-archive",
   "difficulty": "beginner",
@@ -26,7 +26,7 @@
 
 Les relais stockent vos notes, profils et autres événements signés, mais peuvent devenir indisponibles ou supprimer des données anciennes. **Archive** conserve une copie locale chiffrée des événements encore accessibles. Vous pouvez la mettre à jour, l’exporter et republier les événements admissibles sur un autre relais.
 
-Disponible dans Nostr WoT **0.8.11**. Sélectionnez le compte, déverrouillez l’extension et ouvrez **Paramètres → Archive**. Les captures montrent l’interface anglaise, un compte jetable et des relais locaux de démonstration. Leurs adresses ne sont pas des recommandations.
+Disponible dans Nostr WoT **0.8.12**. Sélectionnez le compte, déverrouillez l’extension et ouvrez **Paramètres → Archive**. Les captures montrent l’interface anglaise, un compte jetable et des relais locaux de démonstration. Leurs adresses ne sont pas des recommandations.
 
 ## 1. Synchronisez vos événements
 
@@ -54,15 +54,17 @@ La collecte des messages chiffrés est facultative. Ils restent chiffrés; Archi
 
 Archive répond aux demandes d’authentification pour le compte sélectionné. Les échecs récupérables ont jusqu’à trois tentatives limitées. Une mauvaise configuration du serveur nécessite l’intervention de son opérateur. Un signataire distant doit déjà être connecté; un compte en lecture seule ne peut pas s’authentifier.
 
-## 4. Exportez et importez une copie
+## 4. Gardez une copie hors du navigateur
 
-Choisissez le téléchargement et un mot de passe distinct d’au moins huit caractères. Conservez le fichier `.ndjson` chiffré et son mot de passe. Il contient des événements, pas votre clé privée ni votre phrase de récupération.
+Utilisez l’icône de téléchargement puis **Download archive**. Le fichier `.ndjson` contient un événement signé par ligne, sans mot de passe. Les messages privés conservent leur contenu chiffré. Aucune clé privée ni phrase de récupération n’est incluse.
 
-![Mot de passe de l’export chiffré](/images/guides/account-archive/04-export.png)
+![Téléchargement d’événements signés sans mot de passe](/images/guides/account-archive/04-export.png)
 
-La désinstallation ou l’effacement des données du navigateur peut supprimer l’archive locale. Gardez une copie ailleurs et sauvegardez vos clés séparément. Pour importer, sélectionnez le compte correspondant, choisissez le fichier et saisissez son mot de passe. Le compte, les signatures et l’intégrité du fichier sont contrôlés avant la fusion. Les doublons ne créent pas de nouveaux enregistrements.
+Sélectionnez le compte correspondant, choisissez Importer puis le fichier. L’import vérifie que les événements appartiennent au compte et que leurs signatures sont valides avant de les fusionner. Les doublons ne créent pas de copies supplémentaires. Les anciens fichiers chiffrés restent compatibles; le champ du mot de passe apparaît uniquement pour ces fichiers.
 
-![Fichier et mot de passe pour l’importation](/images/guides/account-archive/05-import.png)
+![Import avec vérification du compte et des signatures](/images/guides/account-archive/05-import.png)
+
+Désinstaller l’extension ou effacer les données du navigateur peut supprimer les archives locales. Gardez une copie ailleurs et sauvegardez vos clés séparément. NDJSON n’a pas de marqueur de fin authentifié: un sous-ensemble valide peut être importé, mais les lignes mal formées sont refusées.
 
 ## 5. Migrez vers un autre relais
 
