@@ -23,7 +23,7 @@ import { readFileSync, writeFileSync, existsSync, mkdirSync } from "node:fs";
 import { join, dirname } from "node:path";
 import { execFileSync } from "node:child_process";
 import { fetchRetry } from "../fetch-retry.mjs";
-import { ROOT, CHANNEL_CONFIG, SUPPORTED_CHANNELS, withUrl } from "./entries.mjs";
+import { ROOT, buildRequestPosts } from "./entries.mjs";
 import { collectErrors } from "./checks.mjs";
 import { selectPending } from "./selection.mjs";
 
@@ -62,19 +62,6 @@ async function isLive(url) {
   } catch {
     return false;
   }
-}
-
-function buildRequestPosts(entry) {
-  const posts = [];
-  for (const key of SUPPORTED_CHANNELS) {
-    const text = key === "x" ? undefined : entry.data[key]; // x deferred, see entries.mjs
-    if (!text) continue;
-    const config = CHANNEL_CONFIG[key];
-    const body = { channel: config.channel, text: withUrl(text, entry.url) };
-    if (!config.primary) body.optional = true;
-    posts.push(body);
-  }
-  return posts;
 }
 
 async function main() {
@@ -120,7 +107,13 @@ async function main() {
       return [match[1]];
     });
   }
-  const pending = selectPending(entries, ledger, { slug, deployedSlugs });
+  const pending = selectPending(entries, ledger, { slug, deployedSlugs }).filter((entry) => {
+    if (entry.data.linkedin && !buildRequestPosts(entry).some((p) => p.channel === "nostr-wot-li")) {
+      console.log(`policy-excluded ${entry.slug}: LinkedIn requires platform/team eligibility`);
+    }
+    // No eligible channel means no network request and no fabricated ledger receipt.
+    return buildRequestPosts(entry).length > 0;
+  });
 
   if (!pending.length) {
     console.log("Nothing due. No entries pending, no secret required.");

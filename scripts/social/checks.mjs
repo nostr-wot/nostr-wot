@@ -15,6 +15,7 @@
  * `collectErrors()` returns { entries, errors } and prints nothing, so callers
  * decide how to report.
  */
+import { LINKEDIN_CATEGORIES, linkedinEligible } from "./channel-policy.mjs";
 import { readdirSync, existsSync } from "node:fs";
 import { join, relative } from "node:path";
 import {
@@ -187,15 +188,20 @@ export function collectErrors() {
   for (const { path, data, url } of entries) {
     const rel = relative(ROOT, path);
 
-    const unknown = Object.keys(data).filter((k) => k !== "collection" && !KNOWN_CHANNELS.includes(k));
+    const unknown = Object.keys(data).filter((k) => !["collection", "linkedinCategory", "linkedinReason"].includes(k) && !KNOWN_CHANNELS.includes(k));
     if (unknown.length) {
       errors.push(
-        `${rel}: unknown field(s) ${unknown.join(", ")}. Known fields: collection, ${KNOWN_CHANNELS.join(", ")}.`,
+        `${rel}: unknown field(s) ${unknown.join(", ")}. Known fields: collection, linkedinCategory, linkedinReason, ${KNOWN_CHANNELS.join(", ")}.`,
       );
     }
 
-    if (!("linkedin" in data)) {
-      errors.push(`${rel}: missing required "linkedin" field.`);
+    if (!("linkedin" in data) && !("nostr" in data)) {
+      errors.push(`${rel}: supply at least one supported copy field: linkedin or nostr.`);
+    }
+    if ("linkedinCategory" in data || "linkedinReason" in data) {
+      if (!linkedinEligible(data) || typeof data.linkedin !== "string" || !data.linkedin.trim()) {
+        errors.push(`${rel}: LinkedIn eligibility requires linkedin copy, linkedinCategory (${LINKEDIN_CATEGORIES.join(", ")}), and a nonempty linkedinReason.`);
+      }
     }
 
     for (const key of ["linkedin", "x", "nostr"]) {
