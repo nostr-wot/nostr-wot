@@ -28,6 +28,7 @@
 import { readFileSync, readdirSync, existsSync } from "node:fs";
 import { join } from "node:path";
 import matter from "gray-matter";
+import { eligibleChannelKeys } from "./channel-policy.mjs";
 import { newsPath } from "../../lib/news-path.mjs";
 
 export const ROOT = new URL("../..", import.meta.url).pathname;
@@ -187,4 +188,14 @@ export function buildEntries() {
   // Stable source order; the posting selector prioritizes newest publication.
   entries.sort((a, b) => a.date.localeCompare(b.date) || a.slug.localeCompare(b.slug));
   return { entries, errors };
+}
+
+/** The exact request builder used by both production and policy regression tests. */
+export function buildRequestPosts(entry) {
+  return eligibleChannelKeys(entry.data).map((key) => {
+    const config = CHANNEL_CONFIG[key];
+    const body = { channel: config.channel, text: withUrl(entry.data[key], entry.url) };
+    if (!config.primary) body.optional = true;
+    return body;
+  });
 }

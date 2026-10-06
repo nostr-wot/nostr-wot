@@ -1,5 +1,14 @@
 # Sharing Nostr WoT news on LinkedIn (and Nostr)
 
+## LinkedIn eligibility (owner policy, 6 October 2026)
+
+LinkedIn is reserved for relevant, substantive news and updates about the Nostr WoT platform and team. Routine third-party client, app, relay, protocol or ecosystem notices, including Amber, Amethyst, nak and Nostream releases, are not eligible. Publishing an article or adding a project to our directory does not make it a platform update. General ecosystem significance alone is not an exception.
+
+New ecosystem copy should contain `nostr` only. For a qualifying platform or team announcement, include `linkedin`, `linkedinCategory` set to `platform-update` or `team-update`, and a nonempty `linkedinReason` explaining the actual platform/team news and reader impact. Do not label third-party maintenance as a platform advance. Minor maintenance and routine version bumps do not qualify.
+
+The sender defaults to excluding LinkedIn when this explicit classification is absent, including old queued copy. Existing copy and receipts are preserved; policy exclusion is not delivery failure and never creates a delivery receipt. Nostr delivery remains governed by the normal queue and live-page checks. Do not retry a ledgered or uncertain delivery to apply a new classification.
+
+
 How automated social posting works in this repository. Adapted from
 `quantakrypto/website` (`scripts/social/` and `.github/workflows/social.yml`),
 which this mirrors closely on purpose: same API, same split of responsibility,
@@ -66,7 +75,7 @@ added.
 
 | Path | Job |
 |---|---|
-| `social/<slug>.json` | The copy: `{"linkedin": "...", "x": "...", "xThread": [...], "nostr": "..."}`. Only `linkedin` is required. |
+| `social/<slug>.json` | The copy: `{"linkedin": "...", "x": "...", "xThread": [...], "nostr": "..."}`. At least one supported copy field is required: `nostr` or `linkedin`. LinkedIn is sent only with the explicit eligibility fields above. |
 | `scripts/social/entries.mjs` | Reads entries, joins them to the article they name, derives URLs, builds request bodies. Shared by the scripts below. |
 | `scripts/social/checks.mjs` | The house rules, as `collectErrors()`. Used by the linter **and** by the poster, so the two cannot drift. |
 | `scripts/social/lint-social.mjs` | `npm run social:lint`, a CLI over `checks.mjs`. Wired into `.github/workflows/ci.yml` on pull requests and pushes to `main`. |
@@ -231,7 +240,7 @@ agent to write `social/<slug>.json` for whatever it just published, in the same
 commit. It is told, in substance:
 
 > Write the English social copy for the article you just published. Follow
-> `docs/social-voice.md`. Only `linkedin` is required. Do not write a URL; the
+> `docs/social-voice.md`. At least one supported copy field is required: `nostr` or `linkedin`. LinkedIn is sent only with the explicit eligibility fields above. Do not write a URL; the
 > canonical link is derived and appended automatically, and a hard-coded link is
 > a lint error. Run `npm run social:lint` before committing.
 >

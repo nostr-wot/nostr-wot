@@ -1,5 +1,14 @@
 # Newsroom playbook
 
+## LinkedIn eligibility (owner policy, 6 October 2026)
+
+LinkedIn is reserved for relevant, substantive news and updates about the Nostr WoT platform and team. Routine third-party client, app, relay, protocol or ecosystem notices, including Amber, Amethyst, nak and Nostream releases, are not eligible. Publishing an article or adding a project to our directory does not make it a platform update. General ecosystem significance alone is not an exception.
+
+New ecosystem copy should contain `nostr` only. For a qualifying platform or team announcement, include `linkedin`, `linkedinCategory` set to `platform-update` or `team-update`, and a nonempty `linkedinReason` explaining the actual platform/team news and reader impact. Do not label third-party maintenance as a platform advance. Minor maintenance and routine version bumps do not qualify.
+
+The sender defaults to excluding LinkedIn when this explicit classification is absent, including old queued copy. Existing copy and receipts are preserved; policy exclusion is not delivery failure and never creates a delivery receipt. Nostr delivery remains governed by the normal queue and live-page checks. Do not retry a ledgered or uncertain delivery to apply a new classification.
+
+
 The daily newsroom agent reads this file at the start of every run. Changing what
 counts as news, or how it is written, is a commit to this file. Do not encode
 editorial rules in the schedule, where they cannot be reviewed or reverted.
@@ -178,7 +187,7 @@ copy file.
   person ("we track") is allowed in social copy and is **never** allowed in an
   article body. That split is deliberate.
 - **English only**, even though the article ships in seven locales.
-- Only `linkedin` is required. `x`, `xThread` and `nostr` are optional.
+- At least one supported copy field is required: `nostr` or `linkedin`. LinkedIn is sent only with the explicit eligibility fields above. `x`, `xThread` and `nostr` are optional.
 - **Never write a URL.** The canonical link is derived from
   `content/news/en/<slug>.mdx` and appended automatically; a hard-coded
   `http(s)://` link is a lint error. Use `{url}` to place it, and
