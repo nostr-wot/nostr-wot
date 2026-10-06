@@ -1,0 +1,90 @@
+---
+{
+  "title": "Keep your Nostr history with Account Archive",
+  "description": "Save an encrypted copy of your Nostr events, understand relay results, export your archive and migrate to another relay.",
+  "excerpt": "Save an encrypted copy of your Nostr events, understand relay results, export your archive and migrate to another relay.",
+  "date": "2026-10-06",
+  "author": {
+    "name": "Leon Acosta",
+    "avatar": "/authors/leon-profile.jpg"
+  },
+  "featuredImage": "/images/guides/account-archive/featured.png",
+  "previewImage": "/images/guides/account-archive/featured.png",
+  "tags": [
+    "Archive",
+    "Relays"
+  ],
+  "published": true,
+  "seoTitle": "Keep your Nostr history with Account Archive",
+  "seoDescription": "Save an encrypted copy of your Nostr events, understand relay results, export your archive and migrate to another relay.",
+  "ogImage": "/images/guides/account-archive/featured.png",
+  "translationKey": "account-archive",
+  "difficulty": "beginner",
+  "order": 24
+}
+---
+
+Your notes, profile updates and other signed events live on relays. A relay can go offline, change its retention policy or stop serving older events. **Account Archive** gives you an encrypted local copy of the events your selected relays can still return. You can keep it up to date, download an independent encrypted file, and publish eligible events to another relay when you need to move.
+
+Available in Nostr WoT **0.8.11**. Open the extension, unlock your account and go to **Settings → Archive**. If you have several accounts, select the one you want to archive first. The screenshots use the English interface, a disposable account and local demo relays. The local addresses shown are examples, not relay recommendations.
+
+## 1. Start with a manual sync
+
+Use the circular-arrows icon to sync. The first run looks for available history from the beginning; later runs revisit recent history around the saved checkpoint. All selected relays work concurrently. A slow relay does not make the others wait, and duplicate events are stored only once.
+
+Turn on **Automatic archive** if you want periodic updates. Choose hourly, daily or weekly. The vault must be unlocked for work to run; a scheduled time is not a guarantee that a locked or closed browser will sync immediately. You can pause active work and resume it later.
+
+![Archive overview with automatic archiving and the compact action controls](/images/guides/account-archive/01-overview.png)
+
+## 2. Choose the relays to read
+
+Open the gear icon beside Sync. **Profile relays (default)** starts from your configured relays. Review this list, add or remove entries, or create a named group. The add control suggests common relays and accepts your own valid relay address. Remote relays use `wss://`; the local demonstration addresses in later screenshots are only for this guide.
+
+Use **Create new group** in the selector to keep a separate set of sources. **Use profile relays** refreshes the group from your published relay lists. Only the selected group's relays are queried. Decide whether to collect encrypted messages too. Those events remain encrypted: Archive does not turn them into readable conversations.
+
+![Archive settings with the relay group and editable relay list](/images/guides/account-archive/02-settings.png)
+
+## 3. Read the results before retrying
+
+Open **See details** for the archive size and one row per relay. **Events** includes verified events that were already in your archive. Two relays can each return 12 events while the local archive contains only 12 unique events.
+
+- **Complete:** all requested queries for that relay finished.
+- **Incomplete:** some coverage is unfinished. Events already received remain saved.
+- **Error:** the attempt failed without retrieving events.
+- **Not synced:** no completed attempt is available yet.
+
+The information icon shows the reason. Use the retry icon on the affected row; you do not need to restart successful relays. A retry merges new results and keeps existing data. If another job is running, the request can appear as queued.
+
+![A demo relay completed with 12 events; another failed and has an information and retry control](/images/guides/account-archive/03-relay-results.png)
+
+A relay may request authentication before returning private events. Archive responds for the selected account and waits for the relay's acknowledgement. Recoverable authentication failures get up to three bounded attempts. A relay configuration error needs the operator's attention; repeatedly signing cannot repair its server. A remote signer must already be connected, and a watch-only account cannot authenticate.
+
+## 4. Keep an encrypted file outside the browser
+
+Choose the download icon and set a separate archive password. Use at least eight characters and store it somewhere safe. The downloaded `.ndjson` file is encrypted; you will need that password to import it. The export contains events, not your private key or recovery phrase.
+
+![Download archive asks for an encryption password and confirmation](/images/guides/account-archive/04-export.png)
+
+Browser storage can be cleared, evicted or removed when you uninstall the extension. An encrypted file saved elsewhere gives you an independent copy. Keep your seed or key backup too: that restores your identity, while Archive preserves event data.
+
+To restore an archive, select the matching account, choose the import icon, select the file and enter its password. Import checks account ownership, signatures and the complete file before merging. Duplicate event IDs do not create extra records. A valid partial merge interrupted by a storage failure can be retried safely.
+
+![Import archive accepts the encrypted file and its password](/images/guides/account-archive/05-import.png)
+
+## 5. Migrate to another relay
+
+**Migrate archive** appears once you have archived events. Enter or choose the destination. Review the separate options for encrypted messages and other event types. Publishing encrypted messages still exposes their encrypted envelopes to the destination, which may retain them.
+
+![Migration destination and optional event categories](/images/guides/account-archive/06-migration.png)
+
+Choose **Start migration**. The extension validates the address and checks that a bounded relay query completes. It then shows the destination and eligible/skipped counts. Review these and select **Confirm** to publish. Passing the connection check does not mean the relay will accept every event.
+
+![Migration confirmation shows the destination and eligible events before publishing](/images/guides/account-archive/07-confirmation.png)
+
+Migration preserves original signatures and timestamps. It does not delete your local archive or data on other relays. Deleted, expired, superseded and otherwise ineligible events are skipped. Progress and results stay inside the migration section, with accepted, already stored, failed and skipped counts.
+
+After the first pass, failed events get one further retry pass. **Failed events** shows remaining IDs, event types, dates, responses and attempts so you can understand what the relay refused. Accepted events are not sent again during that pass.
+
+## What a complete archive can tell you
+
+A complete result means the requested queries finished. It cannot prove that a relay still has every event you ever created. Add sources you trust, save an encrypted export periodically and keep your identity recovery material separately. Together, these let you recover both control of your account and more of the history associated with it.

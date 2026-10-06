@@ -1,0 +1,81 @@
+---
+{
+  "title": "Guarde seu histórico Nostr com o Arquivo",
+  "description": "Sincronize eventos, guarde uma cópia criptografada e migre seu arquivo para outro relay.",
+  "excerpt": "Sincronize eventos, guarde uma cópia criptografada e migre seu arquivo para outro relay.",
+  "date": "2026-10-06",
+  "author": {
+    "name": "Leon Acosta",
+    "avatar": "/authors/leon-profile.jpg"
+  },
+  "featuredImage": "/images/guides/account-archive/featured.png",
+  "previewImage": "/images/guides/account-archive/featured.png",
+  "tags": [
+    "Archive",
+    "Relays"
+  ],
+  "published": true,
+  "seoTitle": "Guarde seu histórico Nostr com o Arquivo",
+  "seoDescription": "Sincronize eventos, guarde uma cópia criptografada e migre seu arquivo para outro relay.",
+  "ogImage": "/images/guides/account-archive/featured.png",
+  "translationKey": "account-archive",
+  "difficulty": "beginner",
+  "order": 24
+}
+---
+
+Os relays armazenam notas, perfis e outros eventos assinados, mas podem sair do ar ou remover dados antigos. O **Arquivo** mantém uma cópia local criptografada dos eventos ainda disponíveis. Você pode atualizar essa cópia, exportá-la e publicar eventos elegíveis em outro relay.
+
+Disponível no Nostr WoT **0.8.11**. Escolha a conta, desbloqueie a extensão e abra **Configurações → Arquivo**. As capturas usam a interface em inglês, uma conta descartável e relays locais de demonstração; os endereços não são recomendações.
+
+## 1. Sincronize seus eventos
+
+Use as setas circulares para sincronizar. A primeira execução busca o histórico disponível; as seguintes retomam os checkpoints e revisitam eventos recentes. Todos os relays selecionados trabalham em paralelo. Eventos repetidos são armazenados uma única vez.
+
+Ative o arquivo automático para executar a cada hora, dia ou semana. A operação precisa do cofre desbloqueado e do navegador em funcionamento. Você pode pausar e retomar.
+
+![Visão geral e controles do Arquivo](/images/guides/account-archive/01-overview.png)
+
+## 2. Configure as fontes
+
+Abra a engrenagem ao lado de sincronizar. O grupo padrão começa com seus relays configurados. Adicione ou remova endereços, escolha sugestões ou informe um relay remoto com `wss://`. Crie grupos no seletor ou atualize a lista usando os relays publicados no perfil. Somente o grupo selecionado é consultado.
+
+A coleta de mensagens criptografadas é opcional. Elas continuam criptografadas; o Arquivo não transforma essas mensagens em conversas legíveis.
+
+![Configuração de grupos e relays](/images/guides/account-archive/02-settings.png)
+
+## 3. Entenda os resultados
+
+**See details** mostra o tamanho do arquivo e os resultados por relay. **Events** conta também eventos que já estavam armazenados: dois relays com doze eventos podem representar apenas doze eventos únicos no arquivo.
+
+**Complete** indica que todas as consultas terminaram; **Incomplete**, que falta cobertura. **Error** indica uma tentativa sem eventos obtidos; **Not synced**, ausência de tentativa concluída. Abra o ícone de informação para conhecer a causa e repita somente o relay afetado. Dados existentes são preservados; uma nova tentativa pode entrar na fila durante outro trabalho.
+
+![Resultados com eventos, erro e nova tentativa](/images/guides/account-archive/03-relay-results.png)
+
+O Arquivo responde aos pedidos de autenticação para a conta selecionada, com até três tentativas limitadas para falhas recuperáveis. Problemas de configuração exigem correção pelo operador. Um assinador remoto precisa estar conectado; contas somente de leitura não autenticam.
+
+## 4. Exporte e importe
+
+Use o ícone de download e escolha uma senha separada com pelo menos oito caracteres. Guarde o `.ndjson` criptografado e sua senha. Ele contém eventos, não a chave privada nem a frase de recuperação.
+
+![Senha para exportar o arquivo](/images/guides/account-archive/04-export.png)
+
+A desinstalação ou limpeza do navegador pode apagar os dados locais. Mantenha uma cópia fora dele e um backup separado das chaves. Para importar, escolha a conta correspondente, selecione o arquivo e informe a senha. O conteúdo completo, as assinaturas e a conta são verificados antes da combinação; eventos duplicados não criam registros extras.
+
+![Seleção do arquivo e senha de importação](/images/guides/account-archive/05-import.png)
+
+## 5. Migre para outro relay
+
+Com eventos armazenados, use **Migrate archive**. Informe o destino e revise as opções de mensagens criptografadas e outros tipos. O destino recebe os envelopes das mensagens e pode mantê-los, mesmo sem ler seu conteúdo.
+
+![Destino e opções da migração](/images/guides/account-archive/06-migration.png)
+
+**Start migration** valida o endereço e verifica uma consulta limitada. Confira os eventos elegíveis e ignorados antes de confirmar. O teste de conexão não garante aceitação de todos os eventos.
+
+![Confirmação antes de publicar](/images/guides/account-archive/07-confirmation.png)
+
+A migração preserva assinaturas e datas, sem apagar dados locais ou de outros relays. Eventos excluídos, expirados, substituídos ou inelegíveis são ignorados. O progresso mostra aceitos, já armazenados, falhos e ignorados. Após a primeira passagem, somente os falhos recebem mais uma tentativa. **Failed events** mostra IDs, tipos, datas, respostas e tentativas restantes.
+
+## Preserve identidade e histórico
+
+Consultas completas não provam que o relay guardou tudo que você publicou. Use fontes confiáveis, exporte periodicamente e mantenha as chaves separadamente: elas recuperam a identidade; o Arquivo preserva eventos disponíveis.

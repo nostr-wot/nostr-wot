@@ -1,0 +1,81 @@
+---
+{
+  "title": "Bewahre deinen Nostr-Verlauf mit Archiv",
+  "description": "Synchronisiere Ereignisse, exportiere eine verschlüsselte Kopie und migriere zu einem anderen Relay.",
+  "excerpt": "Synchronisiere Ereignisse, exportiere eine verschlüsselte Kopie und migriere zu einem anderen Relay.",
+  "date": "2026-10-06",
+  "author": {
+    "name": "Leon Acosta",
+    "avatar": "/authors/leon-profile.jpg"
+  },
+  "featuredImage": "/images/guides/account-archive/featured.png",
+  "previewImage": "/images/guides/account-archive/featured.png",
+  "tags": [
+    "Archive",
+    "Relays"
+  ],
+  "published": true,
+  "seoTitle": "Bewahre deinen Nostr-Verlauf mit Archiv",
+  "seoDescription": "Synchronisiere Ereignisse, exportiere eine verschlüsselte Kopie und migriere zu einem anderen Relay.",
+  "ogImage": "/images/guides/account-archive/featured.png",
+  "translationKey": "account-archive",
+  "difficulty": "beginner",
+  "order": 24
+}
+---
+
+Relays speichern Notizen, Profile und andere signierte Ereignisse. Sie können jedoch ausfallen oder ältere Daten löschen. **Archiv** hält eine verschlüsselte lokale Kopie der noch verfügbaren Ereignisse bereit. Du kannst sie aktualisieren, exportieren und geeignete Ereignisse auf einem anderen Relay veröffentlichen.
+
+Verfügbar in Nostr WoT **0.8.11**. Wähle das Konto, entsperre die Erweiterung und öffne **Einstellungen → Archiv**. Die Bilder zeigen die englische Oberfläche mit einem temporären Konto und lokalen Demo-Relays. Die Adressen sind keine Relay-Empfehlungen.
+
+## 1. Synchronisierung starten
+
+Nutze das Symbol mit den kreisförmigen Pfeilen. Der erste Durchlauf sucht den verfügbaren Verlauf; weitere Durchläufe setzen an gespeicherten Prüfpunkten an und prüfen auch jüngere Ereignisse erneut. Alle ausgewählten Relays arbeiten parallel. Identische Ereignisse werden nur einmal gespeichert.
+
+Aktiviere das automatische Archiv für stündliche, tägliche oder wöchentliche Läufe. Der Tresor muss entsperrt und der Browser aktiv sein. Du kannst die Arbeit pausieren und fortsetzen.
+
+![Archivübersicht mit automatischer Synchronisierung](/images/guides/account-archive/01-overview.png)
+
+## 2. Quellen auswählen
+
+Öffne das Zahnrad neben der Synchronisierung. Die Standardgruppe übernimmt deine konfigurierten Relays. Ergänze oder entferne Adressen, nutze Vorschläge oder gib ein eigenes entferntes Relay mit `wss://` an. Im Auswahlmenü kannst du Gruppen erstellen oder die Liste aus deinen veröffentlichten Profil-Relays aktualisieren. Nur die ausgewählte Gruppe wird abgefragt.
+
+Du kannst verschlüsselte Nachrichten einbeziehen. Sie bleiben verschlüsselt; Archiv exportiert keine lesbaren Unterhaltungen.
+
+![Einstellungen für Gruppen und Relays](/images/guides/account-archive/02-settings.png)
+
+## 3. Ergebnisse verstehen
+
+**See details** zeigt Archivgröße und Ergebnisse je Relay. **Events** zählt auch bereits gespeicherte Ereignisse. Zwei Relays mit jeweils zwölf Ereignissen können insgesamt nur zwölf verschiedene Ereignisse liefern.
+
+**Complete** bedeutet, dass alle Abfragen beendet wurden; **Incomplete** steht für unvollständige Abdeckung. **Error** kennzeichnet einen fehlgeschlagenen Versuch ohne empfangene Ereignisse; **Not synced** bedeutet, dass noch kein abgeschlossener Versuch vorliegt. Das Info-Symbol erklärt den Fehler. Wiederhole nur das betroffene Relay. Bestehende Daten bleiben erhalten; während anderer Arbeit kann der Versuch eingereiht werden.
+
+![Ergebnisse mit Ereigniszahl, Fehler und Wiederholung](/images/guides/account-archive/03-relay-results.png)
+
+Archiv beantwortet Authentifizierungsanfragen für das ausgewählte Konto. Behebbare Fehler erhalten bis zu drei begrenzte Versuche. Eine fehlerhafte Serverkonfiguration muss der Betreiber korrigieren. Ein entfernter Signierer muss bereits verbunden sein; reine Lesekonten können sich nicht authentifizieren.
+
+## 4. Verschlüsselte Datei exportieren und importieren
+
+Wähle Download und ein separates Passwort mit mindestens acht Zeichen. Bewahre die verschlüsselte `.ndjson`-Datei und das Passwort sicher auf. Die Datei enthält Ereignisse, keinen privaten Schlüssel und keine Wiederherstellungsphrase.
+
+![Passwort für den verschlüsselten Export](/images/guides/account-archive/04-export.png)
+
+Deinstallation oder das Löschen von Browserdaten kann das lokale Archiv entfernen. Bewahre eine externe Kopie und eine getrennte Schlüsselsicherung auf. Zum Import wählst du das passende Konto, die Datei und ihr Passwort. Konto, Signaturen und vollständige Datei werden vor dem Zusammenführen geprüft. Doppelte Ereignisse erzeugen keine zusätzlichen Datensätze.
+
+![Datei und Passwort beim Import](/images/guides/account-archive/05-import.png)
+
+## 5. Zu einem anderen Relay migrieren
+
+Sobald Ereignisse gespeichert sind, erscheint **Migrate archive**. Trage das Ziel ein und prüfe die Optionen für verschlüsselte Nachrichten und weitere Ereignistypen. Das Ziel erhält verschlüsselte Nachrichtenhüllen und kann sie dauerhaft speichern.
+
+![Ziel und Optionen der Migration](/images/guides/account-archive/06-migration.png)
+
+**Start migration** prüft die Adresse und eine begrenzte Abfrage. Kontrolliere die geeigneten und übersprungenen Ereignisse, bevor du bestätigst. Erreichbarkeit garantiert nicht, dass das Relay jedes Ereignis annimmt.
+
+![Bestätigung vor der Veröffentlichung](/images/guides/account-archive/07-confirmation.png)
+
+Die Migration erhält Signaturen und Zeitstempel und löscht keine lokalen Daten oder Daten anderer Relays. Gelöschte, abgelaufene, ersetzte oder ungeeignete Ereignisse werden übersprungen. Das Ergebnis unterscheidet angenommen, bereits vorhanden, fehlgeschlagen und übersprungen. Nach dem ersten Durchlauf werden nur Fehler einmal erneut versucht. **Failed events** zeigt IDs, Typen, Daten, Antworten und Versuche.
+
+## Identität und Verlauf sichern
+
+Abgeschlossene Abfragen beweisen nicht, dass ein Relay deinen gesamten Verlauf aufbewahrt. Nutze vertrauenswürdige Quellen, exportiere regelmäßig und sichere deine Schlüssel getrennt: Sie stellen deine Identität wieder her; Archiv bewahrt verfügbare Ereignisse.

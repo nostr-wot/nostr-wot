@@ -1,0 +1,88 @@
+---
+{
+  "title": "Conserva tu historial de Nostr con Archivo",
+  "description": "Guarda una copia cifrada de tus eventos, interpreta los resultados, exporta el archivo y migra a otro relay.",
+  "excerpt": "Guarda una copia cifrada de tus eventos, interpreta los resultados, exporta el archivo y migra a otro relay.",
+  "date": "2026-10-06",
+  "author": {
+    "name": "Leon Acosta",
+    "avatar": "/authors/leon-profile.jpg"
+  },
+  "featuredImage": "/images/guides/account-archive/featured.png",
+  "previewImage": "/images/guides/account-archive/featured.png",
+  "tags": [
+    "Archive",
+    "Relays"
+  ],
+  "published": true,
+  "seoTitle": "Conserva tu historial de Nostr con Archivo",
+  "seoDescription": "Guarda una copia cifrada de tus eventos, interpreta los resultados, exporta el archivo y migra a otro relay.",
+  "ogImage": "/images/guides/account-archive/featured.png",
+  "translationKey": "account-archive",
+  "difficulty": "beginner",
+  "order": 24
+}
+---
+
+Los relays guardan tus notas, cambios de perfil y otros eventos firmados. Pueden dejar de funcionar o de conservar datos antiguos. **Archivo** mantiene una copia local cifrada de los eventos que tus relays todavía pueden devolver. Puedes actualizarla, descargar un archivo independiente y migrar eventos a otro relay.
+
+Disponible en Nostr WoT **0.8.11**. Selecciona la cuenta, desbloquea la extensión y abre **Configuración → Archivo**. Las capturas muestran la interfaz en inglés, una cuenta desechable y relays locales de demostración. Sus direcciones no son recomendaciones de relays.
+
+## 1. Sincroniza manualmente o programa actualizaciones
+
+Pulsa el icono de flechas circulares. La primera sincronización busca el historial disponible desde el principio; las siguientes retoman el punto guardado y revisan también eventos recientes. Todos los relays seleccionados trabajan en paralelo y los eventos duplicados se guardan una sola vez.
+
+Activa el archivo automático para actualizar cada hora, día o semana. La bóveda debe estar desbloqueada; el horario no garantiza una sincronización inmediata si el navegador está cerrado o bloqueado. Puedes pausar y reanudar.
+
+![Pantalla de Archivo con sincronización automática y controles](/images/guides/account-archive/01-overview.png)
+
+## 2. Revisa los relays de origen
+
+Abre el engranaje junto a sincronizar. El grupo predeterminado parte de tus relays configurados. Puedes añadir o quitar direcciones, aceptar sugerencias o introducir un relay propio con `wss://`. Crea un grupo desde el selector para guardar otra lista. La opción de usar los relays del perfil actualiza el grupo desde tus listas publicadas.
+
+Solo se consulta el grupo seleccionado. Decide si quieres recopilar mensajes cifrados: permanecen cifrados, no se exportan como conversaciones legibles.
+
+![Ajustes del archivo con grupos y lista de relays](/images/guides/account-archive/02-settings.png)
+
+## 3. Comprueba los resultados y reintenta
+
+Abre **See details** para ver el tamaño y los resultados por relay. **Events** incluye eventos ya guardados. Dos relays pueden devolver doce eventos cada uno y el archivo contener solo doce eventos únicos.
+
+- **Complete:** terminaron todas las consultas solicitadas a ese relay.
+- **Incomplete:** falta cobertura; lo recibido sigue guardado.
+- **Error:** el intento falló sin obtener eventos.
+- **Not synced:** todavía no hay un intento completado.
+
+El icono de información explica el error. Reintenta desde la fila afectada sin repetir los relays exitosos. Los datos existentes se conservan; si hay otro trabajo activo, el reintento puede quedar en cola.
+
+![Un relay de prueba devuelve doce eventos y otro permite consultar el error y reintentar](/images/guides/account-archive/03-relay-results.png)
+
+Si el relay exige autenticación, Archivo responde con la cuenta seleccionada. Los fallos recuperables tienen hasta tres intentos limitados. Un error de configuración del servidor requiere que lo corrija su operador. Un firmante remoto debe estar conectado; una cuenta de solo lectura no puede autenticarse.
+
+## 4. Descarga e importa una copia cifrada
+
+Pulsa descargar y elige una contraseña independiente de al menos ocho caracteres. Guarda el archivo `.ndjson` y su contraseña de forma segura. La exportación contiene eventos, no tu clave privada ni frase de recuperación.
+
+![Descarga con contraseña de cifrado](/images/guides/account-archive/04-export.png)
+
+Desinstalar la extensión o borrar los datos del navegador puede eliminar el archivo local. Conserva una copia fuera del navegador y también tu respaldo de claves: recuperan cosas diferentes.
+
+Para importar, selecciona la cuenta correspondiente, pulsa el icono de importación, elige el archivo e introduce su contraseña. Se comprueban la cuenta, las firmas y el archivo completo antes de combinar eventos. Los duplicados no crean registros adicionales.
+
+![Importación del archivo cifrado y su contraseña](/images/guides/account-archive/05-import.png)
+
+## 5. Migra a otro relay
+
+Con eventos guardados aparece **Migrate archive**. Introduce el destino y revisa las opciones de mensajes cifrados y otros tipos de eventos. Aunque el contenido siga cifrado, el relay de destino recibe sus envoltorios y puede conservarlos.
+
+![Destino de la migración y categorías opcionales](/images/guides/account-archive/06-migration.png)
+
+Pulsa **Start migration**. La extensión valida la dirección y realiza una consulta limitada; después muestra cuántos eventos son elegibles y cuántos se omiten. Revisa el destino y confirma. Que el relay responda no garantiza que acepte todos los eventos.
+
+![Confirmación con destino y cantidad de eventos](/images/guides/account-archive/07-confirmation.png)
+
+La migración conserva firmas y fechas, y no elimina datos locales ni de otros relays. Omite eventos eliminados, caducados, reemplazados o no elegibles. El progreso muestra aceptados, ya almacenados, fallidos y omitidos. Al terminar la primera pasada, reintenta una vez los fallidos; los aceptados no se vuelven a enviar. **Failed events** muestra los fallos restantes con ID, tipo, fecha, respuesta e intentos.
+
+## Por qué merece la pena
+
+Una consulta completa no demuestra que el relay conserve todo lo que publicaste. Combina fuentes de confianza, exportaciones periódicas y un respaldo independiente de tus claves para conservar tanto el control de tu identidad como su historial disponible.

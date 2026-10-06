@@ -22,7 +22,7 @@ export type HelpTopic = { id: string; slug: string; category: HelpCategory; vide
 export const HELP_TOPICS: HelpTopic[] = [
   { id: 'account', screenshots: ['account-methods', 'security'], slug: 'create-account', related: ['import', 'backup'], category: 'accounts', video: 'account', guides: ['create-nostr-account', 'import-nostr-account', 'connect-nostr-signer'] },
   { id: 'subAccounts', screenshots: ['sub-account', 'accounts'], slug: 'add-identity', related: ['backup', 'switch'], category: 'accounts', video: 'subAccounts', guides: ['custom-identity-paths'] },
-  { id: 'backup', screenshots: ['sub-account'], slug: 'back-up-account', related: ['import', 'remove'], category: 'accounts', video: 'backup', guides: ['import-nostr-account'] },
+  { id: 'backup', screenshots: ['sub-account'], slug: 'back-up-account', related: ['import', 'remove'], category: 'accounts', video: 'backup', guides: ['import-nostr-account', 'account-archive'] },
   { id: 'remove', screenshots: ['accounts', 'remove-confirmation'], slug: 'remove-account', related: ['backup', 'switch'], category: 'accounts', video: 'remove', guides: ['removing-accounts'] },
   { id: 'approvals', screenshots: ['backend-review', 'relay-review'], slug: 'review-request', related: ['permissions', 'denied'], category: 'permissions', video: 'approvals', guides: ['site-permissions'] },
   { id: 'permissions', screenshots: ['permissions', 'global-rules'], slug: 'site-and-global-rules', related: ['approvals', 'authentication'], category: 'permissions', video: 'permissions', guides: ['site-permissions'] },

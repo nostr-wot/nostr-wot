@@ -1,0 +1,81 @@
+---
+{
+  "title": "Conservez votre historique Nostr avec Archive",
+  "description": "Synchronisez vos événements, exportez une copie chiffrée et migrez vers un autre relais.",
+  "excerpt": "Synchronisez vos événements, exportez une copie chiffrée et migrez vers un autre relais.",
+  "date": "2026-10-06",
+  "author": {
+    "name": "Leon Acosta",
+    "avatar": "/authors/leon-profile.jpg"
+  },
+  "featuredImage": "/images/guides/account-archive/featured.png",
+  "previewImage": "/images/guides/account-archive/featured.png",
+  "tags": [
+    "Archive",
+    "Relays"
+  ],
+  "published": true,
+  "seoTitle": "Conservez votre historique Nostr avec Archive",
+  "seoDescription": "Synchronisez vos événements, exportez une copie chiffrée et migrez vers un autre relais.",
+  "ogImage": "/images/guides/account-archive/featured.png",
+  "translationKey": "account-archive",
+  "difficulty": "beginner",
+  "order": 24
+}
+---
+
+Les relais stockent vos notes, profils et autres événements signés, mais peuvent devenir indisponibles ou supprimer des données anciennes. **Archive** conserve une copie locale chiffrée des événements encore accessibles. Vous pouvez la mettre à jour, l’exporter et republier les événements admissibles sur un autre relais.
+
+Disponible dans Nostr WoT **0.8.11**. Sélectionnez le compte, déverrouillez l’extension et ouvrez **Paramètres → Archive**. Les captures montrent l’interface anglaise, un compte jetable et des relais locaux de démonstration. Leurs adresses ne sont pas des recommandations.
+
+## 1. Synchronisez vos événements
+
+Utilisez les flèches circulaires. La première synchronisation recherche l’historique disponible; les suivantes reprennent les points de contrôle et revérifient les événements récents. Tous les relais sélectionnés travaillent en parallèle. Les événements identiques sont stockés une seule fois.
+
+Activez l’archivage automatique pour une exécution horaire, quotidienne ou hebdomadaire. Le coffre doit être déverrouillé et le navigateur actif. Vous pouvez suspendre et reprendre le travail.
+
+![Vue d’ensemble et commandes d’Archive](/images/guides/account-archive/01-overview.png)
+
+## 2. Choisissez les sources
+
+Ouvrez l’engrenage près de la synchronisation. Le groupe par défaut reprend vos relais configurés. Ajoutez ou retirez des adresses, utilisez les suggestions ou saisissez un relais distant en `wss://`. Créez un groupe dans le sélecteur ou actualisez la liste depuis les relais publiés dans votre profil. Seul le groupe sélectionné est interrogé.
+
+La collecte des messages chiffrés est facultative. Ils restent chiffrés; Archive ne produit pas de conversations en clair.
+
+![Configuration des groupes et des relais](/images/guides/account-archive/02-settings.png)
+
+## 3. Comprenez les résultats
+
+**See details** affiche la taille et les résultats par relais. **Events** compte aussi les événements déjà enregistrés: deux relais renvoyant douze événements peuvent ne représenter que douze événements uniques.
+
+**Complete** signifie que toutes les requêtes ont terminé; **Incomplete** indique une couverture inachevée. **Error** correspond à un échec sans événement récupéré; **Not synced** à l’absence de tentative terminée. L’icône d’information explique la cause. Réessayez uniquement la ligne concernée. Les données existantes restent intactes; une tentative peut être mise en attente si une autre tâche est active.
+
+![Résultats avec compteurs, erreur et nouvelle tentative](/images/guides/account-archive/03-relay-results.png)
+
+Archive répond aux demandes d’authentification pour le compte sélectionné. Les échecs récupérables ont jusqu’à trois tentatives limitées. Une mauvaise configuration du serveur nécessite l’intervention de son opérateur. Un signataire distant doit déjà être connecté; un compte en lecture seule ne peut pas s’authentifier.
+
+## 4. Exportez et importez une copie
+
+Choisissez le téléchargement et un mot de passe distinct d’au moins huit caractères. Conservez le fichier `.ndjson` chiffré et son mot de passe. Il contient des événements, pas votre clé privée ni votre phrase de récupération.
+
+![Mot de passe de l’export chiffré](/images/guides/account-archive/04-export.png)
+
+La désinstallation ou l’effacement des données du navigateur peut supprimer l’archive locale. Gardez une copie ailleurs et sauvegardez vos clés séparément. Pour importer, sélectionnez le compte correspondant, choisissez le fichier et saisissez son mot de passe. Le compte, les signatures et l’intégrité du fichier sont contrôlés avant la fusion. Les doublons ne créent pas de nouveaux enregistrements.
+
+![Fichier et mot de passe pour l’importation](/images/guides/account-archive/05-import.png)
+
+## 5. Migrez vers un autre relais
+
+**Migrate archive** apparaît lorsque des événements sont enregistrés. Saisissez la destination et examinez les options pour les messages chiffrés et les autres types d’événements. Le relais reçoit les enveloppes chiffrées et peut les conserver.
+
+![Destination et options de migration](/images/guides/account-archive/06-migration.png)
+
+**Start migration** valide l’adresse et vérifie une requête limitée. Examinez les nombres d’événements admissibles et ignorés avant de confirmer. Une connexion fonctionnelle ne garantit pas que tous seront acceptés.
+
+![Confirmation avant publication](/images/guides/account-archive/07-confirmation.png)
+
+La migration conserve les signatures et dates sans effacer les données locales ou celles des autres relais. Elle ignore les événements supprimés, expirés, remplacés ou non admissibles. Le résultat distingue acceptés, déjà présents, échoués et ignorés. Après le premier passage, seuls les échecs font l’objet d’un nouvel essai. **Failed events** affiche les identifiants, types, dates, réponses et tentatives.
+
+## Conservez identité et historique
+
+Des requêtes terminées ne prouvent pas qu’un relais possède tout votre historique. Utilisez des sources fiables, exportez régulièrement et sauvegardez vos clés séparément: elles restaurent votre identité; Archive préserve les événements disponibles.
