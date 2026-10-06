@@ -1,0 +1,64 @@
+---
+title: "Nostream 3.2.0 adds blue/green relay updates and actionable moderation"
+description: "Nostream 3.2.0 adds an optional HAProxy blue/green stack, default-off NIP-56 hiding and fixes for quiet multi-filter query failures."
+excerpt: "Relay operators gain a rolling two-process topology and an opt-in way to act on trusted reports, with important validation and policy limits."
+date: "2026-10-03"
+publishedAt: "2026-10-06"
+backfilled: false
+type: "story"
+tags: ["Nostr","Relays","Infrastructure","Moderation"]
+featuredImage: "/images/news/nostream-3-2-0-adds-blue-green-relay-updates-and-actionable-moderation.svg"
+translationKey: "nostream-3-2-0-adds-blue-green-relay-updates-and-actionable-moderation"
+sources:
+  - title: "Nostream v3.2.0 release"
+    url: "https://github.com/cameri/nostream/releases/tag/v3.2.0"
+    publisher: "cameri/nostream"
+    date: "2026-10-03"
+  - title: "HAProxy blue/green deployment PR #777"
+    url: "https://github.com/cameri/nostream/pull/777"
+    publisher: "cameri/nostream"
+    date: "2026-10-01"
+  - title: "NIP-56 actionable-report PR #788"
+    url: "https://github.com/cameri/nostream/pull/788"
+    publisher: "cameri/nostream"
+    date: "2026-09-29"
+  - title: "Multi-filter query fix PR #792"
+    url: "https://github.com/cameri/nostream/pull/792"
+    publisher: "cameri/nostream"
+    date: "2026-09-30"
+  - title: "NIP-56 reporting specification"
+    url: "https://github.com/nostr-protocol/nips/blob/master/56.md"
+    publisher: "nostr-protocol/nips"
+    date: "2026-10-06"
+published: true
+---
+
+[Nostream 3.2.0](https://github.com/cameri/nostream/releases/tag/v3.2.0) gives relay operators two new decisions to make. One is operational: whether to run two relay processes behind HAProxy and replace them one at a time. The other is editorial: whether reports from configured trusted moderators should hide events from relay queries. The same release also fixes query shapes that could silently omit events.
+
+This is a published source release, not a new project launch. Nostream has existed since 2022 and is already indexed in the ecosystem directory. Version 3.2.0 was published on 3 October 2026, inside this watch window.
+
+## An optional blue/green relay topology
+
+[Pull request #777](https://github.com/cameri/nostream/pull/777) adds an alternative Docker Compose stack with two relay containers, named blue and green, behind HAProxy. HAProxy checks each relay through the unauthenticated /readyz endpoint. If a backend stops being ready, option redispatch lets HAProxy retry an eligible failed request against the other backend.
+
+A rolling script replaces one relay, waits for its replacement to report healthy, then moves to the second. The stack also enables a Redis stream fan-out so live events accepted by either relay can reach WebSocket clients connected to both processes. The existing single-relay deployment remains available. Operators opt into the new topology by using the separate compose file.
+
+The release calls this a zero-downtime update path, but the underlying PR records a narrower validation result. Its author checked the Compose configuration and HAProxy syntax, then stated that the rolling script had not yet been exercised against a live stack with a WebSocket client connected. The implementation is therefore a documented deployment option, not independent proof that every cutover will preserve every connection.
+
+## Reports can now affect query results
+
+[Pull request #788](https://github.com/cameri/nostream/pull/788) adds the setting nip56.hideActionableReports. It is false by default and only has an effect when NIP-56 handling is also enabled.
+
+When both settings are active, a report from a configured trusted moderator can become actionable. An event-targeted report hides that event from REQ and COUNT results. A pubkey-targeted report hides events authored by that pubkey. Before this change, Nostream could record that a report was actionable without changing what subscribers received.
+
+This remains an operator policy choice. [NIP-56](https://github.com/nostr-protocol/nips/blob/master/56.md) describes kind 1984 reports as subjective signals and warns that automatic relay moderation can be gamed. Version 3.2.0 does not decide which reports are correct, does not enable hiding by default, and does not remove the underlying event from other relays.
+
+## Quiet query failures get explicit fixes
+
+[Pull request #792](https://github.com/cameri/nostream/pull/792) addresses two query bugs. A filter with more than one tag name previously tried to satisfy all tag conditions from one joined database row, so a valid event could fail to match. Nostream now uses a separate EXISTS subquery for each tag name.
+
+The same patch wraps each filter before combining several filters with UNION. That keeps a limit on the first filter from capping the entire request and prevents it from breaking COUNT queries. The release also changes nostream info and nostream invite create so they fail instead of hanging indefinitely when the database cannot be reached.
+
+These changes matter because the failures were quiet. A client could receive end-of-stored-events with no matching events and no obvious server error. The release provides unit-level and configuration evidence for the fixes, but this review did not operate a production relay or reproduce traffic under load.
+
+For operators, 3.2.0 is best read as a set of controls with explicit boundaries: an optional deployment topology, an opt-in moderation action and corrected query behavior. Adoption, live cutover behavior and moderation policy still depend on each relay operator.
