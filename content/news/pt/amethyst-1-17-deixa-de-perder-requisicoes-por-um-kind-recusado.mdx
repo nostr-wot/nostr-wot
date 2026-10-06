@@ -1,0 +1,72 @@
+---
+title: "Amethyst 1.17 deixa de perder requisições inteiras por um único kind recusado"
+description: "Amethyst 1.17.0 restringe as assinaturas que um relay recusou em vez de descartá-las, lê metadados NIP-92 para imagens de perfil e corrige a forma como verifica senhas NIP-49."
+excerpt: "Um relay fechava toda requisição que citasse um kind que ele não servia, então os gift wraps de uma conta, e com eles suas mensagens diretas e convites do White Noise, nunca chegavam."
+date: "2026-10-06"
+publishedAt: "2026-10-06"
+backfilled: false
+type: "story"
+tags: ["Nostr", "Amethyst", "Clients", "NIP-92", "NIP-49"]
+featuredImage: "/images/news/amethyst-1-17-stops-losing-requests-to-refused-kinds.svg"
+translationKey: "amethyst-1-17-stops-losing-requests-to-refused-kinds"
+sources:
+  - title: "Lançamento do Amethyst v1.17.0"
+    url: "https://github.com/vitorpamplona/amethyst/releases/tag/v1.17.0"
+    publisher: "vitorpamplona/amethyst"
+    date: "2026-10-05"
+  - title: "PR #4238: descartar um kind que o relay recusa pelo nome"
+    url: "https://github.com/vitorpamplona/amethyst/pull/4238"
+    publisher: "vitorpamplona/amethyst"
+    date: "2026-09-27"
+  - title: "PR #4239: encaixar um REQ no limite de filtros de um relay"
+    url: "https://github.com/vitorpamplona/amethyst/pull/4239"
+    publisher: "vitorpamplona/amethyst"
+    date: "2026-09-28"
+  - title: "PR #4320: imeta NIP-92 para foto e banner do perfil"
+    url: "https://github.com/vitorpamplona/amethyst/pull/4320"
+    publisher: "vitorpamplona/amethyst"
+    date: "2026-10-05"
+  - title: "PR #4209: novo Backup Keys e correções de NIP-49"
+    url: "https://github.com/vitorpamplona/amethyst/pull/4209"
+    publisher: "vitorpamplona/amethyst"
+    date: "2026-09-27"
+  - title: "PR #4201: mensagens em grupo Cordn"
+    url: "https://github.com/vitorpamplona/amethyst/pull/4201"
+    publisher: "vitorpamplona/amethyst"
+    date: "2026-09-26"
+published: true
+---
+
+O [Amethyst 1.17.0](https://github.com/vitorpamplona/amethyst/releases/tag/v1.17.0) foi publicado em 5 de outubro de 2026 com o título "Cordn and several updates". É uma versão grande: 1.253 commits desde a 1.16.0, com 176 pull requests listados nas notas. A página da versão traz pacotes Android nas variantes F-Droid e Google Play, builds de desktop para Linux, macOS e Windows, e pacotes separados de `amy` e `geode`.
+
+A maior parte desses pull requests é refatoração e tradução. Este artigo cobre quatro mudanças que um usuário consegue de fato perceber, lidas nos pull requests e em seus diffs, e não nas entradas de uma linha do changelog.
+
+## Um kind recusado não derruba mais a requisição inteira
+
+A correção de maior impacto envolve relays que servem só alguns kinds de eventos. O [PR #4238](https://github.com/vitorpamplona/amethyst/pull/4238) documenta um relay rodando strfry 1.1.1 com uma lista de kinds permitidos que responde `CLOSED` a qualquer `REQ` cujo filtro cite um kind que ele não serve, mesmo quando os outros kinds do mesmo filtro são válidos.
+
+O Amethyst pede gift wraps com um único filtro que cobre os kinds `1059` e `21059`. O relay recusava `21059`, o Amethyst tratava o `CLOSED` como recusa de todo o conjunto de filtros e todos os gift wraps se perdiam. Para uma conta cujo relay de mensagens diretas de kind `10050` era esse relay, nenhuma mensagem direta NIP-17 chegava, nem nenhum convite do White Noise. O caminho do Welcome falhava sem registrar nada, então nada apontava para a causa.
+
+A correção ensina o pool de relays a ler a recusa. Quando o motivo de um `CLOSED` cita um kind, por exemplo `kind not allowed: 21059`, o Amethyst registra isso para aquele relay e remove o kind de todas as requisições que monta para ele, tanto na mudança quanto na reconexão. Um filtro que fica sem nenhum kind é descartado em vez de enviado vazio, porque uma lista de kinds vazia pediria todos os kinds.
+
+O mesmo relay também fecha qualquer requisição com quatro ou mais filtros, e não anuncia um valor `max_filters` no seu documento NIP-11. As mensagens de grupo do Marmot usam um filtro por grupo, então uma conta com quatro ou mais grupos ali não carregava nenhuma mensagem de grupo. O [PR #4239](https://github.com/vitorpamplona/amethyst/pull/4239), que chegou à `main` como reaplicação no #4242, aprende o limite a partir da recusa: se quatro filtros foram recusados, o máximo é três. Em seguida, junta os filtros que diferem em exatamente um conjunto de valores em um único filtro com a união desses valores.
+
+A junção tem limites deliberados. Filtros com `limit` nunca são unidos, porque um limite por filtro e um limite sobre a união são requisições diferentes. Filtros que diferem em dois campos também não, porque a união casaria com combinações que nenhum filtro pediu. Se uma requisição ainda não couber, o Amethyst envia os primeiros filtros até o limite e registra um aviso. O pull request informa que algumas assinaturas da conta ainda podem ser cortadas quando um relay com limite é o único relay de saída da conta, e deixa a solução completa para uma mudança separada.
+
+## Imagens de perfil seguem a NIP-92
+
+O [PR #4320](https://github.com/vitorpamplona/amethyst/pull/4320) foi mesclado em 5 de outubro, cerca de duas horas depois de a NIP-92 passar a permitir tags `imeta` para as URLs `picture` e `banner` do kind `0`, uma mudança [noticiada aqui mais cedo hoje](/pt/news/2026-10-06/nip-92-da-fallbacks-e-blurhashes-as-imagens-de-perfil). Uma nova classe `ProfileImageMetas` associa uma tag `imeta` a uma imagem de perfil só quando as URLs são iguais depois de remover espaços nas pontas, de modo que uma query string diferente não casa.
+
+Avatares e banners agora podem mostrar um placeholder blurhash enquanto carregam e tentar as URLs de fallback listadas se a principal falhar. Quando um usuário edita o perfil, o Amethyst mantém os metadados de uma imagem que não mudou e os descarta para uma imagem substituída ou removida. Um arquivo de testes de 291 linhas cobre esses casos.
+
+## Backup Keys e NIP-49
+
+O [PR #4209](https://github.com/vitorpamplona/amethyst/pull/4209) redesenha a tela de backup de chaves. A `nsec` aparece como três linhas numeradas de grupos em maiúsculas, ocultas até serem tocadas, para que possa ser copiada no papel. Bech32 não diferencia maiúsculas, e o login no Android, no desktop e no `amy` agora aceita uma chave digitada de volta em maiúsculas com hífens, espaços ou quebras de linha. Antes, uma `NSEC1` em maiúsculas era rejeitada.
+
+A cópia protegida por senha NIP-49 agora pede a senha duas vezes e exige pelo menos 12 caracteres ao criar uma nova `ncryptsec`. O diff esclarece que é só uma política de criação, já que a NIP-49 não define mínimo e a decifragem precisa aceitar senhas que outros clientes permitiram.
+
+O mesmo pull request corrige o próprio código NIP-49. A decifragem ignorava o resultado da autenticação e considerava errada uma chave decifrada se nenhum de seus bytes fosse positivo, o que rejeitava uma chave válida cujos 32 bytes tivessem todos o bit alto ligado. Agora ela verifica a tag Poly1305. A cifragem também ignorava seu resultado, então uma falha podia gerar uma `ncryptsec` que nenhuma senha abre; agora ela lança um erro. Payloads cifrados que não têm exatamente 48 bytes passam a ser rejeitados.
+
+## Chega o Cordn
+
+O título da versão se refere ao [PR #4201](https://github.com/vitorpamplona/amethyst/pull/4201), que adiciona as mensagens em grupo Cordn: telas para criar, entrar e gerenciar grupos, e um runtime que cuida da comunicação em grupo cifrada com MLS por meio de servidores coordenadores. É a maior mudança individual da versão, com 51.174 linhas adicionadas em 419 arquivos. A checklist do plano de testes do pull request, incluindo suas três suítes de interoperabilidade, ficou sem marcação.
