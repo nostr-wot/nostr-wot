@@ -1,20 +1,21 @@
 {
   "meta": {
     "title": "Política de Privacidade",
-    "description": "Como o Nostr Web of Trust protege sua privacidade. Cobre coleta de dados, modos de privacidade da extensão, API Oracle e seus direitos."
+    "description": "Como o Nostr WoT trata seus dados no site, na extensão de navegador, no app Nostr WoT para iOS e sua carteira Lightning hospedada, e na API Oracle."
   },
   "hero": {
     "title": "Política de Privacidade",
-    "lastUpdated": "Última atualização: Fevereiro 2026"
+    "lastUpdated": "Última atualização: Outubro 2026"
   },
   "intro": {
-    "description": "Esta Política de Privacidade descreve como Nostr Web of Trust (\"nós\", \"nos\" ou \"nosso\") coleta, usa e protege suas informações quando você usa nosso site (nostrwot.com) e extensão de navegador (Extensão WoT).",
+    "description": "Esta Política de Privacidade descreve como Nostr Web of Trust (\"nós\", \"nos\" ou \"nosso\") coleta, usa e protege suas informações quando você usa nosso site (nostrwot.com), nossa extensão de navegador (Extensão WoT) e o app Nostr WoT para iOS.",
     "commitment": "Estamos comprometidos em proteger sua privacidade. Como projeto construído para o ecossistema Nostr, entendemos a importância da descentralização e da soberania do usuário sobre dados pessoais."
   },
   "contents": {
     "title": "Conteúdo",
     "website": "Privacidade do Site",
     "extension": "Privacidade da Extensão de Navegador",
+    "app": "App Nostr WoT (iOS)",
     "oracle": "API WoT Oracle",
     "thirdParty": "Serviços de Terceiros",
     "dataRetention": "Retenção de Dados",
@@ -121,6 +122,159 @@
       }
     }
   },
+  "app": {
+    "title": "App Nostr WoT (iOS)",
+    "intro": "O Nostr WoT é um app para iPhone que mantém suas chaves Nostr no seu celular, assina para os apps que você usa e pode conectar uma carteira Lightning. Esta seção explica o que o app guarda no seu celular, o que ele envia pela rede e para quem, e como apagar esses dados.",
+    "publisher": "O app é publicado na App Store pela DANDELION LABS JOINT STOCK COMPANY, que também opera a carteira Lightning hospedada em zaps.nostr-wot.com. Nesta seção, \"nós\" se refere a essa empresa.",
+    "summary": {
+      "title": "Em resumo",
+      "description": "Você não precisa de uma conta conosco para usar o app. Suas chaves e sua frase semente ficam criptografadas no seu celular e nunca são enviadas para nós. O app não tem análise de uso, anúncios nem rastreamento, e não vendemos dados. Os únicos dados que mantemos sobre você pertencem à carteira Lightning hospedada, e apenas se você optar por usá-la."
+    },
+    "onDevice": {
+      "title": "O que fica no seu celular",
+      "description": "Os itens a seguir são armazenados apenas no seu celular. Não conseguimos lê-los e eles não são enviados para nós.",
+      "items": {
+        "vault": {
+          "title": "Chaves e frases semente:",
+          "description": "Suas chaves privadas e sua frase semente são guardadas em um cofre criptografado (AES-256-GCM, com uma chave derivada da sua senha ou PIN usando PBKDF2-SHA-256 e 600.000 iterações). Um backup do iPhone pode incluir o cofre, mas apenas na forma criptografada."
+        },
+        "unlock": {
+          "title": "Senha, PIN e Face ID:",
+          "description": "Você desbloqueia o cofre com uma senha ou, se preferir, com um PIN que só funciona neste celular. O Face ID é opcional e gerenciado pelo iOS: o app só fica sabendo se a verificação foi bem-sucedida e nunca vê seus dados faciais."
+        },
+        "settings": {
+          "title": "Permissões, atividade e configurações:",
+          "description": "As regras que você define para cada app, seus clientes pareados, o registro de atividades, suas listas de relays e suas demais configurações."
+        },
+        "archive": {
+          "title": "Arquivo:",
+          "description": "Se você usar o Arquivo, cada conta mantém uma cópia dos seus próprios eventos Nostr assinados em um banco de dados local, com cada registro criptografado por uma chave guardada no seu cofre. Os arquivos do Arquivo que você exporta são criptografados com uma senha escolhida por você."
+        },
+        "walletSecrets": {
+          "title": "Segredos da carteira:",
+          "description": "As strings de conexão do Nostr Wallet Connect e as chaves da carteira em autocustódia são guardadas no cofre criptografado ou criptografadas com a chave dele."
+        }
+      }
+    },
+    "connections": {
+      "title": "O que o app envia pela rede",
+      "description": "O app só se conecta a outros serviços para fazer o que você pede. Para cada conexão, veja quem recebe o quê.",
+      "items": {
+        "relays": {
+          "title": "Relays Nostr:",
+          "description": "A assinatura remota (NIP-46), os eventos que você assina e publica, seu atestado de chave pós-quântica e o Arquivo usam relays Nostr, que você pode escolher e alterar. As solicitações de assinatura são criptografadas de ponta a ponta, mas os relays veem seu endereço IP, o horário e as chaves públicas envolvidas, e os eventos que você publica são públicos. Não operamos esses relays, e a remoção de algo deles é feita na base do melhor esforço."
+        },
+        "lan": {
+          "title": "Ponte de rede local:",
+          "description": "Quando você a ativa, um computador pareado pode enviar solicitações de assinatura diretamente ao app pela sua rede local, com criptografia de ponta a ponta, sem relays nem nossos servidores. Ela vem desativada por padrão e precisa ser ativada a cada vez."
+        },
+        "sameDevice": {
+          "title": "Assinatura para apps neste iPhone:",
+          "description": "A extensão de ação \"Assinar com Nostr WoT\" assina solicitações de outros apps no mesmo celular. Ela não faz nenhuma conexão de rede."
+        },
+        "hostedWallet": {
+          "title": "Carteira Lightning hospedada:",
+          "description": "Se você configurar a carteira guardada por nós, o app se conecta a zaps.nostr-wot.com. A seção <strong>Carteira Lightning hospedada</strong> abaixo lista o que armazenamos."
+        },
+        "nwc": {
+          "title": "Sua própria carteira (Nostr Wallet Connect):",
+          "description": "Se você conectar uma carteira externa, a string de conexão dela fica no seu cofre. As solicitações de pagamento vão criptografadas para o relay indicado nessa conexão e de lá para o provedor da sua carteira, cuja própria política se aplica."
+        },
+        "spark": {
+          "title": "Carteira em autocustódia (Breez SDK, Spark):",
+          "description": "A carteira em autocustódia funciona na rede Spark por meio do Breez SDK. As chaves dela vêm da sua frase semente e ficam no seu celular, mas os operadores do Spark, entre eles a Breez, processam os dados de pagamento necessários para operar a carteira e veem seu endereço IP. Veja a <breez>política de privacidade da Breez</breez> e a <spark>política de privacidade do Spark</spark>."
+        },
+        "lightningAddress": {
+          "title": "Pagamento a um endereço Lightning:",
+          "description": "Quando você paga um endereço Lightning, o app pede uma fatura ao domínio desse endereço, como faz qualquer carteira Lightning."
+        },
+        "tor": {
+          "title": "Tor (opcional):",
+          "description": "Você pode encaminhar o tráfego do app pelo Tor, que já vem integrado ao app. Com o Tor ativado, relays, assinatura remota, o Arquivo, solicitações da carteira e imagens passam pelo Tor e não veem seu endereço IP. A ponte de rede local e a carteira em autocustódia não usam o Tor. O Tor vem desativado por padrão."
+        },
+        "favicons": {
+          "title": "Ícones de sites:",
+          "description": "Para mostrar o ícone de um site conectado, o app consulta o <google>serviço de favicons do Google</google> (www.google.com/s2/favicons), que recebe o domínio desse site e seu endereço IP. O app não consulta o Google para obter ícones enquanto o Tor estiver ativado. Suas próprias fotos de perfil são carregadas do endereço definido no seu perfil Nostr."
+        },
+        "feedback": {
+          "title": "Links de feedback:",
+          "description": "\"Relatar um bug\" e \"Pedir um recurso\" abrem no seu navegador um formulário de issue do GitHub em um repositório público. Um relato de bug vem preenchido com a versão do app, a versão do iOS, o modelo do aparelho e o idioma do app. Você pode editá-lo antes de enviar, e o que você envia é público e tratado conforme a <github>declaração de privacidade do GitHub</github>."
+        }
+      }
+    },
+    "hostedWallet": {
+      "title": "Carteira Lightning hospedada (zaps.nostr-wot.com)",
+      "description": "A carteira hospedada é opcional. Ela é custodial: nós guardamos o saldo para você. Se você a usar, armazenamos:",
+      "items": {
+        "identity": {
+          "title": "Sua chave pública Nostr:",
+          "description": "Ela identifica sua carteira. O app comprova que você é o dono dela assinando cada solicitação de login; sua chave privada nunca é enviada."
+        },
+        "wallet": {
+          "title": "Registros da carteira:",
+          "description": "Os identificadores internos da sua carteira e da conta dela, e seu saldo."
+        },
+        "address": {
+          "title": "Endereço Lightning:",
+          "description": "O nome de usuário que você escolhe (name@zaps.nostr-wot.com). Ele é público, e qualquer pessoa pode encontrá-lo a partir da sua chave pública."
+        },
+        "payments": {
+          "title": "Pagamentos e conexões de apps:",
+          "description": "Faturas, valores, datas e status dos pagamentos que você envia e recebe, e as conexões de apps (NWC) que você cria, com seus limites."
+        },
+        "requests": {
+          "title": "Dados de requisição:",
+          "description": "Seu endereço IP é usado para limitação de taxa e mantido em memória por cerca de um minuto. Os logs do nosso servidor registram os caminhos das requisições e os erros para que possamos operar e proteger o serviço."
+        }
+      },
+      "custody": "Como a carteira é custodial, nós podemos movimentar seus fundos, e seu saldo depende do nosso serviço. Mantenha nela apenas pequenas quantias.",
+      "retention": "Mantemos esses registros enquanto sua carteira hospedada existir. Quando você a apaga, apagamos seu endereço Lightning, suas conexões de apps, a carteira com seu histórico de pagamentos e o vínculo entre sua chave pública e a carteira."
+    },
+    "privacyMode": {
+      "title": "Modo de privacidade",
+      "description": "Com o modo de privacidade ativado, o app deixa de gravar o registro de atividades, o momento em que cada cliente pareado esteve ativo pela última vez e os perfis de outras pessoas que você visualizou. Você também pode limpar o registro de atividades a qualquer momento."
+    },
+    "doesNot": {
+      "title": "O que o app não faz",
+      "items": {
+        "analytics": "Sem análise de uso, relatórios de falhas ou telemetria",
+        "ads": "Sem anúncios",
+        "tracking": "Sem rastreamento entre apps ou sites, e sem identificador de publicidade",
+        "sell": "Não vendemos nem compartilhamos seus dados",
+        "keys": "Nunca recebemos suas chaves privadas, frase semente, senha ou PIN"
+      }
+    },
+    "delete": {
+      "title": "Como apagar seus dados",
+      "description": "Você pode apagar seus dados de dentro do app:",
+      "items": {
+        "account": {
+          "title": "Uma conta:",
+          "description": "Remova-a na tela Contas. As chaves, permissões e autorizações de login dela são apagadas deste celular."
+        },
+        "everything": {
+          "title": "Tudo neste celular:",
+          "description": "\"Apagar todos os dados\" nas Configurações apaga deste celular o cofre, todas as contas, permissões, pareamentos, o Arquivo e os dados da carteira. Desinstalar o app também os remove. Faça antes o backup da sua frase semente: sem ela, suas chaves não podem ser recuperadas."
+        },
+        "hostedWallet": {
+          "title": "Carteira hospedada:",
+          "description": "Quando você apaga todos os dados, o app pergunta separadamente se você também quer apagar sua carteira hospedada no nosso servidor. Se você disser que sim, nós a apagamos conforme descrito acima. Transfira qualquer saldo antes."
+        },
+        "relays": {
+          "title": "Relays Nostr:",
+          "description": "Os eventos que você publicou ficam armazenados em relays que não controlamos. Os relays podem atender a um pedido de exclusão, mas não podemos garantir que removam algo."
+        }
+      },
+      "contact": "Se você não tem mais o app, ou tem alguma dúvida sobre seus dados, fale conosco pela",
+      "supportLink": "página de suporte",
+      "or": "ou pelo",
+      "contactLink": "formulário de contato"
+    },
+    "children": {
+      "title": "Crianças",
+      "description": "O app não é direcionado a crianças, e não coletamos intencionalmente dados pessoais de crianças. Se você acredita que uma criança configurou uma carteira hospedada, entre em contato conosco e nós a apagaremos."
+    }
+  },
   "oracle": {
     "title": "API WoT Oracle",
     "intro": "Se você usar a API pública WoT Oracle (diretamente ou através da extensão no modo Remoto):",
@@ -199,6 +353,14 @@
       "extensionData": {
         "title": "Dados da Extensão:",
         "description": "Armazenados localmente no seu navegador até você limpá-los ou desinstalar a extensão"
+      },
+      "appData": {
+        "title": "Dados do App Nostr WoT:",
+        "description": "Armazenados no seu celular até você remover a conta, apagar todos os dados ou desinstalar o app"
+      },
+      "hostedWallet": {
+        "title": "Registros da Carteira Hospedada:",
+        "description": "Mantidos enquanto sua carteira hospedada existir e apagados quando você a apagar"
       },
       "rateLimit": {
         "title": "Dados de Limite de Taxa do Oracle:",

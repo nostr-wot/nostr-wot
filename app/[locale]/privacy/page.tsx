@@ -6,6 +6,7 @@ import { Link } from "@/i18n/routing";
 import { ScrollReveal } from "@/components/ui";
 import { generateAlternates, generateOpenGraph, generateTwitter } from "@/lib/metadata";
 import { type Locale } from "@/i18n/config";
+import AppSection from "./AppSection";
 
 type Props = {
   params: Promise<{ locale: string }>;
@@ -20,7 +21,7 @@ async function pageMetadata({ params }: Props): Promise<Metadata> {
   return {
     title,
     description,
-    keywords: ["nostr wot privacy"],
+    keywords: ["nostr wot privacy", "nostr wot app privacy"],
     alternates: generateAlternates("/privacy", locale as Locale),
     openGraph: generateOpenGraph({
       title,
@@ -89,6 +90,7 @@ export default async function PrivacyPage() {
               <ul className="space-y-2 text-gray-600 dark:text-gray-400">
                 <li><a href="#website" className="hover:text-primary">{t("contents.website")}</a></li>
                 <li><a href="#extension" className="hover:text-primary">{t("contents.extension")}</a></li>
+                <li><a href="#app" className="hover:text-primary">{t("contents.app")}</a></li>
                 <li><a href="#oracle" className="hover:text-primary">{t("contents.oracle")}</a></li>
                 <li><a href="#third-party" className="hover:text-primary">{t("contents.thirdParty")}</a></li>
                 <li><a href="#data-retention" className="hover:text-primary">{t("contents.dataRetention")}</a></li>
@@ -208,6 +210,9 @@ export default async function PrivacyPage() {
               </ul>
             </section>
 
+            {/* Nostr WoT app (iOS) */}
+            <AppSection />
+
             {/* Oracle API */}
             <section id="oracle" className="mb-12">
               <h2 className="text-2xl font-bold mb-4">{t("oracle.title")}</h2>
@@ -310,6 +315,8 @@ export default async function PrivacyPage() {
                 <li><strong className="text-gray-900 dark:text-white">{t("dataRetention.items.analytics.title")}</strong> {t("dataRetention.items.analytics.description")}</li>
                 <li><strong className="text-gray-900 dark:text-white">{t("dataRetention.items.contactForm.title")}</strong> {t("dataRetention.items.contactForm.description")}</li>
                 <li><strong className="text-gray-900 dark:text-white">{t("dataRetention.items.extensionData.title")}</strong> {t("dataRetention.items.extensionData.description")}</li>
+                <li><strong className="text-gray-900 dark:text-white">{t("dataRetention.items.appData.title")}</strong> {t("dataRetention.items.appData.description")}</li>
+                <li><strong className="text-gray-900 dark:text-white">{t("dataRetention.items.hostedWallet.title")}</strong> {t("dataRetention.items.hostedWallet.description")}</li>
                 <li><strong className="text-gray-900 dark:text-white">{t("dataRetention.items.rateLimit.title")}</strong> {t("dataRetention.items.rateLimit.description")}</li>
               </ul>
             </section>

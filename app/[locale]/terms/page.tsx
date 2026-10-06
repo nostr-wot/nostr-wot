@@ -6,6 +6,7 @@ import { Link } from "@/i18n/routing";
 import { ScrollReveal } from "@/components/ui";
 import { generateAlternates, generateOpenGraph, generateTwitter } from "@/lib/metadata";
 import { type Locale } from "@/i18n/config";
+import AppSection from "./AppSection";
 
 type Props = {
   params: Promise<{ locale: string }>;
@@ -88,6 +89,7 @@ export default async function TermsPage() {
                 <li><a href="#use-restrictions" className="hover:text-primary">{t("contents.useRestrictions")}</a></li>
                 <li><a href="#extension" className="hover:text-primary">{t("contents.extension")}</a></li>
                 <li><a href="#oracle" className="hover:text-primary">{t("contents.oracle")}</a></li>
+                <li><a href="#app" className="hover:text-primary">{t("contents.app")}</a></li>
                 <li><a href="#disclaimer" className="hover:text-primary">{t("contents.disclaimer")}</a></li>
                 <li><a href="#limitation" className="hover:text-primary">{t("contents.limitation")}</a></li>
                 <li><a href="#changes" className="hover:text-primary">{t("contents.changes")}</a></li>
@@ -187,6 +189,9 @@ export default async function TermsPage() {
                 {t("oracle.accuracy.description")}
               </p>
             </section>
+
+            {/* Nostr WoT app (iOS) */}
+            <AppSection />
 
             {/* Disclaimer */}
             <section id="disclaimer" className="mb-12">

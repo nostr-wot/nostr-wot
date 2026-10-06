@@ -11,6 +11,7 @@ import oracle from './oracle.json';
 import mediaKit from './mediaKit.json';
 import privacy from './privacy.json';
 import terms from './terms.json';
+import support from './support.json';
 import docs from './docs.json';
 import playground from './playground.json';
 import profile from './profile.json';
@@ -40,6 +41,7 @@ const messages = {
   mediaKit,
   privacy,
   terms,
+  support,
   docs,
   playground,
   profile,

@@ -1,20 +1,21 @@
 {
   "meta": {
     "title": "Politique de confidentialité",
-    "description": "Politique de confidentialité Nostr Web of Trust : collecte de données, modes de l'extension navigateur, utilisation de l'API Oracle et vos droits."
+    "description": "Comment Nostr WoT traite vos données sur le site web, dans l'extension de navigateur, dans l'application iOS Nostr WoT et son portefeuille Lightning hébergé, ainsi que dans l'API Oracle."
   },
   "hero": {
     "title": "Politique de confidentialité",
-    "lastUpdated": "Dernière mise à jour : février 2026"
+    "lastUpdated": "Dernière mise à jour : octobre 2026"
   },
   "intro": {
-    "description": "Cette politique de confidentialité décrit comment Nostr Web of Trust (« nous », « notre ») collecte, utilise et protège vos informations lorsque vous utilisez notre site web (nostrwot.com) et notre extension de navigateur (extension WoT).",
+    "description": "Cette politique de confidentialité décrit comment Nostr Web of Trust (« nous », « notre ») collecte, utilise et protège vos informations lorsque vous utilisez notre site web (nostrwot.com), notre extension de navigateur (extension WoT) et l'application Nostr WoT pour iOS.",
     "commitment": "Nous nous engageons à protéger votre vie privée. En tant que projet conçu pour l'écosystème Nostr, nous comprenons l'importance de la décentralisation et de la souveraineté des utilisateurs sur leurs données personnelles."
   },
   "contents": {
     "title": "Sommaire",
     "website": "Confidentialité du site web",
     "extension": "Confidentialité de l'extension de navigateur",
+    "app": "Application Nostr WoT (iOS)",
     "oracle": "API WoT Oracle",
     "thirdParty": "Services tiers",
     "dataRetention": "Conservation des données",
@@ -121,6 +122,159 @@
       }
     }
   },
+  "app": {
+    "title": "Application Nostr WoT (iOS)",
+    "intro": "Nostr WoT est une application iPhone qui conserve vos clés Nostr sur votre téléphone, signe pour les applications que vous utilisez et peut connecter un portefeuille Lightning. Cette section explique ce que l'application conserve sur votre téléphone, ce qu'elle envoie sur le réseau et à qui, et comment le supprimer.",
+    "publisher": "L'application est publiée sur l'App Store par DANDELION LABS JOINT STOCK COMPANY, qui exploite également le portefeuille Lightning hébergé sur zaps.nostr-wot.com. Dans cette section, « nous » désigne cette société.",
+    "summary": {
+      "title": "En bref",
+      "description": "Vous n'avez pas besoin de compte chez nous pour utiliser l'application. Vos clés et votre phrase de récupération sont chiffrées sur votre téléphone et ne nous sont jamais envoyées. L'application ne contient ni outils d'analyse, ni publicité, ni pistage, et nous ne vendons pas de données. Les seules données que nous détenons à votre sujet sont celles du portefeuille Lightning hébergé, et uniquement si vous choisissez de l'utiliser."
+    },
+    "onDevice": {
+      "title": "Ce qui reste sur votre téléphone",
+      "description": "Les éléments suivants sont stockés uniquement sur votre téléphone. Nous ne pouvons pas les lire et ils ne nous sont pas envoyés.",
+      "items": {
+        "vault": {
+          "title": "Clés et phrases de récupération :",
+          "description": "Vos clés privées et votre phrase de récupération sont conservées dans un coffre chiffré (AES-256-GCM, avec une clé dérivée de votre mot de passe ou de votre PIN au moyen de PBKDF2-SHA-256 et de 600 000 itérations). Une sauvegarde de l'iPhone peut inclure le coffre, mais uniquement sous forme chiffrée."
+        },
+        "unlock": {
+          "title": "Mot de passe, PIN et Face ID :",
+          "description": "Vous déverrouillez le coffre avec un mot de passe ou, si vous le préférez, un PIN qui ne fonctionne que sur ce téléphone. Face ID est facultatif et géré par iOS : l'application sait seulement si la vérification a réussi et ne voit jamais les données de votre visage."
+        },
+        "settings": {
+          "title": "Permissions, activité et paramètres :",
+          "description": "Les règles que vous définissez pour chaque application, vos clients associés, le journal d'activité, vos listes de relais et vos autres paramètres."
+        },
+        "archive": {
+          "title": "Archives :",
+          "description": "Si vous utilisez les Archives, chaque compte conserve une copie de ses propres événements Nostr signés dans une base de données locale, chaque enregistrement étant chiffré avec une clé conservée dans votre coffre. Les fichiers d'Archives que vous exportez sont chiffrés avec un mot de passe de votre choix."
+        },
+        "walletSecrets": {
+          "title": "Secrets du portefeuille :",
+          "description": "Les chaînes de connexion Nostr Wallet Connect et les clés du portefeuille en auto-garde sont conservées dans le coffre chiffré ou chiffrées avec sa clé."
+        }
+      }
+    },
+    "connections": {
+      "title": "Ce que l'application envoie sur le réseau",
+      "description": "L'application se connecte à d'autres services uniquement pour faire ce que vous demandez. Pour chaque connexion, voici qui reçoit quoi.",
+      "items": {
+        "relays": {
+          "title": "Relais Nostr :",
+          "description": "La signature à distance (NIP-46), les événements que vous signez et publiez, l'attestation de votre clé post-quantique et les Archives utilisent des relais Nostr, que vous pouvez choisir et modifier. Les demandes de signature sont chiffrées de bout en bout, mais les relais voient votre adresse IP, l'horodatage et les clés publiques concernées, et les événements que vous publiez sont publics. Nous n'exploitons pas ces relais, et le retrait d'un contenu de ces relais ne peut se faire qu'au mieux."
+        },
+        "lan": {
+          "title": "Pont réseau local :",
+          "description": "Lorsque vous l'activez, un ordinateur associé peut envoyer des demandes de signature directement à l'application via votre réseau local, chiffrées de bout en bout, sans passer par des relais ni par nos serveurs. Il est désactivé par défaut et doit être activé à chaque fois."
+        },
+        "sameDevice": {
+          "title": "Signature pour les applications de cet iPhone :",
+          "description": "L'extension d'action « Signer avec Nostr WoT » signe les demandes d'autres applications sur le même téléphone. Elle n'établit aucune connexion réseau."
+        },
+        "hostedWallet": {
+          "title": "Portefeuille Lightning hébergé :",
+          "description": "Si vous configurez le portefeuille détenu par nous, l'application se connecte à zaps.nostr-wot.com. La section <strong>Portefeuille Lightning hébergé</strong> ci-dessous indique ce que nous stockons."
+        },
+        "nwc": {
+          "title": "Votre propre portefeuille (Nostr Wallet Connect) :",
+          "description": "Si vous connectez un portefeuille externe, sa chaîne de connexion reste dans votre coffre. Les demandes de paiement sont envoyées chiffrées au relais indiqué dans cette connexion, puis à votre fournisseur de portefeuille, dont la propre politique s'applique."
+        },
+        "spark": {
+          "title": "Portefeuille en auto-garde (Breez SDK, Spark) :",
+          "description": "Le portefeuille en auto-garde fonctionne sur le réseau Spark au moyen du Breez SDK. Ses clés proviennent de votre phrase de récupération et restent sur votre téléphone, mais les opérateurs de Spark, dont Breez, traitent les données de paiement nécessaires au fonctionnement du portefeuille et voient votre adresse IP. Consultez la <breez>politique de confidentialité de Breez</breez> et la <spark>politique de confidentialité de Spark</spark>."
+        },
+        "lightningAddress": {
+          "title": "Paiement à une adresse Lightning :",
+          "description": "Lorsque vous payez une adresse Lightning, l'application demande une facture au domaine de cette adresse, comme le fait tout portefeuille Lightning."
+        },
+        "tor": {
+          "title": "Tor (facultatif) :",
+          "description": "Vous pouvez faire passer le trafic de l'application par Tor, qui est intégré à l'application. Lorsque Tor est activé, les relais, la signature à distance, les Archives, les requêtes du portefeuille et les images passent par Tor et ne voient pas votre adresse IP. Le pont réseau local et le portefeuille en auto-garde n'utilisent pas Tor. Tor est désactivé par défaut."
+        },
+        "favicons": {
+          "title": "Icônes des sites :",
+          "description": "Pour afficher l'icône d'un site connecté, l'application interroge le <google>service d'icônes de Google</google> (www.google.com/s2/favicons), qui reçoit le domaine de ce site et votre adresse IP. L'application ne contacte pas Google pour les icônes lorsque Tor est activé. Vos propres photos de profil sont chargées depuis l'adresse définie dans votre profil Nostr."
+        },
+        "feedback": {
+          "title": "Liens de retour :",
+          "description": "« Signaler un bug » et « Proposer une fonctionnalité » ouvrent dans votre navigateur un formulaire de ticket GitHub sur un dépôt public. Un signalement de bug est prérempli avec la version de l'application, la version d'iOS, le modèle de l'appareil et la langue de l'application. Vous pouvez le modifier avant de l'envoyer ; ce que vous soumettez est public et traité conformément à la <github>déclaration de confidentialité de GitHub</github>."
+        }
+      }
+    },
+    "hostedWallet": {
+      "title": "Portefeuille Lightning hébergé (zaps.nostr-wot.com)",
+      "description": "Le portefeuille hébergé est facultatif. Il est dépositaire : nous détenons son solde pour vous. Si vous l'utilisez, nous stockons :",
+      "items": {
+        "identity": {
+          "title": "Votre clé publique Nostr :",
+          "description": "Elle identifie votre portefeuille. L'application prouve que vous en êtes le titulaire en signant chaque demande de connexion ; votre clé privée n'est jamais envoyée."
+        },
+        "wallet": {
+          "title": "Données du portefeuille :",
+          "description": "Les identifiants internes de votre portefeuille et de son compte, ainsi que votre solde."
+        },
+        "address": {
+          "title": "Adresse Lightning :",
+          "description": "Le nom d'utilisateur que vous réservez (name@zaps.nostr-wot.com). Il est public, et n'importe qui peut le retrouver à partir de votre clé publique."
+        },
+        "payments": {
+          "title": "Paiements et connexions d'applications :",
+          "description": "Les factures, montants, dates et statuts des paiements que vous envoyez et recevez, ainsi que les connexions d'applications (NWC) que vous créez, avec leurs limites."
+        },
+        "requests": {
+          "title": "Données des requêtes :",
+          "description": "Votre adresse IP est utilisée pour la limitation du débit et conservée en mémoire pendant environ une minute. Les journaux de notre serveur enregistrent les chemins des requêtes et les erreurs afin que nous puissions faire fonctionner et sécuriser le service."
+        }
+      },
+      "custody": "Le portefeuille étant dépositaire, nous pouvons déplacer ses fonds, et votre solde dépend de notre service. N'y conservez que de petits montants.",
+      "retention": "Nous conservons ces données tant que votre portefeuille hébergé existe. Lorsque vous le supprimez, nous supprimons votre adresse Lightning, vos connexions d'applications, le portefeuille avec son historique de paiements et le lien entre votre clé publique et le portefeuille."
+    },
+    "privacyMode": {
+      "title": "Mode confidentialité",
+      "description": "Lorsque le mode confidentialité est activé, l'application cesse d'enregistrer son journal d'activité, la date de dernière activité de chaque client associé et les profils des autres personnes que vous avez consultés. Vous pouvez également effacer le journal d'activité à tout moment."
+    },
+    "doesNot": {
+      "title": "Ce que l'application ne fait pas",
+      "items": {
+        "analytics": "Aucun outil d'analyse, aucun rapport de plantage ni aucune télémétrie",
+        "ads": "Aucune publicité",
+        "tracking": "Aucun pistage entre applications ou sites web, et aucun identifiant publicitaire",
+        "sell": "Nous ne vendons ni ne partageons vos données",
+        "keys": "Nous ne recevons jamais vos clés privées, votre phrase de récupération, votre mot de passe ou votre PIN"
+      }
+    },
+    "delete": {
+      "title": "Supprimer vos données",
+      "description": "Vous pouvez supprimer vos données depuis l'application :",
+      "items": {
+        "account": {
+          "title": "Un compte :",
+          "description": "Supprimez-le depuis l'écran Comptes. Ses clés, permissions et autorisations de connexion sont supprimées de ce téléphone."
+        },
+        "everything": {
+          "title": "Tout ce qui se trouve sur ce téléphone :",
+          "description": "« Supprimer toutes les données », dans les Paramètres, efface de ce téléphone le coffre, tous les comptes, les permissions, les associations, les Archives et les données du portefeuille. La désinstallation de l'application les supprime également. Sauvegardez d'abord votre phrase de récupération : sans elle, vos clés ne peuvent pas être récupérées."
+        },
+        "hostedWallet": {
+          "title": "Portefeuille hébergé :",
+          "description": "Lorsque vous supprimez toutes les données, l'application vous demande séparément si vous souhaitez aussi supprimer votre portefeuille hébergé sur notre serveur. Si vous acceptez, nous le supprimons comme décrit ci-dessus. Transférez d'abord tout solde restant."
+        },
+        "relays": {
+          "title": "Relais Nostr :",
+          "description": "Les événements que vous avez publiés sont stockés sur des relais que nous ne contrôlons pas. Les relais peuvent donner suite à une demande de suppression, mais nous ne pouvons pas garantir qu'ils suppriment quoi que ce soit."
+        }
+      },
+      "contact": "Si vous n'avez plus l'application, ou si vous avez une question sur vos données, contactez-nous via la",
+      "supportLink": "page d'assistance",
+      "or": "ou le",
+      "contactLink": "formulaire de contact"
+    },
+    "children": {
+      "title": "Enfants",
+      "description": "L'application ne s'adresse pas aux enfants, et nous ne collectons pas sciemment de données personnelles auprès d'enfants. Si vous pensez qu'un enfant a configuré un portefeuille hébergé, contactez-nous et nous le supprimerons."
+    }
+  },
   "oracle": {
     "title": "API WoT Oracle",
     "intro": "Si vous utilisez l'API publique WoT Oracle (directement ou via l'extension en mode distant) :",
@@ -199,6 +353,14 @@
       "extensionData": {
         "title": "Données de l'extension :",
         "description": "Stockées localement dans votre navigateur jusqu'à ce que vous les effaciez ou désinstalliez l'extension"
+      },
+      "appData": {
+        "title": "Données de l'application Nostr WoT :",
+        "description": "Stockées sur votre téléphone jusqu'à ce que vous supprimiez le compte, supprimiez toutes les données ou désinstalliez l'application"
+      },
+      "hostedWallet": {
+        "title": "Données du portefeuille hébergé :",
+        "description": "Conservées tant que votre portefeuille hébergé existe et supprimées lorsque vous le supprimez"
       },
       "rateLimit": {
         "title": "Données de limitation du débit Oracle :",

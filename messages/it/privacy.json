@@ -1,20 +1,21 @@
 {
   "meta": {
     "title": "Informativa sulla Privacy",
-    "description": "Scopri come Nostr Web of Trust protegge la tua privacy. Copre raccolta dati, modalità dell'estensione browser, utilizzo dell'API Oracle e i tuoi diritti."
+    "description": "Come Nostr WoT tratta i tuoi dati sul sito web, nell'estensione per il browser, nell'app Nostr WoT per iOS e nel suo portafoglio Lightning ospitato, e nell'API Oracle."
   },
   "hero": {
     "title": "Informativa sulla Privacy",
-    "lastUpdated": "Ultimo aggiornamento: Febbraio 2026"
+    "lastUpdated": "Ultimo aggiornamento: Ottobre 2026"
   },
   "intro": {
-    "description": "Questa Informativa sulla Privacy descrive come Nostr Web of Trust (\"noi\" o \"nostro\") raccoglie, utilizza e protegge le tue informazioni quando utilizzi il nostro sito web (nostrwot.com) e l'estensione per il browser (Estensione WoT).",
+    "description": "Questa Informativa sulla Privacy descrive come Nostr Web of Trust (\"noi\" o \"nostro\") raccoglie, utilizza e protegge le tue informazioni quando utilizzi il nostro sito web (nostrwot.com), la nostra estensione per il browser (Estensione WoT) e l'app Nostr WoT per iOS.",
     "commitment": "Siamo impegnati a proteggere la tua privacy. Come progetto costruito per l'ecosistema Nostr, comprendiamo l'importanza della decentralizzazione e della sovranità dell'utente sui propri dati personali."
   },
   "contents": {
     "title": "Contenuti",
     "website": "Privacy del Sito Web",
     "extension": "Privacy dell'Estensione per il Browser",
+    "app": "App Nostr WoT (iOS)",
     "oracle": "API WoT Oracle",
     "thirdParty": "Servizi di Terze Parti",
     "dataRetention": "Conservazione dei Dati",
@@ -121,6 +122,159 @@
       }
     }
   },
+  "app": {
+    "title": "App Nostr WoT (iOS)",
+    "intro": "Nostr WoT è un'app per iPhone che conserva le tue chiavi Nostr sul telefono, firma per le app che usi e può collegare un portafoglio Lightning. Questa sezione spiega cosa l'app conserva sul telefono, cosa invia in rete e a chi, e come eliminarlo.",
+    "publisher": "L'app è pubblicata sull'App Store da DANDELION LABS JOINT STOCK COMPANY, che gestisce anche il portafoglio Lightning ospitato su zaps.nostr-wot.com. In questa sezione, \"noi\" indica tale società.",
+    "summary": {
+      "title": "In breve",
+      "description": "Per usare l'app non ti serve un account presso di noi. Le tue chiavi e la tua frase di recupero sono cifrate sul telefono e non ci vengono mai inviate. L'app non ha analisi, pubblicità né tracciamento, e non vendiamo dati. Gli unici dati che deteniamo su di te riguardano il portafoglio Lightning ospitato, e solo se scegli di usarlo."
+    },
+    "onDevice": {
+      "title": "Cosa resta sul tuo telefono",
+      "description": "Quanto segue è archiviato solo sul tuo telefono. Non possiamo leggerlo e non ci viene inviato.",
+      "items": {
+        "vault": {
+          "title": "Chiavi e frasi di recupero:",
+          "description": "Le tue chiavi private e la tua frase di recupero sono conservate in una cassaforte cifrata (AES-256-GCM, con una chiave derivata dalla tua password o dal tuo PIN tramite PBKDF2-SHA-256 e 600.000 iterazioni). Un backup dell'iPhone può includere la cassaforte, ma solo in forma cifrata."
+        },
+        "unlock": {
+          "title": "Password, PIN e Face ID:",
+          "description": "Sblocchi la cassaforte con una password o, se preferisci, con un PIN che funziona solo su questo telefono. Face ID è facoltativo ed è gestito da iOS: l'app sa soltanto se il controllo è riuscito e non vede mai i dati del tuo volto."
+        },
+        "settings": {
+          "title": "Permessi, attività e impostazioni:",
+          "description": "Le regole che imposti per ciascuna app, i client associati, il registro attività, i tuoi elenchi di relay e le altre impostazioni."
+        },
+        "archive": {
+          "title": "Archivio:",
+          "description": "Se usi l'Archivio, ogni account conserva una copia dei propri eventi Nostr firmati in un database locale, con ogni record cifrato con una chiave custodita nella tua cassaforte. I file di Archivio che esporti sono cifrati con una password scelta da te."
+        },
+        "walletSecrets": {
+          "title": "Segreti del portafoglio:",
+          "description": "Le stringhe di connessione di Nostr Wallet Connect e le chiavi del portafoglio in autocustodia sono conservate nella cassaforte cifrata o cifrate con la sua chiave."
+        }
+      }
+    },
+    "connections": {
+      "title": "Cosa invia l'app in rete",
+      "description": "L'app si connette ad altri servizi solo per fare ciò che chiedi. Per ogni connessione, ecco chi riceve cosa.",
+      "items": {
+        "relays": {
+          "title": "Relay Nostr:",
+          "description": "La firma remota (NIP-46), gli eventi che firmi e pubblichi, l'attestazione della tua chiave post-quantistica e l'Archivio usano relay Nostr, che puoi scegliere e cambiare. Le richieste di firma sono cifrate end-to-end, ma i relay vedono il tuo indirizzo IP, le tempistiche e le chiavi pubbliche coinvolte, e gli eventi che pubblichi sono pubblici. Non gestiamo questi relay, e la rimozione di contenuti da essi avviene secondo il miglior impegno possibile."
+        },
+        "lan": {
+          "title": "Ponte di rete locale:",
+          "description": "Quando lo attivi, un computer associato può inviare richieste di firma direttamente all'app tramite la tua rete locale, cifrate end-to-end, senza relay né i nostri server. È disattivato per impostazione predefinita e va attivato ogni volta."
+        },
+        "sameDevice": {
+          "title": "Firma per le app su questo iPhone:",
+          "description": "L'estensione di azione \"Firma con Nostr WoT\" firma le richieste di altre app sullo stesso telefono. Non effettua connessioni di rete."
+        },
+        "hostedWallet": {
+          "title": "Portafoglio Lightning ospitato:",
+          "description": "Se configuri il portafoglio custodito da noi, l'app si connette a zaps.nostr-wot.com. La sezione <strong>Portafoglio Lightning ospitato</strong> qui sotto elenca cosa archiviamo."
+        },
+        "nwc": {
+          "title": "Il tuo portafoglio (Nostr Wallet Connect):",
+          "description": "Se colleghi un portafoglio esterno, la sua stringa di connessione resta nella tua cassaforte. Le richieste di pagamento vengono inviate cifrate al relay indicato in quella connessione e da lì al fornitore del tuo portafoglio, che applica la propria informativa."
+        },
+        "spark": {
+          "title": "Portafoglio in autocustodia (Breez SDK, Spark):",
+          "description": "Il portafoglio in autocustodia funziona sulla rete Spark tramite il Breez SDK. Le sue chiavi derivano dalla tua frase di recupero e restano sul tuo telefono, ma gli operatori di Spark, tra cui Breez, trattano i dati di pagamento necessari al funzionamento del portafoglio e vedono il tuo indirizzo IP. Consulta l'<breez>informativa sulla privacy di Breez</breez> e l'<spark>informativa sulla privacy di Spark</spark>."
+        },
+        "lightningAddress": {
+          "title": "Pagare un indirizzo Lightning:",
+          "description": "Quando paghi un indirizzo Lightning, l'app chiede una fattura al dominio di quell'indirizzo, come fa qualsiasi portafoglio Lightning."
+        },
+        "tor": {
+          "title": "Tor (facoltativo):",
+          "description": "Puoi instradare il traffico dell'app attraverso Tor, che è integrato nell'app. Con Tor attivo, relay, firma remota, Archivio, richieste del portafoglio e immagini passano attraverso Tor e non vedono il tuo indirizzo IP. Il ponte di rete locale e il portafoglio in autocustodia non usano Tor. Tor è disattivato per impostazione predefinita."
+        },
+        "favicons": {
+          "title": "Icone dei siti:",
+          "description": "Per mostrare l'icona di un sito connesso, l'app interroga il <google>servizio di favicon di Google</google> (www.google.com/s2/favicons), che riceve il dominio di quel sito e il tuo indirizzo IP. L'app non contatta Google per le icone mentre Tor è attivo. Le tue immagini del profilo vengono caricate dall'indirizzo impostato nel tuo profilo Nostr."
+        },
+        "feedback": {
+          "title": "Link per i feedback:",
+          "description": "\"Segnala un bug\" e \"Richiedi una funzione\" aprono nel tuo browser un modulo per creare una issue GitHub su un repository pubblico. Una segnalazione di bug arriva precompilata con la versione dell'app, la versione di iOS, il modello del dispositivo e la lingua dell'app. Puoi modificarla prima di inviarla, e ciò che invii è pubblico ed è trattato secondo l'<github>informativa sulla privacy di GitHub</github>."
+        }
+      }
+    },
+    "hostedWallet": {
+      "title": "Portafoglio Lightning ospitato (zaps.nostr-wot.com)",
+      "description": "Il portafoglio ospitato è facoltativo. È custodiale: deteniamo noi il suo saldo per tuo conto. Se lo usi, archiviamo:",
+      "items": {
+        "identity": {
+          "title": "La tua chiave pubblica Nostr:",
+          "description": "Identifica il tuo portafoglio. L'app dimostra che ne sei il titolare firmando ogni richiesta di accesso; la tua chiave privata non viene mai inviata."
+        },
+        "wallet": {
+          "title": "Record del portafoglio:",
+          "description": "Gli identificativi interni del tuo portafoglio e del relativo conto, e il tuo saldo."
+        },
+        "address": {
+          "title": "Indirizzo Lightning:",
+          "description": "Il nome utente che rivendichi (name@zaps.nostr-wot.com). È pubblico, e chiunque può trovarlo a partire dalla tua chiave pubblica."
+        },
+        "payments": {
+          "title": "Pagamenti e connessioni delle app:",
+          "description": "Fatture, importi, date e stato dei pagamenti che invii e ricevi, e le eventuali connessioni delle app (NWC) che crei, con i relativi limiti."
+        },
+        "requests": {
+          "title": "Dati delle richieste:",
+          "description": "Il tuo indirizzo IP è usato per la limitazione delle richieste e tenuto in memoria per circa un minuto. I log del nostro server registrano i percorsi delle richieste e gli errori, per consentirci di gestire e proteggere il servizio."
+        }
+      },
+      "custody": "Poiché il portafoglio è custodiale, possiamo spostarne i fondi, e il tuo saldo dipende dal nostro servizio. Tienici solo piccole somme.",
+      "retention": "Conserviamo questi record finché il tuo portafoglio ospitato esiste. Quando lo elimini, eliminiamo il tuo indirizzo Lightning, le connessioni delle tue app, il portafoglio con il suo storico dei pagamenti e il collegamento tra la tua chiave pubblica e il portafoglio."
+    },
+    "privacyMode": {
+      "title": "Modalità privacy",
+      "description": "Con la modalità privacy attiva, l'app smette di registrare il proprio registro attività, il momento dell'ultima attività di ciascun client associato e i profili di altre persone che hai visualizzato. Puoi anche cancellare il registro attività in qualsiasi momento."
+    },
+    "doesNot": {
+      "title": "Cosa l'app non fa",
+      "items": {
+        "analytics": "Nessuna analisi, segnalazione di arresti anomali o telemetria",
+        "ads": "Nessuna pubblicità",
+        "tracking": "Nessun tracciamento tra app o siti web, e nessun identificativo pubblicitario",
+        "sell": "Non vendiamo né condividiamo i tuoi dati",
+        "keys": "Non riceviamo mai le tue chiavi private, la tua frase di recupero, la tua password o il tuo PIN"
+      }
+    },
+    "delete": {
+      "title": "Eliminare i tuoi dati",
+      "description": "Puoi eliminare i tuoi dati dall'interno dell'app:",
+      "items": {
+        "account": {
+          "title": "Un account:",
+          "description": "Rimuovilo dalla schermata Account. Le sue chiavi, i suoi permessi e le sue autorizzazioni di accesso vengono eliminati da questo telefono."
+        },
+        "everything": {
+          "title": "Tutto ciò che si trova su questo telefono:",
+          "description": "\"Elimina tutti i dati\" nelle Impostazioni cancella da questo telefono la cassaforte, ogni account, i permessi, le associazioni, l'Archivio e i dati del portafoglio. Anche disinstallare l'app li rimuove. Prima fai un backup della tua frase di recupero: senza di essa, le tue chiavi non possono essere recuperate."
+        },
+        "hostedWallet": {
+          "title": "Portafoglio ospitato:",
+          "description": "Quando elimini tutti i dati, l'app ti chiede separatamente se eliminare anche il tuo portafoglio ospitato sul nostro server. Se rispondi di sì, lo eliminiamo come descritto sopra. Prima trasferisci altrove l'eventuale saldo."
+        },
+        "relays": {
+          "title": "Relay Nostr:",
+          "description": "Gli eventi che hai pubblicato sono archiviati su relay che non controlliamo. I relay possono dare seguito a una richiesta di eliminazione, ma non possiamo garantire che rimuovano alcunché."
+        }
+      },
+      "contact": "Se non hai più l'app, o hai una domanda sui tuoi dati, contattaci tramite la",
+      "supportLink": "pagina di supporto",
+      "or": "o il",
+      "contactLink": "modulo di contatto"
+    },
+    "children": {
+      "title": "Minori",
+      "description": "L'app non è rivolta ai minori, e non raccogliamo consapevolmente dati personali di minori. Se ritieni che un minore abbia configurato un portafoglio ospitato, contattaci e lo elimineremo."
+    }
+  },
   "oracle": {
     "title": "API WoT Oracle",
     "intro": "Se utilizzi l'API pubblica WoT Oracle (direttamente o tramite l'estensione in modalità Remota):",
@@ -199,6 +353,14 @@
       "extensionData": {
         "title": "Dati dell'Estensione:",
         "description": "Archiviati localmente nel tuo browser fino a quando non li cancelli o disinstalli l'estensione"
+      },
+      "appData": {
+        "title": "Dati dell'App Nostr WoT:",
+        "description": "Archiviati sul tuo telefono fino a quando non rimuovi l'account, elimini tutti i dati o disinstalli l'app"
+      },
+      "hostedWallet": {
+        "title": "Record del Portafoglio Ospitato:",
+        "description": "Conservati finché il tuo portafoglio ospitato esiste ed eliminati quando lo elimini"
       },
       "rateLimit": {
         "title": "Dati di Limitazione Oracle:",

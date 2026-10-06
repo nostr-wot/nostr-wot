@@ -1,20 +1,21 @@
 {
   "meta": {
     "title": "Datenschutzrichtlinie",
-    "description": "Erfahren Sie, wie Nostr Web of Trust Ihre Privatsphäre schützt. Umfasst Datenerfassung, Datenschutzmodi der Extension, Oracle-API und Ihre Rechte."
+    "description": "Wie Nostr WoT mit Ihren Daten umgeht: auf der Website, in der Browser-Extension, in der Nostr WoT App für iOS und ihrer gehosteten Lightning-Wallet sowie in der Oracle-API."
   },
   "hero": {
     "title": "Datenschutzrichtlinie",
-    "lastUpdated": "Zuletzt aktualisiert: Februar 2026"
+    "lastUpdated": "Zuletzt aktualisiert: Oktober 2026"
   },
   "intro": {
-    "description": "Diese Datenschutzrichtlinie beschreibt, wie Nostr Web of Trust (\"wir\", \"uns\" oder \"unser\") Ihre Informationen erfasst, verwendet und schützt, wenn Sie unsere Website (nostrwot.com) und Browser-Extension (WoT Extension) nutzen.",
+    "description": "Diese Datenschutzrichtlinie beschreibt, wie Nostr Web of Trust (\"wir\", \"uns\" oder \"unser\") Ihre Informationen erfasst, verwendet und schützt, wenn Sie unsere Website (nostrwot.com), unsere Browser-Extension (WoT Extension) und die Nostr WoT App für iOS nutzen.",
     "commitment": "Wir sind dem Schutz Ihrer Privatsphäre verpflichtet. Als ein für das Nostr-Ökosystem entwickeltes Projekt verstehen wir die Bedeutung von Dezentralisierung und Benutzersouveränität über persönliche Daten."
   },
   "contents": {
     "title": "Inhalt",
     "website": "Website-Datenschutz",
     "extension": "Browser-Extension-Datenschutz",
+    "app": "Nostr WoT App (iOS)",
     "oracle": "WoT-Oracle-API",
     "thirdParty": "Drittanbieterdienste",
     "dataRetention": "Datenspeicherung",
@@ -121,6 +122,159 @@
       }
     }
   },
+  "app": {
+    "title": "Nostr WoT App (iOS)",
+    "intro": "Nostr WoT ist eine iPhone-App, die Ihre Nostr-Schlüssel auf Ihrem Telefon aufbewahrt, für die von Ihnen genutzten Apps signiert und eine Lightning-Wallet verbinden kann. Dieser Abschnitt erklärt, was die App auf Ihrem Telefon speichert, was sie über das Netzwerk sendet und an wen, und wie Sie diese Daten löschen.",
+    "publisher": "Die App wird im App Store von DANDELION LABS JOINT STOCK COMPANY veröffentlicht, die auch die gehostete Lightning-Wallet unter zaps.nostr-wot.com betreibt. In diesem Abschnitt bezeichnet \"wir\" dieses Unternehmen.",
+    "summary": {
+      "title": "Kurz gesagt",
+      "description": "Sie benötigen kein Konto bei uns, um die App zu nutzen. Ihre Schlüssel und Ihre Seed-Phrase werden auf Ihrem Telefon verschlüsselt und niemals an uns gesendet. Die App enthält keine Analyse, keine Werbung und kein Tracking, und wir verkaufen keine Daten. Die einzigen Daten, die wir über Sie speichern, gehören zur gehosteten Lightning-Wallet, und das nur, wenn Sie sich für deren Nutzung entscheiden."
+    },
+    "onDevice": {
+      "title": "Was auf Ihrem Telefon bleibt",
+      "description": "Folgendes wird ausschließlich auf Ihrem Telefon gespeichert. Wir können es nicht lesen, und es wird nicht an uns gesendet.",
+      "items": {
+        "vault": {
+          "title": "Schlüssel und Seed-Phrasen:",
+          "description": "Ihre privaten Schlüssel und Ihre Seed-Phrase werden in einem verschlüsselten Tresor aufbewahrt (AES-256-GCM, mit einem Schlüssel, der mittels PBKDF2-SHA-256 mit 600.000 Iterationen aus Ihrem Passwort oder Ihrer PIN abgeleitet wird). Ein iPhone-Backup kann den Tresor enthalten, jedoch nur in verschlüsselter Form."
+        },
+        "unlock": {
+          "title": "Passwort, PIN und Face ID:",
+          "description": "Sie entsperren den Tresor mit einem Passwort oder, wenn Sie möchten, mit einer PIN, die nur auf diesem Telefon funktioniert. Face ID ist optional und wird von iOS abgewickelt: Die App erfährt nur, ob die Prüfung erfolgreich war, und sieht Ihre Gesichtsdaten nie."
+        },
+        "settings": {
+          "title": "Berechtigungen, Aktivität und Einstellungen:",
+          "description": "Die Regeln, die Sie für jede App festlegen, Ihre gekoppelten Clients, das Aktivitätsprotokoll, Ihre Relay-Listen und Ihre übrigen Einstellungen."
+        },
+        "archive": {
+          "title": "Archiv:",
+          "description": "Wenn Sie das Archiv nutzen, bewahrt jedes Konto eine Kopie seiner eigenen signierten Nostr-Events in einer lokalen Datenbank auf, wobei jeder Datensatz mit einem Schlüssel verschlüsselt ist, der in Ihrem Tresor liegt. Archivdateien, die Sie exportieren, werden mit einem von Ihnen gewählten Passwort verschlüsselt."
+        },
+        "walletSecrets": {
+          "title": "Wallet-Geheimnisse:",
+          "description": "Verbindungszeichenfolgen für Nostr Wallet Connect und die Schlüssel der selbstverwahrten Wallet werden im verschlüsselten Tresor aufbewahrt oder mit dessen Schlüssel verschlüsselt."
+        }
+      }
+    },
+    "connections": {
+      "title": "Was die App über das Netzwerk sendet",
+      "description": "Die App verbindet sich nur mit anderen Diensten, um auszuführen, worum Sie sie bitten. Für jede Verbindung ist hier aufgeführt, wer was erhält.",
+      "items": {
+        "relays": {
+          "title": "Nostr-Relays:",
+          "description": "Remote-Signieren (NIP-46), die Events, die Sie signieren und veröffentlichen, Ihre Post-Quanten-Schlüsselattestierung und das Archiv nutzen Nostr-Relays, die Sie auswählen und ändern können. Signaturanfragen sind Ende-zu-Ende-verschlüsselt, aber Relays sehen Ihre IP-Adresse, den Zeitpunkt und die beteiligten öffentlichen Schlüssel, und Events, die Sie veröffentlichen, sind öffentlich. Wir betreiben diese Relays nicht, und das Entfernen von Inhalten dort erfolgt nach bestem Bemühen."
+        },
+        "lan": {
+          "title": "Lokale Netzwerkbrücke:",
+          "description": "Wenn Sie sie einschalten, kann ein gekoppelter Computer Signaturanfragen direkt über Ihr lokales Netzwerk an die App senden, Ende-zu-Ende-verschlüsselt, ohne Relays oder unsere Server. Sie ist standardmäßig ausgeschaltet und muss jedes Mal neu eingeschaltet werden."
+        },
+        "sameDevice": {
+          "title": "Signieren für Apps auf diesem iPhone:",
+          "description": "Die Aktionserweiterung „Sign with Nostr WoT“ signiert Anfragen anderer Apps auf demselben Telefon. Sie stellt keine Netzwerkverbindungen her."
+        },
+        "hostedWallet": {
+          "title": "Gehostete Lightning-Wallet:",
+          "description": "Wenn Sie die von uns verwahrte Wallet einrichten, verbindet sich die App mit zaps.nostr-wot.com. Im Abschnitt <strong>Gehostete Lightning-Wallet</strong> weiter unten ist aufgeführt, was wir speichern."
+        },
+        "nwc": {
+          "title": "Ihre eigene Wallet (Nostr Wallet Connect):",
+          "description": "Wenn Sie eine externe Wallet verbinden, bleibt deren Verbindungszeichenfolge in Ihrem Tresor. Zahlungsanfragen gehen verschlüsselt an das in dieser Verbindung angegebene Relay und weiter an Ihren Wallet-Anbieter, für den dessen eigene Datenschutzrichtlinie gilt."
+        },
+        "spark": {
+          "title": "Selbstverwahrte Wallet (Breez SDK, Spark):",
+          "description": "Die selbstverwahrte Wallet läuft über das Breez SDK im Spark-Netzwerk. Ihre Schlüssel stammen aus Ihrer Seed-Phrase und bleiben auf Ihrem Telefon, aber die Spark-Betreiber, darunter Breez, verarbeiten die für den Betrieb der Wallet nötigen Zahlungsdaten und sehen Ihre IP-Adresse. Siehe die <breez>Datenschutzrichtlinie von Breez</breez> und die <spark>Datenschutzrichtlinie von Spark</spark>."
+        },
+        "lightningAddress": {
+          "title": "Zahlung an eine Lightning-Adresse:",
+          "description": "Wenn Sie an eine Lightning-Adresse zahlen, fordert die App bei der Domain dieser Adresse eine Rechnung an, wie es jede Lightning-Wallet tut."
+        },
+        "tor": {
+          "title": "Tor (optional):",
+          "description": "Sie können den Datenverkehr der App über Tor leiten, das in die App integriert ist. Bei aktiviertem Tor laufen Relays, Remote-Signieren, das Archiv, Wallet-Anfragen und Bilder über Tor und sehen Ihre IP-Adresse nicht. Die lokale Netzwerkbrücke und die selbstverwahrte Wallet nutzen Tor nicht. Tor ist standardmäßig deaktiviert."
+        },
+        "favicons": {
+          "title": "Website-Symbole:",
+          "description": "Um das Symbol einer verbundenen Website anzuzeigen, fragt die App den <google>Favicon-Dienst von Google</google> (www.google.com/s2/favicons) ab, der die Domain dieser Website und Ihre IP-Adresse erhält. Bei aktiviertem Tor kontaktiert die App Google nicht für Symbole. Ihre eigenen Profilbilder werden von der Adresse geladen, die in Ihrem Nostr-Profil hinterlegt ist."
+        },
+        "feedback": {
+          "title": "Feedback-Links:",
+          "description": "„Fehler melden“ und „Funktion vorschlagen“ öffnen in Ihrem Browser ein GitHub-Issue-Formular in einem öffentlichen Repository. Ein Fehlerbericht ist mit App-Version, iOS-Version, Gerätemodell und App-Sprache vorausgefüllt. Sie können ihn vor dem Absenden bearbeiten; was Sie einreichen, ist öffentlich und unterliegt der <github>Datenschutzerklärung von GitHub</github>."
+        }
+      }
+    },
+    "hostedWallet": {
+      "title": "Gehostete Lightning-Wallet (zaps.nostr-wot.com)",
+      "description": "Die gehostete Wallet ist optional. Sie ist verwahrend (custodial): Wir halten ihr Guthaben für Sie. Wenn Sie sie nutzen, speichern wir:",
+      "items": {
+        "identity": {
+          "title": "Ihren öffentlichen Nostr-Schlüssel:",
+          "description": "Er identifiziert Ihre Wallet. Die App weist nach, dass er Ihnen gehört, indem sie jede Anmeldeanfrage signiert; Ihr privater Schlüssel wird nie gesendet."
+        },
+        "wallet": {
+          "title": "Wallet-Datensätze:",
+          "description": "Die internen Kennungen Ihrer Wallet und ihres Kontos sowie Ihr Guthaben."
+        },
+        "address": {
+          "title": "Lightning-Adresse:",
+          "description": "Den Benutzernamen, den Sie beanspruchen (name@zaps.nostr-wot.com). Er ist öffentlich, und jeder kann ihn anhand Ihres öffentlichen Schlüssels nachschlagen."
+        },
+        "payments": {
+          "title": "Zahlungen und App-Verbindungen:",
+          "description": "Rechnungen, Beträge, Zeitpunkte und Status der Zahlungen, die Sie senden und empfangen, sowie alle von Ihnen erstellten App-Verbindungen (NWC) mit ihren Limits."
+        },
+        "requests": {
+          "title": "Anfragedaten:",
+          "description": "Ihre IP-Adresse wird für Rate Limiting verwendet und etwa eine Minute lang im Arbeitsspeicher gehalten. Unsere Serverprotokolle erfassen Anfragepfade und Fehler, damit wir den Dienst betreiben und absichern können."
+        }
+      },
+      "custody": "Da die Wallet verwahrend ist, können wir ihre Mittel bewegen, und Ihr Guthaben hängt von unserem Dienst ab. Bewahren Sie darin nur kleine Beträge auf.",
+      "retention": "Wir bewahren diese Datensätze auf, solange Ihre gehostete Wallet besteht. Wenn Sie sie löschen, löschen wir Ihre Lightning-Adresse, Ihre App-Verbindungen, die Wallet mit ihrem Zahlungsverlauf sowie die Verknüpfung zwischen Ihrem öffentlichen Schlüssel und der Wallet."
+    },
+    "privacyMode": {
+      "title": "Privatsphäre-Modus",
+      "description": "Bei aktiviertem Privatsphäre-Modus zeichnet die App weder ihr Aktivitätsprotokoll noch den Zeitpunkt der letzten Aktivität jedes gekoppelten Clients noch die Profile anderer Personen auf, die Sie angesehen haben. Sie können das Aktivitätsprotokoll außerdem jederzeit löschen."
+    },
+    "doesNot": {
+      "title": "Was die App nicht tut",
+      "items": {
+        "analytics": "Keine Analyse, keine Absturzberichte und keine Telemetrie",
+        "ads": "Keine Werbung",
+        "tracking": "Kein Tracking über Apps oder Websites hinweg und keine Werbe-ID",
+        "sell": "Wir verkaufen oder teilen Ihre Daten nicht",
+        "keys": "Wir erhalten niemals Ihre privaten Schlüssel, Ihre Seed-Phrase, Ihr Passwort oder Ihre PIN"
+      }
+    },
+    "delete": {
+      "title": "Ihre Daten löschen",
+      "description": "Sie können Ihre Daten direkt in der App löschen:",
+      "items": {
+        "account": {
+          "title": "Ein Konto:",
+          "description": "Entfernen Sie es in der Kontenübersicht. Seine Schlüssel, Berechtigungen und Anmeldefreigaben werden von diesem Telefon gelöscht."
+        },
+        "everything": {
+          "title": "Alles auf diesem Telefon:",
+          "description": "„Alle Daten löschen“ in den Einstellungen löscht den Tresor, alle Konten, Berechtigungen, Kopplungen, das Archiv und die Wallet-Daten von diesem Telefon. Auch das Deinstallieren der App entfernt sie. Sichern Sie vorher Ihre Seed-Phrase: Ohne sie können Ihre Schlüssel nicht wiederhergestellt werden."
+        },
+        "hostedWallet": {
+          "title": "Gehostete Wallet:",
+          "description": "Wenn Sie alle Daten löschen, fragt die App Sie gesondert, ob auch Ihre gehostete Wallet auf unserem Server gelöscht werden soll. Wenn Sie zustimmen, löschen wir sie wie oben beschrieben. Übertragen Sie vorher ein etwaiges Guthaben."
+        },
+        "relays": {
+          "title": "Nostr-Relays:",
+          "description": "Von Ihnen veröffentlichte Events werden auf Relays gespeichert, die wir nicht kontrollieren. Relays können einer Löschanfrage nachkommen, wir können jedoch nicht garantieren, dass sie etwas entfernen."
+        }
+      },
+      "contact": "Wenn Sie die App nicht mehr haben oder eine Frage zu Ihren Daten haben, erreichen Sie uns über die",
+      "supportLink": "Support-Seite",
+      "or": "oder das",
+      "contactLink": "Kontaktformular"
+    },
+    "children": {
+      "title": "Kinder",
+      "description": "Die App richtet sich nicht an Kinder, und wir erfassen wissentlich keine personenbezogenen Daten von Kindern. Wenn Sie glauben, dass ein Kind eine gehostete Wallet eingerichtet hat, kontaktieren Sie uns, und wir löschen sie."
+    }
+  },
   "oracle": {
     "title": "WoT-Oracle-API",
     "intro": "Wenn Sie die öffentliche WoT Oracle API verwenden (direkt oder über die Extension im Remote-Modus):",
@@ -199,6 +353,14 @@
       "extensionData": {
         "title": "Extension-Daten:",
         "description": "Lokal in Ihrem Browser gespeichert, bis Sie sie löschen oder die Extension deinstallieren"
+      },
+      "appData": {
+        "title": "Daten der Nostr WoT App:",
+        "description": "Auf Ihrem Telefon gespeichert, bis Sie das Konto entfernen, alle Daten löschen oder die App deinstallieren"
+      },
+      "hostedWallet": {
+        "title": "Datensätze der gehosteten Wallet:",
+        "description": "Aufbewahrt, solange Ihre gehostete Wallet besteht, und gelöscht, wenn Sie sie löschen"
       },
       "rateLimit": {
         "title": "Oracle Rate-Limit-Daten:",
