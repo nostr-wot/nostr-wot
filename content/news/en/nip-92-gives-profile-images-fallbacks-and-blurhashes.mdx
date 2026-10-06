@@ -1,0 +1,68 @@
+---
+title: "NIP-92 gives profile images fallbacks and blurhashes"
+description: "A merged NIP-92 change lets kind 0 profiles describe pictures and banners with exact-match imeta tags, including fallbacks, dimensions, hashes, blurhashes and alt text."
+excerpt: "Profile pictures and banners can now carry the same inline media metadata as attachments, without moving their URLs out of the kind 0 profile document."
+date: "2026-10-06"
+publishedAt: "2026-10-06"
+backfilled: false
+type: "story"
+tags: ["Nostr", "NIP-92", "Profiles", "Media"]
+featuredImage: "/images/news/nip-92-gives-profile-images-fallbacks-and-blurhashes.svg"
+translationKey: "nip-92-gives-profile-images-fallbacks-and-blurhashes"
+sources:
+  - title: "NIP-92: imeta tags for kind 0 picture and banner"
+    url: "https://github.com/nostr-protocol/nips/pull/2494"
+    publisher: "nostr-protocol/nips"
+    date: "2026-10-05"
+  - title: "NIP-92 Media Attachments Metadata"
+    url: "https://github.com/nostr-protocol/nips/blob/master/92.md"
+    publisher: "nostr-protocol/nips"
+    date: "2026-10-05"
+  - title: "NIP-24 Extra metadata fields and tags"
+    url: "https://github.com/nostr-protocol/nips/blob/master/24.md"
+    publisher: "nostr-protocol/nips"
+    date: "2026-10-05"
+  - title: "NIP-94 File Metadata"
+    url: "https://github.com/nostr-protocol/nips/blob/master/94.md"
+    publisher: "nostr-protocol/nips"
+    date: "2026-10-05"
+published: true
+---
+
+[Pull request #2494](https://github.com/nostr-protocol/nips/pull/2494) merged into the Nostr specifications on 5 October 2026. It adds a profile-specific section to [NIP-92](https://github.com/nostr-protocol/nips/blob/master/92.md): a kind `0` metadata event may now attach `imeta` tags to its `picture` and `banner` URLs.
+
+The patch is small, adding 35 lines to NIP-92 and one cross-reference to [NIP-24](https://github.com/nostr-protocol/nips/blob/master/24.md), but it closes a practical gap. A note could already describe an attached image with dimensions, a MIME type, a hash, alt text, a blurhash and fallback locations. A profile image could only supply its primary URL inside the JSON string stored in the event's `content` field.
+
+## The URL remains in the profile
+
+The change does not replace the existing kind `0` shape. `picture` remains in the profile JSON, and `banner` remains the optional field recorded by NIP-24. The new data sits in ordinary event tags alongside that content.
+
+An `imeta` tag is associated with a profile field only when its `url` entry is exactly equal to the value of `picture` or `banner`. A shortened URL, a redirected destination or a URL differing only in its query string is not a match. Tags that match neither field should be ignored.
+
+That exact-match rule gives clients a deterministic join between two representations inside one signed event. It also stops a stale tag from being applied to a newly selected image merely because both images came from the same host.
+
+The specification's example gives a profile picture a MIME type, SHA-256 hash, dimensions, blurhash and fallback URL, while the banner carries its MIME type, hash and dimensions. NIP-92 allows any field defined by [NIP-94](https://github.com/nostr-protocol/nips/blob/master/94.md), so a publisher can also provide `alt`, `size`, thumbnails or other file metadata. Only `url` plus at least one other field is required for an `imeta` tag; the richer fields remain optional.
+
+## A failed host no longer has to mean an empty avatar
+
+The most visible addition is `fallback`. Clients should try declared fallback URLs when the primary profile image fails to load. That can keep an avatar or banner visible through a host outage or a moved file, provided the author published another reachable copy.
+
+The other fields solve different problems. `blurhash` can provide a compact placeholder while the image loads. `dim` lets a layout reserve the correct aspect ratio before downloading the file. `alt` gives clients an accessibility description. The `x` field can carry the file's SHA-256 hash, although NIP-92 does not require it and clients still have to verify it for the hash to provide an integrity check.
+
+These are hints carried by the profile author, not a storage layer. The merge does not upload a mirror, prove that a fallback will stay online or force a client to use any field. The normative language is mostly `MAY` and `SHOULD`, so a profile still needs a usable primary URL and compatibility still depends on client implementations.
+
+## Replaceable events create a maintenance rule
+
+Kind `0` is replaceable: a newer event from the same public key supersedes the older profile. That makes metadata preservation part of the publishing path.
+
+The new section says a client publishing a new kind `0` should carry over the `imeta` tags for a picture or banner that has not changed and drop tags for images no longer in use. Without that rule, editing a display name in a client that understands profile media metadata could accidentally erase fallbacks and alt text. Carrying every old tag forward would be worse, because it would leave signed metadata for images the profile no longer references.
+
+Clients that do not implement the addition can continue reading `picture` and `banner` exactly as before. They may ignore the new tags, which makes the format backward compatible. The tradeoff is a mixed deployment period: one client may show a fallback or blurhash while another shows a broken primary image.
+
+## What changed, and what did not
+
+The merged text establishes a common format for describing profile media. It does not certify media hosts, move profiles to content-addressed storage or make a hash mandatory. It also does not retroactively enrich existing profiles. New tags appear only when a user or client publishes a new kind `0` event containing them.
+
+The pull request says Ditto and Armada already implement the shape, but that statement comes from the submitter and the specification does not maintain a compatibility registry. Other clients need to adopt both the publishing and rendering sides before the metadata travels reliably across the ecosystem.
+
+For implementers, the safe sequence is narrow: keep the canonical URL in the profile JSON, emit at most one matching `imeta` tag per image, compare URLs exactly, preserve tags only for unchanged fields, and treat every fallback as untrusted network input. The result is incremental rather than dramatic, but it gives profile images the same recovery and presentation vocabulary that Nostr attachments already had.
