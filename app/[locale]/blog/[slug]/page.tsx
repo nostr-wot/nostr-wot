@@ -22,8 +22,9 @@ const ogLocaleMap: Record<Locale, string> = {
   de: 'de_DE',
 };
 import { BlogContent, BlogCard, BlogSidebar, BlogPostWrapper } from '@/components/blog';
-import { ScrollReveal, Section, LinkButton } from '@/components/ui';
-import { ArrowLeftIcon } from '@/components/icons';
+import { ScrollReveal, Section } from '@/components/ui';
+import Breadcrumbs from '@/components/ui/Breadcrumbs';
+import { BlogAuthorFollow } from '@/components/blog/BlogSidebar';
 import {NewsletterSection} from "@/components/layout/NewsletterSection";
 
 type Props = {
@@ -93,7 +94,7 @@ export default async function BlogPostPage({ params }: Props) {
   const allPosts = getAllBlogPosts(locale as Locale);
 
   // JSON-LD structured data
-  const postLd = blogPostingJsonLd({
+  const postLd = { ...blogPostingJsonLd({
     headline: post.title,
     description: post.excerpt,
     image: post.featuredImage,
@@ -109,32 +110,61 @@ export default async function BlogPostPage({ params }: Props) {
       : undefined,
     tags: post.tags,
     url: getFullUrl(`/blog/${slug}`, locale as Locale),
-  });
+  }),
+    inLanguage: locale,
+    ...(post.author.name === 'Nostr WoT Team' ? {
+      author: { '@type': 'Organization', name: 'Nostr WoT', url: getFullUrl('/', locale as Locale) },
+    } : {}),
+  };
 
-  const crumbsLd = breadcrumbJsonLd([
-    { name: 'Home', url: 'https://nostrwot.com' },
-    { name: 'Blog', url: getFullUrl('/blog', locale as Locale) },
-    { name: post.title, url: getFullUrl(`/blog/${slug}`, locale as Locale) },
-  ]);
+  const prefix = locale === 'en' ? '' : `/${locale}`;
+  const crumbs = [
+    { name: t('home'), path: prefix || '/' },
+    { name: t('title'), path: `${prefix}/blog` },
+    { name: post.title, path: `${prefix}/blog/${slug}` },
+  ];
+  const crumbsLd = breadcrumbJsonLd(crumbs.map(crumb => ({
+    name: crumb.name, url: getFullUrl(crumb.path, 'en'),
+  })));
 
   return (
     <BlogPostWrapper translations={post.translations}>
       <JsonLd data={[postLd, crumbsLd]} />
       <main className="py-4 mb-14">
         <article>
-          {/* Hero */}
-          <header className="relative pt-24 pb-16">
-            <div className="max-w-4xl mx-auto px-6">
-              <ScrollReveal animation="fade-up" immediate>
-                <LinkButton
-                  href="/blog"
-                  variant="secondary"
-                  className="mb-8 inline-flex items-center gap-2 !px-4 !py-2 text-sm"
-                >
-                  <ArrowLeftIcon className="w-4 h-4" />
-                  {t('backToBlog')}
-                </LinkButton>
-              </ScrollReveal>
+          {/* Featured Image */}
+            <div className="max-w-5xl mx-auto px-6 pt-20 mb-6">
+              <div className="relative aspect-[2/1] rounded-2xl overflow-hidden">
+                <Image
+                  src={post.featuredImage}
+                  alt={post.title}
+                  fill
+                  className="object-cover"
+                  priority
+                  sizes="(max-width: 1200px) 100vw, 1200px"
+                />
+              </div>
+            </div>
+
+          <div className="sticky top-16 z-40 border-y border-gray-200 bg-white/95 backdrop-blur-md dark:border-gray-800 dark:bg-gray-950/95">
+            <div className="mx-auto max-w-5xl px-6 py-3">
+                  <BlogSidebar horizontal
+                    tags={allTags}
+                    currentLocale={locale as Locale}
+                    translations={post.translations}
+                    allPosts={allPosts.map((p) => ({
+                      slug: p.slug,
+                      title: p.title,
+                      excerpt: p.excerpt,
+                      tags: p.tags,
+                    }))}
+                  />
+            </div>
+          </div>
+          {/* Article header */}
+          <header className="relative pt-10 pb-8">
+            <div className="max-w-3xl mx-auto px-6">
+              <Breadcrumbs items={crumbs} label={t('breadcrumb')} className="mb-8" />
 
               <ScrollReveal animation="fade-up" delay={100} immediate>
                 <div className="flex flex-wrap gap-2 mb-6">
@@ -187,28 +217,14 @@ export default async function BlogPostPage({ params }: Props) {
             </div>
           </header>
 
-          {/* Featured Image */}
-          <ScrollReveal animation="fade-up" delay={300} immediate>
-            <div className="max-w-5xl mx-auto px-6 mb-12">
-              <div className="relative aspect-[2/1] rounded-2xl overflow-hidden">
-                <Image
-                  src={post.featuredImage}
-                  alt={post.title}
-                  fill
-                  className="object-cover"
-                  priority
-                  sizes="(max-width: 1200px) 100vw, 1200px"
-                />
-              </div>
-            </div>
-          </ScrollReveal>
-
-          {/* Content + Sidebar */}
-          <div className="flex justify-center max-w-7xl mx-auto px-6 pb-16">
-            <div className="min-w-0 lg:flex lg:gap-12">
-              {/* Main Content - max-w-prose for optimal readability (65ch ~700px) */}
-              <article className="flex-1 min-w-0 max-w-prose">
+          {/* Article body */}
+          <div className="max-w-3xl mx-auto px-6 pb-16">
+            <div className="min-w-0">
+              {/* Reading column */}
+              <div className="min-w-0">
                 <BlogContent content={post.content} />
+
+                <BlogAuthorFollow authorSocials={post.author.socials} />
 
                 {/* Author Box */}
                 <ScrollReveal animation="fade-up">
@@ -242,31 +258,8 @@ export default async function BlogPostPage({ params }: Props) {
                     </div>
                   </div>
                 </ScrollReveal>
-              </article>
+              </div>
 
-              {/* Sidebar */}
-              <aside className="hidden lg:block w-80 flex-shrink-0">
-                <div className="sticky top-24">
-                  <BlogSidebar
-                    tags={allTags}
-                    relatedPosts={relatedPosts.map((p) => ({
-                      slug: p.slug,
-                      title: p.title,
-                      date: p.date,
-                    }))}
-                    authorNpub={post.author.npub}
-                    authorSocials={post.author.socials}
-                    currentLocale={locale as Locale}
-                    translations={post.translations}
-                    allPosts={allPosts.map((p) => ({
-                      slug: p.slug,
-                      title: p.title,
-                      excerpt: p.excerpt,
-                      tags: p.tags,
-                    }))}
-                  />
-                </div>
-              </aside>
             </div>
           </div>
         </article>

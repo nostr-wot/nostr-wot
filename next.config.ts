@@ -150,6 +150,11 @@ const nextConfig: NextConfig = {
     ];
 
     return [
+      ...['', '/en', '/es', '/pt', '/ru', '/it', '/fr', '/de'].map(prefix => ({
+        source: `${prefix}/blog/extension-themes-la-crypta`,
+        destination: `${prefix}/blog/extension-themes`,
+        permanent: true,
+      })),
       ...['nostr-wot.com', 'www.nostr-wot.com', 'www.nostrwot.com'].map(host => ({
         source: '/:path*',
         has: [{ type: 'host' as const, value: host }],
