@@ -1,0 +1,86 @@
+---
+title: "Citrine 3.1.1 cierra un bypass de autenticación NIP-42 en el relay para Android"
+description: "Citrine 3.1.1 verifica la firma de los eventos AUTH de kind 22242 antes de confiar en ellos, limita los ids de suscripción a su conexión y alinea COUNT, los desempates de reemplazables y los prefijos de OK con NIP-01 y NIP-45."
+excerpt: "Citrine comprobaba el kind, el challenge, la etiqueta relay y la marca de tiempo de un evento AUTH, pero nunca su firma, así que un cliente podía autenticarse como cualquier pubkey y leer los kinds privados que el relay protege con NIP-42."
+date: "2026-10-07"
+publishedAt: "2026-10-07"
+backfilled: false
+type: "story"
+tags: ["Nostr", "Relays", "NIP-42", "Security"]
+featuredImage: "/images/news/citrine-3-1-1-closes-a-nip-42-auth-bypass.svg"
+translationKey: "citrine-3-1-1-closes-a-nip-42-auth-bypass"
+sources:
+  - title: "Publicación de Citrine v3.1.1"
+    url: "https://github.com/greenart7c3/Citrine/releases/tag/v3.1.1"
+    publisher: "greenart7c3/Citrine"
+    date: "2026-09-11"
+  - title: "Comparación v3.1.0...v3.1.1"
+    url: "https://github.com/greenart7c3/Citrine/compare/v3.1.0...v3.1.1"
+    publisher: "greenart7c3/Citrine"
+    date: "2026-09-11"
+  - title: "Enforce NIP spec conformance across the relay (829f0396)"
+    url: "https://github.com/greenart7c3/Citrine/commit/829f039622efe1e3fae9c3aab2c4e3abd9b639cc"
+    publisher: "greenart7c3/Citrine"
+    date: "2026-09-09"
+  - title: "NIP-42 Authentication of clients to relays"
+    url: "https://github.com/nostr-protocol/nips/blob/master/42.md"
+    publisher: "nostr-protocol/nips"
+    date: "2026-10-07"
+  - title: "NIP-45 Event Counts"
+    url: "https://github.com/nostr-protocol/nips/blob/master/45.md"
+    publisher: "nostr-protocol/nips"
+    date: "2026-10-07"
+published: true
+---
+
+[Citrine 3.1.1](https://github.com/greenart7c3/Citrine/releases/tag/v3.1.1), el relay que funciona como aplicación de Android, se publicó el 11 de septiembre de 2026. La primera entrada de su registro de cambios es una corrección de seguridad, y el resto es un repaso de reparaciones de conformidad más pequeñas.
+
+La [comparación con 3.1.0](https://github.com/greenart7c3/Citrine/compare/v3.1.0...v3.1.1) son tres commits y once archivos. Casi todo el código llega en uno de ellos, [829f0396](https://github.com/greenart7c3/Citrine/commit/829f039622efe1e3fae9c3aab2c4e3abd9b639cc), titulado "Enforce NIP spec conformance across the relay".
+
+## AUTH sin firma
+
+[NIP-42](https://github.com/nostr-protocol/nips/blob/master/42.md) permite que un relay pida a un cliente que demuestre qué pubkey controla. El relay envía una cadena de challenge, y el cliente responde con un evento firmado de kind 22242 que lleva ese challenge y la URL del relay.
+
+En 3.1.0, `validateAuthEvent` comprobaba que el evento fuera de kind 22242, que llevara un challenge y una etiqueta relay, que el challenge coincidiera con el enviado en esa conexión, que la URL del relay se pudiera normalizar y que `created_at` estuviera a menos de diez minutos de la hora actual. Son las comprobaciones que enumera NIP-42. Si pasaban, el manejador añadía `event.pubKey` al conjunto de usuarios autenticados de la conexión.
+
+Nada en ese camino verificaba la firma. El challenge se envía a quien abre la conexión, así que un cliente podía construir un evento de kind 22242 con el challenge correcto, poner cualquier pubkey, dejar la firma inválida y ser tratado como esa pubkey durante el resto de la conexión.
+
+La versión 3.1.1 añade el paso que faltaba después de las comprobaciones existentes:
+
+```kotlin
+// NIP-42: an AUTH event must carry a valid signature, otherwise any
+// client could authenticate as any pubkey.
+if (!event.verify()) {
+    connection?.send(CommandResult.invalid(event, "auth event signature verification failed").toJson())
+    return
+}
+```
+
+El mensaje del commit nombra lo que protegía el conjunto de autenticados: las escrituras de eventos protegidos y las lecturas de kinds privados. En el lado de la lectura, `AuthGate` rechaza los filtros de cinco kinds salvo que una de las pubkeys autenticadas de la conexión sea autora en el filtro o aparezca en sus valores `#p`. Entre esos cinco están los mensajes directos de kind 4, los gift wraps de kind 1059 y los datos de aplicación de kind 30078. Con un AUTH falsificado, un cliente podía nombrar la pubkey del propietario y pasar ese filtro.
+
+El alcance depende de la configuración. Citrine escucha por defecto en 127.0.0.1, puerto 4869, así que en una instalación por defecto los clientes que pueden abrir una conexión son los del mismo dispositivo. La dirección de escucha es un ajuste, y un relay configurado para escuchar en otra dirección quedaba expuesto al mismo AUTH falsificado desde cualquier cosa que pudiera alcanzarlo. En el lado de la escritura, la comprobación de eventos protegidos de NIP-70 ya eximía a las conexiones desde localhost, así que allí el bypass solo importaba para conexiones remotas.
+
+## Los ids de suscripción eran globales
+
+[NIP-01](https://github.com/nostr-protocol/nips/blob/master/01.md) dice que los relays deben gestionar los ids de suscripción de forma independiente para cada conexión WebSocket. Citrine guardaba todas las suscripciones en una sola caché indexada por el id que enviaba el cliente. Un `CLOSE` de `"feed"` en un socket cancelaba el `"feed"` de todas las conexiones, y un nuevo `REQ` con el mismo id lo sustituía.
+
+La clave de la caché es ahora el nombre de la conexión junto con el id. El id que viaja por la red sigue siendo el que eligió el cliente.
+
+## COUNT es una sola respuesta
+
+[NIP-45](https://github.com/nostr-protocol/nips/blob/master/45.md) dice que los filtros de un `COUNT` se combinan con OR y se agregan en un único resultado. En 3.1.0 un `COUNT` seguía el mismo camino que un `REQ`: un mensaje de conteo por filtro, después un `EOSE`, y la suscripción quedaba registrada, así que también recibía eventos en vivo que coincidieran más tarde.
+
+La versión 3.1.1 da a `COUNT` su propio camino. Nunca se registra, de modo que ni sustituye a un `REQ` con el mismo id ni recibe eventos en vivo, y envía un solo mensaje `COUNT` sin `EOSE`. El total es la suma de los conteos de cada filtro, así que un evento que coincide con dos filtros en la misma petición se cuenta dos veces.
+
+## Reparaciones menores
+
+- **La clave `#p`.** Para filtros sin kinds, `AuthGate` buscaba destinatarios bajo la clave `"#p"`, pero las etiquetas de filtro se guardan sin el `#`. Un usuario autenticado que pedía `{"#p":[<su pubkey>]}` recibía `restricted`. La rama de kinds ya usaba `"p"`; esta ahora también.
+- **Desempates de reemplazables.** NIP-01 dice que, entre eventos reemplazables con la misma marca de tiempo, se conserva el de id más bajo. Citrine rechazaba cualquier evento entrante si había uno guardado con `created_at` igual o posterior, así que ganaba el primero en llegar. Ambas consultas permiten ahora que un evento entrante con la misma marca de tiempo y un id más bajo sustituya al guardado.
+- **`ids` y `authors` exactos.** El filtro en memoria todavía aceptaba coincidencias por prefijo, algo que ni la ruta SQL ni NIP-01 admiten. Ahora solo coinciden valores exactos.
+- **Prefijos de OK.** Los rechazos por política usan ahora `blocked:` en lugar de `invalid:`, un evento borrado recibe `deleted:` y un reemplazable antiguo recibe `duplicate:`.
+- **NIP-11.** El documento de información del relay se construía por interpolación de cadenas, así que un nombre o descripción con comillas producía JSON inválido. Ahora se construye con Jackson. NIP-04 ya no se anuncia en `supported_nips`, y las cabeceras CORS incluyen ahora `Access-Control-Allow-Headers`.
+- **NIP-86.** Se añaden `unbanpubkey` y `unallowpubkey`, y `allowpubkey` ya no quita una pubkey de la lista de baneos como efecto secundario.
+
+## Lo que establecen los artefactos
+
+La versión 3.1.1 es una publicación con seis paquetes de Android y un manifiesto de sumas de verificación firmado. El mensaje del commit informa de que `assembleDebug`, `ktlintCheck`, `test` y `lintDebug` pasan y de 24 comprobaciones de comportamiento ejecutadas en un dispositivo; el diff en sí no añade archivos de prueba. Citrine 3.2.0 llegó el 18 de septiembre y contiene todos los commits de 3.1.1, así que actualizar a la versión actual incluye la corrección. Nada de esto establece qué versión ejecuta un teléfono concreto, y quien dependa de Citrine para sus mensajes directos debería comprobarlo.

@@ -1,0 +1,86 @@
+---
+title: "Citrine 3.1.1 fecha um bypass de autenticação NIP-42 no relay para Android"
+description: "Citrine 3.1.1 verifica a assinatura dos eventos AUTH de kind 22242 antes de confiar neles, limita os ids de assinatura à sua conexão e alinha COUNT, o desempate de substituíveis e os prefixos de OK com NIP-01 e NIP-45."
+excerpt: "Citrine conferia o kind, o challenge, a tag relay e o horário de um evento AUTH, mas nunca a assinatura, então um cliente podia se autenticar como qualquer pubkey e ler os kinds privados que o relay protege com NIP-42."
+date: "2026-10-07"
+publishedAt: "2026-10-07"
+backfilled: false
+type: "story"
+tags: ["Nostr", "Relays", "NIP-42", "Security"]
+featuredImage: "/images/news/citrine-3-1-1-closes-a-nip-42-auth-bypass.svg"
+translationKey: "citrine-3-1-1-closes-a-nip-42-auth-bypass"
+sources:
+  - title: "Lançamento do Citrine v3.1.1"
+    url: "https://github.com/greenart7c3/Citrine/releases/tag/v3.1.1"
+    publisher: "greenart7c3/Citrine"
+    date: "2026-09-11"
+  - title: "Comparação v3.1.0...v3.1.1"
+    url: "https://github.com/greenart7c3/Citrine/compare/v3.1.0...v3.1.1"
+    publisher: "greenart7c3/Citrine"
+    date: "2026-09-11"
+  - title: "Enforce NIP spec conformance across the relay (829f0396)"
+    url: "https://github.com/greenart7c3/Citrine/commit/829f039622efe1e3fae9c3aab2c4e3abd9b639cc"
+    publisher: "greenart7c3/Citrine"
+    date: "2026-09-09"
+  - title: "NIP-42 Authentication of clients to relays"
+    url: "https://github.com/nostr-protocol/nips/blob/master/42.md"
+    publisher: "nostr-protocol/nips"
+    date: "2026-10-07"
+  - title: "NIP-45 Event Counts"
+    url: "https://github.com/nostr-protocol/nips/blob/master/45.md"
+    publisher: "nostr-protocol/nips"
+    date: "2026-10-07"
+published: true
+---
+
+[Citrine 3.1.1](https://github.com/greenart7c3/Citrine/releases/tag/v3.1.1), o relay que roda como aplicativo Android, foi publicado em 11 de setembro de 2026. A primeira entrada do changelog é uma correção de segurança, e o restante é uma varredura de reparos menores de conformidade.
+
+A [comparação com 3.1.0](https://github.com/greenart7c3/Citrine/compare/v3.1.0...v3.1.1) tem três commits e onze arquivos. Quase todo o código chega em um deles, [829f0396](https://github.com/greenart7c3/Citrine/commit/829f039622efe1e3fae9c3aab2c4e3abd9b639cc), intitulado "Enforce NIP spec conformance across the relay".
+
+## AUTH sem assinatura
+
+[NIP-42](https://github.com/nostr-protocol/nips/blob/master/42.md) permite que um relay peça a um cliente que prove qual pubkey ele controla. O relay envia uma string de challenge, e o cliente responde com um evento assinado de kind 22242 contendo esse challenge e a URL do relay.
+
+Na 3.1.0, `validateAuthEvent` conferia se o evento era de kind 22242, se trazia um challenge e uma tag relay, se o challenge batia com o enviado naquela conexão, se a URL do relay podia ser normalizada e se `created_at` estava a menos de dez minutos do horário atual. São as verificações que a NIP-42 lista. Se passassem, o handler adicionava `event.pubKey` ao conjunto de usuários autenticados da conexão.
+
+Nada nesse caminho verificava a assinatura. O challenge é enviado para quem abre a conexão, então um cliente podia montar um evento de kind 22242 com o challenge certo, colocar qualquer pubkey nele, deixar a assinatura inválida e ser tratado como essa pubkey pelo resto da conexão.
+
+A versão 3.1.1 adiciona o passo que faltava depois das verificações existentes:
+
+```kotlin
+// NIP-42: an AUTH event must carry a valid signature, otherwise any
+// client could authenticate as any pubkey.
+if (!event.verify()) {
+    connection?.send(CommandResult.invalid(event, "auth event signature verification failed").toJson())
+    return
+}
+```
+
+A mensagem do commit nomeia o que o conjunto de autenticados protegia: escritas de eventos protegidos e leituras de kinds privados. Do lado da leitura, `AuthGate` recusa filtros de cinco kinds a menos que uma das pubkeys autenticadas da conexão seja autora no filtro ou apareça nos seus valores `#p`. Entre os cinco estão as mensagens diretas de kind 4, os gift wraps de kind 1059 e os dados de aplicativo de kind 30078. Com um AUTH forjado, um cliente podia informar a pubkey do dono e passar por esse filtro.
+
+O alcance depende da configuração. Por padrão, Citrine escuta em 127.0.0.1, porta 4869, então numa instalação padrão os clientes que conseguem abrir uma conexão são os do mesmo aparelho. O endereço de escuta é uma configuração, e um relay configurado para escutar em outro endereço ficava exposto ao mesmo AUTH forjado vindo de qualquer coisa que conseguisse alcançá-lo. Do lado da escrita, a verificação de eventos protegidos da NIP-70 já isentava conexões vindas de localhost, então ali o bypass só importava para conexões remotas.
+
+## Os ids de assinatura eram globais
+
+[NIP-01](https://github.com/nostr-protocol/nips/blob/master/01.md) diz que relays devem gerenciar ids de assinatura de forma independente para cada conexão WebSocket. Citrine guardava todas as assinaturas em um único cache indexado pelo id enviado pelo cliente. Um `CLOSE` de `"feed"` em um socket cancelava o `"feed"` de todas as conexões, e um novo `REQ` com o mesmo id o substituía.
+
+A chave do cache agora é o nome da conexão junto com o id. O id que trafega na rede continua sendo o escolhido pelo cliente.
+
+## COUNT é uma resposta só
+
+[NIP-45](https://github.com/nostr-protocol/nips/blob/master/45.md) diz que os filtros de um `COUNT` são combinados com OR e agregados em um único resultado. Na 3.1.0 um `COUNT` seguia o mesmo caminho de um `REQ`: uma mensagem de contagem por filtro, depois um `EOSE`, e a assinatura ficava registrada, então também recebia eventos ao vivo que batessem com ela depois.
+
+A versão 3.1.1 dá ao `COUNT` um caminho próprio. Ele nunca é registrado, então não substitui um `REQ` com o mesmo id nem recebe eventos ao vivo, e envia uma única mensagem `COUNT` sem `EOSE`. O total é a soma das contagens de cada filtro, então um evento que bate com dois filtros na mesma requisição é contado duas vezes.
+
+## Reparos menores
+
+- **A chave `#p`.** Para filtros sem kinds, `AuthGate` procurava destinatários sob a chave `"#p"`, mas as tags de filtro são guardadas sem o `#`. Um usuário autenticado que pedia `{"#p":[<sua pubkey>]}` recebia `restricted`. O ramo de kinds já usava `"p"`; este agora também.
+- **Desempate de substituíveis.** NIP-01 diz que, entre eventos substituíveis com o mesmo horário, fica o de id mais baixo. Citrine rejeitava qualquer evento recebido se houvesse um guardado com `created_at` igual ou posterior, então vencia o primeiro a chegar. As duas consultas agora deixam um evento recebido com o mesmo horário e id mais baixo substituir o guardado.
+- **`ids` e `authors` exatos.** O filtro em memória ainda aceitava correspondência por prefixo, o que nem o caminho SQL nem a NIP-01 aceitam. Agora só valores exatos correspondem.
+- **Prefixos de OK.** Recusas por política agora usam `blocked:` em vez de `invalid:`, um evento apagado recebe `deleted:` e um substituível mais antigo recebe `duplicate:`.
+- **NIP-11.** O documento de informações do relay era montado por interpolação de strings, então um nome ou descrição com aspas gerava JSON inválido. Agora ele é montado com Jackson. A NIP-04 deixou de ser anunciada em `supported_nips`, e os cabeçalhos CORS agora incluem `Access-Control-Allow-Headers`.
+- **NIP-86.** Foram adicionados `unbanpubkey` e `unallowpubkey`, e `allowpubkey` não remove mais uma pubkey da lista de banidos como efeito colateral.
+
+## O que os artefatos estabelecem
+
+A versão 3.1.1 é um lançamento publicado com seis pacotes Android e um manifesto de checksums assinado. A mensagem do commit relata `assembleDebug`, `ktlintCheck`, `test` e `lintDebug` passando e 24 verificações de comportamento executadas em um aparelho; o diff em si não adiciona arquivos de teste. Citrine 3.2.0 veio em 18 de setembro e contém todos os commits da 3.1.1, então atualizar para a versão atual inclui a correção. Nada disso estabelece qual versão um celular específico está rodando, e quem depende do Citrine para mensagens diretas deve conferir.
