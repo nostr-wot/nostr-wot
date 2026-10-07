@@ -16,7 +16,6 @@ interface SearchablePost {
 }
 
 interface BlogSidebarProps {
-  horizontal?: boolean;
   tags: string[];
   currentTag?: string;
   authorNpub?: string;
@@ -28,7 +27,6 @@ interface BlogSidebarProps {
 
 export function BlogSidebar({
   tags,
-  horizontal = false,
   currentTag,
   authorSocials,
   currentLocale,
@@ -44,7 +42,7 @@ export function BlogSidebar({
   const showLanguageSwitcher = availableLocales.length > 1;
 
   return (
-    <aside className={horizontal ? 'grid grid-cols-2 gap-3 sm:grid-cols-3' : 'space-y-5'}>
+    <aside className="space-y-5">
       {showLanguageSwitcher && <SearchableSelect
         label={t('language')} value={currentLocale || locale}
         options={availableLocales.map(loc => ({ value: loc, label: localeNames[loc] }))}
@@ -56,11 +54,11 @@ export function BlogSidebar({
         emptyText={t('noOptions')}
         onSelect={tag => router.push(tag ? `/blog?tag=${encodeURIComponent(tag)}` : '/blog')}
       />
-      <form onBlur={event => { if (!event.currentTarget.contains(event.relatedTarget as Node)) setSearchOpen(false); }} onKeyDown={event => { if (event.key === 'Escape') setSearchOpen(false); }} className={horizontal ? 'relative col-span-2 min-w-0 sm:col-span-1' : 'relative'} onSubmit={event => {
+      <form onBlur={event => { if (!event.currentTarget.contains(event.relatedTarget as Node)) setSearchOpen(false); }} onKeyDown={event => { if (event.key === 'Escape') setSearchOpen(false); }} className="relative" onSubmit={event => {
         event.preventDefault(); router.push(`/blog?q=${encodeURIComponent(searchQuery.trim())}`);
       }}>
-        <label htmlFor={horizontal ? 'blog-toolbar-search' : 'blog-sidebar-search'} className="mb-1 block text-xs font-medium text-gray-600 dark:text-gray-400">{t('search')}</label>
-        <input id={horizontal ? 'blog-toolbar-search' : 'blog-sidebar-search'} type="search" value={searchQuery}
+        <label htmlFor="blog-sidebar-search" className="mb-1 block text-xs font-medium text-gray-600 dark:text-gray-400">{t('search')}</label>
+        <input id="blog-sidebar-search" type="search" value={searchQuery}
           onFocus={() => setSearchOpen(true)} onChange={event => { setSearchQuery(event.target.value); setSearchOpen(true); }} placeholder={t('searchPlaceholder')}
           className="w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-primary dark:border-gray-600 dark:bg-gray-900 dark:text-white" />
         {searchOpen && searchQuery.trim().length >= 2 && <div className="absolute z-50 mt-2 w-full rounded-lg border border-gray-200 bg-white p-1 shadow-lg dark:border-gray-700 dark:bg-gray-900">
