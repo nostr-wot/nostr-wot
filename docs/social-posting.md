@@ -356,3 +356,7 @@ user-requested La Crypta community-call thank-you. This is an exact-URL exceptio
 other external URLs and hand-written article URLs remain lint errors. Article
 links still use `{url}` or `{url:/path}`. Keep this rule in `checks.mjs` and cover
 lookalike hosts and altered paths in the social tests.
+
+## Account Archive lesson link
+
+The user explicitly requested the published lesson URL https://youtu.be/He4gz4occgY alongside the derived Account Archive guide URL. That exact video URL is allowed in social copy; arbitrary YouTube URLs, query variants and lookalike hosts remain rejected. The account-archive entry publishes to LinkedIn only.

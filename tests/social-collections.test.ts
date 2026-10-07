@@ -25,3 +25,19 @@ test('only the exact verified community URL is allowed in social credits', async
   }
   assert.equal(hasUnapprovedLink('https://lacrypta.ar/ https://example.org/'), true);
 });
+
+test('archive lesson allows only its exact verified YouTube URL', async () => {
+  const { hasUnapprovedLink, collectErrors } = await import('../scripts/social/checks.mjs');
+  const { buildRequestPosts } = await import('../scripts/social/entries.mjs');
+  assert.equal(hasUnapprovedLink('https://youtu.be/He4gz4occgY'), false);
+  for (const url of ['https://youtu.be/another1234', 'https://youtu.be/He4gz4occgY?redirect=1', 'https://youtu.be.evil.example/He4gz4occgY']) assert.equal(hasUnapprovedLink(url), true);
+  const { entries, errors } = collectErrors();
+  assert.deepEqual(errors, []);
+  const entry = entries.find((e: {slug: string}) => e.slug === 'account-archive');
+  assert.ok(entry);
+  const posts = buildRequestPosts(entry);
+  assert.equal(posts.length, 1);
+  assert.equal(posts[0].channel, 'nostr-wot-li');
+  assert.match(posts[0].text, /https:\/\/nostrwot\.com\/guides\/account-archive/);
+  assert.match(posts[0].text, /https:\/\/youtu\.be\/He4gz4occgY/);
+});

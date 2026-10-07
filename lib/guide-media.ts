@@ -11,6 +11,7 @@ export const GUIDE_VIDEOS = {
   security: { id: "pnOollWgs7g", title: "Nostr WoT Security: Passwords & Auto-Lock" },
   backup: { id: "2-oTsMLWEd8", title: "How to Export and Re-Import Your Nostr Keys" },
   remove: { id: "U1LZmgQgURA", title: "How to Remove an Account from Nostr WoT" },
+  archive: { id: "He4gz4occgY", title: "How to Back Up and Migrate Nostr Events with Nostr WoT" },
   authentication: { id: "4TmndKyE8D4", title: "Nostr Backend and Relay Authentication: Choose Who Can Log You In" },
 } as const;
 
@@ -23,6 +24,7 @@ export interface GuideMedia {
 // Key by translationKey so every localized guide gets the same verified media.
 export const GUIDE_MEDIA: Record<string, GuideMedia> = {
   'create-extension-theme': { screenshots: [], videos: ['appearance'] },
+  'account-archive': { screenshots: [], videos: ['archive'] },
   'getting-started': { screenshots: ['account-methods'], videos: ['account'] },
   'create-nostr-account': { screenshots: ['account-methods', 'security'], videos: ['account'] },
   'import-nostr-account': { screenshots: ['import-key'], videos: ['backup'] },
