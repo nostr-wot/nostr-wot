@@ -131,9 +131,12 @@ export default async function BlogPostPage({ params }: Props) {
     <BlogPostWrapper translations={post.translations}>
       <JsonLd data={[postLd, crumbsLd]} />
       <main className="py-4 mb-14">
+        <div className="mx-auto max-w-5xl px-6 pt-4 pb-6">
+          <Breadcrumbs items={crumbs} label={t('breadcrumb')} />
+        </div>
         <article>
           {/* Featured Image */}
-            <div className="max-w-5xl mx-auto px-6 pt-20 mb-6">
+            <div className="max-w-4xl mx-auto px-6 mb-10">
               <div className="relative aspect-[2/1] rounded-2xl overflow-hidden">
                 <Image
                   src={post.featuredImage}
@@ -146,9 +149,112 @@ export default async function BlogPostPage({ params }: Props) {
               </div>
             </div>
 
-          <div className="sticky top-16 z-40 border-y border-gray-200 bg-white/95 backdrop-blur-md dark:border-gray-800 dark:bg-gray-950/95">
-            <div className="mx-auto max-w-5xl px-6 py-3">
-                  <BlogSidebar horizontal
+          <div className="mx-auto grid max-w-5xl gap-10 px-6 pb-16 lg:grid-cols-[minmax(0,1fr)_16rem] lg:gap-12">
+            <div className="min-w-0">
+              {/* Article header */}
+              <header className="relative pb-8">
+                <div className="min-w-0">
+
+                  <ScrollReveal animation="fade-up" delay={100} immediate>
+                    <div className="flex flex-wrap gap-2 mb-6">
+                      {post.tags.map((tag) => (
+                        <span
+                          key={tag}
+                          className="px-3 py-1 text-sm font-medium bg-primary/10 text-primary rounded-full"
+                        >
+                          {tag}
+                        </span>
+                      ))}
+                    </div>
+                  </ScrollReveal>
+
+                  <ScrollReveal animation="fade-up" delay={150} immediate>
+                    <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold text-gray-900 dark:text-white mb-6 leading-tight">
+                      {post.title}
+                    </h1>
+                  </ScrollReveal>
+
+                  <ScrollReveal animation="fade-up" delay={200} immediate>
+                    <p className="text-xl text-gray-600 dark:text-gray-400 mb-8">
+                      {post.excerpt}
+                    </p>
+                  </ScrollReveal>
+
+                  <ScrollReveal animation="fade-up" delay={250} immediate>
+                    <div className="flex items-center gap-4 pb-8 border-b border-gray-200 dark:border-gray-700">
+                      {post.author.avatar && (
+                        <Image
+                          src={post.author.avatar}
+                          alt={post.author.name}
+                          width={48}
+                          height={48}
+                          className="rounded-full"
+                        />
+                      )}
+                      <div>
+                        <p className="font-medium text-gray-900 dark:text-white">
+                          {post.author.name}
+                        </p>
+                        <div className="flex items-center gap-3 text-sm text-gray-500 dark:text-gray-400">
+                          <time dateTime={post.date}>{formatDate(post.date, locale)}</time>
+                          <span>·</span>
+                          <ReadingTime value={post.readingTime} />
+                        </div>
+                      </div>
+                    </div>
+                  </ScrollReveal>
+                </div>
+              </header>
+
+              {/* Article body */}
+              <div className="min-w-0">
+                <div className="min-w-0">
+                  {/* Reading column */}
+                  <div className="min-w-0">
+                    <BlogContent content={post.content} />
+
+                    <BlogAuthorFollow authorSocials={post.author.socials} />
+
+                    {/* Author Box */}
+                    <ScrollReveal animation="fade-up">
+                      <div className="mt-12 flex items-start gap-6 bg-gray-50 dark:bg-gray-800/50 rounded-xl p-6 border border-gray-200 dark:border-gray-700/50">
+                        {post.author.avatar && (
+                          <Image
+                            src={post.author.avatar}
+                            alt={post.author.name}
+                            width={64}
+                            height={64}
+                            className="rounded-full flex-shrink-0"
+                          />
+                        )}
+                        <div>
+                          <p className="text-sm text-gray-500 dark:text-gray-400 mb-1">
+                            {t('writtenBy')}
+                          </p>
+                          <p className="text-lg font-semibold text-gray-900 dark:text-white">
+                            {post.author.name}
+                          </p>
+                          {post.author.npub && (
+                            <a
+                              href={`https://nostrwot.com/profile/${post.author.npub}`}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="text-sm text-primary hover:underline mt-1 inline-block"
+                            >
+                              {t('viewOnNostr')}
+                            </a>
+                          )}
+                        </div>
+                      </div>
+                    </ScrollReveal>
+                  </div>
+
+                </div>
+              </div>
+            </div>
+            <div className="order-first min-w-0 lg:order-last">
+              <div className="rounded-xl border border-gray-200 bg-white p-5 dark:border-gray-800 dark:bg-gray-900 lg:sticky lg:top-24">
+                  <BlogSidebar
                     tags={allTags}
                     currentLocale={locale as Locale}
                     translations={post.translations}
@@ -159,107 +265,7 @@ export default async function BlogPostPage({ params }: Props) {
                       tags: p.tags,
                     }))}
                   />
-            </div>
-          </div>
-          {/* Article header */}
-          <header className="relative pt-10 pb-8">
-            <div className="max-w-3xl mx-auto px-6">
-              <Breadcrumbs items={crumbs} label={t('breadcrumb')} className="mb-8" />
-
-              <ScrollReveal animation="fade-up" delay={100} immediate>
-                <div className="flex flex-wrap gap-2 mb-6">
-                  {post.tags.map((tag) => (
-                    <span
-                      key={tag}
-                      className="px-3 py-1 text-sm font-medium bg-primary/10 text-primary rounded-full"
-                    >
-                      {tag}
-                    </span>
-                  ))}
-                </div>
-              </ScrollReveal>
-
-              <ScrollReveal animation="fade-up" delay={150} immediate>
-                <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold text-gray-900 dark:text-white mb-6 leading-tight">
-                  {post.title}
-                </h1>
-              </ScrollReveal>
-
-              <ScrollReveal animation="fade-up" delay={200} immediate>
-                <p className="text-xl text-gray-600 dark:text-gray-400 mb-8">
-                  {post.excerpt}
-                </p>
-              </ScrollReveal>
-
-              <ScrollReveal animation="fade-up" delay={250} immediate>
-                <div className="flex items-center gap-4 pb-8 border-b border-gray-200 dark:border-gray-700">
-                  {post.author.avatar && (
-                    <Image
-                      src={post.author.avatar}
-                      alt={post.author.name}
-                      width={48}
-                      height={48}
-                      className="rounded-full"
-                    />
-                  )}
-                  <div>
-                    <p className="font-medium text-gray-900 dark:text-white">
-                      {post.author.name}
-                    </p>
-                    <div className="flex items-center gap-3 text-sm text-gray-500 dark:text-gray-400">
-                      <time dateTime={post.date}>{formatDate(post.date, locale)}</time>
-                      <span>·</span>
-                      <ReadingTime value={post.readingTime} />
-                    </div>
-                  </div>
-                </div>
-              </ScrollReveal>
-            </div>
-          </header>
-
-          {/* Article body */}
-          <div className="max-w-3xl mx-auto px-6 pb-16">
-            <div className="min-w-0">
-              {/* Reading column */}
-              <div className="min-w-0">
-                <BlogContent content={post.content} />
-
-                <BlogAuthorFollow authorSocials={post.author.socials} />
-
-                {/* Author Box */}
-                <ScrollReveal animation="fade-up">
-                  <div className="mt-12 flex items-start gap-6 bg-gray-50 dark:bg-gray-800/50 rounded-xl p-6 border border-gray-200 dark:border-gray-700/50">
-                    {post.author.avatar && (
-                      <Image
-                        src={post.author.avatar}
-                        alt={post.author.name}
-                        width={64}
-                        height={64}
-                        className="rounded-full flex-shrink-0"
-                      />
-                    )}
-                    <div>
-                      <p className="text-sm text-gray-500 dark:text-gray-400 mb-1">
-                        {t('writtenBy')}
-                      </p>
-                      <p className="text-lg font-semibold text-gray-900 dark:text-white">
-                        {post.author.name}
-                      </p>
-                      {post.author.npub && (
-                        <a
-                          href={`https://nostrwot.com/profile/${post.author.npub}`}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="text-sm text-primary hover:underline mt-1 inline-block"
-                        >
-                          {t('viewOnNostr')}
-                        </a>
-                      )}
-                    </div>
-                  </div>
-                </ScrollReveal>
               </div>
-
             </div>
           </div>
         </article>
