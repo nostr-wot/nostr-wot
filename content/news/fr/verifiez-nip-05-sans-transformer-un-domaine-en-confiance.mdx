@@ -1,0 +1,109 @@
+---
+title: "Vérifiez NIP-05 sans transformer un domaine en confiance"
+description: "NIP-05 confirme une correspondance actuelle entre un profil Nostr signé, un identifiant internet et la réponse d’un domaine. Il ne certifie pas la personne derrière la clé."
+seoDescription: "Comprenez le flux NIP-05, la recherche inversée, les règles de casse, les contrôles de redirection et CORS, le cache, les indices de relais et les limites de confiance."
+excerpt: "Un identifiant NIP-05 valide est une correspondance bidirectionnelle vérifiée à un instant donné. La clé publique reste l’ancre de l’identité."
+date: "2026-10-08"
+publishedAt: "2026-10-08"
+backfilled: false
+type: "story"
+tags: ["Nostr", "NIP-05", "Identité", "Guide"]
+featuredImage: "/images/news/verify-nip-05-without-turning-a-domain-into-trust.svg"
+translationKey: "verify-nip-05-without-turning-a-domain-into-trust"
+sources:
+  - title: "NIP-05 : Correspondance entre clés Nostr et identifiants internet basés sur le DNS au commit a79e21d"
+    url: "https://github.com/nostr-protocol/nips/blob/a79e21d90fce5465b50ef385dd368bba99ec4a0b/05.md"
+    publisher: "nostr-protocol/nips"
+    date: "2026-06-13"
+  - title: "NIP-01 : Flux de base du protocole au commit a79e21d"
+    url: "https://github.com/nostr-protocol/nips/blob/a79e21d90fce5465b50ef385dd368bba99ec4a0b/01.md"
+    publisher: "nostr-protocol/nips"
+    date: "2026-09-04"
+published: true
+---
+
+NIP-05 facilite l’échange d’une longue clé publique Nostr en la reliant à un identifiant internet comme `alice@example.com`. Cela aide à découvrir un profil, mais le mot « vérifié » suggère souvent plus que ce que le protocole démontre.
+
+Un contrôle correct prouve quelque chose de plus étroit : le dernier événement de métadonnées kind `0` signé indique un identifiant, et le domaine associe actuellement ce même nom à la même clé publique. Il ne prouve ni une identité légale, ni le jugement, ni la fiabilité. [NIP-05 précise que le mécanisme sert à l’identification, pas à une vérification générale](https://github.com/nostr-protocol/nips/blob/a79e21d90fce5465b50ef385dd368bba99ec4a0b/05.md).
+
+## Commencez par le profil signé
+
+Le flux direct commence avec l’événement kind `0` valide le plus récent d’une clé publique. Son contenu JSON peut inclure `nip05` :
+
+```json
+{
+  "name": "Alice",
+  "nip05": "alice@example.com"
+}
+```
+
+Séparez la partie locale du domaine. La partie locale accepte seulement `a-z` en minuscules, les chiffres et `-_.`. Interrogez ensuite :
+
+```text
+https://example.com/.well-known/nostr.json?name=alice
+```
+
+La réponse doit contenir un objet `names` dont l’entrée exacte `alice` est la même clé publique hexadécimale en minuscules de 64 caractères que celle de l’événement kind `0`. Une valeur `npub` sert à l’affichage et n’est pas valide dans cette réponse.
+
+La comparaison a deux côtés. Le profil signé affirme « cette clé revendique cet identifiant ». La réponse HTTPS affirme « ce domaine attribue actuellement ce nom à cette clé ». Affichez l’identifiant uniquement quand les deux déclarations concordent.
+
+## La recherche inversée exige aussi le second côté
+
+Une recherche peut commencer avec `alice@example.com`, mais elle ne doit pas s’arrêter quand le domaine renvoie une clé. Le client doit récupérer l’événement kind `0` valide le plus récent de cette clé et confirmer que son champ `nip05` contient le même identifiant.
+
+Sans ce contrôle inverse, l’opérateur d’un domaine pourrait lister une clé publique qui n’a jamais revendiqué l’adresse. Avec lui, la recherche démontre un accord actuel entre le détenteur de la clé et l’opérateur du domaine.
+
+La partie locale spéciale `_` peut être affichée comme le domaine seul. `_@example.com` peut apparaître sous la forme `example.com`, mais la requête utilise toujours `name=_`.
+
+## Suivez la clé publique, jamais l’adresse
+
+NIP-05 n’est pas un pointeur de contact mutable. Si une personne suit la clé renvoyée pour `alice@example.com`, la liste de contacts doit conserver cette clé publique. Elle ne doit pas mémoriser l’identifiant comme une instruction permettant de remplacer la clé plus tard.
+
+Supposons que le domaine associe `alice` à la clé A aujourd’hui, puis à la clé B le mois prochain. Le client doit cesser d’afficher l’identifiant NIP-05 pour A lorsque l’association ne correspond plus. Il ne doit pas déplacer silencieusement le suivi de A vers B. Un transfert de domaine, un serveur compromis, une erreur de configuration ou une réattribution pourraient sinon réécrire le graphe social.
+
+La distinction compte aussi pour le Web of Trust. Les arêtes appartiennent aux clés publiques. Une correspondance de domaine actuelle peut être une preuve affichée à côté d’une clé, mais elle ne remplace pas le nœud et ne doit pas hériter de son score de confiance si elle change.
+
+## Traitez les règles réseau comme des règles de sécurité
+
+Le endpoint well-known impose des exigences strictes :
+
+1. Utilisez HTTPS et le domaine exact de l’identifiant.
+2. Ignorez les redirections. NIP-05 interdit au endpoint d’en renvoyer et aux clients de les suivre.
+3. Exigez des clés hexadécimales et des noms en minuscules.
+4. Dans un client web, distinguez une correspondance invalide d’un échec réseau non concluant. L’absence de `Access-Control-Allow-Origin: *` peut cacher à JavaScript un endpoint pourtant valide.
+5. Lisez uniquement le nom demandé dans `names`; n’acceptez ni variante proche ni normalisation supposée.
+
+Ces règles empêchent un identifiant pratique de devenir un mécanisme ouvert de redirection ou de normalisation. L’interface doit séparer « la correspondance diffère » de « le contrôle n’a pas pu aboutir ».
+
+## Les indices de relais aident à découvrir, pas à identifier
+
+La réponse peut inclure un objet recommandé `relays`, indexé par clé publique. Ces URL peuvent aider à trouver l’événement kind `0` et d’autres événements de la personne. Elles ne renforcent pas la preuve entre nom et clé et ne garantissent ni l’existence, ni l’acceptation, ni la conservation d’un événement.
+
+Utilisez ces indices comme une entrée de découverte limitée. Ils ne doivent pas effacer la configuration des relais de l’utilisateur ni remplacer des informations de routage plus récentes sans politique explicite.
+
+## Mettez en cache le résultat, l’heure et la raison
+
+Vérifier à chaque rendu révèle l’activité de navigation et crée une charge inutile. Le cache est raisonnable, mais un badge en cache ne doit pas sembler intemporel.
+
+Conservez au minimum l’identifiant, la clé publique, le résultat, l’heure du contrôle et la classe d’erreur. Revérifiez périodiquement les correspondances réussies et réessayez les erreurs réseau plus tôt que les divergences confirmées. Si le champ `nip05` du kind `0` change, invalidez immédiatement l’ancien résultat.
+
+Un modèle pratique comporte quatre états :
+
+- **correspondance** : les deux côtés concordent maintenant ;
+- **divergence** : le endpoint a répondu, mais le nom ou la clé diffère ;
+- **injoignable** : DNS, TLS, HTTP ou CORS a empêché une conclusion ;
+- **invalide** : l’identifiant, le JSON ou la clé enfreint NIP-05.
+
+## Liste de contrôle sûre
+
+Avant d’afficher un identifiant NIP-05 :
+
+1. Vérifiez la signature du dernier événement kind `0` valide.
+2. Validez la syntaxe et la partie locale en minuscules.
+3. Interrogez l’URL well-known exacte sans suivre de redirection.
+4. Comparez le nom exact à la clé hexadécimale exacte en minuscules.
+5. Pour une recherche inversée, récupérez kind `0` et confirmez-y le même identifiant.
+6. Gardez les suivis, les arêtes de confiance et les références de compte ancrés à la clé publique.
+7. Enregistrez l’heure du contrôle et expliquez séparément les échecs non concluants.
+
+NIP-05 est utile parce qu’il ajoute une découverte lisible sans changer l’ancre cryptographique de Nostr. L’interface la plus sûre dit exactement ce qui a été contrôlé : ce domaine et cette clé signée s’accordent actuellement sur ce nom.

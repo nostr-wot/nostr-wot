@@ -1,0 +1,109 @@
+---
+title: "Prüfe NIP-05, ohne eine Domain mit Vertrauen gleichzusetzen"
+description: "NIP-05 bestätigt eine aktuelle Zuordnung zwischen einem signierten Nostr-Profil, einer Internet-Kennung und der Antwort einer Domain. Es zertifiziert nicht die Person hinter dem Schlüssel."
+seoDescription: "Lerne den korrekten NIP-05-Ablauf, Rückwärtssuche, Kleinschreibungsregeln, Redirect- und CORS-Prüfungen, Caching, Relay-Hinweise und Vertrauensgrenzen."
+excerpt: "Eine gültige NIP-05-Kennung ist eine beidseitige Zuordnung, die zu einem Zeitpunkt geprüft wurde. Der öffentliche Schlüssel bleibt der Identitätsanker."
+date: "2026-10-08"
+publishedAt: "2026-10-08"
+backfilled: false
+type: "story"
+tags: ["Nostr", "NIP-05", "Identität", "Leitfaden"]
+featuredImage: "/images/news/verify-nip-05-without-turning-a-domain-into-trust.svg"
+translationKey: "verify-nip-05-without-turning-a-domain-into-trust"
+sources:
+  - title: "NIP-05: Zuordnung von Nostr-Schlüsseln zu DNS-basierten Internet-Kennungen bei Commit a79e21d"
+    url: "https://github.com/nostr-protocol/nips/blob/a79e21d90fce5465b50ef385dd368bba99ec4a0b/05.md"
+    publisher: "nostr-protocol/nips"
+    date: "2026-06-13"
+  - title: "NIP-01: Grundlegender Protokollablauf bei Commit a79e21d"
+    url: "https://github.com/nostr-protocol/nips/blob/a79e21d90fce5465b50ef385dd368bba99ec4a0b/01.md"
+    publisher: "nostr-protocol/nips"
+    date: "2026-09-04"
+published: true
+---
+
+NIP-05 erleichtert den Austausch eines langen öffentlichen Nostr-Schlüssels, indem er mit einer Internet-Kennung wie `alice@example.com` verknüpft wird. Das hilft bei der Suche, doch das Wort „verifiziert“ lässt oft mehr vermuten, als das Protokoll belegt.
+
+Eine korrekte Prüfung beweist etwas Engeres: Das neueste signierte Metadatenereignis kind `0` nennt eine Kennung, und die Domain ordnet denselben Namen derzeit demselben öffentlichen Schlüssel zu. Das belegt weder eine rechtliche Identität noch Urteilsvermögen oder Vertrauenswürdigkeit. [NIP-05 erklärt ausdrücklich, dass der Mechanismus der Identifikation und nicht einer allgemeinen Verifizierung dient](https://github.com/nostr-protocol/nips/blob/a79e21d90fce5465b50ef385dd368bba99ec4a0b/05.md).
+
+## Beginne mit dem signierten Profil
+
+Der Vorwärtsablauf beginnt mit dem neuesten gültigen kind `0`-Ereignis eines öffentlichen Schlüssels. Sein JSON-Inhalt kann `nip05` enthalten:
+
+```json
+{
+  "name": "Alice",
+  "nip05": "alice@example.com"
+}
+```
+
+Trenne lokalen Teil und Domain. Der lokale Teil darf nur Kleinbuchstaben `a-z`, Ziffern und `-_.` enthalten. Rufe dann ab:
+
+```text
+https://example.com/.well-known/nostr.json?name=alice
+```
+
+Die Antwort muss ein `names`-Objekt enthalten, dessen exakter Eintrag `alice` dem öffentlichen Schlüssel aus dem kind `0`-Ereignis entspricht: 64 hexadezimale Zeichen in Kleinschreibung. Ein `npub`-Wert dient der Anzeige und ist in dieser Antwort ungültig.
+
+Der Vergleich hat zwei Seiten. Das signierte Profil sagt: „Dieser Schlüssel beansprucht diese Kennung.“ Die HTTPS-Antwort sagt: „Diese Domain weist diesen Namen derzeit diesem Schlüssel zu.“ Zeige die Kennung nur an, wenn beide Aussagen übereinstimmen.
+
+## Auch die Rückwärtssuche braucht die zweite Seite
+
+Eine Suche kann bei `alice@example.com` beginnen, darf aber nicht enden, sobald die Domain einen Schlüssel liefert. Der Client muss das neueste gültige kind `0`-Ereignis dieses Schlüssels abrufen und bestätigen, dass dessen `nip05`-Feld dieselbe Kennung enthält.
+
+Ohne diese Rückprüfung könnte ein Domainbetreiber jeden beliebigen öffentlichen Schlüssel aufführen, der die Adresse nie beansprucht hat. Mit ihr zeigt die Suche eine aktuelle Übereinstimmung zwischen Schlüsselinhaber und Domainbetreiber.
+
+Der besondere lokale Teil `_` darf nur als Domain angezeigt werden. `_@example.com` kann als `example.com` erscheinen, der Abruf verwendet aber weiterhin `name=_`.
+
+## Folge dem öffentlichen Schlüssel, niemals der Adresse
+
+NIP-05 ist kein veränderlicher Kontaktzeiger. Folgt ein Nutzer dem für `alice@example.com` gelieferten Schlüssel, muss die Kontaktliste diesen öffentlichen Schlüssel behalten. Sie darf die Kennung nicht als Anweisung speichern, den Schlüssel später zu ersetzen.
+
+Angenommen, die Domain ordnet `alice` heute Schlüssel A und nächsten Monat Schlüssel B zu. Der Client sollte die NIP-05-Kennung für A nicht mehr anzeigen, sobald die Zuordnung nicht mehr stimmt. Er darf das bestehende Follow nicht still von A zu B verschieben. Ein Domaintransfer, ein kompromittierter Server, ein Konfigurationsfehler oder eine Neuzuweisung könnten sonst den sozialen Graphen des Nutzers umschreiben.
+
+Diese Unterscheidung zählt auch für Web-of-Trust-Berechnungen. Kanten gehören zu öffentlichen Schlüsseln. Eine aktuelle Domainzuordnung kann als Hinweis neben einem Schlüssel stehen, ist aber kein Ersatzknoten und darf bei einer Änderung nicht dessen Vertrauenswert übernehmen.
+
+## Behandle Netzwerkregeln als Sicherheitsregeln
+
+Der Well-known-Endpunkt hat strenge Anforderungen:
+
+1. Verwende HTTPS und exakt die Domain aus der Kennung.
+2. Ignoriere Weiterleitungen. NIP-05 verbietet dem Endpunkt, sie zurückzugeben, und Fetchern, ihnen zu folgen.
+3. Verlange hexadezimale Schlüssel und Namen in Kleinschreibung.
+4. Unterscheide in Browser-Clients eine ungültige Zuordnung von einem ergebnislosen Netzwerkfehler. Fehlendes `Access-Control-Allow-Origin: *` kann einen gültigen Endpunkt vor JavaScript verbergen.
+5. Lies nur den angeforderten Namen aus `names`; akzeptiere keine ähnliche Schreibweise oder vermutete Normalisierung.
+
+Diese Regeln verhindern, dass eine bequeme Kennung zu einem offenen Weiterleitungs- oder Normalisierungsmechanismus wird. Die Oberfläche sollte „Zuordnung stimmt nicht“ von „Prüfung nicht möglich“ trennen.
+
+## Relay-Hinweise helfen bei der Suche, nicht bei der Identität
+
+Die Antwort darf ein empfohlenes `relays`-Objekt enthalten, das nach öffentlichem Schlüssel indiziert ist. Diese URLs können helfen, das kind `0`-Ereignis und weitere Ereignisse der Person zu finden. Sie verstärken den Nachweis zwischen Name und Schlüssel nicht und garantieren weder Existenz noch Annahme oder dauerhafte Speicherung eines Ereignisses.
+
+Nutze die Hinweise als begrenzte Eingabe für die Suche. Sie dürfen die Relay-Konfiguration des Nutzers nicht löschen oder neuere Routinginformationen ohne ausdrückliche Richtlinie überschreiben.
+
+## Cache Ergebnis, Zeitpunkt und Grund
+
+Eine Prüfung bei jedem Rendern legt Browsing-Aktivität offen und erzeugt unnötige Last. Caching ist sinnvoll, ein gespeichertes Abzeichen darf aber nicht zeitlos wirken.
+
+Speichere mindestens Kennung, öffentlichen Schlüssel, Ergebnis, Prüfzeitpunkt und Fehlerklasse. Prüfe erfolgreiche Zuordnungen regelmäßig erneut und wiederhole Netzwerkfehler früher als bestätigte Abweichungen. Ändert sich das `nip05`-Feld des kind `0`-Ereignisses, verwerfe das alte Ergebnis sofort.
+
+Ein praktisches Modell kennt vier Zustände:
+
+- **passend**: Beide Seiten stimmen jetzt überein;
+- **abweichend**: Der Endpunkt antwortete, aber Name oder Schlüssel unterscheiden sich;
+- **nicht erreichbar**: DNS, TLS, HTTP oder CORS verhinderten ein Ergebnis;
+- **ungültig**: Kennung, JSON oder Schlüssel verletzen NIP-05.
+
+## Sichere Prüfliste
+
+Vor der Anzeige einer NIP-05-Kennung:
+
+1. Prüfe die Signatur des neuesten gültigen kind `0`-Ereignisses.
+2. Validiere Syntax und kleingeschriebenen lokalen Teil.
+3. Rufe die exakte Well-known-URL ab, ohne Weiterleitungen zu folgen.
+4. Vergleiche den exakten Namen mit dem exakten kleingeschriebenen Hex-Schlüssel.
+5. Rufe bei der Rückwärtssuche kind `0` ab und bestätige dort dieselbe Kennung.
+6. Verankere Follows, Vertrauenskanten und Kontoreferenzen am öffentlichen Schlüssel.
+7. Speichere den Prüfzeitpunkt und erkläre ergebnislose Fehler separat.
+
+NIP-05 ist nützlich, weil es lesbare Suche hinzufügt, ohne Nostrs kryptografischen Identitätsanker zu ändern. Die sicherste Oberfläche sagt genau, was geprüft wurde: Diese Domain und dieser signierte Schlüssel stimmen derzeit bei diesem Namen überein.
