@@ -90,4 +90,17 @@ trap - ERR
 # Retain the previous process for in-flight requests and rollback. The next deploy
 # reuses its inactive port; no running application is ever overwritten.
 rm -f "$incoming/.env" "$incoming/production.tar.gz" "$incoming/env.before"
+# Bound disk use while retaining recent releases and every running process's cwd.
+node - "$root/releases" "$release" "$previous" <<'NODE' || echo 'Release cleanup needs attention' >&2
+const fs = require('fs'), path = require('path'), cp = require('child_process');
+const [root, current, previous] = process.argv.slice(2);
+const running = JSON.parse(cp.execFileSync('pm2', ['jlist'], {encoding: 'utf8'}));
+const keep = new Set([current, previous, ...running.map(p => p.pm2_env?.pm_cwd)]);
+const dirs = fs.readdirSync(root, {withFileTypes: true})
+  .filter(d => d.isDirectory() && /^[0-9a-f]{40}$/.test(d.name))
+  .map(d => path.join(root, d.name))
+  .sort((a, b) => fs.statSync(b).mtimeMs - fs.statSync(a).mtimeMs);
+for (const dir of dirs.slice(0, 3)) keep.add(dir);
+for (const dir of dirs) if (!keep.has(dir)) fs.rmSync(dir, {recursive: true});
+NODE
 echo "Serving $revision on port $port"

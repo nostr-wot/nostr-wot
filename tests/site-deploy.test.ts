@@ -10,6 +10,10 @@ for (const failure of ['', 'health', 'nginx', 'save']) test(`deployment ${failur
  try {
   const sha = 'a'.repeat(40), root = path.join(tmp, 'site'), incoming = path.join(root, 'incoming', sha), bin = path.join(tmp, 'bin'), payload = path.join(tmp, 'payload');
   for (const dir of [bin, path.join(incoming, 'scripts'), path.join(payload, '.next/static'), path.join(payload, 'scripts/newsletters'), path.join(payload, 'newsletters')]) fs.mkdirSync(dir, { recursive: true });
+  for (let i = 1; i <= 4; i++) {
+   const stale = path.join(root, 'releases', String(i).repeat(40));
+   fs.mkdirSync(stale, {recursive: true}); fs.utimesSync(stale, 1000 + i, 1000 + i);
+  }
   fs.writeFileSync(path.join(payload, 'scripts/newsletters/send.mjs'), 'new sender');
   fs.writeFileSync(path.join(payload, 'newsletters/edition.json'), '{}');
   fs.writeFileSync(path.join(incoming, '.env'), 'EXAMPLE=value');
@@ -39,6 +43,7 @@ for (const failure of ['', 'health', 'nginx', 'save']) test(`deployment ${failur
    assert.equal(fs.readlinkSync(path.join(root, 'current')), path.join(root, 'releases', sha));
    assert.equal(fs.readlinkSync(path.join(root, 'releases', sha, 'data/newsletter')), path.join(root, 'data/newsletter'));
    assert.equal(fs.readFileSync(path.join(root, 'scripts/newsletters/send.mjs'), 'utf8'), 'new sender');
+   assert.equal(fs.readdirSync(path.join(root, 'releases')).length, 3);
   }
  } finally { fs.rmSync(tmp, { recursive: true, force: true }); }
 });
