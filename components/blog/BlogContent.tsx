@@ -1,3 +1,6 @@
+import { getLocale } from 'next-intl/server';
+import type { Locale } from '@/i18n/config';
+import { resolveContentLink } from '@/lib/content-links';
 import { MDXRemote } from 'next-mdx-remote/rsc';
 import remarkGfm from 'remark-gfm';
 import Image from 'next/image';
@@ -24,12 +27,14 @@ const components = {
   p: (props: React.HTMLAttributes<HTMLParagraphElement>) => (
     <p className="text-gray-700 dark:text-gray-300 leading-relaxed mb-6" {...props} />
   ),
-  a: (props: React.AnchorHTMLAttributes<HTMLAnchorElement>) => {
-    const href = props.href || '#';
+  a: async (props: React.AnchorHTMLAttributes<HTMLAnchorElement>) => {
+    const authored = props.href || '#';
+    const resolved = resolveContentLink(authored, await getLocale() as Locale);
+    const href = resolved ?? authored;
     // Authored MDX links can already include a locale. Passing them through
     // next-intl Link prefixes that locale again (/ru/ru/news/...).
     // External links also must not be rewritten as localized site routes.
-    if (!isLocaleNeutralPath(href)) {
+    if (resolved !== null || !isLocaleNeutralPath(href)) {
       return <a {...props} href={href} className="text-primary hover:underline" />;
     }
     return <Link {...props} href={href} className="text-primary hover:underline" />;

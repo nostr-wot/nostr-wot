@@ -81,7 +81,7 @@ Die entfernten Zeilen sind der gesamte Abschnitt "Invite Request", der festlegte
 }
 ```
 
-Ein Nutzer forderte dieses Event beim Relay an, und das Relay signierte es mit dem Pubkey aus dem Feld `self` seines NIP-11-Dokuments. An seiner Stelle steht in `43.md` nun ein einziger Satz: "Users can request a `claim` using the [NIP 86](./86.md) `createclaim` method."
+Ein Nutzer forderte dieses Event beim Relay an, und das Relay signierte es mit dem Pubkey aus dem Feld `self` seines NIP-11-Dokuments. An seiner Stelle steht in `43.md` nun ein einziger Satz: "Users can request a `claim` using the [NIP 86](https://github.com/nostr-protocol/nips/blob/master/86.md) `createclaim` method."
 
 Die beiden Wege führen nicht an dieselbe Stelle. `kind 28935` war eine Anfrage über die eigene Relay-Verbindung des Nutzers. NIP-86 ist ein JSON-RPC-ähnliches Protokoll über HTTP, auf derselben URI wie der Websocket, und sein Autorisierungsabschnitt verlangt ein gültiges NIP-98-Event im Header `Authorization` und antwortet ohne dieses mit 401. `createclaim` liegt hinter diesem Header, und das ist der Weg eines Relay-Betreibers, nicht der eines künftigen Mitglieds.
 
