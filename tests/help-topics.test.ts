@@ -8,7 +8,7 @@ test('help tasks are independent of the complete published video library', () =>
   assert.ok(HELP_TOPICS.length > HELP_VIDEOS.length);
   assert.ok(HELP_TOPICS.some(topic => !topic.video && topic.category === 'troubleshooting'));
   assert.equal(new Set(HELP_TOPICS.map(topic => topic.id)).size, HELP_TOPICS.length);
-  assert.equal(new Set(HELP_VIDEOS.map(video => GUIDE_VIDEOS[video.id].id)).size, 13);
+  assert.equal(new Set(HELP_VIDEOS.map(video => GUIDE_VIDEOS[video.id].id)).size, 14);
   for (const locale of ['en', 'es', 'pt', 'fr', 'de', 'it', 'ru']) {
     const copy = JSON.parse(fs.readFileSync(`messages/${locale}/help.json`, 'utf8'));
     for (const topic of HELP_TOPICS) {

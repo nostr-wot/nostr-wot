@@ -30,6 +30,7 @@ test('archive lesson allows only its exact verified YouTube URL', async () => {
   const { hasUnapprovedLink, collectErrors } = await import('../scripts/social/checks.mjs');
   const { buildRequestPosts } = await import('../scripts/social/entries.mjs');
   assert.equal(hasUnapprovedLink('https://youtu.be/He4gz4occgY'), false);
+  assert.equal(hasUnapprovedLink('https://youtu.be/e-E9u2UyL3E'), false);
   for (const url of ['https://youtu.be/another1234', 'https://youtu.be/He4gz4occgY?redirect=1', 'https://youtu.be.evil.example/He4gz4occgY']) assert.equal(hasUnapprovedLink(url), true);
   const { entries, errors } = collectErrors();
   assert.deepEqual(errors, []);

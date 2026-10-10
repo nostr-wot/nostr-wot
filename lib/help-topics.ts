@@ -17,6 +17,7 @@ export const HELP_VIDEOS: { id: GuideVideo; duration: string }[] = [
   { id: 'language', duration: '0:47' },
   { id: 'security', duration: '1:07' },
   { id: 'archive', duration: '1:49' },
+  { id: 'connect', duration: '1:34' },
 ];
 
 export type HelpTopic = { id: string; slug: string; category: HelpCategory; video?: GuideVideo; screenshots?: string[]; related?: string[]; guides: string[] };
@@ -29,6 +30,7 @@ export const HELP_TOPICS: HelpTopic[] = [
   { id: 'approvals', screenshots: ['backend-review', 'relay-review'], slug: 'review-request', related: ['permissions', 'denied'], category: 'permissions', video: 'approvals', guides: ['site-permissions'] },
   { id: 'permissions', screenshots: ['permissions', 'global-rules'], slug: 'site-and-global-rules', related: ['approvals', 'authentication'], category: 'permissions', video: 'permissions', guides: ['site-permissions'] },
   { id: 'authentication', screenshots: ['backend-review', 'relay-permissions'], slug: 'sign-in-permissions', related: ['permissions', 'loginFailed'], category: 'permissions', video: 'authentication', guides: ['backend-authentication', 'relay-authentication'] },
+  { id: 'connect', screenshots: ['remote-signer'], slug: 'connect-remote-signer', related: ['account', 'permissions'], category: 'accounts', video: 'connect', guides: ['connect-nostr-signer'] },
   { id: 'wallet', screenshots: ['wallet-setup', 'wallet-nwc', 'wallet-lnbits'], slug: 'connect-wallet', related: ['receive', 'walletFailed'], category: 'payments', video: 'wallet', guides: ['setting-up-wallet'] },
   { id: 'zaps', screenshots: ['zap-review', 'zap-limit'], slug: 'send-zap', related: ['limits', 'zapFailed'], category: 'payments', video: 'zaps', guides: ['zapping-auto-approve'] },
   { id: 'appearance', screenshots: ['appearance-light', 'appearance-dark'], slug: 'change-appearance', related: ['language', 'security'], category: 'settings', video: 'appearance', guides: [] },

@@ -13,6 +13,7 @@ export const GUIDE_VIDEOS = {
   remove: { id: "U1LZmgQgURA", title: "How to Remove an Account from Nostr WoT" },
   archive: { id: "He4gz4occgY", title: "How to Back Up and Migrate Nostr Events with Nostr WoT" },
   authentication: { id: "4TmndKyE8D4", title: "Nostr Backend and Relay Authentication: Choose Who Can Log You In" },
+  connect: { id: "e-E9u2UyL3E", title: "Nostr Connect: Use Your Remote Signer in the Browser" },
 } as const;
 
 export type GuideVideo = keyof typeof GUIDE_VIDEOS;
@@ -28,7 +29,7 @@ export const GUIDE_MEDIA: Record<string, GuideMedia> = {
   'getting-started': { screenshots: ['account-methods'], videos: ['account'] },
   'create-nostr-account': { screenshots: ['account-methods', 'security'], videos: ['account'] },
   'import-nostr-account': { screenshots: ['import-key'], videos: ['backup'] },
-  'connect-nostr-signer': { screenshots: ['remote-signer'] },
+  'connect-nostr-signer': { screenshots: ['remote-signer'], videos: ['connect'] },
   'watch-only-nostr-account': { screenshots: ['watch-only'] },
   'custom-identity-paths': { screenshots: ['sub-account'], videos: ['subAccounts'] },
   'managing-identity': { screenshots: ['security'], videos: ['security', 'backup'] },
