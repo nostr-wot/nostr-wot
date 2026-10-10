@@ -149,7 +149,14 @@ const nextConfig: NextConfig = {
       { locale: "ru", oldSlug: "2026-08-01-nip-47-uproshchaet-yadro-i-dobavlyaet-rasshireniya", newSlug: "nip-47-uproshchaet-yadro-i-dobavlyaet-rasshireniya" },
     ];
 
+    const duplicateLocaleRedirects = ['en', 'es', 'pt', 'ru', 'it', 'fr', 'de'].map(locale => ({
+      source: `/${locale}/${locale}/:path*`,
+      destination: locale === 'en' ? '/:path*' : `/${locale}/:path*`,
+      permanent: true,
+    }));
+
     return [
+      ...duplicateLocaleRedirects,
       ...['', '/en', '/es', '/pt', '/ru', '/it', '/fr', '/de'].map(prefix => ({
         source: `${prefix}/blog/extension-themes-la-crypta`,
         destination: `${prefix}/blog/extension-themes`,
