@@ -1,6 +1,7 @@
 import { serializeJsonLd } from '@/lib/serialize-jsonld';
 import { withMetadataPolicy } from '@/lib/metadata-policy';
 import type { Metadata } from "next";
+import { resolveContentLink } from "@/lib/content-links";
 import { getTranslations } from "next-intl/server";
 import { ScrollReveal, LinkButton, ExternalLinkButton, Section, CodeBlock } from "@/components/ui";
 import { generateAlternates, generateOpenGraph, generateTwitter } from "@/lib/metadata";
@@ -79,7 +80,9 @@ const HTML_SNIPPET = `<a href="${SITE_URL}/profile/${DEMO_NPUB}"
   />
 </a>`;
 
-export default async function WidgetsPage() {
+export default async function WidgetsPage({ params }: Props) {
+  const { locale } = await params;
+  const articleHref = resolveContentLink("/blog/introducing-widgets", locale as Locale) ?? "/blog";
   const t = await getTranslations("widgets");
 
   const jsonLd = {
@@ -161,9 +164,9 @@ export default async function WidgetsPage() {
                 <ExternalLinkButton href={REPO_URL} className="hover-lift">
                   {t("hero.github")}
                 </ExternalLinkButton>
-                <LinkButton href="/blog/introducing-widgets" variant="secondary" className="hover-lift">
+                <a href={articleHref} className="btn btn-secondary hover-lift">
                   {t("hero.blog")}
-                </LinkButton>
+                </a>
               </div>
             </ScrollReveal>
           </div>
