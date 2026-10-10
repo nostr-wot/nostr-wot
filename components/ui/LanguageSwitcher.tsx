@@ -1,5 +1,6 @@
 "use client";
 
+import { languageSwitchPath } from "@/lib/language-switch";
 import { useLocale } from "next-intl";
 import { usePathname, useRouter } from "@/i18n/routing";
 import { locales, localeNames, localeISO, type Locale } from "@/i18n/config";
@@ -13,19 +14,7 @@ export function LanguageSwitcher() {
   const { translations } = useBlogTranslations();
 
   const handleChange = (newLocale: Locale) => {
-    // If we have translations (blog or guide), use the translated slug
-    if (translations && translations[newLocale]) {
-      const translatedSlug = translations[newLocale];
-      // Detect whether we're on /blog/, /guides/ or /news/ to use the correct prefix
-      const prefix = pathname.startsWith('/guides/')
-        ? '/guides'
-        : pathname.startsWith('/news/')
-          ? '/news'
-          : '/blog';
-      router.replace(`${prefix}/${translatedSlug}`, { locale: newLocale });
-    } else {
-      router.replace(pathname, { locale: newLocale });
-    }
+    router.replace(languageSwitchPath(pathname, newLocale, translations), { locale: newLocale });
   };
 
   return (
