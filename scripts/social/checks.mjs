@@ -44,7 +44,7 @@ export const HARD_LINK = /https?:\/\//i;
 // Explicitly requested external links. Keep article URLs derived as before.
 export function hasUnapprovedLink(text) {
   const links = text.match(/https?:\/\/[^\s]*/gi) ?? [];
-  return links.some((url) => url !== 'https://lacrypta.ar/' && url !== 'https://youtu.be/He4gz4occgY');
+  return links.some((url) => url !== 'https://lacrypta.ar/' && url !== 'https://youtu.be/He4gz4occgY' && url !== 'https://youtu.be/e-E9u2UyL3E');
 }
 // docs/social-voice.md section 5: dead calls to action. Narrow on purpose,
 // these are the ones that have actually shipped.

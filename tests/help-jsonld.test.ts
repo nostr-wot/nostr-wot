@@ -12,7 +12,7 @@ test('help schemas match localized visible content and canonical routes', () => 
     const copy = JSON.parse(fs.readFileSync(`messages/${locale}/help.json`, 'utf8'));
     const collection = helpCollectionJsonLd(locale, copy.search, copy.description, copy.topics);
     assert.equal(collection.inLanguage, locale);
-    assert.equal(collection.mainEntity?.itemListElement.length, 21);
+    assert.equal(collection.mainEntity?.itemListElement.length, 22);
     for (const topic of HELP_TOPICS) {
       const content = copy.topics[topic.id];
       const graph = helpArticleJsonLd(locale, topic, content);

@@ -132,7 +132,7 @@ def audit(url):
                     if h1 and graph.get('headline') != h1[0]: issues.append('Help headline differs from H1')
                 else:
                     items = graph.get('mainEntity', {}).get('itemListElement', [])
-                    if len(items) != 21 or len({item.get('url') for item in items}) != 21: issues.append('Help index must list all 21 unique tasks')
+                    if len(items) != 22 or len({item.get('url') for item in items}) != 22: issues.append('Help index must list all 22 unique tasks')
             if crumbs and crumbs[0].get('itemListElement', [{}])[-1].get('item') != url: issues.append('Help breadcrumb canonical mismatch')
         return {'url': url, 'titles': values, 'jsonldGraphs': len(page.graphs), 'issues': issues}, images
     except Exception as error:
