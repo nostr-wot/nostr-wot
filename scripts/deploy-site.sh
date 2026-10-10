@@ -13,8 +13,8 @@ port=3100
 [[ "$old_port" != 3100 ]] || port=3101
 app="nostr-wot-$port"
 health() {
-  for route in / /sitemap.xml /fr/projects/snort '/es/news?tag=Security'; do
-    curl --fail --silent --show-error --max-time 30 --retry 8 --retry-delay 1 --retry-connrefused "http://127.0.0.1:$1$route" -o /dev/null || return 1
+  for route in / /guides/lightning-address /sitemap.xml /fr/projects/snort '/es/news?tag=Security'; do
+    curl --fail --silent --show-error --max-time 30 --retry 8 --retry-delay 1 --retry-connrefused -H "Host: nostrwot.com" -H "X-Forwarded-Proto: https" "http://127.0.0.1:$1$route" -o /dev/null || return 1
   done
 }
 if [[ -L "$root/current" && "$(readlink "$root/current")" == "$release" ]]; then
@@ -42,7 +42,7 @@ if pm2 describe "$app" >/dev/null 2>&1; then pm2 delete "$app"; fi
 if curl --silent --max-time 2 "http://127.0.0.1:$port/" -o /dev/null; then
   echo 'Candidate port is occupied by another service' >&2; exit 1
 fi
-PORT=$port pm2 start node_modules/next/dist/bin/next --name "$app" -- start --hostname 127.0.0.1 --port "$port"
+PORT=$port pm2 start node_modules/next/dist/bin/next --name "$app" --node-args="--dns-result-order=ipv4first" -- start --hostname localhost --port "$port"
 backup="$incoming/nginx.before"
 cp "$nginx_config" "$backup"
 if [[ -f "$root/.env" ]]; then install -m 600 "$root/.env" "$incoming/env.before"; fi

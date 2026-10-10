@@ -14,3 +14,11 @@ test('leaves explicit locales, external links and relative references to the cal
 test('uses the English article when a translation is missing', () => {
   assert.equal(resolveContentLink('/guides/post-quantum-key?from=guide#setup', 'es'), '/guides/post-quantum-key?from=guide#setup');
 });
+
+ test('widgets introduction resolves to every published translation', () => {
+  const slugs = { en: 'introducing-widgets', es: 'presentamos-los-widgets', pt: 'apresentando-os-widgets', ru: 'predstavlyaem-vidzhety', it: 'presentazione-dei-widget', fr: 'presentation-des-widgets', de: 'vorstellung-der-widgets' } as const;
+  for (const [locale, slug] of Object.entries(slugs)) {
+    const prefix = locale === 'en' ? '' : `/${locale}`;
+    assert.equal(resolveContentLink('/blog/introducing-widgets', locale as keyof typeof slugs), `${prefix}/blog/${slug}`);
+  }
+});
