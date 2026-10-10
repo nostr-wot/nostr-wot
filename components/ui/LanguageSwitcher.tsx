@@ -24,7 +24,10 @@ export function LanguageSwitcher() {
           : '/blog';
       router.replace(`${prefix}/${translatedSlug}`, { locale: newLocale });
     } else {
-      router.replace(pathname, { locale: newLocale });
+      // Never send visitors to a non-existent translated article.
+      // Collection indexes exist in every locale, unlike individual posts.
+      const collection = pathname.match(/^\\/(blog|guides|news)\\//)?.[1];
+      router.replace(collection ? `/${collection}` : pathname, { locale: newLocale });
     }
   };
 
