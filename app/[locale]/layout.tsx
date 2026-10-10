@@ -83,7 +83,7 @@ export default async function LocaleLayout({ children, params }: Props) {
         />
         <script
           src="https://analytics.ahrefs.com/analytics.js"
-          data-key="vfOr4k8Sfsy9wYfOO0Nehw"
+          data-key="lRAW4OK800Jw+bWYgGmZNw"
           async
         />
         <link
