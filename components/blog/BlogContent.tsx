@@ -23,13 +23,16 @@ const components = {
   p: (props: React.HTMLAttributes<HTMLParagraphElement>) => (
     <p className="text-gray-700 dark:text-gray-300 leading-relaxed mb-6" {...props} />
   ),
-  a: (props: React.AnchorHTMLAttributes<HTMLAnchorElement>) => (
-    <Link
-      href={props.href || '#'}
-      className="text-primary hover:underline"
-      {...props}
-    />
-  ),
+  a: (props: React.AnchorHTMLAttributes<HTMLAnchorElement>) => {
+    const href = props.href || '#';
+    // Authored MDX links can already include a locale. Passing them through
+    // next-intl Link prefixes that locale again (/ru/ru/news/...).
+    // External links also must not be rewritten as localized site routes.
+    if (/^(?:\\/\\/(?!\\/)|[a-z][a-z\\d+.-]*:|\\/(?:en|es|pt|ru|it|fr|de)(?:\\/|$))/.test(href)) {
+      return <a {...props} href={href} className="text-primary hover:underline" />;
+    }
+    return <Link {...props} href={href} className="text-primary hover:underline" />;
+  },
   ul: (props: React.HTMLAttributes<HTMLUListElement>) => (
     <ul className="list-disc list-inside mb-6 space-y-2 text-gray-700 dark:text-gray-300" {...props} />
   ),
