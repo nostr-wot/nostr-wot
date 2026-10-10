@@ -2,6 +2,7 @@ import { MDXRemote } from 'next-mdx-remote/rsc';
 import remarkGfm from 'remark-gfm';
 import Image from 'next/image';
 import { Link } from '@/i18n/routing';
+import { isLocaleNeutralPath } from '@/lib/mdx-links';
 import { CodeBlock, ScrollReveal } from '@/components/ui';
 import { WikiLink } from './WikiPreview';
 import { Citation, BibEntry, Bibliography, Statistic, ExpertQuote } from './CitationComponents';
@@ -28,7 +29,7 @@ const components = {
     // Authored MDX links can already include a locale. Passing them through
     // next-intl Link prefixes that locale again (/ru/ru/news/...).
     // External links also must not be rewritten as localized site routes.
-    if (/^(?:\\/\\/(?!\\/)|[a-z][a-z\\d+.-]*:|\\/(?:en|es|pt|ru|it|fr|de)(?:\\/|$))/.test(href)) {
+    if (!isLocaleNeutralPath(href)) {
       return <a {...props} href={href} className="text-primary hover:underline" />;
     }
     return <Link {...props} href={href} className="text-primary hover:underline" />;
