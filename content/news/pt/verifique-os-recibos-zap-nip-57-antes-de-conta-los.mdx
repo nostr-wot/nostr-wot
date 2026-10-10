@@ -1,0 +1,82 @@
+---
+title: "Verifique os recibos zap NIP-57 antes de contá-los"
+description: "Um recibo zap NIP-57 é uma declaração assinada pelo servidor LNURL do destinatário. Verifique signatário, pedido, fatura, valor e alvo."
+seoDescription: "Aprenda a validar recibos zap NIP-57 kind 9735, pedido incorporado, signatário LNURL, valor BOLT11, hash da descrição, alvos e limites."
+excerpt: "Um evento kind 9735 não basta para provar um pagamento Lightning. A assinatura e cada vínculo entre servidor, pedido, fatura, valor e alvo precisam coincidir."
+date: "2026-10-10"
+publishedAt: "2026-10-10"
+backfilled: false
+type: "story"
+tags: ["Nostr", "NIP-57", "Lightning", "Segurança", "Guia"]
+featuredImage: "/images/news/verify-nip-57-zap-receipts-before-counting-them.svg"
+translationKey: "verify-nip-57-zap-receipts-before-counting-them"
+sources:
+  - title: "NIP-57: Lightning Zaps no commit a79e21d"
+    url: "https://github.com/nostr-protocol/nips/blob/a79e21d90fce5465b50ef385dd368bba99ec4a0b/57.md"
+    publisher: "nostr-protocol/nips"
+    date: "2026-06-13"
+  - title: "NIP-01: Fluxo básico do protocolo no commit a79e21d"
+    url: "https://github.com/nostr-protocol/nips/blob/a79e21d90fce5465b50ef385dd368bba99ec4a0b/01.md"
+    publisher: "nostr-protocol/nips"
+    date: "2026-09-04"
+published: true
+---
+
+Um zap no Nostr normalmente deixa um evento kind `9735`, chamado recibo zap. Ele é uma evidência útil, mas o tipo do evento sozinho prova muito pouco. Um cliente que conte todo evento `9735` pode aceitar um signatário falso, um valor alterado, outro destinatário ou um recibo copiado de outro alvo.
+
+[A NIP-57 define uma cadeia de dados vinculados](https://github.com/nostr-protocol/nips/blob/a79e21d90fce5465b50ef385dd368bba99ec4a0b/57.md): um pedido zap kind `9734` assinado, uma resposta LNURL-pay, uma fatura BOLT11 e um recibo kind `9735` assinado. Validar significa conferir cada vínculo. Mesmo assim, o resultado é uma declaração assinada pelo servidor LNURL do destinatário, não uma prova sem confiança de que o Lightning liquidou o pagamento.
+
+## Comece com um evento Nostr válido
+
+Primeiro valide o recibo como evento Nostr comum segundo a NIP-01. Recalcule o ID a partir da serialização canônica e verifique a assinatura Schnorr usando `pubkey`. Rejeite tags malformadas e confirme que `kind` é exatamente `9735`.
+
+Cópias do mesmo evento em vários relays mantêm o mesmo ID. Remova duplicatas por ID antes de calcular totais, ou o mesmo recibo encontrado em relays diferentes poderá ser contado várias vezes.
+
+O `content` do recibo deve estar vazio. Os dados úteis ficam nas tags:
+
+- `bolt11` contém a fatura Lightning;
+- `description` contém o pedido zap kind `9734` codificado em JSON;
+- `p` identifica o destinatário;
+- `e` ou `a`, opcionais, identificam o evento ou evento endereçável;
+- `P`, opcional, identifica o remetente incluído no pedido.
+
+## Vincule o signatário ao serviço LNURL
+
+A chave pública do recibo deve ser igual a `nostrPubkey` retornada pelo endpoint LNURL-pay do destinatário. Uma assinatura Nostr válida de qualquer outra chave não é um recibo válido para esse fluxo.
+
+Essa verificação tem limite temporal. A configuração LNURL pode mudar, então software que precise de trilha de auditoria deve guardar os metadados LNURL usados ao solicitar a fatura. Uma consulta posterior mostra a chave atual, mas talvez não reconstrua a chave autorizada no momento do pagamento.
+
+## Valide o pedido zap incorporado
+
+Interprete a tag `description` como o evento kind `9734` original. Verifique o ID e a assinatura. A NIP-57 também exige um pedido estruturalmente válido: exatamente uma tag `p`, no máximo uma tag `e`, `a` ou `P`, e uma tag `relays` com URLs para publicação do recibo.
+
+Compare pedido e recibo. O recibo precisa copiar `p` e as tags `e`, `a` e `P` presentes. Se apontar para outro destinatário ou alvo, não o conte na página, perfil ou evento exibido.
+
+Se o pedido tiver uma tag `lnurl`, a NIP-57 diz que ela deve corresponder à LNURL do destinatário. Trate divergência como falha de vínculo, não como simples mudança de metadados.
+
+## Faça a fatura e o valor coincidirem
+
+Decodifique a fatura `bolt11` em vez de confiar em um valor exibido. Quando o pedido tem uma tag `amount`, o valor da fatura precisa ser igual. A chamada ao callback LNURL também deve ter usado esse valor.
+
+O hash de descrição da fatura BOLT11 deve ser igual ao SHA-256 da string JSON exata na tag `description`. Isso impede anexar posteriormente uma fatura válida a outro pedido. Calcule o hash sobre os bytes recebidos: analisar e serializar novamente o JSON pode alterar espaços ou ordem das chaves.
+
+O recibo também pode ter `preimage`. Seu hash pode ser comparado ao hash de pagamento da fatura, mas a NIP-57 alerta que isso não é prova independente relevante, pois o destinatário criou a fatura e conhece a preimagem após a liquidação.
+
+## Entenda o que o recibo não prova
+
+Após todas as verificações, o recibo estabelece coerência interna e uma assinatura do servidor autorizado. Ele não fornece a um observador externo prova criptográfica de que a fatura foi paga. A NIP-57 afirma explicitamente que o autor do recibo pode mentir.
+
+A interface deve refletir esse limite. “Recibo verificado” pode significar que evento, signatário, pedido, fatura, valor e alvo coincidem. Não deve ser apresentado como prova de liquidação sem confiança. Para contabilidade, recompensas ou controle de acesso, use dados independentes de liquidação Lightning sob controle de quem toma a decisão.
+
+## Ordem prática de validação
+
+1. Verifique ID e assinatura do evento `9735`.
+2. Remova IDs duplicados entre relays.
+3. Confirme que o signatário coincide com o `nostrPubkey` LNURL usado.
+4. Analise e verifique o pedido `9734` incorporado.
+5. Compare os vínculos `p`, `e`, `a`, `P` e `lnurl` opcional.
+6. Decodifique BOLT11 e compare o valor com o pedido.
+7. Compare o hash da descrição com a string `description` exata.
+8. Apresente o resultado como declaração assinada do servidor, não como prova independente do pagamento.
+
+Essa sequência transforma um sinal social conveniente em algo que o cliente consegue explicar e depurar. Também mantém visível o limite final: a NIP-57 autentica quem emitiu um recibo coerente, mas não impede o emissor de mentir.
