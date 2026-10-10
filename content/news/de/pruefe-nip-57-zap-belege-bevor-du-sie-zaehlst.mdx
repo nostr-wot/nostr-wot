@@ -1,0 +1,82 @@
+---
+title: "Prüfe NIP-57-Zap-Belege, bevor du sie zählst"
+description: "Ein NIP-57-Zap-Beleg ist eine signierte Aussage des LNURL-Servers des Empfängers. Prüfe Signierer, Anfrage, Rechnung, Betrag und Ziel."
+seoDescription: "So validierst du NIP-57-Zap-Belege vom Kind 9735, eingebettete Anfrage, LNURL-Signierer, BOLT11-Betrag, Beschreibungs-Hash und Ziel."
+excerpt: "Ein Ereignis vom Kind 9735 beweist noch keine Lightning-Zahlung. Signatur und Bindungen zwischen Server, Anfrage, Rechnung, Betrag und Ziel müssen stimmen."
+date: "2026-10-10"
+publishedAt: "2026-10-10"
+backfilled: false
+type: "story"
+tags: ["Nostr", "NIP-57", "Lightning", "Sicherheit", "Anleitung"]
+featuredImage: "/images/news/verify-nip-57-zap-receipts-before-counting-them.svg"
+translationKey: "verify-nip-57-zap-receipts-before-counting-them"
+sources:
+  - title: "NIP-57: Lightning Zaps in Commit a79e21d"
+    url: "https://github.com/nostr-protocol/nips/blob/a79e21d90fce5465b50ef385dd368bba99ec4a0b/57.md"
+    publisher: "nostr-protocol/nips"
+    date: "2026-06-13"
+  - title: "NIP-01: Grundlegender Protokollablauf in Commit a79e21d"
+    url: "https://github.com/nostr-protocol/nips/blob/a79e21d90fce5465b50ef385dd368bba99ec4a0b/01.md"
+    publisher: "nostr-protocol/nips"
+    date: "2026-09-04"
+published: true
+---
+
+Ein Nostr-Zap hinterlässt normalerweise ein Ereignis vom Kind `9735`, einen Zap-Beleg. Er ist ein nützlicher Hinweis, doch allein der Ereignistyp beweist fast nichts. Ein Client, der jedes `9735`-Ereignis zählt, kann einen falschen Signierer, einen veränderten Betrag, einen anderen Empfänger oder einen Beleg von einem anderen Ziel akzeptieren.
+
+[NIP-57 definiert eine Kette verbundener Daten](https://github.com/nostr-protocol/nips/blob/a79e21d90fce5465b50ef385dd368bba99ec4a0b/57.md): eine signierte Zap-Anfrage vom Kind `9734`, eine LNURL-pay-Antwort, eine BOLT11-Rechnung und einen signierten Beleg vom Kind `9735`. Validierung bedeutet, jedes Glied zu prüfen. Selbst dann ist das Ergebnis eine signierte Aussage des LNURL-Servers des Empfängers, kein vertrauensloser Beweis für die Lightning-Abrechnung.
+
+## Beginne mit einem gültigen Nostr-Ereignis
+
+Validiere den Beleg zuerst als normales Nostr-Ereignis nach NIP-01. Berechne seine ID aus der kanonischen Serialisierung neu und prüfe die Schnorr-Signatur gegen `pubkey`. Weise fehlerhafte Tags zurück und bestätige, dass `kind` genau `9735` ist.
+
+Kopien desselben Ereignisses auf mehreren Relays behalten dieselbe ID. Entferne Duplikate nach Ereignis-ID, bevor du Summen bildest. Sonst kann derselbe Beleg von mehreren Relays mehrfach gezählt werden.
+
+Der `content` sollte leer sein. Die nützlichen Daten stehen in den Tags:
+
+- `bolt11` enthält die Lightning-Rechnung;
+- `description` enthält die JSON-codierte Zap-Anfrage vom Kind `9734`;
+- `p` bezeichnet den Empfänger;
+- optionale Tags `e` oder `a` bezeichnen das Ereignis oder adressierbare Ereignis;
+- das optionale `P` bezeichnet den in der Anfrage enthaltenen Absender.
+
+## Binde den Signierer an den LNURL-Dienst
+
+Der öffentliche Schlüssel des Belegs muss dem `nostrPubkey` entsprechen, den der LNURL-pay-Endpunkt des Empfängers geliefert hat. Eine gültige Nostr-Signatur eines anderen Schlüssels ist für diesen Zahlungsablauf kein gültiger Beleg.
+
+Diese Prüfung hat eine zeitliche Grenze. LNURL-Konfigurationen können sich ändern. Software mit Audit-Anforderungen sollte deshalb die beim Abruf der Rechnung verwendeten LNURL-Metadaten aufbewahren. Eine spätere Abfrage zeigt den aktuellen Serverschlüssel, stellt aber möglicherweise nicht den zum Zahlungszeitpunkt autorisierten Schlüssel wieder her.
+
+## Validiere die eingebettete Zap-Anfrage
+
+Lies den `description`-Tag als ursprüngliches Ereignis vom Kind `9734` und prüfe dessen ID und Signatur. NIP-57 verlangt außerdem eine gültige Struktur: genau einen `p`-Tag, höchstens je einen `e`-, `a`- oder `P`-Tag sowie einen `relays`-Tag mit URLs für die Veröffentlichung des Belegs.
+
+Vergleiche Anfrage und Beleg. Der Beleg muss `p` sowie vorhandene `e`-, `a`- und `P`-Tags kopieren. Zeigt er auf einen anderen Empfänger oder ein anderes Ziel, darf er für die angezeigte Seite, das Profil oder das Ereignis nicht gezählt werden.
+
+Enthält die Anfrage `lnurl`, sollte dieser Wert laut NIP-57 der LNURL des Empfängers entsprechen. Behandle eine Abweichung als fehlgeschlagene Bindung, nicht als harmlose Änderung von Metadaten.
+
+## Gleiche Rechnung und Betrag ab
+
+Dekodiere die `bolt11`-Rechnung, statt einem angezeigten Betrag zu vertrauen. Enthält die Zap-Anfrage einen `amount`-Tag, muss der Rechnungsbetrag damit übereinstimmen. Auch die Anfrage an den LNURL-Callback muss denselben Betrag verwendet haben.
+
+Der Beschreibungs-Hash der BOLT11-Rechnung sollte dem SHA-256-Hash der exakten JSON-Zeichenfolge im `description`-Tag entsprechen. So kann eine gültige Rechnung nicht nachträglich mit einer anderen Zap-Anfrage verbunden werden. Hashe die empfangenen Bytes unverändert, denn erneutes Serialisieren von JSON kann Leerzeichen oder Schlüsselreihenfolge ändern.
+
+Der Beleg kann einen `preimage`-Tag enthalten. Sein Hash lässt sich mit dem Payment Hash der Rechnung vergleichen. NIP-57 warnt jedoch, dass dies kein aussagekräftiger unabhängiger Beweis ist, weil der Empfänger die Rechnung erstellt hat und die Preimage nach der Abrechnung kennt.
+
+## Verstehe die Grenze des Belegs
+
+Nach allen Prüfungen belegt der Beleg interne Konsistenz und eine Signatur des autorisierten Servers. Er liefert einem außenstehenden Beobachter keinen kryptografischen Beweis dafür, dass die Rechnung tatsächlich bezahlt wurde. NIP-57 sagt ausdrücklich, dass der Autor des Belegs lügen kann.
+
+Die Oberfläche sollte diese Grenze zeigen. „Beleg verifiziert“ kann bedeuten, dass Ereignis, Signierer, Anfrage, Rechnung, Betrag und Ziel übereinstimmen. Es sollte nicht als vertrauensloser Abrechnungsbeweis dargestellt werden. Nutze für Buchhaltung, Belohnungen oder Zugriffskontrolle unabhängige Lightning-Abrechnungsdaten unter Kontrolle der entscheidenden Partei.
+
+## Praktische Prüfreihenfolge
+
+1. Prüfe ID und Signatur des `9735`-Ereignisses.
+2. Entferne doppelte Beleg-IDs aus verschiedenen Relays.
+3. Bestätige den Signierer gegen den verwendeten LNURL-`nostrPubkey`.
+4. Analysiere und prüfe die eingebettete `9734`-Anfrage.
+5. Vergleiche die Bindungen `p`, `e`, `a`, `P` und optional `lnurl`.
+6. Dekodiere BOLT11 und vergleiche den Betrag mit der Anfrage.
+7. Vergleiche den Beschreibungs-Hash mit der exakten `description`-Zeichenfolge.
+8. Berichte das Ergebnis als signierte Serveraussage, nicht als unabhängigen Zahlungsbeweis.
+
+Diese Reihenfolge macht aus einem praktischen sozialen Signal ein erklärbares und diagnostizierbares Ergebnis. Sie hält zugleich die wichtigste Grenze sichtbar: NIP-57 authentifiziert den Herausgeber eines konsistenten Belegs, verhindert aber nicht, dass dieser Herausgeber lügt.

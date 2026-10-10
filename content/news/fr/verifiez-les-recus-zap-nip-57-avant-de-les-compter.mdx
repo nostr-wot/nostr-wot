@@ -1,0 +1,82 @@
+---
+title: "Vérifiez les reçus zap NIP-57 avant de les compter"
+description: "Un reçu zap NIP-57 est une déclaration signée par le serveur LNURL du destinataire. Vérifiez signataire, demande, facture, montant et cible."
+seoDescription: "Comment valider les reçus zap NIP-57 kind 9735, la demande intégrée, le signataire LNURL, le montant BOLT11, le hachage et la cible."
+excerpt: "Un événement kind 9735 ne suffit pas à prouver un paiement Lightning. La signature et les liens entre serveur, demande, facture, montant et cible doivent correspondre."
+date: "2026-10-10"
+publishedAt: "2026-10-10"
+backfilled: false
+type: "story"
+tags: ["Nostr", "NIP-57", "Lightning", "Sécurité", "Guide"]
+featuredImage: "/images/news/verify-nip-57-zap-receipts-before-counting-them.svg"
+translationKey: "verify-nip-57-zap-receipts-before-counting-them"
+sources:
+  - title: "NIP-57 : Lightning Zaps au commit a79e21d"
+    url: "https://github.com/nostr-protocol/nips/blob/a79e21d90fce5465b50ef385dd368bba99ec4a0b/57.md"
+    publisher: "nostr-protocol/nips"
+    date: "2026-06-13"
+  - title: "NIP-01 : Flux de base du protocole au commit a79e21d"
+    url: "https://github.com/nostr-protocol/nips/blob/a79e21d90fce5465b50ef385dd368bba99ec4a0b/01.md"
+    publisher: "nostr-protocol/nips"
+    date: "2026-09-04"
+published: true
+---
+
+Un zap Nostr laisse normalement un événement kind `9735`, appelé reçu zap. C'est un indice utile, mais le type d'événement seul ne prouve presque rien. Un client qui compte chaque événement `9735` peut accepter un faux signataire, un montant modifié, un autre destinataire ou un reçu copié depuis une autre cible.
+
+[NIP-57 définit une chaîne de données liées](https://github.com/nostr-protocol/nips/blob/a79e21d90fce5465b50ef385dd368bba99ec4a0b/57.md) : une demande zap kind `9734` signée, une réponse LNURL-pay, une facture BOLT11 et un reçu kind `9735` signé. Valider signifie vérifier chaque lien. Même alors, le résultat reste une déclaration signée du serveur LNURL du destinataire, et non une preuve sans confiance du règlement Lightning.
+
+## Commencez par un événement Nostr valide
+
+Validez d'abord le reçu comme événement Nostr normal selon NIP-01. Recalculez son ID depuis la sérialisation canonique et vérifiez sa signature Schnorr avec `pubkey`. Rejetez les tags mal formés et confirmez que `kind` vaut exactement `9735`.
+
+Les copies du même événement sur plusieurs relais gardent le même ID. Dédupliquez par ID avant de calculer les totaux, sinon le même reçu trouvé sur plusieurs relais peut être compté plusieurs fois.
+
+Le champ `content` devrait être vide. Les données utiles se trouvent dans les tags :
+
+- `bolt11` contient la facture Lightning ;
+- `description` contient la demande zap kind `9734` encodée en JSON ;
+- `p` identifie le destinataire ;
+- les tags facultatifs `e` ou `a` identifient l'événement ou l'événement adressable ;
+- le tag facultatif `P` identifie l'expéditeur inclus dans la demande.
+
+## Liez le signataire au service LNURL
+
+La clé publique du reçu doit être égale au `nostrPubkey` renvoyé par le point LNURL-pay du destinataire. Une signature Nostr valide provenant d'une autre clé ne constitue pas un reçu valide pour ce paiement.
+
+Cette vérification a une limite temporelle. La configuration LNURL peut changer. Un logiciel ayant besoin d'une piste d'audit devrait donc conserver les métadonnées LNURL utilisées lors de la demande de facture. Une consultation ultérieure montre la clé actuelle, mais ne reconstitue pas forcément celle autorisée au moment du paiement.
+
+## Validez la demande zap intégrée
+
+Interprétez le tag `description` comme l'événement kind `9734` original, puis vérifiez son ID et sa signature. NIP-57 impose aussi une structure valide : exactement un tag `p`, au plus un tag `e`, `a` ou `P`, et un tag `relays` avec les URL où publier le reçu.
+
+Comparez demande et reçu. Le reçu doit copier `p` ainsi que les tags `e`, `a` et `P` présents. S'il pointe vers un autre destinataire ou une autre cible, ne le comptez pas pour la page, le profil ou l'événement affiché.
+
+Si la demande contient `lnurl`, NIP-57 indique qu'il devrait correspondre au LNURL du destinataire. Une différence est un échec de liaison, pas une simple dérive de métadonnées.
+
+## Faites correspondre facture et montant
+
+Décodez la facture `bolt11` au lieu de faire confiance au montant affiché. Lorsque la demande contient `amount`, le montant de la facture doit être identique. L'appel au callback LNURL doit également avoir utilisé ce montant.
+
+Le hachage de description de la facture BOLT11 devrait être égal au SHA-256 de la chaîne JSON exacte du tag `description`. Cela empêche de rattacher plus tard une facture valide à une autre demande. Hachez les octets exacts reçus : analyser puis resérialiser le JSON peut modifier les espaces ou l'ordre des clés.
+
+Le reçu peut aussi contenir `preimage`. Son hachage peut être comparé au payment hash de la facture, mais NIP-57 précise qu'il ne s'agit pas d'une preuve indépendante significative, car le destinataire a créé la facture et connaît la préimage après le règlement.
+
+## Comprenez ce qu'un reçu ne prouve pas
+
+Après toutes les vérifications, le reçu établit une cohérence interne et la signature du serveur autorisé. Il ne fournit pas à un observateur externe une preuve cryptographique que la facture a été payée. NIP-57 dit explicitement que l'auteur du reçu peut mentir.
+
+L'interface doit refléter cette limite. « Reçu vérifié » peut signifier que l'événement, le signataire, la demande, la facture, le montant et la cible correspondent. Ce statut ne doit pas être présenté comme une preuve sans confiance du règlement. Pour la comptabilité, les récompenses ou le contrôle d'accès, utilisez des données de règlement Lightning indépendantes contrôlées par la partie qui décide.
+
+## Ordre pratique de validation
+
+1. Vérifiez l'ID et la signature de l'événement `9735`.
+2. Éliminez les ID de reçus dupliqués entre relais.
+3. Confirmez que le signataire correspond au `nostrPubkey` LNURL utilisé.
+4. Analysez et vérifiez la demande `9734` intégrée.
+5. Comparez les liens `p`, `e`, `a`, `P` et le `lnurl` facultatif.
+6. Décodez BOLT11 et comparez son montant à la demande.
+7. Comparez le hachage de description à la chaîne `description` exacte.
+8. Présentez le résultat comme déclaration signée du serveur, pas comme preuve indépendante du paiement.
+
+Cette séquence transforme un signal social pratique en résultat explicable et diagnosticable. Elle garde aussi visible la limite finale : NIP-57 authentifie l'auteur d'un reçu cohérent, mais ne l'empêche pas de mentir.

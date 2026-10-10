@@ -1,0 +1,84 @@
+---
+title: "Verify NIP-57 zap receipts before counting them"
+description: "A NIP-57 zap receipt is a signed claim from the recipient's LNURL server. Verify its signer, request, invoice, amount and target before counting it."
+seoDescription: "Learn how to validate NIP-57 kind 9735 zap receipts, embedded requests, LNURL signer, BOLT11 amount, description hash, targets and proof limits."
+excerpt: "A kind 9735 event is not enough to prove a Lightning payment. Its signature and every binding between the LNURL server, zap request, invoice, amount and target must agree."
+date: "2026-10-10"
+publishedAt: "2026-10-10"
+backfilled: false
+type: "story"
+tags: ["Nostr", "NIP-57", "Lightning", "Security", "Guide"]
+featuredImage: "/images/news/verify-nip-57-zap-receipts-before-counting-them.svg"
+translationKey: "verify-nip-57-zap-receipts-before-counting-them"
+sources:
+  - title: "NIP-57: Lightning Zaps at commit a79e21d"
+    url: "https://github.com/nostr-protocol/nips/blob/a79e21d90fce5465b50ef385dd368bba99ec4a0b/57.md"
+    publisher: "nostr-protocol/nips"
+    date: "2026-06-13"
+  - title: "NIP-01: Basic protocol flow at commit a79e21d"
+    url: "https://github.com/nostr-protocol/nips/blob/a79e21d90fce5465b50ef385dd368bba99ec4a0b/01.md"
+    publisher: "nostr-protocol/nips"
+    date: "2026-09-04"
+published: true
+---
+
+A Nostr zap normally leaves a kind `9735` event called a zap receipt. It is useful evidence, but its event kind alone proves almost nothing. A client that counts every `9735` event can accept a forged signer, a changed amount, a different recipient or a receipt copied from another target.
+
+[NIP-57 defines a chain of linked data](https://github.com/nostr-protocol/nips/blob/a79e21d90fce5465b50ef385dd368bba99ec4a0b/57.md): a signed kind `9734` zap request, an LNURL-pay response, a BOLT11 invoice and a signed kind `9735` receipt. Validation means checking every link. Even then, the result is the recipient's LNURL server making a signed statement, not trustless proof that Lightning settled.
+
+## Start with a valid Nostr event
+
+First validate the receipt as a normal Nostr event under NIP-01. Recompute its event ID from the canonical serialization and verify its Schnorr signature against `pubkey`. Reject malformed tags and confirm that `kind` is exactly `9735`.
+
+Relay copies of the same event keep the same ID. Deduplicate by event ID before doing any totals, otherwise the same receipt found on several relays can be counted several times.
+
+The receipt should have empty `content`. Its useful data is in tags:
+
+- `bolt11` carries the Lightning invoice;
+- `description` carries the JSON-encoded kind `9734` zap request;
+- `p` identifies the recipient;
+- optional `e` or `a` tags identify the event or addressable event being zapped;
+- optional `P` identifies the sender when the request included one.
+
+## Bind the signer to the recipient's LNURL service
+
+The receipt's public key must equal the `nostrPubkey` returned by the recipient's LNURL-pay endpoint. A valid Nostr signature from any other key is not a valid receipt for that payment flow.
+
+This check has a time boundary. LNURL configuration can change, so software that needs an audit trail should retain the LNURL metadata used when the invoice was requested. A later lookup can show the current server key, but it may not reconstruct the key that was authorized at payment time.
+
+## Validate the embedded zap request
+
+Parse the `description` tag as the original kind `9734` event. Then verify its ID and signature like any other signed event. NIP-57 also requires a structurally valid request: exactly one `p` tag, no more than one `e`, `a` or `P` tag, and a `relays` tag with relay URLs where the receipt can be published.
+
+Compare the request with the receipt. The receipt must copy the request's `p` tag and any `e`, `a` and `P` tags. If a receipt points at a different recipient or target, do not count it for the page, profile or event currently being displayed.
+
+If the request contains an `lnurl` tag, NIP-57 says it should match the recipient's LNURL. Treat a mismatch as failed binding rather than harmless metadata drift.
+
+## Make the invoice and amount agree
+
+Decode the `bolt11` invoice rather than trusting a displayed amount. When the zap request has an `amount` tag, the invoice amount must equal it. The LNURL callback request must also have used that same amount.
+
+The BOLT11 invoice's description hash should equal the SHA-256 hash of the exact JSON string in the receipt's `description` tag. This prevents a valid invoice from being attached to a different zap request after the fact. Hash the bytes exactly as carried; parsing and reserializing JSON can change whitespace or key order and produce a different hash.
+
+A receipt may also contain a `preimage` tag. Its hash can be compared with the invoice payment hash, but NIP-57 warns that this is not meaningful independent proof because the recipient created the invoice and already knows the preimage after settlement.
+
+## Know what a valid receipt does not prove
+
+After all checks pass, the receipt establishes internal consistency and an authorized server signature. It does not provide cryptographic proof to an outside observer that the invoice was actually paid. NIP-57 explicitly says the receipt author can lie.
+
+That limitation should shape the interface. “Receipt verified” can mean the event, signer, request, invoice, amount and target agree. It should not be presented as trustless settlement proof. For accounting, rewards or access control, use independent Lightning settlement data controlled by the party making the decision.
+
+## A practical validation order
+
+Use a fixed order so failures are understandable:
+
+1. Verify the kind `9735` event ID and signature.
+2. Deduplicate identical receipt event IDs across relays.
+3. Confirm the signer matches the LNURL `nostrPubkey` used for the invoice.
+4. Parse and verify the embedded kind `9734` request.
+5. Compare `p`, `e`, `a`, `P` and optional `lnurl` bindings.
+6. Decode BOLT11 and compare its amount with the request amount.
+7. Compare the invoice description hash with the exact `description` string.
+8. Report the result as a signed server claim, not independent payment proof.
+
+This sequence turns a convenient social signal into something a client can explain and debug. It also keeps the final limitation visible: NIP-57 can authenticate who issued a consistent receipt, but it cannot make the issuer unable to lie.
