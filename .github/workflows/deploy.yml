@@ -28,9 +28,6 @@ jobs:
         with:
           name: production-${{ github.sha }}
 
-      - name: Unpack the verified build
-        run: tar -xzf production.tar.gz
-
       - name: Write runtime environment
         env:
           PRODUCTION_ENV: ${{ secrets.ENV_PRODUCTION }}
@@ -44,26 +41,18 @@ jobs:
           host: ${{ secrets.SSH_HOST_PROD }}
           username: ${{ secrets.SSH_USER_PROD }}
           key: ${{ secrets.SSH_PRIVATE_KEY_PROD }}
-          source: ".next,public,scripts/newsletters,newsletters,next.config.ts,package.json,package-lock.json,.env"
-          target: /var/www/nostr-wot
+          source: "production.tar.gz,.env,scripts/deploy-site.sh,scripts/site-nginx.mjs"
+          target: /var/www/nostr-wot/incoming/${{ github.sha }}
           overwrite: true
 
-      - name: Restart app via SSH
+      - name: Activate the healthy release via SSH
         uses: appleboy/ssh-action@v1.0.0
         with:
           host: ${{ secrets.SSH_HOST_PROD }}
           username: ${{ secrets.SSH_USER_PROD }}
           key: ${{ secrets.SSH_PRIVATE_KEY_PROD }}
-          script: |
-            set -e
-            cd /var/www/nostr-wot
-            # Runtime subscriptions and delivery records must survive application deploys.
-            install -d -m 700 data/newsletter
-            npm ci --legacy-peer-deps
-            export PORT=3000
-            pm2 delete nostr-wot || true
-            pm2 start "npm run start" --name nostr-wot
-            pm2 save
+          command_timeout: 20m
+          script: bash /var/www/nostr-wot/incoming/${{ github.sha }}/scripts/deploy-site.sh '${{ github.sha }}'
 
       - name: Verify the live homepage and refreshed sitemap
         run: |
