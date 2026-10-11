@@ -1,0 +1,57 @@
+---
+title: "Prüfe, bei welchem Backend du dich authentifizierst"
+description: "Verstehe Berechtigungen für Website, Konto, genaue URL und HTTP-Methode bei getrennten API-Domains."
+excerpt: "Verstehe Berechtigungen für Website, Konto, genaue URL und HTTP-Methode bei getrennten API-Domains."
+date: "2026-09-30"
+updated: "2026-10-01"
+featuredImage: "/images/illustrations/backend-authentication.webp"
+previewImage: "/images/illustrations/backend-authentication.webp"
+ogImage: "/images/illustrations/backend-authentication.webp"
+published: true
+translationKey: "backend-authentication"
+difficulty: "intermediate"
+order: 18
+author:
+  name: "Leon Acosta"
+  avatar: "/authors/leon-profile.jpg"
+tags:
+  - "Security"
+  - "Permissions"
+  - "Authentication"
+---
+
+[Nostr WoT](https://github.com/nostr-wot/nostr-wot-extension) trennt den Zugriff einer Website auf deine Identität von der Erlaubnis, dich bei einem HTTP-Dienst zu authentifizieren. Für WebSocket gibt es den [Relay-Leitfaden](/guides/relay-authentication).
+
+## Genaue Freigaben und optionale Automatik
+
+Eine Website wie `https://client.example` darf `https://api.client.example` verwenden. Eine gespeicherte HTTP-Freigabe bindet das aktive Konto, den Website-Origin, die genaue signierte URL samt Abfrage und die HTTP-Methode. Sie gilt nicht für andere Ziele, Methoden, Websites oder Konten. Ältere originweite Freigaben verlangen neue Zustimmung; Ablehnungen bleiben wirksam.
+
+**Standard-Backend-Authentifizierung** ist anfangs pro Konto ausgeschaltet. In **Berechtigungen** aktiviert, erlaubt sie verbundenen Websites NIP-98 automatisch für denselben exakten HTTPS-Origin oder ein im [Register und Regelwerk](https://github.com/nostr-wot/nostr-wot-extension/blob/main/docs/auth-client-registry.md) mit `nip98` markiertes Website/Backend-Paar. Gültige Pfade und Methoden dieser Origins sind eingeschlossen. Rein informative, ungeprüfte oder Wildcard-Einträge reichen nicht. Explizite Ablehnungen haben Vorrang. Relays bleiben getrennt.
+
+## Authentifizierung prüfen und verwalten
+
+Die Anfrage zeigt Website, Ziel und Methode. **Genehmigen** und **Ablehnen** gelten nur für diese Anfrage. Die Pfeilmenüs speichern Entscheidungen für Konto, Website, URL und Methode. Das Code-Symbol öffnet das rohe Ereignis. Sammelfreigaben für gewöhnliche Signaturen erteilen keine dauerhafte Authentifizierungsfreigabe.
+
+Öffne **Berechtigungen → Backend-Authentifizierung**. Bei aktiver Automatik erklärt ein Hinweis den Umfang und verlinkt Regeln und Register. Automatische Freigaben erzeugen keine einzelnen Zeilen: Eine leere Tabelle bedeutet nicht, dass die Automatik aus ist. Die Tabelle zeigt explizite Entscheidungen des aktiven Kontos.
+
+Widerrufe dort einen Eintrag oder deaktiviere die Automatik in Berechtigungen. Gespeicherte explizite Freigaben bleiben beim Abschalten erhalten. Widerruf betrifft zukünftige Signaturen, nicht versandte Nachweise oder bestehende Sitzungen. HTTP bietet keine Freigabe für alle Websites.
+
+## Was die Erweiterung prüft
+
+Die Origin stammt aus der vom Browser gelieferten Dokumentidentität. Eine Website kann nicht über ein RPC-Feld eine andere Origin wählen. Ein verifizierter Hauptframe ist erforderlich. Iframes, auch derselben Origin, sowie undurchsichtige oder widersprüchliche Origins werden abgelehnt. HTTPS ist vorgeschrieben, abgesehen von ausdrücklichen Loopback-Ausnahmen für Entwicklung.
+
+Mehrdeutige Pflicht-Tags, ungültige URLs, unerwartete Inhalte und veraltete Zeitstempel werden abgelehnt. Optionale `origin`- und `client-origin`-Tags müssen zur tatsächlichen Origin passen. Nach Wartezeiten für Genehmigung oder Entsperrung werden Zugriff, Berechtigungen und Kontositzung erneut geprüft. Ein NIP-46-Signer muss das vollständige genehmigte Ereignis einschließlich Tag-Reihenfolge mit dem erwarteten Konto signieren.
+
+## Integrierte Wallet-Vorgänge
+
+Wallet-Erstellung oder Wiederherstellung und Lightning-Adressverwaltung verwenden LNbits-proxy v2. Der allgemeine Website-Signer verweigert Tokens für diese sensiblen Verwaltungsrouten.
+
+Der Nachweis bindet URL, Methode und Hash der exakten Body-Bytes. Eine Backend-Challenge gilt 60 Sekunden und nur einmal. Ein separates Transaktionstoken wird in einem eigenen Header übertragen; nur sein Hash wird signiert. Der Server prüft Signatur und Bindungen, bevor er die Challenge atomar verbraucht. Browser-Aufrufe benötigen zusätzlich eine zugelassene HTTPS-Origin und ein passendes signiertes `client-origin`. Alte Routen liefern 426; der Client wechselt nicht zum alten Protokoll zurück.
+
+## Grenzen
+
+[NIP-98](https://github.com/nostr-protocol/nips/blob/master/98.md) setzt voraus, dass das Backend URL und Methode korrekt prüft. Die Erweiterung kann dies fremden Servern nicht aufzwingen. Wer einen gültigen Nachweis und erforderliche Tokens besitzt, kann sie vor der ersten Nutzung an das vorgesehene Ziel weiterleiten.
+
+CORS beschränkt Browser, nicht Server-zu-Server-Aufrufe. Ein Origin-Tag ist kein kryptografischer Browsernachweis. Bösartiger Code innerhalb einer vertrauten Hauptseite teilt deren Befugnisse. Diese Kontrollen begrenzen die Zustimmung, verhindern aber nicht jedes Phishing oder Weiterleiten von Authentifizierungsnachweisen.
+
+Siehe [v2-Vertrag](https://github.com/nostr-wot/nostr-wot-extension/blob/main/docs/wallet-auth-v2.md) und [Tests](https://github.com/nostr-wot/nostr-wot-extension/blob/main/tests/authentication.test.ts).

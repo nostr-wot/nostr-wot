@@ -1,4 +1,4 @@
-const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || 'https://nostr-wot.com';
+const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || 'https://nostrwot.com';
 
 /**
  * Escapes the five XML entities. The ampersand MUST be replaced first,

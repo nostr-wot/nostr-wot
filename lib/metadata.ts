@@ -2,7 +2,7 @@ import { previewImageUrl } from '@/lib/metadata-policy';
 import { Metadata } from 'next';
 import { locales, defaultLocale, type Locale } from '@/i18n/config';
 
-const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || 'https://nostr-wot.com';
+const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || 'https://nostrwot.com';
 
 
 // Locale to OpenGraph locale format mapping
@@ -29,11 +29,11 @@ export function getFullUrl(path: string, locale: Locale): string {
   }
 
   if (locale === defaultLocale) {
-    // Default locale: https://nostr-wot.com or https://nostr-wot.com/about
+    // Default locale: https://nostrwot.com or https://nostrwot.com/about
     return normalizedPath ? `${BASE_URL}${normalizedPath}` : BASE_URL;
   }
 
-  // Non-default locale: https://nostr-wot.com/es or https://nostr-wot.com/es/about
+  // Non-default locale: https://nostrwot.com/es or https://nostrwot.com/es/about
   return `${BASE_URL}/${locale}${normalizedPath}`;
 }
 
@@ -42,6 +42,16 @@ export function getFullUrl(path: string, locale: Locale): string {
  * @param path - The path without locale prefix (e.g., '/about', '/docs')
  * @param currentLocale - The current page locale
  */
+/**
+ * The site-relative prefix for a locale under `localePrefix: 'as-needed'`:
+ * empty for the default locale, `/<locale>` otherwise. The same expression was
+ * written out in six places before this existed, which is one rule in six
+ * copies.
+ */
+export function localePrefix(locale: string): string {
+  return locale === defaultLocale ? '' : `/${locale}`;
+}
+
 export function generateAlternates(path: string, currentLocale: Locale): Metadata['alternates'] {
   // Normalize: treat '/' and '' as homepage
   const normalizedPath = path === '/' ? '' : path;

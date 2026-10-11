@@ -6,14 +6,9 @@ import { generateAlternates, generateOpenGraph, generateTwitter, getFullUrl } fr
 import { type Locale } from "@/i18n/config";
 
 import EcosystemDirectory from "@/components/projects/EcosystemDirectory";
-import ecosystemData from "@/data/ecosystem-projects.json";
-import esEcosystemData from "@/data/ecosystem-projects.es.json";
-import deEcosystemData from "@/data/ecosystem-projects.de.json";
-import frEcosystemData from "@/data/ecosystem-projects.fr.json";
-import itEcosystemData from "@/data/ecosystem-projects.it.json";
-import ptEcosystemData from "@/data/ecosystem-projects.pt.json";
-import ruEcosystemData from "@/data/ecosystem-projects.ru.json";
-import { ecosystemJsonLd, serializeJsonLd, type EcosystemData } from "@/lib/ecosystem-projects";
+import { ecosystemJsonLd, serializeJsonLd } from "@/lib/ecosystem-projects";
+import { ecosystemDataFor } from '@/lib/ecosystem-data';
+import { peopleCopy } from '@/lib/people';
 
 
 type Props = {
@@ -63,8 +58,7 @@ const PROJECTS = [
 export default async function ProjectsPage({ params }: Props) {
   const { locale } = await params;
   const t = await getTranslations("projects");
-  const dataByLocale = { en: ecosystemData, es: esEcosystemData, de: deEcosystemData, fr: frEcosystemData, it: itEcosystemData, pt: ptEcosystemData, ru: ruEcosystemData };
-  const data = (dataByLocale[locale as Locale] ?? ecosystemData) as EcosystemData;
+  const data = ecosystemDataFor(locale);
   const jsonLd = ecosystemJsonLd(data, getFullUrl("/projects", locale as Locale), locale);
   const localPath = (path: string) => locale === "en" ? path : `/${locale}${path}`;
 
@@ -87,7 +81,8 @@ export default async function ProjectsPage({ params }: Props) {
           </div>
         </section>
 
-        <EcosystemDirectory locale={locale} data={data} blogHref={localPath("/blog")} newsHref={localPath("/news")} />
+        <EcosystemDirectory locale={locale} data={data} blogHref={localPath("/blog")} newsHref={localPath("/news")}
+          peopleLink={{ href: localPath("/people"), label: peopleCopy(locale).breadcrumbPeople }} />
 
         {/* Confirmed integrations remain distinct from the wider ecosystem. */}
         <Section padding="md">

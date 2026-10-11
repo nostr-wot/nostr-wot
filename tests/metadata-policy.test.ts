@@ -4,7 +4,7 @@ import { generateOpenGraph } from '../lib/metadata';
 
 test('preview fallback is an actual landscape PNG, not a mislabelled square icon', () => {
   const result = generateOpenGraph({ title: 'News', description: 'Nostr updates', path: '/news', locale: 'en' }) as any;
-  assert.notEqual(result.images[0].url, 'https://nostr-wot.com/icon-512.png');
+  assert.notEqual(result.images[0].url, 'https://nostrwot.com/icon-512.png');
   assert.equal(result.images[0].type, 'image/png');
 });
 
@@ -47,7 +47,7 @@ test('every published article has compliant search and social text', () => {
 test('metadata normalization preserves article dates, noindex and canonical URLs', () => {
   const result = normalizeMetadata({
     title: 'Newsletter', description: 'Edition', robots: { index: false },
-    alternates: { canonical: 'https://nostr-wot.com/es/newsletters/example-v1' },
+    alternates: { canonical: 'https://nostrwot.com/es/newsletters/example-v1' },
     openGraph: { type: 'article', publishedTime: '2026-09-01T00:00:00Z' },
   }, 'es') as any;
   assert.equal(result.openGraph.type, 'article');

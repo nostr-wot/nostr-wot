@@ -13,7 +13,7 @@ import { getFullUrl, generateOpenGraph, generateTwitter } from "@/lib/metadata";
 import "../globals.css";
 import "@nostr-wot/ui/styles.css";
 
-const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || 'https://nostr-wot.com';
+const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || 'https://nostrwot.com';
 
 async function pageMetadata({ params }: { params: Promise<{ locale: string }> }): Promise<Metadata> {
   const { locale } = await params;
@@ -83,7 +83,7 @@ export default async function LocaleLayout({ children, params }: Props) {
         />
         <script
           src="https://analytics.ahrefs.com/analytics.js"
-          data-key="vfOr4k8Sfsy9wYfOO0Nehw"
+          data-key="lRAW4OK800Jw+bWYgGmZNw"
           async
         />
         <link

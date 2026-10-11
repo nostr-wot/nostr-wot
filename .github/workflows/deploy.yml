@@ -28,13 +28,12 @@ jobs:
         with:
           name: production-${{ github.sha }}
 
-      - name: Unpack the verified build
-        run: tar -xzf production.tar.gz
-
       - name: Write runtime environment
         env:
           PRODUCTION_ENV: ${{ secrets.ENV_PRODUCTION }}
-        run: printf '%s\n' "$PRODUCTION_ENV" > .env
+        run: |
+          printf '%s\n' "$PRODUCTION_ENV" > .env
+          printf '\nNEXT_PUBLIC_BASE_URL=https://nostrwot.com\nSITE_BASE_URL=https://nostrwot.com\n' >> .env
 
       - name: Upload production files via SCP
         uses: appleboy/scp-action@v0.1.4
@@ -42,31 +41,23 @@ jobs:
           host: ${{ secrets.SSH_HOST_PROD }}
           username: ${{ secrets.SSH_USER_PROD }}
           key: ${{ secrets.SSH_PRIVATE_KEY_PROD }}
-          source: ".next,public,scripts/newsletters,newsletters,next.config.ts,package.json,package-lock.json,.env"
-          target: /var/www/nostr-wot
+          source: "production.tar.gz,.env,scripts/deploy-site.sh,scripts/site-nginx.mjs"
+          target: /var/www/nostr-wot/incoming/${{ github.sha }}
           overwrite: true
 
-      - name: Restart app via SSH
+      - name: Activate the healthy release via SSH
         uses: appleboy/ssh-action@v1.0.0
         with:
           host: ${{ secrets.SSH_HOST_PROD }}
           username: ${{ secrets.SSH_USER_PROD }}
           key: ${{ secrets.SSH_PRIVATE_KEY_PROD }}
-          script: |
-            set -e
-            cd /var/www/nostr-wot
-            # Runtime subscriptions and delivery records must survive application deploys.
-            install -d -m 700 data/newsletter
-            npm ci --legacy-peer-deps
-            export PORT=3000
-            pm2 delete nostr-wot || true
-            pm2 start "npm run start" --name nostr-wot
-            pm2 save
+          command_timeout: 20m
+          script: bash /var/www/nostr-wot/incoming/${{ github.sha }}/scripts/deploy-site.sh '${{ github.sha }}'
 
       - name: Verify the live homepage and refreshed sitemap
         run: |
-          curl --fail --retry 12 --retry-delay 5 --retry-all-errors https://nostr-wot.com/ -o /dev/null
-          curl --fail --retry 6 --retry-delay 5 --retry-all-errors https://nostr-wot.com/sitemap.xml -o "$RUNNER_TEMP/live-sitemap.xml"
+          curl --fail --retry 12 --retry-delay 5 --retry-all-errors https://nostrwot.com/ -o /dev/null
+          curl --fail --retry 6 --retry-delay 5 --retry-all-errors https://nostrwot.com/sitemap.xml -o "$RUNNER_TEMP/live-sitemap.xml"
           python3 -c 'import os, xml.etree.ElementTree as E; r=E.parse(os.environ["RUNNER_TEMP"]+"/live-sitemap.xml"); assert len(r.findall("{*}url")) > 0'
 
       - name: Restore IndexNow state

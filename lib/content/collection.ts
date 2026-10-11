@@ -103,7 +103,7 @@ export function createContentCollection<TExtra extends object>(
 
   function getAll(locale: Locale = defaultLocale): Meta[] {
     if (useCache) {
-      return (bucket(locale)?.posts ?? []).map(({ content: _content, ...meta }) => meta as Meta);
+      return [...(bucket(locale)?.posts ?? [])].sort(config.sort).map(({ content: _content, ...meta }) => meta as Meta);
     }
     return getSlugs(locale)
       .map((slug) => getPost(slug, locale))

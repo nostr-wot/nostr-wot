@@ -1,7 +1,7 @@
 import { serializeJsonLd } from '@/lib/serialize-jsonld';
 import type { NewsSource, NewsDigestItem } from '@/lib/content/shapes';
 
-const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || 'https://nostr-wot.com';
+const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || 'https://nostrwot.com';
 
 function absolute(url: string): string {
   return url.startsWith('http') ? url : `${BASE_URL}${url}`;

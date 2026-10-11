@@ -34,6 +34,7 @@ async function pageMetadata({ params }: Props): Promise<Metadata> {
 
 export default async function DocsOverviewPage() {
   const t = await getTranslations("docs");
+  const help = await getTranslations("help");
 
   // JSON-LD structured data
   const jsonLd = {
@@ -41,11 +42,11 @@ export default async function DocsOverviewPage() {
     "@type": "TechArticle",
     "name": t("labels.structuredTitle"),
     "description": t("labels.structuredDescription"),
-    "url": "https://nostr-wot.com/docs",
+    "url": "https://nostrwot.com/docs",
     "author": {
       "@type": "Organization",
       "name": "Nostr Web of Trust",
-      "url": "https://nostr-wot.com",
+      "url": "https://nostrwot.com",
     },
   };
 
@@ -59,6 +60,7 @@ export default async function DocsOverviewPage() {
       <article className="prose prose-gray dark:prose-invert max-w-none">
         <ScrollReveal animation="fade-up">
           <h1>{t("overview.title")}</h1>
+          <Link href="/help" className="mb-5 inline-block text-primary hover:underline">{help("title")} →</Link>
 
           <p className="lead text-xl text-gray-600 dark:text-gray-400">
             {t("overview.description")}
@@ -71,7 +73,7 @@ export default async function DocsOverviewPage() {
             href="/docs/extension"
             className="block p-6 bg-gray-50 dark:bg-gray-900 rounded-xl border border-gray-200 dark:border-gray-800 hover:border-primary dark:hover:border-primary transition-colors"
           >
-            <h3 className="font-semibold text-lg mb-2">{t("overview.extension.title")}</h3>
+            <h2 className="font-semibold text-lg mb-2">{t("overview.extension.title")}</h2>
             <p className="text-gray-600 dark:text-gray-400 text-sm">
               {t("overview.extension.description")} <InlineCode>{t("overview.extension.api")}</InlineCode> {t("overview.extension.forClientSide")}
             </p>
@@ -81,7 +83,7 @@ export default async function DocsOverviewPage() {
             href="/docs/oracle"
             className="block p-6 bg-gray-50 dark:bg-gray-900 rounded-xl border border-gray-200 dark:border-gray-800 hover:border-primary dark:hover:border-primary transition-colors"
           >
-            <h3 className="font-semibold text-lg mb-2">{t("overview.oracle.title")}</h3>
+            <h2 className="font-semibold text-lg mb-2">{t("overview.oracle.title")}</h2>
             <p className="text-gray-600 dark:text-gray-400 text-sm">
               {t("overview.oracle.description")}
             </p>
@@ -91,7 +93,7 @@ export default async function DocsOverviewPage() {
             href="/docs/lnbits-proxy"
             className="block p-6 bg-gray-50 dark:bg-gray-900 rounded-xl border border-gray-200 dark:border-gray-800 hover:border-primary dark:hover:border-primary transition-colors"
           >
-            <h3 className="font-semibold text-lg mb-2">{t("overview.lnbitsProxy.title")}</h3>
+            <h2 className="font-semibold text-lg mb-2">{t("overview.lnbitsProxy.title")}</h2>
             <p className="text-gray-600 dark:text-gray-400 text-sm">
               {t("overview.lnbitsProxy.description")}
             </p>
@@ -116,7 +118,7 @@ export default async function DocsOverviewPage() {
               </svg>
             </div>
             <div>
-              <h4 className="font-semibold mb-1">{t("integration.extensionTitle")}</h4>
+              <h3 className="font-semibold mb-1">{t("integration.extensionTitle")}</h3>
               <p className="text-sm text-gray-600 dark:text-gray-400 mb-2">{t("integration.extensionDescription")}</p>
               <Link href="/docs/extension" className="text-sm text-primary hover:underline">{t("integration.extensionLink")}</Link>
             </div>
@@ -129,7 +131,7 @@ export default async function DocsOverviewPage() {
               </svg>
             </div>
             <div>
-              <h4 className="font-semibold mb-1">{t("integration.oracleTitle")}</h4>
+              <h3 className="font-semibold mb-1">{t("integration.oracleTitle")}</h3>
               <p className="text-sm text-gray-600 dark:text-gray-400 mb-2">{t("integration.oracleDescription")}</p>
               <Link href="/docs/oracle" className="text-sm text-primary hover:underline">{t("integration.oracleLink")}</Link>
             </div>
@@ -142,7 +144,7 @@ export default async function DocsOverviewPage() {
               </svg>
             </div>
             <div>
-              <h4 className="font-semibold mb-1">{t("integration.sdkTitle")}</h4>
+              <h3 className="font-semibold mb-1">{t("integration.sdkTitle")}</h3>
               <p className="text-sm text-gray-600 dark:text-gray-400 mb-2">{t("integration.sdkDescription")}</p>
               <Link href="/docs/sdk" className="text-sm text-primary hover:underline">{t("integration.sdkLink")}</Link>
             </div>

@@ -1,0 +1,448 @@
+{
+  "title": "Help",
+  "description": "Find a task, follow the steps, or watch a short video. Practical help for using the Nostr WoT extension.",
+  "channel": "Watch all 14 videos on YouTube",
+  "browse": "Browse topics",
+  "all": "All topics",
+  "categories": {
+    "accounts": "Accounts & backups",
+    "permissions": "App permissions",
+    "payments": "Wallet & zaps",
+    "settings": "Settings",
+    "troubleshooting": "Troubleshooting"
+  },
+  "search": "What do you need help with?",
+  "results": "{count, plural, one {# task} other {# tasks}}",
+  "noResults": "No matching tasks. Try another word or choose all topics.",
+  "clear": "Clear filters",
+  "install": "Install the extension",
+  "guides": "More detailed guides",
+  "developers": "Developer documentation",
+  "videoNote": "Video in English. Some labels may differ by version.",
+  "watch": "Watch on YouTube",
+  "more": "More detail",
+  "topics": {
+    "account": {
+      "title": "Create a new account",
+      "steps": [
+        "On first setup, select Continue, then Create New. If you already have an account to restore, choose Import Key or Backup instead.",
+        "Reveal the recovery phrase privately. Write all 24 words in their exact order, then complete the backup check using your saved copy.",
+        "Choose a timed auto-lock setting and set and confirm a vault password. Save the password separately from the browser.",
+        "Continue through setup. Follow suggestions are optional; use Skip for now if you want to choose people later.",
+        "Select Get Started and check the account name and public key shown in the extension."
+      ],
+      "overview": "Create a new Nostr identity when you do not already have the account you want to use. Its recovery words restore the identity; the vault password unlocks this browser.",
+      "before": [
+        "Install the extension and open it from the browser toolbar.",
+        "Have a private place to record all 24 recovery words and a secure place to store them."
+      ],
+      "checks": [
+        "Your account should appear in the account selector, with a public key you can copy.",
+        "If Create New opens New Sub-Account, this vault already has a main recovery phrase. The new identity will share that phrase."
+      ]
+    },
+    "subAccounts": {
+      "title": "Add another identity",
+      "steps": [
+        "Unlock the extension, open the account selector, and choose Add Account → Create New.",
+        "Enter a name that helps you recognize the identity. The local account name does not publish a new profile name.",
+        "Keep the suggested derivation path unless you need a specific one. Open Advanced only to enter an exact path you intend to use.",
+        "Check the public-key preview, finish setup, then select the new identity in the account selector.",
+        "Record its exact derivation path and public key with your recovery records. The phrase alone does not tell another tool which path to restore."
+      ],
+      "overview": "Create another identity for a different purpose without generating another recovery phrase. Each derived identity has its own public key, but all identities using the same phrase depend on that shared backup.",
+      "before": [
+        "The vault must already contain a main recovery phrase; an imported private key alone is not enough.",
+        "Keep a secure copy of that phrase before adding identities."
+      ],
+      "checks": [
+        "The account selector should show the additional identity, and selecting it should show its own public key.",
+        "Changing a path creates a different identity; it does not move posts, followers, or profile information from another account."
+      ]
+    },
+    "backup": {
+      "title": "Back up your account",
+      "steps": [
+        "Open the account’s key or backup controls. The available options depend on whether it uses a recovery phrase, an imported private key, or a remote signer.",
+        "Save the private key or recovery backup in a secure location. Never paste private keys or recovery words into a website or a support message.",
+        "For a derived identity, save both the main recovery phrase and the exact derivation path. Include the expected public key in your recovery records.",
+        "If you create an encrypted backup, keep its password recoverable. Changing the browser’s vault password does not change an existing backup’s password."
+      ],
+      "overview": "A recovery backup lets you restore an account after losing this browser or device. Keep enough information to restore the exact identity, including its derivation path when it shares a recovery phrase.",
+      "before": [
+        "Unlock the extension and select the account you intend to back up.",
+        "Prepare private storage for the backup and record the account’s public key so you can recognize it after recovery."
+      ],
+      "checks": [
+        "Check that your saved copy is complete and readable before removing an account or clearing browser data.",
+        "When restoring later, compare the recovered public key with your saved public key. Importing a phrase does not automatically recreate every sub-account."
+      ]
+    },
+    "remove": {
+      "title": "Remove an account",
+      "steps": [
+        "Open the account selector at the top of the extension popup.",
+        "Find the account you want to remove and select its × icon.",
+        "Read the confirmation and check the account name. For a derived account, review the path and the explanation about other accounts sharing its phrase.",
+        "Choose Remove to confirm, or Cancel to keep the account."
+      ],
+      "overview": "Removing an account deletes its entry from this extension. Its published profile and posts remain on Nostr, and the identity can still exist on your other devices.",
+      "before": [
+        "Save a recoverable private-key or recovery backup before removing the account.",
+        "For an identity derived from a phrase, record its exact derivation path and public key too."
+      ],
+      "checks": [
+        "The removed account should no longer appear in this extension’s account selector.",
+        "Removing one derived account leaves other identities from that phrase available. Restoring keys later may still require reconnecting wallets and configuring permissions."
+      ]
+    },
+    "approvals": {
+      "title": "Review an app’s request",
+      "steps": [
+        "Open the extension’s pending request when a site asks to connect, sign, decrypt, or authenticate.",
+        "Check the requesting website and the action. Read the content or destination shown; the code button opens the raw event for closer inspection.",
+        "Choose Approve or Deny for the current request. Open an arrow menu only if you intend to remember a decision.",
+        "For grouped requests, check which requests are selected before approving the group. Revealing blurred message content does not itself approve sending it to the website."
+      ],
+      "overview": "An approval request tells you what a website wants to do with the active account. A one-time decision handles that request; a remembered decision can also affect future requests.",
+      "before": [
+        "Make sure the active account is the identity you want the website to use.",
+        "Check which website you are using and what action you just started there."
+      ],
+      "checks": [
+        "Return to the website and check whether the action completed; review Recent activity if you need to identify the request.",
+        "An unexpected request can be denied. Review saved site or authentication permissions if similar requests are being allowed without the review you expect."
+      ]
+    },
+    "permissions": {
+      "title": "Change global and site rules",
+      "steps": [
+        "Open Permissions → Global rules to inspect the defaults used across connected sites.",
+        "To edit the current website, open Permissions → Site rules. Gray rows are inherited defaults; colored rows are site overrides.",
+        "Use Add rule or edit an existing rule to choose Allow, Deny, or Ask for the intended action. A broader Deny can still block a request even when a narrower rule allows it.",
+        "Use Use inherited default to remove one override. To remove all overrides for this account and website, choose Reset site overrides and read the confirmation."
+      ],
+      "overview": "Global rules provide shared defaults, while site rules customize ordinary actions for the active account on one website. Connection consent and backend or relay sign-ins have separate controls.",
+      "before": [
+        "Select the account whose site permissions you want to change.",
+        "Open the affected website in the current browser tab before editing its site rules."
+      ],
+      "checks": [
+        "Reopen the site editor and check that the intended override or inherited rule is displayed.",
+        "Resetting overrides can make a global Allow apply again. It does not remove separate connection dismissals or backend and relay authentication decisions."
+      ]
+    },
+    "authentication": {
+      "title": "Review saved sign-in permissions",
+      "steps": [
+        "Open Permissions, then choose Backend authentication to review explicit saved backend decisions for the active account.",
+        "Revoke a saved backend decision you no longer want. Its scope includes the requesting site, exact URL, and method.",
+        "Open Relay authentication to review a relay’s allowed connected apps. Select the apps you intend to allow, or review the scope carefully before choosing all connected sites.",
+        "Review Default backend auth separately. It starts off and can allow same-origin or verified website/backend pairs automatically; read its policy link before enabling it."
+      ],
+      "overview": "A website may ask to identify you to its backend or to a Nostr relay. These sign-in permissions are separate from permission to sign ordinary posts or messages.",
+      "before": [
+        "Select the account whose saved sign-in decisions you want to review.",
+        "Identify the website and the backend or relay destination involved in the request."
+      ],
+      "checks": [
+        "An empty backend list does not prove automatic authentication is off. Check the Default backend auth setting as well.",
+        "Revoking permission affects future approvals; it does not sign you out of an existing website session or close an already authenticated relay connection."
+      ]
+    },
+    "wallet": {
+      "title": "Connect a Lightning wallet",
+      "steps": [
+        "Open Wallet and choose Quick Setup, NWC, or LNbits. Quick Setup creates a custodial wallet with a provider that holds the funds.",
+        "For NWC, create a dedicated connection in your wallet and copy the complete nostr+walletconnect:// secret. Allow wallet information and the operations you need.",
+        "For LNbits, enter the instance’s HTTPS URL and the wallet’s Admin API key. This is a wallet spending credential, not your administrator login password.",
+        "Connect, then check the balance and wallet activity. Use Deposit to create an invoice when you want to add sats."
+      ],
+      "overview": "The extension connects to a Lightning wallet so you can check funds, receive sats, and approve payments. Choose the connection method supported by your wallet.",
+      "before": [
+        "Unlock the extension and select the account that should use the wallet.",
+        "For an existing wallet, have its NWC connection secret or LNbits HTTPS URL and wallet Admin API key ready."
+      ],
+      "checks": [
+        "The connected wallet should show its available balance and the features its connection permits.",
+        "If balance, invoice creation, or history is unavailable, review the connection’s permissions and expiry in your wallet. NWC and LNbits access do not by themselves determine who holds the funds."
+      ]
+    },
+    "zaps": {
+      "title": "Send a zap",
+      "steps": [
+        "Choose the zap or Lightning button on the profile or note you want to support.",
+        "Enter the amount in sats and check which recipient the app displays.",
+        "Review any signing and payment requests in the extension. Check the amount, recipient, and fees where shown before approving.",
+        "Return to Wallet and check activity to confirm the payment outcome."
+      ],
+      "overview": "A zap sends sats to someone through a compatible Nostr app. The app requests a Lightning payment from the extension’s connected wallet.",
+      "before": [
+        "Connect a Lightning wallet with enough balance for the payment and any fees.",
+        "Use a Nostr app that supports paying through the extension, and check the recipient before starting."
+      ],
+      "checks": [
+        "A completed payment should appear in wallet activity. The app’s visible zap result can depend on its own updates.",
+        "If the outcome is unclear, inspect wallet history before retrying. Small payments may not prompt when automatic approval is enabled and its checks pass."
+      ]
+    },
+    "appearance": {
+      "title": "Change the appearance",
+      "steps": [
+        "Open Settings → Appearance and language.",
+        "Choose light, dark, or system appearance. Choose a theme from the available options.",
+        "Return to the dashboard and look at the text, cards, and buttons in the selected appearance."
+      ],
+      "overview": "Change how the extension looks using its appearance and theme controls. These settings affect the extension interface, not the design of websites you visit.",
+      "before": [
+        "Open the extension from the browser toolbar and unlock it if needed.",
+        "Decide whether you want a fixed light or dark appearance, or one that follows your system."
+      ],
+      "checks": [
+        "The extension should use the selected appearance when you return to its screens.",
+        "If the result is hard to read or not what you intended, return to the same controls and choose another theme or appearance."
+      ]
+    },
+    "language": {
+      "title": "Change the language",
+      "steps": [
+        "Open Settings → Appearance and language → Language.",
+        "Scroll or drag the language wheel until your language is centered. With the list focused, you can also use the up and down arrow keys.",
+        "Select Confirm to apply the choice. The button remains in the current interface language until you confirm.",
+        "Return to the interface and check the updated labels. Closing the picker without confirming keeps the previous language."
+      ],
+      "overview": "Choose the language used by the extension’s controls and messages. This does not translate Nostr posts or change the website’s separate language setting.",
+      "before": [
+        "Open and unlock the extension if needed.",
+        "Find Settings using the gear icon; this also helps if the current language is unfamiliar."
+      ],
+      "checks": [
+        "The language row should show your saved choice when you open it again.",
+        "Some labels may remain in English. To switch back, use the gear icon and return to the same language picker."
+      ]
+    },
+    "security": {
+      "title": "Set a password and auto-lock",
+      "steps": [
+        "Unlock the extension and open Settings → Security.",
+        "Choose a timed auto-lock interval. If you are turning timed locking on, set and confirm the password when prompted.",
+        "To replace an existing password, use Change password and complete the requested fields.",
+        "Lock the vault when finished, then unlock it using your saved password."
+      ],
+      "overview": "A vault password protects access to the keys stored in this browser. Timed auto-lock asks you to unlock again after inactivity; it does not replace a recovery backup.",
+      "before": [
+        "Keep a recoverable backup of your account before changing vault protection.",
+        "Have a secure place to store the password you will need to unlock this browser."
+      ],
+      "checks": [
+        "The selected timed interval should remain visible in Security after you reopen it.",
+        "A vault password is not a recovery phrase or an encrypted backup’s password. Keep those recovery records available independently of this browser."
+      ]
+    },
+    "import": {
+      "title": "Import an existing account",
+      "steps": [
+        "Choose Import Key or Backup during setup, or Add Account → Import Key or Backup from the account selector.",
+        "Paste the nsec, hex private key, or recovery phrase privately into the extension, or load your supported backup file.",
+        "For an encrypted backup or ncryptsec, enter its backup password. Keep the original backup intact if the format or password is rejected.",
+        "Continue after the format is recognized. Set a local vault password when prompted, or unlock an existing vault with its current password.",
+        "Finish setup and compare the displayed public key with the identity you intended to restore."
+      ],
+      "overview": "Restore an existing identity using its private key, recovery phrase, or supported encrypted backup. The extension detects the input format; an npub alone is a public key and belongs in Watch-Only.",
+      "before": [
+        "Have your existing backup and, if it is encrypted, the password used to encrypt it.",
+        "Keep the expected public key and any custom derivation path available to verify the restored identity."
+      ],
+      "checks": [
+        "The restored public key should match your saved account. A different key may mean you need the original derivation path.",
+        "Importing a phrase starts with its first Nostr key; it does not automatically restore every derived identity or custom path."
+      ]
+    },
+    "switch": {
+      "title": "Switch accounts",
+      "steps": [
+        "Unlock the extension and open the account selector at the top of the popup.",
+        "Select the identity you want to use and check its displayed name and public key.",
+        "Return to the website. If it still shows the old identity, sign out there and reconnect using the extension."
+      ],
+      "overview": "Switch the active identity before using a different Nostr account. Websites can keep their own signed-in session, so changing the extension’s selection may also require reconnecting there.",
+      "before": [
+        "Add or import each identity you want to switch between.",
+        "Check the account name or public key you intend to use."
+      ],
+      "checks": [
+        "Check the active account again before approving a new request.",
+        "If the website still displays a different profile, verify its own signed-in account rather than assuming the extension selection changed that session."
+      ]
+    },
+    "receive": {
+      "title": "Receive sats",
+      "steps": [
+        "Open Wallet → Deposit.",
+        "Enter the amount in sats and create the Lightning invoice.",
+        "Share the invoice with the payer. Keep your NWC secret and API key private.",
+        "Check wallet activity and balance after the payer sends the payment."
+      ],
+      "overview": "Create a Lightning invoice to receive a chosen amount into your connected wallet. You can share the invoice with the payer without sharing your wallet connection credentials.",
+      "before": [
+        "Connect a wallet and select the account that uses it.",
+        "For NWC, ensure the connection permits invoice creation and the information you need to check payment."
+      ],
+      "checks": [
+        "Look for a paid invoice or incoming payment in the wallet; creating an invoice alone does not mean it has been paid.",
+        "If invoice creation fails, review the wallet connection and its permissions before trying again."
+      ]
+    },
+    "limits": {
+      "title": "Change payment auto-approval",
+      "steps": [
+        "Open Wallet → Settings and find the Auto-Approve Threshold.",
+        "Enter a whole number of sats. Use zero if you want each payment to require confirmation.",
+        "Save the change, then reopen the settings to check the stored value.",
+        "Review wallet activity regularly and lower the threshold or revoke a site’s payment permission if you see unexpected requests."
+      ],
+      "overview": "Automatic approval can let eligible small payments proceed without a confirmation popup. The threshold determines payment eligibility; other permission and safety checks may still require confirmation.",
+      "before": [
+        "Connect the wallet you want to configure and check the active account.",
+        "Choose an amount in sats that you are comfortable allowing without reviewing each request."
+      ],
+      "checks": [
+        "Payments above the threshold should require confirmation; a payment below it may still require review.",
+        "This setting does not give a website permission to use the wallet on its own. Review site access and your wallet provider’s connection permissions separately."
+      ]
+    },
+    "loginFailed": {
+      "title": "I cannot sign in",
+      "steps": [
+        "Open and unlock the extension, then check the active account.",
+        "Look for a pending request. Read the requesting site and destination, then approve only if they match the sign-in you started.",
+        "Check Permissions → Site rules for a dismissal or relevant denial. Review Backend authentication or Relay authentication when the request involves those destinations.",
+        "Return to the website and retry sign-in after resolving the specific problem. If it shows an old account, sign out there before reconnecting."
+      ],
+      "overview": "A sign-in can stop because the vault is locked, the wrong account is selected, or a connection or authentication request is blocked. Start with the pending request and the exact error shown.",
+      "before": [
+        "Open the affected website in the current tab and note any error message.",
+        "Identify the account you expect to sign in with."
+      ],
+      "checks": [
+        "The website should show the intended account after a successful sign-in.",
+        "If the error persists or reports an unsupported request format, keep the exact error and site URL for support. Never include private keys or recovery words."
+      ]
+    },
+    "denied": {
+      "title": "A request is denied",
+      "steps": [
+        "Open Permissions → Site rules for the current website.",
+        "If the website is dismissed, review or remove that dismissal so it can ask to connect again.",
+        "For an ordinary action, check both site overrides and inherited global rules. Change the relevant denial; a broader Deny may also need attention.",
+        "For backend or relay sign-ins, review their separate authentication screens. Retry the action on the website after making the intended change."
+      ],
+      "overview": "A remembered denial can block a request without another approval prompt. The control to change depends on whether the website is dismissed, an ordinary action is denied, or a sign-in destination is blocked.",
+      "before": [
+        "Select the affected account and visit the website making the request.",
+        "Note the action or error so you can change the relevant permission."
+      ],
+      "checks": [
+        "A removed dismissal allows the website to ask again; it does not automatically connect the site or approve signing.",
+        "Resetting site overrides keeps global defaults and separate authentication decisions. Inspect those controls if the request is still denied."
+      ]
+    },
+    "walletFailed": {
+      "title": "My wallet will not connect",
+      "steps": [
+        "In the extension, check whether you selected NWC or LNbits for the credentials you have.",
+        "For NWC, paste the complete nostr+walletconnect:// connection secret. Check its expiry and allow wallet information for connection validation.",
+        "For LNbits, use the instance’s HTTPS URL and this wallet’s Admin API key. An invoice/read key or administrator password is not a replacement.",
+        "Try connecting again, then check which features work. Review balance, invoice, payment, and history permissions in the provider if only some operations fail."
+      ],
+      "overview": "Connection problems often come from a mismatched credential, an expired NWC connection, or an unavailable wallet. Check the connection method before replacing any credentials.",
+      "before": [
+        "Open your wallet provider’s interface and check that the wallet is available.",
+        "Keep the connection error visible or copy its text without any secret values."
+      ],
+      "checks": [
+        "A successful connection should display the wallet and the information its permissions allow.",
+        "If it still fails, provide the connection method and error text to support. Remove NWC secrets and API keys from messages and screenshots."
+      ]
+    },
+    "zapFailed": {
+      "title": "A zap failed",
+      "steps": [
+        "Check wallet activity and the provider’s history before retrying. If the payment is completed, do not send it again just because the app did not update.",
+        "If no payment completed, check that the wallet has enough balance for the amount and fees.",
+        "Unlock the extension and check the wallet connection, pending requests, and the website’s payment permission.",
+        "If the app reports that it cannot find a WebLN provider, refresh the page after unlocking and connecting the wallet.",
+        "Retry only after you have established the previous attempt’s outcome. Keep the error text if the request still fails."
+      ],
+      "overview": "A missing success message does not always mean no payment was made. Check the wallet’s actual payment outcome before sending the same zap again.",
+      "before": [
+        "Keep the requested amount and the app’s error message available.",
+        "Open the wallet used for the attempted payment."
+      ],
+      "checks": [
+        "Use a completed wallet record to confirm payment; the app’s zap display can update separately.",
+        "If the outcome remains unknown, keep checking the wallet or contact its provider before paying again. Never share connection secrets when asking for help."
+      ]
+    },
+    "archive": {
+      "title": "Back up and migrate your events",
+      "overview": "Archive keeps an encrypted local copy of signed events your relays can still return. Download an event file and copy eligible events to another relay. Keep your key backup separately.",
+      "before": [
+        "Unlock the extension and select the account whose events you want to save.",
+        "Choose source relays and a safe place for your downloaded event file."
+      ],
+      "steps": [
+        "Open Settings → Archive. Use the gear icon to review your source relays, then sync.",
+        "Open See details to check each relay result. Retry failed or incomplete sources when needed.",
+        "Choose Download archive to save signed events without a file password. Import the file into the matching account to restore events.",
+        "Under Migrate archive, choose a destination and review optional event categories. Select Start migration, check eligible events, then Confirm."
+      ],
+      "checks": [
+        "Migration copies events without deleting your local archive or data on other relays. The destination may retain its copies.",
+        "Uninstalling can remove the local archive. Keep a downloaded copy and back up your keys separately."
+      ]
+    },
+    "connect": {
+      "title": "Connect a remote signer",
+      "overview": "Use Nostr Connect to keep your private key in a separate signer while browser apps request signatures through Nostr WoT.",
+      "before": [
+        "Install Nostr WoT and a NIP-46-compatible remote signer.",
+        "Keep your recovery phrase private; never enter it into the signer connection."
+      ],
+      "steps": [
+        "Open the extension and choose Nostr Connect.",
+        "Scan the connection QR code with your signer and approve the pairing there.",
+        "Review the local connection protection and approve only apps you recognize.",
+        "Open a NIP-07 browser app and confirm its signing request appears in your signer."
+      ],
+      "checks": [
+        "The signer should complete the request without moving your private key into the browser.",
+        "The browser app should receive only the result of the approved signing request."
+      ]
+    }
+  },
+  "videosTitle": "Video tutorials",
+  "videosDescription": "Prefer to watch? Browse all 14 walkthroughs.",
+  "relatedVideo": "Watch the related video",
+  "relatedTasks": "Related tasks",
+  "browseCategories": "Browse help by topic",
+  "quickStart": "Start here",
+  "backToHelp": "Back to Help",
+  "stepsTitle": "Steps",
+  "supportTitle": "Still need help?",
+  "supportLink": "Contact us",
+  "searchHint": "Search accounts, permissions, wallets, and settings",
+  "categoryView": "View all topics",
+  "categoryDescriptions": {
+    "accounts": "Create identities, switch accounts, and keep your keys safe.",
+    "permissions": "Review requests and control what connected apps can do.",
+    "payments": "Connect a wallet, receive sats, and send zaps.",
+    "settings": "Choose your language and secure your extension.",
+    "troubleshooting": "Find help with sign-in, requests, and payments."
+  },
+  "beforeTitle": "Before you start",
+  "checksTitle": "Check the result",
+  "screenshotsTitle": "On screen",
+  "onThisPage": "On this page",
+  "breadcrumb": "Breadcrumb"
+}

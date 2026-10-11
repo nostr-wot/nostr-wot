@@ -1,5 +1,14 @@
 # Sharing Nostr WoT news on LinkedIn (and Nostr)
 
+## LinkedIn eligibility (owner policy, 6 October 2026)
+
+LinkedIn is reserved for relevant, substantive news and updates about the Nostr WoT platform and team. Routine third-party client, app, relay, protocol or ecosystem notices, including Amber, Amethyst, nak and Nostream releases, are not eligible. Publishing an article or adding a project to our directory does not make it a platform update. General ecosystem significance alone is not an exception.
+
+New ecosystem copy should contain `nostr` only. For a qualifying platform or team announcement, include `linkedin`, `linkedinCategory` set to `platform-update` or `team-update`, and a nonempty `linkedinReason` explaining the actual platform/team news and reader impact. Do not label third-party maintenance as a platform advance. Minor maintenance and routine version bumps do not qualify.
+
+The sender defaults to excluding LinkedIn when this explicit classification is absent, including old queued copy. Existing copy and receipts are preserved; policy exclusion is not delivery failure and never creates a delivery receipt. Nostr delivery remains governed by the normal queue and live-page checks. Do not retry a ledgered or uncertain delivery to apply a new classification.
+
+
 How automated social posting works in this repository. Adapted from
 `quantakrypto/website` (`scripts/social/` and `.github/workflows/social.yml`),
 which this mirrors closely on purpose: same API, same split of responsibility,
@@ -66,7 +75,7 @@ added.
 
 | Path | Job |
 |---|---|
-| `social/<slug>.json` | The copy: `{"linkedin": "...", "x": "...", "xThread": [...], "nostr": "..."}`. Only `linkedin` is required. |
+| `social/<slug>.json` | The copy: `{"linkedin": "...", "x": "...", "xThread": [...], "nostr": "..."}`. At least one supported copy field is required: `nostr` or `linkedin`. LinkedIn is sent only with the explicit eligibility fields above. |
 | `scripts/social/entries.mjs` | Reads entries, joins them to the article they name, derives URLs, builds request bodies. Shared by the scripts below. |
 | `scripts/social/checks.mjs` | The house rules, as `collectErrors()`. Used by the linter **and** by the poster, so the two cannot drift. |
 | `scripts/social/lint-social.mjs` | `npm run social:lint`, a CLI over `checks.mjs`. Wired into `.github/workflows/ci.yml` on pull requests and pushes to `main`. |
@@ -89,21 +98,14 @@ differences, both structural:
    no module to parse and no server-only boundary to work around. A copy file
    that names a slug with no matching `content/news/en/<slug>.mdx` is a lint
    error.
-2. **The URL has no date segment.** quantakrypto routes news at
-   `/news/<date>/<slug>`. This site routes it at `/news/<slug>`, per
-   `getFullUrl()` in `lib/metadata.ts` and `app/news-sitemap.xml/route.ts`, and
-   the newsroom playbook says the same thing from the other side: slugs carry
-   no date prefix, because the date already lives in frontmatter and on the
-   page. If that routing rule ever changes, update `entries.mjs` with it.
+2. **News URLs carry the first publication date.** `lib/news-path.mjs` supplies `/news/YYYY-MM-DD/slug` to the website and social scripts. The filename remains the translated slug without a date prefix.
 
-`date` and `type` are still read from the frontmatter, but neither one is part
-of the URL: `date` orders a batch newest-first, and `type` (`story` or
-`digest`) is carried for reporting.
+`date` orders the batch, `publishedAt` supplies the URL date, and `type` (`story` or `digest`) is carried for reporting.
 
 **Copy is English only**, even though every article ships in seven locales. The
 social accounts post in one language, so the derived link is the English one,
 which for the default locale takes no locale prefix
-(`https://nostr-wot.com/news/<slug>`).
+(`https://nostrwot.com/news/<publication-date>/<slug>`).
 
 `lint-social.mjs` **rejects hard-coded `http(s)://` links** in a copy field,
 except the exact verified community credit URL documented below:
@@ -238,7 +240,7 @@ agent to write `social/<slug>.json` for whatever it just published, in the same
 commit. It is told, in substance:
 
 > Write the English social copy for the article you just published. Follow
-> `docs/social-voice.md`. Only `linkedin` is required. Do not write a URL; the
+> `docs/social-voice.md`. At least one supported copy field is required: `nostr` or `linkedin`. LinkedIn is sent only with the explicit eligibility fields above. Do not write a URL; the
 > canonical link is derived and appended automatically, and a hard-coded link is
 > a lint error. Run `npm run social:lint` before committing.
 >
@@ -354,3 +356,7 @@ user-requested La Crypta community-call thank-you. This is an exact-URL exceptio
 other external URLs and hand-written article URLs remain lint errors. Article
 links still use `{url}` or `{url:/path}`. Keep this rule in `checks.mjs` and cover
 lookalike hosts and altered paths in the social tests.
+
+## Account Archive lesson link
+
+The user explicitly requested the published lesson URL https://youtu.be/He4gz4occgY alongside the derived Account Archive guide URL. That exact video URL is allowed in social copy; arbitrary YouTube URLs, query variants and lookalike hosts remain rejected. The account-archive entry publishes to LinkedIn only.

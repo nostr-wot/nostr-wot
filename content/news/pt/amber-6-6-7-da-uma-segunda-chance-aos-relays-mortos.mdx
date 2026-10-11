@@ -1,0 +1,89 @@
+---
+title: "Amber 6.6.7 dá uma segunda chance aos relays mortos depois de quinze minutos"
+description: "O Amber 6.6.7 faz o estado morto de um relay expirar depois de uma espera de 15 minutos, para de contar duas vezes cada tentativa de conexão falhada e reconstrói os sockets quando uma VPN sobe ou o aparelho recupera o acesso à internet."
+excerpt: "Um relay marcado como morto continuava morto até o aplicativo ser fechado à força, e como cada tentativa falhada era registrada duas vezes, bastavam cinco em vez de dez para chegar lá."
+date: "2026-10-05"
+publishedAt: "2026-10-05"
+backfilled: false
+type: "story"
+tags: ["Nostr", "Signer", "NIP-55", "Clients"]
+featuredImage: "/images/news/amber-6-6-7-gives-dead-relays-a-second-chance.svg"
+translationKey: "amber-6-6-7-gives-dead-relays-a-second-chance"
+sources:
+  - title: "Lançamento do Amber v6.6.7"
+    url: "https://github.com/greenart7c3/Amber/releases/tag/v6.6.7"
+    publisher: "greenart7c3/Amber"
+    date: "2026-10-05"
+  - title: "Comparação v6.6.6...v6.6.7"
+    url: "https://github.com/greenart7c3/Amber/compare/v6.6.6...v6.6.7"
+    publisher: "greenart7c3/Amber"
+    date: "2026-10-05"
+  - title: "NIP-55 Android Signer Application"
+    url: "https://github.com/nostr-protocol/nips/blob/master/55.md"
+    publisher: "nostr-protocol/nips"
+    date: "2026-10-05"
+published: true
+---
+
+O [Amber 6.6.7](https://github.com/greenart7c3/Amber/releases/tag/v6.6.7) foi publicado em 5 de outubro de 2026. Oito commits e vinte e três arquivos o separam do 6.6.6, e a maior parte da mudança está em como o assinador decide que um relay não vale mais a tentativa.
+
+O sintoma relatado era que os relays ficavam desconectados até o aplicativo ser fechado à força. A [comparação com o 6.6.6](https://github.com/greenart7c3/Amber/compare/v6.6.6...v6.6.7) mostra duas causas independentes, as duas na contabilidade das novas tentativas e não nos sockets.
+
+## Morto era permanente
+
+O `RelayHealthTracker` mantém, por relay, uma sequência de falhas de conexão consecutivas e para de tentar quando a sequência passa de `MAX_RECONNECT_ATTEMPTS`, que vale 10. Um relay morto também sai do conjunto de relays da assinatura, então a atualização periódica deixa de abrir sockets para ele.
+
+No 6.6.6 esse estado só era limpo por uma conexão bem-sucedida, uma mudança de rede do sistema operacional ou uma reconexão manual. O rastreador guardava um contador de falhas simples e o `isDead` era uma comparação com esse contador. Nada o fazia expirar.
+
+Isso é suportável quando toda queda chega como uma mudança de rede, e não é o que acontece. A documentação nova do arquivo nomeia os casos que escapam: uma rede Wi-Fi que perdeu o acesso à internet e o recuperou, um sinal de celular fraco, a queda de um relay. Nenhum é uma mudança de rede padrão, então nenhum reiniciava o rastreador, e todos os relays podiam ser marcados como mortos enquanto o aparelho seguia em uma rede aparentemente saudável.
+
+A versão 6.6.7 guarda um horário junto com o contador e faz o estado morto expirar:
+
+```kotlin
+const val DEAD_COOLDOWN_MS = 15 * 60 * 1000L
+
+fun isDead(relay: NormalizedRelayUrl): Boolean {
+    val entry = health[relay] ?: return false
+    return entry.failures > MAX_RECONNECT_ATTEMPTS && clock() - entry.lastFailureAt < DEAD_COOLDOWN_MS
+}
+```
+
+Quinze minutos depois da última falha, um relay volta a ser elegível e a atualização periódica o readmite. O limite não mudou; o que mudou é que passar dele agora é uma penalidade com prazo, e não um veredito. Uma função de relógio é injetada para que a expiração possa ser testada sem esperar.
+
+## Cada tentativa falhada era contada duas vezes
+
+A segunda causa é mais estreita e mais nítida. O Quartz, a biblioteca que comanda o conjunto de relays, relata uma tentativa de conexão falhada como `onCannotConnect` seguido de `onDisconnected`. Os dois tratadores chamavam o mesmo `scheduleReconnect`, que registrava uma falha.
+
+Então a sequência avançava de dois em dois por tentativa falhada. O limite documentado de 10 era alcançado em cinco. O comentário adicionado no 6.6.7 enuncia as duas metades do problema: contar as duas chamadas cortava pela metade o limite real, e um fechamento do lado do servidor não é uma falha de conexão.
+
+O reparo divide a função em duas. O `recordFailureAndScheduleReconnect` registra uma falha e é chamado apenas pelo `onCannotConnect`. O `scheduleReconnect` agora consulta o `isDead` e reconecta sem registrar nada, que é o que o `onDisconnected` precisa.
+
+## Mudanças de rede que não eram mudança de rede
+
+O lançamento também reconstrói as conexões de relay quando uma VPN sobe ou cai, e quando o aparelho recupera o acesso à internet, em vez de apenas na troca entre Wi-Fi e dados móveis.
+
+Um arquivo novo, `NetworkChangeDetector.kt`, guarda essa decisão em 79 linhas sem dependências de serviços do Android. Ele reduz a rede padrão a um retrato de três campos: o identificador da rede, o conjunto de transportes que ela declara e se o Android validou que a rede realmente chega à internet. Comparando retratos sucessivos, ele indica que um reinício é necessário quando o identificador muda, quando o conjunto de transportes muda, quando uma rede não validada passa a validada ou quando uma rede volta depois de ter sido perdida.
+
+Dois desses casos são os de VPN. Uma rede VPN declara o próprio `TRANSPORT_VPN` e também o transporte subjacente, então uma VPN que assume como rede padrão muda o identificador, e uma VPN que vai do Wi-Fi para o celular muda o conjunto de transportes mesmo que a rede padrão continue a mesma. O detector distingue as duas direções e as rotula, de modo que o reinício carrega um motivo.
+
+Ele é igualmente explícito sobre o que não é mudança. A primeira chamada depois do registro é a rede em que os relays já estão conectando, então ela é anotada como linha de base e não relata nada. Chamadas repetidas com o mesmo estado não relatam nada. Perder uma rede que já havia sido substituída não relata nada.
+
+O `ConnectivityService` foi reescrito em volta dele, perdendo 46 linhas e ganhando 81. Tanto o `onAvailable` quanto o `onCapabilitiesChanged` agora alimentam uma única função `onNetworkState`. Os reinícios são amortecidos pelo `NETWORK_SETTLE_MS`, um segundo, porque as chamadas chegam em rajadas enquanto a validação se completa e os relays devem ser reconstruídos uma única vez, na rede final. As capacidades seguem sendo registradas mesmo com o interruptor de corte ligado, para que a linha de base esteja atual quando os relays forem liberados.
+
+## Requisições de navegadores que não são o Chrome
+
+Uma entrada separada restaura a compatibilidade com clientes web. Uma requisição `nostrsigner:` pode levar seus parâmetros nos extras do intent, que é o que a [NIP-55](https://github.com/nostr-protocol/nips/blob/master/55.md) descreve para chamadores nativos do Android, ou na string de consulta da URI, que é o que uma página web faz. O Amber decidia entre os dois procurando um único extra, o `Browser.EXTRA_APPLICATION_ID`.
+
+O Chrome o define. Outros navegadores não. O DuckDuckGo é citado no changelog, e uma requisição dele tomava o caminho nativo e falhava com "Unknown signer type".
+
+O novo `isWebRequest` aceita três sinais mais fracos além desse extra: a categoria de intent `BROWSABLE`, um referenciador que resolve para um navegador e um parâmetro `type=` na string de consulta, verificado tanto cru quanto decodificado. Um extra `type` continua tendo prioridade, porque significa que o chamador usou a API de extras e é nativo. Resolver um referenciador para um navegador exige visibilidade de pacotes, então o `AndroidManifest.xml` adiciona uma entrada `<queries>` para `VIEW` mais `BROWSABLE` em `https`.
+
+## Uma chave estrangeira que o IGNORE não cobria
+
+A última entrada corrige uma queda ao salvar uma permissão para um aplicativo que acabara de ser apagado ou reiniciado. O `insertPermissions2` estava anotado com `OnConflictStrategy.IGNORE`, que cobre conflitos de unicidade e não falhas de chave estrangeira, então a inserção levantava `SQLITE_CONSTRAINT_FOREIGNKEY`. Agora ele lê primeiro as chaves de aplicativo que sobraram e descarta as permissões cujo pai não existe mais, e o `insertPermissions` passa por ele em vez de chamar a inserção crua.
+
+## O que os artefatos estabelecem
+
+A versão 6.6.7 é um lançamento publicado e marcado no commit `dc3f672e`, com onze pacotes Android e um manifesto de somas de verificação assinado. Dezenove casos de teste chegam com ele: quatro sobre a espera, oito sobre o detector de mudanças e sete sobre a decisão de requisição web. O changelog e o diff concordam nas quatro entradas.
+
+Isso estabelece o que o código faz. Não estabelece que algum aparelho esteja rodando ele, e os canais de loja e de repositório andam no próprio ritmo. Quem viu o assinador perder os relays deveria conferir a versão de fato instalada.

@@ -7,8 +7,8 @@ author:
   name: "Leon Acosta"
   avatar: "/authors/leon-profile.jpg"
   npub: "npub1gxdhmu9swqduwhr6zptjy4ya693zp3ql28nemy4hd97kuufyrqdqwe5zfk"
-featuredImage: "/images/guides/managing-identity/featured.svg"
-previewImage: "/images/guides/managing-identity/preview.svg"
+featuredImage: "/images/illustrations/managing-identity.webp"
+previewImage: "/images/illustrations/managing-identity.webp"
 tags:
   - "Identity"
   - "Keys"
@@ -16,17 +16,17 @@ tags:
 published: true
 seoTitle: "Managing Your Identity — Nostr WoT Extension Guide"
 seoDescription: "Learn how the Nostr WoT Extension manages your Nostr identity with NIP-07 signer support, profile management, and essential key security practices."
-ogImage: "/images/guides/managing-identity/og.jpg"
+ogImage: "/images/illustrations/managing-identity.webp"
 translationKey: "managing-identity"
 difficulty: "beginner"
 order: 2
+updated: "2026-10-01"
 ---
 
 Your Nostr identity is the anchor for everything else in the extension — your trust network, your wallet, your permissions. This guide covers how to manage that identity, keep your keys secure, and use the NIP-07 signer that lets websites interact with your Nostr account.
 
 ## NIP-07 Signer Support
 
-![The extension popup shows your identity status, trust graph sync state, and quick access to permissions and trust settings](/images/guides/managing-identity/extension-main.jpg)
 
 NIP-07 is the standard that allows Nostr web applications to request signatures from a browser extension without ever seeing your private key. When you visit a Nostr client like Primal, Snort, or Coracle, it can ask the extension to sign events on your behalf.
 
@@ -43,25 +43,9 @@ If you previously used another NIP-07 extension like nos2x or Alby, disable it b
 
 ## Managing Your Nostr Profile
 
-Your profile details — display name, bio, avatar, Lightning Address, and NIP-05 identifier — are stored on Nostr relays as a kind 0 event. The extension lets you view and edit these details directly.
+Open the extension and choose **Edit profile** in the Account section. Edit your display name, biography, picture, cover image and optional public fields. The picture and cover controls open the image editor; their high-contrast labels remain visible over both light and dark photos.
 
-### Viewing Your Profile
-
-Click the extension icon and navigate to the **Identity** tab. You will see your current profile information, your npub, and the relays your profile is published to.
-
-![The Identity tab shows your npub, profile setup status, trust graph sync state, and quick links to manage permissions and recent activity](/images/guides/managing-identity/identity-tab.jpg)
-
-![Your profile preview shows display name, bio, NIP-05 identifier, Lightning address, and website — exactly how other Nostr users will see you](/images/guides/managing-identity/view-profile.jpg)
-
-### Editing Your Profile
-
-![Review your profile before publishing — confirm display name, bio, NIP-05, Lightning address, and website, then click Confirm & Publish to sign and broadcast your kind 0 event](/images/guides/managing-identity/edit-profile.jpg)
-
-1. Click **Edit Profile** on the Identity tab.
-2. Update any fields you want to change.
-3. Click **Save**. The extension signs a new kind 0 event and publishes it to your relays.
-
-Changes propagate across Nostr clients within seconds as relays distribute the updated event.
+Review the preview before confirming publication. The extension signs and publishes a kind:0 profile event with the active identity and updates its local profile cache. Other clients must fetch the new event before displaying the changes; propagation time depends on their relays and caches. Profile fields are public. Keep recovery words and private keys out of them.
 
 ## Key Security Best Practices
 
@@ -79,7 +63,6 @@ Your seed phrase and nsec (private key) are the single most important pieces of 
 - The extension locks after a period of inactivity. You will need this password to unlock it.
 - If you forget this password, you can restore access using your seed phrase.
 
-![When the vault is locked, enter your encryption password to unlock — your private keys never leave the extension](/images/guides/managing-identity/lock-screen.jpg)
 
 ### Multiple Devices
 
@@ -96,3 +79,11 @@ The extension supports multiple identities. If you manage more than one Nostr ac
 ## What's Next?
 
 With your identity secured, it is time to understand how the extension uses it to build your [Web of Trust](/guides/understanding-wot). If you want to connect a wallet, jump to [Setting Up Your Wallet](/guides/setting-up-wallet).
+
+## Account previews and finishing setup
+
+When a main recovery phrase already exists, **Create New** opens **New Sub-Account**. It uses that phrase with another derivation path; it does not generate a second recovery phrase. Edit the name if needed. The npub and hex public keys appear below their labels in accent color, shortened in the middle. Copy icons copy the complete values. **Advanced** sits below the keys and opens the path editor; leave the proposed path unless you need a specific one.
+
+Follow suggestions show names and small pictures from verified public profiles when available. The extension reuses a shared cache for 30 minutes, keeping at most 500 profiles, and looks up missing metadata at purplepag.es. The public author key is sent to that directory; images load separately from the profile's image host. Missing profiles fall back to a shortened key. Loading does not block selection or **Skip for now**.
+
+The completion screen puts the account summary and **Get Started** at the bottom. It shows the account name and a copyable public key; only derived sub-accounts are described as sharing the main seed phrase. New accounts can use global rules or copy site overrides from another account. Authentication grants stay separate.

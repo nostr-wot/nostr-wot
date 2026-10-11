@@ -1,0 +1,82 @@
+---
+title: "Use NIP-65 relay lists without losing posts or mentions"
+description: "NIP-65 separates relays used to publish a person's events from relays used to receive mentions. The direction changes where clients should look."
+seoDescription: "Learn how NIP-65 kind 10002 relay lists use read and write markers, how clients route posts and mentions, and how to avoid common relay-list mistakes."
+excerpt: "A NIP-65 relay list is directional. Write relays are where a person publishes; read relays are where other people should deliver events that mention them."
+date: "2026-10-04"
+publishedAt: "2026-10-04"
+backfilled: false
+type: "story"
+tags: ["Nostr", "NIP-65", "Relays", "Guide"]
+featuredImage: "/images/news/use-nip-65-relay-lists-without-losing-posts-or-mentions.svg"
+translationKey: "use-nip-65-relay-lists-without-losing-posts-or-mentions"
+sources:
+  - title: "NIP-65: Relay List Metadata at commit 0046368"
+    url: "https://github.com/nostr-protocol/nips/blob/0046368a747c5c25ae2bec28bae0e537744c8f10/65.md"
+    publisher: "nostr-protocol/nips"
+    date: "2026-09-27"
+  - title: "NIP-01: Basic protocol flow at commit 0046368"
+    url: "https://github.com/nostr-protocol/nips/blob/0046368a747c5c25ae2bec28bae0e537744c8f10/01.md"
+    publisher: "nostr-protocol/nips"
+    date: "2026-09-27"
+published: true
+---
+
+A Nostr client cannot assume that every relay serves the same role. A person may publish their own events to one set of relays and watch another set for events that mention them. [NIP-65](https://github.com/nostr-protocol/nips/blob/0046368a747c5c25ae2bec28bae0e537744c8f10/65.md) gives clients a signed way to advertise that split with a replaceable kind `10002` event.
+
+The direction is easy to reverse by mistake. A person's **write** relays are where their events can be found. Their **read** relays are where other authors should send events that tag them. Getting this wrong can make a healthy relay setup look like lost posts or missing mentions.
+
+## Read and write describe the list owner's behavior
+
+A kind `10002` event stores relay URLs in `r` tags. The optional third value is `read` or `write`:
+
+```json
+{
+  "kind": 10002,
+  "tags": [
+    ["r", "wss://posts.example", "write"],
+    ["r", "wss://mentions.example", "read"],
+    ["r", "wss://both.example"]
+  ],
+  "content": ""
+}
+```
+
+The unmarked relay belongs to both groups. These labels are from the list owner's point of view. `write` means "I generally publish my events here." `read` means "I generally read mentions here." They are not permissions and do not promise that a relay will accept a connection, store an event or keep it indefinitely.
+
+Because kind `10002` is in NIP-01's replaceable range, the newest event for a public key supersedes older versions. A client editing the list should publish a complete replacement, not a partial patch. If two versions have the same timestamp, NIP-01 says the event with the lowest ID wins lexically.
+
+## Finding a person's posts uses their write relays
+
+To download events **from** a person, NIP-65 says clients should query that person's write relays. This includes their ordinary notes and other events they authored.
+
+That may sound backward if "write" is read as an instruction for the current client. It is not. It records where the list owner writes, so it tells everyone else where to read that owner's output.
+
+If a profile appears empty in one client, inspect the profile's kind `10002` event before concluding that the posts are gone. The client may know the public key but be searching only its own default relays. Adding the author's advertised write relays to the fetch plan can restore discovery without changing the user's permanent relay configuration.
+
+## Delivering a mention uses the recipient's read relays
+
+When publishing an event, a client should send it to the author's write relays. If the event tags another person, it should also send the event to that person's read relays. This is the other half of the route: author storage plus recipient delivery.
+
+Suppose Alice writes on Relay A and reads mentions on Relay B. Bob's client should publish Bob's reply to Bob's own write relays and to Alice's Relay B. Looking only at Alice's Relay A may find her posts, but it does not follow her declared inbox route.
+
+This does not guarantee delivery. A relay may require authentication, payment or another policy check. The recipient may change their list, and clients may implement NIP-65 differently. The relay list is routing metadata, not a receipt.
+
+## Keep the list small and make it discoverable
+
+NIP-65 recommends two to four relays in each category. A long list multiplies connections, duplicate events and publication work. More relays can improve redundancy, but every additional destination has a cost and may expose more of a user's activity pattern.
+
+The relay-list event itself also has to be found. NIP-65 tells clients to spread it broadly, including to well-known public indexers that other clients use to discover relay lists. It should also accompany the events published to the selected relays. Otherwise a perfectly formed list can remain invisible to the clients that need it.
+
+## A practical check sequence
+
+When posts or mentions appear missing:
+
+1. Fetch the newest valid kind `10002` event for the public key.
+2. Treat unmarked `r` tags as both read and write.
+3. Query the person's write relays for events they authored.
+4. Publish tagged events to the recipient's read relays as well as the author's write relays.
+5. Record relay acceptance separately from the routing choice.
+6. Fall back carefully when no list is discoverable, because absence of a list is not proof that any particular default is correct.
+
+NIP-65 does not create one global relay set. It lets each person publish directions for two different flows. Following those directions makes relay behavior easier to debug and reduces the chance that a client mistakes a routing mismatch for missing data.

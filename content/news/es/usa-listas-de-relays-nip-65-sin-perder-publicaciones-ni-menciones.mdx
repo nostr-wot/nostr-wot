@@ -1,0 +1,82 @@
+---
+title: "Usa listas de relays NIP-65 sin perder publicaciones ni menciones"
+description: "NIP-65 separa los relays donde una persona publica de los relays donde recibe menciones. La dirección cambia dónde debe buscar cada cliente."
+seoDescription: "Aprende cómo las listas de relays NIP-65 de tipo 10002 usan marcas read y write, cómo enrutar publicaciones y menciones y qué errores evitar."
+excerpt: "Una lista de relays NIP-65 tiene dirección. Los relays write guardan lo que publica una persona; los read reciben eventos que la mencionan."
+date: "2026-10-04"
+publishedAt: "2026-10-04"
+backfilled: false
+type: "story"
+tags: ["Nostr", "NIP-65", "Relays", "Guía"]
+featuredImage: "/images/news/use-nip-65-relay-lists-without-losing-posts-or-mentions.svg"
+translationKey: "use-nip-65-relay-lists-without-losing-posts-or-mentions"
+sources:
+  - title: "NIP-65: Metadatos de lista de relays en el commit 0046368"
+    url: "https://github.com/nostr-protocol/nips/blob/0046368a747c5c25ae2bec28bae0e537744c8f10/65.md"
+    publisher: "nostr-protocol/nips"
+    date: "2026-09-27"
+  - title: "NIP-01: Flujo básico del protocolo en el commit 0046368"
+    url: "https://github.com/nostr-protocol/nips/blob/0046368a747c5c25ae2bec28bae0e537744c8f10/01.md"
+    publisher: "nostr-protocol/nips"
+    date: "2026-09-27"
+published: true
+---
+
+Un cliente Nostr no puede asumir que todos los relays cumplen la misma función. Una persona puede publicar sus eventos en un grupo de relays y vigilar otro para recibir eventos que la mencionan. [NIP-65](https://github.com/nostr-protocol/nips/blob/0046368a747c5c25ae2bec28bae0e537744c8f10/65.md) permite anunciar esa separación con un evento reemplazable de tipo `10002` firmado.
+
+Es fácil invertir la dirección. Los relays **write** de una persona son donde se encuentran sus eventos. Sus relays **read** son donde otros autores deben enviar eventos que la etiquetan. Confundirlos puede hacer que una configuración sana parezca sufrir publicaciones perdidas o menciones ausentes.
+
+## Read y write describen el comportamiento del dueño
+
+Un evento de tipo `10002` guarda URLs en etiquetas `r`. El tercer valor opcional es `read` o `write`:
+
+```json
+{
+  "kind": 10002,
+  "tags": [
+    ["r", "wss://publicaciones.example", "write"],
+    ["r", "wss://menciones.example", "read"],
+    ["r", "wss://ambos.example"]
+  ],
+  "content": ""
+}
+```
+
+El relay sin marca pertenece a ambos grupos. Las etiquetas se interpretan desde el punto de vista del dueño de la lista. `write` significa «aquí suelo publicar mis eventos». `read` significa «aquí suelo leer menciones». No son permisos ni prometen que el relay acepte una conexión, guarde un evento o lo conserve para siempre.
+
+Como el tipo `10002` está en el rango reemplazable de NIP-01, el evento más nuevo para una clave pública sustituye a versiones anteriores. Un cliente que edita la lista debe publicar un reemplazo completo, no un parche parcial. Si dos versiones tienen la misma marca de tiempo, NIP-01 indica que vence el ID menor en orden léxico.
+
+## Para encontrar publicaciones se usan relays write
+
+Para descargar eventos **de** una persona, NIP-65 recomienda consultar sus relays write. Esto incluye notas normales y otros eventos creados por ella.
+
+Puede parecer al revés si `write` se entiende como una instrucción para el cliente actual. No lo es. Registra dónde escribe el dueño de la lista y así dice a los demás dónde leer su salida.
+
+Si un perfil aparece vacío, conviene inspeccionar su evento `10002` antes de concluir que las publicaciones desaparecieron. El cliente quizá conozca la clave pública, pero busque solo en sus relays predeterminados. Añadir los relays write del autor al plan de consulta puede recuperar el contenido sin cambiar la configuración permanente del usuario.
+
+## Para entregar una mención se usan relays read
+
+Al publicar un evento, un cliente debe enviarlo a los relays write del autor. Si etiqueta a otra persona, también debe enviarlo a los relays read de esa persona. La ruta combina almacenamiento del autor y entrega al destinatario.
+
+Si Alice escribe en Relay A y lee menciones en Relay B, el cliente de Bob debe publicar la respuesta en los relays write de Bob y en Relay B de Alice. Consultar solo Relay A permite encontrar las publicaciones de Alice, pero no respeta la ruta de entrada que ella anunció.
+
+No hay garantía de entrega. Un relay puede exigir autenticación, pago u otra política. El destinatario puede cambiar su lista y los clientes pueden implementar NIP-65 de forma diferente. La lista es metadato de enrutamiento, no un recibo.
+
+## Mantén la lista pequeña y visible
+
+NIP-65 recomienda entre dos y cuatro relays por categoría. Una lista larga multiplica conexiones, duplicados y trabajo de publicación. Más relays pueden dar redundancia, pero cada destino cuesta recursos y puede revelar más sobre el patrón de actividad del usuario.
+
+El propio evento de lista también debe ser descubierto. NIP-65 pide difundirlo ampliamente, incluso en indexadores públicos conocidos que otros clientes usan para encontrar estas listas. También debe acompañar a los eventos publicados en los relays elegidos. De otro modo, una lista correcta puede seguir invisible.
+
+## Secuencia práctica de comprobación
+
+Cuando faltan publicaciones o menciones:
+
+1. Obtén el evento `10002` válido más reciente de la clave pública.
+2. Trata las etiquetas `r` sin marca como read y write.
+3. Busca eventos del autor en sus relays write.
+4. Envía eventos etiquetados a los relays read del destinatario y a los write del autor.
+5. Registra la aceptación de cada relay por separado de la decisión de ruta.
+6. Usa valores predeterminados con cuidado cuando no exista una lista visible, porque su ausencia no demuestra que ningún relay concreto sea correcto.
+
+NIP-65 no crea un conjunto global de relays. Permite que cada persona publique instrucciones para dos flujos distintos. Seguirlas facilita el diagnóstico y reduce el riesgo de confundir un error de ruta con datos perdidos.

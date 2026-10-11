@@ -52,7 +52,7 @@ export function backfilledWithoutPublishedAtMessage(data) {
   return (
     `news: "${name}" is marked \`backfilled: true\` but has no \`publishedAt\`. ` +
     'A backfilled entry must state its real publication date: `date` is the EVENT ' +
-    'date (slug, displayed date, sort, archive bucketing) and `publishedAt` is the ' +
+    'date (slug, event date, archive bucketing) and `publishedAt` is the ' +
     'ship date, the only value permitted as `datePublished` in structured data. ' +
     'Falling back to `date` would make the article claim it shipped on the day the ' +
     'event happened. Add `publishedAt` to the frontmatter.'
@@ -134,7 +134,7 @@ export const COLLECTIONS = [
         items: data.items || [],
       };
     },
-    sort: (a, b) => new Date(b.date).getTime() - new Date(a.date).getTime(),
+    sort: (a, b) => new Date(b.publishedAt ?? b.date).getTime() - new Date(a.publishedAt ?? a.date).getTime() || new Date(b.date).getTime() - new Date(a.date).getTime() || a.slug.localeCompare(b.slug),
     emitTypes: { typeName: 'NewsPost', typeImport: "import type { NewsPost } from '@/lib/news';", interfaceName: 'NewsCache' },
   },
 ];

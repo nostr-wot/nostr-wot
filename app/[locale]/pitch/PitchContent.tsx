@@ -113,7 +113,7 @@ export default function PitchContent() {
         {/* SLIDE 0 — TITLE */}
         <Slide active={current === 0} center>
           <AnimatedWotLogo size={140} className="pitch-title-logo" />
-          <a href="https://nostr-wot.com" target="_blank" rel="noopener noreferrer" className="pitch-label pitch-label-v pitch-link">{t("slide0.label")}</a>
+          <a href="https://nostrwot.com" target="_blank" rel="noopener noreferrer" className="pitch-label pitch-label-v pitch-link">{t("slide0.label")}</a>
           <h1 className="pitch-h1">
             {t.rich("slide0.titleLine1", richTags)}
             <br />
@@ -389,7 +389,7 @@ export default function PitchContent() {
           <div className="pitch-contact-grid">
             <div className="pitch-contact-cell">
               <div className="pitch-cc-label">{t("slide13.projectLabel")}</div>
-              <a href="https://nostr-wot.com" target="_blank" rel="noopener noreferrer" className="pitch-cc-value pitch-link">{t("slide13.projectValue")}</a>
+              <a href="https://nostrwot.com" target="_blank" rel="noopener noreferrer" className="pitch-cc-value pitch-link">{t("slide13.projectValue")}</a>
             </div>
             <div className="pitch-contact-cell">
               <div className="pitch-cc-label">{t("slide13.githubLabel")}</div>

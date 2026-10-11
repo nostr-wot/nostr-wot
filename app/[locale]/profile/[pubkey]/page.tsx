@@ -95,7 +95,7 @@ export default async function ProfilePage({ params }: ProfilePageProps) {
     () => null,
   );
   const npub = pubkey.startsWith("npub") ? pubkey : hexToNpub(pubkey);
-  const canonical = `https://nostr-wot.com${locale === "en" ? "" : `/${locale}`}/profile/${npub}`;
+  const canonical = `https://nostrwot.com${locale === "en" ? "" : `/${locale}`}/profile/${npub}`;
   const jsonLd = buildPersonJsonLd(initialProfile, npub, canonical);
 
   return (

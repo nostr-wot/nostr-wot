@@ -1,0 +1,105 @@
+---
+{
+  "title": "Créer des thèmes clairs et sombres pour Nostr WoT",
+  "description": "Créez une palette personnalisée, ajoutez un thème clair et sombre et contribuez à l’extension Nostr WoT.",
+  "excerpt": "Créez une palette personnalisée, ajoutez un thème clair et sombre et contribuez à l’extension Nostr WoT.",
+  "date": "2026-10-01",
+  "author": {
+    "name": "Leon Acosta",
+    "avatar": "/authors/leon-profile.jpg"
+  },
+  "featuredImage": "/images/illustrations/developers.webp",
+  "previewImage": "/images/illustrations/developers.webp",
+  "ogImage": "/images/illustrations/developers.webp",
+  "tags": [
+    "Développement",
+    "Thèmes"
+  ],
+  "published": true,
+  "translationKey": "create-extension-theme",
+  "difficulty": "advanced",
+  "order": 30
+}
+---
+
+## Choisir la bonne méthode
+
+Pour votre installation, ouvrez **Paramètres → Apparence et langue → Create custom theme**. Collez le JSON, choisissez **Parse JSON**, puis **Apply custom theme**. Le JSON enregistre une seule palette, sans bascule automatique. Pour proposer les deux modes, contribuez à un thème intégré ci-dessous.
+
+![Paramètres d’apparence dans une installation de démonstration en anglais.](/images/guides/change-language/02-appearance.png)
+
+## Une palette personnalisée complète
+
+Voici la palette sombre initiale de l’éditeur. Gardez les 20 clés. Commencez avec des couleurs hexadécimales à six chiffres. Les clés inconnues, couleurs manquantes et CSS arbitraire sont refusés. L’hexadécimal à huit chiffres et la syntaxe rgb/rgba prise en charge sont aussi acceptés. Un thème change l’apparence, pas les permissions.
+
+```json
+{
+  "bgPage": "#0b0d12",
+  "bgPageSolid": "#0b0d12",
+  "bgHtml": "#07090d",
+  "bgElevated": "#151922",
+  "surfaceHover": "#252c38",
+  "inputBg": "#1c222c",
+  "textHeading": "#ffffff",
+  "textBody": "#e8eaf0",
+  "textSecondary": "#c4c8d2",
+  "textMuted": "#9da4b2",
+  "brand": "#818cf8",
+  "brandHover": "#a5b4fc",
+  "textOnBrand": "#080b12",
+  "cardBg": "#151922",
+  "cardBorder": "#343c4a",
+  "controlBorder": "#687386",
+  "success": "#6ee7b7",
+  "error": "#ff909b",
+  "warning": "#fcd17a",
+  "info": "#93c5fd"
+}
+```
+
+## Ajouter un thème intégré à deux modes
+
+Créez un fork et une branche dédiée. Utilisez Node **24.15+ dans la série 24.x**, puis installez et compilez :
+
+```bash
+npm ci
+npm run build
+```
+
+### Utiliser le système existant
+
+1. Ajoutez l’identifiant à `THEME_OPTIONS` dans `src/constants/appearance.ts` et à `ProjectTheme` dans `src/domain/appearance/theme.ts`. Le résolveur utilise cet ID pour sombre et `your-theme-light` pour clair. Conservez Clair, Sombre et Système.
+2. Ajoutez le nom à `PROJECT_LABELS` dans `src/screens/Settings/AppearanceSection.tsx`. Les choix viennent de `THEME_OPTIONS` ; réutilisez le sélecteur et le service de stockage.
+3. Définissez les deux sélecteurs dans `src/styles/theme.css`, en suivant un thème comme Coracle. Définissez les couleurs sémantiques des fonds, textes, contrôles, focus, bordures et états. Vérifiez aussi les valeurs héritées. Évitez l’inversion automatique et les exceptions par composant.
+
+Thème et mode sont stockés séparément dans `appearanceTheme` et `appearanceMode`. Système suit le système d’exploitation, même quand l’extension reste ouverte. JSON personnalisé et La Crypta ont une palette fixe. Ne créez pas un autre stockage.
+
+## Vérifier le résultat
+
+Chargez `dist/` comme extension non empaquetée dans Chrome. Vérifiez popup, accueil, paramètres, demandes et dialogues en Clair, Sombre et Système. Testez focus clavier, survol, sélection, désactivation, erreurs, QR, textes longs et fenêtres étroites. Visez 4.5:1 pour le texte normal et 3:1 pour le grand texte et les contrôles significatifs. Mesurez les paires réelles, y compris les surfaces translucides.
+
+Complétez les tests existants pour votre thème, puis lancez :
+
+```bash
+node --import tsx --test tests/custom-theme.test.ts tests/theme-tokens.test.ts tests/theme-handoff.test.ts
+npm run typecheck
+npm run lint
+npm run build
+./tests/run.sh
+```
+
+## Proposer votre contribution
+
+Ouvrez une pull request avec description, sources ou licence de la palette, captures des deux modes sur des comptes de démonstration et commandes exécutées. Montrez les contrôles ouverts et fermés. Excluez builds, archives, comptes réels et clés privées. Suivez les conventions de contribution et de composants.
+
+### Liens d’installation facultatifs
+
+Si votre thème nécessite un lien d’installation, mettez à jour la liste autorisée du site et l’extension, avec les tests de transfert. Le JSON personnalisé ne peut pas passer par l’URL. Préservez toujours les choix existants. Lisez la documentation avant de modifier ce parcours.
+
+## Références
+
+- [CONTRIBUTING.md](https://github.com/nostr-wot/nostr-wot-extension/blob/main/CONTRIBUTING.md)
+- [Component standards](https://github.com/nostr-wot/nostr-wot-extension/blob/main/docs/component-standards.md)
+- [Theme CSS](https://github.com/nostr-wot/nostr-wot-extension/blob/main/src/styles/theme.css)
+- [Theme resolver and JSON validation](https://github.com/nostr-wot/nostr-wot-extension/blob/main/src/domain/appearance/theme.ts)
+- [Theme handoff](https://github.com/nostr-wot/nostr-wot-extension/blob/main/docs/theme-handoff.md)

@@ -1,0 +1,105 @@
+---
+{
+  "title": "Создание светлых и тёмных тем для Nostr WoT",
+  "description": "Создайте палитру, добавьте светлый и тёмный варианты темы и внесите вклад в расширение Nostr WoT.",
+  "excerpt": "Создайте палитру, добавьте светлый и тёмный варианты темы и внесите вклад в расширение Nostr WoT.",
+  "date": "2026-10-01",
+  "author": {
+    "name": "Leon Acosta",
+    "avatar": "/authors/leon-profile.jpg"
+  },
+  "featuredImage": "/images/illustrations/developers.webp",
+  "previewImage": "/images/illustrations/developers.webp",
+  "ogImage": "/images/illustrations/developers.webp",
+  "tags": [
+    "Разработка",
+    "Темы"
+  ],
+  "published": true,
+  "translationKey": "create-extension-theme",
+  "difficulty": "advanced",
+  "order": 30
+}
+---
+
+## Выберите подходящий путь
+
+Для своей установки откройте **Настройки → Оформление и язык → Create custom theme**. Вставьте JSON, выберите **Parse JSON**, затем **Apply custom theme**. JSON сохраняет одну палитру без автоматического переключения. Чтобы предложить оба режима, добавьте встроенную тему по шагам ниже.
+
+![Настройки оформления в демонстрационной установке на английском.](/images/guides/change-language/02-appearance.png)
+
+## Полная пользовательская палитра
+
+Это начальная тёмная палитра редактора. Сохраните все 20 ключей. Начните с шестизначных HEX-цветов. Неизвестные ключи, отсутствующие цвета и произвольный CSS отклоняются. Также поддерживаются восьмизначные HEX-цвета и допустимый синтаксис rgb/rgba. Тема меняет оформление, а не разрешения.
+
+```json
+{
+  "bgPage": "#0b0d12",
+  "bgPageSolid": "#0b0d12",
+  "bgHtml": "#07090d",
+  "bgElevated": "#151922",
+  "surfaceHover": "#252c38",
+  "inputBg": "#1c222c",
+  "textHeading": "#ffffff",
+  "textBody": "#e8eaf0",
+  "textSecondary": "#c4c8d2",
+  "textMuted": "#9da4b2",
+  "brand": "#818cf8",
+  "brandHover": "#a5b4fc",
+  "textOnBrand": "#080b12",
+  "cardBg": "#151922",
+  "cardBorder": "#343c4a",
+  "controlBorder": "#687386",
+  "success": "#6ee7b7",
+  "error": "#ff909b",
+  "warning": "#fcd17a",
+  "info": "#93c5fd"
+}
+```
+
+## Добавьте встроенную тему с двумя режимами
+
+Создайте форк и отдельную ветку. Используйте Node **24.15+ из серии 24.x**, установите зависимости и соберите проект:
+
+```bash
+npm ci
+npm run build
+```
+
+### Используйте существующую систему
+
+1. Добавьте ID в `THEME_OPTIONS` в `src/constants/appearance.ts` и в `ProjectTheme` в `src/domain/appearance/theme.ts`. Для тёмного режима используется ID, для светлого `your-theme-light`. Сохраните режимы Светлый, Тёмный и Системный.
+2. Добавьте название в `PROJECT_LABELS` в `src/screens/Settings/AppearanceSection.tsx`. Список строится из `THEME_OPTIONS`; используйте готовый селектор и сервис хранения.
+3. Задайте оба селектора в `src/styles/theme.css` по примеру Coracle. Настройте семантические цвета фонов, текста, элементов управления, фокуса, границ и состояний. Проверьте наследуемые значения. Не ограничивайтесь инверсией палитры и не добавляйте исключения для отдельных компонентов.
+
+Тема и режим сохраняются отдельно в `appearanceTheme` и `appearanceMode`. Системный режим следует ОС, в том числе при открытом расширении. Пользовательский JSON и La Crypta имеют фиксированные палитры. Не создавайте другое хранилище.
+
+## Проверьте результат
+
+Загрузите `dist/` как распакованное расширение в Chrome. Проверьте popup, начало работы, настройки, запросы и диалоги во всех трёх режимах. Проверьте клавиатурный фокус, наведение, выбор, отключённые состояния, ошибки, QR, длинный текст и узкие окна. Стремитесь к контрасту 4.5:1 для обычного текста и 3:1 для крупного текста и значимых элементов управления. Измеряйте реальные пары цветов, включая полупрозрачные поверхности.
+
+Расширьте существующие тесты для своей темы и выполните:
+
+```bash
+node --import tsx --test tests/custom-theme.test.ts tests/theme-tokens.test.ts tests/theme-handoff.test.ts
+npm run typecheck
+npm run lint
+npm run build
+./tests/run.sh
+```
+
+## Отправьте вклад
+
+Откройте pull request с описанием, источниками или лицензией палитры, скриншотами обоих режимов с демонстрационными аккаунтами и выполненными командами. Покажите раскрытые и закрытые элементы. Не добавляйте сборки, архивы, реальные данные аккаунтов или приватные ключи. Следуйте правилам участия и стандартам компонентов.
+
+### Необязательные ссылки установки
+
+Если теме нужна ссылка установки, обновите разрешённые темы сайта и расширение, а также тесты передачи. Пользовательский JSON нельзя передавать через URL. Существующие настройки должны сохраняться. Перед изменением прочитайте документацию.
+
+## Источники
+
+- [CONTRIBUTING.md](https://github.com/nostr-wot/nostr-wot-extension/blob/main/CONTRIBUTING.md)
+- [Component standards](https://github.com/nostr-wot/nostr-wot-extension/blob/main/docs/component-standards.md)
+- [Theme CSS](https://github.com/nostr-wot/nostr-wot-extension/blob/main/src/styles/theme.css)
+- [Theme resolver and JSON validation](https://github.com/nostr-wot/nostr-wot-extension/blob/main/src/domain/appearance/theme.ts)
+- [Theme handoff](https://github.com/nostr-wot/nostr-wot-extension/blob/main/docs/theme-handoff.md)

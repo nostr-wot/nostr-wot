@@ -1,0 +1,72 @@
+---
+title: "Amethyst 1.17 verliert keine ganzen Anfragen mehr wegen eines abgelehnten Kinds"
+description: "Amethyst 1.17.0 grenzt Abonnements ein, die ein Relay abgelehnt hat, statt sie fallen zu lassen, liest NIP-92-Metadaten für Profilbilder und korrigiert die Prüfung von NIP-49-Passwörtern."
+excerpt: "Ein Relay schloss jede Anfrage, die ein Kind nannte, das es nicht bediente. Die Gift Wraps eines Kontos, und mit ihnen seine Direktnachrichten und White-Noise-Einladungen, kamen deshalb nie an."
+date: "2026-10-06"
+publishedAt: "2026-10-06"
+backfilled: false
+type: "story"
+tags: ["Nostr", "Amethyst", "Clients", "NIP-92", "NIP-49"]
+featuredImage: "/images/news/amethyst-1-17-stops-losing-requests-to-refused-kinds.svg"
+translationKey: "amethyst-1-17-stops-losing-requests-to-refused-kinds"
+sources:
+  - title: "Amethyst v1.17.0 Release"
+    url: "https://github.com/vitorpamplona/amethyst/releases/tag/v1.17.0"
+    publisher: "vitorpamplona/amethyst"
+    date: "2026-10-05"
+  - title: "PR #4238: ein vom Relay namentlich abgelehntes Kind entfernen"
+    url: "https://github.com/vitorpamplona/amethyst/pull/4238"
+    publisher: "vitorpamplona/amethyst"
+    date: "2026-09-27"
+  - title: "PR #4239: ein REQ unter die Filtergrenze eines Relays bringen"
+    url: "https://github.com/vitorpamplona/amethyst/pull/4239"
+    publisher: "vitorpamplona/amethyst"
+    date: "2026-09-28"
+  - title: "PR #4320: NIP-92 imeta für Profilbild und Banner"
+    url: "https://github.com/vitorpamplona/amethyst/pull/4320"
+    publisher: "vitorpamplona/amethyst"
+    date: "2026-10-05"
+  - title: "PR #4209: neues Backup Keys und NIP-49-Korrekturen"
+    url: "https://github.com/vitorpamplona/amethyst/pull/4209"
+    publisher: "vitorpamplona/amethyst"
+    date: "2026-09-27"
+  - title: "PR #4201: Cordn-Gruppennachrichten"
+    url: "https://github.com/vitorpamplona/amethyst/pull/4201"
+    publisher: "vitorpamplona/amethyst"
+    date: "2026-09-26"
+published: true
+---
+
+[Amethyst 1.17.0](https://github.com/vitorpamplona/amethyst/releases/tag/v1.17.0) wurde am 5. Oktober 2026 unter dem Titel „Cordn and several updates“ veröffentlicht. Es ist ein großes Release: 1.253 Commits seit 1.16.0, mit 176 Pull Requests in den Release Notes. Die Release-Seite enthält Android-Pakete in den Varianten F-Droid und Google Play, Desktop-Builds für Linux, macOS und Windows sowie separate Pakete für `amy` und `geode`.
+
+Die meisten dieser Pull Requests sind Refactoring und Übersetzungen. Dieser Artikel behandelt vier Änderungen, die Nutzer tatsächlich bemerken können, gelesen aus den Pull Requests und ihren Diffs statt aus den einzeiligen Changelog-Einträgen.
+
+## Ein abgelehntes Kind versenkt nicht mehr die ganze Anfrage
+
+Die folgenreichste Korrektur betrifft Relays, die nur bestimmte Event-Kinds bedienen. [PR #4238](https://github.com/vitorpamplona/amethyst/pull/4238) dokumentiert ein Relay mit strfry 1.1.1 und einer Kind-Allowlist, das auf jedes `REQ` mit `CLOSED` antwortet, dessen Filter ein nicht bedientes Kind nennt, auch wenn die übrigen Kinds im selben Filter in Ordnung sind.
+
+Amethyst fragt Gift Wraps mit einem einzigen Filter für die Kinds `1059` und `21059` ab. Das Relay lehnte `21059` ab, Amethyst wertete das `CLOSED` als Ablehnung des gesamten Filtersatzes, und alle Gift Wraps gingen verloren. Bei einem Konto, dessen DM-Relay aus Kind `10050` dieses Relay war, kam keine NIP-17-Direktnachricht an und auch keine White-Noise-Einladung. Der Welcome-Pfad schlug ohne Log-Eintrag fehl, sodass nichts auf die Ursache hinwies.
+
+Die Korrektur bringt dem Relay-Pool bei, die Ablehnung zu lesen. Nennt der Grund eines `CLOSED` ein Kind, etwa `kind not allowed: 21059`, merkt sich Amethyst das für dieses Relay und entfernt das Kind aus jeder Anfrage, die es dafür baut, sowohl bei Änderungen als auch beim Wiederverbinden. Ein Filter, der danach kein Kind mehr enthält, wird verworfen statt leer gesendet, denn eine leere Kind-Liste würde alle Kinds anfordern.
+
+Dasselbe Relay schließt außerdem jede Anfrage mit vier oder mehr Filtern und gibt in seinem NIP-11-Dokument keinen `max_filters`-Wert an. Marmot-Gruppennachrichten verwenden einen Filter pro Gruppe, also lud ein Konto mit vier oder mehr Gruppen dort überhaupt keine Gruppennachrichten. [PR #4239](https://github.com/vitorpamplona/amethyst/pull/4239), das als erneute Anwendung in #4242 auf `main` gelangte, leitet die Grenze aus der Ablehnung ab: Wurden vier Filter abgelehnt, liegt das Maximum bei drei. Danach werden Filter, die sich in genau einer Wertemenge unterscheiden, zu einem Filter mit der Vereinigung dieser Werte zusammengeführt.
+
+Die Zusammenführung hat bewusste Grenzen. Filter mit `limit` werden nie zusammengeführt, weil ein Limit pro Filter und ein Limit über die Vereinigung verschiedene Anfragen sind. Filter, die sich in zwei Feldern unterscheiden, ebenfalls nicht, weil die Vereinigung Kombinationen treffen würde, die kein Filter angefragt hat. Passt eine Anfrage danach immer noch nicht, sendet Amethyst die ersten Filter bis zur Grenze und protokolliert eine Warnung. Laut Pull Request können einige Kontoabonnements weiterhin gekürzt werden, wenn ein begrenztes Relay das einzige Outbox-Relay des Kontos ist. Die vollständige Lösung ist einer separaten Änderung vorbehalten.
+
+## Profilbilder folgen NIP-92
+
+[PR #4320](https://github.com/vitorpamplona/amethyst/pull/4320) wurde am 5. Oktober gemergt, etwa zwei Stunden nachdem NIP-92 begonnen hatte, `imeta`-Tags für die `picture`- und `banner`-URLs von Kind `0` zu erlauben, eine Änderung, [über die hier heute bereits berichtet wurde](/de/news/2026-10-06/nip-92-gibt-profilbildern-fallbacks-und-blurhashes). Eine neue Klasse `ProfileImageMetas` ordnet ein `imeta`-Tag einem Profilbild nur zu, wenn die URLs nach dem Entfernen von Leerzeichen am Anfang und Ende gleich sind, sodass ein anderer Query-String nicht passt.
+
+Avatare und Banner können jetzt beim Laden einen Blurhash-Platzhalter zeigen und die angegebenen Fallback-URLs versuchen, wenn die primäre fehlschlägt. Bearbeitet jemand das eigene Profil, behält Amethyst die Metadaten eines unveränderten Bildes und entfernt sie für ein ersetztes oder gelöschtes Bild. Eine Testdatei mit 291 Zeilen deckt diese Fälle ab.
+
+## Backup Keys und NIP-49
+
+[PR #4209](https://github.com/vitorpamplona/amethyst/pull/4209) gestaltet den Bildschirm für die Schlüsselsicherung neu. Der `nsec` erscheint in drei nummerierten Zeilen aus Großbuchstaben-Gruppen, verdeckt bis zum Antippen, damit er sich auf Papier abschreiben lässt. Bech32 unterscheidet nicht zwischen Groß- und Kleinschreibung, und die Anmeldung auf Android, dem Desktop und in `amy` akzeptiert jetzt einen zurück eingetippten Schlüssel in Großbuchstaben mit Bindestrichen, Leerzeichen oder Zeilenumbrüchen. Vorher wurde ein großgeschriebenes `NSEC1` abgelehnt.
+
+Die passwortgeschützte NIP-49-Kopie fragt das Passwort jetzt zweimal ab und verlangt beim Erstellen eines neuen `ncryptsec` mindestens 12 Zeichen. Der Diff stellt klar, dass dies nur eine Regel für die Erstellung ist, da NIP-49 kein Minimum festlegt und die Entschlüsselung Passwörter akzeptieren muss, die andere Clients zugelassen haben.
+
+Derselbe Pull Request korrigiert den NIP-49-Code selbst. Die Entschlüsselung ignorierte das Ergebnis der Authentifizierung und hielt einen entschlüsselten Schlüssel für falsch, wenn keines seiner Bytes positiv war. Damit wurde ein gültiger Schlüssel abgelehnt, dessen 32 Bytes alle das höchste Bit gesetzt hatten. Jetzt prüft sie das Poly1305-Tag. Auch die Verschlüsselung ignorierte ihr Ergebnis, sodass ein Fehler einen `ncryptsec` erzeugen konnte, den kein Passwort öffnet; jetzt wirft sie einen Fehler. Verschlüsselte Payloads, die nicht genau 48 Bytes lang sind, werden abgelehnt.
+
+## Cordn kommt hinzu
+
+Der Titel des Releases bezieht sich auf [PR #4201](https://github.com/vitorpamplona/amethyst/pull/4201), der Cordn-Gruppennachrichten hinzufügt: Bildschirme zum Erstellen, Beitreten und Verwalten von Gruppen sowie eine Runtime, die MLS-verschlüsselte Gruppenkommunikation über Koordinator-Server abwickelt. Mit 51.174 hinzugefügten Zeilen in 419 Dateien ist es die größte Einzeländerung des Releases. Die Test-Checkliste des Pull Requests, einschließlich seiner drei Interop-Suiten, blieb unabgehakt.

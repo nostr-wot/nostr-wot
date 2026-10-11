@@ -1,0 +1,114 @@
+---
+title: "nak 0.21.0 lê listas de relays e resolve caminhos de petnames"
+description: "O nak 0.21.0 adiciona um comando relays que imprime os relays NIP-65 de uma chave pública com filtros de entrada e saída, e ensina qualquer argumento de chave pública a resolver caminhos de petnames NIP-02. Dezessete commits o separam do 0.20.7."
+excerpt: "As notas da versão estão vazias, então o diff é o único relato. Dois acréscimos se destacam: um subcomando novo para as listas de relays NIP-65 e a resolução de caminhos de petnames ligada ao analisador compartilhado de chaves públicas, e não a um único comando."
+date: "2026-10-04"
+publishedAt: "2026-10-04"
+backfilled: false
+type: "story"
+tags:
+  - "Nostr"
+  - "NIP"
+  - "Tooling"
+published: true
+translationKey: "nak-0-21-0-reads-relay-lists-and-resolves-petname-paths"
+featuredImage: "/images/news/nak-0-21-0-reads-relay-lists-and-resolves-petname-paths.svg"
+sources:
+  - title: "nak v0.21.0"
+    url: "https://github.com/fiatjaf/nak/releases/tag/v0.21.0"
+    publisher: "fiatjaf/nak"
+    date: "2026-10-03"
+  - title: "Comparação v0.20.7...v0.21.0"
+    url: "https://github.com/fiatjaf/nak/compare/v0.20.7...v0.21.0"
+    publisher: "fiatjaf/nak"
+    date: "2026-10-03"
+  - title: "nak relays"
+    url: "https://github.com/fiatjaf/nak/commit/55707c26af51b0c10611b962037a6d833ecd4778"
+    publisher: "fiatjaf/nak"
+    date: "2026-10-01"
+  - title: "petname support in parsePubKey()"
+    url: "https://github.com/fiatjaf/nak/commit/4011cba5c56c03ee8b9d03fcc2dc3215836e7108"
+    publisher: "fiatjaf/nak"
+    date: "2026-09-17"
+  - title: "Pull request #220: Resolve relative petnames using the selected signer"
+    url: "https://github.com/fiatjaf/nak/pull/220"
+    publisher: "fiatjaf/nak"
+    date: "2026-09-25"
+  - title: "enable shell completion generation"
+    url: "https://github.com/fiatjaf/nak/commit/5f28b21cbde99d0066c15c9ba31d8e4dd6ca0e49"
+    publisher: "fiatjaf/nak"
+    date: "2026-10-01"
+  - title: "Correct nak event behaviour if 0 lines received from an open stdin"
+    url: "https://github.com/fiatjaf/nak/commit/30551476c533c31591c5c3b5de6ff85fb722a167"
+    publisher: "fiatjaf/nak"
+    date: "2026-09-25"
+---
+
+O [nak](https://github.com/fiatjaf/nak), a ferramenta de linha de comando para Nostr, marcou a [v0.21.0](https://github.com/fiatjaf/nak/releases/tag/v0.21.0) em 3 de outubro de 2026. O corpo da publicação está vazio, então os [dezessete commits desde a v0.20.7](https://github.com/fiatjaf/nak/compare/v0.20.7...v0.21.0) são o único relato do que mudou. Dois deles adicionam capacidades em vez de corrigir comportamentos, e ambos recaem sobre especificações já cobertas neste site.
+
+## Um comando para as listas de relays NIP-65
+
+O [`55707c26`](https://github.com/fiatjaf/nak/commit/55707c26af51b0c10611b962037a6d833ecd4778) adiciona `relays.go`, um arquivo de 58 linhas que registra um subcomando novo de primeiro nível. Sua string de uso declara o escopo: `prints the nip65 relays for a given pubkey, one relay per line`.
+
+Ele recebe uma chave pública como argumento ou pela entrada padrão e escreve uma URL de relay por linha. Duas flags restringem a saída, cada uma com um alias que nomeia a outra metade do vocabulário do NIP-65:
+
+```
+--inbox, --read     only print relays marked as inbox/read
+--outbox, --write   only print relays marked as outbox/write
+```
+
+Vale ler a lógica do filtro de forma literal, porque o caso combinado não é uma união. Passar as duas flags exige as duas marcas no mesmo relay:
+
+```go
+if wantInbox && wantOutbox {
+    if !(rl.Inbox && rl.Outbox) {
+        continue
+    }
+}
+```
+
+Então `--inbox --outbox` imprime apenas os relays que servem as duas direções, o que sob o NIP-65 é o que uma tag `r` sem marcação produz, enquanto não passar nenhuma imprime a lista inteira. Juntas, as duas flags estreitam o conjunto em vez de ampliá-lo, o que importa quando a saída alimenta uma etapa de publicação.
+
+Os nomes das direções correspondem aos papéis descritos no [guia de roteamento NIP-65 publicado hoje mesmo](/pt/news/2026-10-04/use-listas-de-relays-nip-65-sem-perder-publicacoes-ou-mencoes): os relays de saída de um autor são de onde os eventos dele são buscados, e os relays de entrada de um destinatário são onde os eventos que o mencionam são entregues. O comando torna os dois destinos scriptáveis sem analisar à mão um evento de kind 10002.
+
+## Caminhos de petnames, no analisador compartilhado
+
+Os caminhos de petnames do NIP-02 chegam em duas etapas, e a segunda corrige a primeira. É o recurso adicionado ao NIP-02 na revisão relatada em [20 de setembro](/pt/news/2026-09-20/nip-02-da-caminhos-resoluveis-aos-apelidos) e restringido a ASCII no [acompanhamento três dias depois](/pt/news/2026-09-23/nip-02-limita-os-petnames-a-ascii).
+
+O [`4011cba5`](https://github.com/fiatjaf/nak/commit/4011cba5c56c03ee8b9d03fcc2dc3215836e7108) não adiciona um comando. Ele muda o analisador compartilhado: `parsePubKey` passa a receber um segundo argumento, uma chave pública a partir da qual resolver, e despacha qualquer valor que comece com um til para um novo `resolvePetnamePath`.
+
+```go
+func parsePubKey(value string, from nostr.PubKey) (nostr.PubKey, error) {
+	value = strings.TrimPrefix(value, "nostr:")
+
+	if strings.HasPrefix(value, "~") {
+		return resolvePetnamePath(value, from)
+	}
+```
+
+Esse auxiliar chama `sys.ResolvePetnamePath` com um tempo limite de cinco segundos. Seu comentário de documentação declara o mecanismo e dá a forma mista que o NIP-02 permite: o caminho `~erin/david/frank` percorre a lista de seguidos de cada nome da cadeia, e o primeiro nome pode ser, em vez disso, um identificador NIP-05, como em `~erin@names.com/david/frank`. Como a busca de perfil subjacente esconde os erros de NIP-05, uma resolução que falha é reverificada contra `nip05.QueryIdentifier`, de modo que um problema de DNS ou HTTP seja relatado como ele mesmo e não como um petname irresolúvel. O commit atualiza todos os pontos de chamada e adiciona 239 linhas de testes.
+
+O que essa etapa não resolve é de qual chave um caminho relativo parte. A [pull request #220](https://github.com/fiatjaf/nak/pull/220), integrada em 25 de setembro, adiciona `petname_cli.go` e um invólucro `parsePubKeyForCommand` que classifica a raiz:
+
+```go
+absolute := hexErr == nil || nip05.IsValidIdentifier(parts[0]) ||
+    (nip19Err == nil && (prefix == "npub" || prefix == "nprofile"))
+```
+
+Um caminho enraizado em uma chave pública hexadecimal, num identificador NIP-05 válido ou num `npub` ou `nprofile` é absoluto, e um comentário registra por que o caso é separado: `Absolute roots must also work without access to a signing key.` Só um caminho relativo chama `gatherKeyerFromArguments` e toma a chave pública desse assinante como ponto de partida. Ler para fora a partir de alguém que se pode nomear não exige chave, enquanto um caminho que parte dos seus próprios seguidos exige.
+
+A mesma pull request corrige um problema de ordem de argumentos. Uma chamada em `init` aplica `deferPetnameFlags` a toda a árvore de comandos e substitui cada flag portadora de chaves públicas por um invólucro que guarda a string crua e a resolve apenas depois que todas as flags foram analisadas. O comentário dá o motivo: uma flag de assinante como `--sec` pode aparecer depois da flag de petname na linha de comando, e a resolução precisa do assinante. Ela adiciona outras 169 linhas de testes.
+
+## Autocompletar e três correções menores
+
+O [`5f28b21c`](https://github.com/fiatjaf/nak/commit/5f28b21cbde99d0066c15c9ba31d8e4dd6ca0e49) define `EnableShellCompletion: true` no comando raiz, o que expõe `nak completion bash`, `zsh` e `fish`. O README ganha os três caminhos de instalação para os shells cujo pacote não faz isso.
+
+Três correções de comportamento são estreitas, mas cada uma fecha um caso em que a ferramenta fazia algo inútil em vez de relatar um problema:
+
+- O [`30551476`](https://github.com/fiatjaf/nak/commit/30551476c533c31591c5c3b5de6ff85fb722a167) adiciona `--github` ao `nak event`, e sua linha de uso dá o motivo: `treat empty stdin as no stdin at all, as GitHub Actions always opens it`. Nesse ambiente, uma entrada padrão sempre aberta mas vazia era indistinguível de uma entrada por pipe.
+- O `nak key encrypt` com um único argumento agora falha com `no password given or key piped on stdin` quando a entrada padrão não é um pipe, em vez de ler esse argumento solitário como senha sem chave à qual aplicá-la.
+- O `blossom` remove `Required: true` da sua flag `--server`, então o servidor pode ser dado por subcomando, e a ausência dele agora produz `no server specified`. O `blossom upload` ganha `--auto`, que resolve os servidores de mídia anunciados pelo usuário atual. O `nsite download` aceita um ponteiro `nevent1` ou `naddr1` além de uma URL de site, buscando nos relays de escrita do autor e nas dicas que o ponteiro carregue.
+
+## O que isso significa na prática
+
+Os dois acréscimos eliminam um passo feito à mão para quem escreve scripts contra o Nostr. Responder onde publicar ou onde ler já não exige buscar e analisar um evento de kind 10002, e um caminho de seguidos pode ser escrito onde antes ia uma string hexadecimal de 64 caracteres. Nenhum muda qualquer especificação: é uma ferramenta se pondo em dia com o NIP-02 e o NIP-65 como eles já são. A regra da raiz absoluta é o detalhe a guardar, porque um caminho de petname que parte dos seus próprios seguidos vai pedir uma chave.

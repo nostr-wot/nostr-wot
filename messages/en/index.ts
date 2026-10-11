@@ -1,3 +1,5 @@
+import help from './help.json';
+import uninstall from './uninstall.json';
 import ui from './ui.json';
 import common from './common.json';
 import home from './home.json';
@@ -9,6 +11,7 @@ import oracle from './oracle.json';
 import mediaKit from './mediaKit.json';
 import privacy from './privacy.json';
 import terms from './terms.json';
+import support from './support.json';
 import docs from './docs.json';
 import playground from './playground.json';
 import profile from './profile.json';
@@ -17,6 +20,7 @@ import notFound from './notFound.json';
 import pitch from './pitch.json';
 import guides from './guides.json';
 import projects from './projects.json';
+import people from './people.json';
 import notes from './notes.json';
 import widgets from './widgets.json';
 import pqc from './pqc.json';
@@ -24,6 +28,8 @@ import pqcChat from './pqcChat.json';
 import news from './news.json';
 
 const messages = {
+  help,
+  uninstall,
   ui,
   common,
   home,
@@ -35,6 +41,7 @@ const messages = {
   mediaKit,
   privacy,
   terms,
+  support,
   docs,
   playground,
   profile,
@@ -43,6 +50,7 @@ const messages = {
   pitch,
   guides,
   projects,
+  people,
   notes,
   widgets,
   pqc,

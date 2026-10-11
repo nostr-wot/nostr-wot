@@ -9,7 +9,7 @@ import { getGuide, getGuideSlugs, getRelatedGuides, getAllGuideTags, getAllGuide
 import { generateBlogAlternates, getFullUrl } from '@/lib/metadata';
 import { type Locale, locales } from '@/i18n/config';
 
-const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || 'https://nostr-wot.com';
+const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || 'https://nostrwot.com';
 
 const ogLocaleMap: Record<Locale, string> = {
   en: 'en_US',
@@ -23,6 +23,7 @@ const ogLocaleMap: Record<Locale, string> = {
 
 import { BlogContent } from '@/components/blog';
 import { GuideSidebar, GuidePostWrapper } from '@/components/guides';
+import { GuideMedia } from '@/components/guides/GuideMedia';
 import { GuideCard } from '@/components/guides';
 import { ScrollReveal, Section, LinkButton } from '@/components/ui';
 import { ArrowLeftIcon } from '@/components/icons';
@@ -113,11 +114,11 @@ export default async function GuidePostPage({ params }: Props) {
     'author': {
       '@type': 'Person',
       'name': guide.author.name,
-      'url': guide.author.npub ? `https://nostr-wot.com/profile/${guide.author.npub}` : undefined,
+      'url': guide.author.npub ? `https://nostrwot.com/profile/${guide.author.npub}` : undefined,
       'affiliation': {
         '@type': 'Organization',
         'name': 'Nostr Web of Trust',
-        'url': 'https://nostr-wot.com',
+        'url': 'https://nostrwot.com',
       },
     },
     'publisher': {
@@ -125,7 +126,7 @@ export default async function GuidePostPage({ params }: Props) {
       'name': 'Nostr Web of Trust',
       'logo': {
         '@type': 'ImageObject',
-        'url': 'https://nostr-wot.com/icon-512.png',
+        'url': 'https://nostrwot.com/icon-512.png',
       },
     },
     'mainEntityOfPage': {
@@ -143,7 +144,7 @@ export default async function GuidePostPage({ params }: Props) {
         '@type': 'ListItem',
         'position': 1,
         'name': 'Home',
-        'item': 'https://nostr-wot.com',
+        'item': 'https://nostrwot.com',
       },
       {
         '@type': 'ListItem',
@@ -191,8 +192,10 @@ export default async function GuidePostPage({ params }: Props) {
                   variant="secondary"
                   className="mb-8 inline-flex items-center gap-2 !px-4 !py-2 text-sm"
                 >
-                  <ArrowLeftIcon className="w-4 h-4" />
-                  {t('backToGuides')}
+                  <span className="inline-flex items-center gap-2 whitespace-nowrap">
+                    <ArrowLeftIcon className="w-4 h-4 shrink-0" />
+                    <span>{t('backToGuides')}</span>
+                  </span>
                 </LinkButton>
               </ScrollReveal>
 
@@ -266,6 +269,7 @@ export default async function GuidePostPage({ params }: Props) {
               {/* Main Content */}
               <article className="flex-1 min-w-0 max-w-prose">
                 <BlogContent content={guide.content} />
+                <GuideMedia guideKey={guide.translationKey} />
               </article>
 
               {/* Sidebar */}

@@ -6,7 +6,7 @@ const withNextIntl = createNextIntlPlugin("./i18n/request.ts");
 const nextConfig: NextConfig = {
   // Include content folder in serverless functions for blog
   outputFileTracingIncludes: {
-    '/*': ['./content/**/*'],
+    '/*': ['./content/**/*', './public/images/illustrations/*.jpg'],
   },
   async headers() {
     const securityHeaders = [
@@ -41,7 +41,7 @@ const nextConfig: NextConfig = {
         "img-src 'self' data: https: blob:",
         "font-src 'self' https://fonts.gstatic.com",
         "connect-src 'self' wss: wss://relay.damus.io wss://relay.nostr.band wss://nos.lol wss://relay.snort.social wss://purplepag.es wss://relay.primal.net https://www.google.com https://www.google.com/recaptcha/ https://www.gstatic.com https://*.google-analytics.com https://*.analytics.google.com https://region1.google-analytics.com https://wot-oracle.mappingbitcoin.com https://analytics.ahrefs.com https://cloudflareinsights.com",
-        "frame-src 'self' https://www.google.com/recaptcha/ https://recaptcha.google.com/",
+        "frame-src 'self' https://www.youtube-nocookie.com https://www.google.com/recaptcha/ https://recaptcha.google.com/",
         "base-uri 'self'",
         "form-action 'self'",
         "upgrade-insecure-requests",
@@ -149,14 +149,27 @@ const nextConfig: NextConfig = {
       { locale: "ru", oldSlug: "2026-08-01-nip-47-uproshchaet-yadro-i-dobavlyaet-rasshireniya", newSlug: "nip-47-uproshchaet-yadro-i-dobavlyaet-rasshireniya" },
     ];
 
-    return newsSlugRedirects.map(({ locale, oldSlug, newSlug }) => {
-      const prefix = locale === "en" ? "" : `/${locale}`;
-      return {
-        source: `${prefix}/news/${oldSlug}`,
-        destination: `${prefix}/news/${newSlug}`,
+    return [
+      ...['', '/en', '/es', '/pt', '/ru', '/it', '/fr', '/de'].map(prefix => ({
+        source: `${prefix}/blog/extension-themes-la-crypta`,
+        destination: `${prefix}/blog/extension-themes`,
         permanent: true,
-      };
-    });
+      })),
+      ...['nostr-wot.com', 'www.nostr-wot.com', 'www.nostrwot.com'].map(host => ({
+        source: '/:path*',
+        has: [{ type: 'host' as const, value: host }],
+        destination: 'https://nostrwot.com/:path*',
+        statusCode: 301 as const,
+      })),
+      ...newsSlugRedirects.map(({ locale, oldSlug, newSlug }) => {
+        const prefix = locale === "en" ? "" : `/${locale}`;
+        return {
+          source: `${prefix}/news/${oldSlug}`,
+          destination: `${prefix}/news/${newSlug}`,
+          permanent: true,
+        };
+      }),
+    ];
   },
 };
 

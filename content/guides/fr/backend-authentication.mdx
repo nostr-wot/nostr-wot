@@ -1,0 +1,57 @@
+---
+title: "Vérifiez le backend auquel vous vous authentifiez"
+description: "Comprenez les autorisations par site, compte, URL et méthode lorsque votre application utilise une API distincte."
+excerpt: "Comprenez les autorisations par site, compte, URL et méthode lorsque votre application utilise une API distincte."
+date: "2026-09-30"
+updated: "2026-10-01"
+featuredImage: "/images/illustrations/backend-authentication.webp"
+previewImage: "/images/illustrations/backend-authentication.webp"
+ogImage: "/images/illustrations/backend-authentication.webp"
+published: true
+translationKey: "backend-authentication"
+difficulty: "intermediate"
+order: 18
+author:
+  name: "Leon Acosta"
+  avatar: "/authors/leon-profile.jpg"
+tags:
+  - "Security"
+  - "Permissions"
+  - "Authentication"
+---
+
+[Nostr WoT](https://github.com/nostr-wot/nostr-wot-extension) distingue l’accès d’un site à votre identité de l’autorisation de vous authentifier auprès d’un service HTTP. Pour WebSocket, consultez le [guide des relais](/guides/relay-authentication).
+
+## Autorisations précises et automatisation facultative
+
+Un site comme `https://client.example` peut utiliser `https://api.client.example`. Une autorisation HTTP mémorisée lie le compte actif, l’origine du site, l’URL signée exacte avec sa requête et la méthode HTTP. Elle ne couvre pas d’autres destinations, méthodes, sites ou comptes. Les anciennes autorisations par origine demandent un nouveau consentement ; les refus restent valables.
+
+**Authentification backend par défaut** est désactivée initialement pour chaque compte. Activée dans **Permissions**, elle permet aux sites connectés d’utiliser NIP-98 automatiquement pour la même origine HTTPS exacte ou une paire site/backend marquée `nip98` dans le [registre et ses règles](https://github.com/nostr-wot/nostr-wot-extension/blob/main/docs/auth-client-registry.md). Les chemins et méthodes valides de ces origines sont couverts. Une entrée informative, non vérifiée ou avec joker ne suffit pas. Les refus explicites priment. Les relais restent séparés.
+
+## Examiner et gérer les autorisations
+
+La demande indique le site, la destination et la méthode. **Approuver** et **Refuser** concernent cette demande seulement. Les flèches mémorisent une décision pour ce compte, site, URL et méthode. L’icône de code ouvre l’événement brut. L’approbation groupée de signatures ordinaires n’accorde pas d’autorisation permanente d’authentification.
+
+Ouvrez **Permissions → Authentification du backend**. Un avis indique quand la politique est activée, explique sa portée et donne accès aux règles et au registre. Ses approbations automatiques ne créent pas de lignes : un tableau vide ne signifie pas qu’elle est désactivée. Le tableau contient les décisions explicites du compte actif.
+
+Révoquez une ligne ici ou désactivez la politique dans Permissions. La désactivation conserve les autorisations explicites. La révocation concerne les futures signatures, pas les preuves envoyées ni les sessions déjà créées. HTTP ne propose pas d’autorisation pour tous les sites.
+
+## Vérifications de l’extension
+
+L’origine vient de l’identité du document fournie par le navigateur. Une page ne peut pas choisir une origine de confiance dans un paramètre RPC. Un cadre principal vérifié est obligatoire ; les iframes, même de même origine, et les origines opaques ou incohérentes sont refusés. HTTPS est requis hors exceptions explicites de développement en loopback.
+
+Les tags obligatoires ambigus, URL invalides, contenus inattendus et dates périmées sont rejetés. Les tags facultatifs `origin` et `client-origin` doivent correspondre à l’origine réelle. Accès, permissions et session du compte sont revérifiés après attente d’une approbation ou d’un déverrouillage. Avec NIP-46, la signature retournée doit appartenir au compte attendu et correspondre exactement à l’événement approuvé, ordre des tags compris.
+
+## Opérations du portefeuille intégré
+
+Créer ou récupérer un portefeuille et gérer une adresse Lightning utilise le protocole v2 de LNbits-proxy. Le signataire générique des sites refuse les jetons destinés à ces routes sensibles.
+
+La preuve lie URL, méthode et hash des octets exacts du corps. Un défi de 60 secondes ne peut être consommé qu’une fois. Un jeton de transaction distinct circule dans son propre en-tête ; seul son hash est signé. Le serveur valide signature et paramètres avant de consommer atomiquement le défi. Les appels du navigateur nécessitent aussi une origine HTTPS autorisée et un `client-origin` signé correspondant. Les anciennes routes retournent 426, sans repli du client.
+
+## Limites
+
+[NIP-98](https://github.com/nostr-protocol/nips/blob/master/98.md) dépend d’une validation correcte de l’URL et de la méthode par le backend. L’extension ne peut l’imposer à tous les serveurs. Une personne détenant une preuve et les jetons requis peut les transférer au destinataire prévu avant leur première utilisation.
+
+CORS limite les navigateurs, pas les appels entre serveurs. Un tag d’origine ne constitue pas une attestation cryptographique du navigateur. Du code malveillant dans un site principal autorisé partage ses droits. Ces contrôles limitent le consentement sans éliminer tout hameçonnage ou transfert d’authentification.
+
+Consultez le [contrat v2](https://github.com/nostr-wot/nostr-wot-extension/blob/main/docs/wallet-auth-v2.md) et les [tests](https://github.com/nostr-wot/nostr-wot-extension/blob/main/tests/authentication.test.ts).

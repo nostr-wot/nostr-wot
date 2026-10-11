@@ -13,12 +13,8 @@
  *    does. There is no module to import and no server-only boundary to worry
  *    about.
  *
- * 2. **The URL carries no date.** quantakrypto routes news at
- *    `/news/<date>/<slug>`; this site routes it at `/news/<slug>` for the
- *    default locale, per `getFullUrl()` in `lib/metadata.ts` and the news
- *    sitemap in `app/news-sitemap.xml/route.ts`. The newsroom playbook makes
- *    the same point from the other side: slugs carry no date prefix. If that
- *    routing rule ever changes, update it here too.
+ * 2. News URLs use `/news/<publication-date>/<slug>`, shared with the site
+ *    through `newsPath`. Blog and guide URLs remain undated.
  *
  * Copy is **English only**, even though every article ships in seven locales.
  * The social accounts post in one language, so the derived URL is the English
@@ -32,12 +28,14 @@
 import { readFileSync, readdirSync, existsSync } from "node:fs";
 import { join } from "node:path";
 import matter from "gray-matter";
+import { eligibleChannelKeys } from "./channel-policy.mjs";
+import { newsPath } from "../../lib/news-path.mjs";
 
 export const ROOT = new URL("../..", import.meta.url).pathname;
 export const SOCIAL_DIR = join(ROOT, "social");
 /** Copy is English only, so only the `en` articles are ever joined against. */
 export const NEWS_DIR = join(ROOT, "content/news/en");
-export const BASE_URL = (process.env.SITE_BASE_URL || "https://nostr-wot.com").replace(/\/$/, "");
+export const BASE_URL = (process.env.SITE_BASE_URL || "https://nostrwot.com").replace(/\/$/, "");
 
 /** Only these keys are recognised in a social/<slug>.json file. */
 export const KNOWN_CHANNELS = ["linkedin", "x", "xThread", "nostr"];
@@ -82,8 +80,7 @@ function toDateString(value) {
  * slug -> { date, type, url }, built by reading the frontmatter of every
  * English article in the selected collection (news by default). Drafts are excluded.
  * `date` is used only to order a batch, and `type`
- * (`story` or `digest`) is carried for reporting; the URL depends on neither,
- * because news does not live under a dated path here.
+ * (`story` or `digest`) is carried for reporting. News URLs use publishedAt.
  */
 export function loadNewsIndex(collection = "news") {
   if (!LINKABLE_COLLECTIONS.includes(collection)) throw new Error(`Unsupported social collection: ${collection}`);
@@ -105,7 +102,9 @@ export function loadNewsIndex(collection = "news") {
       date: toDateString(data.date),
       publishedAt: toDateString(data.publishedAt) || toDateString(data.date),
       type: typeof data.type === "string" ? data.type : "",
-      url: `${BASE_URL}/${collection}/${slug}`,
+      url: collection === "news"
+        ? `${BASE_URL}${newsPath({ slug, publishedAt: data.publishedAt || data.date })}`
+        : `${BASE_URL}/${collection}/${slug}`,
     });
   }
   return index;
@@ -143,7 +142,10 @@ export const SITE_LINK = /\{url:(\/[A-Za-z0-9\-._~/]*)\}/g;
  * /blog/ or /guides/ path actually matches an article on disk.
  */
 export function expandLinks(text) {
-  return text.replace(SITE_LINK, (_m, path) => `${BASE_URL}${path}`);
+  return text.replace(SITE_LINK, (_m, path) => {
+    const legacy = path.match(/^\/news\/([^/]+)$/);
+    return (legacy && loadNewsIndex().get(legacy[1])?.url) || `${BASE_URL}${path}`;
+  });
 }
 
 /**
@@ -186,4 +188,14 @@ export function buildEntries() {
   // Stable source order; the posting selector prioritizes newest publication.
   entries.sort((a, b) => a.date.localeCompare(b.date) || a.slug.localeCompare(b.slug));
   return { entries, errors };
+}
+
+/** The exact request builder used by both production and policy regression tests. */
+export function buildRequestPosts(entry) {
+  return eligibleChannelKeys(entry.data).map((key) => {
+    const config = CHANNEL_CONFIG[key];
+    const body = { channel: config.channel, text: withUrl(entry.data[key], entry.url) };
+    if (!config.primary) body.optional = true;
+    return body;
+  });
 }

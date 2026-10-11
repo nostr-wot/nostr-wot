@@ -1,5 +1,7 @@
 'use client';
 
+import { newsPath } from '@/lib/news-path.mjs';
+
 import ReadingTime from '@/components/ui/ReadingTime';
 
 import Image from 'next/image';
@@ -15,8 +17,9 @@ export interface NewsCardMeta {
   title: string;
   description: string;
   excerpt: string;
-  /** EVENT date — this is what gets displayed. */
+  /** Event date; cards display the publication date. */
   date: string;
+  publishedAt: string;
   featuredImage: string;
   previewImage: string;
   tags: string[];
@@ -55,13 +58,13 @@ export function NewsCard({ post, featured = false, variant = 'card' }: NewsCardP
 
   if (variant === 'compact' || variant === 'headline') {
     return (
-      <Link href={`/news/${post.slug}`} className="group block rounded-lg focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-primary">
+      <Link href={newsPath(post)} className="group block rounded-lg focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-primary">
         <article className="flex items-start gap-4 py-4">
           <div className="min-w-0 flex-1">
             <p className="mb-2 text-xs font-medium text-primary">{post.tags[0] || typeLabel}</p>
             <h3 className="text-sm font-semibold leading-snug text-gray-900 transition-colors group-hover:text-primary dark:text-white">{post.title}</h3>
             <div className="mt-2 flex flex-wrap gap-x-3 gap-y-1 text-xs text-gray-500 dark:text-gray-400">
-              <time dateTime={post.date}>{formatDate(post.date, locale)}</time>
+              <time dateTime={post.publishedAt}>{formatDate(post.publishedAt, locale)}</time>
               {variant === 'compact' && <ReadingTime value={post.readingTime} />}
             </div>
           </div>
@@ -77,7 +80,7 @@ export function NewsCard({ post, featured = false, variant = 'card' }: NewsCardP
 
   if (variant === 'lead') {
     return (
-      <Link href={`/news/${post.slug}`} className="group block rounded-xl focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-primary">
+      <Link href={newsPath(post)} className="group block rounded-xl focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-primary">
         <article>
           <div className="relative mb-5 aspect-[1200/630] overflow-hidden rounded-xl">
             <Image src={post.featuredImage} alt="" fill priority sizes="(min-width: 1280px) 32vw, (min-width: 768px) 45vw, 100vw" className="object-cover" />
@@ -89,7 +92,7 @@ export function NewsCard({ post, featured = false, variant = 'card' }: NewsCardP
           <h3 className="mb-3 text-2xl font-bold leading-tight text-gray-900 transition-colors group-hover:text-primary dark:text-white">{post.title}</h3>
           <p className="mb-4 text-base leading-relaxed text-gray-600 dark:text-gray-400">{post.excerpt}</p>
           <div className="flex flex-wrap gap-3 text-xs text-gray-500 dark:text-gray-400">
-            <time dateTime={post.date}>{formatDate(post.date, locale)}</time>
+            <time dateTime={post.publishedAt}>{formatDate(post.publishedAt, locale)}</time>
             <ReadingTime value={post.readingTime} />
           </div>
         </article>
@@ -99,7 +102,7 @@ export function NewsCard({ post, featured = false, variant = 'card' }: NewsCardP
 
   if (featured) {
     return (
-      <Link href={`/news/${post.slug}`} className="group block">
+      <Link href={newsPath(post)} className="group block">
         <article className="relative overflow-hidden rounded-2xl bg-white dark:bg-gray-800/50 border border-gray-200 dark:border-gray-700/50 shadow-sm hover:shadow-lg transition-all duration-300">
           <div className="grid md:grid-cols-2 gap-0">
             <div className="relative aspect-[16/10] md:aspect-auto overflow-hidden">
@@ -135,7 +138,7 @@ export function NewsCard({ post, featured = false, variant = 'card' }: NewsCardP
                 {post.excerpt}
               </p>
               <div className="flex flex-wrap items-center gap-3 text-sm text-gray-500 dark:text-gray-400">
-                <time dateTime={post.date}>{formatDate(post.date, locale)}</time>
+                <time dateTime={post.publishedAt}>{formatDate(post.publishedAt, locale)}</time>
                 <span aria-hidden="true">·</span>
                 <ReadingTime value={post.readingTime} />
               </div>
@@ -147,7 +150,7 @@ export function NewsCard({ post, featured = false, variant = 'card' }: NewsCardP
   }
 
   return (
-    <Link href={`/news/${post.slug}`} className="group block h-full">
+    <Link href={newsPath(post)} className="group block h-full">
       <article className="h-full overflow-hidden rounded-xl bg-white dark:bg-gray-800/50 border border-gray-200 dark:border-gray-700/50 shadow-sm hover:shadow-md transition-all duration-300 flex flex-col">
         <div className="relative aspect-[16/9] overflow-hidden">
           <Image
@@ -182,7 +185,7 @@ export function NewsCard({ post, featured = false, variant = 'card' }: NewsCardP
           </p>
           <div className="pt-4 border-t border-gray-100 dark:border-gray-700/50">
             <div className="flex items-center justify-between text-xs text-gray-500 dark:text-gray-400">
-              <time dateTime={post.date}>{formatDate(post.date, locale)}</time>
+              <time dateTime={post.publishedAt}>{formatDate(post.publishedAt, locale)}</time>
               <ReadingTime value={post.readingTime} />
             </div>
           </div>

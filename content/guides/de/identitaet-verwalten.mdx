@@ -7,8 +7,8 @@ author:
   name: "Leon Acosta"
   avatar: "/authors/leon-profile.jpg"
   npub: "npub1gxdhmu9swqduwhr6zptjy4ya693zp3ql28nemy4hd97kuufyrqdqwe5zfk"
-featuredImage: "/images/guides/managing-identity/featured.svg"
-previewImage: "/images/guides/managing-identity/preview.svg"
+featuredImage: "/images/illustrations/managing-identity.webp"
+previewImage: "/images/illustrations/managing-identity.webp"
 tags:
   - "Identität"
   - "Schlüssel"
@@ -16,10 +16,11 @@ tags:
 published: true
 seoTitle: "Ihre Identität verwalten — Nostr WoT Extension Anleitung"
 seoDescription: "Erfahren Sie, wie die Nostr WoT Extension Ihre Nostr-Identität mit NIP-07-Signer-Unterstützung, Profilverwaltung und wichtigen Schlüsselsicherheitspraktiken verwaltet."
-ogImage: "/images/guides/managing-identity/og.jpg"
+ogImage: "/images/illustrations/managing-identity.webp"
 translationKey: "managing-identity"
 difficulty: "beginner"
 order: 2
+updated: "2026-10-01"
 ---
 
 Ihre Nostr-Identität ist der Ankerpunkt für alles andere in der Erweiterung — Ihr Vertrauensnetzwerk, Ihr Wallet, Ihre Berechtigungen. Diese Anleitung behandelt, wie Sie diese Identität verwalten, Ihre Schlüssel sicher aufbewahren und den NIP-07-Signer nutzen, der Websites die Interaktion mit Ihrem Nostr-Konto ermöglicht.
@@ -43,21 +44,9 @@ Wenn Sie zuvor eine andere NIP-07-Erweiterung wie nos2x oder Alby verwendet habe
 
 ## Ihr Nostr-Profil verwalten
 
-Ihre Profildetails — Anzeigename, Bio, Avatar, Lightning-Adresse und NIP-05-Identifikator — werden auf Nostr-Relays als Kind-0-Event gespeichert. Die Erweiterung ermöglicht es Ihnen, diese Details direkt anzuzeigen und zu bearbeiten.
+Öffne die Erweiterung und wähle **Profil bearbeiten** im Kontobereich. Ändere Anzeigename, Biografie, Bild, Titelbild und optionale öffentliche Felder. Bild- und Titelbildsteuerung öffnen den Bildeditor; ihre kontrastreichen Beschriftungen bleiben auf hellen und dunklen Fotos erkennbar.
 
-### Ihr Profil anzeigen
-
-Klicken Sie auf das Erweiterungssymbol und navigieren Sie zum **Identität**-Tab. Sie sehen Ihre aktuellen Profilinformationen, Ihren npub und die Relays, auf denen Ihr Profil veröffentlicht ist.
-
-{/* TODO: Screenshot of the Identity tab showing profile details */}
-
-### Ihr Profil bearbeiten
-
-1. Klicken Sie auf **Profil bearbeiten** im Identität-Tab.
-2. Aktualisieren Sie die gewünschten Felder.
-3. Klicken Sie auf **Speichern**. Die Erweiterung signiert ein neues Kind-0-Event und veröffentlicht es auf Ihren Relays.
-
-Änderungen verbreiten sich innerhalb von Sekunden über Nostr-Clients, da Relays das aktualisierte Event verteilen.
+Prüfe die Vorschau vor dem Veröffentlichen. Die Erweiterung signiert und veröffentlicht ein kind:0-Ereignis mit der aktiven Identität und aktualisiert ihren Cache. Andere Clients müssen es erst abrufen; die Dauer hängt von ihren Relays und Caches ab. Profilfelder sind öffentlich. Trage keine privaten Schlüssel oder Wiederherstellungswörter ein.
 
 ## Best Practices für Schlüsselsicherheit
 
@@ -92,3 +81,11 @@ Die Erweiterung unterstützt mehrere Identitäten. Wenn Sie mehr als ein Nostr-K
 ## Wie geht es weiter?
 
 Nachdem Ihre Identität gesichert ist, ist es Zeit zu verstehen, wie die Erweiterung sie nutzt, um Ihr [Web of Trust](/guides/web-of-trust-verstehen) aufzubauen. Wenn Sie ein Wallet verbinden möchten, springen Sie zu [Wallet einrichten](/guides/wallet-einrichten).
+
+## Vorschau und Abschluss
+
+Wenn bereits eine Haupt-Wiederherstellungsphrase vorhanden ist, öffnet **Neu erstellen** ein **Neues Unterkonto**. Es verwendet dieselbe Phrase mit einem anderen Ableitungspfad und erzeugt keine zweite Phrase. Der Name ist editierbar. Öffentliche npub- und Hex-Schlüssel stehen unter ihren Bezeichnungen in Akzentfarbe, in der Mitte gekürzt. Kopiersymbole kopieren den vollständigen Wert. **Erweitert** steht unter den Schlüsseln und öffnet den Pfadeditor; behalte den Vorschlag ohne besonderen Grund bei.
+
+Folgevorschläge zeigen Namen und kleine Bilder verifizierter öffentlicher Profile, soweit verfügbar. Der gemeinsame Cache gilt 30 Minuten für höchstens 500 Profile; fehlende Metadaten werden bei purplepag.es abgefragt. Dabei wird der öffentliche Autorenschlüssel gesendet; Bilder kommen separat vom Bildhost. Ohne Profil erscheint der gekürzte Schlüssel. Laden blockiert weder Auswahl noch **Vorerst überspringen**.
+
+Der Abschluss zeigt Zusammenfassung und **Loslegen** unten. Name und kopierbarer öffentlicher Schlüssel ersetzen eine Tabelle; nur abgeleitete Unterkonten nennen die gemeinsame Hauptphrase. Neue Konten können globale Regeln verwenden oder Website-Ausnahmen eines anderen Kontos kopieren. Authentifizierungsfreigaben bleiben getrennt.

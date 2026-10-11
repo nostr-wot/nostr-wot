@@ -9,7 +9,7 @@ import { generateBlogAlternates, getFullUrl } from '@/lib/metadata';
 import { type Locale, locales } from '@/i18n/config';
 import { JsonLd, blogPostingJsonLd, breadcrumbJsonLd } from '@/lib/jsonld';
 
-const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || 'https://nostr-wot.com';
+const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || 'https://nostrwot.com';
 
 // Locale to OpenGraph locale format mapping
 const ogLocaleMap: Record<Locale, string> = {
@@ -22,8 +22,9 @@ const ogLocaleMap: Record<Locale, string> = {
   de: 'de_DE',
 };
 import { BlogContent, BlogCard, BlogSidebar, BlogPostWrapper } from '@/components/blog';
-import { ScrollReveal, Section, LinkButton } from '@/components/ui';
-import { ArrowLeftIcon } from '@/components/icons';
+import { ScrollReveal, Section } from '@/components/ui';
+import Breadcrumbs from '@/components/ui/Breadcrumbs';
+import { BlogAuthorFollow } from '@/components/blog/BlogSidebar';
 import {NewsletterSection} from "@/components/layout/NewsletterSection";
 
 type Props = {
@@ -93,104 +94,49 @@ export default async function BlogPostPage({ params }: Props) {
   const allPosts = getAllBlogPosts(locale as Locale);
 
   // JSON-LD structured data
-  const postLd = blogPostingJsonLd({
+  const postLd = { ...blogPostingJsonLd({
     headline: post.title,
     description: post.excerpt,
     image: post.featuredImage,
     datePublished: post.date,
     authorName: post.author.name,
-    authorUrl: post.author.npub ? `https://nostr-wot.com/profile/${post.author.npub}` : undefined,
+    authorUrl: post.author.npub ? `https://nostrwot.com/profile/${post.author.npub}` : undefined,
     authorSameAs: post.author.socials
       ? ([
-          post.author.socials.twitter && `https://twitter.com/${post.author.socials.twitter}`,
           post.author.socials.github && `https://github.com/${post.author.socials.github}`,
           post.author.socials.linkedin && `https://linkedin.com/in/${post.author.socials.linkedin}`,
-          post.author.npub && `https://nostr-wot.com/profile/${post.author.npub}`,
+          post.author.npub && `https://nostrwot.com/profile/${post.author.npub}`,
         ].filter(Boolean) as string[])
       : undefined,
     tags: post.tags,
     url: getFullUrl(`/blog/${slug}`, locale as Locale),
-  });
+  }),
+    inLanguage: locale,
+    ...(post.author.name === 'Nostr WoT Team' ? {
+      author: { '@type': 'Organization', name: 'Nostr WoT', url: getFullUrl('/', locale as Locale) },
+    } : {}),
+  };
 
-  const crumbsLd = breadcrumbJsonLd([
-    { name: 'Home', url: 'https://nostr-wot.com' },
-    { name: 'Blog', url: getFullUrl('/blog', locale as Locale) },
-    { name: post.title, url: getFullUrl(`/blog/${slug}`, locale as Locale) },
-  ]);
+  const prefix = locale === 'en' ? '' : `/${locale}`;
+  const crumbs = [
+    { name: t('home'), path: prefix || '/' },
+    { name: t('title'), path: `${prefix}/blog` },
+    { name: post.title, path: `${prefix}/blog/${slug}` },
+  ];
+  const crumbsLd = breadcrumbJsonLd(crumbs.map(crumb => ({
+    name: crumb.name, url: getFullUrl(crumb.path, 'en'),
+  })));
 
   return (
     <BlogPostWrapper translations={post.translations}>
       <JsonLd data={[postLd, crumbsLd]} />
       <main className="py-4 mb-14">
+        <div className="mx-auto max-w-5xl px-6 pt-4 pb-6">
+          <Breadcrumbs items={crumbs} label={t('breadcrumb')} />
+        </div>
         <article>
-          {/* Hero */}
-          <header className="relative pt-24 pb-16">
-            <div className="max-w-4xl mx-auto px-6">
-              <ScrollReveal animation="fade-up" immediate>
-                <LinkButton
-                  href="/blog"
-                  variant="secondary"
-                  className="mb-8 inline-flex items-center gap-2 !px-4 !py-2 text-sm"
-                >
-                  <ArrowLeftIcon className="w-4 h-4" />
-                  {t('backToBlog')}
-                </LinkButton>
-              </ScrollReveal>
-
-              <ScrollReveal animation="fade-up" delay={100} immediate>
-                <div className="flex flex-wrap gap-2 mb-6">
-                  {post.tags.map((tag) => (
-                    <span
-                      key={tag}
-                      className="px-3 py-1 text-sm font-medium bg-primary/10 text-primary rounded-full"
-                    >
-                      {tag}
-                    </span>
-                  ))}
-                </div>
-              </ScrollReveal>
-
-              <ScrollReveal animation="fade-up" delay={150} immediate>
-                <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold text-gray-900 dark:text-white mb-6 leading-tight">
-                  {post.title}
-                </h1>
-              </ScrollReveal>
-
-              <ScrollReveal animation="fade-up" delay={200} immediate>
-                <p className="text-xl text-gray-600 dark:text-gray-400 mb-8">
-                  {post.excerpt}
-                </p>
-              </ScrollReveal>
-
-              <ScrollReveal animation="fade-up" delay={250} immediate>
-                <div className="flex items-center gap-4 pb-8 border-b border-gray-200 dark:border-gray-700">
-                  {post.author.avatar && (
-                    <Image
-                      src={post.author.avatar}
-                      alt={post.author.name}
-                      width={48}
-                      height={48}
-                      className="rounded-full"
-                    />
-                  )}
-                  <div>
-                    <p className="font-medium text-gray-900 dark:text-white">
-                      {post.author.name}
-                    </p>
-                    <div className="flex items-center gap-3 text-sm text-gray-500 dark:text-gray-400">
-                      <time dateTime={post.date}>{formatDate(post.date, locale)}</time>
-                      <span>·</span>
-                      <ReadingTime value={post.readingTime} />
-                    </div>
-                  </div>
-                </div>
-              </ScrollReveal>
-            </div>
-          </header>
-
           {/* Featured Image */}
-          <ScrollReveal animation="fade-up" delay={300} immediate>
-            <div className="max-w-5xl mx-auto px-6 mb-12">
+            <div className="max-w-4xl mx-auto px-6 mb-10">
               <div className="relative aspect-[2/1] rounded-2xl overflow-hidden">
                 <Image
                   src={post.featuredImage}
@@ -202,61 +148,114 @@ export default async function BlogPostPage({ params }: Props) {
                 />
               </div>
             </div>
-          </ScrollReveal>
 
-          {/* Content + Sidebar */}
-          <div className="flex justify-center max-w-7xl mx-auto px-6 pb-16">
-            <div className="min-w-0 lg:flex lg:gap-12">
-              {/* Main Content - max-w-prose for optimal readability (65ch ~700px) */}
-              <article className="flex-1 min-w-0 max-w-prose">
-                <BlogContent content={post.content} />
+          <div className="mx-auto grid max-w-5xl gap-10 px-6 pb-16 lg:grid-cols-[minmax(0,1fr)_16rem] lg:gap-12">
+            <div className="min-w-0">
+              {/* Article header */}
+              <header className="relative pb-8">
+                <div className="min-w-0">
 
-                {/* Author Box */}
-                <ScrollReveal animation="fade-up">
-                  <div className="mt-12 flex items-start gap-6 bg-gray-50 dark:bg-gray-800/50 rounded-xl p-6 border border-gray-200 dark:border-gray-700/50">
-                    {post.author.avatar && (
-                      <Image
-                        src={post.author.avatar}
-                        alt={post.author.name}
-                        width={64}
-                        height={64}
-                        className="rounded-full flex-shrink-0"
-                      />
-                    )}
-                    <div>
-                      <p className="text-sm text-gray-500 dark:text-gray-400 mb-1">
-                        {t('writtenBy')}
-                      </p>
-                      <p className="text-lg font-semibold text-gray-900 dark:text-white">
-                        {post.author.name}
-                      </p>
-                      {post.author.npub && (
-                        <a
-                          href={`https://nostr-wot.com/profile/${post.author.npub}`}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="text-sm text-primary hover:underline mt-1 inline-block"
+                  <ScrollReveal animation="fade-up" delay={100} immediate>
+                    <div className="flex flex-wrap gap-2 mb-6">
+                      {post.tags.map((tag) => (
+                        <span
+                          key={tag}
+                          className="px-3 py-1 text-sm font-medium bg-primary/10 text-primary rounded-full"
                         >
-                          {t('viewOnNostr')}
-                        </a>
-                      )}
+                          {tag}
+                        </span>
+                      ))}
                     </div>
-                  </div>
-                </ScrollReveal>
-              </article>
+                  </ScrollReveal>
 
-              {/* Sidebar */}
-              <aside className="hidden lg:block w-80 flex-shrink-0">
-                <div className="sticky top-24">
+                  <ScrollReveal animation="fade-up" delay={150} immediate>
+                    <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold text-gray-900 dark:text-white mb-6 leading-tight">
+                      {post.title}
+                    </h1>
+                  </ScrollReveal>
+
+                  <ScrollReveal animation="fade-up" delay={200} immediate>
+                    <p className="text-xl text-gray-600 dark:text-gray-400 mb-8">
+                      {post.excerpt}
+                    </p>
+                  </ScrollReveal>
+
+                  <ScrollReveal animation="fade-up" delay={250} immediate>
+                    <div className="flex items-center gap-4 pb-8 border-b border-gray-200 dark:border-gray-700">
+                      {post.author.avatar && (
+                        <Image
+                          src={post.author.avatar}
+                          alt={post.author.name}
+                          width={48}
+                          height={48}
+                          className="rounded-full"
+                        />
+                      )}
+                      <div>
+                        <p className="font-medium text-gray-900 dark:text-white">
+                          {post.author.name}
+                        </p>
+                        <div className="flex items-center gap-3 text-sm text-gray-500 dark:text-gray-400">
+                          <time dateTime={post.date}>{formatDate(post.date, locale)}</time>
+                          <span>·</span>
+                          <ReadingTime value={post.readingTime} />
+                        </div>
+                      </div>
+                    </div>
+                  </ScrollReveal>
+                </div>
+              </header>
+
+              {/* Article body */}
+              <div className="min-w-0">
+                <div className="min-w-0">
+                  {/* Reading column */}
+                  <div className="min-w-0">
+                    <BlogContent content={post.content} />
+
+                    <BlogAuthorFollow authorSocials={post.author.socials} />
+
+                    {/* Author Box */}
+                    <ScrollReveal animation="fade-up">
+                      <div className="mt-12 flex items-start gap-6 bg-gray-50 dark:bg-gray-800/50 rounded-xl p-6 border border-gray-200 dark:border-gray-700/50">
+                        {post.author.avatar && (
+                          <Image
+                            src={post.author.avatar}
+                            alt={post.author.name}
+                            width={64}
+                            height={64}
+                            className="rounded-full flex-shrink-0"
+                          />
+                        )}
+                        <div>
+                          <p className="text-sm text-gray-500 dark:text-gray-400 mb-1">
+                            {t('writtenBy')}
+                          </p>
+                          <p className="text-lg font-semibold text-gray-900 dark:text-white">
+                            {post.author.name}
+                          </p>
+                          {post.author.npub && (
+                            <a
+                              href={`https://nostrwot.com/profile/${post.author.npub}`}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="text-sm text-primary hover:underline mt-1 inline-block"
+                            >
+                              {t('viewOnNostr')}
+                            </a>
+                          )}
+                        </div>
+                      </div>
+                    </ScrollReveal>
+                  </div>
+
+                </div>
+              </div>
+            </div>
+            <div className="order-first min-w-0 lg:order-last">
+              <div className="rounded-xl border border-gray-200 bg-white p-5 dark:border-gray-800 dark:bg-gray-900 lg:sticky lg:top-24">
                   <BlogSidebar
                     tags={allTags}
-                    relatedPosts={relatedPosts.map((p) => ({
-                      slug: p.slug,
-                      title: p.title,
-                      date: p.date,
-                    }))}
-                    authorNpub={post.author.npub}
-                    authorSocials={post.author.socials}
                     currentLocale={locale as Locale}
                     translations={post.translations}
                     allPosts={allPosts.map((p) => ({
@@ -266,8 +265,7 @@ export default async function BlogPostPage({ params }: Props) {
                       tags: p.tags,
                     }))}
                   />
-                </div>
-              </aside>
+              </div>
             </div>
           </div>
         </article>

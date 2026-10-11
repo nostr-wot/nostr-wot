@@ -1,5 +1,14 @@
 # Social copy
 
+## LinkedIn eligibility (owner policy, 6 October 2026)
+
+LinkedIn is reserved for relevant, substantive news and updates about the Nostr WoT platform and team. Routine third-party client, app, relay, protocol or ecosystem notices, including Amber, Amethyst, nak and Nostream releases, are not eligible. Publishing an article or adding a project to our directory does not make it a platform update. General ecosystem significance alone is not an exception.
+
+New ecosystem copy should contain `nostr` only. For a qualifying platform or team announcement, include `linkedin`, `linkedinCategory` set to `platform-update` or `team-update`, and a nonempty `linkedinReason` explaining the actual platform/team news and reader impact. Do not label third-party maintenance as a platform advance. Minor maintenance and routine version bumps do not qualify.
+
+The sender defaults to excluding LinkedIn when this explicit classification is absent, including old queued copy. Existing copy and receipts are preserved; policy exclusion is not delivery failure and never creates a delivery receipt. Nostr delivery remains governed by the normal queue and live-page checks. Do not retry a ledgered or uncertain delivery to apply a new classification.
+
+
 One `<slug>.json` per news article, named after the **English** slug, so
 `social/nip-78-puts-app-data-behind-auth.json` pairs with
 `content/news/en/nip-78-puts-app-data-behind-auth.mdx`.
@@ -17,7 +26,7 @@ ignored.
 }
 ```
 
-Only `linkedin` is required.
+At least one supported copy field is required: `nostr` or `linkedin`. LinkedIn is sent only with the explicit eligibility fields above.
 
 **Never write a URL.** The canonical link is derived from the article's
 frontmatter and appended automatically. A hard-coded `http(s)://` link is a lint

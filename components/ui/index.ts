@@ -13,6 +13,13 @@ export { TextArea } from "./TextArea";
 
 export { Badge } from "./Badge";
 
+export { Tooltip } from "./Tooltip";
+
+export { focusRing, iconButton, cardShell } from "./focus-ring";
+
+export { Tabs } from "./Tabs";
+export type { TabItem } from "./Tabs";
+
 export { CodeBlock, InlineCode, TerminalBlock } from "./CodeBlock";
 
 // Section components
@@ -50,3 +57,5 @@ export { Modal } from "./Modal";
 
 export { AccordionList } from "./AccordionList";
 export type { AccordionItem } from "./AccordionList";
+
+export { default as Breadcrumbs, type Crumb } from "./Breadcrumbs";

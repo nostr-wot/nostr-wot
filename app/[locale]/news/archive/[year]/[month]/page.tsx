@@ -1,3 +1,4 @@
+import { newsPath } from '@/lib/news-path.mjs';
 import { withMetadataPolicy } from '@/lib/metadata-policy';
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
@@ -148,7 +149,7 @@ export default async function NewsArchiveMonthPage({ params }: Props) {
     url,
     items: posts.map((post) => ({
       name: post.title,
-      url: getFullUrl(`/news/${post.slug}`, locale as Locale),
+      url: getFullUrl(newsPath(post), locale as Locale),
     })),
   });
 

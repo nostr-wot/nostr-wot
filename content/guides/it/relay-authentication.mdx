@@ -1,0 +1,61 @@
+---
+title: "Scegli quali relay possono autenticare il tuo account"
+description: "Autorizza un relay per sito o per i siti collegati e gestisci la revoca dei permessi."
+excerpt: "Autorizza un relay per sito o per i siti collegati e gestisci la revoca dei permessi."
+date: "2026-09-30"
+updated: "2026-10-01"
+featuredImage: "/images/illustrations/relay-authentication.webp"
+previewImage: "/images/illustrations/relay-authentication.webp"
+ogImage: "/images/illustrations/relay-authentication.webp"
+published: true
+translationKey: "relay-authentication"
+difficulty: "intermediate"
+order: 19
+author:
+  name: "Leon Acosta"
+  avatar: "/authors/leon-profile.jpg"
+tags:
+  - "Security"
+  - "Permissions"
+  - "Authentication"
+---
+
+In [Nostr WoT](https://github.com/nostr-wot/nostr-wot-extension), collegare un sito o consentire firme ordinarie non lo autorizza a identificarti presso ogni relay. Le API HTTP hanno una [guida distinta](/guides/backend-authentication).
+
+## Sito e relay sono soggetti distinti
+
+`https://client.example` può collegarsi a `wss://relay.example`. Con [NIP-42](https://github.com/nostr-protocol/nips/blob/master/42.md), il relay invia una challenge e il client richiede un evento di autenticazione firmato. La prova rivela la chiave pubblica, senza consegnare quella privata o permettere altre firme.
+
+Il dialogo mostra sito e relay; il pulsante del codice apre l’evento completo. L’autenticazione del relay non ha un metodo HTTP.
+
+## Scegli l’ambito
+
+| Scelta | Ambito |
+| --- | --- |
+| Approva | Richiesta attuale |
+| Approva sempre | Questo sito, account e relay |
+| Sempre per tutti i siti | Siti collegati con accesso all’identità, per questo account e relay |
+| Nega | Richiesta attuale |
+| Nega sempre | Rifiuto memorizzato per sito, account e relay |
+
+Le opzioni memorizzate sono nei menu a freccia. Il permesso usa l’URL normalizzato del relay, non solo il nome mostrato. Un percorso o una porta diversi non sono automaticamente autorizzati.
+
+L’opzione per tutti i siti evita conferme ripetute tra client e può valere anche per siti collegati in seguito. Non collega nuovi siti, concede accesso all’identità, copre altri account, autorizza firme ordinarie o backend HTTP. Un rifiuto specifico del sito prevale. Disabilitare l’accesso all’identità o scollegare il sito continua a bloccarlo, anche con NIP-46.
+
+## Esaminare e revocare i permessi
+
+Apri **Permessi → Autenticazione relay** per l’account attivo. È una schermata con Indietro e informazioni, separata dalla configurazione di lettura e scrittura. I permessi sono raggruppati per relay, con numero di siti approvati o ambito per tutti e relative eccezioni negate.
+
+Apri un relay per scegliere app collegate o tutti i siti collegati. Deselezionare un’app in modalità tutti passa ai soli altri siti collegati non negati; i futuri siti non sono più inclusi. Salvare una selezione vuota elimina le autorizzazioni del relay conservando i rifiuti. Selezionare esplicitamente un sito negato sostituisce il rifiuto; scegliere tutti conserva le eccezioni. Cambiano solo questo account e relay.
+
+Scollegare un sito rimuove i suoi permessi specifici; un permesso condiviso resta disponibile agli altri siti collegati. Eliminare un account elimina i suoi permessi. La revoca riguarda firme future, non chiude un WebSocket già autenticato: deve farlo il client.
+
+## Verifiche e limiti
+
+L’estensione richiede l’origine fornita dal browser e un frame principale verificato. Nega iframe, origini opache o incoerenti e trasporti non sicuri salvo eccezioni esplicite di loopback. Verifica tag del relay e challenge, URL, contenuto e timestamp, anche dopo attese. Permessi generici e approvazioni collettive non evitano il consenso alla destinazione. Cambiare account invalida le richieste precedenti. NIP-46 deve restituire esattamente l’evento approvato firmato dall’account previsto.
+
+L’estensione non gestisce il WebSocket del client. Il relay deve verificare firma, indirizzo, data e challenge della connessione. Il firmatario non può dimostrare come il client abbia ottenuto la challenge o impedire ogni inoltro.
+
+La stessa chiave pubblica può rendere collegabili le connessioni di vari client presso un relay. Usa account separati o permessi più limitati quando serve questa distinzione. CORS non sostituisce la verifica della connessione né i limiti per account, sito e destinazione.
+
+Vedi le [regole dei permessi](https://github.com/nostr-wot/nostr-wot-extension/blob/main/src/services/permissions/authentication.ts) e i [test](https://github.com/nostr-wot/nostr-wot-extension/blob/main/tests/authentication.test.ts).

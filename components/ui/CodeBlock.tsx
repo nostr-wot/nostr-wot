@@ -229,7 +229,7 @@ export function CodeBlock({
 
   return (
     <div
-      className={`relative group bg-gray-950 rounded-xl overflow-hidden border border-gray-800/50 shadow-2xl ${className}`}
+      className={`code-block relative group bg-gray-950 rounded-xl overflow-hidden border border-gray-800/50 shadow-2xl ${className}`}
       {...props}
     >
       {/* Header */}
@@ -353,7 +353,7 @@ export function TerminalBlock({
 
   return (
     <div
-      className={`relative group bg-gray-950 rounded-xl overflow-hidden border border-gray-800/50 shadow-2xl ${className}`}
+      className={`code-block relative group bg-gray-950 rounded-xl overflow-hidden border border-gray-800/50 shadow-2xl ${className}`}
       {...props}
     >
       {/* Header */}

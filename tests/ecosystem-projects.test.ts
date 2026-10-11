@@ -30,8 +30,8 @@ test('external links permit only absolute HTTP(S) without credentials', () => {
 });
 test('collection JSON-LD uses actual directory entries and escapes script delimiters', () => {
   const data = { checkedAt: '2026-09-08', projects: [{ ...project, name: '</script><script>alert(1)</script>' }], news: [], security: [] };
-  const ld = ecosystemJsonLd(data, 'https://nostr-wot.com/es/projects');
-  assert.equal(ld.url, 'https://nostr-wot.com/es/projects');
+  const ld = ecosystemJsonLd(data, 'https://nostrwot.com/es/projects');
+  assert.equal(ld.url, 'https://nostrwot.com/es/projects');
   assert.equal(ld.mainEntity.itemListElement.length, 1);
   assert.equal(ld.mainEntity.itemListElement[0].item.name, data.projects[0].name);
   const serialized = serializeJsonLd(ld);
@@ -40,19 +40,46 @@ test('collection JSON-LD uses actual directory entries and escapes script delimi
   assert.equal(ecosystemJsonLd({ ...data, projects: [] }, ld.url).mainEntity.itemListElement.length, 0);
 });
 
-test('rendered cards keep maintainer evidence distinct from an unverified founder', async () => {
+// The person-level evidence this guards moved from the directory cards to each
+// project's own page, so the assertions follow it there. The card is now a
+// summary tile and is asserted separately not to carry the evidence block.
+test('the project page keeps maintainer evidence distinct from an unverified founder', async () => {
+  const { createElement } = await import('react');
+  const { renderToStaticMarkup } = await import('react-dom/server');
+  const { default: ProjectDetail } = await import('../components/projects/ProjectDetail');
+  const data = { checkedAt: '2026-09-08', projects: [project], news: [], security: [] };
+  const html = renderToStaticMarkup(createElement(ProjectDetail, {
+    project, data, locale: 'en', directoryHref: '/projects',
+  } as never));
+  assert.match(html, /Founder: not verified/);
+  // The role label is capitalised in the markup now rather than by CSS: a card
+  // lists every role this project credits the person with, and
+  // `first-letter:uppercase` only reached the first item of a joined list.
+  assert.match(html, /Maintainer/);
+  assert.match(html, /href="https:\/\/example.com\/team"/);
+  assert.match(html, /lang="en"/);
+  assert.match(html, /href="\/projects"/);
+});
+
+test('the directory card is a summary tile and does not repeat the evidence trail', async () => {
   const { createElement } = await import('react');
   const { renderToStaticMarkup } = await import('react-dom/server');
   const { default: Directory } = await import('../components/projects/EcosystemDirectory');
   const html = renderToStaticMarkup(createElement(Directory, {
     data: { checkedAt: '2026-09-08', projects: [project], news: [], security: [] },
     blogHref: '/es/blog', newsHref: '/es/news',
+    peopleLink: { href: '/es/people', label: 'Personas' },
   }));
-  assert.match(html, /Founder: not verified/);
-  assert.match(html, /maintainer/);
-  assert.match(html, /href="https:\/\/example.com\/team"/);
-  assert.match(html, /<details/);
-  assert.match(html, /<summary/);
+  // The card shows what identifies the project and links onward. It must not
+  // duplicate the page it links to.
+  assert.match(html, /Example/);
+  assert.match(html, /A relay browser/);
+  assert.match(html, /href="\/projects\/test"/);
+  assert.doesNotMatch(html, /Founder: not verified/);
+  assert.doesNotMatch(html, /Status evidence/);
+  assert.doesNotMatch(html, /href="https:\/\/example.com\/team"/);
+  // The former "Curated content" language strip is gone.
+  assert.doesNotMatch(html, /Curated content/);
   assert.match(html, /lang="en"/);
   assert.match(html, /href="\/es\/blog"/);
   assert.doesNotMatch(html, /Security reports/);
@@ -65,6 +92,7 @@ test('empty data renders preparation state; supplied reports render without inve
   const html = renderToStaticMarkup(createElement(Directory, {
     data: { checkedAt: '2026-09-08', projects: [], news: [], security: [{ title: 'A cited report', date: '2026-09-07', summary: 'Scope of this report', url: 'https://example.com/report' }] },
     blogHref: '/blog', newsHref: '/news',
+    peopleLink: { href: '/people', label: 'People' },
   }));
   assert.match(html, /directory is being prepared/);
   assert.match(html, /Security reports/);
@@ -91,6 +119,7 @@ test('security baseline preserves coverage, date basis and expandable source evi
       type: 'baseline', coverage: 'Repository advisories', dateBasis: 'tag commit date',
       sources: [{ label: 'Tagged commit', url: 'https://example.com/commit' }],
     }] }, blogHref: '/blog', newsHref: '/news',
+    peopleLink: { href: '/people', label: 'People' },
   }));
   assert.match(html, /Social client/);
   assert.match(html, /Baseline/);
@@ -112,10 +141,21 @@ test('Spanish UI translates controls, roles, dates and evidence without changing
     url: 'https://example.com/report', type: 'baseline', dateBasis: 'tag commit date', coverage: 'Avisos del repositorio',
     sources: [{ label: 'Commit etiquetado', url: 'https://example.com/commit' }],
   }] };
-  const html = renderToStaticMarkup(createElement(Directory, { locale: 'es', data, blogHref: '/es/blog', newsHref: '/es/news' }));
-  for (const text of ['lang="es"', 'Buscar proyectos o personas', 'Todas las categorías', 'Todos los estados', 'Cliente social', 'Desconocido', 'Responsable de mantenimiento', 'Fundador: no verificado', 'Fuentes', 'Fecha del commit', 'Informes de seguridad', 'Revisión de referencia', '8 de septiembre de 2026']) assert.ok(html.includes(text), text);
-  for (const url of ['https://example.com/team', 'https://example.com/alice', 'https://example.com/commit', 'https://example.com/report']) assert.ok(html.includes(`href="${url}"`));
-  assert.doesNotMatch(html, /Curated content|Search projects|Founder: not verified|People, status|Commit date|link unavailable/);
+  const html = renderToStaticMarkup(createElement(Directory, { locale: 'es', data, blogHref: '/es/blog', newsHref: '/es/news', peopleLink: { href: '/es/people', label: 'Personas' } }));
+  const { default: ProjectDetail } = await import('../components/projects/ProjectDetail');
+  // Person-level evidence is rendered by the project page now, so the Spanish
+  // check spans both surfaces rather than dropping half its assertions.
+  const page = renderToStaticMarkup(createElement(ProjectDetail, {
+    project: data.projects[0], data, locale: 'es', directoryHref: '/es/projects',
+  } as never));
+  for (const text of ['lang="es"', 'Buscar proyectos o personas', 'Todas las categorías', 'Todos los estados', 'Cliente social', 'Desconocido', 'Informes de seguridad', 'Contexto inicial']) assert.ok(html.includes(text), `directory: ${text}`);
+  // The directory's own "checked on" line was removed; the date is stated on
+  // each project's page instead, so the localised date format is asserted there.
+  for (const text of ['lang="es"', 'Responsable de mantenimiento', 'Fundador: no verificado', 'Fuentes', '8 de septiembre de 2026']) assert.ok(page.includes(text), `project page: ${text}`);
+  for (const url of ['https://example.com/commit', 'https://example.com/report']) assert.ok(html.includes(`href="${url}"`), url);
+  for (const url of ['https://example.com/team', 'https://example.com/alice']) assert.ok(page.includes(`href="${url}"`), url);
+  assert.doesNotMatch(html, /Curated content|Search projects|Commit date|link unavailable/);
+  assert.doesNotMatch(page, /Founder: not verified|Search projects/);
 });
 
 test('Spanish and French empty states and JSON-LD honor their page language', async () => {
@@ -123,14 +163,14 @@ test('Spanish and French empty states and JSON-LD honor their page language', as
   const { renderToStaticMarkup } = await import('react-dom/server');
   const { default: Directory } = await import('../components/projects/EcosystemDirectory');
   const data = { checkedAt: '2026-09-08', projects: [], news: [], security: [] };
-  const html = renderToStaticMarkup(createElement(Directory, { locale: 'es', data, blogHref: '/es/blog', newsHref: '/es/news' }));
+  const html = renderToStaticMarkup(createElement(Directory, { locale: 'es', data, blogHref: '/es/blog', newsHref: '/es/news', peopleLink: { href: '/es/people', label: 'Personas' } }));
   assert.match(html, /El directorio está en preparación/);
   assert.doesNotMatch(html, /English|inglés/);
-  const french = renderToStaticMarkup(createElement(Directory, { locale: 'fr', data, blogHref: '/fr/blog', newsHref: '/fr/news' }));
+  const french = renderToStaticMarkup(createElement(Directory, { locale: 'fr', data, blogHref: '/fr/blog', newsHref: '/fr/news', peopleLink: { href: '/fr/people', label: 'Personnes' } }));
   assert.match(french, /lang="fr"/);
   assert.doesNotMatch(french, /Curated content · English/);
-  assert.equal(ecosystemJsonLd(data, 'https://nostr-wot.com/es/projects', 'es').inLanguage, 'es');
-  assert.equal(ecosystemJsonLd(data, 'https://nostr-wot.com/fr/projects', 'fr').inLanguage, 'fr');
+  assert.equal(ecosystemJsonLd(data, 'https://nostrwot.com/es/projects', 'es').inLanguage, 'es');
+  assert.equal(ecosystemJsonLd(data, 'https://nostrwot.com/fr/projects', 'fr').inLanguage, 'fr');
 });
 
 test('Spanish dataset preserves the English source URLs and dated evidence', async () => {
@@ -153,9 +193,9 @@ test('directory UI and structured data honor all seven page languages', async ()
   const { ecosystemCopy } = await import('../lib/ecosystem-projects');
   for (const locale of ['en', 'es', 'de', 'fr', 'it', 'pt', 'ru']) {
     const data = { checkedAt: '2026-09-08', projects: [project], news: [], security: [] };
-    const html = renderToStaticMarkup(createElement(Directory, { data, locale, blogHref: '/blog', newsHref: '/news' }));
+    const html = renderToStaticMarkup(createElement(Directory, { data, locale, blogHref: '/blog', newsHref: '/news', peopleLink: { href: '/people', label: 'People' } }));
     assert.ok(html.includes(`lang="${locale}"`), locale);
-    assert.equal(ecosystemJsonLd(data, `https://nostr-wot.com/${locale}/projects`, locale).inLanguage, locale);
+    assert.equal(ecosystemJsonLd(data, `https://nostrwot.com/${locale}/projects`, locale).inLanguage, locale);
     if (locale !== 'en') assert.notEqual(ecosystemCopy(locale).heading, ecosystemCopy('en').heading, locale);
   }
 });

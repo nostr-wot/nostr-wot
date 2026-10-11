@@ -1,3 +1,4 @@
+import { OracleHosting } from "@/components/docs/OracleHosting";
 import { withMetadataPolicy } from '@/lib/metadata-policy';
 import type { Metadata } from "next";
 import { getTranslations } from "next-intl/server";
@@ -204,10 +205,12 @@ export default async function OracleDocsPage() {
         <p>{t("oracleApi.retryAdvice")}</p>
       </section>
 
+      <OracleHosting />
+
       <div className="not-prose mt-12 flex justify-between items-center pt-8 border-t border-gray-200 dark:border-gray-800">
         <Link href="/docs/sdk" className="text-gray-600 dark:text-gray-400 hover:text-primary">{t("oracleApi.sdkReference")}</Link>
         <a href="https://github.com/nostr-wot/nostr-wot-oracle/blob/v0.3.0/docs/API.md" className="text-gray-600 dark:text-gray-400 hover:text-primary">{t("oracleApi.source")}</a>
-        <Link href="/oracle" className="text-gray-600 dark:text-gray-400 hover:text-primary">{t("oracleApi.selfHost")}</Link>
+        <Link href="#self-hosting" className="text-gray-600 dark:text-gray-400 hover:text-primary">{t("oracleApi.selfHost")}</Link>
       </div>
     </article>
   );

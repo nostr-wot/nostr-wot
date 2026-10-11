@@ -7,8 +7,8 @@ author:
   name: "Leon Acosta"
   avatar: "/authors/leon-profile.jpg"
   npub: "npub1gxdhmu9swqduwhr6zptjy4ya693zp3ql28nemy4hd97kuufyrqdqwe5zfk"
-featuredImage: "/images/guides/managing-identity/featured.svg"
-previewImage: "/images/guides/managing-identity/preview.svg"
+featuredImage: "/images/illustrations/managing-identity.webp"
+previewImage: "/images/illustrations/managing-identity.webp"
 tags:
   - "Identità"
   - "Chiavi"
@@ -16,10 +16,11 @@ tags:
 published: true
 seoTitle: "Gestire la Tua Identità — Guida Estensione Nostr WoT"
 seoDescription: "Scopri come l'Estensione Nostr WoT gestisce la tua identità Nostr con il supporto signer NIP-07, la gestione del profilo e le pratiche essenziali di sicurezza delle chiavi."
-ogImage: "/images/guides/managing-identity/og.jpg"
+ogImage: "/images/illustrations/managing-identity.webp"
 translationKey: "managing-identity"
 difficulty: "beginner"
 order: 2
+updated: "2026-10-01"
 ---
 
 La tua identità Nostr è l'ancora per tutto il resto nell'estensione — la tua rete di fiducia, il tuo portafoglio, i tuoi permessi. Questa guida spiega come gestire quella identità, mantenere le tue chiavi al sicuro e usare il signer NIP-07 che permette ai siti web di interagire con il tuo account Nostr.
@@ -43,21 +44,9 @@ Se in precedenza usavi un'altra estensione NIP-07 come nos2x o Alby, disabilital
 
 ## Gestire il Tuo Profilo Nostr
 
-I dettagli del tuo profilo — nome visualizzato, bio, avatar, Lightning Address e identificatore NIP-05 — sono memorizzati sui relay Nostr come evento kind 0. L'estensione ti permette di visualizzare e modificare questi dettagli direttamente.
+Apri l’estensione e scegli **Modifica profilo** nella sezione account. Modifica nome visualizzato, biografia, foto, copertina e campi pubblici facoltativi. I controlli di foto e copertina aprono l’editor di immagini; le etichette ad alto contrasto restano visibili su foto chiare e scure.
 
-### Visualizzare il Tuo Profilo
-
-Clicca l'icona dell'estensione e naviga alla scheda **Identità**. Vedrai le informazioni attuali del tuo profilo, il tuo npub e i relay su cui è pubblicato il tuo profilo.
-
-{/* TODO: Screenshot della scheda Identità che mostra i dettagli del profilo */}
-
-### Modificare il Tuo Profilo
-
-1. Clicca **Modifica Profilo** nella scheda Identità.
-2. Aggiorna i campi che desideri modificare.
-3. Clicca **Salva**. L'estensione firma un nuovo evento kind 0 e lo pubblica sui tuoi relay.
-
-Le modifiche si propagano attraverso i client Nostr in pochi secondi man mano che i relay distribuiscono l'evento aggiornato.
+Controlla l’anteprima prima di confermare la pubblicazione. L’estensione firma e pubblica un evento kind:0 con l’identità attiva e aggiorna la cache locale. Gli altri client devono recuperarlo; i tempi dipendono da relay e cache. I campi del profilo sono pubblici. Non inserirvi chiavi private o parole di recupero.
 
 ## Best Practice per la Sicurezza delle Chiavi
 
@@ -92,3 +81,11 @@ L'estensione supporta identità multiple. Se gestisci più di un account Nostr, 
 ## Cosa Fare Dopo?
 
 Con la tua identità al sicuro, è il momento di capire come l'estensione la usa per costruire il tuo [Web of Trust](/guides/comprendere-web-of-trust). Se vuoi collegare un portafoglio, vai a [Configurare il Tuo Portafoglio](/guides/configurare-portafoglio).
+
+## Anteprima e completamento
+
+Se esiste già una frase di recupero principale, **Crea nuovo** apre **Nuovo sotto-account**. Riutilizza quella frase con un altro percorso di derivazione; non genera una seconda frase. Puoi cambiare il nome. Le chiavi pubbliche npub e hex appaiono sotto le etichette, nel colore di accento e abbreviate al centro. Le icone copiano il valore completo. **Avanzate** è sotto le chiavi e apre il percorso; mantieni quello proposto salvo esigenze specifiche.
+
+I suggerimenti mostrano nomi e piccole foto di profili pubblici verificati, quando disponibili. Usano una cache condivisa di 30 minuti con massimo 500 profili; i dati mancanti vengono cercati su purplepag.es. La directory riceve la chiave pubblica dell’autore; le immagini provengono dal loro host. Senza profilo compare la chiave abbreviata. Il caricamento non blocca selezione o **Salta per ora**.
+
+La schermata finale dispone riepilogo e **Inizia** in basso. Mostra nome e chiave pubblica copiabile; solo i sotto-account derivati citano la frase principale. I nuovi account possono usare regole globali o copiare eccezioni per sito di un altro account. I permessi di autenticazione restano separati.

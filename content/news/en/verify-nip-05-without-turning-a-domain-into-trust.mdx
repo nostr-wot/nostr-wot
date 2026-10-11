@@ -1,0 +1,109 @@
+---
+title: "Verify NIP-05 without turning a domain into trust"
+description: "NIP-05 confirms a live mapping between a signed Nostr profile, an internet identifier and a domain response. It does not certify the person behind the key."
+seoDescription: "Learn the correct NIP-05 verification flow, reverse lookup, lowercase key rules, redirect and CORS checks, caching, relay hints and trust limits."
+excerpt: "A valid NIP-05 identifier is a two-sided mapping checked at a point in time. Keep the public key as the identity anchor and treat the domain as current evidence, not permanent trust."
+date: "2026-10-08"
+publishedAt: "2026-10-08"
+backfilled: false
+type: "story"
+tags: ["Nostr", "NIP-05", "Identity", "Guide"]
+featuredImage: "/images/news/verify-nip-05-without-turning-a-domain-into-trust.svg"
+translationKey: "verify-nip-05-without-turning-a-domain-into-trust"
+sources:
+  - title: "NIP-05: Mapping Nostr keys to DNS-based internet identifiers at commit a79e21d"
+    url: "https://github.com/nostr-protocol/nips/blob/a79e21d90fce5465b50ef385dd368bba99ec4a0b/05.md"
+    publisher: "nostr-protocol/nips"
+    date: "2026-06-13"
+  - title: "NIP-01: Basic protocol flow at commit a79e21d"
+    url: "https://github.com/nostr-protocol/nips/blob/a79e21d90fce5465b50ef385dd368bba99ec4a0b/01.md"
+    publisher: "nostr-protocol/nips"
+    date: "2026-09-04"
+published: true
+---
+
+NIP-05 makes a long Nostr public key easier to exchange by linking it to an internet identifier such as `alice@example.com`. The result can help with discovery, but the word “verified” often encourages a stronger conclusion than the protocol supports.
+
+A correct check proves something narrower: the latest signed kind `0` metadata event names an identifier, and the domain currently maps that same name back to the same public key. It does not prove a legal identity, good judgment or trustworthiness. [NIP-05 says explicitly that the mechanism is for identification, not general verification](https://github.com/nostr-protocol/nips/blob/a79e21d90fce5465b50ef385dd368bba99ec4a0b/05.md).
+
+## Start with the signed profile
+
+The forward flow begins with the newest valid kind `0` event for a public key. Its JSON content may contain a `nip05` field:
+
+```json
+{
+  "name": "Alice",
+  "nip05": "alice@example.com"
+}
+```
+
+Split the value into the local part and domain. The local part is deliberately restricted to lowercase `a-z`, digits and `-_.`. Fetch:
+
+```text
+https://example.com/.well-known/nostr.json?name=alice
+```
+
+The response must contain a `names` object whose exact `alice` entry is the same 64-character lowercase hexadecimal public key as the kind `0` event. An `npub` value is for display and is not valid in this response.
+
+This comparison is two-sided. The signed profile says “this key claims this identifier.” The HTTPS response says “this domain currently assigns this name to this key.” Display the identifier only when both statements agree.
+
+## Reverse lookup needs the second half too
+
+Search can begin from `alice@example.com`, but it should not stop after the domain returns a key. A client should fetch the returned key’s newest valid kind `0` event and confirm that its `nip05` field contains the same identifier.
+
+Without that reverse check, a domain operator could list any public key that never claimed the address. With it, the lookup demonstrates current agreement between the key holder and the domain operator.
+
+The special local part `_` may be displayed as just the domain. `_@example.com` can therefore appear as `example.com`, but the wire lookup still uses `name=_`.
+
+## Follow the public key, never the address
+
+NIP-05 is not a mutable contact pointer. If a user follows the key returned for `alice@example.com`, the follow list must retain that public key. It must not retain the identifier as an instruction to replace the followed key later.
+
+Suppose the domain maps `alice` to key A today and key B next month. The client should stop showing the NIP-05 identifier for key A once the mapping no longer matches. It must not silently change the existing follow from A to B. A domain transfer, server compromise, configuration error or deliberate reassignment would otherwise rewrite the user’s social graph.
+
+This distinction also matters for Web of Trust calculations. Edges belong to public keys. A current domain mapping can be evidence displayed beside a key, but it is not a substitute node and must not inherit the key’s trust score if the mapping changes.
+
+## Treat the network rules as security rules
+
+The well-known endpoint has several strict requirements:
+
+1. Use HTTPS and the exact domain from the identifier.
+2. Ignore redirects. NIP-05 says the endpoint must not return them and fetchers must not follow them.
+3. Require lowercase hexadecimal keys and lowercase names.
+4. For browser clients, distinguish an invalid mapping from an inconclusive network failure. Missing `Access-Control-Allow-Origin: *` can make a valid endpoint unreadable to JavaScript.
+5. Parse only the requested name from `names`; do not accept a similar spelling or case-folded guess.
+
+These rules prevent a convenient identifier from becoming an open-ended redirect or normalization mechanism. A user-facing status should separate “mapping mismatch” from “could not check,” because they mean different things.
+
+## Relay hints help discovery, not identity
+
+The response may include a recommended `relays` object keyed by public key. Those URLs can help a client find the kind `0` event and other events for the person. They do not strengthen the name-to-key proof, and they do not guarantee that an event exists, was accepted or will remain stored.
+
+Use relay hints as a bounded discovery input. They should not erase the user’s relay configuration or override newer routing information without an explicit policy.
+
+## Cache the result with its time and reason
+
+Checking on every render leaks browsing activity and creates unnecessary load. Caching is reasonable, but a cached badge should not look timeless.
+
+Store at least the identifier, public key, result, checked-at time and failure class. Recheck successful mappings periodically and retry network failures sooner than confirmed mismatches. When a kind `0` event changes its `nip05` field, invalidate the old result immediately.
+
+A practical client state model is:
+
+- **matched**: both directions agree now;
+- **mismatched**: the endpoint answered, but the name or key differs;
+- **unreachable**: DNS, TLS, HTTP or CORS prevented a conclusive check;
+- **invalid**: the identifier, JSON or key format violates NIP-05.
+
+## A safe implementation checklist
+
+Before showing a NIP-05 identifier:
+
+1. Verify the signature of the newest kind `0` event.
+2. Validate the identifier syntax and lowercase local part.
+3. Fetch the exact well-known URL without following redirects.
+4. Compare the exact name to the exact lowercase hex public key.
+5. For reverse search, fetch kind `0` and confirm the same identifier there.
+6. Keep follows, trust edges and account references anchored to the public key.
+7. Record when the check happened and explain inconclusive failures separately.
+
+NIP-05 is useful because it adds human-readable discovery without changing Nostr’s cryptographic identity anchor. The safest interface says exactly what was checked: this domain and this signed key currently agree on this name.

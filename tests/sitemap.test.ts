@@ -1,3 +1,4 @@
+import { HELP_TOPICS, helpTopicHref } from '../lib/help-topics';
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
@@ -10,17 +11,28 @@ import { routes } from '../lib/sitemap-routes.mjs';
 import { getAllBlogPosts } from '../lib/blog';
 import { getAllGuides } from '../lib/guides';
 import { getAllNews, getNewsArchiveMonths } from '../lib/news';
+import ecosystemProjects from '../data/ecosystem-projects.json';
+import { personSlug } from '../lib/people';
 
-const base = process.env.NEXT_PUBLIC_BASE_URL || 'https://nostr-wot.com';
+const base = process.env.NEXT_PUBLIC_BASE_URL || 'https://nostrwot.com';
 const url = (route: string, locale: string) => `${base}${locale === 'en' ? '' : `/${locale}`}${route}`;
 
 test('every application page is covered or has an explicit dynamic-content policy', () => {
   const root = path.join(process.cwd(), 'app/[locale]');
   const dynamic = new Set([
-    '/blog/[slug]', '/guides/[slug]', '/news/[slug]',
+    '/help/[task]', '/blog/[slug]', '/guides/[slug]', '/news/[date]', '/news/[date]/[slug]',
     '/news/archive/[year]/[month]', '/newsletters/[id]',
     // Relay-backed viewers have no finite, owned inventory of public IDs.
     '/profile/[pubkey]', '/notes/[id]',
+    // 42 project records times 7 locales, enumerated by generateStaticParams
+    // and emitted into the sitemap by app/sitemap.ts, so the path pattern
+    // itself is never a URL.
+    '/projects/[id]',
+    // One page per person credited in those same project records, times 7
+    // locales, likewise enumerated by generateStaticParams and emitted into
+    // the sitemap. The inventory is derived from the dataset by lib/people.ts,
+    // so there is no static route to list here either.
+    '/people/[slug]',
   ]);
   const pages = fs.readdirSync(root, { recursive: true }).map(String)
     .filter(file => file === 'page.tsx' || file.endsWith('/page.tsx'))
@@ -34,8 +46,20 @@ test('generated sitemap covers every published locale and contains only public c
   const expected = new Set<string>();
   for (const locale of locales) {
     for (const route of routes) expected.add(url(route.path, locale));
+    for (const project of ecosystemProjects.projects) expected.add(url(`/projects/${project.id}`, locale));
+    // Rebuilt from the dataset rather than from lib/people.ts: a person page
+    // exists for every credited role whose source URL is an external citation,
+    // one page per distinct slug (the Set collapses a person credited twice).
+    // Only `personSlug` is shared, because the slug IS the identifier.
+    for (const project of ecosystemProjects.projects) {
+      for (const person of project.people ?? []) {
+        if (!/^https?:\/\//.test(person.sourceUrl)) continue;
+        expected.add(url(`/people/${personSlug(person.name)}`, locale));
+      }
+    }
+    for (const topic of HELP_TOPICS) expected.add(url(helpTopicHref(topic), locale));
     for (const [section, getAll] of Object.entries({ blog: getAllBlogPosts, guides: getAllGuides, news: getAllNews })) {
-      for (const post of getAll(locale)) expected.add(url(`/${section}/${post.slug}`, locale));
+      for (const post of getAll(locale)) expected.add(url(section === "news" && "publishedAt" in post ? `/news/${String(post.publishedAt).slice(0, 10)}/${post.slug}` : `/${section}/${post.slug}`, locale));
     }
     for (let page = 2; page <= Math.ceil(getAllNews(locale).length / 12); page++) expected.add(url(`/news?page=${page}`, locale));
     for (const { year, month } of getNewsArchiveMonths(locale)) {
@@ -79,11 +103,24 @@ test('locale-only publications are included and draft translations are excluded'
       encoding: 'utf8',
     }));
     for (const section of ['blog', 'guides', 'news']) {
-      assert.ok(entries.some((entry: { url: string }) => entry.url === url(`/${section}/solo`, 'es')), `${section}: locale-only content missing`);
-      assert.ok(!entries.some((entry: { url: string }) => entry.url === url(`/${section}/brouillon`, 'fr')), `${section}: draft leaked`);
-      const translated = entries.find((entry: { url: string }) => entry.url === url(`/${section}/compartido`, 'es'));
+      assert.ok(entries.some((entry: { url: string }) => entry.url === url(`/${section}/${section === "news" ? "2026-02-01/" : ""}solo`, 'es')), `${section}: locale-only content missing`);
+      assert.ok(!entries.some((entry: { url: string }) => entry.url === url(`/${section}/${section === "news" ? "2026-02-03/" : ""}brouillon`, 'fr')), `${section}: draft leaked`);
+      const translated = entries.find((entry: { url: string }) => entry.url === url(`/${section}/${section === "news" ? "2026-02-02/" : ""}compartido`, 'es'));
       assert.equal(translated.lastModified, '2026-02-02T00:00:00.000Z');
-      assert.deepEqual(translated.alternates.languages, { en: url(`/${section}/shared`, 'en'), es: url(`/${section}/compartido`, 'es') });
+      // `x-default` points at the default locale, as the page metadata's own
+      // hreflang does. It is present here because this fixture publishes an
+      // English translation; a locale-only post has no English URL to point at
+      // and gets no `x-default`, which the draft case below relies on.
+      assert.deepEqual(translated.alternates.languages, {
+        en: url(`/${section}/${section === "news" ? "2026-01-01/" : ""}shared`, 'en'),
+        es: url(`/${section}/${section === "news" ? "2026-02-02/" : ""}compartido`, 'es'),
+        'x-default': url(`/${section}/${section === "news" ? "2026-01-01/" : ""}shared`, 'en'),
+      });
+      // The Spanish-only post has no English translation, so advertising an
+      // `x-default` for it would point a crawler at a 404.
+      const soloEntry = entries.find((entry: { url: string }) => entry.url === url(`/${section}/${section === "news" ? "2026-02-01/" : ""}solo`, 'es'));
+      assert.ok(!('x-default' in soloEntry.alternates.languages),
+        `${section}: a locale-only post advertises an x-default it does not have`);
     }
   } finally {
     fs.rmSync(directory, { recursive: true, force: true });

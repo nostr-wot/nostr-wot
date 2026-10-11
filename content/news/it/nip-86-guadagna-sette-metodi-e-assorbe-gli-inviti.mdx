@@ -81,7 +81,7 @@ Le righe rimosse sono l'intera sezione "Invite Request", che definiva come un ut
 }
 ```
 
-Un utente richiedeva quell'evento al relay, e il relay lo firmava con la pubkey indicata nel campo `self` del suo documento NIP-11. Al suo posto, `43.md` porta ora una sola frase: "Users can request a `claim` using the [NIP 86](./86.md) `createclaim` method."
+Un utente richiedeva quell'evento al relay, e il relay lo firmava con la pubkey indicata nel campo `self` del suo documento NIP-11. Al suo posto, `43.md` porta ora una sola frase: "Users can request a `claim` using the [NIP 86](https://github.com/nostr-protocol/nips/blob/master/86.md) `createclaim` method."
 
 I due percorsi non arrivano allo stesso punto. `kind 28935` era una richiesta fatta sulla connessione dell'utente stesso con il relay. NIP-86 è un protocollo simile a JSON-RPC su HTTP, sullo stesso URI del websocket, e la sua sezione di autorizzazione richiede un evento NIP-98 valido in un'intestazione `Authorization`, restituendo 401 in sua assenza. `createclaim` si trova dietro quell'intestazione, che è la via usata da un operatore di relay e non da un futuro membro.
 

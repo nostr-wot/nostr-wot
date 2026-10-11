@@ -1,0 +1,68 @@
+---
+title: "NIP-92 dá fallbacks e blurhashes às imagens de perfil"
+description: "Uma mudança incorporada ao NIP-92 permite que perfis kind 0 descrevam fotos e banners com tags imeta de correspondência exata, incluindo fallbacks, dimensões, hashes, blurhashes e texto alternativo."
+excerpt: "Fotos de perfil e banners agora podem carregar os mesmos metadados de mídia em linha que anexos, sem remover suas URLs do documento de perfil kind 0."
+date: "2026-10-06"
+publishedAt: "2026-10-06"
+backfilled: false
+type: "story"
+tags: ["Nostr", "NIP-92", "Perfis", "Mídia"]
+featuredImage: "/images/news/nip-92-gives-profile-images-fallbacks-and-blurhashes.svg"
+translationKey: "nip-92-gives-profile-images-fallbacks-and-blurhashes"
+sources:
+  - title: "NIP-92: tags imeta para picture e banner de kind 0"
+    url: "https://github.com/nostr-protocol/nips/pull/2494"
+    publisher: "nostr-protocol/nips"
+    date: "2026-10-05"
+  - title: "NIP-92 Metadados de anexos de mídia"
+    url: "https://github.com/nostr-protocol/nips/blob/master/92.md"
+    publisher: "nostr-protocol/nips"
+    date: "2026-10-05"
+  - title: "NIP-24 Campos e tags adicionais de metadados"
+    url: "https://github.com/nostr-protocol/nips/blob/master/24.md"
+    publisher: "nostr-protocol/nips"
+    date: "2026-10-05"
+  - title: "NIP-94 Metadados de arquivos"
+    url: "https://github.com/nostr-protocol/nips/blob/master/94.md"
+    publisher: "nostr-protocol/nips"
+    date: "2026-10-05"
+published: true
+---
+
+O [pull request #2494](https://github.com/nostr-protocol/nips/pull/2494) foi incorporado às especificações do Nostr em 5 de outubro de 2026. Ele acrescenta uma seção específica para perfis ao [NIP-92](https://github.com/nostr-protocol/nips/blob/master/92.md): um evento de metadados kind `0` agora pode associar tags `imeta` às URLs de `picture` e `banner`.
+
+O patch é pequeno, com 35 linhas novas no NIP-92 e uma referência no [NIP-24](https://github.com/nostr-protocol/nips/blob/master/24.md), mas fecha uma lacuna prática. Uma nota já podia descrever uma imagem anexada com dimensões, tipo MIME, hash, texto alternativo, blurhash e locais de reserva. Uma imagem de perfil só podia fornecer sua URL principal dentro da string JSON armazenada no campo `content` do evento.
+
+## A URL continua no perfil
+
+A mudança não substitui o formato atual do kind `0`. `picture` permanece no JSON do perfil, e `banner` continua sendo o campo opcional registrado pelo NIP-24. Os novos dados ficam em tags comuns do evento.
+
+Uma tag `imeta` só se associa a um campo do perfil quando sua entrada `url` é exatamente igual ao valor de `picture` ou `banner`. Uma URL encurtada, um destino de redirecionamento ou uma URL diferente apenas na query string não corresponde. Tags que não correspondem a nenhum dos campos devem ser ignoradas.
+
+Essa regra cria uma associação determinística entre duas representações dentro do mesmo evento assinado. Também impede que uma tag antiga seja aplicada a uma imagem nova apenas porque ambas vieram do mesmo host.
+
+O exemplo da especificação dá à foto um tipo MIME, hash SHA-256, dimensões, blurhash e URL de reserva. O banner recebe tipo MIME, hash e dimensões. O NIP-92 permite qualquer campo definido pelo [NIP-94](https://github.com/nostr-protocol/nips/blob/master/94.md), então quem publica também pode incluir `alt`, `size`, miniaturas ou outros metadados. Apenas `url` e pelo menos mais um campo são exigidos para uma tag `imeta`; os campos mais ricos continuam opcionais.
+
+## A falha de um host não precisa deixar o avatar vazio
+
+A adição mais visível é `fallback`. Clientes devem tentar as URLs de reserva declaradas quando a imagem principal não carrega. Isso pode manter um avatar ou banner visível durante uma indisponibilidade ou depois que um arquivo é movido, desde que o autor tenha publicado outra cópia acessível.
+
+Os outros campos resolvem problemas diferentes. `blurhash` oferece um espaço reservado compacto durante o carregamento. `dim` permite reservar a proporção correta antes do download. `alt` fornece uma descrição para acessibilidade. O campo `x` pode carregar o hash SHA-256 do arquivo, mas o NIP-92 não o exige e o cliente ainda precisa verificá-lo para obter uma garantia de integridade.
+
+Essas são dicas assinadas pelo autor do perfil, não uma camada de armazenamento. A mudança não envia um espelho, não prova que um fallback continuará online nem obriga um cliente a usar qualquer campo. A linguagem normativa usa principalmente `MAY` e `SHOULD`, portanto o perfil ainda precisa de uma URL principal utilizável e a compatibilidade depende das implementações.
+
+## Eventos substituíveis criam uma regra de manutenção
+
+Kind `0` é substituível: um evento mais novo da mesma chave pública supera o perfil anterior. Assim, preservar metadados passa a fazer parte do caminho de publicação.
+
+A nova seção diz que um cliente que publique outro kind `0` deve manter as tags `imeta` para uma foto ou banner que não mudou e remover as tags de imagens que não são mais usadas. Sem essa regra, editar o nome de exibição poderia apagar fallbacks e texto alternativo. Manter todas as tags antigas seria pior, pois deixaria metadados assinados para imagens que o perfil não referencia mais.
+
+Clientes que não implementam a novidade continuam lendo `picture` e `banner` como antes. Eles podem ignorar as novas tags, tornando o formato retrocompatível. A consequência é um período misto: um cliente mostra o fallback ou blurhash, enquanto outro exibe a imagem principal quebrada.
+
+## O que mudou e o que não mudou
+
+O texto incorporado define um formato comum para descrever mídia de perfil. Ele não certifica hosts, não move perfis para armazenamento endereçado por conteúdo e não torna o hash obrigatório. Também não enriquece perfis existentes retroativamente. As tags só aparecem quando uma pessoa ou cliente publica um novo kind `0` que as contenha.
+
+O pull request informa que Ditto e Armada já implementam o formato, mas essa afirmação vem do autor da proposta e a especificação não mantém um registro de compatibilidade. Outros clientes precisam adotar tanto a publicação quanto a renderização antes que os metadados circulem de forma confiável.
+
+Para implementar com segurança, a sequência é restrita: manter a URL canônica no JSON do perfil, emitir no máximo uma tag `imeta` correspondente por imagem, comparar URLs exatamente, preservar tags apenas para campos inalterados e tratar cada fallback como entrada de rede não confiável. É uma mudança incremental, mas entrega às imagens de perfil o vocabulário de recuperação e apresentação que os anexos do Nostr já tinham.

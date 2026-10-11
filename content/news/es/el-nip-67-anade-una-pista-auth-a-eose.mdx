@@ -38,7 +38,7 @@ Las dos pistas existentes responden a una pregunta sobre el almacenamiento del r
 
 El nuevo valor responde, en cambio, a una pregunta sobre el cliente:
 
-> `"auth"`: el relay puede tener más eventos almacenados que coinciden con los filtros de la suscripción si el usuario realiza `AUTH` ([NIP-42](42.md)).
+> `"auth"`: el relay puede tener más eventos almacenados que coinciden con los filtros de la suscripción si el usuario realiza `AUTH` ([NIP-42](https://github.com/nostr-protocol/nips/blob/master/42.md)).
 
 Ese es un tipo distinto de resultado incompleto. `"more"` describe un resultado truncado por los límites del propio relay, que la paginación acabará agotando. `"auth"` describe un resultado truncado por quién es el cliente, algo que la paginación no arreglará nunca. Antes de que existiera esta pista, ambos casos eran indistinguibles desde el lado del cliente: una suscripción sin autenticar que devolvía una vista parcial de los datos de un relay terminaba con el mismo `EOSE` que una que lo devolvía todo.
 

@@ -13,59 +13,48 @@ interface TocItem {
 interface TableOfContentsProps {
   items: TocItem[];
   title?: string;
+  headingLevel?: 2 | 3 | 4;
 }
 
-export function TableOfContents({ items, title }: TableOfContentsProps) {
+export function TableOfContents({ items, title, headingLevel = 4 }: TableOfContentsProps) {
   const t = useTranslations("docs");
+  const Heading = `h${headingLevel}` as "h2" | "h3" | "h4";
   const [activeId, setActiveId] = useState<string>("");
 
   useEffect(() => {
-    const observer = new IntersectionObserver(
-      (entries) => {
-        // Find the first visible entry
-        const visibleEntry = entries.find((entry) => entry.isIntersecting);
-        if (visibleEntry) {
-          setActiveId(visibleEntry.target.id);
-        }
-      },
-      {
-        rootMargin: "-80px 0px -70% 0px",
-        threshold: 0,
-      }
-    );
-
-    // Observe all section headers
-    items.forEach((item) => {
-      const element = document.getElementById(item.id);
-      if (element) {
-        observer.observe(element);
-      }
-    });
-
-    return () => observer.disconnect();
+    let frame = 0;
+    const update = () => {
+      const sections = items.map(item => ({ id: item.id, element: document.getElementById(item.id) })).filter(item => item.element);
+      const passed = sections.filter(item => item.element!.getBoundingClientRect().top <= 120);
+      setActiveId(passed.at(-1)?.id ?? sections[0]?.id ?? "");
+    };
+    const schedule = () => {
+      cancelAnimationFrame(frame);
+      frame = requestAnimationFrame(update);
+    };
+    schedule();
+    window.addEventListener("scroll", schedule, { passive: true });
+    window.addEventListener("resize", schedule);
+    return () => {
+      cancelAnimationFrame(frame);
+      window.removeEventListener("scroll", schedule);
+      window.removeEventListener("resize", schedule);
+    };
   }, [items]);
-
-  const handleClick = (id: string) => {
-    const element = document.getElementById(id);
-    if (element) {
-      const yOffset = -100;
-      const y = element.getBoundingClientRect().top + window.pageYOffset + yOffset;
-      window.scrollTo({ top: y, behavior: "smooth" });
-    }
-  };
 
   if (items.length === 0) return null;
 
   return (
     <nav className="h-full overflow-y-auto pl-4 pb-8">
-      <h4 className="font-semibold text-sm uppercase tracking-wide text-gray-500 dark:text-gray-400 mb-3">
+      <Heading className="font-semibold text-sm uppercase tracking-wide text-gray-500 dark:text-gray-400 mb-3">
         {title ?? t("sidebar.onThisPage")}
-      </h4>
+      </Heading>
       <ul className="space-y-2 border-l border-gray-200 dark:border-gray-700">
         {items.map((item) => (
           <li key={item.id}>
-            <button
-              onClick={() => handleClick(item.id)}
+            <a
+              href={`#${item.id}`}
+              aria-current={activeId === item.id ? "location" : undefined}
               className={`block w-full text-left text-sm py-1 transition-colors ${
                 item.level === 2 ? "pl-3" : "pl-6"
               } ${
@@ -75,7 +64,7 @@ export function TableOfContents({ items, title }: TableOfContentsProps) {
               }`}
             >
               {item.label}
-            </button>
+            </a>
           </li>
         ))}
       </ul>

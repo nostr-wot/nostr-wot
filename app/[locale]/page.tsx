@@ -1,3 +1,4 @@
+import { socialLinks } from "@/lib/social-links";
 import { serializeJsonLd } from '@/lib/serialize-jsonld';
 import { withMetadataPolicy } from '@/lib/metadata-policy';
 import type { Metadata } from "next";
@@ -22,8 +23,8 @@ import {
   ServerIcon,
   ArrowRightIcon,
   NostrLogo,
-  ExtensionIllustration,
   ExtensionPopupIllustration,
+  ExtensionIllustration,
   OracleIllustration,
   CTAIllustration,
   CodeBracketsIcon,
@@ -82,12 +83,9 @@ export default async function Home({ params }: Props) {
     "name": "Nostr Web of Trust",
     "alternateName": "Nostr WoT",
     "url": localUrl("/"),
-    "logo": "https://nostr-wot.com/icon-512.png",
+    "logo": "https://nostrwot.com/icon-512.png",
     "description": t("meta.description"),
-    "sameAs": [
-      "https://github.com/nostr-wot",
-      "https://twitter.com/nostr_wot",
-    ],
+    "sameAs": socialLinks.map(({ href }) => href),
   };
 
   const websiteJsonLd = {

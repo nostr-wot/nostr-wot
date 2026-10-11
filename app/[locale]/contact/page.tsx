@@ -40,21 +40,21 @@ export default async function ContactPage() {
     "@type": "ContactPage",
     "name": t("title"),
     "description": t("description"),
-    "url": "https://nostr-wot.com/contact",
+    "url": "https://nostrwot.com/contact",
     "mainEntity": {
       "@type": "Organization",
       "name": "Nostr Web of Trust",
-      "url": "https://nostr-wot.com",
+      "url": "https://nostrwot.com",
       "contactPoint": [
         {
           "@type": "ContactPoint",
           "contactType": "technical support",
-          "url": "https://nostr-wot.com/contact",
+          "url": "https://nostrwot.com/contact",
         },
         {
           "@type": "ContactPoint",
           "contactType": "press",
-          "url": "https://nostr-wot.com/contact",
+          "url": "https://nostrwot.com/contact",
         },
       ],
     },

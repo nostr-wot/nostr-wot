@@ -207,3 +207,21 @@ export function LinkedInIcon({ className }: { className?: string }) {
     </svg>
   );
 }
+
+export function MediumIcon({ className }: { className?: string }) {
+  return (
+    <svg className={className || "w-5 h-5"} viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+      <ellipse cx="6.5" cy="12" rx="6.5" ry="6.5" />
+      <ellipse cx="17" cy="12" rx="3.3" ry="6.1" />
+      <ellipse cx="22.5" cy="12" rx="1.2" ry="5.5" />
+    </svg>
+  );
+}
+
+export function YouTubeIcon({ className }: { className?: string }) {
+  return (
+    <svg className={className || "w-5 h-5"} viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+      <path fillRule="evenodd" d="M23 7s-.2-1.6-.9-2.3c-.9-.9-1.9-.9-2.4-1C16.4 3.5 12 3.5 12 3.5s-4.4 0-7.7.2c-.5.1-1.5.1-2.4 1C1.2 5.4 1 7 1 7S.8 8.9.8 10.8v2.4c0 1.9.2 3.8.2 3.8s.2 1.6.9 2.3c.9.9 2.1.9 2.7 1 2 .2 7.4.2 7.4.2s4.4 0 7.7-.3c.5 0 1.5-.1 2.4-1 .7-.7.9-2.3.9-2.3s.2-1.9.2-3.8v-2.4C23.2 8.9 23 7 23 7ZM9.7 15.8V8.2l6.6 3.8-6.6 3.8Z" clipRule="evenodd" />
+    </svg>
+  );
+}

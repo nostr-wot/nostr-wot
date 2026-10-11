@@ -38,7 +38,7 @@ The existing two hints answer a question about the relay's storage. `"finish"` s
 
 The new value answers a question about the client instead:
 
-> `"auth"`: the relay may have more stored events matching the subscription's filters if the user performs `AUTH` ([NIP-42](42.md)).
+> `"auth"`: the relay may have more stored events matching the subscription's filters if the user performs `AUTH` ([NIP-42](https://github.com/nostr-protocol/nips/blob/master/42.md)).
 
 That is a different kind of incompleteness. `"more"` describes a result truncated by the relay's own limits, which paginating will eventually exhaust. `"auth"` describes a result truncated by who the client is, which paginating will never fix. Before this hint existed, the two were indistinguishable from the client side: an unauthenticated subscription that returned a partial view of a relay's data ended with the same `EOSE` as one that returned everything.
 

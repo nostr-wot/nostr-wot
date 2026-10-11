@@ -15,6 +15,7 @@
  * `collectErrors()` returns { entries, errors } and prints nothing, so callers
  * decide how to report.
  */
+import { LINKEDIN_CATEGORIES, linkedinEligible } from "./channel-policy.mjs";
 import { readdirSync, existsSync } from "node:fs";
 import { join, relative } from "node:path";
 import {
@@ -40,10 +41,10 @@ export const EM_EN_DASH = /[—–]/;
 export const EMOJI =
   /[\u{1F300}-\u{1FAFF}\u{2600}-\u{27BF}\u{2190}-\u{21FF}\u{2B00}-\u{2BFF}\u{1F1E6}-\u{1F1FF}]/u;
 export const HARD_LINK = /https?:\/\//i;
-// Explicitly requested community credit. Keep article URLs derived as before.
+// Explicitly requested external links. Keep article URLs derived as before.
 export function hasUnapprovedLink(text) {
   const links = text.match(/https?:\/\/[^\s]*/gi) ?? [];
-  return links.some((url) => url !== 'https://lacrypta.ar/');
+  return links.some((url) => url !== 'https://lacrypta.ar/' && url !== 'https://youtu.be/He4gz4occgY' && url !== 'https://youtu.be/e-E9u2UyL3E');
 }
 // docs/social-voice.md section 5: dead calls to action. Narrow on purpose,
 // these are the ones that have actually shipped.
@@ -59,6 +60,7 @@ export const HASHTAG = /^#[A-Za-z][A-Za-z0-9]*$/;
  */
 function buildKnownPaths(newsIndex) {
   const known = new Set([...newsIndex.values()].map((p) => new URL(p.url).pathname));
+  for (const slug of newsIndex.keys()) known.add(`/news/${slug}`);
   for (const collection of LINKABLE_COLLECTIONS) {
     if (collection === "news") continue; // already indexed above
     const dir = join(ROOT, "content", collection, "en");
@@ -89,7 +91,7 @@ export function collectErrors() {
     }
     if (hasUnapprovedLink(text)) {
       errors.push(
-        `${rel}: "${key}" contains an unapproved hard-coded link. Only the verified La Crypta credit URL is allowed; the poster derives and appends the canonical URL. Use {url} only to place it somewhere other than the end.`,
+        `${rel}: "${key}" contains an unapproved hard-coded link. Only the verified La Crypta credit and Account Archive lesson URLs are allowed; the poster derives and appends the canonical URL. Use {url} only to place it somewhere other than the end.`,
       );
     }
     if (EM_EN_DASH.test(text)) {
@@ -186,15 +188,20 @@ export function collectErrors() {
   for (const { path, data, url } of entries) {
     const rel = relative(ROOT, path);
 
-    const unknown = Object.keys(data).filter((k) => k !== "collection" && !KNOWN_CHANNELS.includes(k));
+    const unknown = Object.keys(data).filter((k) => !["collection", "linkedinCategory", "linkedinReason"].includes(k) && !KNOWN_CHANNELS.includes(k));
     if (unknown.length) {
       errors.push(
-        `${rel}: unknown field(s) ${unknown.join(", ")}. Known fields: collection, ${KNOWN_CHANNELS.join(", ")}.`,
+        `${rel}: unknown field(s) ${unknown.join(", ")}. Known fields: collection, linkedinCategory, linkedinReason, ${KNOWN_CHANNELS.join(", ")}.`,
       );
     }
 
-    if (!("linkedin" in data)) {
-      errors.push(`${rel}: missing required "linkedin" field.`);
+    if (!("linkedin" in data) && !("nostr" in data)) {
+      errors.push(`${rel}: supply at least one supported copy field: linkedin or nostr.`);
+    }
+    if ("linkedinCategory" in data || "linkedinReason" in data) {
+      if (!linkedinEligible(data) || typeof data.linkedin !== "string" || !data.linkedin.trim()) {
+        errors.push(`${rel}: LinkedIn eligibility requires linkedin copy, linkedinCategory (${LINKEDIN_CATEGORIES.join(", ")}), and a nonempty linkedinReason.`);
+      }
     }
 
     for (const key of ["linkedin", "x", "nostr"]) {

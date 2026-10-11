@@ -15,7 +15,7 @@ import { fileURLToPath } from "url";
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-const SITE_URL = "https://nostr-wot.com";
+const SITE_URL = "https://nostrwot.com";
 const INDEXNOW_KEY = "cc96a62ee2c05a372eea85893057e4ec";
 const INDEXNOW_ENDPOINT = "https://api.indexnow.org/indexnow";
 const CACHE_FILE = path.join(__dirname, ".indexnow-cache.json");
@@ -111,7 +111,7 @@ async function submitToIndexNow(urls: string[]): Promise<boolean> {
   console.log(`Submitting ${urls.length} URLs to IndexNow...`);
 
   const payload = {
-    host: "nostr-wot.com",
+    host: "nostrwot.com",
     key: INDEXNOW_KEY,
     keyLocation: `${SITE_URL}/${INDEXNOW_KEY}.txt`,
     urlList: urls,

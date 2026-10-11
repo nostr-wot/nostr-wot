@@ -2,7 +2,11 @@
 
 import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/routing";
-import { LogoIcon, GitHubIcon, NostrIcon, XTwitterIcon, LinkedInIcon, FacebookIcon } from "@/components/icons";
+import { LogoIcon, GitHubIcon, LinkedInIcon, MediumIcon, YouTubeIcon } from "@/components/icons";
+
+import { socialLinks } from "@/lib/social-links";
+
+const socialIcons = { GitHub: GitHubIcon, LinkedIn: LinkedInIcon, Medium: MediumIcon, YouTube: YouTubeIcon };
 
 export default function Footer() {
   const u = useTranslations("ui");
@@ -24,57 +28,27 @@ export default function Footer() {
             </p>
             {/* Social Links */}
             <div className="flex items-center gap-4">
-              <a
-                href="https://github.com/nostr-wot"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-gray-500 dark:text-gray-500 hover:text-gray-900 dark:hover:text-white transition-colors"
-                aria-label="GitHub"
-              >
-                <GitHubIcon className="w-5 h-5" />
-              </a>
-              <a
-                href="https://x.com/leonacosta_"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-gray-500 dark:text-gray-500 hover:text-gray-900 dark:hover:text-white transition-colors"
-                aria-label="X (Twitter)"
-              >
-                <XTwitterIcon className="w-5 h-5" />
-              </a>
-              <a
-                href="https://www.linkedin.com/company/nostr-wot"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-gray-500 dark:text-gray-500 hover:text-[#0077B5] transition-colors"
-                aria-label="LinkedIn"
-              >
-                <LinkedInIcon className="w-5 h-5" />
-              </a>
-              <a
-                href="https://nostr-wot.com/profile/npub1gxdhmu9swqduwhr6zptjy4ya693zp3ql28nemy4hd97kuufyrqdqwe5zfk"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-gray-500 dark:text-gray-500 hover:text-[#8B5CF6] transition-colors"
-                aria-label="Nostr"
-              >
-                <NostrIcon className="w-5 h-5" />
-              </a>
-              <a
-                href="https://facebook.com/nostr.wot"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-gray-500 dark:text-gray-500 hover:text-[#1877F2] transition-colors"
-                aria-label="Facebook"
-              >
-                <FacebookIcon className="w-5 h-5" />
-              </a>
+              {socialLinks.map(({ name, href }) => {
+                const Icon = socialIcons[name];
+                return (
+                  <a
+                    key={name}
+                    href={href}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-gray-500 dark:text-gray-500 hover:text-gray-900 dark:hover:text-white transition-colors"
+                    aria-label={name}
+                  >
+                    <Icon className="w-5 h-5" />
+                  </a>
+                );
+              })}
             </div>
           </div>
 
           {/* Product */}
           <div>
-            <h4 className="font-semibold text-gray-900 dark:text-white mb-4">{t("footer.product")}</h4>
+            <h2 className="font-semibold text-gray-900 dark:text-white mb-4">{t("footer.product")}</h2>
             <ul className="space-y-3">
               <li>
                 <Link href="/download" className="text-gray-600 dark:text-gray-400 text-sm hover:text-primary transition-colors">
@@ -101,11 +75,16 @@ export default function Footer() {
 
           {/* Resources */}
           <div>
-            <h4 className="font-semibold text-gray-900 dark:text-white mb-4">{t("footer.resources")}</h4>
+            <h2 className="font-semibold text-gray-900 dark:text-white mb-4">{t("footer.resources")}</h2>
             <ul className="space-y-3">
               <li>
                 <Link href="/newsletters" className="text-gray-600 dark:text-gray-400 text-sm hover:text-primary transition-colors">
                   {t("nav.newsletters")}
+                </Link>
+              </li>
+              <li>
+                <Link href="/help" className="text-gray-600 dark:text-gray-400 text-sm hover:text-primary transition-colors">
+                  {t("nav.help")}
                 </Link>
               </li>
               <li>
@@ -148,7 +127,7 @@ export default function Footer() {
 
           {/* Company & Legal */}
           <div>
-            <h4 className="font-semibold text-gray-900 dark:text-white mb-4">{t("footer.company")}</h4>
+            <h2 className="font-semibold text-gray-900 dark:text-white mb-4">{t("footer.company")}</h2>
             <ul className="space-y-3">
               <li>
                 <Link href="/about" className="text-gray-600 dark:text-gray-400 text-sm hover:text-primary transition-colors">
@@ -158,6 +137,11 @@ export default function Footer() {
               <li>
                 <Link href="/contact" className="text-gray-600 dark:text-gray-400 text-sm hover:text-primary transition-colors">
                   {t("nav.contact")}
+                </Link>
+              </li>
+              <li>
+                <Link href="/support" className="text-gray-600 dark:text-gray-400 text-sm hover:text-primary transition-colors">
+                  {t("footer.support")}
                 </Link>
               </li>
               <li>

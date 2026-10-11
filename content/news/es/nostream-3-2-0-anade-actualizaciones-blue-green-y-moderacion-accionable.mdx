@@ -1,0 +1,62 @@
+---
+title: "Nostream 3.2.0 añade actualizaciones blue/green y moderación accionable"
+description: "Nostream 3.2.0 añade una pila HAProxy blue/green opcional, ocultación NIP-56 desactivada por defecto y correcciones para consultas multifiltro."
+excerpt: "Los operadores obtienen una topología de dos procesos y una forma voluntaria de actuar sobre informes de confianza, con límites de validación y política."
+date: "2026-10-03"
+publishedAt: "2026-10-06"
+backfilled: false
+type: "story"
+tags: ["Nostr","Relays","Infraestructura","Moderación"]
+featuredImage: "/images/news/nostream-3-2-0-adds-blue-green-relay-updates-and-actionable-moderation.svg"
+translationKey: "nostream-3-2-0-adds-blue-green-relay-updates-and-actionable-moderation"
+sources:
+  - title: "Nostream v3.2.0 release"
+    url: "https://github.com/cameri/nostream/releases/tag/v3.2.0"
+    publisher: "cameri/nostream"
+    date: "2026-10-03"
+  - title: "HAProxy blue/green deployment PR #777"
+    url: "https://github.com/cameri/nostream/pull/777"
+    publisher: "cameri/nostream"
+    date: "2026-10-01"
+  - title: "NIP-56 actionable-report PR #788"
+    url: "https://github.com/cameri/nostream/pull/788"
+    publisher: "cameri/nostream"
+    date: "2026-09-29"
+  - title: "Multi-filter query fix PR #792"
+    url: "https://github.com/cameri/nostream/pull/792"
+    publisher: "cameri/nostream"
+    date: "2026-09-30"
+  - title: "NIP-56 reporting specification"
+    url: "https://github.com/nostr-protocol/nips/blob/master/56.md"
+    publisher: "nostr-protocol/nips"
+    date: "2026-10-06"
+published: true
+---
+
+[Nostream 3.2.0](https://github.com/cameri/nostream/releases/tag/v3.2.0) plantea dos decisiones nuevas a quienes operan un relay. Una es operativa: ejecutar dos procesos detrás de HAProxy y sustituirlos de uno en uno. La otra es editorial: permitir que los informes de moderadores de confianza configurados oculten eventos en las consultas. La versión también corrige consultas que podían omitir eventos sin un error visible.
+
+Es una versión de código fuente publicada, no el lanzamiento de un proyecto nuevo. Nostream existe desde 2022 y ya figura en el directorio. La versión 3.2.0 se publicó el 3 de octubre de 2026.
+
+## Una topología blue/green opcional
+
+La [PR #777](https://github.com/cameri/nostream/pull/777) añade una pila Docker Compose alternativa con dos relays, blue y green, detrás de HAProxy. HAProxy comprueba cada proceso mediante /readyz. Si uno deja de estar listo, option redispatch permite reintentar una solicitud apta contra el otro.
+
+Un script sustituye un relay, espera a que el reemplazo esté sano y después continúa con el segundo. La pila activa además un flujo de Redis para compartir eventos en vivo entre clientes WebSocket conectados a ambos procesos. El despliegue de un solo relay sigue disponible.
+
+La versión llama a esta ruta una actualización sin tiempo de inactividad, pero la PR registra una validación más limitada. Se comprobaron la configuración de Compose y la sintaxis de HAProxy, mientras que el script no se probó aún en una pila activa con un cliente WebSocket conectado. Es una opción documentada, no una prueba independiente de que toda transición conserve cada conexión.
+
+## Los informes pueden afectar a las consultas
+
+La [PR #788](https://github.com/cameri/nostream/pull/788) añade nip56.hideActionableReports. Está desactivado por defecto y solo funciona si también está habilitado NIP-56.
+
+Con ambas opciones activas, un informe de un moderador de confianza puede pasar a ser accionable. Un informe dirigido a un evento lo oculta de REQ y COUNT. Un informe dirigido a una clave pública oculta los eventos de esa clave. Antes, Nostream podía registrar el carácter accionable sin cambiar lo que recibían los suscriptores.
+
+La política sigue en manos del operador. [NIP-56](https://github.com/nostr-protocol/nips/blob/master/56.md) define los eventos kind 1984 como señales subjetivas y advierte de que la moderación automática puede ser manipulada. La versión no decide qué informes son correctos, no activa la ocultación por defecto y no elimina el evento de otros relays.
+
+## Correcciones para fallos silenciosos
+
+La [PR #792](https://github.com/cameri/nostream/pull/792) corrige dos errores. Un filtro con varios nombres de etiqueta intentaba satisfacer todas las condiciones desde una sola fila de la base de datos, por lo que podía no encontrar un evento válido. Ahora utiliza una subconsulta EXISTS por cada nombre.
+
+La misma corrección envuelve cada filtro antes de combinarlos con UNION. Así, el límite del primer filtro no limita toda la solicitud ni rompe COUNT. Otros cambios hacen que nostream info y nostream invite create fallen de forma explícita si la base de datos no está disponible, en lugar de quedar bloqueados.
+
+Este análisis no operó un relay de producción ni reprodujo tráfico bajo carga. La versión aporta controles con límites claros: una topología opcional, una acción de moderación voluntaria y consultas corregidas. La adopción y el resultado operativo siguen dependiendo de cada relay.

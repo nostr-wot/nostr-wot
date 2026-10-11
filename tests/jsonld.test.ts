@@ -19,7 +19,7 @@ const base = {
   headline: 'ML-DSA lands in a client',
   description: 'Excerpt here',
   image: '/images/news/default-featured.svg',
-  url: 'https://nostr-wot.com/news/2026-08-21-ml-dsa',
+  url: 'https://nostrwot.com/news/2026-08-21-ml-dsa',
   publishedAt: '2026-08-25T00:00:00.000Z',
   tags: ['Nostr', 'PQC'],
   sources: [{ title: 'Release notes', url: 'https://example.com/r' }],
@@ -75,16 +75,16 @@ test('digest items become an ItemList with positions starting at 1', () => {
 
 test('breadcrumbs number sequentially from 1', () => {
   const ld = breadcrumbJsonLd([
-    { name: 'Home', url: 'https://nostr-wot.com' },
-    { name: 'News', url: 'https://nostr-wot.com/news' },
+    { name: 'Home', url: 'https://nostrwot.com' },
+    { name: 'News', url: 'https://nostrwot.com/news' },
   ]) as any;
   assert.deepEqual(ld.itemListElement.map((i: any) => i.position), [1, 2]);
 });
 
 test('collection page carries its url and name', () => {
-  const ld = collectionPageJsonLd({ name: 'News', description: 'd', url: 'https://nostr-wot.com/news' }) as any;
+  const ld = collectionPageJsonLd({ name: 'News', description: 'd', url: 'https://nostrwot.com/news' }) as any;
   assert.equal(ld['@type'], 'CollectionPage');
-  assert.equal(ld.url, 'https://nostr-wot.com/news');
+  assert.equal(ld.url, 'https://nostrwot.com/news');
 });
 
 test('relative images are absolutised', () => {
@@ -103,6 +103,6 @@ test('JSON-LD cannot terminate its script when relay or article text contains HT
 });
 
 test('BlogPosting images are absolute crawler-accessible URLs', () => {
-  const graph = blogPostingJsonLd({ headline: 'Test', description: 'Test', image: '/images/blog/test.jpg', url: 'https://nostr-wot.com/blog/test', datePublished: '2026-01-01', authorName: 'Test', tags: [] });
-  assert.equal(graph.image, 'https://nostr-wot.com/images/blog/test.jpg');
+  const graph = blogPostingJsonLd({ headline: 'Test', description: 'Test', image: '/images/blog/test.jpg', url: 'https://nostrwot.com/blog/test', datePublished: '2026-01-01', authorName: 'Test', tags: [] });
+  assert.equal(graph.image, 'https://nostrwot.com/images/blog/test.jpg');
 });
