@@ -1,0 +1,60 @@
+---
+title: "Amethyst 1.18 ajoute le filtrage de confiance NIP-85 et une nouvelle app de bureau"
+description: "Amethyst 1.18.0 ajoute un index local de confiance NIP-85 pour les messages et notifications, ainsi que des versions de bureau partagées."
+excerpt: "Un réseau de confiance fourni par un prestataire peut désormais séparer les contacts connus des nouvelles demandes sans interroger chaque profil."
+date: "2026-10-11"
+publishedAt: "2026-10-12"
+backfilled: false
+type: "story"
+tags: ["Nostr", "Amethyst", "Clients", "NIP-85", "Web of Trust"]
+featuredImage: "/images/news/amethyst-1-18-adds-nip-85-trust-filtering-and-a-new-desktop-app.svg"
+translationKey: "amethyst-1-18-adds-nip-85-trust-filtering-and-a-new-desktop-app"
+sources:
+  - title: "Version Amethyst v1.18.0"
+    url: "https://github.com/vitorpamplona/amethyst/releases/tag/v1.18.0"
+    publisher: "vitorpamplona/amethyst"
+    date: "2026-10-11"
+  - title: "PR #4375 : index de réseau de confiance NIP-85"
+    url: "https://github.com/vitorpamplona/amethyst/pull/4375"
+    publisher: "vitorpamplona/amethyst"
+    date: "2026-10-09"
+  - title: "NIP-85 : Trusted Assertions"
+    url: "https://github.com/nostr-protocol/nips/blob/master/85.md"
+    publisher: "nostr-protocol/nips"
+    date: "2026-06-13"
+  - title: "PR #4372 : application de bureau partagée"
+    url: "https://github.com/vitorpamplona/amethyst/pull/4372"
+    publisher: "vitorpamplona/amethyst"
+    date: "2026-10-08"
+published: true
+---
+
+[Amethyst 1.18.0](https://github.com/vitorpamplona/amethyst/releases/tag/v1.18.0) a été publié le 11 octobre 2026. Cette version ajoute un index local de Web of Trust fondé sur NIP-85, l'utilise pour les messages directs et les notifications, et remplace l'ancienne interface de bureau par la même structure d'application qu'Android.
+
+La page de la version propose des paquets Android ainsi que des fichiers de bureau pour Linux sur x86-64 et ARM64, Windows sur x86-64 et ARM64, et les Mac Apple Silicon. Les outils en ligne de commande `amy` et `geode` disposent aussi de paquets pour les trois systèmes de bureau.
+
+## Un réseau de confiance qui reste local après la synchronisation
+
+[NIP-85](https://github.com/nostr-protocol/nips/blob/master/85.md) définit des événements signés appelés Trusted Assertions. Pour une personne, le kind `30382` désigne le sujet dans son tag `d` et peut contenir un `rank` de 0 à 100. Un événement kind `10040` séparé permet à l'utilisateur de choisir le prestataire et le relay pour chaque type d'assertion.
+
+La [PR #4375](https://github.com/vitorpamplona/amethyst/pull/4375) ajoute à Amethyst le côté client de ce modèle. Le client télécharge les cartes kind `30382` du prestataire choisi, vérifie leurs signatures et construit un index local compact. Les vérifications suivantes lisent cet index au lieu d'ouvrir un abonnement auprès d'un relay pour chaque profil.
+
+Les effets visibles vont au-delà d'un badge. Amethyst peut employer le score minimal choisi pour répartir les messages directs entre **Connus** et **Nouvelles demandes**, filtrer la vue de notifications **Sélectionnées**, replier les réponses extérieures au réseau et signaler les profils qui dépassent le seuil. L'écran de réglages présente le prestataire, le score minimal et la progression de la synchronisation. Le client `amy` reçoit les commandes correspondantes `trust setup`, `sync`, `status` et `check`.
+
+Le premier prestataire proposé par l'assistant est Brainstorm, mais la conception ne dépend pas d'un seul service. NIP-85 place le choix dans l'événement kind `10040` de l'utilisateur, et les réglages permettent de changer le prestataire comme le seuil.
+
+## L'index a un coût et une frontière de confiance
+
+La pull request indique un téléchargement initial d'environ 93 Mo pour près de 155 000 cartes, terminé en 34 secondes dans son environnement de test. Il s'agit d'une mesure du projet, pas d'une garantie pour chaque relay ou appareil. Sur Android, la tâche en arrière-plan s'exécute chaque jour uniquement avec une connexion non facturée au volume et une batterie suffisante. L'ouverture de l'application peut aussi lancer une synchronisation attendue. Les vérifications complètes utilisent la negentropy de NIP-77, tandis que les petites mises à jour demandent les cartes plus récentes.
+
+Ce système ne transforme pas un score en fait objectif. NIP-85 autorise explicitement des algorithmes et points de vue différents. Le client vérifie que l'assertion est signée par le prestataire choisi, pas que son classement est juste. Le choix délègue donc une partie du filtrage des messages et notifications à son point de vue. L'utilisateur peut changer de prestataire ou de seuil, et le filtrage reste désactivé tant qu'un prestataire et un réseau complet ne sont pas disponibles.
+
+L'index local évite des requêtes répétées et accélère les recherches, mais il conserve aussi sur l'appareil une vue dérivée et volumineuse du réseau. Son en-tête contient l'identité du prestataire et l'état de synchronisation afin qu'un changement de prestataire déclenche la reconstruction appropriée.
+
+## Une même interface arrive sur le bureau
+
+La [PR #4372](https://github.com/vitorpamplona/amethyst/pull/4372) fait de l'`AmethystApp` partagée l'application de bureau par défaut. Connexion, changement de compte, fils, messages, envois, publications programmées et plusieurs fonctions multimédias utilisent désormais les mêmes écrans partagés qu'Android. La version de bureau ajoute aussi des sélecteurs de fichiers natifs, les notifications du système, les thèmes de la plateforme et les commandes vidéo.
+
+La pull request consigne un test sous Linux dans un conteneur Ubuntu 24.04. Elle ne revendique aucun test sur du matériel macOS ou Windows et mentionne comme limite connue la lecture HLS sous Linux avec GStreamer 1.24 ou plus récent. Les fichiers publiés ne couvrent qu'ARM64 sous macOS, tandis que Linux et Windows couvrent ARM64 et x86-64.
+
+Amethyst 1.18 réunit donc deux changements distincts. Le travail de bureau élargit les endroits où le client fonctionne. L'index NIP-85 modifie la manière dont il peut décider quelles personnes et quels événements méritent l'attention. Ce dernier reste un filtre configurable fourni par un tiers choisi, et non un score universel de réputation.

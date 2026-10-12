@@ -1,0 +1,60 @@
+---
+title: "Amethyst 1.18 aggiunge il filtro di fiducia NIP-85 e una nuova app desktop"
+description: "Amethyst 1.18.0 aggiunge un indice locale di fiducia NIP-85 per messaggi e notifiche e distribuisce build desktop condivise."
+excerpt: "Una rete di fiducia fornita da un provider può separare i contatti noti dalle nuove richieste senza interrogare ogni profilo su un relay."
+date: "2026-10-11"
+publishedAt: "2026-10-12"
+backfilled: false
+type: "story"
+tags: ["Nostr", "Amethyst", "Client", "NIP-85", "Web of Trust"]
+featuredImage: "/images/news/amethyst-1-18-adds-nip-85-trust-filtering-and-a-new-desktop-app.svg"
+translationKey: "amethyst-1-18-adds-nip-85-trust-filtering-and-a-new-desktop-app"
+sources:
+  - title: "Release Amethyst v1.18.0"
+    url: "https://github.com/vitorpamplona/amethyst/releases/tag/v1.18.0"
+    publisher: "vitorpamplona/amethyst"
+    date: "2026-10-11"
+  - title: "PR #4375: indice della rete di fiducia NIP-85"
+    url: "https://github.com/vitorpamplona/amethyst/pull/4375"
+    publisher: "vitorpamplona/amethyst"
+    date: "2026-10-09"
+  - title: "NIP-85: Trusted Assertions"
+    url: "https://github.com/nostr-protocol/nips/blob/master/85.md"
+    publisher: "nostr-protocol/nips"
+    date: "2026-06-13"
+  - title: "PR #4372: applicazione desktop condivisa"
+    url: "https://github.com/vitorpamplona/amethyst/pull/4372"
+    publisher: "vitorpamplona/amethyst"
+    date: "2026-10-08"
+published: true
+---
+
+[Amethyst 1.18.0](https://github.com/vitorpamplona/amethyst/releases/tag/v1.18.0) è stato pubblicato l'11 ottobre 2026. La versione aggiunge un indice locale di Web of Trust basato su NIP-85, lo usa nei messaggi diretti e nelle notifiche e sostituisce la vecchia interfaccia desktop con la stessa struttura applicativa di Android.
+
+La pagina della release offre pacchetti Android e file desktop per Linux su x86-64 e ARM64, Windows su x86-64 e ARM64 e Mac Apple Silicon. Anche gli strumenti da riga di comando `amy` e `geode` hanno pacchetti per i tre sistemi desktop.
+
+## Una rete di fiducia che resta locale dopo la sincronizzazione
+
+[NIP-85](https://github.com/nostr-protocol/nips/blob/master/85.md) definisce eventi firmati chiamati Trusted Assertions. Per le persone, il kind `30382` identifica il soggetto nel tag `d` e può contenere un `rank` da 0 a 100. Un evento separato di kind `10040` consente all'utente di indicare provider e relay per ogni tipo di affermazione.
+
+La [PR #4375](https://github.com/vitorpamplona/amethyst/pull/4375) aggiunge ad Amethyst la parte client di questo modello. Il client scarica le schede kind `30382` del provider scelto, ne verifica le firme e crea un indice locale compatto. Le verifiche successive leggono l'indice invece di aprire un abbonamento al relay per ogni profilo.
+
+Gli effetti visibili vanno oltre un badge. Amethyst può usare la soglia scelta per dividere i messaggi diretti tra **Noti** e **Nuove richieste**, filtrare la vista delle notifiche **Curate**, comprimere le risposte esterne alla rete e contrassegnare i profili sopra la soglia. La schermata delle impostazioni mostra provider, punteggio minimo e avanzamento della sincronizzazione. Il client `amy` riceve i comandi corrispondenti `trust setup`, `sync`, `status` e `check`.
+
+Il primo provider proposto dalla configurazione è Brainstorm, ma il progetto non dipende da un solo servizio. NIP-85 registra la scelta nell'evento kind `10040` dell'utente e le impostazioni permettono di cambiare sia provider sia soglia.
+
+## L'indice ha un costo e un confine di fiducia
+
+La pull request riporta un download iniziale di circa 93 MB per quasi 155.000 schede, completato in 34 secondi nel suo ambiente di prova. È una misura del progetto, non una garanzia per ogni relay o dispositivo. Su Android, il processo in background parte ogni giorno solo con una connessione non a consumo e batteria sufficiente. Anche l'apertura dell'app può avviare una sincronizzazione dovuta. Le verifiche complete usano la negentropy di NIP-77, mentre gli aggiornamenti minori richiedono le schede più recenti.
+
+Il sistema non rende oggettivo un punteggio. NIP-85 consente espressamente algoritmi e punti di vista diversi. Il client verifica che l'affermazione sia firmata dal provider scelto, non che la sua classifica sia corretta. La scelta delega quindi parte del filtro di messaggi e notifiche al punto di vista del provider. L'utente può cambiare provider o soglia e il filtro resta disattivato finché non sono disponibili un provider e una rete completa.
+
+L'indice locale riduce le richieste ripetute e accelera le ricerche, ma conserva anche sul dispositivo una grande vista derivata della rete. L'intestazione include l'identità del provider e lo stato di sincronizzazione, così un cambio di provider avvia la ricostruzione corretta.
+
+## La stessa interfaccia arriva sul desktop
+
+La [PR #4372](https://github.com/vitorpamplona/amethyst/pull/4372) rende l'`AmethystApp` condivisa l'applicazione desktop predefinita. Accesso, cambio account, feed, messaggi, caricamenti, post programmati e varie funzioni multimediali usano ora le stesse schermate condivise di Android. La versione desktop aggiunge anche selettori file nativi, notifiche del sistema, temi della piattaforma e controlli video.
+
+La pull request registra un test Linux in un container Ubuntu 24.04. Non dichiara test su hardware macOS o Windows e segnala come limite noto la riproduzione HLS su Linux con GStreamer 1.24 o successivo. I file pubblicati coprono solo ARM64 su macOS, mentre Linux e Windows comprendono ARM64 e x86-64.
+
+Amethyst 1.18 riunisce quindi due cambiamenti diversi. Il lavoro desktop amplia i luoghi in cui il client può funzionare. L'indice NIP-85 cambia come può decidere quali persone ed eventi meritano attenzione. Quest'ultimo resta un filtro configurabile fornito da una terza parte scelta, non un punteggio universale di reputazione.

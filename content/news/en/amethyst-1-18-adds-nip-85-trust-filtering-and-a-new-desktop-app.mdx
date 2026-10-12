@@ -1,0 +1,60 @@
+---
+title: "Amethyst 1.18 adds NIP-85 trust filtering and a new desktop app"
+description: "Amethyst 1.18.0 adds a local NIP-85 trust index for DMs and notifications, and ships shared desktop builds for Linux, macOS and Windows."
+excerpt: "A provider-supplied trust network can now separate known contacts from new requests without a relay query for every profile."
+date: "2026-10-11"
+publishedAt: "2026-10-12"
+backfilled: false
+type: "story"
+tags: ["Nostr", "Amethyst", "Clients", "NIP-85", "Web of Trust"]
+featuredImage: "/images/news/amethyst-1-18-adds-nip-85-trust-filtering-and-a-new-desktop-app.svg"
+translationKey: "amethyst-1-18-adds-nip-85-trust-filtering-and-a-new-desktop-app"
+sources:
+  - title: "Amethyst v1.18.0 release"
+    url: "https://github.com/vitorpamplona/amethyst/releases/tag/v1.18.0"
+    publisher: "vitorpamplona/amethyst"
+    date: "2026-10-11"
+  - title: "PR #4375: NIP-85 trust network index"
+    url: "https://github.com/vitorpamplona/amethyst/pull/4375"
+    publisher: "vitorpamplona/amethyst"
+    date: "2026-10-09"
+  - title: "NIP-85: Trusted Assertions"
+    url: "https://github.com/nostr-protocol/nips/blob/master/85.md"
+    publisher: "nostr-protocol/nips"
+    date: "2026-06-13"
+  - title: "PR #4372: shared desktop application"
+    url: "https://github.com/vitorpamplona/amethyst/pull/4372"
+    publisher: "vitorpamplona/amethyst"
+    date: "2026-10-08"
+published: true
+---
+
+[Amethyst 1.18.0](https://github.com/vitorpamplona/amethyst/releases/tag/v1.18.0) was published on 11 October 2026. The release adds a local Web of Trust index based on NIP-85, uses it in direct messages and notifications, and replaces the old desktop interface with the same application shell used on Android.
+
+The release page provides Android packages plus desktop files for Linux on x86-64 and ARM64, Windows on x86-64 and ARM64, and Apple Silicon Macs. The `amy` and `geode` command-line tools also have packages for the three desktop operating systems.
+
+## A trust network that stays local after syncing
+
+[NIP-85](https://github.com/nostr-protocol/nips/blob/master/85.md) defines signed Trusted Assertion events. For people, kind `30382` identifies the subject in its `d` tag and can carry a `rank` from 0 to 100. A separate kind `10040` event lets a user name the provider and relay they want for each assertion type.
+
+[PR #4375](https://github.com/vitorpamplona/amethyst/pull/4375) adds the consumer side of that model to Amethyst. The client downloads the selected provider's kind `30382` cards, verifies their signatures and builds a compact local index. Later checks read that index instead of opening a relay subscription for every profile.
+
+The visible effects are broader than a badge. Amethyst can use the selected minimum score when it separates direct messages into **Known** and **New Requests**, filters the **Curated** notification view, collapses replies from outside the network and marks profiles that pass the threshold. The settings screen exposes the provider, minimum score and sync progress. The `amy` command-line client gets matching `trust setup`, `sync`, `status` and `check` commands.
+
+The first provider offered by the onboarding flow is Brainstorm, but the design is not tied to one scoring service. NIP-85 puts provider selection in the user's kind `10040` event, and the Amethyst settings allow that choice and threshold to change.
+
+## The index has a cost and a trust boundary
+
+The pull request reports a measured cold download of about 93 MB for roughly 155,000 cards, completed in 34 seconds in its test setup. That is a project measurement, not a guarantee for every relay or device. On Android, the background worker runs daily only on an unmetered connection with sufficient battery. Opening the app can also start a due sync. Full checks use NIP-77 negentropy, while smaller updates request the newer cards.
+
+This system does not make a score objective. NIP-85 explicitly allows providers to use different algorithms and points of view. A client verifies that an assertion was signed by the chosen provider, not that the provider's ranking is correct. Selecting a provider therefore delegates part of message and notification filtering to that provider's view. Users who dislike the result can change the provider or threshold, and filtering remains off until a provider and a complete network are available.
+
+The local index reduces repeated network queries and makes lookups fast, but it also stores a large derived view of the network on the device. The implementation keeps provider identity and sync state in the index header so that changing providers triggers the appropriate rebuild.
+
+## One interface reaches the desktop
+
+[PR #4372](https://github.com/vitorpamplona/amethyst/pull/4372) makes the shared `AmethystApp` the default desktop application. Login, account switching, feeds, messages, uploads, scheduled posts and several media features now use the same shared screens as Android. The desktop build also adds native file pickers, operating-system notifications, platform themes and video playback controls.
+
+The pull request records a Linux test in an Ubuntu 24.04 container. It does not claim a hardware test on macOS or Windows, and it lists HLS playback on Linux with GStreamer 1.24 or newer as a known limitation. The release assets also include only ARM64 for macOS, while Linux and Windows cover both ARM64 and x86-64.
+
+Amethyst 1.18 is therefore two changes of different kinds. The desktop work widens where the client runs. The NIP-85 index changes how the client can decide which people and events deserve attention. The latter remains a configurable filter supplied by a chosen third party, not a universal reputation score.

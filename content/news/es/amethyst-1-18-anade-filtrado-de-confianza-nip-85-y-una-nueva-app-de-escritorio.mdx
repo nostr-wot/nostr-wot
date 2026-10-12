@@ -1,0 +1,60 @@
+---
+title: "Amethyst 1.18 añade filtrado de confianza NIP-85 y una nueva app de escritorio"
+description: "Amethyst 1.18.0 añade un índice local de confianza NIP-85 para mensajes y notificaciones, y estrena versiones de escritorio compartidas."
+excerpt: "Una red de confianza suministrada por un proveedor puede separar contactos conocidos de nuevas solicitudes sin consultar cada perfil en un relay."
+date: "2026-10-11"
+publishedAt: "2026-10-12"
+backfilled: false
+type: "story"
+tags: ["Nostr", "Amethyst", "Clientes", "NIP-85", "Web of Trust"]
+featuredImage: "/images/news/amethyst-1-18-adds-nip-85-trust-filtering-and-a-new-desktop-app.svg"
+translationKey: "amethyst-1-18-adds-nip-85-trust-filtering-and-a-new-desktop-app"
+sources:
+  - title: "Lanzamiento de Amethyst v1.18.0"
+    url: "https://github.com/vitorpamplona/amethyst/releases/tag/v1.18.0"
+    publisher: "vitorpamplona/amethyst"
+    date: "2026-10-11"
+  - title: "PR #4375: índice de red de confianza NIP-85"
+    url: "https://github.com/vitorpamplona/amethyst/pull/4375"
+    publisher: "vitorpamplona/amethyst"
+    date: "2026-10-09"
+  - title: "NIP-85: Trusted Assertions"
+    url: "https://github.com/nostr-protocol/nips/blob/master/85.md"
+    publisher: "nostr-protocol/nips"
+    date: "2026-06-13"
+  - title: "PR #4372: aplicación de escritorio compartida"
+    url: "https://github.com/vitorpamplona/amethyst/pull/4372"
+    publisher: "vitorpamplona/amethyst"
+    date: "2026-10-08"
+published: true
+---
+
+[Amethyst 1.18.0](https://github.com/vitorpamplona/amethyst/releases/tag/v1.18.0) se publicó el 11 de octubre de 2026. La versión añade un índice local de Web of Trust basado en NIP-85, lo usa en mensajes directos y notificaciones, y sustituye la antigua interfaz de escritorio por la misma estructura de aplicación de Android.
+
+La página de lanzamiento ofrece paquetes de Android y archivos de escritorio para Linux en x86-64 y ARM64, Windows en x86-64 y ARM64, y Mac con Apple Silicon. Las herramientas de línea de comandos `amy` y `geode` también tienen paquetes para los tres sistemas de escritorio.
+
+## Una red de confianza que permanece local tras sincronizarse
+
+[NIP-85](https://github.com/nostr-protocol/nips/blob/master/85.md) define eventos firmados llamados Trusted Assertions. Para personas, el kind `30382` identifica al sujeto en su etiqueta `d` y puede llevar un `rank` de 0 a 100. Un evento separado de kind `10040` permite que el usuario indique el proveedor y el relay que desea para cada tipo de afirmación.
+
+[PR #4375](https://github.com/vitorpamplona/amethyst/pull/4375) incorpora a Amethyst la parte consumidora de ese modelo. El cliente descarga las tarjetas de kind `30382` del proveedor elegido, verifica sus firmas y crea un índice local compacto. Las consultas posteriores leen ese índice en lugar de abrir una suscripción al relay para cada perfil.
+
+Los efectos visibles van más allá de una insignia. Amethyst puede usar la puntuación mínima elegida para separar mensajes directos entre **Conocidos** y **Nuevas solicitudes**, filtrar la vista de notificaciones **Curadas**, contraer respuestas de fuera de la red y marcar perfiles que superen el umbral. La pantalla de ajustes muestra proveedor, puntuación mínima y avance de la sincronización. El cliente `amy` añade comandos equivalentes: `trust setup`, `sync`, `status` y `check`.
+
+El primer proveedor que ofrece el flujo de configuración es Brainstorm, pero el diseño no está vinculado a un único servicio. NIP-85 guarda la elección en el evento kind `10040` del usuario, y los ajustes permiten cambiar tanto el proveedor como el umbral.
+
+## El índice tiene un coste y un límite de confianza
+
+El pull request informa de una descarga inicial de unos 93 MB para aproximadamente 155.000 tarjetas, completada en 34 segundos en su entorno de prueba. Es una medición del proyecto, no una garantía para todos los relays o dispositivos. En Android, el proceso en segundo plano se ejecuta a diario solo con una conexión no medida y batería suficiente. Abrir la app también puede iniciar una sincronización pendiente. Las comprobaciones completas usan negentropy de NIP-77, mientras que las actualizaciones pequeñas solicitan tarjetas más recientes.
+
+El sistema no convierte una puntuación en un hecho objetivo. NIP-85 permite expresamente algoritmos y puntos de vista diferentes. El cliente verifica que una afirmación fue firmada por el proveedor elegido, no que su clasificación sea correcta. Elegirlo delega parte del filtrado de mensajes y notificaciones a su criterio. El usuario puede cambiar proveedor o umbral, y el filtrado permanece desactivado hasta disponer de un proveedor y una red completa.
+
+El índice local evita consultas repetidas y acelera las búsquedas, pero también guarda en el dispositivo una vista derivada y grande de la red. Su cabecera incluye la identidad del proveedor y el estado de sincronización para que un cambio de proveedor active la reconstrucción adecuada.
+
+## Una interfaz llega al escritorio
+
+[PR #4372](https://github.com/vitorpamplona/amethyst/pull/4372) convierte `AmethystApp` compartida en la aplicación de escritorio predeterminada. Inicio de sesión, cambio de cuenta, feeds, mensajes, cargas, publicaciones programadas y varias funciones multimedia usan ahora las mismas pantallas compartidas que Android. La versión de escritorio añade además selectores de archivos nativos, notificaciones del sistema, temas de plataforma y controles de vídeo.
+
+El pull request registra una prueba en Linux dentro de un contenedor Ubuntu 24.04. No afirma pruebas en hardware macOS o Windows y señala como limitación conocida la reproducción HLS en Linux con GStreamer 1.24 o posterior. Los archivos publicados cubren solo ARM64 en macOS, mientras que Linux y Windows incluyen ARM64 y x86-64.
+
+Amethyst 1.18 reúne así dos cambios distintos. El trabajo de escritorio amplía dónde se ejecuta el cliente. El índice NIP-85 cambia cómo puede decidir qué personas y eventos merecen atención. Este último sigue siendo un filtro configurable suministrado por un tercero elegido, no una puntuación universal de reputación.
