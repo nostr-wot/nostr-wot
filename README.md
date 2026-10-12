@@ -104,4 +104,4 @@ All components are fully open source. Run your own oracle, fork the extension, b
 
 ## License
 
-MIT
+Project-owned code and documentation are licensed under [GNU GPL version 3 only](LICENSE) (`GPL-3.0-only`). See [LICENSING.md](LICENSING.md) for third-party material and earlier versions.

@@ -115,9 +115,9 @@ export default async function TermsPage() {
                 {t("license.description")}
               </p>
               <div className="bg-gray-50 dark:bg-gray-900 rounded-xl p-6">
-                <h3 className="text-lg font-semibold mb-3">{t("license.mitTitle")}</h3>
+                <h3 className="text-lg font-semibold mb-3">{t("license.gplTitle")}</h3>
                 <p className="text-gray-600 dark:text-gray-400 text-sm mb-4">
-                  {t("license.mitDescription")}
+                  {t("license.gplDescription")}
                 </p>
                 <ul className="list-disc pl-6 text-gray-600 dark:text-gray-400 text-sm space-y-2">
                   <li>{t("license.rights.use")}</li>
@@ -125,6 +125,10 @@ export default async function TermsPage() {
                   <li>{t("license.rights.modify")}</li>
                   <li>{t("license.rights.distribute")}</li>
                 </ul>
+                <p className="text-gray-600 dark:text-gray-400 text-sm mt-4">
+                  {t("license.conditions")}{" "}
+                  <a href="https://www.gnu.org/licenses/gpl-3.0.html" className="text-primary hover:underline">{t("license.fullText")}</a>
+                </p>
               </div>
             </section>
 

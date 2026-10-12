@@ -92,7 +92,7 @@ export default async function WidgetsPage({ params }: Props) {
     "description": t("meta.description"),
     "codeRepository": REPO_URL,
     "programmingLanguage": "TypeScript",
-    "license": "https://opensource.org/licenses/MIT",
+    "license": "https://spdx.org/licenses/GPL-3.0-only.html",
     "url": `${SITE_URL}/widgets`,
   };
 
