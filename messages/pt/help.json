@@ -429,13 +429,13 @@
       ],
       "steps": [
         "Selecione Create with passkey. Escolha um provedor no aviso do navegador para passkeys.nostrwot.com e confirme.",
-        "Prepare a recuperação. Se o provedor confirmar que salvou os dados, o arquivo é opcional. Caso contrário, escolha Download recovery file, salve e confirme que também precisará da passkey. Salvar nos relays não substitui essa etapa.",
-        "Opcionalmente salve a recuperação nos relays e confira quais aceitaram. Guarde um arquivo como alternativa adicional.",
-        "Continue para as preferências de proteção. Confirm mantém o desbloqueio por passkey e o bloqueio automático de 15 minutos. Conclua e anote seu npub público."
+        "Se o provedor oferece armazenamento de recuperação, a extensão salva automaticamente. Confirme a autenticação adicional. Após a confirmação do armazenamento, a configuração avança diretamente para Protect your keys, sem tela de download nem outro clique em Continue.",
+        "Somente se o armazenamento do provedor estiver indisponível ou falhar: selecione Download recovery file, salve o arquivo e confirme que também precisa da passkey. O salvamento opcional nos relays aparece nessa alternativa; não substitui o arquivo e a confirmação obrigatórios.",
+        "Em Protect your keys, Confirm mantém Use passkey selecionado e o bloqueio automático de 15 minutos. Escolha contas para seguir ou pule essa etapa e termine em All Set. Anote seu npub público para conferir a identidade após a recuperação."
       ],
       "checks": [
         "O arquivo criptografado precisa de uma passkey cadastrada capaz de decifrar a cópia. O arquivo sozinho não basta.",
-        "Atualize a cópia após mudanças de contas ou chaves. Os arquivos de eventos são separados; a confirmação do provedor não comprova sincronização com outro dispositivo."
+        "Um arquivo adicional fica disponível depois em Settings → Security → Passkey. Atualize as cópias após mudanças de contas ou chaves. Os arquivos de eventos são separados; o armazenamento confirmado não comprova sincronização com outro dispositivo."
       ]
     },
     "passkeyRecover": {
@@ -443,7 +443,7 @@
       "overview": "Restaure dados de recuperação compatíveis em uma instalação vazia e confirme que a chave pública corresponde à conta original.",
       "before": [
         "Use uma instalação sem contas. Esse fluxo não substitui um cofre que já contém contas.",
-        "Disponibilize o provedor original e tenha o arquivo criptografado e seu npub original em mãos."
+        "Disponibilize o provedor original e tenha seu npub público original em mãos. Se você salvou um arquivo criptografado, prepare-o como alternativa."
       ],
       "steps": [
         "Abra Try other methods e Restore passkey vault. A busca usa passkeys.nostrwot.com. Para outro domínio original, use Advanced passkey setup com o hostname exato.",
@@ -466,8 +466,8 @@
       "steps": [
         "Escolha Try other methods e Advanced passkey setup. Informe o hostname original sem esquema, caminho ou porta.",
         "Selecione a credencial existente e confirme a recuperação. Restaure os dados compatíveis do provedor, relays ou arquivo e compare o npub.",
-        "Abra Settings, Security e Passkey. Selecione a credencial existente e Add another passkey. Verifique-a e cadastre uma nova credencial em passkeys.nostrwot.com.",
-        "Prepare a recuperação da nova credencial. Com armazenamento confirmado, o arquivo é opcional; caso contrário, baixe e confirme. Guarde uma cópia adicional e teste a nova credencial."
+        "Abra Settings, Security e Passkey. Selecione a credencial existente e Add another passkey. Mantenha ou altere o nome sugerido e continue. Verifique a credencial existente e cadastre uma nova em passkeys.nostrwot.com no aviso do navegador.",
+        "A recuperação da nova credencial é salva automaticamente quando o provedor oferece suporte; confirme a autenticação. O armazenamento confirmado conclui essa etapa sem tela de download. Somente se estiver indisponível ou falhar, baixe o arquivo e confirme. Teste a nova credencial; um arquivo adicional continua disponível nas configurações de Passkey."
       ],
       "checks": [
         "A credencial original continua cadastrada. A nova mantém a chave pública recuperada sem mudar o domínio da anterior.",

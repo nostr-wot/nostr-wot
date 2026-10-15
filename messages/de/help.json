@@ -429,13 +429,13 @@
       ],
       "steps": [
         "Wähle Create with passkey. Wähle im Browserdialog für passkeys.nostrwot.com einen Anbieter und bestätige.",
-        "Richte die Wiederherstellung ein. Bestätigt der Anbieter die Speicherung, ist die Datei optional. Andernfalls wähle Download recovery file, speichere sie und bestätige, dass auch dein Passkey benötigt wird. Relay-Speicherung ersetzt diese Voraussetzung nicht.",
-        "Optional kannst du die Wiederherstellung auf Relays speichern und deren Bestätigungen prüfen. Behalte eine Datei als zusätzliche Möglichkeit.",
-        "Fahre mit den Schutzeinstellungen fort. Confirm behält Passkey-Entsperrung und automatische Sperre nach 15 Minuten bei. Schließe die Einrichtung ab und notiere deinen öffentlichen npub."
+        "Unterstützt der Anbieter Wiederherstellungsspeicher, speichert die Erweiterung automatisch. Bestätige die zusätzliche Authentifizierung. Nach bestätigter Speicherung geht es direkt zu Protect your keys, ohne Download-Bildschirm oder weiteren Klick auf Continue.",
+        "Nur wenn der Anbieterspeicher nicht verfügbar ist oder fehlschlägt: Wähle Download recovery file, speichere die Datei und bestätige, dass dein Passkey ebenfalls nötig ist. Optionales Speichern auf Relays erscheint in diesem Ersatzablauf; es ersetzt die erforderliche Datei und Bestätigung nicht.",
+        "Unter Protect your keys behält Confirm die Auswahl Use passkey und die automatische Sperre nach 15 Minuten bei. Wähle Konten zum Folgen oder überspringe den Schritt und beende die Einrichtung unter All Set. Notiere deinen öffentlichen npub für spätere Vergleiche."
       ],
       "checks": [
         "Die verschlüsselte Datei benötigt einen registrierten Passkey, der diese Kopie entschlüsseln kann. Die Datei allein reicht nicht.",
-        "Aktualisiere die Kopie nach Konto- oder Schlüsseländerungen. Ereignisarchive sind separat; die Anbieterbestätigung beweist keine Synchronisierung mit einem anderen Gerät."
+        "Eine zusätzliche Datei ist später unter Settings → Security → Passkey verfügbar. Aktualisiere Kopien nach Konto- oder Schlüsseländerungen. Ereignisarchive sind separat; bestätigte Speicherung beweist keine Synchronisierung mit einem anderen Gerät."
       ]
     },
     "passkeyRecover": {
@@ -443,7 +443,7 @@
       "overview": "Stelle kompatible Wiederherstellungsdaten in einer leeren Installation wieder her und vergleiche den öffentlichen Schlüssel mit dem Original.",
       "before": [
         "Verwende eine Installation ohne Konten. Dieser Ablauf ersetzt keinen bereits befüllten Tresor.",
-        "Stelle den ursprünglichen Anbieter bereit und halte die verschlüsselte Datei sowie den ursprünglichen npub griffbereit."
+        "Stelle den ursprünglichen Anbieter bereit und halte deinen ursprünglichen öffentlichen npub griffbereit. Falls du eine verschlüsselte Datei gespeichert hast, halte sie als Alternative bereit."
       ],
       "steps": [
         "Öffne Try other methods und Restore passkey vault. Gesucht wird unter passkeys.nostrwot.com. Für eine andere ursprüngliche Domain nutze Advanced passkey setup mit ihrem genauen Hostnamen.",
@@ -466,8 +466,8 @@
       "steps": [
         "Wähle Try other methods und Advanced passkey setup. Gib den ursprünglichen Hostnamen ohne Schema, Pfad oder Port ein.",
         "Wähle den bestehenden Passkey und bestätige die Wiederherstellung. Stelle kompatible Anbieter-, Relay- oder Dateidaten wieder her und vergleiche den npub.",
-        "Öffne Settings, Security und Passkey. Wähle den bestehenden Passkey und Add another passkey. Bestätige ihn und registriere einen neuen unter passkeys.nostrwot.com.",
-        "Richte die Wiederherstellung des neuen Passkeys ein. Nach bestätigter Anbieterspeicherung ist die Datei optional; sonst lade sie herunter und bestätige. Behalte eine zusätzliche Kopie und teste den neuen Passkey."
+        "Öffne Settings, Security und Passkey. Wähle den bestehenden Passkey und Add another passkey. Behalte oder ändere den vorgeschlagenen Namen und fahre fort. Bestätige den bestehenden Passkey und registriere im Browser einen neuen unter passkeys.nostrwot.com.",
+        "Die Wiederherstellung des neuen Passkeys wird bei Anbieterunterstützung automatisch gespeichert; bestätige die Authentifizierung. Die bestätigte Speicherung beendet diesen Schritt ohne Download-Bildschirm. Nur bei fehlender Unterstützung oder einem Fehler musst du die Datei herunterladen und bestätigen. Teste den neuen Passkey; eine zusätzliche Datei bleibt in den Passkey-Einstellungen verfügbar."
       ],
       "checks": [
         "Der ursprüngliche Passkey bleibt registriert. Der neue behält den wiederhergestellten öffentlichen Schlüssel bei und verschiebt die alte Domain nicht.",

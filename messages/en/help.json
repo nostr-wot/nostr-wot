@@ -429,13 +429,13 @@
       ],
       "steps": [
         "Select Create with passkey. The browser opens its provider prompt for passkeys.nostrwot.com; choose a provider and confirm.",
-        "Complete recovery setup. If the provider confirms recovery data was saved, downloading a file is optional. Otherwise select Download recovery file, save it and acknowledge that you also need your passkey. Relay saving alone does not replace this requirement.",
-        "Optionally save recovery to relays and check which destinations accepted it. Keep a file as an additional recovery route, even when provider storage succeeds.",
-        "Continue to protection preferences. Confirm keeps passkey unlock and the 15-minute auto-lock default. Complete setup and record your public npub so you can check the identity after recovery."
+        "When the provider supports recovery storage, the extension saves it automatically. Confirm the additional authentication prompt. Once the provider confirms the save, setup advances directly to Protect your keys without a download screen or another Continue click.",
+        "Only if provider storage is unavailable or fails: select Download recovery file, save it and acknowledge that your passkey is also required. Optional relay saving appears on this fallback screen; relay acceptance does not replace the required file and acknowledgement.",
+        "On Protect your keys, Confirm keeps Use passkey selected and the 15-minute auto-lock default. Choose follows or skip them, then finish on All Set. Record your public npub so you can check the identity after recovery."
       ],
       "checks": [
         "The encrypted file requires an enrolled passkey that can decrypt its snapshot. Keep access to the provider; a file alone is insufficient.",
-        "Save a fresh recovery snapshot after account or key changes. Local event archives are separate, and provider confirmation does not prove another device has synchronized."
+        "An additional recovery file is available later in Settings → Security → Passkey. Refresh snapshots after account or key changes. Local event archives are separate, and provider confirmation does not prove synchronization with another device."
       ]
     },
     "passkeyRecover": {
@@ -443,7 +443,7 @@
       "overview": "Restore compatible saved recovery data on a fresh installation and check that the recovered public key matches your original account.",
       "before": [
         "Use an installation with no existing accounts. This restore flow cannot replace a populated vault.",
-        "Make the original passkey provider available on this device. Keep your encrypted recovery file and original public npub available."
+        "Make the original passkey provider available on this device and keep your original public npub available. If you saved an encrypted recovery file, have it ready as a fallback."
       ],
       "steps": [
         "Open Try other methods and select Restore passkey vault. The default search uses passkeys.nostrwot.com. For another original domain, use Advanced passkey setup with that exact hostname.",
@@ -466,8 +466,8 @@
       "steps": [
         "Choose Try other methods, then Advanced passkey setup. Enter the original passkey domain as a hostname without a scheme, path or port.",
         "Select the existing credential. Confirm recovery when asked, then restore compatible provider, relay or file data. Compare the recovered npub with the original before continuing.",
-        "Open Settings, Security, then Passkey. Select the existing credential and choose Add another passkey. Verify it, then register a new credential under passkeys.nostrwot.com with the browser’s provider prompt.",
-        "Finish recovery setup for the new credential. A confirmed provider save makes the file optional; otherwise download and acknowledge the encrypted recovery file. Keep an additional file and test the new credential before relying on it."
+        "Open Settings, Security, then Passkey. Select the existing credential and choose Add another passkey. Keep or edit the suggested name and continue. Verify the existing credential, then register a new one under passkeys.nostrwot.com in the browser prompt.",
+        "Recovery for the new credential saves automatically when the provider supports it; confirm the authentication prompt. A confirmed save finishes this step automatically, without a download screen. Only if provider storage is unavailable or fails must you download and acknowledge the encrypted recovery file. Test the new credential; an additional file remains available in Passkey settings."
       ],
       "checks": [
         "The original credential remains enrolled. Adding the new credential preserves the recovered Nostr public key; it does not move or rename the original passkey’s domain.",
