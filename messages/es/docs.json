@@ -55,7 +55,9 @@
     "proxyProcess": "Gestión del proceso",
     "proxyMonitoring": "Monitorización",
     "proxyLimits": "Límites y validación",
-    "proxyOwnership": "Propiedad del monedero"
+    "proxyOwnership": "Propiedad del monedero",
+    "sdkPasskeys": "Passkeys y recuperación",
+    "sdkPasskeyInterop": "Interoperabilidad de passkeys"
   },
   "overview": {
     "title": "Resumen",
@@ -261,7 +263,24 @@
     "compatibilityTitle": "Compatibilidad con Oracle",
     "compatibilityDescription": "La versión publicada @nostr-wot/wot 1.0.0 utiliza el contrato anterior /api/distance/FROM/TO?maxHops= y espera el campo distance. Oracle 0.3.0 utiliza /distance?from=&to=&max_hops= y devuelve hops. Cambiar solo la URL base no los hace compatibles. Usa fetch directamente con Oracle 0.3.0 o la fuente del grafo local mostrada abajo.",
     "localTitle": "Ejemplo de grafo local",
-    "localDescription": "Carga y rastrea un grafo local antes de pasar su fuente a WoT. El ejemplo React recibe este grafo preparado y usa useIsInWoT; useWoT también solicita getDetails al Oracle. @nostr-wot/graph tiene su propia API getScore, independiente de la API de puntuación eliminada de WoT."
+    "localDescription": "Carga y rastrea un grafo local antes de pasar su fuente a WoT. El ejemplo React recibe este grafo preparado y usa useIsInWoT; useWoT también solicita getDetails al Oracle. @nostr-wot/graph tiene su propia API getScore, independiente de la API de puntuación eliminada de WoT.",
+    "passkeys": {
+      "title": "Passkeys y recuperación",
+      "description": "@nostr-wot/vault ofrece registros de bóveda portátiles, datos de recuperación cifrados y coordinación con proveedores y relays para aplicaciones web y nativas. La versión 1.1.0 está publicada en npm.",
+      "host": "Tu app crea la cuenta y realiza la ceremonia nativa de passkey. Proporciona el identificador verificado, RP y entrada y salida PRF a las funciones; el SDK no abre el aviso del navegador ni autoriza dominios. No guardes ni registres la salida PRF.",
+      "example": "El ejemplo cifra los datos de una cuenta existente y abre un archivo de recuperación. Valida las cuentas y la clave pública esperada, aplica la política de sustitución de bóveda y guarda el registro de forma atómica. Debes volver a cifrar una clave de caché recién generada antes de usarla. La clase Vault para contraseñas no abre registros passkey v2.",
+      "adaptersTitle": "Adaptadores de proveedor y relays",
+      "adapters": "saveRecovery y restoreRecovery reciben RecoveryProvider, RecoveryTransport y un verificador de firmas. Guardar también requiere la función de firma del autor. Reutiliza las conexiones, verifica la sesión al escribir y exige consentimiento para publicar en relays. Configura los mismos relays iniciales al registrar y restaurar; el SDK no incluye una lista oculta.",
+      "interopTitle": "Interoperabilidad de passkeys",
+      "domain": "Primero necesitas acceso a la credencial: dominio RP original y proveedor disponible en el dispositivo destino. Compartir el nombre del RP no autoriza otra web o app. La migración recupera datos compatibles y comprueba la misma clave pública antes de registrar otra credencial en passkeys.nostrwot.com; no transfiere la original.",
+      "wire": "El protocolo usa kind 31777, entrada PRF keytr-v1 y un user handle con los 32 bytes públicos del autor. La clave única usa Keytr PRF v1. Semillas y bóvedas usan la propuesta tipada v4 y esquemas versionados; no presupongas compatibilidad con apps v1. Respeta coordenadas, codificación, contexto HKDF, AAD y esquema exactos.",
+      "validation": "Verifica firmas y contexto autenticado antes de importar y deriva la clave pública esperada. Rechaza esquemas desconocidos y datos inválidos. Prueba vectores independientes y dispositivos reales; un guardado local no demuestra sincronización.",
+      "blob": "El sobre nostr-wot-passkey-recovery del SDK y la copia cifrada nostr-wot-passkey-vault de la extensión son formatos distintos. Usa el parser y la ruta de migración de la extensión; restoreRecovery rechaza blobs desconocidos. Actualiza la recuperación tras cambios y conserva un archivo.",
+      "packageLink": "API del paquete y ejemplos",
+      "protocolLink": "Protocolo, contratos y formato",
+      "extensionLink": "Recuperación en la extensión",
+      "guidesLink": "Guías de usuario"
+    }
   },
   "rateLimits": {
     "title": "Límites de Tasa",

@@ -55,7 +55,9 @@
     "proxyProcess": "Gestão do processo",
     "proxyMonitoring": "Monitorização",
     "proxyLimits": "Limites e validação",
-    "proxyOwnership": "Propriedade da carteira"
+    "proxyOwnership": "Propriedade da carteira",
+    "sdkPasskeys": "Passkeys e recuperação",
+    "sdkPasskeyInterop": "Interoperabilidade de passkeys"
   },
   "overview": {
     "title": "Visão Geral",
@@ -261,7 +263,24 @@
     "compatibilityTitle": "Compatibilidade com Oracle",
     "compatibilityDescription": "A versão publicada @nostr-wot/wot 1.0.0 usa o contrato antigo /api/distance/FROM/TO?maxHops= e espera o campo distance. Oracle 0.3.0 usa /distance?from=&to=&max_hops= e retorna hops. Alterar apenas a URL base não os torna compatíveis. Use fetch diretamente com Oracle 0.3.0 ou a fonte do grafo local abaixo.",
     "localTitle": "Exemplo de grafo local",
-    "localDescription": "Carregue e rastreie um grafo local antes de passar sua fonte ao WoT. O exemplo React recebe esse grafo preparado e usa useIsInWoT; useWoT também solicita getDetails ao Oracle. @nostr-wot/graph tem sua própria API getScore, separada da API de pontuação removida do WoT."
+    "localDescription": "Carregue e rastreie um grafo local antes de passar sua fonte ao WoT. O exemplo React recebe esse grafo preparado e usa useIsInWoT; useWoT também solicita getDetails ao Oracle. @nostr-wot/graph tem sua própria API getScore, separada da API de pontuação removida do WoT.",
+    "passkeys": {
+      "title": "Passkeys e recuperação",
+      "description": "@nostr-wot/vault fornece cofres portáteis, dados criptografados de recuperação e coordenação com provedores e relays para aplicativos web e nativos. A versão 1.1.0 está publicada no npm.",
+      "host": "Seu aplicativo cria a conta e realiza a cerimônia nativa. Forneça o identificador verificado, RP e entrada e saída PRF; o SDK não abre o aviso do navegador nem autoriza domínios. Nunca armazene ou registre a saída PRF.",
+      "example": "O exemplo criptografa dados de uma conta existente e abre um arquivo de recuperação. Valide as contas e a chave pública esperada, aplique a política de substituição e salve atomicamente. Uma chave de cache recém-criada deve ser criptografada e salva antes do uso. A classe Vault baseada em senha não abre registros passkey v2.",
+      "adaptersTitle": "Adaptadores de provedor e relays",
+      "adapters": "saveRecovery e restoreRecovery recebem RecoveryProvider, RecoveryTransport e um verificador de assinaturas. Salvar também exige a função de assinatura do autor. Reutilize conexões, verifique a sessão nas gravações e exija consentimento para publicar. Configure os mesmos relays iniciais no cadastro e na restauração; não há lista oculta no SDK.",
+      "interopTitle": "Interoperabilidade de passkeys",
+      "domain": "O acesso exige o RP original e um provedor disponível no dispositivo de destino. Compartilhar o nome do RP não autoriza outro site ou app. A migração recupera dados compatíveis e verifica a mesma chave pública antes de registrar outra credencial em passkeys.nostrwot.com; não transfere a original.",
+      "wire": "O protocolo usa kind 31777, entrada PRF keytr-v1 e um user handle com os 32 bytes públicos do autor. Uma chave única usa Keytr PRF v1. Sementes e cofres usam a proposta tipada v4 e esquemas versionados; não presuma compatibilidade com apps v1. Respeite coordenadas, codificação, contexto HKDF, AAD e esquema exatos.",
+      "validation": "Verifique assinaturas e contexto autenticado antes da importação e derive a chave pública esperada. Rejeite esquemas desconhecidos e dados inválidos. Teste vetores independentes e dispositivos reais; uma gravação local não comprova sincronização.",
+      "blob": "O envelope nostr-wot-passkey-recovery do SDK difere da cópia nostr-wot-passkey-vault da extensão. Use o parser e o caminho de migração da extensão; restoreRecovery rejeita blobs desconhecidos. Atualize a recuperação após mudanças e mantenha um arquivo.",
+      "packageLink": "API do pacote e exemplos",
+      "protocolLink": "Protocolo, contratos e formato",
+      "extensionLink": "Recuperação na extensão",
+      "guidesLink": "Guias do usuário"
+    }
   },
   "rateLimits": {
     "title": "Limites de Taxa",
