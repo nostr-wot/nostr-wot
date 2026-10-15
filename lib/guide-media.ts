@@ -1,5 +1,6 @@
 /** Published videos verified on youtube.com/@nostr-wot; see docs/guide-media.md. */
 export const GUIDE_VIDEOS = {
+  events: { id: "JlenrCGN2z8", title: "What Is a Nostr Event? Posts, Profiles & Signatures Explained" },
   account: { id: "pUBd2rgmhNc", title: "How to Create a Nostr Account with Nostr WoT" },
   subAccounts: { id: "5nk687W76hE", title: "How to Create Multiple Nostr Identities from One Seed" },
   approvals: { id: "HjK-ygsj4Qs", title: "Nostr Permissions Explained: Approvals & Recent Activity" },
@@ -24,6 +25,7 @@ export interface GuideMedia {
 
 // Key by translationKey so every localized guide gets the same verified media.
 export const GUIDE_MEDIA: Record<string, GuideMedia> = {
+  'what-is-a-nostr-event': { screenshots: [], videos: ['events'] },
   'create-extension-theme': { screenshots: [], videos: ['appearance'] },
   'account-archive': { screenshots: [], videos: ['archive'] },
   'getting-started': { screenshots: ['account-methods'], videos: ['account'] },
