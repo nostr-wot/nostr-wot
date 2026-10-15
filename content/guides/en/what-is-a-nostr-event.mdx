@@ -1,0 +1,56 @@
+---
+title: "What Is a Nostr Event? Posts, Profiles and Signatures"
+description: "Understand the seven event fields, what signatures verify, and why profiles, reactions and linked media behave differently."
+excerpt: "Understand the seven event fields, what signatures verify, and why profiles, reactions and linked media behave differently."
+date: "2026-10-15"
+featuredImage: "/images/illustrations/what-is-nostr.webp"
+previewImage: "/images/illustrations/what-is-nostr.webp"
+tags: ["Nostr", "Protocol"]
+published: true
+seoTitle: "What Is a Nostr Event? Posts, Profiles and Signatures"
+seoDescription: "Understand the seven event fields, what signatures verify, and why profiles, reactions and linked media behave differently."
+ogImage: "/images/illustrations/what-is-nostr.webp"
+translationKey: "what-is-a-nostr-event"
+difficulty: "beginner"
+order: 0.2
+---
+
+A post on Nostr is more than the words in your feed. Your app packages those words with an author key, a timestamp and other details, then asks your signer to sign them. That signed package is an **event**. This guide accompanies the Nostr WoT video below, following one message: “See you at sunset.”
+
+## Inside the seven fields
+
+[NIP-01](https://github.com/nostr-protocol/nips/blob/master/01.md) defines the common format. You do not need to write JSON to use Nostr, but recognizing these fields helps when reviewing a signing request.
+
+| Field | What it contains |
+| --- | --- |
+| `pubkey` | The author's public key, encoded as hexadecimal. |
+| `created_at` | A Unix timestamp in seconds, supplied by the author’s software. |
+| `kind` | A number telling apps how to interpret the event. |
+| `tags` | Lists of references or additional details. |
+| `content` | A string containing text or data appropriate to the kind. |
+| `id` | A SHA-256 fingerprint of the specified serialized data. |
+| `sig` | A Schnorr signature over that ID, verifiable with `pubkey`. |
+
+The ID is calculated from `[0, pubkey, created_at, kind, tags, content]` using NIP-01’s exact JSON serialization rules. Neither `id` nor `sig` is included in that input. The leading `0` belongs to the serialization format; it is not the event’s kind.
+
+![The five data fields feed the NIP-01 serialization and SHA-256 hash to produce id; sig is a signature over id.](/images/guides/nostr-event-fields.svg)
+
+## One format, different actions
+
+A short plaintext post uses **kind 1**, defined in [NIP-10](https://github.com/nostr-protocol/nips/blob/master/10.md). Its `content` can hold “See you at sunset.” Tags can connect a reply to another event.
+
+A profile update uses **kind 0**. Its `content` is a JSON object encoded as a string, with details such as `name`, `about` and `picture`. Profiles are replaceable: relays may discard older versions after receiving a newer one for the same key.
+
+A reaction to a Nostr event uses **kind 7**, defined in [NIP-25](https://github.com/nostr-protocol/nips/blob/master/25.md). An `e` tag identifies the target event. A `+` in `content` represents a like. The reaction has its own author, ID and signature; it does not modify the original post.
+
+## What verification actually proves
+
+Full verification recomputes the ID from the data and checks the signature against the public key. If someone changes “sunset” to “sunrise” while retaining the old ID and signature, verification fails. Signing the changed data creates a different event; it does not rewrite the original.
+
+A valid signature establishes that the matching key signed those data. It does not identify the person operating that key, verify a profile’s real name or make a signed statement true. The timestamp is also signed, but it remains an author-supplied claim rather than independent proof of time. Signing alone does not encrypt the content.
+
+## Why a photo can disappear
+
+An event can contain a media URL that the app downloads separately. [NIP-92](https://github.com/nostr-protocol/nips/blob/master/92.md) describes `imeta` tags for related metadata, including optional file hashes. Signing a URL does not freeze the bytes served there or keep the server online. A file hash can help check downloaded bytes, but cannot guarantee availability.
+
+Different apps can verify the same event and display it differently. Whether they find it depends on the relays they query, retention and app support. When inspecting an event, separate three questions: does it verify, do you trust its author, and can you retrieve what it references?

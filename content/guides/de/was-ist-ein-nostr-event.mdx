@@ -1,0 +1,56 @@
+---
+title: "Was ist ein Nostr-Event? Beiträge, Profile und Signaturen"
+description: "Die sieben Event-Felder verstehen: Was Signaturen prüfen und wie Profile, Reaktionen und verlinkte Medien funktionieren."
+excerpt: "Die sieben Event-Felder verstehen: Was Signaturen prüfen und wie Profile, Reaktionen und verlinkte Medien funktionieren."
+date: "2026-10-15"
+featuredImage: "/images/illustrations/what-is-nostr.webp"
+previewImage: "/images/illustrations/what-is-nostr.webp"
+tags: ["Nostr", "Protocol"]
+published: true
+seoTitle: "Was ist ein Nostr-Event? Beiträge, Profile und Signaturen"
+seoDescription: "Die sieben Event-Felder verstehen: Was Signaturen prüfen und wie Profile, Reaktionen und verlinkte Medien funktionieren."
+ogImage: "/images/illustrations/what-is-nostr.webp"
+translationKey: "what-is-a-nostr-event"
+difficulty: "beginner"
+order: 0.2
+---
+
+Ein Beitrag auf Nostr besteht aus mehr als den Wörtern in deinem Feed. Deine App ergänzt sie um den Schlüssel des Autors, einen Zeitstempel und weitere Angaben. Anschließend lässt sie diese Daten von deinem Signierwerkzeug signieren. Dieses signierte Paket ist ein **Event**. Der Leitfaden begleitet das Nostr-WoT-Video weiter unten anhand einer Nachricht: „Wir sehen uns bei Sonnenuntergang.“
+
+## Die sieben Felder
+
+[NIP-01](https://github.com/nostr-protocol/nips/blob/master/01.md) definiert das gemeinsame Format. Du musst kein JSON schreiben, um Nostr zu nutzen. Wenn du diese Felder erkennst, kannst du Signaturanfragen aber besser beurteilen.
+
+| Feld | Inhalt |
+| --- | --- |
+| `pubkey` | Der öffentliche Schlüssel des Autors in Hexadezimaldarstellung. |
+| `created_at` | Ein Unix-Zeitstempel in Sekunden, den die Software des Autors angibt. |
+| `kind` | Eine Zahl, die Apps sagt, wie sie das Event interpretieren sollen. |
+| `tags` | Listen mit Verweisen oder zusätzlichen Angaben. |
+| `content` | Eine Zeichenkette mit Text oder zum Event-Typ passenden Daten. |
+| `id` | Ein SHA-256-Fingerabdruck der nach Vorgabe serialisierten Daten. |
+| `sig` | Eine Schnorr-Signatur dieser ID, prüfbar mit `pubkey`. |
+
+Die ID wird aus `[0, pubkey, created_at, kind, tags, content]` nach den genauen JSON-Serialisierungsregeln von NIP-01 berechnet. Weder `id` noch `sig` gehören zu dieser Eingabe. Die führende `0` gehört zum Serialisierungsformat; sie ist nicht der Event-Typ.
+
+![Die fünf Datenfelder durchlaufen die NIP-01-Serialisierung und SHA-256 und ergeben id; sig ist eine Signatur dieser id.](/images/guides/nostr-event-fields.svg)
+
+## Ein Format, verschiedene Aktionen
+
+Ein kurzer Klartextbeitrag verwendet **kind 1**, definiert in [NIP-10](https://github.com/nostr-protocol/nips/blob/master/10.md). Sein `content` kann „Wir sehen uns bei Sonnenuntergang“ enthalten. Tags können eine Antwort mit einem anderen Event verknüpfen.
+
+Eine Profilaktualisierung verwendet **kind 0**. Ihr `content` ist ein als Zeichenkette kodiertes JSON-Objekt mit Angaben wie `name`, `about` und `picture`. Profile sind ersetzbar: Relays dürfen ältere Versionen verwerfen, sobald sie eine neuere für denselben Schlüssel erhalten.
+
+Eine Reaktion auf ein Nostr-Event verwendet **kind 7**, definiert in [NIP-25](https://github.com/nostr-protocol/nips/blob/master/25.md). Ein `e`-Tag bezeichnet das Ziel-Event. Ein `+` in `content` steht für „Gefällt mir“. Die Reaktion hat einen eigenen Autor, eine eigene ID und eine eigene Signatur; sie verändert den ursprünglichen Beitrag nicht.
+
+## Was die Prüfung tatsächlich belegt
+
+Die vollständige Prüfung berechnet die ID aus den Daten neu und prüft die Signatur mit dem öffentlichen Schlüssel. Ändert jemand „Sonnenuntergang“ zu „Sonnenaufgang“, behält aber ID und Signatur bei, schlägt die Prüfung fehl. Wer die geänderten Daten signiert, erstellt ein anderes Event und schreibt das ursprüngliche nicht um.
+
+Eine gültige Signatur belegt, dass der passende Schlüssel diese Daten signiert hat. Sie identifiziert weder die Person hinter dem Schlüssel noch bestätigt sie einen echten Profilnamen oder den Wahrheitsgehalt einer Aussage. Auch der Zeitstempel ist signiert, bleibt aber eine Angabe des Autors statt eines unabhängigen Zeitnachweises. Signieren allein verschlüsselt den Inhalt nicht.
+
+## Warum ein Foto verschwinden kann
+
+Ein Event kann eine Medien-URL enthalten, deren Inhalt die App getrennt herunterlädt. [NIP-92](https://github.com/nostr-protocol/nips/blob/master/92.md) beschreibt `imeta`-Tags für zugehörige Metadaten, darunter optionale Datei-Hashes. Eine signierte URL macht die dort ausgelieferten Bytes nicht unveränderlich und hält den Server nicht online. Ein Hash kann heruntergeladene Bytes prüfbar machen, garantiert aber keine Verfügbarkeit.
+
+Verschiedene Apps können dasselbe Event prüfen und unterschiedlich anzeigen. Ob sie es finden, hängt von den abgefragten Relays, deren Datenspeicherung und der Unterstützung durch die App ab. Trenne beim Prüfen drei Fragen: Ist das Event gültig, vertraust du dem Autor und kannst du die referenzierten Inhalte abrufen?
