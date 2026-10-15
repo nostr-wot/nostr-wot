@@ -4,14 +4,12 @@
 
 LinkedIn is reserved for relevant, substantive news and updates about the Nostr WoT platform and team. Routine third-party client, app, relay, protocol or ecosystem notices, including Amber, Amethyst, nak and Nostream releases, are not eligible. Publishing an article or adding a project to our directory does not make it a platform update. General ecosystem significance alone is not an exception.
 
-New ecosystem copy should contain `nostr` only. For a qualifying platform or team announcement, include `linkedin`, `linkedinCategory` set to `platform-update` or `team-update`, and a nonempty `linkedinReason` explaining the actual platform/team news and reader impact. Do not label third-party maintenance as a platform advance. Minor maintenance and routine version bumps do not qualify.
+Our own substantive published tutorials and educational videos may use `team-update`, with a reason identifying the resource and its practical value. Never call an existing feature newly released merely because we are sharing its tutorial. New ecosystem copy should contain `nostr` only. For a qualifying platform or team announcement, include `linkedin`, `linkedinCategory` set to `platform-update` or `team-update`, and a nonempty `linkedinReason` explaining the actual platform/team news and reader impact. Do not label third-party maintenance as a platform advance. Minor maintenance and routine version bumps do not qualify.
 
 The sender defaults to excluding LinkedIn when this explicit classification is absent, including old queued copy. Existing copy and receipts are preserved; policy exclusion is not delivery failure and never creates a delivery receipt. Nostr delivery remains governed by the normal queue and live-page checks. Do not retry a ledgered or uncertain delivery to apply a new classification.
 
 
-The daily newsroom agent reads this file at the start of every run. Changing what
-counts as news, or how it is written, is a commit to this file. Do not encode
-editorial rules in the schedule, where they cannot be reviewed or reverted.
+The daily newsroom agent reads this file at the start of every run. Changing what counts as news, or how it is written, is a commit to this file. Do not encode editorial rules in the schedule, where they cannot be reviewed or reverted.
 
 ## Before anything else
 
@@ -21,28 +19,15 @@ editorial rules in the schedule, where they cannot be reviewed or reverted.
 
 ## Where facts come from
 
-**GitHub only.** Query the API. Do not search the web for news, and do not treat
-any fetched prose page as a source.
+Check Nostr WoT's own completed work before researching third-party news: public extension releases, SDK packages, website guides, and published educational videos. Read `lib/guide-media.ts`, `docs/guide-media.md`, the official [Nostr WoT channel](https://www.youtube.com/@nostr-wot), and the source repositories. Record the exact public video URL and verified subject. A local render, release tag, version bump or planned upload is not proof of publication. Verify extension availability per release channel and SDK versions against npm before describing a feature as newly available.
 
-This is not caution for its own sake. During the retrofill, a fetched "newsletter"
-page returned content describing a private repository in terms lifted from internal
-notes, for a project with no public footprint. Fabricated pages cannot be told apart
-from real ones here. Structured API responses cross-check; prose does not.
+Use primary evidence for technical claims: GitHub releases, PR diffs, public documentation, published package metadata and the actual video. The official channel is a permitted source for our own tutorials; GitHub-only research must not hide work we have already published. Do not infer that a video exists from a local filename. If a public upload ID cannot be verified, record the gap and use another verified candidate rather than blocking the entire run.
 
-Permitted sources:
-
-- `nostr-protocol/nips` pull requests and commits
-- Tagged releases of major clients and relays (Damus, Amethyst, Primal, Coracle,
-  Snort, strfry, khatru and similar), via the releases API
-- The diff or file content of the above
-
-If a fact cannot be established from one of those, it does not go in the article.
+For ecosystem reports, query `nostr-protocol/nips` changes and tagged client/relay releases through GitHub. Cross-check fetched prose with primary evidence; never turn private notes into purported public news.
 
 ### Enumerate by MERGE date, never creation date
 
-`gh pr list` orders by when a pull request was **opened**. A long-lived pull request
-that merges today will be invisible to it. This exact mistake caused the retrofill to
-report eight merges on a day that had nine, missing the largest change of that day.
+`gh pr list` orders by when a pull request was **opened**. A long-lived pull request that merges today will be invisible to it. This exact mistake caused the retrofill to report eight merges on a day that had nine, missing the largest change of that day.
 
 Use:
 
@@ -69,29 +54,25 @@ Not notable, and never a reason to publish:
 - Personalities, disputes, or anything about who did what to whom
 - Opinion, advocacy, or "the ecosystem is growing"
 
-## Deciding whether to publish at all
+## Deciding what to publish
 
-**Monday**: publish a `digest` covering the previous seven days, if anything notable
-merged in that window. If nothing did, publish nothing and log it.
+Each scheduled cycle must evaluate three lanes: ecosystem news, practical guides/education, and meaningful Nostr WoT project updates. Inspect recent publications and their sources, open PRs, social copy and delivery receipts before choosing. Preserve website variety across the lanes; a useful existing tutorial does not need to be disguised as a software release.
 
-**Every other day**: publish a single `story` only if something notable merged since
-the last run AND it is not already covered by an existing article. Check the most
-recent 20 articles and their `sources` before deciding.
+First recover scoped unfinished work and missing social copy for our own published guides or videos. An existing substantive guide with a verified tutorial can be shared without creating a duplicate article. Our own educational work is eligible for LinkedIn with a specific `team-update` reason; unrelated third-party releases remain ineligible regardless of where their article is hosted. Do not retry a confirmed or uncertain delivery.
 
-**Publishing nothing is a correct outcome and requires no justification.** A quiet week
-is a fact about the ecosystem, not a failure of the newsroom. Never lower the bar to
-produce an article, and never combine unrelated trivia into a digest to fill a slot.
+For a new article, prefer the least recently covered substantive lane. A Monday ecosystem digest is useful when the previous week has meaningful developments; it is not the only permissible Monday output. A quiet ecosystem news day is a reason to consider a researched guide, our completed work or an unshared video, not a reason to silently disappear. Never lower the factual bar, invent a release, recycle old news as new or publish filler.
+
+Every invocation must leave a timestamped outcome in `docs/newsroom/log.md`: publication and channel receipts, pending work with its PR/workflow reference, a justified skip listing considered candidates, or the exact blocker. A green social workflow with nothing due and a schedule acknowledgement do not prove that editorial work ran. Pending social verification must be preserved and reconciled separately; it must not prevent producing the next due article.
 
 ## Writing rules
 
-Read `content/news/en/` for voice before writing. Plain, technical, unhurried: a working
-engineer explaining a change, not a press release.
+Read `content/news/en/` for voice before writing. Plain, technical, unhurried: a working engineer explaining a change, not a press release.
 
 - **Never use an em dash.** Rephrase, or use a comma, colon or full stop. Substituting a
   hyphen is not the fix. This is a firm house rule.
 - No hype words. Nothing is revolutionary, exciting, huge or game-changing.
 - Do not speculate about maintainer intent, roadmaps, or adoption.
-- Do not mention nostr-wot or QuantaKrypto. These are reports, not promotion.
+- Explain Nostr WoT directly when the subject is our own work. In ecosystem reports, avoid unrelated self-promotion. Do not introduce QuantaKrypto unless it is directly relevant and sourced.
 - Link the pull request inline the first time you reference a change.
 - State what the diff says. If the diff contradicts your expectation, follow the diff.
 - 500 to 900 words for a story. Digests may run longer, with each item treated briefly.
@@ -121,25 +102,20 @@ published: true
 
 Digests add an `items` array of `{title, url, summary}`, one per covered change.
 
-Omit `author`. It defaults to "Nostr WoT Newsroom", which is correct. Never attribute
-an article to a person.
+Omit `author`. It defaults to "Nostr WoT Newsroom", which is correct. Never attribute an article to a person.
 
-`backfilled` is `false` for daily articles, and `date` equals `publishedAt`, because
-these report current events. The build throws if `backfilled: true` is set without
-`publishedAt`; that guard exists on purpose.
+`backfilled` is `false` for daily articles, and `date` equals `publishedAt`, because these report current events. The build throws if `backfilled: true` is set without `publishedAt`; that guard exists on purpose.
 
 ## Locales
 
 Publish in all seven: `en, es, pt, ru, it, fr, de`. `pt` is Brazilian Portuguese.
 
 - Slug: a short kebab-case phrase from the headline. **No date prefix.**
-  `nip-47-simplifies-core-adds-extensions`, never `2026-08-01-nip-47-...`.
-  The route adds the first publication date as a separate segment: `/news/YYYY-MM-DD/slug`, with `/{locale}` before `/news` for non-English editions. Keep `publishedAt` stable after publication.
+  `nip-47-simplifies-core-adds-extensions`, never `2026-08-01-nip-47-...`.   The route adds the first publication date as a separate segment: `/news/YYYY-MM-DD/slug`, with `/{locale}` before `/news` for non-English editions. Keep `publishedAt` stable after publication.
 - Digests need a descriptive slug from their own headline too. A generic
   `week-in-review` collides with every other digest, in every locale.
 - Non-English slugs come from that locale's own translated headline, not from a
-  transliteration of the English one. Russian uses Latin-script transliteration,
-  following the convention already in `content/news/ru/`.
+  transliteration of the English one. Russian uses Latin-script transliteration,   following the convention already in `content/news/ru/`.
 - `translationKey` is the English slug, identical across all seven files.
 - Translate properly, matching each locale's register in `content/blog/<locale>/`.
   Keep technical terms, kind numbers, tag names and JSON in English.
@@ -149,61 +125,42 @@ Publish in all seven: `en, es, pt, ru, it, fr, de`. `pt` is Brazilian Portuguese
 
 ## Illustration
 
-Every article gets its own illustration. Never leave an article on the shared
-default image.
+Every article gets its own illustration. Never leave an article on the shared default image.
 
 ```
 node scripts/generate-news-illustration.mjs <slug>
 ```
 
-This writes `public/images/news/<slug>.svg`, derived deterministically from the
-slug, so the same article always produces the identical file and rebuilds never
-churn. Set that path as `featuredImage` in all seven locale files, keyed on the
-English slug, so every translation of an article shares one image.
+This writes `public/images/news/<slug>.svg`, derived deterministically from the slug, so the same article always produces the identical file and rebuilds never churn. Set that path as `featuredImage` in all seven locale files, keyed on the English slug, so every translation of an article shares one image.
 
 `npm run news:illustrations` regenerates every article's image at once.
 
-If the generator fails, do not fall back to the default and publish anyway. Fix
-it, or skip the day and log why.
+If the generator fails, do not fall back to the default and publish anyway. Fix it, or skip the day and log why.
 
 ## Social copy
 
-Write `social/<slug>.json` for whatever you just published, keyed on the **English
-slug**, in the **same commit** as the article. There is no pull request on this
-path and no reviewer, so nothing else gates it: a copy file written "later" is a
-copy file that does not exist.
+Write `social/<slug>.json` for whatever you just published, keyed on the **English slug**, in the **same commit** as the article. Include copy in the same scoped pull request so publication cannot leave its social delivery unspecified.
 
-Skip this only when you published nothing. A skipped day gets a log line and no
-copy file.
+Skip this only when you published nothing. A skipped day gets a log line and no copy file.
 
 ```json
 {
-  "linkedin": "The claim, alone on the first line.\n\nEvidence, with the kind numbers and dates.\n\n{url}\n\n#Nostr #NIP"
+  "nostr": "The concrete change and why it matters.\n\n{url}\n\n#Nostr #NIP"
 }
 ```
 
 - **Follow `docs/social-voice.md`.** It carries the anatomy, the mechanics and
-  the two deltas from quantakrypto's version, one of which matters here: first
-  person ("we track") is allowed in social copy and is **never** allowed in an
-  article body. That split is deliberate.
+  the two deltas from quantakrypto's version, one of which matters here: first   person ("we track") is allowed in social copy and is **never** allowed in an   article body. That split is deliberate.
 - **English only**, even though the article ships in seven locales.
 - At least one supported copy field is required: `nostr` or `linkedin`. LinkedIn is sent only with the explicit eligibility fields above. `x`, `xThread` and `nostr` are optional.
 - **Never write a URL.** The canonical link is derived from
-  `content/news/en/<slug>.mdx` and appended automatically; a hard-coded
-  `http(s)://` link is a lint error. Use `{url}` to place it, and
-  `{url:/news/other-slug}` for a second link.
+  `content/news/en/<slug>.mdx` and appended automatically; a hard-coded   `http(s)://` link is a lint error. Use `{url}` to place it, and   `{url:/news/other-slug}` for a second link.
 - The same house rules apply as to the article: no em dash, no emoji, no hype,
   no speculation about maintainer intent.
 
-**Run `npm run social:lint` before committing.** It is in CI, but CI only sees
-this commit after it is already on `main`, and the posting workflow also
-re-runs the linter. Running it here is the same gate, earlier, where it can still
-stop something.
+**Run `npm run social:lint` before committing.** It is in CI, but CI only sees this commit after it is already on `main`, and the posting workflow also re-runs the linter. Running it here is the same gate, earlier, where it can still stop something.
 
-You never hold a posting credential and must never ask for one.
-`.github/workflows/social.yml` reads a repository secret and does the posting on
-its roughly eight-hour schedule. You write text into the commit and nothing else. See
-`docs/social-posting.md`.
+You never hold a posting credential and must never ask for one. `.github/workflows/social.yml` reads a repository secret and does the posting on its roughly eight-hour schedule. You write text into the commit and nothing else. See `docs/social-posting.md`.
 
 ## Before pushing
 
@@ -225,17 +182,16 @@ Then verify your own article:
 
 ## Publishing
 
-Commit and push to `main`. This deploys to production automatically. There is no
-review gate, which is a deliberate choice and the reason the rules above are strict.
+Create a scoped PR, wait for all required checks on its current head, and merge when they pass with no blocking conflict or review. Use the established GitHub Actions deployment. Verify the deployed article and preview before claiming publication. No further owner approval is needed for authorized scoped content; required checks must never be bypassed.
 
-Then append one line to `docs/newsroom/log.md`:
+In the same scoped change, append a timestamped preparation or pending line; after verification, append the actual publication outcome. Never label a queued change as published. Example lines to `docs/newsroom/log.md`:
 
 ```
+YYYY-MM-DD HH:MM UTC  pending    <slug> (<PR or workflow reference>)
 YYYY-MM-DD HH:MM UTC  published  <slug>  (<n> sources)
 YYYY-MM-DD HH:MM UTC  skipped    nothing cleared the bar; considered: #NNNN, #NNNN
 YYYY-MM-DD HH:MM UTC  paused     PAUSE file present
 YYYY-MM-DD HH:MM UTC  failed     <what broke>
 ```
 
-Log every run, including skips. Without a pre-publish gate, a silent skip and a silent
-crash are indistinguishable from outside, and the log is what tells them apart.
+Log every run, including skips and blocked attempts. A silent skip and a silent crash are indistinguishable from outside; the log records the actual outcome.
