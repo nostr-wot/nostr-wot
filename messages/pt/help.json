@@ -419,6 +419,60 @@
         "O assinador deve concluir a solicitação sem mover sua chave privada para o navegador.",
         "The browser app should receive only the result of the approved signing request."
       ]
+    },
+    "passkeyCreate": {
+      "title": "Criar uma conta Nostr com uma passkey",
+      "overview": "Crie uma identidade Nostr, proteja-a com o provedor de passkeys do dispositivo e prepare a recuperação antes de concluir.",
+      "before": [
+        "Use uma versão com Create with passkey. O navegador e o provedor precisam oferecer suporte a PRF.",
+        "Comece com uma instalação nova e prepare um local seguro para o arquivo criptografado, acessível em outro dispositivo."
+      ],
+      "steps": [
+        "Selecione Create with passkey. Escolha um provedor no aviso do navegador para passkeys.nostrwot.com e confirme.",
+        "Prepare a recuperação. Se o provedor confirmar que salvou os dados, o arquivo é opcional. Caso contrário, escolha Download recovery file, salve e confirme que também precisará da passkey. Salvar nos relays não substitui essa etapa.",
+        "Opcionalmente salve a recuperação nos relays e confira quais aceitaram. Guarde um arquivo como alternativa adicional.",
+        "Continue para as preferências de proteção. Confirm mantém o desbloqueio por passkey e o bloqueio automático de 15 minutos. Conclua e anote seu npub público."
+      ],
+      "checks": [
+        "O arquivo criptografado precisa de uma passkey cadastrada capaz de decifrar a cópia. O arquivo sozinho não basta.",
+        "Atualize a cópia após mudanças de contas ou chaves. Os arquivos de eventos são separados; a confirmação do provedor não comprova sincronização com outro dispositivo."
+      ]
+    },
+    "passkeyRecover": {
+      "title": "Recuperar uma conta Nostr com uma passkey",
+      "overview": "Restaure dados de recuperação compatíveis em uma instalação vazia e confirme que a chave pública corresponde à conta original.",
+      "before": [
+        "Use uma instalação sem contas. Esse fluxo não substitui um cofre que já contém contas.",
+        "Disponibilize o provedor original e tenha o arquivo criptografado e seu npub original em mãos."
+      ],
+      "steps": [
+        "Abra Try other methods e Restore passkey vault. A busca usa passkeys.nostrwot.com. Para outro domínio original, use Advanced passkey setup com o hostname exato.",
+        "Selecione e verifique a credencial original. A recuperação consulta os dados do provedor e depois os relays compatíveis. Credenciais compatíveis fornecem o identificador público automaticamente.",
+        "Se não houver dados, escolha o arquivo criptografado quando solicitado. Uma passkey cadastrada capaz de decifrá-lo continua necessária. Se cancelar, tente novamente sem criar uma conta nova.",
+        "Conclua as preferências de proteção e compare o npub recuperado com o original. Pare se forem diferentes."
+      ],
+      "checks": [
+        "A cópia define o que é restaurado: semente e caminhos salvos ou uma chave única. Outras contas e arquivos de eventos podem precisar de backups próprios.",
+        "O armazenamento no provedor não garante sincronização. Em caso de falha, verifique domínio original, acesso ao provedor e arquivo."
+      ]
+    },
+    "passkeyMigrate": {
+      "title": "Migrar uma conta passkey compatível para Nostr WoT",
+      "overview": "Recupere uma conta compatível no domínio original e cadastre uma nova credencial Nostr WoT mantendo a identidade pública.",
+      "before": [
+        "Você precisa de dados compatíveis, acesso ao provedor e domínio originais e o npub esperado.",
+        "Comece com uma instalação vazia. O navegador deve permitir o domínio original; passkeys de outros aplicativos não são automaticamente compatíveis."
+      ],
+      "steps": [
+        "Escolha Try other methods e Advanced passkey setup. Informe o hostname original sem esquema, caminho ou porta.",
+        "Selecione a credencial existente e confirme a recuperação. Restaure os dados compatíveis do provedor, relays ou arquivo e compare o npub.",
+        "Abra Settings, Security e Passkey. Selecione a credencial existente e Add another passkey. Verifique-a e cadastre uma nova credencial em passkeys.nostrwot.com.",
+        "Prepare a recuperação da nova credencial. Com armazenamento confirmado, o arquivo é opcional; caso contrário, baixe e confirme. Guarde uma cópia adicional e teste a nova credencial."
+      ],
+      "checks": [
+        "A credencial original continua cadastrada. A nova mantém a chave pública recuperada sem mudar o domínio da anterior.",
+        "A compatibilidade depende do domínio, PRF e formato. Não é uma transferência universal de passkeys. Mantenha o acesso original até verificar a nova alternativa."
+      ]
     }
   },
   "videosTitle": "Tutoriais em vídeo",
@@ -444,5 +498,6 @@
   "checksTitle": "Confira o resultado",
   "screenshotsTitle": "Na tela",
   "onThisPage": "Nesta página",
-  "breadcrumb": "Caminho de navegação"
+  "breadcrumb": "Caminho de navegação",
+  "videoPending": "Vídeo em breve. Siga as etapas escritas."
 }

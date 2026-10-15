@@ -419,6 +419,60 @@
         "Der Signer sollte die Anfrage ausführen, ohne deinen privaten Schlüssel in den Browser zu übertragen.",
         "The browser app should receive only the result of the approved signing request."
       ]
+    },
+    "passkeyCreate": {
+      "title": "Ein Nostr-Konto mit einem Passkey erstellen",
+      "overview": "Erstelle eine Nostr-Identität, schütze sie mit dem Passkey-Anbieter deines Geräts und richte die Wiederherstellung ein.",
+      "before": [
+        "Verwende eine Version mit Create with passkey. Browser und Anbieter müssen PRF unterstützen.",
+        "Beginne mit einer neuen Installation und bereite einen sicheren Speicherort für die verschlüsselte Datei vor, der auf einem anderen Gerät erreichbar ist."
+      ],
+      "steps": [
+        "Wähle Create with passkey. Wähle im Browserdialog für passkeys.nostrwot.com einen Anbieter und bestätige.",
+        "Richte die Wiederherstellung ein. Bestätigt der Anbieter die Speicherung, ist die Datei optional. Andernfalls wähle Download recovery file, speichere sie und bestätige, dass auch dein Passkey benötigt wird. Relay-Speicherung ersetzt diese Voraussetzung nicht.",
+        "Optional kannst du die Wiederherstellung auf Relays speichern und deren Bestätigungen prüfen. Behalte eine Datei als zusätzliche Möglichkeit.",
+        "Fahre mit den Schutzeinstellungen fort. Confirm behält Passkey-Entsperrung und automatische Sperre nach 15 Minuten bei. Schließe die Einrichtung ab und notiere deinen öffentlichen npub."
+      ],
+      "checks": [
+        "Die verschlüsselte Datei benötigt einen registrierten Passkey, der diese Kopie entschlüsseln kann. Die Datei allein reicht nicht.",
+        "Aktualisiere die Kopie nach Konto- oder Schlüsseländerungen. Ereignisarchive sind separat; die Anbieterbestätigung beweist keine Synchronisierung mit einem anderen Gerät."
+      ]
+    },
+    "passkeyRecover": {
+      "title": "Ein Nostr-Konto mit einem Passkey wiederherstellen",
+      "overview": "Stelle kompatible Wiederherstellungsdaten in einer leeren Installation wieder her und vergleiche den öffentlichen Schlüssel mit dem Original.",
+      "before": [
+        "Verwende eine Installation ohne Konten. Dieser Ablauf ersetzt keinen bereits befüllten Tresor.",
+        "Stelle den ursprünglichen Anbieter bereit und halte die verschlüsselte Datei sowie den ursprünglichen npub griffbereit."
+      ],
+      "steps": [
+        "Öffne Try other methods und Restore passkey vault. Gesucht wird unter passkeys.nostrwot.com. Für eine andere ursprüngliche Domain nutze Advanced passkey setup mit ihrem genauen Hostnamen.",
+        "Wähle und bestätige den ursprünglichen Passkey. Zuerst werden Anbieterdaten geprüft, danach kompatible Relay-Daten. Kompatible Passkeys liefern die öffentliche Kennung automatisch.",
+        "Falls keine Daten gefunden werden, wähle die verschlüsselte Datei, sobald die Dateiauswahl erscheint. Ein registrierter Passkey zur Entschlüsselung bleibt erforderlich. Versuche es nach einem Abbruch erneut, ohne ein neues Konto zu erstellen.",
+        "Schließe die Schutzeinstellungen ab und vergleiche den wiederhergestellten npub mit dem Original. Halte an, falls sie abweichen."
+      ],
+      "checks": [
+        "Die Kopie bestimmt den Umfang: Seed mit gespeicherten Pfaden oder ein einzelner Schlüssel. Andere Konten und Ereignisarchive können eigene Sicherungen benötigen.",
+        "Anbieterspeicherung garantiert keine Synchronisierung. Prüfe bei Problemen ursprüngliche Domain, Anbieterzugriff und Datei."
+      ]
+    },
+    "passkeyMigrate": {
+      "title": "Ein kompatibles Passkey-Konto zu Nostr WoT migrieren",
+      "overview": "Stelle ein kompatibles Konto über seine ursprüngliche Domain wieder her und registriere einen neuen Nostr-WoT-Passkey mit derselben öffentlichen Identität.",
+      "before": [
+        "Du brauchst kompatible Daten, Zugriff auf den ursprünglichen Anbieter und seine Domain sowie den erwarteten npub.",
+        "Beginne mit einer leeren Installation. Der Browser muss die ursprüngliche Domain erlauben; Passkeys anderer Apps sind nicht automatisch kompatibel."
+      ],
+      "steps": [
+        "Wähle Try other methods und Advanced passkey setup. Gib den ursprünglichen Hostnamen ohne Schema, Pfad oder Port ein.",
+        "Wähle den bestehenden Passkey und bestätige die Wiederherstellung. Stelle kompatible Anbieter-, Relay- oder Dateidaten wieder her und vergleiche den npub.",
+        "Öffne Settings, Security und Passkey. Wähle den bestehenden Passkey und Add another passkey. Bestätige ihn und registriere einen neuen unter passkeys.nostrwot.com.",
+        "Richte die Wiederherstellung des neuen Passkeys ein. Nach bestätigter Anbieterspeicherung ist die Datei optional; sonst lade sie herunter und bestätige. Behalte eine zusätzliche Kopie und teste den neuen Passkey."
+      ],
+      "checks": [
+        "Der ursprüngliche Passkey bleibt registriert. Der neue behält den wiederhergestellten öffentlichen Schlüssel bei und verschiebt die alte Domain nicht.",
+        "Kompatibilität hängt von Domain, PRF und Format ab. Dies ist keine universelle Passkey-Übertragung. Behalte den ursprünglichen Zugang, bis der neue Weg geprüft ist."
+      ]
     }
   },
   "videosTitle": "Videoanleitungen",
@@ -444,5 +498,6 @@
   "checksTitle": "Ergebnis prüfen",
   "screenshotsTitle": "Auf dem Bildschirm",
   "onThisPage": "Auf dieser Seite",
-  "breadcrumb": "Brotkrümelnavigation"
+  "breadcrumb": "Brotkrümelnavigation",
+  "videoPending": "Video folgt. Nutze die schriftliche Anleitung."
 }

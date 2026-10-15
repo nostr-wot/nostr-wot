@@ -1,0 +1,39 @@
+---
+title: "Recuperare un account Nostr con una passkey"
+description: "Ripristina dati compatibili su un’installazione vuota e verifica che la chiave pubblica corrisponda all’account originale."
+excerpt: "Ripristina dati compatibili su un’installazione vuota e verifica che la chiave pubblica corrisponda all’account originale."
+date: "2026-10-15"
+author: {"name": "Leon Acosta", "avatar": "/authors/leon-profile.jpg"}
+tags: ["Nostr", "Passkeys", "Recovery"]
+published: true
+translationKey: "recover-nostr-account-with-passkey"
+difficulty: "beginner"
+order: 2.1199999999999997
+---
+
+Ripristina dati compatibili su un’installazione vuota e verifica che la chiave pubblica corrisponda all’account originale.
+
+Questa guida descrive il percorso passkey. Se mancano questi controlli, verifica la versione installata. I nomi dei pulsanti corrispondono all’interfaccia inglese.
+
+## Prima di iniziare
+
+Usa un’installazione senza account. Questo percorso non sostituisce un vault che contiene già account.
+
+Rendi disponibile il gestore originale e tieni pronti il file cifrato e il tuo npub originale.
+
+## Passaggi
+
+1. Apri Try other methods e Restore passkey vault. La ricerca usa passkeys.nostrwot.com. Per un altro dominio originale, usa Advanced passkey setup con l’hostname esatto.
+2. Seleziona e verifica la credenziale originale. Il recupero cerca prima i dati del gestore, poi i relay compatibili. Le credenziali compatibili forniscono automaticamente l’identificatore pubblico.
+3. Se non vengono trovati dati, seleziona il file cifrato quando richiesto. Serve comunque una passkey registrata capace di decifrarlo. Dopo un annullamento riprova senza creare un nuovo account.
+4. Termina le preferenze di protezione e confronta il npub recuperato con l’originale. Fermati se sono diversi.
+
+![Recuperare un account Nostr con una passkey](/images/guides/passkeys/recover-nostr-account-with-passkey.svg)
+
+## Verifica il recupero
+
+La copia determina cosa viene ripristinato: seed con percorsi salvati o una singola chiave. Altri account e archivi possono richiedere backup separati.
+
+Il salvataggio del gestore non garantisce la sincronizzazione. In caso di errore verifica dominio originale, accesso al gestore e file.
+
+[Lezione successiva: Migrare un account passkey compatibile a Nostr WoT](/guides/migrate-passkey-account-to-nostr-wot)

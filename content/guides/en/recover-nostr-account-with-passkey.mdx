@@ -1,0 +1,39 @@
+---
+title: "Recover a Nostr account with a passkey"
+description: "Restore compatible saved recovery data on a fresh installation and check that the recovered public key matches your original account."
+excerpt: "Restore compatible saved recovery data on a fresh installation and check that the recovered public key matches your original account."
+date: "2026-10-15"
+author: {"name": "Leon Acosta", "avatar": "/authors/leon-profile.jpg"}
+tags: ["Nostr", "Passkeys", "Recovery"]
+published: true
+translationKey: "recover-nostr-account-with-passkey"
+difficulty: "beginner"
+order: 2.1199999999999997
+---
+
+Restore compatible saved recovery data on a fresh installation and check that the recovered public key matches your original account.
+
+This guide describes the passkey flow. If these controls are missing, check your installed extension version. Button names below match the English interface.
+
+## Before you start
+
+Use an installation with no existing accounts. This restore flow cannot replace a populated vault.
+
+Make the original passkey provider available on this device. Keep your encrypted recovery file and original public npub available.
+
+## Steps
+
+1. Open Try other methods and select Restore passkey vault. The default search uses passkeys.nostrwot.com. For another original domain, use Advanced passkey setup with that exact hostname.
+2. Select the original credential in the browser and verify. Recovery checks data stored with the passkey, then compatible relay recovery. Compatible credentials supply their public account identifier automatically.
+3. If no recovery data is found, select your encrypted recovery file when prompted. You still need an enrolled passkey able to decrypt it. If selection is cancelled, retry; do not create a new account to recover an old one.
+4. Finish the protection preferences and compare the recovered npub with your saved public identifier. Stop if it differs.
+
+![Recover a Nostr account with a passkey](/images/guides/passkeys/recover-nostr-account-with-passkey.svg)
+
+## Check your recovery
+
+Recovery restores the material in its snapshot. Seed recovery covers saved derivation paths; a single-key snapshot covers one key. Separate accounts and local event archives may need separate backups.
+
+A provider accepting a snapshot does not guarantee cross-device synchronization. If recovery fails, check the original domain, provider access and file before changing anything.
+
+[Next lesson: Migrate a compatible passkey account to Nostr WoT](/guides/migrate-passkey-account-to-nostr-wot)

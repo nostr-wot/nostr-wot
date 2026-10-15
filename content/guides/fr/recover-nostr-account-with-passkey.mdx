@@ -1,0 +1,39 @@
+---
+title: "Récupérer un compte Nostr avec une passkey"
+description: "Restaurez une sauvegarde compatible sur une installation vide et vérifiez que la clé publique correspond au compte original."
+excerpt: "Restaurez une sauvegarde compatible sur une installation vide et vérifiez que la clé publique correspond au compte original."
+date: "2026-10-15"
+author: {"name": "Leon Acosta", "avatar": "/authors/leon-profile.jpg"}
+tags: ["Nostr", "Passkeys", "Recovery"]
+published: true
+translationKey: "recover-nostr-account-with-passkey"
+difficulty: "beginner"
+order: 2.1199999999999997
+---
+
+Restaurez une sauvegarde compatible sur une installation vide et vérifiez que la clé publique correspond au compte original.
+
+Ce guide décrit le parcours passkey. Si ces commandes manquent, vérifiez la version installée. Les noms des boutons correspondent à l’interface anglaise.
+
+## Avant de commencer
+
+Utilisez une installation sans comptes. Ce parcours ne remplace pas un coffre contenant déjà des comptes.
+
+Rendez le fournisseur original accessible et gardez votre fichier chiffré et votre npub original à portée de main.
+
+## Étapes
+
+1. Ouvrez Try other methods puis Restore passkey vault. Le domaine recherché est passkeys.nostrwot.com. Pour un autre domaine original, utilisez Advanced passkey setup avec son hostname exact.
+2. Sélectionnez et vérifiez la passkey originale. La récupération consulte les données du fournisseur, puis les relais compatibles. Les identifiants publics sont fournis automatiquement par les passkeys compatibles.
+3. Si aucune donnée n’est trouvée, choisissez votre fichier chiffré quand le sélecteur apparaît. Une passkey enregistrée capable de le déchiffrer reste nécessaire. Après une annulation, réessayez sans créer un nouveau compte.
+4. Terminez les préférences de protection et comparez le npub récupéré à l’original. Arrêtez-vous s’ils diffèrent.
+
+![Récupérer un compte Nostr avec une passkey](/images/guides/passkeys/recover-nostr-account-with-passkey.svg)
+
+## Vérifier la récupération
+
+La récupération dépend du contenu sauvegardé : graine et chemins enregistrés, ou clé unique. Les autres comptes et archives peuvent nécessiter leurs propres sauvegardes.
+
+Le stockage chez le fournisseur ne garantit pas la synchronisation. Vérifiez le domaine original, l’accès au fournisseur et le fichier en cas d’échec.
+
+[Leçon suivante: Migrer un compte passkey compatible vers Nostr WoT](/guides/migrate-passkey-account-to-nostr-wot)

@@ -1,5 +1,8 @@
-/** Published videos verified on youtube.com/@nostr-wot; see docs/guide-media.md. */
+/** Published videos verified on youtube.com/@nostr-wot; null IDs reserve upcoming lessons. See docs/guide-media.md. */
 export const GUIDE_VIDEOS = {
+  passkeyCreate: { id: null as string | null, title: "Create a Nostr Account with a Passkey" },
+  passkeyRecover: { id: null as string | null, title: "Recover a Nostr Account with a Passkey" },
+  passkeyMigrate: { id: null as string | null, title: "Migrate a Compatible Passkey Account to Nostr WoT" },
   account: { id: "pUBd2rgmhNc", title: "How to Create a Nostr Account with Nostr WoT" },
   subAccounts: { id: "5nk687W76hE", title: "How to Create Multiple Nostr Identities from One Seed" },
   approvals: { id: "HjK-ygsj4Qs", title: "Nostr Permissions Explained: Approvals & Recent Activity" },
@@ -24,6 +27,9 @@ export interface GuideMedia {
 
 // Key by translationKey so every localized guide gets the same verified media.
 export const GUIDE_MEDIA: Record<string, GuideMedia> = {
+  'create-nostr-account-with-passkey': { screenshots: [], videos: ['passkeyCreate'] },
+  'recover-nostr-account-with-passkey': { screenshots: [], videos: ['passkeyRecover'] },
+  'migrate-passkey-account-to-nostr-wot': { screenshots: [], videos: ['passkeyMigrate'] },
   'create-extension-theme': { screenshots: [], videos: ['appearance'] },
   'account-archive': { screenshots: [], videos: ['archive'] },
   'getting-started': { screenshots: ['account-methods'], videos: ['account'] },

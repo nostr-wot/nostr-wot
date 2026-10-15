@@ -1,0 +1,39 @@
+---
+title: "Recuperar una cuenta Nostr con una passkey"
+description: "Restaura datos de recuperación compatibles en una instalación nueva y comprueba que la clave pública coincide con tu cuenta original."
+excerpt: "Restaura datos de recuperación compatibles en una instalación nueva y comprueba que la clave pública coincide con tu cuenta original."
+date: "2026-10-15"
+author: {"name": "Leon Acosta", "avatar": "/authors/leon-profile.jpg"}
+tags: ["Nostr", "Passkeys", "Recovery"]
+published: true
+translationKey: "recover-nostr-account-with-passkey"
+difficulty: "beginner"
+order: 2.1199999999999997
+---
+
+Restaura datos de recuperación compatibles en una instalación nueva y comprueba que la clave pública coincide con tu cuenta original.
+
+Esta guía describe el flujo de passkeys. Si faltan estos controles, revisa la versión instalada. Los nombres de los botones corresponden a la interfaz en inglés.
+
+## Antes de empezar
+
+Usa una instalación sin cuentas. Este flujo no puede sustituir una bóveda que ya contiene cuentas.
+
+Asegura el acceso al proveedor original y ten a mano el archivo de recuperación cifrado y tu npub original.
+
+## Pasos
+
+1. Abre Try other methods y Restore passkey vault. La búsqueda usa passkeys.nostrwot.com. Si el dominio original es otro, usa Advanced passkey setup con ese hostname exacto.
+2. Selecciona la credencial original y verifícala. Primero se buscan los datos del proveedor y después la recuperación compatible en relays. Las credenciales compatibles aportan automáticamente el identificador público.
+3. Si no hay datos disponibles, selecciona el archivo cifrado cuando aparezca el selector. Necesitas una passkey registrada capaz de descifrarlo. Si cancelaste la selección, reintenta; crear una cuenta nueva no recupera la anterior.
+4. Termina las preferencias de protección y compara el npub recuperado con el original. Detente si no coincide.
+
+![Recuperar una cuenta Nostr con una passkey](/images/guides/passkeys/recover-nostr-account-with-passkey.svg)
+
+## Comprueba la recuperación
+
+Se restaura el contenido de la copia: una semilla con sus rutas guardadas o una sola clave. Otras cuentas y los archivos de eventos pueden requerir copias separadas.
+
+El guardado del proveedor no garantiza sincronización. Si falla, revisa el dominio original, el acceso al proveedor y el archivo.
+
+[Siguiente lección: Migrar una cuenta passkey compatible a Nostr WoT](/guides/migrate-passkey-account-to-nostr-wot)

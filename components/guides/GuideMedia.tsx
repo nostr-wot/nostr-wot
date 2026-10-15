@@ -40,6 +40,7 @@ export async function GuideMedia({ guideKey }: { guideKey: string }) {
           <div className="space-y-8">
             {media.videos.map((key) => {
               const video = GUIDE_VIDEOS[key];
+              if (!video.id) return <p key={key} className="rounded-xl border border-gray-200 p-6 text-gray-600 dark:border-gray-800 dark:text-gray-400">{t('videoPending')}</p>;
               const urls = youtubeUrls(video.id);
               return (
                 <figure key={key}>

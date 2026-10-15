@@ -26,6 +26,7 @@ test('guide media resolves for every translation, with images and translated cap
 
 test('all published guide videos use privacy-enhanced embeds and direct watch links', () => {
   for (const video of Object.values(GUIDE_VIDEOS)) {
+    if (video.id === null) continue;
     const urls = youtubeUrls(video.id);
     assert.equal(new URL(urls.embed).origin, 'https://www.youtube-nocookie.com');
     assert.equal(new URL(urls.watch).searchParams.get('v'), video.id);
