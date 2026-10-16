@@ -473,6 +473,26 @@
         "La credenziale originale resta registrata. La nuova mantiene la chiave pubblica recuperata senza spostare il dominio precedente.",
         "La compatibilità dipende da dominio, PRF e formato. Non è un trasferimento universale di passkey. Mantieni l’accesso originale finché il nuovo percorso è verificato."
       ]
+    },
+    "passkeyProtect": {
+      "title": "Proteggere un account Nostr esistente con una passkey",
+      "overview": "Aggiungi protezione passkey a una chiave privata già in Nostr WoT, conserva la stessa identità e verifica lo sblocco locale.",
+      "before": [
+        "Sblocca l’estensione e seleziona l’account di firma locale esistente. Conserva il materiale originale di recupero e annota il npub prima del cambiamento.",
+        "Browser e gestore devono supportare PRF. I pulsanti sono indicati in inglese; l’esempio registrato usa Chrome e Touch ID. Gli altri dispositivi mostrano la propria richiesta."
+      ],
+      "steps": [
+        "Apri Settings → Security → Passkey settings e scegli Set up passkey unlock.",
+        "Se il vault ha una password, inserisci quella attuale. Seleziona Confirm per autorizzare il cambiamento; gli account esistenti restano nel vault.",
+        "Completa la creazione della passkey per passkeys.nostrwot.com nel browser. Nell’esempio Chrome, Touch ID conferma la creazione.",
+        "Il recupero viene salvato automaticamente se il gestore lo supporta. Completa l’autenticazione aggiuntiva. Il salvataggio confermato ritorna a Passkey settings, con credenziale e stato del salvataggio, senza schermata di download. Se il salvataggio non è disponibile o fallisce, scarica il file cifrato e conferma che serve anche la passkey.",
+        "Torna a Security e verifica Use passkey attivo e blocco automatico dopo 15 minuti. La protezione riguarda il vault. Confronta il npub con quello annotato prima.",
+        "Blocca l’estensione, riaprila e verifica con la passkey registrata. Questo controlla l’accesso locale, non la rimozione, la reimportazione o il recupero su un altro dispositivo."
+      ],
+      "checks": [
+        "Conserva il backup della chiave privata finché non hai verificato separatamente il recupero. La passkey non cancella vecchie copie e non trasforma account remoti o di sola lettura in chiavi locali.",
+        "Un altro file cifrato è disponibile in Passkey settings. Aggiorna le copie dopo modifiche ad account o chiavi. Il file richiede una passkey in grado di decifrarlo; il salvataggio confermato non dimostra la sincronizzazione tra dispositivi."
+      ]
     }
   },
   "videosTitle": "Tutorial video",

@@ -1,0 +1,39 @@
+---
+title: "Ein bestehendes Nostr-Konto mit einem Passkey schützen"
+description: "Schütze einen bereits in Nostr WoT gespeicherten privaten Schlüssel mit einem Passkey, behalte die Identität und prüfe das lokale Entsperren."
+excerpt: "Schütze einen bereits in Nostr WoT gespeicherten privaten Schlüssel mit einem Passkey, behalte die Identität und prüfe das lokale Entsperren."
+date: "2026-10-15"
+author: {"name": "Leon Acosta", "avatar": "/authors/leon-profile.jpg"}
+tags: ["Nostr", "Passkeys", "Recovery"]
+published: true
+translationKey: "protect-existing-nostr-account-with-passkey"
+difficulty: "beginner"
+order: 2.13
+---
+
+Schütze einen bereits in Nostr WoT gespeicherten privaten Schlüssel mit einem Passkey, behalte die Identität und prüfe das lokale Entsperren.
+
+## Vor dem Start
+
+Entsperre die Erweiterung und wähle dein vorhandenes lokales Signaturkonto. Behalte die ursprüngliche Sicherung und notiere vor der Änderung den npub.
+
+Browser und Anbieter müssen PRF unterstützen. Die Schaltflächen sind auf Englisch angegeben; das aufgezeichnete Beispiel nutzt Chrome und Touch ID. Andere Geräte zeigen eigene Dialoge.
+
+## Schritte
+
+1. Öffne Settings → Security → Passkey settings und wähle Set up passkey unlock.
+2. Falls der Tresor ein Passwort hat, gib es ein. Wähle Confirm, um die Änderung zu erlauben; bestehende Konten bleiben im Tresor.
+3. Schließe die Passkey-Erstellung für passkeys.nostrwot.com im Browser ab. Im Chrome-Beispiel bestätigt Touch ID die Erstellung.
+4. Die Wiederherstellung wird bei Anbieterunterstützung automatisch gespeichert. Bestätige die zusätzliche Authentifizierung. Nach bestätigter Speicherung erscheint Passkey settings mit Passkey und Speicherstatus, ohne Download-Bildschirm. Falls der Speicher fehlt oder die Speicherung scheitert, lade die verschlüsselte Datei herunter und bestätige, dass auch der Passkey nötig ist.
+5. Kehre zu Security zurück und prüfe Use passkey sowie die automatische Sperre nach 15 Minuten. Der Schutz gilt für den Tresor. Vergleiche den npub mit dem vorher notierten Wert.
+6. Sperre die Erweiterung, öffne sie erneut und bestätige mit dem registrierten Passkey. Das prüft lokalen Zugriff, nicht das Entfernen, erneute Importieren oder Wiederherstellen auf einem anderen Gerät.
+
+![Ein bestehendes Nostr-Konto mit einem Passkey schützen](/images/guides/passkeys/protect-existing-nostr-account-with-passkey.svg)
+
+## Wiederherstellung prüfen
+
+Behalte die Sicherung des privaten Schlüssels, bis du die Wiederherstellung separat geprüft hast. Der Passkey löscht keine alten Kopien und macht aus Fernsignatur- oder Nur-Lese-Konten keine lokalen Schlüssel.
+
+Eine zusätzliche verschlüsselte Datei gibt es unter Passkey settings. Aktualisiere Kopien nach Konto- oder Schlüsseländerungen. Die Datei benötigt einen passenden Passkey zur Entschlüsselung; bestätigte Speicherung beweist keine Synchronisierung zwischen Geräten.
+
+[Ein Nostr-Konto mit einem Passkey wiederherstellen](/guides/recover-nostr-account-with-passkey) · [Ein kompatibles Passkey-Konto zu Nostr WoT migrieren](/guides/migrate-passkey-account-to-nostr-wot)

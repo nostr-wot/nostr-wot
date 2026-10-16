@@ -473,6 +473,26 @@
         "La credencial original sigue registrada. La nueva conserva la clave pública recuperada y no cambia el dominio de la anterior.",
         "Depende del dominio, PRF y formato de recuperación compatibles. No es una transferencia universal de passkeys. Conserva el acceso original hasta verificar la nueva vía."
       ]
+    },
+    "passkeyProtect": {
+      "title": "Proteger una cuenta Nostr existente con una passkey",
+      "overview": "Añade protección con passkey a una cuenta de clave privada ya guardada en Nostr WoT, conserva la identidad y comprueba el bloqueo local.",
+      "before": [
+        "Desbloquea la extensión y selecciona tu cuenta de firma local existente. Conserva el material de recuperación original y anota el npub antes del cambio.",
+        "El navegador y el proveedor deben admitir PRF. Los botones se indican en inglés; el ejemplo grabado usa Chrome y Touch ID. Otros dispositivos muestran su propio aviso."
+      ],
+      "steps": [
+        "Abre Settings → Security → Passkey settings y elige Set up passkey unlock.",
+        "Si la bóveda tiene contraseña, introduce la actual. Pulsa Confirm para autorizar el cambio; las cuentas existentes permanecen en la bóveda.",
+        "Completa la creación de la passkey para passkeys.nostrwot.com en el navegador. En el ejemplo de Chrome, Touch ID confirma la creación.",
+        "La recuperación se guarda automáticamente si el proveedor lo admite. Completa la autenticación adicional. El guardado confirmado vuelve a Passkey settings y muestra la credencial y el estado de almacenamiento, sin pantalla de descarga. Si el almacenamiento no está disponible o falla, descarga el archivo cifrado y confirma que también necesitas la passkey.",
+        "Vuelve a Security y comprueba que Use passkey está activado y el bloqueo automático indica 15 minutos. Esta protección se aplica a la bóveda. Compara el npub con el anotado antes.",
+        "Bloquea la extensión, ábrela y verifica con la passkey registrada. El desbloqueo comprueba el acceso local; no prueba eliminación, reimportación ni recuperación en otro dispositivo."
+      ],
+      "checks": [
+        "Conserva la copia de la clave privada hasta verificar la recuperación por separado. La passkey no elimina copias anteriores ni convierte cuentas remotas o de solo lectura en claves locales.",
+        "Puedes obtener otro archivo cifrado en Passkey settings. Actualiza las copias tras cambiar cuentas o claves. El archivo necesita una passkey capaz de descifrarlo; el guardado confirmado no demuestra sincronización entre dispositivos."
+      ]
     }
   },
   "videosTitle": "Tutoriales en vídeo",

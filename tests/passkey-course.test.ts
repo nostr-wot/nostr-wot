@@ -9,7 +9,7 @@ import { GUIDE_MEDIA, GUIDE_VIDEOS, type GuideVideo } from '../lib/guide-media';
 import { HELP_TOPICS } from '../lib/help-topics';
 import matter from 'gray-matter';
 
-const lessons = ['passkeyCreate', 'passkeyRecover', 'passkeyMigrate'] as const;
+const lessons = ['passkeyCreate', 'passkeyRecover', 'passkeyProtect'] as const;
 const locales = ['en', 'es', 'pt', 'fr', 'it', 'de', 'ru'];
 
 test('passkey lessons have complete localized, compilable guides and working media destinations', async () => {
@@ -44,4 +44,15 @@ test('published lessons retain privacy-enhanced players', () => {
   const help = JSON.parse(readFileSync('messages/en/help.json', 'utf8'));
   const html = renderToStaticMarkup(React.createElement(NextIntlClientProvider, { locale: 'en', timeZone: 'UTC', messages: { help }, children: React.createElement(HelpVideo, { video: 'account' as GuideVideo }) }));
   assert.match(html, /www.youtube-nocookie.com\/embed\/pUBd2rgmhNc/);
+});
+
+
+test('external-provider migration remains a written topic separate from lesson 18', () => {
+  const migration = HELP_TOPICS.find(topic => topic.id === 'passkeyMigrate')!;
+  assert.ok(migration);
+  assert.equal(migration.video, undefined);
+  assert.equal(GUIDE_MEDIA['migrate-passkey-account-to-nostr-wot']?.videos, undefined);
+  for (const locale of locales) {
+    assert.ok(readFileSync(`content/guides/${locale}/migrate-passkey-account-to-nostr-wot.mdx`, 'utf8'));
+  }
 });

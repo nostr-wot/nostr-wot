@@ -473,6 +473,26 @@
         "La passkey originale reste enregistrée. La nouvelle conserve la clé publique récupérée sans déplacer le domaine de l’ancienne.",
         "La compatibilité dépend du domaine, de PRF et du format. Ce n’est pas un transfert universel de passkeys. Gardez l’accès original jusqu’à vérification du nouveau parcours."
       ]
+    },
+    "passkeyProtect": {
+      "title": "Protéger un compte Nostr existant avec une passkey",
+      "overview": "Ajoutez une protection par passkey à une clé privée déjà enregistrée dans Nostr WoT, conservez votre identité et vérifiez le déverrouillage local.",
+      "before": [
+        "Déverrouillez l’extension et sélectionnez votre compte de signature local. Conservez sa sauvegarde originale et notez le npub avant le changement.",
+        "Le navigateur et le fournisseur doivent prendre en charge PRF. Les boutons sont indiqués en anglais ; l’exemple filmé utilise Chrome et Touch ID. Les autres appareils ont leur propre fenêtre."
+      ],
+      "steps": [
+        "Ouvrez Settings → Security → Passkey settings et choisissez Set up passkey unlock.",
+        "Si le coffre a un mot de passe, saisissez-le. Sélectionnez Confirm pour autoriser le changement ; les comptes existants restent dans le coffre.",
+        "Terminez la création de la passkey pour passkeys.nostrwot.com dans le navigateur. Dans l’exemple Chrome, Touch ID confirme la création.",
+        "La récupération est enregistrée automatiquement si le fournisseur le permet. Confirmez l’authentification supplémentaire. Le stockage confirmé revient à Passkey settings, avec la passkey et son état de stockage, sans écran de téléchargement. Si le stockage est indisponible ou échoue, téléchargez le fichier chiffré et confirmez que la passkey reste nécessaire.",
+        "Revenez à Security et vérifiez Use passkey et le verrouillage automatique après 15 minutes. Cette protection concerne le coffre. Comparez le npub à celui noté avant la configuration.",
+        "Verrouillez l’extension, rouvrez-la et vérifiez avec la passkey enregistrée. Cela teste l’accès local, pas la suppression, la réimportation ou la récupération sur un autre appareil."
+      ],
+      "checks": [
+        "Conservez la sauvegarde de la clé privée jusqu’à une vérification séparée de la récupération. La passkey n’efface pas les anciennes copies et ne transforme pas les comptes distants ou en lecture seule en clés locales.",
+        "Un autre fichier chiffré est disponible dans Passkey settings. Actualisez les copies après modification des comptes ou clés. Le fichier exige une passkey capable de le déchiffrer ; le stockage confirmé ne prouve pas la synchronisation entre appareils."
+      ]
     }
   },
   "videosTitle": "Tutoriels vidéo",

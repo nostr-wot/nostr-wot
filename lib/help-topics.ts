@@ -6,7 +6,7 @@ export type HelpCategory = typeof HELP_CATEGORIES[number];
 export const HELP_VIDEOS: { id: GuideVideo; duration: string | null }[] = [
   { id: 'passkeyCreate', duration: null },
   { id: 'passkeyRecover', duration: null },
-  { id: 'passkeyMigrate', duration: null },
+  { id: 'passkeyProtect', duration: null },
   { id: 'account', duration: '1:59' },
   { id: 'subAccounts', duration: '1:30' },
   { id: 'backup', duration: '1:19' },
@@ -25,9 +25,10 @@ export const HELP_VIDEOS: { id: GuideVideo; duration: string | null }[] = [
 
 export type HelpTopic = { id: string; slug: string; category: HelpCategory; video?: GuideVideo; screenshots?: string[]; related?: string[]; guides: string[] };
 export const HELP_TOPICS: HelpTopic[] = [
+  { id: 'passkeyProtect', slug: 'protect-existing-account-with-passkey', category: 'accounts', video: 'passkeyProtect', related: ['passkeyRecover', 'passkeyMigrate'], guides: ['protect-existing-nostr-account-with-passkey'] },
   { id: 'passkeyCreate', slug: 'create-account-with-passkey', category: 'accounts', video: 'passkeyCreate', related: ['passkeyRecover', 'passkeyMigrate'], guides: ['create-nostr-account-with-passkey'] },
-  { id: 'passkeyRecover', slug: 'recover-account-with-passkey', category: 'accounts', video: 'passkeyRecover', related: ['passkeyCreate', 'passkeyMigrate'], guides: ['recover-nostr-account-with-passkey'] },
-  { id: 'passkeyMigrate', slug: 'migrate-passkey-account', category: 'accounts', video: 'passkeyMigrate', related: ['passkeyRecover', 'passkeyCreate'], guides: ['migrate-passkey-account-to-nostr-wot'] },
+  { id: 'passkeyRecover', slug: 'recover-account-with-passkey', category: 'accounts', video: 'passkeyRecover', related: ['passkeyCreate', 'passkeyProtect', 'passkeyMigrate'], guides: ['recover-nostr-account-with-passkey'] },
+  { id: 'passkeyMigrate', slug: 'migrate-passkey-account', category: 'accounts', related: ['passkeyRecover', 'passkeyCreate'], guides: ['migrate-passkey-account-to-nostr-wot'] },
   { id: 'account', screenshots: ['account-methods', 'security'], slug: 'create-account', related: ['import', 'backup'], category: 'accounts', video: 'account', guides: ['create-nostr-account', 'import-nostr-account', 'connect-nostr-signer'] },
   { id: 'subAccounts', screenshots: ['sub-account', 'accounts'], slug: 'add-identity', related: ['backup', 'switch'], category: 'accounts', video: 'subAccounts', guides: ['custom-identity-paths'] },
   { id: 'backup', screenshots: ['sub-account'], slug: 'back-up-account', related: ['import', 'remove'], category: 'accounts', video: 'backup', guides: ['import-nostr-account', 'account-archive'] },
