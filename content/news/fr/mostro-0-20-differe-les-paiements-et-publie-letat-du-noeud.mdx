@@ -1,0 +1,68 @@
+---
+title: "Mostro 0.20 diffère les paiements et publie l’état du nœud"
+description: "Mostro v0.20.0 ajoute la surveillance de LND, le report des paiements et des événements d’état signés, avec des limites pour clients et opérateurs."
+excerpt: "Un nœud peut continuer à s’annoncer alors que les paiements échouent. Mostro ajoute des signaux d’état et des contrôles pour un backend Lightning désynchronisé."
+date: "2026-10-15"
+publishedAt: "2026-10-20"
+backfilled: false
+type: "story"
+tags: ["Nostr","Lightning","Infrastructure","Ecosystem"]
+featuredImage: "/images/news/mostro-0-20-health-and-payment-deferral.svg"
+translationKey: "mostro-0-20-health-and-payment-deferral"
+sources:
+  - title: "Mostro v0.20.0 release"
+    url: "https://github.com/MostroP2P/mostro/releases/tag/v0.20.0"
+    publisher: "MostroP2P/mostro"
+    date: "2026-10-15"
+  - title: "Released README"
+    url: "https://github.com/MostroP2P/mostro/blob/v0.20.0/README.md"
+    publisher: "MostroP2P/mostro"
+    date: "2026-10-15"
+  - title: "Released health documentation"
+    url: "https://github.com/MostroP2P/mostro/blob/v0.20.0/docs/HEALTH.md"
+    publisher: "MostroP2P/mostro"
+    date: "2026-10-15"
+  - title: "LND sync and payment deferral PR #1065"
+    url: "https://github.com/MostroP2P/mostro/pull/1065"
+    publisher: "MostroP2P/mostro"
+    date: "2026-10-15"
+  - title: "Health event PR #1066"
+    url: "https://github.com/MostroP2P/mostro/pull/1066"
+    publisher: "MostroP2P/mostro"
+    date: "2026-10-15"
+published: true
+---
+
+La présence d’un nœud sur Nostr ne prouve pas qu’il peut payer. [Mostro v0.20.0](https://github.com/MostroP2P/mostro/releases/tag/v0.20.0), publié le 15 octobre 2026, ajoute des rapports d’état distincts et des contrôles pour un backend Lightning désynchronisé. Il s’agit d’une mise à jour d’un daemon d’échange existant, pas du lancement d’une nouvelle plateforme.
+
+Mostro transporte les messages d’échange entre pairs sur Nostr et coordonne les paiements Lightning. Son [README de version](https://github.com/MostroP2P/mostro/blob/v0.20.0/README.md) distingue le daemon des clients utilisés pour négocier. Cette distinction compte : les nouveaux contrôles s’exécutent sur le nœud, tandis que clients et outils de surveillance doivent interpréter ses rapports.
+
+## Pourquoi une annonce ne suffisait pas
+
+La [documentation d’état](https://github.com/MostroP2P/mostro/blob/v0.20.0/docs/HEALTH.md) décrit une panne opérationnelle du 14 octobre. LND avait cessé de suivre la chaîne, les paiements sortants échouaient et de nouveaux échanges pouvaient encore commencer. L’événement d’information habituel continuait d’apparaître : sa présence ne révélait donc pas le problème de paiement.
+
+La leçon est plus précise qu’une affirmation générale de sécurité. Annoncer sa configuration ou répondre à un relay n’équivaut pas à mener un paiement à terme. La version 0.20.0 sépare ces questions au lieu de prendre l’une pour preuve de l’autre.
+
+## Attendre avant de pénaliser l’acheteur
+
+Le [PR #1065](https://github.com/MostroP2P/mostro/pull/1065) ajoute un moniteur de LND qui interroge le backend toutes les 15 secondes. Après 60 secondes continues sans synchronisation ou sans réponse de LND, les paiements sortants attendent au lieu de consommer les tentatives de l’acheteur. Le démarrage vérifie aussi le backend avant de lancer les tâches de paiement.
+
+La maintenance automatique possède un autre seuil. Par défaut, 600 secondes de désynchronisation déclarée bloquent les nouvelles offres et leur acceptation. Le daemon attend 300 secondes de synchronisation stable avant de lever sa propre maintenance automatique. Une maintenance décidée séparément par l’opérateur n’est pas levée automatiquement.
+
+L’absence de réponse n’est pas la désynchronisation. Un backend silencieux produit un contrôle `unknown`, pas une preuve de désynchronisation de la chaîne. Les paiements peuvent rester différés sans que cette seule condition active la maintenance automatique. Ces distinctions empêchent une simple étiquette verte ou rouge de remplacer plusieurs états différents.
+
+## Un rapport distinct pour la surveillance
+
+Le [PR #1066](https://github.com/MostroP2P/mostro/pull/1066) introduit des événements d’état adressables `kind 38389`. L’intervalle normal de publication est de 60 secondes, avec des rapports anticipés lorsque des états pertinents changent. Les tags publics décrivent notamment la synchronisation de LND, les paiements, les relays et la base de données, ainsi qu’un état global.
+
+Les métriques opérationnelles détaillées peuvent être chiffrées avec NIP-44 pour une clé publique de surveillance configurée. Sans cette configuration, le contenu détaillé reste vide. L’événement ne transforme pas toutes les métriques internes en tableau de bord public.
+
+La fraîcheur fait partie du mécanisme. Les rapports portent des informations de séquence et d’expiration. Un lecteur sans rapport exploitable ne doit pas interpréter cette absence comme `ok`. Les clients existants qui ne comprennent pas ce nouvel événement n’acquièrent pas une fonction de surveillance simplement parce que le daemon a été mis à jour.
+
+## Ce que ces contrôles ne prouvent pas
+
+La documentation de version précise que le nœud rapporte ce que sait son propre backend. Un backend en retard peut ne pas reconnaître son état obsolète. Comparer la hauteur annoncée à une référence indépendante reste utile ; un rapport signé identifie son auteur, pas la véracité de chaque affirmation opérationnelle.
+
+La version fournit des binaires téléchargeables, les sources et des fichiers de manifeste signés. Leur présence prouve la disponibilité, pas une installation réussie sur un nœud donné. Les PR décrivent une couverture automatisée et un contrôle local en mode Cashu, mais signalent aussi des lacunes dans les tests manuels Lightning. Cette revue documentaire n’a exécuté aucun nœud d’échange et n’a envoyé aucun paiement.
+
+Pour les développeurs, l’apport utile est l’interface : distinguer les annonces d’identité et de configuration de l’état opérationnel récent, conserver `unknown` comme véritable état et ne pas transformer une panne du backend en épuisement des tentatives de l’acheteur.

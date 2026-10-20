@@ -1,0 +1,68 @@
+---
+title: "Mostro 0.20 verschiebt Auszahlungen und meldet den Knotenstatus"
+description: "Mostro v0.20.0 ergänzt LND-Überwachung, aufgeschobene Zahlungen und signierte Statusereignisse, mit Grenzen für Clients und Betreiber."
+excerpt: "Ein Knoten kann sich weiter ankündigen, obwohl Auszahlungen scheitern. Mostro ergänzt Statussignale und Kontrollen für ein unsynchronisiertes Lightning-Backend."
+date: "2026-10-15"
+publishedAt: "2026-10-20"
+backfilled: false
+type: "story"
+tags: ["Nostr","Lightning","Infrastructure","Ecosystem"]
+featuredImage: "/images/news/mostro-0-20-health-and-payment-deferral.svg"
+translationKey: "mostro-0-20-health-and-payment-deferral"
+sources:
+  - title: "Mostro v0.20.0 release"
+    url: "https://github.com/MostroP2P/mostro/releases/tag/v0.20.0"
+    publisher: "MostroP2P/mostro"
+    date: "2026-10-15"
+  - title: "Released README"
+    url: "https://github.com/MostroP2P/mostro/blob/v0.20.0/README.md"
+    publisher: "MostroP2P/mostro"
+    date: "2026-10-15"
+  - title: "Released health documentation"
+    url: "https://github.com/MostroP2P/mostro/blob/v0.20.0/docs/HEALTH.md"
+    publisher: "MostroP2P/mostro"
+    date: "2026-10-15"
+  - title: "LND sync and payment deferral PR #1065"
+    url: "https://github.com/MostroP2P/mostro/pull/1065"
+    publisher: "MostroP2P/mostro"
+    date: "2026-10-15"
+  - title: "Health event PR #1066"
+    url: "https://github.com/MostroP2P/mostro/pull/1066"
+    publisher: "MostroP2P/mostro"
+    date: "2026-10-15"
+published: true
+---
+
+Ein auf Nostr sichtbarer Knoten kann nicht zwangsläufig zahlen. [Mostro v0.20.0](https://github.com/MostroP2P/mostro/releases/tag/v0.20.0), veröffentlicht am 15. Oktober 2026, ergänzt separate Statusberichte und Kontrollen für ein Lightning-Backend, das nicht mehr synchron ist. Es handelt sich um ein Update eines bestehenden Handels-Daemons, nicht um den Start einer neuen Börse.
+
+Mostro überträgt Nachrichten für Peer-to-Peer-Handel über Nostr und koordiniert Lightning-Zahlungen. Die [README der Version](https://github.com/MostroP2P/mostro/blob/v0.20.0/README.md) unterscheidet zwischen dem Daemon und den Clients der Handelnden. Das ist wichtig: Die neuen Kontrollen laufen im Knoten, während Clients und Überwachungswerkzeuge seine Berichte auswerten müssen.
+
+## Warum eine Ankündigung nicht genügte
+
+Die [Statusdokumentation](https://github.com/MostroP2P/mostro/blob/v0.20.0/docs/HEALTH.md) beschreibt einen Betriebsausfall am 14. Oktober. LND folgte der Blockchain nicht mehr, ausgehende Zahlungen scheiterten und neue Geschäfte konnten trotzdem beginnen. Das normale Informationsereignis erschien weiterhin und ließ das Zahlungsproblem daher nicht erkennen.
+
+Die Erkenntnis ist enger als eine allgemeine Sicherheitsbehauptung. Eine Konfiguration anzukündigen oder einem Relay zu antworten bedeutet nicht, einen Zahlungsweg erfolgreich abzuschließen. Version 0.20.0 trennt diese Fragen, statt eine als Beleg für die andere zu nehmen.
+
+## Warten statt den Käufer zu belasten
+
+[PR #1065](https://github.com/MostroP2P/mostro/pull/1065) ergänzt eine LND-Überwachung mit Abfragen alle 15 Sekunden. Ist LND durchgehend 60 Sekunden unsynchronisiert oder unerreichbar, warten ausgehende Zahlungen, statt wiederholt Zahlungsversuche des Käufers zu verbrauchen. Beim Start wird das Backend ebenfalls vor den Zahlungsaufgaben geprüft.
+
+Für automatische Wartung gilt eine andere Schwelle. Standardmäßig stoppen 600 Sekunden gemeldeter Desynchronisierung neue Aufträge und deren Annahme. Erst nach 300 Sekunden stabiler Synchronisierung hebt der Daemon seine eigene automatische Wartung auf. Eine separat vom Betreiber gesetzte Wartung wird nicht automatisch aufgehoben.
+
+Unerreichbar ist nicht dasselbe wie unsynchronisiert. Antwortet das Backend nicht, lautet die Prüfung `unknown`; das beweist keine Desynchronisierung. Zahlungen können weiter warten, ohne dass dieser Zustand allein automatische Wartung auslöst. So ersetzt nicht ein einziges grünes oder rotes Etikett mehrere unterschiedliche Zustände.
+
+## Ein eigener Bericht für Beobachter
+
+[PR #1066](https://github.com/MostroP2P/mostro/pull/1066) führt adressierbare Statusereignisse vom `kind 38389` ein. Normalerweise werden sie alle 60 Sekunden veröffentlicht, bei relevanten Zustandsänderungen früher. Öffentliche Tags beschreiben unter anderem LND-Synchronisierung, Auszahlungen, Relays und Datenbank sowie einen Gesamtstatus.
+
+Detaillierte Betriebsmetriken können per NIP-44 für einen konfigurierten Watchdog-Public-Key verschlüsselt werden. Ohne diese Konfiguration bleibt der detaillierte Inhalt leer. Das Ereignis macht nicht sämtliche internen Messwerte zu einem öffentlichen Dashboard.
+
+Aktualität gehört zum Entwurf. Die Berichte enthalten Sequenz- und Ablaufangaben. Ohne verwertbaren Statusbericht darf dessen Fehlen nicht als `ok` gelten. Bestehende Clients, die das neue Ereignis nicht verstehen, erhalten durch ein Daemon-Update allein noch keine Überwachungsfunktion.
+
+## Was die Kontrollen nicht beweisen
+
+Die Dokumentation der Version betont, dass der Knoten wiedergibt, was sein eigenes Backend weiß. Ein zurückliegendes Backend erkennt seine veraltete Sicht möglicherweise nicht. Ein Vergleich der gemeldeten Blockhöhe mit einer unabhängigen Referenz bleibt sinnvoll; eine Signatur identifiziert den Urheber, garantiert aber nicht die Richtigkeit jeder Betriebsangabe.
+
+Die Veröffentlichung bietet herunterladbare Binärdateien, Quellcode und signierte Manifestdateien. Das belegt Verfügbarkeit, nicht eine erfolgreiche Installation auf einem bestimmten Knoten. Die PRs beschreiben automatisierte Abdeckung und eine lokale Prüfung im Cashu-Modus, weisen aber auch auf Lücken bei manuellen Lightning-Tests hin. Für diese quellenbasierte Besprechung wurden weder ein Handelsknoten betrieben noch Zahlungen gesendet.
+
+Für Entwickler ist die Schnittstelle der nützliche Fund: Identitäts- und Konfigurationsankündigungen von aktuellen Betriebsdaten trennen, `unknown` als echten Zustand erhalten und einen Backend-Ausfall nicht in ein erschöpftes Versuchskontingent des Käufers verwandeln.

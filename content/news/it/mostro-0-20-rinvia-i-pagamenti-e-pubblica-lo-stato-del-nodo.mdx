@@ -1,0 +1,68 @@
+---
+title: "Mostro 0.20 rinvia i pagamenti e pubblica lo stato del nodo"
+description: "Mostro v0.20.0 aggiunge monitoraggio di LND, rinvio dei pagamenti ed eventi di stato firmati, con limiti per client e operatori."
+excerpt: "Un nodo può continuare ad annunciarsi mentre i pagamenti falliscono. Mostro aggiunge segnali di stato e controlli per un backend Lightning non sincronizzato."
+date: "2026-10-15"
+publishedAt: "2026-10-20"
+backfilled: false
+type: "story"
+tags: ["Nostr","Lightning","Infrastructure","Ecosystem"]
+featuredImage: "/images/news/mostro-0-20-health-and-payment-deferral.svg"
+translationKey: "mostro-0-20-health-and-payment-deferral"
+sources:
+  - title: "Mostro v0.20.0 release"
+    url: "https://github.com/MostroP2P/mostro/releases/tag/v0.20.0"
+    publisher: "MostroP2P/mostro"
+    date: "2026-10-15"
+  - title: "Released README"
+    url: "https://github.com/MostroP2P/mostro/blob/v0.20.0/README.md"
+    publisher: "MostroP2P/mostro"
+    date: "2026-10-15"
+  - title: "Released health documentation"
+    url: "https://github.com/MostroP2P/mostro/blob/v0.20.0/docs/HEALTH.md"
+    publisher: "MostroP2P/mostro"
+    date: "2026-10-15"
+  - title: "LND sync and payment deferral PR #1065"
+    url: "https://github.com/MostroP2P/mostro/pull/1065"
+    publisher: "MostroP2P/mostro"
+    date: "2026-10-15"
+  - title: "Health event PR #1066"
+    url: "https://github.com/MostroP2P/mostro/pull/1066"
+    publisher: "MostroP2P/mostro"
+    date: "2026-10-15"
+published: true
+---
+
+La presenza di un nodo su Nostr non dimostra che possa pagare. [Mostro v0.20.0](https://github.com/MostroP2P/mostro/releases/tag/v0.20.0), pubblicato il 15 ottobre 2026, aggiunge rapporti di stato separati e controlli per un backend Lightning non sincronizzato. È l’aggiornamento di un daemon di scambio esistente, non il lancio di una nuova piattaforma.
+
+Mostro trasporta i messaggi degli scambi tra pari su Nostr e coordina i pagamenti Lightning. Il [README della versione](https://github.com/MostroP2P/mostro/blob/v0.20.0/README.md) distingue il daemon dai client usati per negoziare. La distinzione conta: i nuovi controlli operano sul nodo, mentre client e strumenti di monitoraggio devono interpretarne i rapporti.
+
+## Perché l’annuncio non bastava
+
+La [documentazione sullo stato](https://github.com/MostroP2P/mostro/blob/v0.20.0/docs/HEALTH.md) descrive un guasto operativo del 14 ottobre. LND aveva smesso di seguire la catena, i pagamenti in uscita fallivano e si potevano ancora aprire nuovi scambi. L’evento informativo abituale continuava a comparire, quindi la sua presenza non mostrava il problema dei pagamenti.
+
+La lezione è più circoscritta di una generica affermazione di sicurezza. Annunciare una configurazione o rispondere a un relay non equivale a completare il percorso di pagamento. La versione 0.20.0 separa queste domande invece di considerare l’una prova dell’altra.
+
+## Attendere prima di penalizzare l’acquirente
+
+Il [PR #1065](https://github.com/MostroP2P/mostro/pull/1065) aggiunge un monitor di LND con interrogazioni ogni 15 secondi. Dopo 60 secondi continui senza sincronizzazione o risposta di LND, i pagamenti in uscita attendono invece di consumare ripetutamente i tentativi dell’acquirente. Anche l’avvio verifica il backend prima di iniziare le attività di pagamento.
+
+La manutenzione automatica ha una soglia diversa. Per impostazione predefinita, 600 secondi di desincronizzazione dichiarata bloccano nuovi ordini e la loro accettazione. Il daemon richiede 300 secondi di sincronizzazione stabile prima di rimuovere la propria manutenzione automatica. Una decisione distinta dell’operatore non viene revocata automaticamente.
+
+L’assenza di risposta non equivale alla desincronizzazione. Un backend che non risponde produce un controllo `unknown`, non una prova di desincronizzazione della catena. I pagamenti possono restare rinviati senza che questa sola condizione attivi la manutenzione automatica. Queste distinzioni impediscono a una semplice etichetta verde o rossa di rappresentare stati diversi.
+
+## Un rapporto separato per i monitor
+
+Il [PR #1066](https://github.com/MostroP2P/mostro/pull/1066) introduce eventi di stato indirizzabili `kind 38389`. L’intervallo normale di pubblicazione è di 60 secondi, con rapporti anticipati quando cambiano stati rilevanti. I tag pubblici descrivono sincronizzazione di LND, pagamenti, relay e database, insieme a uno stato complessivo.
+
+Le metriche operative dettagliate possono essere cifrate con NIP-44 per una chiave pubblica di monitoraggio configurata. Senza questa configurazione, il contenuto dettagliato resta vuoto. L’evento non trasforma tutte le metriche interne in un pannello pubblico.
+
+La freschezza fa parte del meccanismo. I rapporti includono informazioni di sequenza e scadenza. Senza un rapporto utilizzabile, la sua assenza non va interpretata come `ok`. I client esistenti che non comprendono il nuovo evento non acquistano capacità di monitoraggio solo perché il daemon è stato aggiornato.
+
+## Cosa non dimostrano i controlli
+
+La documentazione della versione avverte che il nodo riferisce ciò che sa il proprio backend. Un backend arretrato potrebbe non riconoscere la propria visione obsoleta. Confrontare l’altezza annunciata con una fonte indipendente rimane utile; un rapporto firmato identifica l’autore, non garantisce la verità di ogni affermazione operativa.
+
+La versione offre binari scaricabili, sorgenti e file di manifesto firmati. La loro presenza dimostra disponibilità, non un’installazione riuscita su un nodo specifico. I PR descrivono copertura automatizzata e una verifica locale in modalità Cashu, ma segnalano anche lacune nelle prove manuali Lightning. Questa revisione documentale non ha eseguito un nodo di scambio né inviato pagamenti.
+
+Per gli sviluppatori, la scoperta utile è l’interfaccia: distinguere gli annunci di identità e configurazione dallo stato operativo recente, conservare `unknown` come stato reale e non trasformare un guasto del backend nell’esaurimento dei tentativi dell’acquirente.
