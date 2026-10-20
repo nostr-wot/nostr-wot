@@ -38,3 +38,5 @@ While this issue was prepared, a separate worker merged own-platform PR #102. It
 ## Combined-tree checkpoint
 
 Hosted run 39393503927 passed all checks on 8d2d47424b34244f0a74747140c741da0d588ded, including 1,635 rendered pages and 1,720 images with zero audit failures. Main then gained only PR #104's append-only outcome for PR #102. That independent outcome is preserved. The combined commit must pass hosted validation again before this issue merges. Cloud-browser inspection remains unavailable; no live article or delivery success is claimed.
+
+The next combined run, 39396015771, also passed on c8cf95022e0678a6c7457ed73eec85460b953098. During that run, main gained the other publication's genuine social receipt and final append-only log entry. Both are preserved; they do not prove delivery of this ecosystem issue. The resulting log conflict is resolved without changing any publication input, then the new head is revalidated.
