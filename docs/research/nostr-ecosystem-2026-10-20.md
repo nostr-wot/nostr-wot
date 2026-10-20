@@ -33,3 +33,8 @@ Seven article editions, one deterministic visually inspected illustration and No
 Initial hosted run 39392866511 passed 361 of 363 unit tests. Two old dataset-count assumptions failed: the new Mostro report makes six projects with matched reports, and removing unsupported Mostro credits leaves 39 people. The focused test update pins all six matched project IDs, adds an explicit mixed-case repository check, and independently compares the people index inventory against raw source credits while preserving every link/name/no-duplication assertion. It does not restore unsupported people, skip a test or change production logic. Full hosted revalidation remains mandatory.
 
 While this issue was prepared, a separate worker merged own-platform PR #102. Its article files and appended editorial log are preserved when reconciling main; this run neither merges nor edits that PR.
+
+
+## Combined-tree checkpoint
+
+Hosted run 39393503927 passed all checks on 8d2d47424b34244f0a74747140c741da0d588ded, including 1,635 rendered pages and 1,720 images with zero audit failures. Main then gained only PR #104's append-only outcome for PR #102. That independent outcome is preserved. The combined commit must pass hosted validation again before this issue merges. Cloud-browser inspection remains unavailable; no live article or delivery success is claimed.
