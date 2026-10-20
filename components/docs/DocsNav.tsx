@@ -54,7 +54,7 @@ export function DocsNav({ sections }: { sections: NavSection[] }) {
       {filtered.map(section => <div key={section.title}>
         <p className="font-semibold text-sm text-gray-500 dark:text-gray-400 mb-2">{section.title}</p>
         <ul className="space-y-1 border-l border-gray-200 dark:border-gray-700">
-          {section.links.map(link => <li key={link.href}>
+          {section.links.map(link => <li key={link.href} className={link.parentPath ? "reveal-in" : undefined}>
             <Link href={link.href} aria-current={activeHref === link.href ? (link.href.includes('#') ? 'location' : 'page') : undefined}
               onClick={() => setIsMobileOpen(false)}
               className={`block py-1.5 ${link.parentPath ? 'pl-7' : 'pl-4'} text-sm border-l-2 -ml-px transition-colors ${activeHref === link.href ? 'border-primary text-primary font-medium' : 'border-transparent text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-200 hover:border-gray-300 dark:hover:border-gray-600'}`}>
@@ -76,7 +76,7 @@ export function DocsNav({ sections }: { sections: NavSection[] }) {
         </svg>
       </button>
     </div>
-    {isMobileOpen && <div className="fixed inset-0 z-30 bg-black/50 lg:hidden" onClick={() => setIsMobileOpen(false)} />}
+    <div aria-hidden="true" className={`fixed inset-0 z-30 bg-black/50 lg:hidden transition-opacity duration-200 motion-reduce:transition-none ${isMobileOpen ? "opacity-100" : "opacity-0 pointer-events-none"}`} onClick={() => setIsMobileOpen(false)} />
     <aside id="docs-mobile-navigation" inert={!isMobileOpen} onKeyDown={event => { if (event.key === 'Escape') setIsMobileOpen(false); }}
       className={`fixed inset-y-0 left-0 z-40 w-72 bg-white dark:bg-gray-950 transition-transform duration-200 motion-reduce:transition-none lg:hidden overflow-y-auto ${isMobileOpen ? 'translate-x-0' : '-translate-x-full'}`}>
       <div className="p-6 pt-20">{content()}</div>

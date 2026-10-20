@@ -2,6 +2,7 @@ import {sdkPackages} from "@/lib/sdk-docs.mjs";
 import { integrationExamples } from '@/components/docs/integration-examples';
 import { ReactNode } from "react";
 import { getTranslations } from "next-intl/server";
+import {DocsBreadcrumbs} from "@/components/docs/DocsBreadcrumbs";
 import { DocsNav } from "@/components/docs/DocsNav";
 
 interface DocsLayoutProps {
@@ -90,7 +91,8 @@ export default async function DocsLayout({ children }: DocsLayoutProps) {
   return (
     <>
       <div className="max-w-6xl mx-auto px-6">
-        <div className="flex gap-8 py-8">
+        <DocsBreadcrumbs links={navSections.flatMap(section=>section.links)} />
+        <div className="flex gap-8 pt-6 pb-16">
           {/* Left sidebar */}
           <DocsNav sections={navSections} />
 

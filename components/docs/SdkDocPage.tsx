@@ -29,7 +29,6 @@ export async function SdkDocPage({path,params}:Params & {path:string}) {
   const description=t(topic?.intro ?? `sdk.roles.${pkg.role}`);
   const crumbs=[{name:t('meta.title'),path:'/docs'},{name:t('sdk.title'),path:'/docs/sdk'},{name:pkg.name,path:pkg.href},...(topic?[{name:title,path}]:[])];
   return <article className="prose prose-gray dark:prose-invert max-w-none">
-    <nav aria-label={t('labels.documentationMenu')} className="not-prose mb-6 text-sm text-gray-500"><ol className="flex flex-wrap gap-2">{crumbs.map((c,i)=><li key={c.path}>{i>0 && <span aria-hidden="true" className="mr-2">/</span>}<Link href={c.path} aria-current={i===crumbs.length-1?'page':undefined}>{c.name}</Link></li>)}</ol></nav>
     <JsonLd data={[breadcrumbJsonLd(crumbs.map(c=>({name:c.name,url:getFullUrl(c.path,locale as Locale)}))),{'@context':'https://schema.org','@type':topic?'TechArticle':'CollectionPage',name:title,headline:title,description,url:getFullUrl(path,locale as Locale),inLanguage:locale}]} />
     <h1>{title}</h1>
     {topic?<SdkTopicContent id={topic.id}/>:<>
@@ -40,8 +39,9 @@ export async function SdkDocPage({path,params}:Params & {path:string}) {
       <h2>{t('packageDocs.topics')}</h2>
       <DocTopicCards topics={pkg.topics}/>
     </>}
-    <hr/>
-    <p><a href={`https://github.com/nostr-wot/nostr-wot-sdk/tree/main/packages/${pkg.slug==='core'?'sdk':pkg.slug}`}>{t('packageDocs.reference')}</a> · <Link href="/docs/sdk#migration">{t('packageDocs.migration')}</Link></p>
+    <div className="not-prose mt-12 mb-10 flex flex-wrap items-center gap-x-6 gap-y-3 border-t border-gray-200 pt-6 dark:border-gray-800">
+    <a className="text-primary font-medium underline underline-offset-4 hover:text-primary/80 focus-visible:outline-2 focus-visible:outline-primary" href={`https://github.com/nostr-wot/nostr-wot-sdk/tree/main/packages/${pkg.slug==='core'?'sdk':pkg.slug}`}>{t('packageDocs.reference')}</a><Link className="text-primary font-medium underline underline-offset-4 hover:text-primary/80 focus-visible:outline-2 focus-visible:outline-primary" href="/docs/sdk#migration">{t('packageDocs.migration')}</Link>
+    </div>
     {topic && <nav aria-label={t('packageDocs.topics')}><h2>{t('packageDocs.topics')}</h2><DocTopicCards topics={pkg.topics.filter(item=>item.id!==topic.id)}/></nav>}
   </article>;
 }
