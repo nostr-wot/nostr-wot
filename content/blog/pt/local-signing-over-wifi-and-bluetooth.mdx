@@ -1,0 +1,49 @@
+---
+featuredImage: "/images/blog/local-bridge/pt.svg"
+previewImage: "/images/blog/local-bridge/pt.jpg"
+ogImage: "/images/blog/local-bridge/pt.jpg"
+title: "Uma ponte local entre seu navegador e seu assinador Nostr"
+description: "Uma ponte experimental por Wi-Fi e Bluetooth, uma proposta de protocolo e um caminho para reutilizar a assinatura local."
+excerpt: "Mantenha sua chave de identidade no assinador enquanto um navegador próximo solicita assinaturas por Wi-Fi ou Bluetooth."
+date: "2026-10-20"
+author: {"name": "Nostr WoT Team"}
+tags: ["Nostr WoT", "Assinatura", "Bluetooth", "Protocolo"]
+published: true
+translationKey: "local-signing-over-wifi-and-bluetooth"
+---
+
+Seu navegador e seu telefone podem estar lado a lado enquanto as solicitações de assinatura passam por um relay na internet. O Nostr Connect permite assinar remotamente, mas também é possível acessar diretamente um assinador próximo.
+
+Estamos desenvolvendo uma ponte local experimental para o Nostr WoT. A extensão de desktop se conecta ao assinador por Wi-Fi ou Bluetooth Low Energy (BLE), enquanto a chave de identidade permanece no assinador. A conexão de assinatura não usa um relay público. Publicar o evento resultante no Nostr continua sendo responsabilidade do aplicativo cliente e pode exigir internet.
+
+## Um protocolo, duas conexões
+
+O Wi-Fi usa uma conexão WebSocket local. O Bluetooth usa uma conexão GATT com o telefone. Ambos transportam o mesmo formato de sessão autenticada e solicitações criptografadas, chamado `nwlan/2`.
+
+O assinador exibe um código de pareamento. O navegador lê ou recebe esse código como texto, verifica a chave de transporte do assinador e solicita o pareamento. Você aprova a conexão no assinador. Parear não autoriza automaticamente todas as operações: continuam valendo as permissões do assinador e as permissões por site da extensão.
+
+As chaves de transporte são separadas da sua identidade Nostr. Cada sessão deriva suas próprias chaves de criptografia e autenticação. Fechar a conexão, trocar de conta ou revogar o acesso invalida as operações pendentes. A extensão não muda silenciosamente para outra chave quando o telefone desconecta.
+
+## Uma proposta para outros aplicativos
+
+Escrevemos um [rascunho experimental do protocolo](https://github.com/nostr-wot/nostr-wot-extension/blob/main/nips/signing/02-local-signer-bridge.md) com formatos de pareamento, autenticação, transportes, regras contra repetição e [vetores públicos de teste](https://github.com/nostr-wot/nostr-wot-extension/blob/main/nips/signing/local-bridge-vectors.json). É uma proposta sem número atribuído, não uma NIP aceita.
+
+O rascunho reutiliza os objetos de solicitação da [NIP-46](https://github.com/nostr-protocol/nips/blob/master/46.md), dentro de um envelope de transporte local diferente. Os aplicativos não precisam copiar a interface do Nostr WoT. Um cliente compatível pode ser um aplicativo de desktop, uma extensão ou outro aplicativo nativo.
+
+A [NIP-BE](https://github.com/nostr-protocol/nips/blob/master/BE.md) existente descreve a comunicação BLE entre clientes e relays Nostr. Nossa proposta trata da conexão com um assinador e usa outra autenticação e outro formato de mensagens. São protocolos distintos.
+
+## O que está pronto e o que falta testar
+
+O cliente do navegador e a sessão da carteira têm testes automatizados de interoperabilidade para assinatura, criptografia, aprovação e revogação. Eles não substituem testes de Bluetooth em telefones reais nem uma implementação independente. O suporte do navegador e as restrições de segundo plano do sistema móvel também afetam a disponibilidade. A conexão atual fica em uma aba da extensão que precisa permanecer aberta; sua chave de transporte existe apenas na memória.
+
+O rascunho identifica um caso limite na retenção do cache contra repetição que precisa ser corrigido antes de afirmar conformidade completa. Também explicita os limites de segurança: uma conexão local não prova proximidade física, observadores podem ver o tempo e o tamanho do tráfego, e esta versão não oferece sigilo futuro. Separar sessões impede a reutilização de mensagens entre elas; isso não equivale a um ratchet.
+
+É trabalho em desenvolvimento para quem deseja experimentar. A função é ativada explicitamente e sua disponibilidade depende da versão específica da extensão e da carteira. Este artigo não anuncia disponibilidade em todas as lojas de navegadores.
+
+## O próximo passo é um SDK compartilhado
+
+Um pacote pequeno, `@nostr-wot/local-bridge`, permitiria reutilizar a validação de códigos, a construção das transcrições autenticadas, o estado da sessão e o formato BLE. Adaptadores WebSocket e Web Bluetooth poderiam acompanhá-lo; aplicativos nativos forneceriam os listeners e as permissões de plataforma.
+
+O pacote deve reutilizar a criptografia e os contratos de assinatura existentes. Não precisa incluir outra carteira, banco de permissões ou cópia da interface. Migrar a extensão e a carteira para o mesmo núcleo testado reduziria a duplicação de código e daria a outros desenvolvedores um ponto de partida prático.
+
+Esse pacote é o próximo passo proposto, não um anúncio de publicação no npm. Comentários ao rascunho, implementações independentes e testes em aparelhos reais ajudarão a decidir o que pode se tornar estável.

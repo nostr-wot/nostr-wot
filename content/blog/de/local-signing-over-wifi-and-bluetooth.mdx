@@ -1,0 +1,49 @@
+---
+featuredImage: "/images/blog/local-bridge/de.svg"
+previewImage: "/images/blog/local-bridge/de.jpg"
+ogImage: "/images/blog/local-bridge/de.jpg"
+title: "Eine lokale Brücke zwischen Browser und Nostr-Signer"
+description: "Eine experimentelle WLAN- und Bluetooth-Brücke, ein Protokollentwurf und ein Weg zu wiederverwendbarem lokalem Signieren."
+excerpt: "Der Identitätsschlüssel bleibt beim Signer, während ein Browser in der Nähe Signaturen über WLAN oder Bluetooth anfordert."
+date: "2026-10-20"
+author: {"name": "Nostr WoT Team"}
+tags: ["Nostr WoT", "Signieren", "Bluetooth", "Protokoll"]
+published: true
+translationKey: "local-signing-over-wifi-and-bluetooth"
+---
+
+Browser und Telefon können direkt nebeneinanderliegen, während Signaturanfragen über ein Relay im Internet laufen. Nostr Connect ermöglicht das Signieren aus der Ferne. Ein Signer in der Nähe lässt sich aber auch direkt erreichen.
+
+Wir entwickeln eine experimentelle lokale Brücke für Nostr WoT. Die Desktop-Erweiterung verbindet sich über WLAN oder Bluetooth Low Energy (BLE) mit dem Signer. Der Identitätsschlüssel bleibt auf dem Signer. Diese Verbindung benötigt kein öffentliches Relay. Das fertige Ereignis auf Nostr zu veröffentlichen bleibt Aufgabe der Client-Anwendung und kann Internetzugang erfordern.
+
+## Ein Protokoll, zwei Verbindungen
+
+WLAN verwendet einen lokalen WebSocket. Bluetooth verwendet eine GATT-Verbindung zum Telefon. Beide transportieren dasselbe Format für authentifizierte Sitzungen und verschlüsselte Anfragen: `nwlan/2`.
+
+Der Signer zeigt einen Kopplungscode an. Der Browser liest ihn oder übernimmt ihn als Text, prüft den Transportschlüssel des Signers und fordert die Kopplung an. Du bestätigst die Verbindung auf dem Signer. Die Kopplung erlaubt nicht automatisch jede Operation: Die Berechtigungen des Signers und die Website-Berechtigungen der Erweiterung gelten weiterhin.
+
+Die Transportschlüssel sind von deiner Nostr-Identität getrennt. Jede Sitzung leitet eigene Schlüssel für Verschlüsselung und Authentifizierung ab. Das Schließen der Verbindung, ein Kontowechsel oder der Widerruf des Zugriffs macht ausstehende Vorgänge ungültig. Die Erweiterung wechselt bei einem Verbindungsabbruch nicht unbemerkt zu einem anderen Schlüssel.
+
+## Ein Vorschlag für andere Anwendungen
+
+Wir haben einen [experimentellen Protokollentwurf](https://github.com/nostr-wot/nostr-wot-extension/blob/main/nips/signing/02-local-signer-bridge.md) mit Kopplungsformaten, Authentifizierung, Transportabbildungen, Replay-Regeln und [öffentlichen Testvektoren](https://github.com/nostr-wot/nostr-wot-extension/blob/main/nips/signing/local-bridge-vectors.json) geschrieben. Es ist ein Vorschlag ohne zugewiesene Nummer, keine angenommene NIP.
+
+Der Entwurf verwendet die Anfrageobjekte aus [NIP-46](https://github.com/nostr-protocol/nips/blob/master/46.md) in einer anderen lokalen Transporthülle. Anwendungen müssen die Nostr-WoT-Oberfläche nicht kopieren. Ein kompatibler Client könnte eine Desktop-App, eine Erweiterung oder eine andere native Anwendung sein.
+
+Die bestehende [NIP-BE](https://github.com/nostr-protocol/nips/blob/master/BE.md) beschreibt BLE-Kommunikation zwischen Nostr-Clients und Relays. Unser Vorschlag behandelt die Verbindung zu einem Signer und verwendet eine andere Authentifizierung und ein anderes Nachrichtenformat. Es sind unterschiedliche Protokolle.
+
+## Was bereitsteht und was noch getestet werden muss
+
+Für Browser-Client und Wallet-Sitzung gibt es automatisierte Interoperabilitätstests für Signieren, Verschlüsselung, Freigabe und Widerruf. Diese ersetzen weder Bluetooth-Tests auf echten Telefonen noch eine unabhängige Implementierung. Auch Browser-Unterstützung und Beschränkungen mobiler Betriebssysteme im Hintergrund spielen eine Rolle. Die aktuelle Verbindung läuft in einem geöffneten Erweiterungs-Tab; dessen Transportschlüssel wird nur im Arbeitsspeicher gehalten.
+
+Der Entwurf nennt einen Grenzfall bei der Aufbewahrungsdauer des Replay-Caches, der vor einer vollständigen Konformitätsaussage korrigiert werden muss. Er erklärt auch die Sicherheitsgrenzen: Eine lokale Verbindung beweist keine räumliche Nähe, Beobachter können Zeitpunkt und Umfang des Verkehrs erkennen, und diese Version bietet keine Forward Secrecy. Sitzungstrennung verhindert Replay zwischen Sitzungen; sie ist kein Ratchet-Verfahren.
+
+Dies ist laufende Entwicklungsarbeit. Die Funktion muss ausdrücklich aktiviert werden, und ihre Verfügbarkeit hängt vom jeweiligen Build der Erweiterung und Wallet ab. Dieser Beitrag kündigt keine Verfügbarkeit in allen Browser-Stores an.
+
+## Als Nächstes: ein gemeinsames SDK
+
+Ein kleines Paket namens `@nostr-wot/local-bridge` könnte die Prüfung von Kopplungscodes, authentifizierte Transkripte, den Sitzungszustand und das BLE-Nachrichtenformat bereitstellen. WebSocket- und Web-Bluetooth-Adapter könnten dazugehören; native Anwendungen würden ihre eigenen Listener und Plattformberechtigungen ergänzen.
+
+Das Paket sollte vorhandene Kryptografie und Signierschnittstellen wiederverwenden. Es braucht keine zweite Wallet, Berechtigungsdatenbank oder Kopie der Oberfläche. Erweiterung und Wallet auf denselben getesteten Kern umzustellen würde doppelten Protokollcode reduzieren und anderen Entwicklern einen praktischen Einstieg ermöglichen.
+
+Das Paket ist ein vorgeschlagener nächster Schritt, keine angekündigte npm-Veröffentlichung. Rückmeldungen zum Entwurf, unabhängige Implementierungen und Tests auf echten Geräten werden zeigen, was stabil werden kann.
