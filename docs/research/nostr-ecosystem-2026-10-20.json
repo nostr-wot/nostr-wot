@@ -1,6 +1,6 @@
 {
   "issue": "2026-10-20-fortnightly-ecosystem",
-  "status": "prepared-pending-ci",
+  "status": "partial-deployed-pending-live-verification-and-social",
   "preparedAt": "2026-10-20T08:20:33Z",
   "evidenceWindow": {
     "start": "2026-10-06T08:00:00Z",
@@ -520,7 +520,7 @@
     "visualInspection": "Rendered to a local 1200x630 PNG with Sharp and visually inspected; headline fits and no clipping observed. No new photo, logo or invented project mark."
   },
   "validation": {
-    "state": "pending-combined-tree-revalidation",
+    "state": "passed-on-publication-tree",
     "localExecuted": [
       "Seven-locale fixed-field/structure parity equivalent to current ecosystem-data test.",
       "42 project IDs preserved; Mostro unsupported credits removed across all seven.",
@@ -535,7 +535,7 @@
       "production build",
       "rendered sitemap/metadata/JSON-LD/preview audit"
     ],
-    "notClaimed": "Full repository test/build not executed in the incomplete sandbox; hosted exact-tree results required before merge.",
+    "notClaimed": "No target binary/trading/payment tests and no successful direct live article-body/canonical/metadata or localized directory inspection. Hosted exact-tree checks and deployment are separately verified.",
     "previousFailedRun": {
       "url": "https://github.com/nostr-wot/nostr-wot/actions/runs/39392866511",
       "head": "6c920423450070a6dffa6c32025a3d1872e682ee",
@@ -578,10 +578,41 @@
         "build",
         "rendered sitemap/metadata/JSON-LD/preview audit"
       ]
+    },
+    "finalPullRequestRun": {
+      "url": "https://github.com/nostr-wot/nostr-wot/actions/runs/39397602248",
+      "head": "128ca5786b489b54a5eb6d81ca0e85d86d793ebd",
+      "tree": "d78984232394a13e81b955a21c033fc5e129dbf7",
+      "state": "success",
+      "tests": 363,
+      "passed": 363,
+      "failed": 0,
+      "pages": 1635,
+      "images": 1720,
+      "seoFailures": 0
+    },
+    "productionRun": {
+      "url": "https://github.com/nostr-wot/nostr-wot/actions/runs/39398827408",
+      "head": "2be0fd2bbb8b2c571310b3d96a86c0f172d1f980",
+      "state": "success",
+      "tests": 363,
+      "passed": 363,
+      "failed": 0,
+      "pages": 1635,
+      "images": 1720,
+      "seoFailures": 0,
+      "artifact": {
+        "id": 12254507509,
+        "name": "production-2be0fd2bbb8b2c571310b3d96a86c0f172d1f980",
+        "size": 477925082,
+        "digest": "sha256:cb97868fa34417885300aee0eb88d23b2842d0df3ffbdae9fc822a0a20fc65c9",
+        "run": "https://github.com/nostr-wot/nostr-wot/actions/runs/39398827408",
+        "head": "2be0fd2bbb8b2c571310b3d96a86c0f172d1f980"
+      }
     }
   },
   "publication": {
-    "state": "pending-ci",
+    "state": "deployed-pending-live-verification",
     "branch": "ecosystem/2026-10-20-mostro-health",
     "articleRoutes": {
       "en": "/news/2026-10-20/mostro-0-20-health-and-payment-deferral",
@@ -599,12 +630,38 @@
       "/es/projects/amber"
     ],
     "pr": "https://github.com/nostr-wot/nostr-wot/pull/103",
-    "liveInspectionLimit": "Cloud browser returned generic Site Unavailable page; no origin-outage inference or successful browser article/metadata claim. Verify hosted deployment and accessible public content separately."
+    "liveInspectionLimit": "Cloud browser returned generic Site Unavailable page; no origin-outage inference or successful browser article/metadata claim. Verify hosted deployment and accessible public content separately.",
+    "head": "128ca5786b489b54a5eb6d81ca0e85d86d793ebd",
+    "mergeCommit": "2be0fd2bbb8b2c571310b3d96a86c0f172d1f980",
+    "mergedAt": "2026-10-20T09:11:06Z",
+    "validatedTree": "d78984232394a13e81b955a21c033fc5e129dbf7",
+    "deployment": {
+      "state": "success",
+      "run": "https://github.com/nostr-wot/nostr-wot/actions/runs/39398827408",
+      "job": 118553365084,
+      "servingCommit": "2be0fd2bbb8b2c571310b3d96a86c0f172d1f980",
+      "activatedAt": "2026-10-20T09:26:05Z",
+      "runUpdatedAt": "2026-10-20T09:26:15Z",
+      "liveHomepageAndSitemapCheck": "passed",
+      "sitemapNewArticleUrls": 7,
+      "indexNowSubmittedUrls": 29
+    },
+    "liveVerification": {
+      "state": "blocked-direct-inspection",
+      "checkedAt": "2026-10-20T09:29:03Z",
+      "cloudBrowser": "Generic Site Unavailable; not an origin-outage diagnosis.",
+      "publicWebReader": "New EN/ES articles and Spanish directory unavailable. English Mostro response contains older v0.19.2, two credits and directory check date 2026-10-06; freshness unknown. Dated-query reads unavailable too.",
+      "limits": "All seven article URLs observed in hosted deployment's fresh public sitemap; direct article bodies/canonicals/metadata and updated EN/ES directory renderings are not confirmed."
+    },
+    "currentOutcome": "https://github.com/nostr-wot/nostr-wot/pull/103#issuecomment-6287856420"
   },
   "social": {
     "nostr": {
-      "state": "not-yet-eligible",
-      "reason": "Requires merged and verified live article, then existing hosted queue and durable per-channel receipt."
+      "state": "pending-existing-queue",
+      "checkedAt": "2026-10-20T09:29:03Z",
+      "ledger": "data/social-posted.json",
+      "receiptPresent": false,
+      "reason": "No durable receipt for this translation key at this checkpoint. Existing hosted queue must independently establish live eligibility and record its actual Nostr result; do not blindly retry or infer delivery from a green/no-op run."
     },
     "linkedin": {
       "state": "linkedin_skipped",
@@ -619,5 +676,5 @@
     "senderInvoked": false
   },
   "schedulesChanged": false,
-  "updatedAt": "2026-10-20T09:00:39Z"
+  "updatedAt": "2026-10-20T09:29:03Z"
 }
