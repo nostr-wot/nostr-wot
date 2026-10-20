@@ -1,0 +1,56 @@
+---
+title: "¿Qué es un evento de Nostr? Publicaciones, perfiles y firmas"
+description: "Comprende los siete campos de un evento, qué verifica una firma y cómo funcionan los perfiles, las reacciones y los archivos enlazados."
+excerpt: "Comprende los siete campos de un evento, qué verifica una firma y cómo funcionan los perfiles, las reacciones y los archivos enlazados."
+date: "2026-10-15"
+featuredImage: "/images/illustrations/what-is-nostr.webp"
+previewImage: "/images/illustrations/what-is-nostr.webp"
+tags: ["Nostr", "Protocol"]
+published: true
+seoTitle: "¿Qué es un evento de Nostr? Publicaciones, perfiles y firmas"
+seoDescription: "Comprende los siete campos de un evento, qué verifica una firma y cómo funcionan los perfiles, las reacciones y los archivos enlazados."
+ogImage: "/images/illustrations/what-is-nostr.webp"
+translationKey: "what-is-a-nostr-event"
+difficulty: "beginner"
+order: 0.2
+---
+
+Una publicación en Nostr contiene más que las palabras que ves. Tu aplicación las reúne con la clave del autor, una marca de tiempo y otros datos, y pide a tu firmante que los firme. Ese conjunto firmado es un **evento**. Esta guía acompaña al vídeo de Nostr WoT que aparece más abajo y sigue un mensaje: «Nos vemos al atardecer».
+
+## Los siete campos
+
+[NIP-01](https://github.com/nostr-protocol/nips/blob/master/01.md) define el formato común. No necesitas escribir JSON para usar Nostr, pero reconocer estos campos ayuda a revisar una solicitud de firma.
+
+| Campo | Qué contiene |
+| --- | --- |
+| `pubkey` | La clave pública del autor en formato hexadecimal. |
+| `created_at` | Una marca de tiempo Unix en segundos, proporcionada por el software del autor. |
+| `kind` | Un número que indica cómo interpretar el evento. |
+| `tags` | Listas de referencias o detalles adicionales. |
+| `content` | Una cadena con texto o datos adecuados al tipo de evento. |
+| `id` | Una huella SHA-256 de los datos serializados según la especificación. |
+| `sig` | Una firma Schnorr del ID, verificable con `pubkey`. |
+
+El ID se calcula a partir de `[0, pubkey, created_at, kind, tags, content]`, siguiendo las reglas exactas de serialización JSON de NIP-01. Ni `id` ni `sig` forman parte de esa entrada. El `0` inicial pertenece al formato de serialización; no es el tipo del evento.
+
+![Los cinco campos de datos pasan por la serialización de NIP-01 y SHA-256 para producir id; sig es una firma del id.](/images/guides/nostr-event-fields.svg)
+
+## Un formato, distintas acciones
+
+Una publicación breve de texto sin formato usa **kind 1**, definido en [NIP-10](https://github.com/nostr-protocol/nips/blob/master/10.md). Su `content` puede contener «Nos vemos al atardecer». Las etiquetas pueden vincular una respuesta con otro evento.
+
+Una actualización de perfil usa **kind 0**. Su `content` es un objeto JSON codificado como cadena, con datos como `name`, `about` y `picture`. Los perfiles son reemplazables: un relay puede descartar versiones anteriores cuando recibe una más reciente de la misma clave.
+
+Una reacción a un evento de Nostr usa **kind 7**, definido en [NIP-25](https://github.com/nostr-protocol/nips/blob/master/25.md). Una etiqueta `e` identifica el evento de destino. Un `+` en `content` representa un «me gusta». La reacción tiene su propio autor, ID y firma; no modifica la publicación original.
+
+## Qué demuestra la verificación
+
+La verificación completa vuelve a calcular el ID a partir de los datos y comprueba la firma con la clave pública. Si alguien cambia «atardecer» por «amanecer» y conserva el ID y la firma anteriores, la verificación falla. Firmar los datos modificados crea otro evento; no reescribe el original.
+
+Una firma válida establece que la clave correspondiente firmó esos datos. No identifica a la persona que utiliza la clave, no verifica el nombre real del perfil ni convierte una afirmación en verdadera. La marca de tiempo también está firmada, pero sigue siendo una declaración del autor, no una prueba independiente de la hora. Firmar por sí solo no cifra el contenido.
+
+## Por qué puede desaparecer una foto
+
+Un evento puede contener una URL de un archivo que la aplicación descarga por separado. [NIP-92](https://github.com/nostr-protocol/nips/blob/master/92.md) describe etiquetas `imeta` para metadatos relacionados, incluidos hashes opcionales. Firmar una URL no fija los bytes que servirá ni mantiene el servidor conectado. Un hash permite comprobar los bytes descargados, pero no garantiza su disponibilidad.
+
+Distintas aplicaciones pueden verificar el mismo evento y mostrarlo de formas diferentes. Encontrarlo depende de los relays consultados, la conservación de datos y las funciones compatibles. Al inspeccionarlo, separa tres preguntas: ¿se verifica, confías en su autor y puedes recuperar lo que referencia?

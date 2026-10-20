@@ -4,7 +4,7 @@ export const HELP_CATEGORIES = ['accounts', 'permissions', 'payments', 'settings
 export type HelpCategory = typeof HELP_CATEGORIES[number];
 
 export const HELP_VIDEOS: { id: GuideVideo; duration: string | null }[] = [
-  { id: 'passkeyCreate', duration: null },
+  { id: 'passkeyCreate', duration: '1:04' },
   { id: 'passkeyRecover', duration: null },
   { id: 'passkeyProtect', duration: null },
   { id: 'account', duration: '1:59' },

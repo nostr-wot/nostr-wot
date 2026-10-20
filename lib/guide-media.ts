@@ -1,8 +1,10 @@
 /** Published videos verified on youtube.com/@nostr-wot; null IDs reserve upcoming lessons. See docs/guide-media.md. */
 export const GUIDE_VIDEOS = {
-  passkeyCreate: { id: null as string | null, title: "Create a Nostr Account with a Passkey" },
+  passkeyCreate: { id: "q1RiU-VqM_k", title: "Create a Nostr Account with a Passkey" },
   passkeyRecover: { id: null as string | null, title: "Recover a Nostr Account with a Passkey" },
   passkeyProtect: { id: null as string | null, title: "Protect an Existing Nostr Account with a Passkey" },
+  nostrBasics: { id: "eFoC8i0G4Fk", title: "What Is Nostr? Keys, Relays and Clients Explained" },
+  events: { id: "JlenrCGN2z8", title: "What Is a Nostr Event? Posts, Profiles & Signatures Explained" },
   account: { id: "pUBd2rgmhNc", title: "How to Create a Nostr Account with Nostr WoT" },
   subAccounts: { id: "5nk687W76hE", title: "How to Create Multiple Nostr Identities from One Seed" },
   approvals: { id: "HjK-ygsj4Qs", title: "Nostr Permissions Explained: Approvals & Recent Activity" },
@@ -30,6 +32,8 @@ export const GUIDE_MEDIA: Record<string, GuideMedia> = {
   'create-nostr-account-with-passkey': { screenshots: [], videos: ['passkeyCreate'] },
   'recover-nostr-account-with-passkey': { screenshots: [], videos: ['passkeyRecover'] },
   'protect-existing-nostr-account-with-passkey': { screenshots: [], videos: ['passkeyProtect'] },
+  'what-is-nostr': { screenshots: [], videos: ['nostrBasics'] },
+  'what-is-a-nostr-event': { screenshots: [], videos: ['events'] },
   'create-extension-theme': { screenshots: [], videos: ['appearance'] },
   'account-archive': { screenshots: [], videos: ['archive'] },
   'getting-started': { screenshots: ['account-methods'], videos: ['account'] },

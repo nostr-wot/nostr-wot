@@ -1,0 +1,56 @@
+---
+title: "O que é um evento Nostr? Publicações, perfis e assinaturas"
+description: "Entenda os sete campos de um evento, o que as assinaturas verificam e como funcionam perfis, reações e mídias vinculadas."
+excerpt: "Entenda os sete campos de um evento, o que as assinaturas verificam e como funcionam perfis, reações e mídias vinculadas."
+date: "2026-10-15"
+featuredImage: "/images/illustrations/what-is-nostr.webp"
+previewImage: "/images/illustrations/what-is-nostr.webp"
+tags: ["Nostr", "Protocol"]
+published: true
+seoTitle: "O que é um evento Nostr? Publicações, perfis e assinaturas"
+seoDescription: "Entenda os sete campos de um evento, o que as assinaturas verificam e como funcionam perfis, reações e mídias vinculadas."
+ogImage: "/images/illustrations/what-is-nostr.webp"
+translationKey: "what-is-a-nostr-event"
+difficulty: "beginner"
+order: 0.2
+---
+
+Uma publicação no Nostr contém mais do que as palavras do seu feed. O aplicativo reúne essas palavras com a chave do autor, um horário e outros dados, e pede ao assinador que os assine. Esse conjunto assinado é um **evento**. Este guia acompanha o vídeo do Nostr WoT abaixo, seguindo uma mensagem: “Até o pôr do sol”.
+
+## Os sete campos
+
+A [NIP-01](https://github.com/nostr-protocol/nips/blob/master/01.md) define o formato comum. Você não precisa escrever JSON para usar o Nostr, mas reconhecer esses campos ajuda a revisar uma solicitação de assinatura.
+
+| Campo | O que contém |
+| --- | --- |
+| `pubkey` | A chave pública do autor, em hexadecimal. |
+| `created_at` | Um timestamp Unix em segundos, fornecido pelo software do autor. |
+| `kind` | Um número que indica como interpretar o evento. |
+| `tags` | Listas de referências ou detalhes adicionais. |
+| `content` | Uma string com texto ou dados adequados ao tipo do evento. |
+| `id` | Uma impressão digital SHA-256 dos dados serializados conforme a especificação. |
+| `sig` | Uma assinatura Schnorr desse ID, verificável com `pubkey`. |
+
+O ID é calculado a partir de `[0, pubkey, created_at, kind, tags, content]`, seguindo as regras exatas de serialização JSON da NIP-01. Nem `id` nem `sig` fazem parte dessa entrada. O `0` inicial pertence ao formato de serialização; não é o tipo do evento.
+
+![Os cinco campos de dados passam pela serialização da NIP-01 e por SHA-256 para produzir id; sig é uma assinatura do id.](/images/guides/nostr-event-fields.svg)
+
+## Um formato, diferentes ações
+
+Uma publicação curta em texto simples usa **kind 1**, definido na [NIP-10](https://github.com/nostr-protocol/nips/blob/master/10.md). Seu `content` pode conter “Até o pôr do sol”. As tags podem ligar uma resposta a outro evento.
+
+Uma atualização de perfil usa **kind 0**. Seu `content` é um objeto JSON codificado como string, com dados como `name`, `about` e `picture`. Perfis são substituíveis: os relays podem descartar versões antigas depois de receber uma mais recente para a mesma chave.
+
+Uma reação a um evento do Nostr usa **kind 7**, definido na [NIP-25](https://github.com/nostr-protocol/nips/blob/master/25.md). Uma tag `e` identifica o evento de destino. Um `+` em `content` representa uma curtida. A reação tem autor, ID e assinatura próprios; não modifica a publicação original.
+
+## O que a verificação comprova
+
+A verificação completa recalcula o ID a partir dos dados e confere a assinatura com a chave pública. Se alguém trocar “pôr do sol” por “amanhecer”, mantendo o ID e a assinatura antigos, a verificação falha. Assinar os dados alterados cria outro evento; não reescreve o original.
+
+Uma assinatura válida estabelece que a chave correspondente assinou aqueles dados. Ela não identifica a pessoa que opera a chave, não verifica o nome real do perfil nem torna uma afirmação verdadeira. O horário também é assinado, mas continua sendo uma declaração do autor, não uma prova independente do momento. Assinar, por si só, não criptografa o conteúdo.
+
+## Por que uma foto pode desaparecer
+
+Um evento pode conter uma URL de mídia que o aplicativo baixa separadamente. A [NIP-92](https://github.com/nostr-protocol/nips/blob/master/92.md) descreve tags `imeta` para metadados relacionados, incluindo hashes opcionais de arquivos. Assinar uma URL não fixa os bytes que serão servidos nem mantém o servidor online. Um hash pode ajudar a conferir os bytes baixados, mas não garante disponibilidade.
+
+Aplicativos diferentes podem verificar o mesmo evento e exibi-lo de maneiras distintas. Encontrá-lo depende dos relays consultados, da retenção dos dados e do suporte do aplicativo. Ao inspecionar um evento, separe três perguntas: ele passa na verificação, você confia no autor e consegue obter o que ele referencia?

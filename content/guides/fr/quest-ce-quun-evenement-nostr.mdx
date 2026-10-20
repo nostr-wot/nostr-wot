@@ -1,0 +1,56 @@
+---
+title: "Qu’est-ce qu’un événement Nostr ? Publications, profils et signatures"
+description: "Comprendre les sept champs d’un événement, les garanties des signatures et le fonctionnement des profils, réactions et médias liés."
+excerpt: "Comprendre les sept champs d’un événement, les garanties des signatures et le fonctionnement des profils, réactions et médias liés."
+date: "2026-10-15"
+featuredImage: "/images/illustrations/what-is-nostr.webp"
+previewImage: "/images/illustrations/what-is-nostr.webp"
+tags: ["Nostr", "Protocol"]
+published: true
+seoTitle: "Qu’est-ce qu’un événement Nostr ? Publications, profils et signatures"
+seoDescription: "Comprendre les sept champs d’un événement, les garanties des signatures et le fonctionnement des profils, réactions et médias liés."
+ogImage: "/images/illustrations/what-is-nostr.webp"
+translationKey: "what-is-a-nostr-event"
+difficulty: "beginner"
+order: 0.2
+---
+
+Une publication sur Nostr contient davantage que les mots de votre fil. Votre application les rassemble avec la clé de l’auteur, un horodatage et d’autres données, puis demande à votre outil de signature de les signer. Cet ensemble signé est un **événement**. Ce guide accompagne la vidéo Nostr WoT ci-dessous, à partir d’un message : « À ce soir au coucher du soleil ».
+
+## Les sept champs
+
+[NIP-01](https://github.com/nostr-protocol/nips/blob/master/01.md) définit le format commun. Inutile d’écrire du JSON pour utiliser Nostr, mais reconnaître ces champs aide à examiner une demande de signature.
+
+| Champ | Contenu |
+| --- | --- |
+| `pubkey` | La clé publique de l’auteur, en hexadécimal. |
+| `created_at` | Un horodatage Unix en secondes, fourni par le logiciel de l’auteur. |
+| `kind` | Un nombre indiquant comment interpréter l’événement. |
+| `tags` | Des listes de références ou de détails supplémentaires. |
+| `content` | Une chaîne contenant du texte ou des données adaptés au type. |
+| `id` | Une empreinte SHA-256 des données sérialisées selon la spécification. |
+| `sig` | Une signature Schnorr de cet ID, vérifiable avec `pubkey`. |
+
+L’ID est calculé à partir de `[0, pubkey, created_at, kind, tags, content]`, selon les règles exactes de sérialisation JSON de NIP-01. Ni `id` ni `sig` ne font partie de cette entrée. Le `0` initial appartient au format de sérialisation ; ce n’est pas le type de l’événement.
+
+![Les cinq champs de données passent par la sérialisation NIP-01 puis SHA-256 pour produire id ; sig est une signature de cet id.](/images/guides/nostr-event-fields.svg)
+
+## Un format, plusieurs actions
+
+Une courte publication en texte brut utilise **kind 1**, défini dans [NIP-10](https://github.com/nostr-protocol/nips/blob/master/10.md). Son `content` peut contenir « À ce soir au coucher du soleil ». Les tags peuvent relier une réponse à un autre événement.
+
+Une mise à jour de profil utilise **kind 0**. Son `content` est un objet JSON encodé comme chaîne, avec des informations telles que `name`, `about` et `picture`. Les profils sont remplaçables : les relais peuvent supprimer les anciennes versions après en avoir reçu une plus récente pour la même clé.
+
+Une réaction à un événement Nostr utilise **kind 7**, défini dans [NIP-25](https://github.com/nostr-protocol/nips/blob/master/25.md). Un tag `e` identifie l’événement visé. Un `+` dans `content` représente un « j’aime ». La réaction possède son propre auteur, son ID et sa signature ; elle ne modifie pas la publication originale.
+
+## Ce que prouve la vérification
+
+La vérification complète recalcule l’ID à partir des données et contrôle la signature avec la clé publique. Si quelqu’un remplace « coucher » par « lever » tout en conservant l’ID et la signature, la vérification échoue. Signer les données modifiées crée un autre événement ; cela ne réécrit pas l’original.
+
+Une signature valide établit que la clé correspondante a signé ces données. Elle n’identifie pas la personne qui utilise la clé, ne vérifie pas le nom réel du profil et ne rend pas une affirmation vraie. L’horodatage est lui aussi signé, mais reste une déclaration de l’auteur, sans preuve indépendante de l’heure. La signature seule ne chiffre pas le contenu.
+
+## Pourquoi une photo peut disparaître
+
+Un événement peut contenir l’URL d’un média que l’application télécharge séparément. [NIP-92](https://github.com/nostr-protocol/nips/blob/master/92.md) décrit les tags `imeta` pour les métadonnées associées, notamment des empreintes de fichiers facultatives. Signer une URL ne fige pas les octets servis et ne maintient pas le serveur en ligne. Une empreinte peut aider à vérifier les octets téléchargés, sans garantir leur disponibilité.
+
+Plusieurs applications peuvent vérifier le même événement et l’afficher différemment. Le retrouver dépend des relais interrogés, de la conservation des données et des fonctions prises en charge. Distinguez trois questions : est-il valide, faites-vous confiance à son auteur et pouvez-vous récupérer ce qu’il référence ?

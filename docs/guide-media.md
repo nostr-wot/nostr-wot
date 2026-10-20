@@ -26,6 +26,7 @@ These IDs and titles were verified against the public `@nostr-wot` channel and Y
 
 | ID | Topic | Guides |
 | --- | --- | --- |
+| eFoC8i0G4Fk | Nostr basics: keys, signed notes, relays and clients | What is Nostr? |
 | pUBd2rgmhNc | Create a Nostr account | Getting started, create account |
 | 5nk687W76hE | Multiple identities from one seed | Custom identity paths |
 | Iu11fK9juzU | Site permissions and global rules | Site permissions |
@@ -48,6 +49,8 @@ Run `npm test`, `npm run build` and `npm run test:parity`. The media tests check
 
 The theme contribution guide (`create-extension-theme`, all seven locales) reuses the appearance-settings screenshot and the published appearance video. Its JSON starter palette is checked against the extension’s `parseCustomThemeJson` parser.
 
+The Nostr introduction (`eFoC8i0G4Fk`, “What Is Nostr? Keys, Relays and Clients Explained”) was verified on the official public channel on 2026-10-18. The page identifies Nostr WoT as the publisher, dates the public video 2026-10-05, reports a 4:38 duration, and describes keys, signed notes, independent relays and clients. It is embedded in the localized What Is Nostr? guide without implying a software release.
+
 The archive and migration tutorial (`He4gz4occgY`, “How to Back Up and Migrate Nostr Events with Nostr WoT”) was verified through YouTube’s oEmbed endpoint on 2026-10-07. It lasts approximately 1:49 and appears in Account Archive and the localized Help library. Downloads contain signed events without a file password; encryption of the local archive is distinct from the downloaded file.
 
 ## User help
@@ -62,7 +65,7 @@ The Help index emits a localized CollectionPage and ItemList. Articles emit Tech
 
 ## Passkey course publication slots
 
-Lessons 16, 17 and 18 use `passkeyCreate`, `passkeyRecover` and `passkeyProtect` in the existing `GUIDE_VIDEOS` registry. Their `id: null` values deliberately render translated pending text in both guide media and help articles. The help library links to working written lessons, with no iframe, thumbnail request, invented runtime or YouTube URL for a pending lesson.
+Lessons 16, 17 and 18 use `passkeyCreate`, `passkeyRecover` and `passkeyProtect` in the existing `GUIDE_VIDEOS` registry. Lesson 16 is published at https://youtu.be/q1RiU-VqM_k (1:04). Lessons 17 and 18 retain `id: null` values, which deliberately render translated pending text in both guide media and help articles. The help library links to working written lessons, with no iframe, thumbnail request, invented runtime or YouTube URL for a pending lesson.
 
 After each video is actually published and its title/topic verified, replace that entry's null ID with the verified 11-character YouTube ID and set its real duration in `HELP_VIDEOS` in `lib/help-topics.ts`. All seven guide and help variants then use the same published video. Keep pending IDs null until publication; never use an empty string or placeholder ID. Lessons 16 and 17 cover creation and recovery. Lesson 18 now covers protecting an existing local private-key account with a passkey; its pending slot belongs to `protect-existing-nostr-account-with-passkey`. The separate external-provider migration guide and help topic retain their written instructions without a video assignment. Content-operations owns the current lesson scripts and captures.
 

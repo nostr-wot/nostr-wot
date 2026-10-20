@@ -35,3 +35,8 @@ The sender defaults to excluding LinkedIn when this explicit classification is a
 - Do not introduce an unprompted threat or denial, such as "hardening, not a reported hack", "not a breach", or "no victims". These raise questions the story did not require. Use incident language only when reporting a relevant, verified incident or correcting a specific claim readers actually encountered.
 - Keep evidence classifications and research limitations in the research manifest. Include a limitation in reader-facing copy only when it materially changes their understanding or action; do not turn internal fact-checking notes into headings or routine disclaimers.
 - Apply this to every language and future issue. Preserve immutable editions already sent.
+
+## Publication recovery
+
+- Scheduled editorial runs must check our own published videos, guides and verified releases before third-party news. Read `lib/guide-media.ts` and verify the official channel. A useful published tutorial is eligible for a team-update LinkedIn post; third-party ecosystem notices are not. Do not relabel old capabilities as new releases.
+- Record a timestamped outcome with publication, PR/workflow reference or exact blocker on every run. A timer invocation or a green empty sender is not completion. Preserve pending receipts and reconcile them separately from generating the next article.
