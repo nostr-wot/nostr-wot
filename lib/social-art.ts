@@ -14,7 +14,7 @@ export function isSocialArtId(value: unknown): value is SocialArtId {
   return typeof value === 'string' && [...GUIDE_ART_IDS, ...PAGE_ART_IDS].some(id => id === value);
 }
 /** Guides can reuse related illustrations without duplicating assets. */
-export const GUIDE_ART_ALIASES: Record<string, SocialArtId> = { 'what-is-a-nostr-event': 'what-is-nostr', 'create-extension-theme': 'developers', 'account-archive': 'why-nostr-is-resilient' };
+export const GUIDE_ART_ALIASES: Record<string, SocialArtId> = { 'create-nostr-account-with-passkey': 'create-nostr-account', 'recover-nostr-account-with-passkey': 'import-nostr-account', 'protect-existing-nostr-account-with-passkey': 'managing-identity', 'migrate-passkey-account-to-nostr-wot': 'import-nostr-account', 'what-is-a-nostr-event': 'what-is-nostr', 'create-extension-theme': 'developers', 'account-archive': 'why-nostr-is-resilient' };
 const routes: Record<string, SocialArtId> = {
   '/': 'home', '/features': 'extension', '/download': 'extension', '/about': 'community',
   '/oracle': 'oracle', '/widgets': 'developers', '/projects': 'community',
