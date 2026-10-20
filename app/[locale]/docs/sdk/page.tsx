@@ -12,6 +12,7 @@ const packages = [
   ["nostr-wot-sdk", "1.0.1"],
   ["@nostr-wot/data", "0.5.1"],
   ["@nostr-wot/relay", "0.1.1"],
+  ["@nostr-wot/vault", "1.1.0"],
   ["@nostr-wot/signers", "1.2.0"],
   ["@nostr-wot/blossom", "0.1.7"],
   ["@nostr-wot/dm", "0.6.2"],
@@ -142,6 +143,51 @@ function watchNotes(transport: PoolLike, onEvent: (event: NostrEvent) => void) {
     pool.destroy();
   };
 }`} />
+      </section>
+
+      <section id="passkeys" className="scroll-mt-24">
+        <h2>{t("passkeys.title")}</h2>
+        <p>{t("passkeys.description")}</p>
+        <TerminalBlock commands={["npm install @nostr-wot/vault@1.1.0"]} />
+        <p>{t("passkeys.host")}</p>
+        <CodeBlock language="typescript" code={`import {
+  createPasskeyRecord, openPasskeyRecord, parsePasskeyBackup,
+  serializePasskeyBackup, sealPasskeyPayload, withPasskeyVaultKey,
+  type VaultPayload, type PasskeyInput, type PasskeyProof,
+} from "@nostr-wot/vault";
+
+export function protectAccount(payload: VaultPayload, enrollment: PasskeyInput) {
+  const record = createPasskeyRecord(payload, enrollment);
+  return { record, recoveryFile: serializePasskeyBackup(record) };
+}
+
+export async function readRecoveryFile(file: string, proof: PasskeyProof) {
+  let record = parsePasskeyBackup(file);
+  const opened = await openPasskeyRecord(record, proof);
+  if (opened.cacheKeyMinted) {
+    record = await withPasskeyVaultKey(record, proof, key =>
+      sealPasskeyPayload(opened.payload, key, record),
+    );
+  }
+  return { record, payload: opened.payload };
+}`} />
+        <p>{t("passkeys.example")}</p>
+        <h3>{t("passkeys.adaptersTitle")}</h3>
+        <p>{t("passkeys.adapters")}</p>
+        <p><a href="https://github.com/nostr-wot/nostr-wot-sdk/tree/main/packages/vault#passkey-record-primitives">{t("passkeys.packageLink")}</a></p>
+      </section>
+
+      <section id="passkey-interoperability" className="scroll-mt-24">
+        <h2>{t("passkeys.interopTitle")}</h2>
+        <p>{t("passkeys.domain")}</p>
+        <p>{t("passkeys.wire")}</p>
+        <p>{t("passkeys.validation")}</p>
+        <p>{t("passkeys.blob")}</p>
+        <ul>
+          <li><a href="https://github.com/nostr-wot/nostr-wot-sdk/blob/main/docs/passkey-recovery.md">{t("passkeys.protocolLink")}</a></li>
+          <li><Link href="/guides/recover-nostr-account-with-passkey">{t("passkeys.extensionLink")}</Link></li>
+          <li><Link href="/guides/create-nostr-account-with-passkey">{t("passkeys.guidesLink")}</Link></li>
+        </ul>
       </section>
 
       <section id="ui" className="scroll-mt-24">

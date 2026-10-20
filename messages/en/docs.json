@@ -55,7 +55,9 @@
     "proxyProcess": "Process Management",
     "proxyMonitoring": "Monitoring",
     "proxyLimits": "Limits & Validation",
-    "proxyOwnership": "Wallet Ownership"
+    "proxyOwnership": "Wallet Ownership",
+    "sdkPasskeys": "Passkeys and recovery",
+    "sdkPasskeyInterop": "Passkey interoperability"
   },
   "overview": {
     "title": "Overview",
@@ -261,7 +263,24 @@
     "compatibilityTitle": "Oracle compatibility",
     "compatibilityDescription": "Published @nostr-wot/wot 1.0.0 uses the older /api/distance/FROM/TO?maxHops= contract and expects a distance field. Oracle 0.3.0 uses /distance?from=&to=&max_hops= and returns hops. Changing the base URL alone does not make them compatible. Use direct fetch for Oracle 0.3.0, or the local graph source shown below.",
     "localTitle": "Local graph example",
-    "localDescription": "Load and crawl a local graph before passing its source to WoT. The React example receives this prepared graph and uses useIsInWoT; useWoT also requests getDetails from the Oracle. @nostr-wot/graph has its own getScore API, separate from the removed WoT score API."
+    "localDescription": "Load and crawl a local graph before passing its source to WoT. The React example receives this prepared graph and uses useIsInWoT; useWoT also requests getDetails from the Oracle. @nostr-wot/graph has its own getScore API, separate from the removed WoT score API.",
+    "passkeys": {
+      "title": "Passkeys and recovery",
+      "description": "@nostr-wot/vault provides portable passkey vault records, encrypted recovery payloads and provider/relay orchestration for browser and native applications. Version 1.1.0 is published on npm.",
+      "host": "Your app creates the account and performs the native passkey ceremony. Supply the verified credential ID, RP, PRF input and output to the record functions; the SDK does not open a browser prompt or grant access to a domain. Never persist or log PRF output.",
+      "example": "This example encrypts an existing account payload and opens an encrypted recovery file. After opening, validate the recovered accounts and expected public key, enforce your vault replacement policy and persist the returned record atomically. Re-sealing a minted cache key is required before using that cache. The password-only Vault class does not unlock v2 passkey records.",
+      "adaptersTitle": "Provider and relay adapters",
+      "adapters": "saveRecovery and restoreRecovery accept your RecoveryProvider, RecoveryTransport and signature verifier. Saving also requires the recovery author’s signing function. Reuse your relay connections, enforce session checks at writes, and require explicit consent for relay publication. Configure the same bootstrap recovery relays for enrollment and fresh-device restore; the SDK supplies no hidden relay list.",
+      "interopTitle": "Passkey interoperability",
+      "domain": "Credential access comes first: use the original RP and a provider available on the destination device. Sharing an RP string does not authorize another website or native app. Migration recovers compatible data and checks the same public key before registering a new credential at passkeys.nostrwot.com; it does not transfer the original credential.",
+      "wire": "The recovery protocol uses kind 31777, PRF input keytr-v1 and a discoverable user handle containing the author’s 32 public-key bytes. Single-key recovery uses Keytr PRF v1. Seed/vault recovery uses the typed v4 proposal and explicit versioned schemas; deployed v1-only apps cannot be assumed to understand it. Match the exact coordinate, encoding, HKDF context, AAD and schema in the protocol reference.",
+      "validation": "Verify event signatures and authenticated context before import, then derive and compare the expected public key. Reject unknown schemas and invalid payloads. Test independent fixtures and real provider/device behavior; a successful local blob write does not prove synchronization.",
+      "blob": "The SDK’s nostr-wot-passkey-recovery provider envelope and the extension’s nostr-wot-passkey-vault encrypted snapshot are different formats. Handle the extension format through its parser and migration path; restoreRecovery rejects unknown blobs. Refresh recovery after account changes and keep a file fallback.",
+      "packageLink": "Package API and record examples",
+      "protocolLink": "Protocol, adapter contracts and wire format",
+      "extensionLink": "Extension recovery behavior",
+      "guidesLink": "User guides"
+    }
   },
   "rateLimits": {
     "title": "Rate Limits",

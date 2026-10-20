@@ -419,6 +419,80 @@
         "El firmante debería completar la solicitud sin trasladar tu clave privada al navegador.",
         "The browser app should receive only the result of the approved signing request."
       ]
+    },
+    "passkeyCreate": {
+      "title": "Crear una cuenta Nostr con una passkey",
+      "overview": "Crea una identidad Nostr, protégela con el proveedor de passkeys de tu dispositivo y prepara la recuperación antes de terminar.",
+      "before": [
+        "Usa una versión con Create with passkey. El navegador y el proveedor deben admitir PRF; los proveedores disponibles dependen del dispositivo.",
+        "Empieza con una instalación nueva y prepara un lugar seguro para el archivo cifrado, accesible desde otro dispositivo."
+      ],
+      "steps": [
+        "Selecciona Create with passkey. Elige un proveedor en el aviso del navegador para passkeys.nostrwot.com y confirma.",
+        "Si el proveedor admite guardar la recuperación, la extensión lo hace automáticamente. Confirma la autenticación adicional. Tras el guardado confirmado, pasa directamente a Protect your keys, sin pantalla de descarga ni otro clic en Continue.",
+        "Solo si el almacenamiento del proveedor no está disponible o falla: selecciona Download recovery file, guarda el archivo y confirma que también necesitas la passkey. El guardado opcional en relays aparece en esta pantalla alternativa; no sustituye el archivo y la confirmación obligatorios.",
+        "En Protect your keys, Confirm mantiene Use passkey activado y el bloqueo automático de 15 minutos. Elige a quién seguir o salta ese paso y termina en All Set. Anota tu npub público para comprobar la identidad al recuperarla."
+      ],
+      "checks": [
+        "El archivo cifrado requiere una passkey registrada capaz de descifrar esa copia. El archivo por sí solo no basta.",
+        "Puedes obtener un archivo adicional después en Settings → Security → Passkey. Actualiza las copias tras cambiar cuentas o claves. Los archivos de eventos son independientes; el guardado confirmado no demuestra sincronización con otro dispositivo."
+      ]
+    },
+    "passkeyRecover": {
+      "title": "Recuperar una cuenta Nostr con una passkey",
+      "overview": "Restaura datos de recuperación compatibles en una instalación nueva y comprueba que la clave pública coincide con tu cuenta original.",
+      "before": [
+        "Usa una instalación sin cuentas. Este flujo no puede sustituir una bóveda que ya contiene cuentas.",
+        "Asegura el acceso al proveedor original y ten a mano tu npub público original. Si guardaste un archivo de recuperación cifrado, prepáralo como alternativa."
+      ],
+      "steps": [
+        "Abre Try other methods y Restore passkey vault. La búsqueda usa passkeys.nostrwot.com. Si el dominio original es otro, usa Advanced passkey setup con ese hostname exacto.",
+        "Selecciona la credencial original y verifícala. Primero se buscan los datos del proveedor y después la recuperación compatible en relays. Las credenciales compatibles aportan automáticamente el identificador público.",
+        "Si no hay datos disponibles, selecciona el archivo cifrado cuando aparezca el selector. Necesitas una passkey registrada capaz de descifrarlo. Si cancelaste la selección, reintenta; crear una cuenta nueva no recupera la anterior.",
+        "Termina las preferencias de protección y compara el npub recuperado con el original. Detente si no coincide."
+      ],
+      "checks": [
+        "Se restaura el contenido de la copia: una semilla con sus rutas guardadas o una sola clave. Otras cuentas y los archivos de eventos pueden requerir copias separadas.",
+        "El guardado del proveedor no garantiza sincronización. Si falla, revisa el dominio original, el acceso al proveedor y el archivo."
+      ]
+    },
+    "passkeyMigrate": {
+      "title": "Migrar una cuenta passkey compatible a Nostr WoT",
+      "overview": "Recupera una cuenta compatible usando su dominio original y registra una nueva credencial Nostr WoT conservando la identidad pública.",
+      "before": [
+        "Necesitas datos de recuperación compatibles, acceso al proveedor y dominio originales y el npub esperado.",
+        "Empieza en una instalación vacía. El navegador debe permitir el dominio original; las passkeys de otras apps no son compatibles automáticamente."
+      ],
+      "steps": [
+        "Elige Try other methods y Advanced passkey setup. Introduce el hostname original sin esquema, ruta ni puerto.",
+        "Selecciona la credencial existente y confirma la recuperación. Restaura los datos compatibles del proveedor, relays o archivo y compara el npub con el original.",
+        "Abre Settings, Security y Passkey. Selecciona la credencial existente y Add another passkey. Conserva o cambia el nombre propuesto y continúa. Verifica la credencial existente y registra otra bajo passkeys.nostrwot.com en el aviso del navegador.",
+        "La recuperación de la nueva credencial se guarda automáticamente si el proveedor lo admite; confirma la autenticación. El guardado confirmado termina este paso sin pantalla de descarga. Solo si no está disponible o falla debes descargar y confirmar el archivo cifrado. Prueba la nueva credencial; puedes obtener un archivo adicional en los ajustes de Passkey."
+      ],
+      "checks": [
+        "La credencial original sigue registrada. La nueva conserva la clave pública recuperada y no cambia el dominio de la anterior.",
+        "Depende del dominio, PRF y formato de recuperación compatibles. No es una transferencia universal de passkeys. Conserva el acceso original hasta verificar la nueva vía."
+      ]
+    },
+    "passkeyProtect": {
+      "title": "Proteger una cuenta Nostr existente con una passkey",
+      "overview": "Añade protección con passkey a una cuenta de clave privada ya guardada en Nostr WoT, conserva la identidad y comprueba el bloqueo local.",
+      "before": [
+        "Desbloquea la extensión y selecciona tu cuenta de firma local existente. Conserva el material de recuperación original y anota el npub antes del cambio.",
+        "El navegador y el proveedor deben admitir PRF. Los botones se indican en inglés; el ejemplo grabado usa Chrome y Touch ID. Otros dispositivos muestran su propio aviso."
+      ],
+      "steps": [
+        "Abre Settings → Security → Passkey settings y elige Set up passkey unlock.",
+        "Si la bóveda tiene contraseña, introduce la actual. Pulsa Confirm para autorizar el cambio; las cuentas existentes permanecen en la bóveda.",
+        "Completa la creación de la passkey para passkeys.nostrwot.com en el navegador. En el ejemplo de Chrome, Touch ID confirma la creación.",
+        "La recuperación se guarda automáticamente si el proveedor lo admite. Completa la autenticación adicional. El guardado confirmado vuelve a Passkey settings y muestra la credencial y el estado de almacenamiento, sin pantalla de descarga. Si el almacenamiento no está disponible o falla, descarga el archivo cifrado y confirma que también necesitas la passkey.",
+        "Vuelve a Security y comprueba que Use passkey está activado y el bloqueo automático indica 15 minutos. Esta protección se aplica a la bóveda. Compara el npub con el anotado antes.",
+        "Bloquea la extensión, ábrela y verifica con la passkey registrada. El desbloqueo comprueba el acceso local; no prueba eliminación, reimportación ni recuperación en otro dispositivo."
+      ],
+      "checks": [
+        "Conserva la copia de la clave privada hasta verificar la recuperación por separado. La passkey no elimina copias anteriores ni convierte cuentas remotas o de solo lectura en claves locales.",
+        "Puedes obtener otro archivo cifrado en Passkey settings. Actualiza las copias tras cambiar cuentas o claves. El archivo necesita una passkey capaz de descifrarlo; el guardado confirmado no demuestra sincronización entre dispositivos."
+      ]
     }
   },
   "videosTitle": "Tutoriales en vídeo",
@@ -444,5 +518,6 @@
   "checksTitle": "Comprueba el resultado",
   "screenshotsTitle": "En pantalla",
   "onThisPage": "En esta página",
-  "breadcrumb": "Ruta de navegación"
+  "breadcrumb": "Ruta de navegación",
+  "videoPending": "Vídeo próximamente. Sigue los pasos escritos."
 }

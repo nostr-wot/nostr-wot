@@ -419,6 +419,80 @@
         "Il firmatario dovrebbe completare la richiesta senza spostare la chiave privata nel browser.",
         "The browser app should receive only the result of the approved signing request."
       ]
+    },
+    "passkeyCreate": {
+      "title": "Creare un account Nostr con una passkey",
+      "overview": "Crea un’identità Nostr, proteggila con il gestore di passkey del dispositivo e prepara il recupero prima di terminare.",
+      "before": [
+        "Usa una versione con Create with passkey. Browser e gestore devono supportare PRF.",
+        "Parti da una nuova installazione e prepara una posizione sicura per il file cifrato, accessibile da un altro dispositivo."
+      ],
+      "steps": [
+        "Seleziona Create with passkey. Scegli un gestore nella finestra del browser per passkeys.nostrwot.com e conferma.",
+        "Se il gestore supporta il salvataggio del recupero, l’estensione lo esegue automaticamente. Conferma l’autenticazione aggiuntiva. Dopo la conferma del salvataggio si passa direttamente a Protect your keys, senza schermata di download né un altro clic su Continue.",
+        "Solo se il salvataggio del gestore non è disponibile o fallisce: scegli Download recovery file, salva il file e conferma che servirà anche la passkey. Il salvataggio facoltativo sui relay appare in questo percorso alternativo; non sostituisce il file e la conferma obbligatori.",
+        "In Protect your keys, Confirm mantiene Use passkey selezionato e il blocco automatico dopo 15 minuti. Scegli chi seguire o salta il passaggio e termina su All Set. Annota il tuo npub pubblico per verificare un futuro recupero."
+      ],
+      "checks": [
+        "Il file cifrato richiede una passkey registrata in grado di decifrare quella copia. Il file da solo non basta.",
+        "Un file aggiuntivo è disponibile in seguito in Settings → Security → Passkey. Aggiorna le copie dopo modifiche ad account o chiavi. Gli archivi degli eventi sono separati; il salvataggio confermato non dimostra la sincronizzazione con un altro dispositivo."
+      ]
+    },
+    "passkeyRecover": {
+      "title": "Recuperare un account Nostr con una passkey",
+      "overview": "Ripristina dati compatibili su un’installazione vuota e verifica che la chiave pubblica corrisponda all’account originale.",
+      "before": [
+        "Usa un’installazione senza account. Questo percorso non sostituisce un vault che contiene già account.",
+        "Rendi disponibile il gestore originale e tieni pronto il tuo npub pubblico originale. Se hai salvato un file cifrato, preparalo come alternativa."
+      ],
+      "steps": [
+        "Apri Try other methods e Restore passkey vault. La ricerca usa passkeys.nostrwot.com. Per un altro dominio originale, usa Advanced passkey setup con l’hostname esatto.",
+        "Seleziona e verifica la credenziale originale. Il recupero cerca prima i dati del gestore, poi i relay compatibili. Le credenziali compatibili forniscono automaticamente l’identificatore pubblico.",
+        "Se non vengono trovati dati, seleziona il file cifrato quando richiesto. Serve comunque una passkey registrata capace di decifrarlo. Dopo un annullamento riprova senza creare un nuovo account.",
+        "Termina le preferenze di protezione e confronta il npub recuperato con l’originale. Fermati se sono diversi."
+      ],
+      "checks": [
+        "La copia determina cosa viene ripristinato: seed con percorsi salvati o una singola chiave. Altri account e archivi possono richiedere backup separati.",
+        "Il salvataggio del gestore non garantisce la sincronizzazione. In caso di errore verifica dominio originale, accesso al gestore e file."
+      ]
+    },
+    "passkeyMigrate": {
+      "title": "Migrare un account passkey compatibile a Nostr WoT",
+      "overview": "Recupera un account compatibile dal dominio originale e registra una nuova credenziale Nostr WoT mantenendo l’identità pubblica.",
+      "before": [
+        "Servono dati compatibili, accesso al gestore e al dominio originali e il npub atteso.",
+        "Inizia con un’installazione vuota. Il browser deve consentire il dominio originale; le passkey di altre app non sono automaticamente compatibili."
+      ],
+      "steps": [
+        "Scegli Try other methods e Advanced passkey setup. Inserisci l’hostname originale senza schema, percorso o porta.",
+        "Seleziona la credenziale esistente e conferma il recupero. Ripristina i dati compatibili del gestore, dei relay o del file e confronta il npub.",
+        "Apri Settings, Security e Passkey. Seleziona la credenziale esistente e Add another passkey. Mantieni o modifica il nome proposto e continua. Verifica la credenziale esistente, poi registrane una nuova su passkeys.nostrwot.com nel browser.",
+        "Il recupero della nuova credenziale viene salvato automaticamente se il gestore lo supporta; conferma l’autenticazione. Il salvataggio confermato termina questo passaggio senza schermata di download. Solo se non è disponibile o fallisce, scarica il file e conferma. Prova la nuova credenziale; un file aggiuntivo resta disponibile nelle impostazioni Passkey."
+      ],
+      "checks": [
+        "La credenziale originale resta registrata. La nuova mantiene la chiave pubblica recuperata senza spostare il dominio precedente.",
+        "La compatibilità dipende da dominio, PRF e formato. Non è un trasferimento universale di passkey. Mantieni l’accesso originale finché il nuovo percorso è verificato."
+      ]
+    },
+    "passkeyProtect": {
+      "title": "Proteggere un account Nostr esistente con una passkey",
+      "overview": "Aggiungi protezione passkey a una chiave privata già in Nostr WoT, conserva la stessa identità e verifica lo sblocco locale.",
+      "before": [
+        "Sblocca l’estensione e seleziona l’account di firma locale esistente. Conserva il materiale originale di recupero e annota il npub prima del cambiamento.",
+        "Browser e gestore devono supportare PRF. I pulsanti sono indicati in inglese; l’esempio registrato usa Chrome e Touch ID. Gli altri dispositivi mostrano la propria richiesta."
+      ],
+      "steps": [
+        "Apri Settings → Security → Passkey settings e scegli Set up passkey unlock.",
+        "Se il vault ha una password, inserisci quella attuale. Seleziona Confirm per autorizzare il cambiamento; gli account esistenti restano nel vault.",
+        "Completa la creazione della passkey per passkeys.nostrwot.com nel browser. Nell’esempio Chrome, Touch ID conferma la creazione.",
+        "Il recupero viene salvato automaticamente se il gestore lo supporta. Completa l’autenticazione aggiuntiva. Il salvataggio confermato ritorna a Passkey settings, con credenziale e stato del salvataggio, senza schermata di download. Se il salvataggio non è disponibile o fallisce, scarica il file cifrato e conferma che serve anche la passkey.",
+        "Torna a Security e verifica Use passkey attivo e blocco automatico dopo 15 minuti. La protezione riguarda il vault. Confronta il npub con quello annotato prima.",
+        "Blocca l’estensione, riaprila e verifica con la passkey registrata. Questo controlla l’accesso locale, non la rimozione, la reimportazione o il recupero su un altro dispositivo."
+      ],
+      "checks": [
+        "Conserva il backup della chiave privata finché non hai verificato separatamente il recupero. La passkey non cancella vecchie copie e non trasforma account remoti o di sola lettura in chiavi locali.",
+        "Un altro file cifrato è disponibile in Passkey settings. Aggiorna le copie dopo modifiche ad account o chiavi. Il file richiede una passkey in grado di decifrarlo; il salvataggio confermato non dimostra la sincronizzazione tra dispositivi."
+      ]
     }
   },
   "videosTitle": "Tutorial video",
@@ -444,5 +518,6 @@
   "checksTitle": "Verifica il risultato",
   "screenshotsTitle": "Sullo schermo",
   "onThisPage": "In questa pagina",
-  "breadcrumb": "Percorso di navigazione"
+  "breadcrumb": "Percorso di navigazione",
+  "videoPending": "Video in arrivo. Segui i passaggi scritti."
 }

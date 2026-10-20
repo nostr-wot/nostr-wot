@@ -1,0 +1,39 @@
+---
+title: "Migrer un compte passkey compatible vers Nostr WoT"
+description: "Récupérez un compte compatible avec son domaine original, puis créez une nouvelle passkey Nostr WoT en conservant son identité publique."
+excerpt: "Récupérez un compte compatible avec son domaine original, puis créez une nouvelle passkey Nostr WoT en conservant son identité publique."
+date: "2026-10-15"
+author: {"name": "Leon Acosta", "avatar": "/authors/leon-profile.jpg"}
+tags: ["Nostr", "Passkeys", "Recovery"]
+published: true
+translationKey: "migrate-passkey-account-to-nostr-wot"
+difficulty: "advanced"
+order: 2.14
+---
+
+Récupérez un compte compatible avec son domaine original, puis créez une nouvelle passkey Nostr WoT en conservant son identité publique.
+
+Ce guide décrit le parcours passkey. Si ces commandes manquent, vérifiez la version installée. Les noms des boutons correspondent à l’interface anglaise.
+
+## Avant de commencer
+
+Il faut des données compatibles, l’accès au fournisseur et au domaine d’origine et le npub attendu.
+
+Commencez avec une installation vide. Le navigateur doit autoriser le domaine original ; les passkeys d’autres applications ne sont pas automatiquement compatibles.
+
+## Étapes
+
+1. Choisissez Try other methods puis Advanced passkey setup. Saisissez le hostname original sans schéma, chemin ni port.
+2. Sélectionnez la passkey existante et confirmez la récupération. Restaurez les données compatibles du fournisseur, des relais ou du fichier, puis comparez le npub.
+3. Ouvrez Settings, Security puis Passkey. Sélectionnez la passkey existante et Add another passkey. Conservez ou modifiez le nom proposé et continuez. Vérifiez la passkey existante, puis enregistrez-en une nouvelle sous passkeys.nostrwot.com dans le navigateur.
+4. La récupération de la nouvelle passkey est enregistrée automatiquement si le fournisseur le permet ; confirmez l’authentification. La confirmation du stockage termine cette étape sans écran de téléchargement. Uniquement en cas d’indisponibilité ou d’échec, téléchargez le fichier et confirmez. Testez la nouvelle passkey ; un fichier supplémentaire reste disponible dans ses paramètres.
+
+![Migrer un compte passkey compatible vers Nostr WoT](/images/guides/passkeys/migrate-passkey-account-to-nostr-wot.svg)
+
+## Vérifier la récupération
+
+La passkey originale reste enregistrée. La nouvelle conserve la clé publique récupérée sans déplacer le domaine de l’ancienne.
+
+La compatibilité dépend du domaine, de PRF et du format. Ce n’est pas un transfert universel de passkeys. Gardez l’accès original jusqu’à vérification du nouveau parcours.
+
+[Leçon suivante: Créer un compte Nostr avec une passkey](/guides/create-nostr-account-with-passkey)

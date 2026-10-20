@@ -40,6 +40,8 @@ export default async function DocsLayout({ children }: DocsLayoutProps) {
         { href: "/docs/sdk#setup", label: t("sidebar.sdkSetup") },
         { href: "/docs/sdk#data", label: t("sidebar.sdkData") },
         { href: "/docs/sdk#relay", label: t("sidebar.sdkRelay") },
+        { href: "/docs/sdk#passkeys", label: t("sidebar.sdkPasskeys") },
+        { href: "/docs/sdk#passkey-interoperability", label: t("sidebar.sdkPasskeyInterop") },
         { href: "/docs/sdk#ui", label: t("sidebar.sdkUi") },
         { href: "/docs/sdk#wot", label: t("sidebar.sdkWot") },
       ],

@@ -55,7 +55,9 @@
     "proxyProcess": "Prozessverwaltung",
     "proxyMonitoring": "Überwachung",
     "proxyLimits": "Grenzwerte und Validierung",
-    "proxyOwnership": "Wallet-Zuordnung"
+    "proxyOwnership": "Wallet-Zuordnung",
+    "sdkPasskeys": "Passkeys und Wiederherstellung",
+    "sdkPasskeyInterop": "Passkey-Interoperabilität"
   },
   "overview": {
     "title": "Übersicht",
@@ -261,7 +263,24 @@
     "compatibilityTitle": "Oracle-Kompatibilität",
     "compatibilityDescription": "Die veröffentlichte Version @nostr-wot/wot 1.0.0 nutzt den älteren Vertrag /api/distance/FROM/TO?maxHops= und erwartet das Feld distance. Oracle 0.3.0 nutzt /distance?from=&to=&max_hops= und liefert hops. Eine andere Basis-URL allein macht die Versionen nicht kompatibel. Nutze fetch direkt für Oracle 0.3.0 oder die unten gezeigte lokale Graphquelle.",
     "localTitle": "Beispiel mit lokalem Graphen",
-    "localDescription": "Lade und erfasse einen lokalen Graphen, bevor du seine Quelle an WoT übergibst. Das React-Beispiel erhält diesen vorbereiteten Graphen und nutzt useIsInWoT; useWoT fragt zusätzlich getDetails beim Oracle ab. @nostr-wot/graph hat eine eigene getScore-API, getrennt von der entfernten WoT-Score-API."
+    "localDescription": "Lade und erfasse einen lokalen Graphen, bevor du seine Quelle an WoT übergibst. Das React-Beispiel erhält diesen vorbereiteten Graphen und nutzt useIsInWoT; useWoT fragt zusätzlich getDetails beim Oracle ab. @nostr-wot/graph hat eine eigene getScore-API, getrennt von der entfernten WoT-Score-API.",
+    "passkeys": {
+      "title": "Passkeys und Wiederherstellung",
+      "description": "@nostr-wot/vault bietet portable Tresore, verschlüsselte Wiederherstellungsdaten und Anbieter-/Relay-Abläufe für Web- und native Apps. Version 1.1.0 ist auf npm veröffentlicht.",
+      "host": "Deine App erstellt das Konto und führt den nativen Passkey-Vorgang aus. Übergib geprüfte Kennung, RP und PRF-Werte an die Funktionen; das SDK öffnet keinen Browserdialog und autorisiert keine Domain. Speichere oder protokolliere die PRF-Ausgabe niemals.",
+      "example": "Das Beispiel verschlüsselt ein vorhandenes Konto und öffnet eine Wiederherstellungsdatei. Prüfe Konten und erwarteten öffentlichen Schlüssel, beachte die Ersetzungsrichtlinie und speichere atomar. Ein neu erzeugter Cache-Schlüssel muss vor Nutzung erneut verschlüsselt und gespeichert werden. Die passwortbasierte Vault-Klasse öffnet keine v2-Passkey-Tresore.",
+      "adaptersTitle": "Anbieter- und Relay-Adapter",
+      "adapters": "saveRecovery und restoreRecovery erhalten RecoveryProvider, RecoveryTransport und einen Signaturprüfer. Speichern benötigt außerdem die Signaturfunktion des Autors. Nutze vorhandene Verbindungen, prüfe die Sitzung bei Schreibvorgängen und verlange Zustimmung zur Veröffentlichung. Verwende dieselben Bootstrap-Relays für Registrierung und Wiederherstellung; das SDK liefert keine versteckte Liste.",
+      "interopTitle": "Passkey-Interoperabilität",
+      "domain": "Zuerst braucht die App Zugriff auf den ursprünglichen RP und den Anbieter am Zielgerät. Ein gleicher RP-Name autorisiert keine andere App. Migration stellt kompatible Daten wieder her und prüft denselben öffentlichen Schlüssel, bevor ein neuer Passkey unter passkeys.nostrwot.com registriert wird; der alte wird nicht übertragen.",
+      "wire": "Das Protokoll nutzt kind 31777, PRF-Eingabe keytr-v1 und einen User Handle mit den 32 öffentlichen Schlüsselbytes des Autors. Einzelne Schlüssel nutzen Keytr PRF v1. Seeds und Tresore nutzen den typisierten v4-Vorschlag mit versionierten Schemas; v1-Apps sind nicht automatisch kompatibel. Koordinaten, Kodierung, HKDF-Kontext, AAD und Schema müssen exakt stimmen.",
+      "validation": "Prüfe Signaturen und authentifizierten Kontext vor dem Import, leite dann den erwarteten öffentlichen Schlüssel ab und vergleiche ihn. Lehne unbekannte Schemas und ungültige Daten ab. Teste unabhängige Vektoren und reale Geräte; lokale Speicherung beweist keine Synchronisierung.",
+      "blob": "Das SDK-Format nostr-wot-passkey-recovery unterscheidet sich vom verschlüsselten Extension-Snapshot nostr-wot-passkey-vault. Nutze dessen Parser und Migrationsweg; restoreRecovery lehnt unbekannte Blobs ab. Aktualisiere Sicherungen nach Änderungen und behalte eine Datei.",
+      "packageLink": "Paket-API und Beispiele",
+      "protocolLink": "Protokoll, Verträge und Format",
+      "extensionLink": "Wiederherstellung der Extension",
+      "guidesLink": "Benutzeranleitungen"
+    }
   },
   "rateLimits": {
     "title": "Anfragelimits",

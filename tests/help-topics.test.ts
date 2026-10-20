@@ -8,7 +8,9 @@ test('help tasks are independent of the complete published video library', () =>
   assert.ok(HELP_TOPICS.length > HELP_VIDEOS.length);
   assert.ok(HELP_TOPICS.some(topic => !topic.video && topic.category === 'troubleshooting'));
   assert.equal(new Set(HELP_TOPICS.map(topic => topic.id)).size, HELP_TOPICS.length);
-  assert.equal(new Set(HELP_VIDEOS.map(video => GUIDE_VIDEOS[video.id].id)).size, 14);
+  const publishedIds = HELP_VIDEOS.map(video => GUIDE_VIDEOS[video.id].id).filter(Boolean);
+  assert.equal(new Set(publishedIds).size, publishedIds.length);
+  assert.ok(publishedIds.length >= 14);
   for (const locale of ['en', 'es', 'pt', 'fr', 'de', 'it', 'ru']) {
     const copy = JSON.parse(fs.readFileSync(`messages/${locale}/help.json`, 'utf8'));
     for (const topic of HELP_TOPICS) {
@@ -25,7 +27,11 @@ test('help tasks are independent of the complete published video library', () =>
       assert.equal(copy.topics[topic.id].checks.length, 2);
       assert.ok(copy.topics[topic.id].steps.length >= 3);
       assert.ok(copy.topics[topic.id].steps.every((step: string) => step.trim().length > 20));
-      if (topic.video) assert.match(youtubeUrls(GUIDE_VIDEOS[topic.video].id).embed, /^https:\/\/www.youtube-nocookie.com\/embed\//);
+      if (topic.video) {
+        const id = GUIDE_VIDEOS[topic.video].id;
+        if (id) assert.match(youtubeUrls(id).embed, /^https:\/\/www.youtube-nocookie.com\/embed\//);
+        else assert.ok(copy.videoPending);
+      }
     }
   }
 });

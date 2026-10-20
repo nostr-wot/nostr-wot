@@ -419,6 +419,80 @@
         "The signer should complete the request without moving your private key into the browser.",
         "The browser app should receive only the result of the approved signing request."
       ]
+    },
+    "passkeyCreate": {
+      "title": "Create a Nostr account with a passkey",
+      "overview": "Create a new Nostr identity in the extension, protect it with your device’s passkey provider and prepare recovery before finishing setup.",
+      "before": [
+        "Use an extension version with Create with passkey. Browser and provider support for PRF is required; available providers depend on your device.",
+        "Start with a new installation. Have a safe location for an encrypted recovery file that you can access from another device."
+      ],
+      "steps": [
+        "Select Create with passkey. The browser opens its provider prompt for passkeys.nostrwot.com; choose a provider and confirm.",
+        "When the provider supports recovery storage, the extension saves it automatically. Confirm the additional authentication prompt. Once the provider confirms the save, setup advances directly to Protect your keys without a download screen or another Continue click.",
+        "Only if provider storage is unavailable or fails: select Download recovery file, save it and acknowledge that your passkey is also required. Optional relay saving appears on this fallback screen; relay acceptance does not replace the required file and acknowledgement.",
+        "On Protect your keys, Confirm keeps Use passkey selected and the 15-minute auto-lock default. Choose follows or skip them, then finish on All Set. Record your public npub so you can check the identity after recovery."
+      ],
+      "checks": [
+        "The encrypted file requires an enrolled passkey that can decrypt its snapshot. Keep access to the provider; a file alone is insufficient.",
+        "An additional recovery file is available later in Settings → Security → Passkey. Refresh snapshots after account or key changes. Local event archives are separate, and provider confirmation does not prove synchronization with another device."
+      ]
+    },
+    "passkeyRecover": {
+      "title": "Recover a Nostr account with a passkey",
+      "overview": "Restore compatible saved recovery data on a fresh installation and check that the recovered public key matches your original account.",
+      "before": [
+        "Use an installation with no existing accounts. This restore flow cannot replace a populated vault.",
+        "Make the original passkey provider available on this device and keep your original public npub available. If you saved an encrypted recovery file, have it ready as a fallback."
+      ],
+      "steps": [
+        "Open Try other methods and select Restore passkey vault. The default search uses passkeys.nostrwot.com. For another original domain, use Advanced passkey setup with that exact hostname.",
+        "Select the original credential in the browser and verify. Recovery checks data stored with the passkey, then compatible relay recovery. Compatible credentials supply their public account identifier automatically.",
+        "If no recovery data is found, select your encrypted recovery file when prompted. You still need an enrolled passkey able to decrypt it. If selection is cancelled, retry; do not create a new account to recover an old one.",
+        "Finish the protection preferences and compare the recovered npub with your saved public identifier. Stop if it differs."
+      ],
+      "checks": [
+        "Recovery restores the material in its snapshot. Seed recovery covers saved derivation paths; a single-key snapshot covers one key. Separate accounts and local event archives may need separate backups.",
+        "A provider accepting a snapshot does not guarantee cross-device synchronization. If recovery fails, check the original domain, provider access and file before changing anything."
+      ]
+    },
+    "passkeyMigrate": {
+      "title": "Migrate a compatible passkey account to Nostr WoT",
+      "overview": "Recover a compatible account using its original passkey domain, then enroll a new Nostr WoT credential while keeping the same public identity.",
+      "before": [
+        "You need compatible recovery data, access to the original provider and original passkey domain, plus the account’s expected public npub.",
+        "Start with an empty extension installation. The browser must permit the original domain; arbitrary passkeys from other apps are not automatically compatible."
+      ],
+      "steps": [
+        "Choose Try other methods, then Advanced passkey setup. Enter the original passkey domain as a hostname without a scheme, path or port.",
+        "Select the existing credential. Confirm recovery when asked, then restore compatible provider, relay or file data. Compare the recovered npub with the original before continuing.",
+        "Open Settings, Security, then Passkey. Select the existing credential and choose Add another passkey. Keep or edit the suggested name and continue. Verify the existing credential, then register a new one under passkeys.nostrwot.com in the browser prompt.",
+        "Recovery for the new credential saves automatically when the provider supports it; confirm the authentication prompt. A confirmed save finishes this step automatically, without a download screen. Only if provider storage is unavailable or fails must you download and acknowledge the encrypted recovery file. Test the new credential; an additional file remains available in Passkey settings."
+      ],
+      "checks": [
+        "The original credential remains enrolled. Adding the new credential preserves the recovered Nostr public key; it does not move or rename the original passkey’s domain.",
+        "Compatibility depends on the original domain, PRF and recovery format. This is not a universal passkey transfer. Keep original recovery access until the new route is verified."
+      ]
+    },
+    "passkeyProtect": {
+      "title": "Protect an existing Nostr account with a passkey",
+      "overview": "Add passkey protection to a private-key account already in Nostr WoT, keep the same public identity and check local lock and unlock.",
+      "before": [
+        "Unlock the extension and select your existing local signing account. Keep your original recovery material and record the public npub before changing protection.",
+        "Use a browser and provider that support PRF. This guide uses the English interface; the recorded example uses Chrome and Touch ID. Other devices show their own verification prompt."
+      ],
+      "steps": [
+        "Open Settings → Security → Passkey settings and choose Set up passkey unlock.",
+        "If your vault has a password, enter the current password. Select Confirm to authorize the protection change; existing accounts stay in the vault.",
+        "Complete the browser’s passkey creation prompt for passkeys.nostrwot.com. In the recorded Chrome flow, Touch ID confirms creation.",
+        "Recovery saves automatically when the provider supports it. Complete the additional authentication prompt. A confirmed save returns to Passkey settings, where the registered credential and provider-storage status appear, without a download screen. If provider storage is unavailable or fails, download the encrypted recovery file and acknowledge that the passkey is also required.",
+        "Return to Security and check that Use passkey is enabled and auto-lock is set to 15 minutes. These protection settings apply to the vault. Compare the account’s npub with the value recorded before setup.",
+        "Lock the extension, reopen it and verify with the enrolled passkey. Successful unlock checks local access; it does not test account removal, reimport or recovery on a different device."
+      ],
+      "checks": [
+        "Keep your original private-key backup until you have separately verified recovery. A passkey protecting this vault does not erase older copies of its keys or turn remote/watch-only accounts into local signing keys.",
+        "An additional encrypted recovery file is available in Passkey settings. Refresh snapshots after account or key changes. File recovery requires an enrolled passkey able to decrypt that snapshot; confirmed provider storage does not prove cross-device synchronization."
+      ]
     }
   },
   "videosTitle": "Video tutorials",
@@ -444,5 +518,6 @@
   "checksTitle": "Check the result",
   "screenshotsTitle": "On screen",
   "onThisPage": "On this page",
-  "breadcrumb": "Breadcrumb"
+  "breadcrumb": "Breadcrumb",
+  "videoPending": "Video coming soon. Follow the written guide."
 }

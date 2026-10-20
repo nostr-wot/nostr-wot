@@ -14,13 +14,15 @@ export function HelpVideoLibrary() {
     </div>
     <div className="grid gap-x-6 gap-y-8 sm:grid-cols-2 lg:grid-cols-3">
       {HELP_VIDEOS.map(video => <article key={video.id} className="min-w-0">
-        <Link href={`${helpTopicHref(HELP_TOPICS.find(topic => topic.video === video.id)!)}#video`} className="group w-full text-left focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-primary">
+        <Link href={`${helpTopicHref(HELP_TOPICS.find(topic => topic.video === video.id)!)}${GUIDE_VIDEOS[video.id].id ? '#video' : ''}`} className="group w-full text-left focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-primary">
           <div className="relative mb-3 overflow-hidden rounded-xl bg-gray-100 dark:bg-gray-900">
+            {GUIDE_VIDEOS[video.id].id ? <>
             {/* Public YouTube thumbnails; no player or autoplay until selected. */}
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img src={`https://i.ytimg.com/vi/${GUIDE_VIDEOS[video.id].id}/mqdefault.jpg`} alt="" width="320" height="180" loading="lazy" className="aspect-video w-full object-cover transition-opacity group-hover:opacity-80" />
-            <span className="absolute bottom-2 right-2 rounded bg-black/80 px-2 py-1 text-xs text-white">{video.duration}</span>
+            {video.duration && <span className="absolute bottom-2 right-2 rounded bg-black/80 px-2 py-1 text-xs text-white">{video.duration}</span>}
             <span aria-hidden="true" className="absolute inset-0 flex items-center justify-center"><svg viewBox="0 0 24 24" className="h-10 w-10 rounded-full bg-black/60 p-2 text-white" fill="currentColor"><path d="m9 5 11 7-11 7z" /></svg></span>
+            </> : <div className="flex aspect-video items-center justify-center p-6 text-center text-sm text-gray-600 dark:text-gray-400">{t('videoPending')}</div>}
           </div>
           <h3 className="font-medium group-hover:text-primary">{t(`topics.${video.id}.title`)}</h3>
         </Link>

@@ -1,0 +1,39 @@
+---
+title: "Proteger uma conta Nostr existente com uma passkey"
+description: "Adicione proteção por passkey a uma conta de chave privada já no Nostr WoT, mantenha a identidade e confira o desbloqueio local."
+excerpt: "Adicione proteção por passkey a uma conta de chave privada já no Nostr WoT, mantenha a identidade e confira o desbloqueio local."
+date: "2026-10-15"
+author: {"name": "Leon Acosta", "avatar": "/authors/leon-profile.jpg"}
+tags: ["Nostr", "Passkeys", "Recovery"]
+published: true
+translationKey: "protect-existing-nostr-account-with-passkey"
+difficulty: "beginner"
+order: 2.13
+---
+
+Adicione proteção por passkey a uma conta de chave privada já no Nostr WoT, mantenha a identidade e confira o desbloqueio local.
+
+## Antes de começar
+
+Desbloqueie a extensão e selecione sua conta local de assinatura. Guarde o material original de recuperação e anote o npub antes da mudança.
+
+O navegador e o provedor precisam suportar PRF. Os botões estão em inglês; o exemplo gravado usa Chrome e Touch ID. Outros dispositivos exibem seus próprios avisos.
+
+## Passos
+
+1. Abra Settings → Security → Passkey settings e escolha Set up passkey unlock.
+2. Se o cofre tiver senha, informe a atual. Selecione Confirm para autorizar a mudança; as contas existentes permanecem no cofre.
+3. Conclua a criação da passkey para passkeys.nostrwot.com no navegador. No exemplo com Chrome, Touch ID confirma a criação.
+4. A recuperação é salva automaticamente se o provedor permitir. Conclua a autenticação adicional. A confirmação retorna a Passkey settings, mostrando a credencial e o estado do armazenamento, sem tela de download. Se o armazenamento estiver indisponível ou falhar, baixe o arquivo criptografado e confirme que também precisa da passkey.
+5. Volte a Security e confira Use passkey ativado e bloqueio automático de 15 minutos. A proteção se aplica ao cofre. Compare o npub com o anotado antes.
+6. Bloqueie a extensão, abra novamente e verifique com a passkey cadastrada. Isso verifica o acesso local, não remoção, reimportação ou recuperação em outro dispositivo.
+
+![Proteger uma conta Nostr existente com uma passkey](/images/guides/passkeys/protect-existing-nostr-account-with-passkey.svg)
+
+## Verifique a recuperação
+
+Guarde o backup da chave privada até verificar a recuperação separadamente. A passkey não apaga cópias antigas nem transforma contas remotas ou somente leitura em chaves locais.
+
+Um arquivo criptografado adicional fica disponível em Passkey settings. Atualize as cópias após mudanças de contas ou chaves. O arquivo exige uma passkey capaz de decifrá-lo; o armazenamento confirmado não comprova sincronização entre dispositivos.
+
+[Recuperar uma conta Nostr com uma passkey](/guides/recover-nostr-account-with-passkey) · [Migrar uma conta passkey compatível para Nostr WoT](/guides/migrate-passkey-account-to-nostr-wot)

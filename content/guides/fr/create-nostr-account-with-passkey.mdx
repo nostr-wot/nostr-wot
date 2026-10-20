@@ -1,0 +1,39 @@
+---
+title: "Créer un compte Nostr avec une passkey"
+description: "Créez une identité Nostr, protégez-la avec le fournisseur de passkeys de votre appareil et préparez sa récupération."
+excerpt: "Créez une identité Nostr, protégez-la avec le fournisseur de passkeys de votre appareil et préparez sa récupération."
+date: "2026-10-15"
+author: {"name": "Leon Acosta", "avatar": "/authors/leon-profile.jpg"}
+tags: ["Nostr", "Passkeys", "Recovery"]
+published: true
+translationKey: "create-nostr-account-with-passkey"
+difficulty: "beginner"
+order: 2.11
+---
+
+Créez une identité Nostr, protégez-la avec le fournisseur de passkeys de votre appareil et préparez sa récupération.
+
+Ce guide décrit le parcours passkey. Si ces commandes manquent, vérifiez la version installée. Les noms des boutons correspondent à l’interface anglaise.
+
+## Avant de commencer
+
+Utilisez une version proposant Create with passkey. Le navigateur et le fournisseur doivent prendre en charge PRF.
+
+Commencez sur une nouvelle installation et prévoyez un emplacement sûr pour le fichier chiffré, accessible depuis un autre appareil.
+
+## Étapes
+
+1. Sélectionnez Create with passkey. Choisissez un fournisseur dans la fenêtre du navigateur pour passkeys.nostrwot.com et confirmez.
+2. Si le fournisseur prend en charge le stockage de récupération, l’extension l’enregistre automatiquement. Confirmez l’authentification supplémentaire. Après confirmation du stockage, la configuration passe directement à Protect your keys, sans écran de téléchargement ni nouveau clic sur Continue.
+3. Uniquement si le stockage du fournisseur est indisponible ou échoue : choisissez Download recovery file, enregistrez le fichier et confirmez que la passkey reste nécessaire. Le stockage facultatif sur les relais apparaît ici ; il ne remplace pas le fichier et la confirmation obligatoires.
+4. Dans Protect your keys, Confirm conserve Use passkey et le verrouillage automatique après 15 minutes. Choisissez des comptes à suivre ou passez cette étape, puis terminez sur All Set. Notez votre npub public pour vérifier une future récupération.
+
+![Créer un compte Nostr avec une passkey](/images/guides/passkeys/create-nostr-account-with-passkey.svg)
+
+## Vérifier la récupération
+
+Le fichier chiffré nécessite une passkey enregistrée capable de déchiffrer cette copie. Le fichier seul ne suffit pas.
+
+Un fichier supplémentaire est disponible ensuite dans Settings → Security → Passkey. Actualisez les copies après modification des comptes ou clés. Les archives des événements sont distinctes ; le stockage confirmé ne prouve pas la synchronisation avec un autre appareil.
+
+[Leçon suivante: Récupérer un compte Nostr avec une passkey](/guides/recover-nostr-account-with-passkey)

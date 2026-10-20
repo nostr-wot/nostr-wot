@@ -55,7 +55,9 @@
     "proxyProcess": "Gestione del processo",
     "proxyMonitoring": "Monitoraggio",
     "proxyLimits": "Limiti e validazione",
-    "proxyOwnership": "Proprietà del wallet"
+    "proxyOwnership": "Proprietà del wallet",
+    "sdkPasskeys": "Passkey e recupero",
+    "sdkPasskeyInterop": "Interoperabilità delle passkey"
   },
   "overview": {
     "title": "Panoramica",
@@ -261,7 +263,24 @@
     "compatibilityTitle": "Compatibilità con Oracle",
     "compatibilityDescription": "La versione pubblicata @nostr-wot/wot 1.0.0 usa il vecchio contratto /api/distance/FROM/TO?maxHops= e attende il campo distance. Oracle 0.3.0 usa /distance?from=&to=&max_hops= e restituisce hops. Cambiare solo l’URL di base non li rende compatibili. Usa fetch direttamente con Oracle 0.3.0 o la fonte del grafo locale mostrata sotto.",
     "localTitle": "Esempio di grafo locale",
-    "localDescription": "Carica ed esplora un grafo locale prima di passarne la fonte a WoT. L’esempio React riceve questo grafo preparato e usa useIsInWoT; useWoT richiede anche getDetails all’Oracle. @nostr-wot/graph ha una propria API getScore, distinta dall’API di punteggio rimossa da WoT."
+    "localDescription": "Carica ed esplora un grafo locale prima di passarne la fonte a WoT. L’esempio React riceve questo grafo preparato e usa useIsInWoT; useWoT richiede anche getDetails all’Oracle. @nostr-wot/graph ha una propria API getScore, distinta dall’API di punteggio rimossa da WoT.",
+    "passkeys": {
+      "title": "Passkey e recupero",
+      "description": "@nostr-wot/vault offre vault portabili, dati di recupero cifrati e coordinamento tra gestori e relay per app web e native. La versione 1.1.0 è pubblicata su npm.",
+      "host": "L’app crea l’account ed esegue la cerimonia nativa. Fornisci identificatore verificato, RP e valori PRF alle funzioni; l’SDK non apre finestre del browser né autorizza domini. Non salvare o registrare la risposta PRF.",
+      "example": "L’esempio cifra un account esistente e apre un file di recupero. Valida account e chiave pubblica attesa, applica la politica di sostituzione e salva atomicamente. Una nuova chiave cache deve essere ricifrata e salvata prima dell’uso. La classe Vault basata su password non apre record passkey v2.",
+      "adaptersTitle": "Adattatori per gestori e relay",
+      "adapters": "saveRecovery e restoreRecovery ricevono RecoveryProvider, RecoveryTransport e un verificatore di firme. Il salvataggio richiede anche la firma dell’autore. Riutilizza le connessioni, verifica la sessione durante le scritture e richiedi consenso per la pubblicazione. Configura gli stessi relay iniziali per registrazione e ripristino; l’SDK non fornisce liste nascoste.",
+      "interopTitle": "Interoperabilità delle passkey",
+      "domain": "Serve accesso al RP originale e al gestore sul dispositivo di destinazione. Condividere un nome RP non autorizza un’altra app. La migrazione recupera dati compatibili e verifica la stessa chiave pubblica prima di registrare una nuova credenziale su passkeys.nostrwot.com; non trasferisce quella originale.",
+      "wire": "Il protocollo usa kind 31777, input PRF keytr-v1 e un user handle con i 32 byte pubblici dell’autore. La chiave singola usa Keytr PRF v1. Seed e vault usano la proposta tipizzata v4 e schemi versionati; non presumere compatibilità con app v1. Rispetta coordinate, codifica, contesto HKDF, AAD e schema esatti.",
+      "validation": "Verifica firme e contesto autenticato prima dell’importazione, poi deriva e confronta la chiave pubblica attesa. Rifiuta schemi sconosciuti e dati invalidi. Prova vettori indipendenti e dispositivi reali; una scrittura locale non dimostra sincronizzazione.",
+      "blob": "Il contenitore SDK nostr-wot-passkey-recovery differisce dalla copia nostr-wot-passkey-vault dell’estensione. Usa il parser e il percorso di migrazione dell’estensione; restoreRecovery rifiuta blob sconosciuti. Aggiorna il recupero dopo modifiche e conserva un file.",
+      "packageLink": "API del pacchetto ed esempi",
+      "protocolLink": "Protocollo, contratti e formato",
+      "extensionLink": "Recupero nell’estensione",
+      "guidesLink": "Guide utente"
+    }
   },
   "rateLimits": {
     "title": "Limiti di Richiesta",

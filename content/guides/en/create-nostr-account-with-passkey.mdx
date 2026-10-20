@@ -1,0 +1,39 @@
+---
+title: "Create a Nostr account with a passkey"
+description: "Create a new Nostr identity in the extension, protect it with your device’s passkey provider and prepare recovery before finishing setup."
+excerpt: "Create a new Nostr identity in the extension, protect it with your device’s passkey provider and prepare recovery before finishing setup."
+date: "2026-10-15"
+author: {"name": "Leon Acosta", "avatar": "/authors/leon-profile.jpg"}
+tags: ["Nostr", "Passkeys", "Recovery"]
+published: true
+translationKey: "create-nostr-account-with-passkey"
+difficulty: "beginner"
+order: 2.11
+---
+
+Create a new Nostr identity in the extension, protect it with your device’s passkey provider and prepare recovery before finishing setup.
+
+This guide describes the passkey flow. If these controls are missing, check your installed extension version. Button names below match the English interface.
+
+## Before you start
+
+Use an extension version with Create with passkey. Browser and provider support for PRF is required; available providers depend on your device.
+
+Start with a new installation. Have a safe location for an encrypted recovery file that you can access from another device.
+
+## Steps
+
+1. Select Create with passkey. The browser opens its provider prompt for passkeys.nostrwot.com; choose a provider and confirm.
+2. When the provider supports recovery storage, the extension saves it automatically. Confirm the additional authentication prompt. Once the provider confirms the save, setup advances directly to Protect your keys without a download screen or another Continue click.
+3. Only if provider storage is unavailable or fails: select Download recovery file, save it and acknowledge that your passkey is also required. Optional relay saving appears on this fallback screen; relay acceptance does not replace the required file and acknowledgement.
+4. On Protect your keys, Confirm keeps Use passkey selected and the 15-minute auto-lock default. Choose follows or skip them, then finish on All Set. Record your public npub so you can check the identity after recovery.
+
+![Create a Nostr account with a passkey](/images/guides/passkeys/create-nostr-account-with-passkey.svg)
+
+## Check your recovery
+
+The encrypted file requires an enrolled passkey that can decrypt its snapshot. Keep access to the provider; a file alone is insufficient.
+
+An additional recovery file is available later in Settings → Security → Passkey. Refresh snapshots after account or key changes. Local event archives are separate, and provider confirmation does not prove synchronization with another device.
+
+[Next lesson: Recover a Nostr account with a passkey](/guides/recover-nostr-account-with-passkey)
