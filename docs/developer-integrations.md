@@ -23,3 +23,11 @@ Examples use the consolidated public import paths and explicit npm package names
 ## Further reference expansion
 
 The new pages separate the existing integration workflows. They do not yet provide a dedicated website page for every identity primitive, relay operation or data fetcher. The package API-reference links lead to the maintained detailed README contracts. Expand individual task pages from those contracts as needed, preserving the registry, translations and original anchors rather than creating another large all-purpose page.
+
+## Package navigation and detailed API references
+
+Package pages use compact, full-card links with hover and keyboard-focus feedback. The SDK now has 36 topic routes across eight packages, including account import and derivation, password vaults, authorization, signing, NIP-46 responders, relay coordination, data caching, DM history and encrypted storage, wallet transports, server sessions, UI themes and hybrid messages.
+
+The focused API reference pages reuse reviewed SDK README sections. `scripts/docs/sdk-reference-topics.json` selects the sections; `node scripts/docs/sync-sdk-reference.mjs /path/to/nostr-wot-sdk` updates the committed snapshot in `data/docs/sdk-reference.json` and records the source revision. Review the resulting examples against that revision before committing. The wallet examples normalize the old README parameter spelling `zappedEventId` to the exported `eventId` parameter. Content renders as Markdown, with JSX and expressions disabled, using the existing code-block and typography components.
+
+Navigation and metadata are localized in all seven languages. The detailed source reference remains English and is explicitly identified with a translated notice and `lang="en"`; the existing localized tutorials remain localized. These are integration guides and API contracts, not a claim that every individual export has its own tutorial. New functionality should receive a task-oriented guide or an addition to the appropriate existing guide.

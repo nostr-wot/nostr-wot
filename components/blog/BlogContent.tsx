@@ -11,7 +11,7 @@ import { WikiLink } from './WikiPreview';
 import { Citation, BibEntry, Bibliography, Statistic, ExpertQuote } from './CitationComponents';
 
 // Custom components for MDX
-const components = {
+export const markdownComponents = {
   h1: (props: React.HTMLAttributes<HTMLHeadingElement>) => (
     <h1 className="text-3xl md:text-4xl font-bold mt-12 mb-6 text-gray-900 dark:text-white" {...props} />
   ),
@@ -185,7 +185,7 @@ export function BlogContent({ content }: BlogContentProps) {
         if (index === 0) {
           return (
             <div key={index}>
-              <MDXRemote source={trimmed} components={components} options={mdxOptions} />
+              <MDXRemote source={trimmed} components={markdownComponents} options={mdxOptions} />
             </div>
           );
         }
@@ -199,11 +199,11 @@ export function BlogContent({ content }: BlogContentProps) {
         return (
           <div key={index}>
             <ScrollReveal animation="fade-up">
-              <MDXRemote source={headingLine} components={components} options={mdxOptions} />
+              <MDXRemote source={headingLine} components={markdownComponents} options={mdxOptions} />
             </ScrollReveal>
             {bodyContent && (
               <ScrollReveal animation="fade-up" delay={100}>
-                <MDXRemote source={bodyContent} components={components} options={mdxOptions} />
+                <MDXRemote source={bodyContent} components={markdownComponents} options={mdxOptions} />
               </ScrollReveal>
             )}
           </div>

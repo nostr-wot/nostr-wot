@@ -7,6 +7,7 @@ import {sdkPackages} from '@/lib/sdk-docs.mjs';
 import {generateAlternates, generateOpenGraph, generateTwitter, getFullUrl} from '@/lib/metadata';
 import {breadcrumbJsonLd, JsonLd} from '@/lib/jsonld';
 import {TerminalBlock} from '@/components/ui';
+import {DocTopicCards} from './DocTopicCards';
 import {SdkTopicContent} from './SdkTopicContent';
 type Params={params:Promise<{locale:string}>};
 function lookup(path:string) {
@@ -37,10 +38,10 @@ export async function SdkDocPage({path,params}:Params & {path:string}) {
       <TerminalBlock commands={[`npm install ${pkg.name}@${pkg.version} nostr-tools`]} />
       <p>{t('packageDocs.installNote')}</p>
       <h2>{t('packageDocs.topics')}</h2>
-      {pkg.topics.map(item=><section key={item.id}><h3><Link href={item.href}>{t(item.title)}</Link></h3><p>{t(item.intro)}</p></section>)}
+      <DocTopicCards topics={pkg.topics}/>
     </>}
     <hr/>
     <p><a href={`https://github.com/nostr-wot/nostr-wot-sdk/tree/main/packages/${pkg.slug==='core'?'sdk':pkg.slug}`}>{t('packageDocs.reference')}</a> · <Link href="/docs/sdk#migration">{t('packageDocs.migration')}</Link></p>
-    {topic && <nav aria-label={t('packageDocs.topics')}><ul>{pkg.topics.filter(item=>item.id!==topic.id).map(item=><li key={item.id}><Link href={item.href}>{t(item.title)}</Link></li>)}</ul></nav>}
+    {topic && <nav aria-label={t('packageDocs.topics')}><h2>{t('packageDocs.topics')}</h2><DocTopicCards topics={pkg.topics.filter(item=>item.id!==topic.id)}/></nav>}
   </article>;
 }
