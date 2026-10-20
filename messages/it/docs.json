@@ -241,7 +241,7 @@
     "title": "Riferimento SDK",
     "description": "Crea applicazioni Nostr con funzioni per i dati, strumenti per i relay, interfaccia di accesso e query opzionali sulla distanza nel grafo dei follow.",
     "packagesTitle": "Pacchetti pubblicati",
-    "packagesDescription": "Versioni verificate su npm il 20 settembre 2026. Il metapacchetto esporta WoT dalla radice e gli altri moduli tramite sottopercorsi. Puoi anche installare direttamente i pacchetti con ambito; @nostr-wot/pq è un pacchetto separato.",
+    "packagesDescription": "Otto pacchetti, raggruppati per le esigenze della tua applicazione. Apri un pacchetto e scegli un’attività per vedere esempi e dettagli di integrazione.",
     "package": "Pacchetto",
     "version": "Versione",
     "installTitle": "Installazione",
@@ -256,17 +256,17 @@
     "wotTitle": "Distanze della rete di fiducia",
     "wotDescription": "WoT interroga l’Oracle per impostazione predefinita. getDistance restituisce un numero o null; isInMyWoT restituisce un booleano. getDetails fornisce i salti, un numero di percorsi e informazioni opzionali sui collegamenti intermedi e sui follow reciproci. Usa chiavi pubbliche esadecimali valide di 64 caratteri.",
     "migrationTitle": "Migrazione a @nostr-wot/wot 1.0.0",
-    "migrationDescription": "La versione 1.0.0 ha rimosso il rilevamento dell’estensione, i metodi di punteggio di fiducia e useTrustScore. Usa useWoT o useIsInWoT e leggi i loro oggetti risultato. Per query locali, passa una WoTLocalSource, come WotGraph.asWoTSource() di @nostr-wot/graph. Solo getDistance, isInMyWoT e filterByWoT usano questa fonte; gli altri metodi interrogano ancora l’Oracle.",
+    "migrationDescription": "La versione 1.0.0 ha rimosso il rilevamento dell’estensione, i metodi di punteggio di fiducia e useTrustScore. Usa useWoT o useIsInWoT e leggi i loro oggetti risultato. Per query locali, passa una WoTLocalSource, come WotGraph.asWoTSource() di @nostr-wot/wot/graph. Solo getDistance, isInMyWoT e filterByWoT usano questa fonte; gli altri metodi interrogano ancora l’Oracle.",
     "oracleLink": "Riferimento API Oracle",
     "previous": "API dell’estensione",
     "next": "API Oracle",
     "compatibilityTitle": "Compatibilità con Oracle",
     "compatibilityDescription": "La versione pubblicata @nostr-wot/wot 1.0.0 usa il vecchio contratto /api/distance/FROM/TO?maxHops= e attende il campo distance. Oracle 0.3.0 usa /distance?from=&to=&max_hops= e restituisce hops. Cambiare solo l’URL di base non li rende compatibili. Usa fetch direttamente con Oracle 0.3.0 o la fonte del grafo locale mostrata sotto.",
     "localTitle": "Esempio di grafo locale",
-    "localDescription": "Carica ed esplora un grafo locale prima di passarne la fonte a WoT. L’esempio React riceve questo grafo preparato e usa useIsInWoT; useWoT richiede anche getDetails all’Oracle. @nostr-wot/graph ha una propria API getScore, distinta dall’API di punteggio rimossa da WoT.",
+    "localDescription": "Carica ed esplora un grafo locale prima di passarne la fonte a WoT. L’esempio React riceve questo grafo preparato e usa useIsInWoT; useWoT richiede anche getDetails all’Oracle. @nostr-wot/wot/graph ha una propria API getScore, distinta dall’API di punteggio rimossa da WoT.",
     "passkeys": {
       "title": "Passkey e recupero",
-      "description": "@nostr-wot/vault offre vault portabili, dati di recupero cifrati e coordinamento tra gestori e relay per app web e native. La versione 1.1.0 è pubblicata su npm.",
+      "description": "@nostr-wot/identity/vault offre vault portabili, dati di recupero cifrati e coordinamento tra gestori e relay per app web e native.",
       "host": "L’app crea l’account ed esegue la cerimonia nativa. Fornisci identificatore verificato, RP e valori PRF alle funzioni; l’SDK non apre finestre del browser né autorizza domini. Non salvare o registrare la risposta PRF.",
       "example": "L’esempio cifra un account esistente e apre un file di recupero. Valida account e chiave pubblica attesa, applica la politica di sostituzione e salva atomicamente. Una nuova chiave cache deve essere ricifrata e salvata prima dell’uso. La classe Vault basata su password non apre record passkey v2.",
       "adaptersTitle": "Adattatori per gestori e relay",
@@ -283,7 +283,7 @@
     },
     "purpose": "Utilizzo",
     "roles": {
-      "sdk": "Punti di accesso e provider React",
+      "sdk": "Profili, note, connessioni ai relay, client di firma, file e archiviazione.",
       "data": "Profili, note e cache condivise",
       "relay": "Connessioni, query e sottoscrizioni relay",
       "vault": "Vault cifrato e recupero passkey",
@@ -300,7 +300,8 @@
       "bunker": "Hosting di un firmatario NIP-46",
       "permissions": "Politiche di permessi e autorizzazioni",
       "signer-core": "Coordinamento condiviso delle firme",
-      "storage": "Adattatori di persistenza"
+      "storage": "Adattatori di persistenza",
+      "identity": "Account, vault cifrati, permessi, approvazioni di firma e hosting di firmatari remoti."
     }
   },
   "rateLimits": {
@@ -383,7 +384,7 @@
     "reference": "Riferimento e altre opzioni",
     "signers": {
       "title": "Firmare con un’estensione o un account remoto",
-      "intro": "Usa @nostr-wot/signers per identità e firme. Nip07Signer usa l’estensione installata; Nip46Signer collega un firmatario remoto. Riutilizza lo stesso firmatario negli strumenti SDK durante la sessione.",
+      "intro": "Usa nostr-wot-sdk/signers per identità e firme. Nip07Signer usa l’estensione installata; Nip46Signer collega un firmatario remoto. Riutilizza lo stesso firmatario negli strumenti SDK durante la sessione.",
       "notes": "L’esempio restituisce una nota firmata, non pubblicata. Gestisci il rifiuto nel pulsante e consenti un nuovo tentativo esplicito. PrivateKeySigner serve alle app che custodiscono le chiavi; l’integrazione con l’estensione non richiede seed o chiavi private."
     },
     "messages": {
@@ -403,7 +404,7 @@
     },
     "uploads": {
       "title": "Caricare file con Blossom",
-      "intro": "@nostr-wot/blossom carica il file selezionato su un server scelto esplicitamente, firma l’autorizzazione e restituisce URL, hash e dimensione verificati. Usa l’URL in un profilo o una nota firmata separatamente.",
+      "intro": "nostr-wot-sdk/blossom carica il file selezionato su un server scelto esplicitamente, firma l’autorizzazione e restituisce URL, hash e dimensione verificati. Usa l’URL in un profilo o una nota firmata separatamente.",
       "notes": "Il caricamento pubblico non cifra il file. Cifra prima gli allegati privati, poi usa uploadEncryptedBlob. Condividi i dati di decifratura solo nel messaggio cifrato. Annulla con AbortController al cambio di vista o account. Il caricamento non pubblica un evento Nostr."
     },
     "lifecycle": {
@@ -623,5 +624,22 @@
     "ownershipPermission": "Sono i permessi del file a rendere affidabile la proprietà del wallet. Conservalo fuori dalla cartella dati di LNbits e assicurati che l'utente con cui gira LNbits non possa scriverci.",
     "ownershipMigrate": "Su un'istanza che ha già dei wallet, importa l'associazione esistente prima di avviare la nuova versione:",
     "ownershipMigrateNote": "L'importazione è idempotente e verifica che ogni chiave pubblica continui a risolvere allo stesso wallet e alle stesse chiavi di prima, altrimenti termina con errore. Lo script di deploy la esegue prima del riavvio e interrompe il deploy se la verifica fallisce."
+  },
+  "packageDocs": {
+    "title": "Scegli un pacchetto",
+    "intro": "Otto pacchetti, raggruppati per le esigenze della tua applicazione. Apri un pacchetto e scegli un’attività per vedere esempi e dettagli di integrazione.",
+    "topics": "Argomenti",
+    "migration": "Migrazione dai pacchetti precedenti",
+    "migrationIntro": "Gli undici nomi precedenti restano adattatori di compatibilità. Sostituisci gli import con i percorsi seguenti. Installa il pacchetto, non il sottopercorso. Le versioni precedenti restano disponibili.",
+    "old": "Pacchetto precedente",
+    "new": "Nuovo import",
+    "reference": "Riferimento API",
+    "identity": "Account, vault cifrati, permessi, approvazioni di firma e hosting di firmatari remoti.",
+    "pqTitle": "Attestazioni post-quantistiche",
+    "pqIntro": "Verifica gli eventi kind-10203 prima di usare le loro chiavi post-quantistiche. Il pacchetto deriva anche chiavi da un seed BIP-39 e cifra messaggi ibridi.",
+    "pqNotes": "Una firma valida non basta: controlla usable prima di fidarti dell’attestazione. Deriva le chiavi dal seed, mai da un nsec. I messaggi ibridi richiedono supporto esplicito da entrambe le parti; non ridurre mai la protezione senza avvisare.",
+    "install": "Installazione",
+    "installNote": "Usa gli import mantenuti per le nuove integrazioni. Dichiara nelle dipendenze i pacchetti importati direttamente. Aggiungi React solo per i suoi punti di ingresso.",
+    "migrationTitle": "Migrazione dei pacchetti SDK"
   }
 }

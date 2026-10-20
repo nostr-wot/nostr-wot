@@ -1,3 +1,4 @@
+import {sdkPackages} from "@/lib/sdk-docs.mjs";
 import { integrationExamples } from '@/components/docs/integration-examples';
 import { ReactNode } from "react";
 import { getTranslations } from "next-intl/server";
@@ -37,16 +38,9 @@ export default async function DocsLayout({ children }: DocsLayoutProps) {
     },
     {
       title: t("sidebar.sdkIntegration"),
-      links: [
-        { href: "/docs/sdk#packages", label: t("sidebar.sdkPackages") },
-        { href: "/docs/sdk#setup", label: t("sidebar.sdkSetup") },
-        { href: "/docs/sdk#data", label: t("sidebar.sdkData") },
-        { href: "/docs/sdk#relay", label: t("sidebar.sdkRelay") },
-        { href: "/docs/sdk#passkeys", label: t("sidebar.sdkPasskeys") },
-        { href: "/docs/sdk#passkey-interoperability", label: t("sidebar.sdkPasskeyInterop") },
-        { href: "/docs/sdk#ui", label: t("sidebar.sdkUi") },
-        { href: "/docs/sdk#wot", label: t("sidebar.sdkWot") },
-        ...integrationExamples.sdk.map(({ id }) => ({ href: `/docs/sdk#${id}`, label: t(`integration.${id}.title`) })),
+      links: [{href: "/docs/sdk", label: t("sidebar.sdkPackages")},
+        ...sdkPackages.map(pkg => ({href: pkg.href, label: pkg.name})),
+        ...sdkPackages.flatMap(pkg => pkg.topics.map(topic => ({href: topic.href, label: t(topic.title), parentPath: pkg.href}))),
       ],
     },
     {

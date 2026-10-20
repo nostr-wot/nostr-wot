@@ -1,270 +1,29 @@
-import { IntegrationRecipes } from '@/components/docs/IntegrationRecipes';
-import { withMetadataPolicy } from '@/lib/metadata-policy';
-import type { Metadata } from "next";
-import { getTranslations } from "next-intl/server";
-import { Link } from "@/i18n/routing";
-import { CodeBlock, TerminalBlock, ScrollReveal } from "@/components/ui";
-import { generateAlternates, generateOpenGraph, generateTwitter } from "@/lib/metadata";
-import { type Locale } from "@/i18n/config";
-
-type Props = { params: Promise<{ locale: string }> };
-
-const packages = [
-  ["nostr-wot-sdk", "2.0.0"],
-  ["@nostr-wot/data", "1.0.0"],
-  ["@nostr-wot/relay", "1.0.0"],
-  ["@nostr-wot/vault", "1.1.0"],
-  ["@nostr-wot/signers", "2.0.0"],
-  ["@nostr-wot/blossom", "1.0.0"],
-  ["@nostr-wot/dm", "1.0.0"],
-  ["@nostr-wot/wallet", "1.0.0"],
-  ["@nostr-wot/wot", "2.0.0"],
-  ["@nostr-wot/graph", "1.0.0"],
-  ["@nostr-wot/ui", "1.0.0"],
-  ["@nostr-wot/auth", "4.0.0"],
-  ["@nostr-wot/pq", "1.0.0"],
-  ["@nostr-wot/accounts", "1.0.0"],
-  ["@nostr-wot/bunker", "1.0.0"],
-  ["@nostr-wot/permissions", "1.0.0"],
-  ["@nostr-wot/signer-core", "1.0.0"],
-  ["@nostr-wot/storage", "1.0.0"],
-] as const;
-
-async function pageMetadata({ params }: Props): Promise<Metadata> {
-  const { locale } = await params;
-  const t = await getTranslations("docs.sdk");
-  const title = t("title");
-  const description = t("description");
-  return {
-    title, description,
-    keywords: ["nostr sdk", "nostr wot sdk", "nostr data layer", "nostr react hooks"],
-    alternates: generateAlternates("/docs/sdk", locale as Locale),
-    openGraph: generateOpenGraph({ title, description, path: "/docs/sdk", locale: locale as Locale }),
-    twitter: generateTwitter({ title, description }),
-  };
+import {withMetadataPolicy} from '@/lib/metadata-policy';
+import type {Metadata} from 'next';
+import {getTranslations} from 'next-intl/server';
+import {Link} from '@/i18n/routing';
+import {generateAlternates,generateOpenGraph,generateTwitter} from '@/lib/metadata';
+import type {Locale} from '@/i18n/config';
+import {sdkPackages,sdkTopics,sdkMoves} from '@/lib/sdk-docs.mjs';
+type Props={params:Promise<{locale:string}>};
+async function metadata({params}:Props):Promise<Metadata>{
+  const {locale}=await params;const t=await getTranslations('docs.sdk');
+  const title=t('title'),description=t('description');
+  return {title,description,alternates:generateAlternates('/docs/sdk',locale as Locale),openGraph:generateOpenGraph({title,description,path:'/docs/sdk',locale:locale as Locale}),twitter:generateTwitter({title,description})};
 }
-
-export default async function SDKDocsPage() {
-  const t = await getTranslations("docs.sdk");
-  return (
-    <article className="prose prose-gray dark:prose-invert max-w-none">
-      <ScrollReveal animation="fade-up">
-        <h1>{t("title")}</h1>
-        <p className="lead text-xl text-gray-600 dark:text-gray-400">{t("description")}</p>
-      </ScrollReveal>
-
-      <section id="packages" className="scroll-mt-24">
-        <h2>{t("packagesTitle")}</h2>
-        <p>{t("packagesDescription")}</p>
-        <div className="not-prose overflow-x-auto mb-6">
-          <table className="w-full text-sm border border-gray-200 dark:border-gray-700">
-            <thead className="bg-gray-50 dark:bg-gray-800"><tr>
-              <th scope="col" className="text-left p-3">{t("package")}</th>
-              <th scope="col" className="text-left p-3">{t("version")}</th>
-              <th scope="col" className="text-left p-3">{t("purpose")}</th>
-            </tr></thead>
-            <tbody>{packages.map(([name, version]) => <tr key={name}>
-              <td className="p-3 border-t border-gray-200 dark:border-gray-700"><a className="underline" href={`https://www.npmjs.com/package/${name}/v/${version}`}><code>{name}</code></a></td>
-              <td className="p-3 border-t border-gray-200 dark:border-gray-700">{version}</td>
-              <td className="p-3 border-t border-gray-200 dark:border-gray-700">{t(`roles.${name === "nostr-wot-sdk" ? "sdk" : name.split("/")[1]}`)}</td>
-            </tr>)}</tbody>
-          </table>
-        </div>
-      </section>
-
-      <section id="setup" className="scroll-mt-24">
-        <h2>{t("installTitle")}</h2>
-        <TerminalBlock commands={["npm install nostr-wot-sdk@2.0.0"]} />
-        <h3>{t("setupTitle")}</h3>
-        <p>{t("setupDescription")}</p>
-        <CodeBlock language="tsx" code={`"use client";
-import type { ReactNode } from "react";
-import { NostrSdkProvider } from "nostr-wot-sdk/react";
-
-export function Providers({ children }: { children: ReactNode }) {
-  return (
-    <NostrSdkProvider
-      relays={["wss://relay.damus.io", "wss://nos.lol"]}
-      profileAggregators={["wss://purplepag.es"]}
-    >
-      {children}
-    </NostrSdkProvider>
-  );
-}`} />
-      </section>
-
-      <section id="compatibility" className="scroll-mt-24">
-        <h2>{t("compatibilityTitle")}</h2>
-        <p>{t("compatibilityDescription")}</p>
-        <CodeBlock language="typescript" code={`async function oracleDistance(from: string, to: string) {
-  const query = new URLSearchParams({ from, to, max_hops: "2" });
-  const response = await fetch(
-    "https://wot-oracle.mappingbitcoin.com/distance?" + query,
-  );
-  if (!response.ok) throw new Error("Oracle HTTP " + response.status);
-  const result = await response.json();
-  return result.hops as number | null;
-}`} />
-        <p><Link href="/docs/oracle">{t("oracleLink")}</Link></p>
-      </section>
-
-      <section id="data" className="scroll-mt-24">
-        <h2>{t("dataTitle")}</h2>
-        <p>{t("dataDescription")}</p>
-        <TerminalBlock commands={["npm install @nostr-wot/data@1.0.0"]} />
-        <CodeBlock language="typescript" code={`import {
-  fetchProfile, fetchNotesByAuthor, fetchEngagement, setDefaultRelays,
-} from "@nostr-wot/data";
-
-setDefaultRelays(["wss://relay.damus.io", "wss://nos.lol"]);
-
-async function loadAuthor(pubkey: string) {
-  const profile = await fetchProfile(pubkey);
-  const notes = await fetchNotesByAuthor(pubkey, { limit: 50 });
-  const engagement = await fetchEngagement(notes.map(note => note.id));
-  return { profile, notes, engagement };
-}`} />
-        <CodeBlock language="tsx" code={`"use client";
-import { useProfile } from "@nostr-wot/data/react";
-
-function ProfileCard({ pubkey }: { pubkey: string }) {
-  const profile = useProfile(pubkey);
-  if (!profile) return null;
-  return <h2>{profile.displayName ?? profile.name ?? pubkey}</h2>;
-}`} />
-      </section>
-
-      <section id="relay" className="scroll-mt-24">
-        <h2>{t("relayTitle")}</h2>
-        <p>{t("relayDescription")}</p>
-        <TerminalBlock commands={["npm install @nostr-wot/relay@1.0.0"]} />
-        <CodeBlock language="typescript" code={`import { RelayPool, type PoolLike, type NostrEvent } from "@nostr-wot/relay";
-
-function watchNotes(transport: PoolLike, onEvent: (event: NostrEvent) => void) {
-  const pool = new RelayPool({
-    urls: ["wss://relay.damus.io", "wss://nos.lol"],
-    pool: transport,
-  });
-  const sub = pool.subscribe({ kinds: [1], limit: 50 }, { onEvent });
-  return () => {
-    sub.close();
-    pool.destroy();
-  };
-}`} />
-      </section>
-
-      <section id="passkeys" className="scroll-mt-24">
-        <h2>{t("passkeys.title")}</h2>
-        <p>{t("passkeys.description")}</p>
-        <TerminalBlock commands={["npm install @nostr-wot/vault@1.1.0"]} />
-        <p>{t("passkeys.host")}</p>
-        <CodeBlock language="typescript" code={`import {
-  createPasskeyRecord, openPasskeyRecord, parsePasskeyBackup,
-  serializePasskeyBackup, sealPasskeyPayload, withPasskeyVaultKey,
-  type VaultPayload, type PasskeyInput, type PasskeyProof,
-} from "@nostr-wot/vault";
-
-export function protectAccount(payload: VaultPayload, enrollment: PasskeyInput) {
-  const record = createPasskeyRecord(payload, enrollment);
-  return { record, recoveryFile: serializePasskeyBackup(record) };
+export const generateMetadata=withMetadataPolicy(metadata);
+export default async function SDKDocsPage(){
+  const t=await getTranslations('docs');
+  return <article className="prose prose-gray dark:prose-invert max-w-none">
+    <h1>{t('sdk.title')}</h1><p className="lead">{t('packageDocs.intro')}</p>
+    <section id="packages"><h2>{t('packageDocs.title')}</h2>
+      <div className="not-prose grid gap-4 sm:grid-cols-2">{sdkPackages.map(pkg=><Link key={pkg.slug} href={pkg.href} className="rounded-xl border border-gray-200 p-5 transition-colors hover:border-primary dark:border-gray-700"><h3 className="mb-2 font-semibold break-words">{pkg.name}</h3><p className="text-sm text-gray-600 dark:text-gray-400">{t(`sdk.roles.${pkg.role}`)}</p><span className="mt-3 block text-sm text-primary">v{pkg.version}</span></Link>)}</div>
+    </section>
+    <section id="migration" className="scroll-mt-24"><h2>{t('packageDocs.migration')}</h2><p>{t('packageDocs.migrationIntro')}</p>
+      <div className="overflow-x-auto"><table><thead><tr><th>{t('packageDocs.old')}</th><th>{t('packageDocs.new')}</th></tr></thead><tbody>{sdkMoves.map(move=><tr key={move.from}><td><code>{move.from}</code></td><td><code>{move.to}</code></td></tr>)}</tbody></table></div>
+      <p><a href="https://github.com/nostr-wot/nostr-wot-sdk/blob/main/docs/package-migration.md">{t('packageDocs.migrationTitle')}</a></p>
+    </section>
+    <h2>{t('packageDocs.topics')}</h2>
+    <ul>{sdkTopics.map(topic=><li key={topic.id} id={topic.id} className="scroll-mt-24"><Link href={topic.href}>{t(topic.title)}</Link></li>)}</ul>
+  </article>;
 }
-
-export async function readRecoveryFile(file: string, proof: PasskeyProof) {
-  let record = parsePasskeyBackup(file);
-  const opened = await openPasskeyRecord(record, proof);
-  if (opened.cacheKeyMinted) {
-    record = await withPasskeyVaultKey(record, proof, key =>
-      sealPasskeyPayload(opened.payload, key, record),
-    );
-  }
-  return { record, payload: opened.payload };
-}`} />
-        <p>{t("passkeys.example")}</p>
-        <h3>{t("passkeys.adaptersTitle")}</h3>
-        <p>{t("passkeys.adapters")}</p>
-        <p><a href="https://github.com/nostr-wot/nostr-wot-sdk/tree/main/packages/vault#passkey-record-primitives">{t("passkeys.packageLink")}</a></p>
-      </section>
-
-      <section id="passkey-interoperability" className="scroll-mt-24">
-        <h2>{t("passkeys.interopTitle")}</h2>
-        <p>{t("passkeys.domain")}</p>
-        <p>{t("passkeys.wire")}</p>
-        <p>{t("passkeys.validation")}</p>
-        <p>{t("passkeys.blob")}</p>
-        <ul>
-          <li><a href="https://github.com/nostr-wot/nostr-wot-sdk/blob/main/docs/passkey-recovery.md">{t("passkeys.protocolLink")}</a></li>
-          <li><Link href="/guides/recover-nostr-account-with-passkey">{t("passkeys.extensionLink")}</Link></li>
-          <li><Link href="/guides/create-nostr-account-with-passkey">{t("passkeys.guidesLink")}</Link></li>
-        </ul>
-      </section>
-
-      <section id="ui" className="scroll-mt-24">
-        <h2>{t("uiTitle")}</h2>
-        <p>{t("uiDescription")}</p>
-        <TerminalBlock commands={["npm install @nostr-wot/ui@1.0.0"]} />
-        <CodeBlock language="tsx" code={`"use client";
-import { LoginButton, useSession } from "@nostr-wot/ui";
-import { NostrSdkProvider } from "nostr-wot-sdk/react";
-import "@nostr-wot/ui/styles.css";
-
-function Account() {
-  const { pubkey } = useSession();
-  return <><LoginButton /><output>{pubkey}</output></>;
-}
-
-function App() {
-  return <NostrSdkProvider><Account /></NostrSdkProvider>;
-}`} />
-      </section>
-
-      <section id="wot" className="scroll-mt-24">
-        <h2>{t("wotTitle")}</h2>
-        <p>{t("wotDescription")}</p>
-        <h3>{t("migrationTitle")}</h3>
-        <p>{t("migrationDescription")}</p>
-        <h3>{t("localTitle")}</h3>
-        <p>{t("localDescription")}</p>
-        <TerminalBlock commands={["npm install @nostr-wot/wot@2.0.0 @nostr-wot/graph@1.0.0"]} />
-        <CodeBlock language="typescript" code={`import { WotGraph } from "@nostr-wot/graph";
-import { WoT } from "@nostr-wot/wot";
-
-async function prepareGraph(myPubkey: string, targetPubkey: string) {
-  const graph = new WotGraph({
-    namespace: "my-app",
-    relays: ["wss://relay.damus.io", "wss://nos.lol"],
-  });
-  await graph.load();
-  await graph.crawl(myPubkey, { maxDepth: 2 });
-  const wot = new WoT({ source: graph.asWoTSource(), maxHops: 2 });
-  const distance = await wot.getDistance(targetPubkey);
-  const inWoT = await wot.isInMyWoT(targetPubkey);
-  return { graph, distance, inWoT };
-}`} />
-        <CodeBlock language="tsx" code={`"use client";
-import type { WotGraph } from "@nostr-wot/graph";
-import { NostrSdkProvider, useIsInWoT } from "nostr-wot-sdk/react";
-
-function FollowBadge({ pubkey }: { pubkey: string }) {
-  const { inWoT, loading, error } = useIsInWoT(pubkey, { maxHops: 2 });
-  if (loading || error || !inWoT) return null;
-  return <span>{pubkey}</span>;
-}
-
-function LocalTrust({ graph, pubkey }: { graph: WotGraph; pubkey: string }) {
-  return (
-    <NostrSdkProvider wot={{ enabled: true, options: { source: graph.asWoTSource() } }}>
-      <FollowBadge pubkey={pubkey} />
-    </NostrSdkProvider>
-  );
-}`} />
-      </section>
-      <IntegrationRecipes area="sdk" />
-      <div className="not-prose mt-12 flex justify-between items-center pt-8 border-t border-gray-200 dark:border-gray-800">
-        <Link href="/docs/extension" className="hover:text-primary">{t("previous")}</Link>
-        <Link href="/docs/oracle" className="hover:text-primary">{t("next")}</Link>
-      </div>
-    </article>
-  );
-}
-
-export const generateMetadata = withMetadataPolicy(pageMetadata);

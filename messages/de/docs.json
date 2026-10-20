@@ -241,7 +241,7 @@
     "title": "SDK-Referenz",
     "description": "Erstelle Nostr-Apps mit Datenabfragen, Relay-Werkzeugen, einer Anmeldeoberfläche und optionalen Distanzabfragen im Follow-Graphen.",
     "packagesTitle": "Veröffentlichte Pakete",
-    "packagesDescription": "Versionen am 20. September 2026 auf npm geprüft. Das Metapaket exportiert WoT über seinen Haupteinstieg und andere Module über Unterpfade. Pakete mit Namensraum lassen sich auch direkt installieren; @nostr-wot/pq ist ein separates Paket.",
+    "packagesDescription": "Acht Pakete, geordnet nach den Anforderungen deiner App. Öffne ein Paket und wähle eine Aufgabe für Beispiele und Integrationsdetails.",
     "package": "Paket",
     "version": "Version",
     "installTitle": "Installation",
@@ -256,17 +256,17 @@
     "wotTitle": "Distanzen im Vertrauensnetzwerk",
     "wotDescription": "WoT fragt standardmäßig das Oracle ab. getDistance liefert eine Zahl oder null; isInMyWoT liefert einen booleschen Wert. getDetails liefert die Hop-Anzahl, eine numerische Pfadanzahl und optionale Angaben zu Zwischenverbindungen und gegenseitigen Follows. Verwende gültige öffentliche Schlüssel mit 64 Hexadezimalzeichen.",
     "migrationTitle": "Migration auf @nostr-wot/wot 1.0.0",
-    "migrationDescription": "Version 1.0.0 entfernte die Erweiterungserkennung, Methoden für Vertrauenswerte und useTrustScore. Verwende useWoT oder useIsInWoT und lies deren Ergebnisobjekte aus. Für lokale Abfragen übergib eine WoTLocalSource, etwa WotGraph.asWoTSource() aus @nostr-wot/graph. Nur getDistance, isInMyWoT und filterByWoT nutzen diese Quelle; andere Methoden fragen weiterhin das Oracle ab.",
+    "migrationDescription": "Version 1.0.0 entfernte die Erweiterungserkennung, Methoden für Vertrauenswerte und useTrustScore. Verwende useWoT oder useIsInWoT und lies deren Ergebnisobjekte aus. Für lokale Abfragen übergib eine WoTLocalSource, etwa WotGraph.asWoTSource() aus @nostr-wot/wot/graph. Nur getDistance, isInMyWoT und filterByWoT nutzen diese Quelle; andere Methoden fragen weiterhin das Oracle ab.",
     "oracleLink": "Oracle-API-Referenz",
     "previous": "Erweiterungs-API",
     "next": "Oracle-API",
     "compatibilityTitle": "Oracle-Kompatibilität",
     "compatibilityDescription": "Die veröffentlichte Version @nostr-wot/wot 1.0.0 nutzt den älteren Vertrag /api/distance/FROM/TO?maxHops= und erwartet das Feld distance. Oracle 0.3.0 nutzt /distance?from=&to=&max_hops= und liefert hops. Eine andere Basis-URL allein macht die Versionen nicht kompatibel. Nutze fetch direkt für Oracle 0.3.0 oder die unten gezeigte lokale Graphquelle.",
     "localTitle": "Beispiel mit lokalem Graphen",
-    "localDescription": "Lade und erfasse einen lokalen Graphen, bevor du seine Quelle an WoT übergibst. Das React-Beispiel erhält diesen vorbereiteten Graphen und nutzt useIsInWoT; useWoT fragt zusätzlich getDetails beim Oracle ab. @nostr-wot/graph hat eine eigene getScore-API, getrennt von der entfernten WoT-Score-API.",
+    "localDescription": "Lade und erfasse einen lokalen Graphen, bevor du seine Quelle an WoT übergibst. Das React-Beispiel erhält diesen vorbereiteten Graphen und nutzt useIsInWoT; useWoT fragt zusätzlich getDetails beim Oracle ab. @nostr-wot/wot/graph hat eine eigene getScore-API, getrennt von der entfernten WoT-Score-API.",
     "passkeys": {
       "title": "Passkeys und Wiederherstellung",
-      "description": "@nostr-wot/vault bietet portable Tresore, verschlüsselte Wiederherstellungsdaten und Anbieter-/Relay-Abläufe für Web- und native Apps. Version 1.1.0 ist auf npm veröffentlicht.",
+      "description": "@nostr-wot/identity/vault bietet portable Tresore, verschlüsselte Wiederherstellungsdaten und Anbieter-/Relay-Abläufe für Web- und native Apps.",
       "host": "Deine App erstellt das Konto und führt den nativen Passkey-Vorgang aus. Übergib geprüfte Kennung, RP und PRF-Werte an die Funktionen; das SDK öffnet keinen Browserdialog und autorisiert keine Domain. Speichere oder protokolliere die PRF-Ausgabe niemals.",
       "example": "Das Beispiel verschlüsselt ein vorhandenes Konto und öffnet eine Wiederherstellungsdatei. Prüfe Konten und erwarteten öffentlichen Schlüssel, beachte die Ersetzungsrichtlinie und speichere atomar. Ein neu erzeugter Cache-Schlüssel muss vor Nutzung erneut verschlüsselt und gespeichert werden. Die passwortbasierte Vault-Klasse öffnet keine v2-Passkey-Tresore.",
       "adaptersTitle": "Anbieter- und Relay-Adapter",
@@ -283,7 +283,7 @@
     },
     "purpose": "Einsatz",
     "roles": {
-      "sdk": "Einstiegspunkte und React-Provider",
+      "sdk": "Profile, Notizen, Relay-Verbindungen, Signierer-Clients, Uploads und Speicher.",
       "data": "Profile, Notizen und gemeinsame Caches",
       "relay": "Relay-Verbindungen, Abfragen und Abonnements",
       "vault": "Verschlüsselter Tresor und Passkey-Wiederherstellung",
@@ -300,7 +300,8 @@
       "bunker": "Betrieb eines NIP-46-Signierers",
       "permissions": "Berechtigungsrichtlinien und Freigaben",
       "signer-core": "Gemeinsame Signierkoordination",
-      "storage": "Persistenzadapter"
+      "storage": "Persistenzadapter",
+      "identity": "Konten, verschlüsselte Tresore, Berechtigungen, Signaturfreigaben und Betrieb entfernter Signierer."
     }
   },
   "rateLimits": {
@@ -383,7 +384,7 @@
     "reference": "Referenz und weitere Optionen",
     "signers": {
       "title": "Mit Erweiterung oder Remote-Konto signieren",
-      "intro": "@nostr-wot/signers stellt Identität und Signaturen bereit. Nip07Signer nutzt die installierte Erweiterung, Nip46Signer einen entfernten Signierer. Verwenden Sie denselben Signierer während der Sitzung für die weiteren SDK-Werkzeuge.",
+      "intro": "nostr-wot-sdk/signers stellt Identität und Signaturen bereit. Nip07Signer nutzt die installierte Erweiterung, Nip46Signer einen entfernten Signierer. Verwenden Sie denselben Signierer während der Sitzung für die weiteren SDK-Werkzeuge.",
       "notes": "Das Beispiel liefert eine signierte, noch nicht veröffentlichte Notiz. Behandeln Sie Ablehnungen im Button und lassen Sie Nutzer ausdrücklich erneut versuchen. PrivateKeySigner ist für Apps gedacht, die Schlüssel selbst verwalten. Bei der Erweiterung sind weder Seed-Phrase noch privater Schlüssel nötig."
     },
     "messages": {
@@ -403,7 +404,7 @@
     },
     "uploads": {
       "title": "Dateien mit Blossom hochladen",
-      "intro": "@nostr-wot/blossom lädt eine ausgewählte Datei auf einen ausdrücklich gewählten Server, signiert die Berechtigung und liefert geprüfte URL, Hash und Größe. Verwenden Sie die URL anschließend in einer separat signierten Notiz oder einem Profil.",
+      "intro": "nostr-wot-sdk/blossom lädt eine ausgewählte Datei auf einen ausdrücklich gewählten Server, signiert die Berechtigung und liefert geprüfte URL, Hash und Größe. Verwenden Sie die URL anschließend in einer separat signierten Notiz oder einem Profil.",
       "notes": "Öffentliche Uploads verschlüsseln nicht. Verschlüsseln Sie private Anhänge vor uploadEncryptedBlob und teilen Sie Entschlüsselungsdaten nur innerhalb der verschlüsselten Nachricht. Brechen Sie beim Konto- oder Ansichtswechsel mit AbortController ab. Ein Upload veröffentlicht kein Nostr-Ereignis."
     },
     "lifecycle": {
@@ -623,5 +624,22 @@
     "ownershipPermission": "Die Dateirechte sind es, was die Wallet-Zuordnung vertrauenswürdig macht. Lege die Datei außerhalb des LNbits-Datenverzeichnisses ab und stelle sicher, dass der Benutzer, unter dem LNbits läuft, nicht hineinschreiben kann.",
     "ownershipMigrate": "Auf einer Instanz mit vorhandenen Wallets die bestehende Zuordnung importieren, bevor die neue Version startet:",
     "ownershipMigrateNote": "Der Import ist wiederholbar und prüft, dass jeder öffentliche Schlüssel weiterhin dieselbe Wallet und dieselben Schlüssel ergibt wie zuvor, sonst bricht er mit einem Fehler ab. Das Deployment-Skript führt ihn vor dem Neustart aus und stoppt das Deployment, wenn die Prüfung fehlschlägt."
+  },
+  "packageDocs": {
+    "title": "Paket auswählen",
+    "intro": "Acht Pakete, geordnet nach den Anforderungen deiner App. Öffne ein Paket und wähle eine Aufgabe für Beispiele und Integrationsdetails.",
+    "topics": "Themen",
+    "migration": "Migration älterer Pakete",
+    "migrationIntro": "Die elf bisherigen Paketnamen bleiben als Kompatibilitätsadapter erhalten. Ersetze ihre Imports durch die folgenden Pfade. Installiere das Paket, nicht den Unterpfad. Alte Versionen bleiben verfügbar.",
+    "old": "Bisheriges Paket",
+    "new": "Neuer Import",
+    "reference": "API-Referenz",
+    "identity": "Konten, verschlüsselte Tresore, Berechtigungen, Signaturfreigaben und Betrieb entfernter Signierer.",
+    "pqTitle": "Postquanten-Attestierungen",
+    "pqIntro": "Prüfe kind-10203-Ereignisse, bevor du ihre Postquanten-Schlüssel verwendest. Das Paket leitet außerdem Schlüssel aus einem BIP-39-Seed ab und verschlüsselt hybride Nachrichten.",
+    "pqNotes": "Eine gültige Signatur allein reicht nicht: Prüfe usable, bevor du der Attestierung vertraust. Leite Schlüssel aus dem Seed ab, niemals aus einem nsec. Hybride Nachrichten erfordern ausdrückliche Unterstützung auf beiden Seiten; reduziere den Schutz niemals stillschweigend.",
+    "install": "Installation",
+    "installNote": "Verwende für neue Integrationen die gepflegten Imports. Deklariere direkt importierte Pakete als Abhängigkeiten. Füge React nur für React-Einstiegspunkte hinzu.",
+    "migrationTitle": "SDK-Paketmigration"
   }
 }

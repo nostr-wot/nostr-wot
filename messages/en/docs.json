@@ -241,7 +241,7 @@
     "title": "SDK Reference",
     "description": "Build Nostr apps with data fetchers, relay utilities, login UI, and optional follow-graph distance queries.",
     "packagesTitle": "Published packages",
-    "packagesDescription": "Versions verified on npm on 20 September 2026. The meta-package exposes WoT at its root and other modules through subpaths. You can also install scoped packages directly; @nostr-wot/pq is a separate package.",
+    "packagesDescription": "Eight packages, grouped by what your app needs. Open a package, then choose a task for its example and integration details.",
     "package": "Package",
     "version": "Version",
     "installTitle": "Installation",
@@ -256,17 +256,17 @@
     "wotTitle": "Web of Trust distances",
     "wotDescription": "WoT queries the Oracle by default. getDistance returns a number or null; isInMyWoT returns a boolean. getDetails provides hops, a numeric path count, and optional bridges and mutual-follow information. Pass valid 64-character hexadecimal public keys.",
     "migrationTitle": "Migrating to @nostr-wot/wot 1.0.0",
-    "migrationDescription": "Version 1.0.0 removed browser-extension detection, trust-score methods, and useTrustScore. Use useWoT or useIsInWoT and read their result objects. For local queries, pass a WoTLocalSource, such as WotGraph.asWoTSource() from @nostr-wot/graph. Only getDistance, isInMyWoT, and filterByWoT use that source; other methods still query the Oracle.",
+    "migrationDescription": "Version 1.0.0 removed browser-extension detection, trust-score methods, and useTrustScore. Use useWoT or useIsInWoT and read their result objects. For local queries, pass a WoTLocalSource, such as WotGraph.asWoTSource() from @nostr-wot/wot/graph. Only getDistance, isInMyWoT, and filterByWoT use that source; other methods still query the Oracle.",
     "oracleLink": "Oracle API reference",
     "previous": "Extension API",
     "next": "Oracle API",
     "compatibilityTitle": "Oracle compatibility",
     "compatibilityDescription": "Published @nostr-wot/wot 1.0.0 uses the older /api/distance/FROM/TO?maxHops= contract and expects a distance field. Oracle 0.3.0 uses /distance?from=&to=&max_hops= and returns hops. Changing the base URL alone does not make them compatible. Use direct fetch for Oracle 0.3.0, or the local graph source shown below.",
     "localTitle": "Local graph example",
-    "localDescription": "Load and crawl a local graph before passing its source to WoT. The React example receives this prepared graph and uses useIsInWoT; useWoT also requests getDetails from the Oracle. @nostr-wot/graph has its own getScore API, separate from the removed WoT score API.",
+    "localDescription": "Load and crawl a local graph before passing its source to WoT. The React example receives this prepared graph and uses useIsInWoT; useWoT also requests getDetails from the Oracle. @nostr-wot/wot/graph has its own getScore API, separate from the removed WoT score API.",
     "passkeys": {
       "title": "Passkeys and recovery",
-      "description": "@nostr-wot/vault provides portable passkey vault records, encrypted recovery payloads and provider/relay orchestration for browser and native applications. Version 1.1.0 is published on npm.",
+      "description": "@nostr-wot/identity/vault provides portable passkey vault records, encrypted recovery payloads and provider/relay orchestration for browser and native applications.",
       "host": "Your app creates the account and performs the native passkey ceremony. Supply the verified credential ID, RP, PRF input and output to the record functions; the SDK does not open a browser prompt or grant access to a domain. Never persist or log PRF output.",
       "example": "This example encrypts an existing account payload and opens an encrypted recovery file. After opening, validate the recovered accounts and expected public key, enforce your vault replacement policy and persist the returned record atomically. Re-sealing a minted cache key is required before using that cache. The password-only Vault class does not unlock v2 passkey records.",
       "adaptersTitle": "Provider and relay adapters",
@@ -283,7 +283,7 @@
     },
     "purpose": "Use it for",
     "roles": {
-      "sdk": "Convenience entry points and React providers",
+      "sdk": "Profiles, notes, relay connections, signer clients, uploads and storage.",
       "data": "Public profiles, notes and shared caches",
       "relay": "Relay connections, queries and subscriptions",
       "vault": "Encrypted vault and passkey recovery primitives",
@@ -300,7 +300,8 @@
       "bunker": "Hosting a NIP-46 remote signer",
       "permissions": "Permission policy and grants",
       "signer-core": "Shared signing orchestration",
-      "storage": "Persistence adapters"
+      "storage": "Persistence adapters",
+      "identity": "Accounts, encrypted vaults, permissions, signing approvals and remote signer hosting."
     }
   },
   "rateLimits": {
@@ -383,7 +384,7 @@
     "reference": "Package reference and additional options",
     "signers": {
       "title": "Sign with an extension or remote account",
-      "intro": "Use @nostr-wot/signers when your app needs an identity and signatures. Nip07Signer uses the installed extension; Nip46Signer connects to a remote signer. Keep one signer for the active session and pass it to other SDK tools.",
+      "intro": "Use nostr-wot-sdk/signers when your app needs an identity and signatures. Nip07Signer uses the installed extension; Nip46Signer connects to a remote signer. Keep one signer for the active session and pass it to other SDK tools.",
       "notes": "The example returns a signed note, not a published note. Handle rejection in your button handler and let the user retry explicitly. PrivateKeySigner is for applications that deliberately hold keys themselves; an extension integration does not need to request a seed or private key."
     },
     "messages": {
@@ -403,7 +404,7 @@
     },
     "uploads": {
       "title": "Upload files with Blossom",
-      "intro": "Use @nostr-wot/blossom to upload a user-selected file to an explicitly chosen server. The helper signs the upload authorization and returns the validated URL, hash and size. Use that URL in a separately signed profile or note.",
+      "intro": "Use nostr-wot-sdk/blossom to upload a user-selected file to an explicitly chosen server. The helper signs the upload authorization and returns the validated URL, hash and size. Use that URL in a separately signed profile or note.",
       "notes": "Public upload does not encrypt the file. For private attachments, encrypt first, then use uploadEncryptedBlob with the ciphertext. Share the decryption material only inside the encrypted message. Keep one AbortController per operation and cancel when the view or account changes; uploading a file does not publish a Nostr event."
     },
     "lifecycle": {
@@ -623,5 +624,22 @@
     "ownershipPermission": "The file permission is what makes wallet ownership trustworthy. Store it outside the LNbits data directory and make sure the user LNbits runs as cannot write it.",
     "ownershipMigrate": "On an instance that already has wallets, import the existing mapping before running the new version:",
     "ownershipMigrateNote": "The import is idempotent and verifies that every public key still resolves to the same wallet and the same keys as before, exiting with an error otherwise. The deploy script runs it before restarting and stops the deployment if verification fails."
+  },
+  "packageDocs": {
+    "title": "Choose a package",
+    "intro": "Eight packages, grouped by what your app needs. Open a package, then choose a task for its example and integration details.",
+    "topics": "Topics",
+    "migration": "Migration from older packages",
+    "migrationIntro": "The eleven previous package names remain compatibility wrappers. Replace their imports with the paths below. Install the package, not its subpath. Old versions remain downloadable.",
+    "old": "Previous package",
+    "new": "New import",
+    "reference": "API reference",
+    "identity": "Accounts, encrypted vaults, permissions, signing approvals and remote signer hosting.",
+    "pqTitle": "Post-quantum attestations",
+    "pqIntro": "Verify kind-10203 events before using their advertised post-quantum keys. The package also derives keys from a BIP-39 seed and encrypts hybrid messages.",
+    "pqNotes": "A valid event signature alone is insufficient: check usable before trusting the attestation. Derive keys from the seed, never from an nsec. Hybrid messaging requires explicit support at both ends; never silently downgrade.",
+    "install": "Installation",
+    "installNote": "For a new integration, use the maintained imports below. Packages imported directly belong in your dependencies. Add React only for React entry points.",
+    "migrationTitle": "SDK package migration"
   }
 }
