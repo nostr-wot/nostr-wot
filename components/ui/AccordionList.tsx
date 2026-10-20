@@ -16,7 +16,7 @@ export function AccordionList({ items }: { items: AccordionItem[] }) {
       <div className="space-y-4">
         {items.map((item, i) => (
           <ScrollReveal key={i} animation="fade-up" delay={50 + i * 50}>
-            <details className="group bg-white dark:bg-gray-800/50 rounded-xl border border-gray-200 dark:border-gray-700/50 overflow-hidden">
+            <details className="animated-disclosure group bg-white dark:bg-gray-800/50 rounded-xl border border-gray-200 dark:border-gray-700/50 overflow-hidden">
               <summary className="flex items-center justify-between p-6 cursor-pointer list-none">
                 <h3 className="font-semibold text-gray-900 dark:text-white pr-4">{item.question}</h3>
                 <ChevronDownIcon className="w-5 h-5 text-gray-500 transition-transform group-open:rotate-180 flex-shrink-0" />
