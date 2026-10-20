@@ -9,9 +9,9 @@ export type IntegrationArea = 'sdk' | 'extension';
 export const integrationExamples: Record<IntegrationArea, IntegrationExample[]> = {
   sdk: [
     {
-      id: 'signers', install: 'npm install @nostr-wot/signers@2.0.0 nostr-tools',
+      id: 'signers', install: 'npm install nostr-wot-sdk@3.0.0 nostr-tools',
       reference: 'https://github.com/nostr-wot/nostr-wot-sdk/tree/main/packages/signers',
-      code: `import { Nip07Signer, isNip07Available } from "@nostr-wot/signers";
+      code: `import { Nip07Signer, isNip07Available } from "nostr-wot-sdk/signers";
 
 // Call from a browser button handler, not during server rendering.
 export async function signNote(content: string) {
@@ -27,10 +27,10 @@ export async function signNote(content: string) {
 }`,
     },
     {
-      id: 'messages', install: 'npm install @nostr-wot/dm@1.0.0 @nostr-wot/signers@2.0.0 nostr-tools',
+      id: 'messages', install: 'npm install @nostr-wot/dm@2.0.0 nostr-wot-sdk@3.0.0 nostr-tools',
       reference: 'https://github.com/nostr-wot/nostr-wot-sdk/tree/main/packages/dm',
       code: `import { buildChatMessage, sealAndGiftWrap, unwrapGiftWrap } from "@nostr-wot/dm";
-import type { NostrSigner } from "@nostr-wot/signers";
+import type { NostrSigner } from "nostr-wot-sdk/signers";
 
 export async function prepareMessage(signer: NostrSigner, recipient: string, text: string) {
   const me = await signer.getPublicKey();
@@ -45,10 +45,10 @@ export async function readMessage(signer: NostrSigner, wrap: Parameters<typeof u
 }`,
     },
     {
-      id: 'payments', install: 'npm install @nostr-wot/wallet@1.0.0 @nostr-wot/signers@2.0.0 nostr-tools',
+      id: 'payments', install: 'npm install @nostr-wot/wallet@2.0.0 nostr-wot-sdk@3.0.0 nostr-tools',
       reference: 'https://github.com/nostr-wot/nostr-wot-sdk/tree/main/packages/wallet',
       code: `import { isWebLNAvailable, zapViaWebLN } from "@nostr-wot/wallet";
-import { Nip07Signer } from "@nostr-wot/signers";
+import { Nip07Signer } from "nostr-wot-sdk/signers";
 
 // Run once after the user confirms recipient and amount.
 export async function sendZap(recipientPubkey: string, lightningAddress: string) {
@@ -61,7 +61,7 @@ export async function sendZap(recipientPubkey: string, lightningAddress: string)
 }`,
     },
     {
-      id: 'http-auth', install: 'npm install @nostr-wot/auth@4.0.0 @nostr-wot/signers@2.0.0 nostr-tools',
+      id: 'http-auth', install: 'npm install @nostr-wot/auth@5.0.0 nostr-wot-sdk@3.0.0 nostr-tools',
       reference: 'https://github.com/nostr-wot/nostr-wot-sdk/tree/main/packages/auth',
       code: `// Server only: lib/auth.ts
 import { createAuthService } from "@nostr-wot/auth";
@@ -83,14 +83,14 @@ export const handlers = createNextHandlers(createAuthService({
 
 // Separate browser module, called by a login button:
 // import { loginWithSigner } from "@nostr-wot/auth/client";
-// import { Nip07Signer } from "@nostr-wot/signers";
+// import { Nip07Signer } from "nostr-wot-sdk/signers";
 // await loginWithSigner({ baseUrl: "/api/auth", signer: new Nip07Signer() });`,
     },
     {
-      id: 'uploads', install: 'npm install @nostr-wot/blossom@1.0.0 @nostr-wot/signers@2.0.0 nostr-tools',
+      id: 'uploads', install: 'npm install nostr-wot-sdk@3.0.0 nostr-tools',
       reference: 'https://github.com/nostr-wot/nostr-wot-sdk/tree/main/packages/blossom',
-      code: `import { uploadToBlossom } from "@nostr-wot/blossom";
-import { Nip07Signer } from "@nostr-wot/signers";
+      code: `import { uploadToBlossom } from "nostr-wot-sdk/blossom";
+import { Nip07Signer } from "nostr-wot-sdk/signers";
 
 export async function upload(file: File, signal: AbortSignal) {
   const blob = await uploadToBlossom(file, {

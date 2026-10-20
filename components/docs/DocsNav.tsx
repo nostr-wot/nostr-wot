@@ -4,7 +4,7 @@ import { useTranslations } from "next-intl";
 import { Link, usePathname } from "@/i18n/routing";
 import { useEffect, useState } from "react";
 
-interface NavLink { href: string; label: string }
+interface NavLink { href: string; label: string; parentPath?: string }
 interface NavSection { title: string; links: NavLink[] }
 
 export function DocsNav({ sections }: { sections: NavSection[] }) {
@@ -41,7 +41,7 @@ export function DocsNav({ sections }: { sections: NavSection[] }) {
     };
   }, [pathname, sections]);
 
-  const filtered = sections.map(section => ({ ...section, links: section.links.filter(link =>
+  const filtered = sections.map(section => ({ ...section, links: section.links.filter(link => query.trim() || !link.parentPath || pathname === link.parentPath || pathname.startsWith(link.parentPath + '/')).filter(link =>
     `${section.title} ${link.label}`.toLocaleLowerCase().includes(query.trim().toLocaleLowerCase())
   ) })).filter(section => section.links.length > 0);
 
@@ -57,7 +57,7 @@ export function DocsNav({ sections }: { sections: NavSection[] }) {
           {section.links.map(link => <li key={link.href}>
             <Link href={link.href} aria-current={activeHref === link.href ? (link.href.includes('#') ? 'location' : 'page') : undefined}
               onClick={() => setIsMobileOpen(false)}
-              className={`block py-1.5 pl-4 text-sm border-l-2 -ml-px transition-colors ${activeHref === link.href ? 'border-primary text-primary font-medium' : 'border-transparent text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-200 hover:border-gray-300 dark:hover:border-gray-600'}`}>
+              className={`block py-1.5 ${link.parentPath ? 'pl-7' : 'pl-4'} text-sm border-l-2 -ml-px transition-colors ${activeHref === link.href ? 'border-primary text-primary font-medium' : 'border-transparent text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-200 hover:border-gray-300 dark:hover:border-gray-600'}`}>
               {link.label}
             </Link>
           </li>)}

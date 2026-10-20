@@ -241,7 +241,7 @@
     "title": "Referência do SDK",
     "description": "Crie aplicações Nostr com funções de dados, ferramentas de relays, interface de login e consultas opcionais de distância no grafo de seguimentos.",
     "packagesTitle": "Pacotes publicados",
-    "packagesDescription": "Versões verificadas no npm em 20 de setembro de 2026. O metapacote exporta WoT na raiz e outros módulos por subcaminhos. Também é possível instalar diretamente pacotes com escopo; @nostr-wot/pq é um pacote separado.",
+    "packagesDescription": "Oito pacotes, agrupados pelo que sua aplicação precisa. Abra um pacote e escolha uma tarefa para ver o exemplo e os detalhes de integração.",
     "package": "Pacote",
     "version": "Versão",
     "installTitle": "Instalação",
@@ -256,17 +256,17 @@
     "wotTitle": "Distâncias da rede de confiança",
     "wotDescription": "WoT consulta o Oracle por padrão. getDistance retorna um número ou null; isInMyWoT retorna um booleano. getDetails fornece saltos, uma contagem numérica de caminhos e informações opcionais sobre conexões intermediárias e seguimentos mútuos. Use chaves públicas hexadecimais válidas de 64 caracteres.",
     "migrationTitle": "Migração para @nostr-wot/wot 1.0.0",
-    "migrationDescription": "A versão 1.0.0 removeu a detecção de extensão, os métodos de pontuação de confiança e useTrustScore. Use useWoT ou useIsInWoT e leia seus objetos de resultado. Para consultas locais, forneça uma WoTLocalSource, como WotGraph.asWoTSource() de @nostr-wot/graph. Apenas getDistance, isInMyWoT e filterByWoT usam essa fonte; os demais métodos continuam consultando o Oracle.",
+    "migrationDescription": "A versão 1.0.0 removeu a detecção de extensão, os métodos de pontuação de confiança e useTrustScore. Use useWoT ou useIsInWoT e leia seus objetos de resultado. Para consultas locais, forneça uma WoTLocalSource, como WotGraph.asWoTSource() de @nostr-wot/wot/graph. Apenas getDistance, isInMyWoT e filterByWoT usam essa fonte; os demais métodos continuam consultando o Oracle.",
     "oracleLink": "Referência da API Oracle",
     "previous": "API da extensão",
     "next": "API Oracle",
     "compatibilityTitle": "Compatibilidade com Oracle",
     "compatibilityDescription": "A versão publicada @nostr-wot/wot 1.0.0 usa o contrato antigo /api/distance/FROM/TO?maxHops= e espera o campo distance. Oracle 0.3.0 usa /distance?from=&to=&max_hops= e retorna hops. Alterar apenas a URL base não os torna compatíveis. Use fetch diretamente com Oracle 0.3.0 ou a fonte do grafo local abaixo.",
     "localTitle": "Exemplo de grafo local",
-    "localDescription": "Carregue e rastreie um grafo local antes de passar sua fonte ao WoT. O exemplo React recebe esse grafo preparado e usa useIsInWoT; useWoT também solicita getDetails ao Oracle. @nostr-wot/graph tem sua própria API getScore, separada da API de pontuação removida do WoT.",
+    "localDescription": "Carregue e rastreie um grafo local antes de passar sua fonte ao WoT. O exemplo React recebe esse grafo preparado e usa useIsInWoT; useWoT também solicita getDetails ao Oracle. @nostr-wot/wot/graph tem sua própria API getScore, separada da API de pontuação removida do WoT.",
     "passkeys": {
       "title": "Passkeys e recuperação",
-      "description": "@nostr-wot/vault fornece cofres portáteis, dados criptografados de recuperação e coordenação com provedores e relays para aplicativos web e nativos. A versão 1.1.0 está publicada no npm.",
+      "description": "@nostr-wot/identity/vault fornece cofres portáteis, dados criptografados de recuperação e coordenação com provedores e relays para aplicativos web e nativos.",
       "host": "Seu aplicativo cria a conta e realiza a cerimônia nativa. Forneça o identificador verificado, RP e entrada e saída PRF; o SDK não abre o aviso do navegador nem autoriza domínios. Nunca armazene ou registre a saída PRF.",
       "example": "O exemplo criptografa dados de uma conta existente e abre um arquivo de recuperação. Valide as contas e a chave pública esperada, aplique a política de substituição e salve atomicamente. Uma chave de cache recém-criada deve ser criptografada e salva antes do uso. A classe Vault baseada em senha não abre registros passkey v2.",
       "adaptersTitle": "Adaptadores de provedor e relays",
@@ -283,7 +283,7 @@
     },
     "purpose": "Finalidade",
     "roles": {
-      "sdk": "Pontos de entrada e provedores React",
+      "sdk": "Perfis, notas, conexões com relays, clientes de assinatura, arquivos e armazenamento.",
       "data": "Perfis, notas e caches compartilhados",
       "relay": "Conexões, consultas e assinaturas de relays",
       "vault": "Cofre cifrado e recuperação por passkey",
@@ -300,7 +300,8 @@
       "bunker": "Hospedagem de assinador NIP-46",
       "permissions": "Políticas de permissão e autorizações",
       "signer-core": "Coordenação compartilhada de assinaturas",
-      "storage": "Adaptadores de persistência"
+      "storage": "Adaptadores de persistência",
+      "identity": "Contas, cofres criptografados, permissões, aprovações de assinatura e hospedagem de assinadores remotos."
     }
   },
   "rateLimits": {
@@ -383,7 +384,7 @@
     "reference": "Referência e opções adicionais",
     "signers": {
       "title": "Assinar com extensão ou conta remota",
-      "intro": "Use @nostr-wot/signers para identidade e assinaturas. Nip07Signer utiliza a extensão instalada; Nip46Signer conecta um assinador remoto. Reutilize o mesmo assinador nas ferramentas do SDK durante a sessão.",
+      "intro": "Use nostr-wot-sdk/signers para identidade e assinaturas. Nip07Signer utiliza a extensão instalada; Nip46Signer conecta um assinador remoto. Reutilize o mesmo assinador nas ferramentas do SDK durante a sessão.",
       "notes": "O exemplo retorna uma nota assinada, ainda não publicada. Trate recusas no botão e permita nova tentativa explícita. PrivateKeySigner é para apps que guardam as próprias chaves; integrar a extensão não exige frase-semente nem chave privada."
     },
     "messages": {
@@ -403,7 +404,7 @@
     },
     "uploads": {
       "title": "Enviar arquivos com Blossom",
-      "intro": "@nostr-wot/blossom envia o arquivo escolhido a um servidor explícito, assina a autorização e retorna URL, hash e tamanho validados. Use a URL em um perfil ou nota assinado separadamente.",
+      "intro": "nostr-wot-sdk/blossom envia o arquivo escolhido a um servidor explícito, assina a autorização e retorna URL, hash e tamanho validados. Use a URL em um perfil ou nota assinado separadamente.",
       "notes": "O envio público não cifra o arquivo. Cifre anexos privados antes de uploadEncryptedBlob e compartilhe o material de decifragem apenas dentro da mensagem cifrada. Cancele com AbortController ao mudar de tela ou conta. O envio não publica um evento Nostr."
     },
     "lifecycle": {
@@ -623,5 +624,109 @@
     "ownershipPermission": "As permissões do ficheiro são o que torna a propriedade da carteira fiável. Guarde-o fora da pasta de dados do LNbits e garanta que o utilizador com que o LNbits corre não o consegue escrever.",
     "ownershipMigrate": "Numa instância que já tem carteiras, importe a associação existente antes de executar a nova versão:",
     "ownershipMigrateNote": "A importação é idempotente e verifica que cada chave pública continua a resolver para a mesma carteira e as mesmas chaves de antes, terminando com erro caso contrário. O script de implementação executa-a antes de reiniciar e interrompe a implementação se a verificação falhar."
+  },
+  "packageDocs": {
+    "title": "Escolha um pacote",
+    "intro": "Oito pacotes, agrupados pelo que sua aplicação precisa. Abra um pacote e escolha uma tarefa para ver o exemplo e os detalhes de integração.",
+    "topics": "Tópicos",
+    "migration": "Migração dos pacotes anteriores",
+    "migrationIntro": "Os onze nomes anteriores continuam como adaptadores de compatibilidade. Substitua os imports pelos caminhos abaixo. Instale o pacote, não o subcaminho. As versões anteriores continuam disponíveis.",
+    "old": "Pacote anterior",
+    "new": "Novo import",
+    "reference": "Referência da API",
+    "identity": "Contas, cofres criptografados, permissões, aprovações de assinatura e hospedagem de assinadores remotos.",
+    "pqTitle": "Atestações pós-quânticas",
+    "pqIntro": "Verifique eventos kind-10203 antes de usar suas chaves pós-quânticas. O pacote também deriva chaves de uma semente BIP-39 e criptografa mensagens híbridas.",
+    "pqNotes": "Uma assinatura válida não basta: confira usable antes de confiar na atestação. Derive chaves da semente, nunca de um nsec. Mensagens híbridas exigem suporte explícito nos dois lados; nunca reduza a proteção silenciosamente.",
+    "install": "Instalação",
+    "installNote": "Use os imports mantidos para novas integrações. Declare os pacotes importados diretamente nas dependências. Adicione React apenas para os pontos de entrada React.",
+    "migrationTitle": "Migração de pacotes SDK"
+  },
+  "apiGuides": {
+    "languageNotice": "Esta referência detalhada da API é mantida em inglês e acompanha o código do SDK indicado. Os exemplos com variáveis da aplicação precisam do seu assinador, chaves, armazenamento ou interface.",
+    "storage": {
+      "title": "Adaptadores de armazenamento",
+      "intro": "Guia de integração e referência de API: Adaptadores de armazenamento."
+    },
+    "data-cache": {
+      "title": "Cache de dados e coleções",
+      "intro": "Guia de integração e referência de API: Cache de dados e coleções."
+    },
+    "data-react": {
+      "title": "Hooks de dados para React",
+      "intro": "Guia de integração e referência de API: Hooks de dados para React."
+    },
+    "relay-hub": {
+      "title": "Conexões compartilhadas com relays",
+      "intro": "Guia de integração e referência de API: Conexões compartilhadas com relays."
+    },
+    "relay-management": {
+      "title": "Consultas e estado dos relays",
+      "intro": "Guia de integração e referência de API: Consultas e estado dos relays."
+    },
+    "blob-management": {
+      "title": "Arquivos criptografados e gestão de blobs",
+      "intro": "Guia de integração e referência de API: Arquivos criptografados e gestão de blobs."
+    },
+    "accounts": {
+      "title": "Contas, importação e derivação",
+      "intro": "Guia de integração e referência de API: Contas, importação e derivação."
+    },
+    "password-vault": {
+      "title": "Cofre com senha e acesso às chaves",
+      "intro": "Guia de integração e referência de API: Cofre com senha e acesso às chaves."
+    },
+    "permissions": {
+      "title": "Permissões e autorizações",
+      "intro": "Guia de integração e referência de API: Permissões e autorizações."
+    },
+    "signing": {
+      "title": "Fluxo de assinatura e aprovação",
+      "intro": "Guia de integração e referência de API: Fluxo de assinatura e aprovação."
+    },
+    "bunker": {
+      "title": "Executar um assinador Nostr Connect",
+      "intro": "Guia de integração e referência de API: Executar um assinador Nostr Connect."
+    },
+    "inbox-cache": {
+      "title": "Caixa de entrada, histórico e armazenamento criptografado",
+      "intro": "Guia de integração e referência de API: Caixa de entrada, histórico e armazenamento criptografado."
+    },
+    "messages-react": {
+      "title": "Hooks de mensagens para React",
+      "intro": "Guia de integração e referência de API: Hooks de mensagens para React."
+    },
+    "encrypted-files": {
+      "title": "Arquivos criptografados e estado privado",
+      "intro": "Guia de integração e referência de API: Arquivos criptografados e estado privado."
+    },
+    "nwc": {
+      "title": "Nostr Wallet Connect",
+      "intro": "Guia de integração e referência de API: Nostr Wallet Connect."
+    },
+    "zaps": {
+      "title": "Zaps e faturas Lightning",
+      "intro": "Guia de integração e referência de API: Zaps e faturas Lightning."
+    },
+    "server-auth": {
+      "title": "Login no servidor, cookies e JWTs",
+      "intro": "Guia de integração e referência de API: Login no servidor, cookies e JWTs."
+    },
+    "login-components": {
+      "title": "Componentes de login e sessões",
+      "intro": "Guia de integração e referência de API: Componentes de login e sessões."
+    },
+    "theming": {
+      "title": "Temas e estilos",
+      "intro": "Guia de integração e referência de API: Temas e estilos."
+    },
+    "oracle": {
+      "title": "Consultas ao oráculo e hooks React",
+      "intro": "Guia de integração e referência de API: Consultas ao oráculo e hooks React."
+    },
+    "hybrid-messages": {
+      "title": "Mensagens pós-quânticas híbridas",
+      "intro": "Guia de integração e referência de API: Mensagens pós-quânticas híbridas."
+    }
   }
 }

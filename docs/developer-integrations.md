@@ -1,23 +1,33 @@
 # Developer integration documentation
 
-The public documentation keeps its existing `/docs`, `/docs/getting-started`, `/docs/extension`, `/docs/sdk`, `/docs/oracle` and `/docs/lnbits-proxy` routes. Existing section IDs, canonical metadata, language alternates and the overview’s TechArticle JSON-LD are preserved. New integration recipes extend the SDK and extension pages; they do not introduce duplicate landing pages or new sitemap URLs.
+The SDK documentation uses eight package pages under `/docs/sdk/<package>` and task pages below each package. The SDK index is a package chooser and migration table. Old `/docs/sdk#section` links remain usable through links with their original IDs. The extension, Oracle and LNbits guides retain their existing URLs.
 
-## Reader paths
+## Package ownership
 
-The quick-start page links directly to signing, private messages, payments, HTTP authentication and uploads. The SDK package table describes all eighteen published packages, including the lower-level account, permission, signer, bunker and storage modules. The extension guide separates public NIP-07 and WebLN capabilities from private vault, recovery and archive functionality.
+`nostr-wot-sdk` owns data, relays, signer clients, uploads and storage. `@nostr-wot/identity` owns accounts, vaults, permissions, signing approvals and the NIP-46 responder. WoT owns Oracle queries and the local graph. DM, wallet, auth, UI and PQ remain separate packages. Eleven old package names forward to the new modules; their migration table distinguishes the package to install from the subpath to import.
 
-Each recipe explains prerequisites and execution environment, gives an example, states the result and describes the next integration step. Error guidance distinguishes rejected approvals, partial relay acceptance and uncertain payment outcomes. The HTTP-auth example separates server setup from browser code, binds verification to an exact URL and describes the stateless challenge limitation.
+## Content and navigation
 
-## Content ownership
+`lib/sdk-docs.mjs` owns package versions, topic routes, translation keys and compatibility mappings. The SDK index, sidebar, page renderer and sitemap consume this registry. Each route has a small physical page wrapper so the existing git-derived modification-date generator can resolve it. Package pages introduce the domain and link to tasks. Task pages use the existing CodeBlock and TerminalBlock components, with topic-specific content in `components/docs/SdkSection-*.tsx` or the shared integration recipes.
 
-`components/docs/integration-examples.ts` owns shared code examples and stable anchor IDs. `components/docs/IntegrationRecipes.tsx` renders them through the existing CodeBlock and TerminalBlock components. Explanations, headings, package purposes and navigation labels live in all seven `messages/*/docs.json` files. The same recipe IDs drive the sidebar, so new sections remain searchable. Existing translation keys must be preserved when extending the integration namespace used by the overview.
+All prose keys live in the seven `messages/*/docs.json` files. Code examples are shared across languages. Sidebar topic links appear for the current package; searching includes all topics. Each new page has one H1, visible breadcrumbs, matching BreadcrumbList JSON-LD, canonical URL and language alternates. Topic pages use TechArticle; package indexes use CollectionPage.
 
-## Version and API evidence
+## Examples and dependencies
 
-On 2026-10-20 npm reported `nostr-wot-sdk@2.0.0`, `@nostr-wot/signers@2.0.0`, `@nostr-wot/auth@4.0.0`, `@nostr-wot/wot@2.0.0` and `@nostr-wot/vault@1.1.0` as latest; the other listed packages were at 1.0.0. The repository changelogs identify the October 12 major releases as the GPL-3.0-only licensing transition; the vault passkey primitives were published October 15. Package versions were verified against npm rather than inferred from the private monorepo version. Documentation-only version updates do not change this website’s runtime dependencies.
+Examples use the consolidated public import paths and explicit npm package names. React, React DOM and the SDK are listed where a workflow imports them directly. The local graph example installs SDK transport because WoT declares it as an optional peer. Site runtime dependencies are unchanged by this documentation migration; the examples describe consumer integrations, not the site's own runtime.
 
-New TypeScript snippets were compiled in an isolated directory against the published signer, DM, wallet, auth, Blossom and vault packages. Extension capabilities and the account-change event were checked against `inject.ts` in the extension source. The signed-event publication example uses `nostr-tools` and reports each relay result instead of treating signing as delivery.
+## Verification and maintenance
 
-## Maintenance checks
+`tests/sdk-docs.test.ts` checks eight owners, eleven compatibility names, unique topic routes, physical pages, sitemap registration and translated titles/descriptions. Existing sitemap tests verify every static route resolves to a page. Run these tests and the site typecheck/build after adding topics. Check a rendered topic's navigation, code-block overflow and metadata. Verify exact package versions against npm before deploying documentation that calls them published.
 
-Before publishing a docs update, validate all seven translation files and existing keys, run the site typecheck/build, compile changed snippets against their documented package versions, and inspect desktop/mobile rendering. Check one H1 per page, working sidebar anchors, canonical and language-alternate links, and horizontal overflow. Keep code samples free of real credentials and keep secrets in server-only configuration. Preserve existing URLs and anchors unless redirects are deliberately provided.
+## Further reference expansion
+
+The new pages separate the existing integration workflows. They do not yet provide a dedicated website page for every identity primitive, relay operation or data fetcher. The package API-reference links lead to the maintained detailed README contracts. Expand individual task pages from those contracts as needed, preserving the registry, translations and original anchors rather than creating another large all-purpose page.
+
+## Package navigation and detailed API references
+
+Package pages use compact, full-card links with hover and keyboard-focus feedback. The SDK now has 36 topic routes across eight packages, including account import and derivation, password vaults, authorization, signing, NIP-46 responders, relay coordination, data caching, DM history and encrypted storage, wallet transports, server sessions, UI themes and hybrid messages.
+
+The focused API reference pages reuse reviewed SDK README sections. `scripts/docs/sdk-reference-topics.json` selects the sections; `node scripts/docs/sync-sdk-reference.mjs /path/to/nostr-wot-sdk` updates the committed snapshot in `data/docs/sdk-reference.json` and records the source revision. Review the resulting examples against that revision before committing. The wallet examples normalize the old README parameter spelling `zappedEventId` to the exported `eventId` parameter. Content renders as Markdown, with JSX and expressions disabled, using the existing code-block and typography components.
+
+Navigation and metadata are localized in all seven languages. The detailed source reference remains English and is explicitly identified with a translated notice and `lang="en"`; the existing localized tutorials remain localized. These are integration guides and API contracts, not a claim that every individual export has its own tutorial. New functionality should receive a task-oriented guide or an addition to the appropriate existing guide.
