@@ -1,0 +1,68 @@
+---
+title: "Mostro 0.20 defers payouts and publishes node health"
+description: "Mostro v0.20.0 adds LND sync monitoring, payment deferral and signed health events, with limits that clients and operators need to understand."
+excerpt: "A node can still announce itself while payouts fail. Mostro adds separate health signals and automatic controls for an unsynced Lightning backend."
+date: "2026-10-15"
+publishedAt: "2026-10-20"
+backfilled: false
+type: "story"
+tags: ["Nostr","Lightning","Infrastructure","Ecosystem"]
+featuredImage: "/images/news/mostro-0-20-health-and-payment-deferral.svg"
+translationKey: "mostro-0-20-health-and-payment-deferral"
+sources:
+  - title: "Mostro v0.20.0 release"
+    url: "https://github.com/MostroP2P/mostro/releases/tag/v0.20.0"
+    publisher: "MostroP2P/mostro"
+    date: "2026-10-15"
+  - title: "Released README"
+    url: "https://github.com/MostroP2P/mostro/blob/v0.20.0/README.md"
+    publisher: "MostroP2P/mostro"
+    date: "2026-10-15"
+  - title: "Released health documentation"
+    url: "https://github.com/MostroP2P/mostro/blob/v0.20.0/docs/HEALTH.md"
+    publisher: "MostroP2P/mostro"
+    date: "2026-10-15"
+  - title: "LND sync and payment deferral PR #1065"
+    url: "https://github.com/MostroP2P/mostro/pull/1065"
+    publisher: "MostroP2P/mostro"
+    date: "2026-10-15"
+  - title: "Health event PR #1066"
+    url: "https://github.com/MostroP2P/mostro/pull/1066"
+    publisher: "MostroP2P/mostro"
+    date: "2026-10-15"
+published: true
+---
+
+A node appearing on Nostr does not prove that it can pay. [Mostro v0.20.0](https://github.com/MostroP2P/mostro/releases/tag/v0.20.0), published on 15 October 2026, adds separate health reporting and controls for a Lightning backend that has fallen out of sync. It is an update to an existing exchange daemon, not a new exchange launch.
+
+Mostro carries peer-to-peer trading messages over Nostr and coordinates Lightning payments. Its [release README](https://github.com/MostroP2P/mostro/blob/v0.20.0/README.md) distinguishes the daemon from the clients that people use to trade. That distinction matters here: the new controls run at the node, while clients and monitoring tools must decide how to interpret its reports.
+
+## Why an announcement was not enough
+
+The project's [health documentation](https://github.com/MostroP2P/mostro/blob/v0.20.0/docs/HEALTH.md) describes a 14 October operational failure. LND stopped following the chain, outgoing payments failed and new trades could still open. The ordinary information event continued to appear, so its presence did not expose the payout problem.
+
+The lesson is narrower than a general security claim. Announcing configuration or answering a relay is not the same as completing the payment path. Version 0.20.0 separates those questions rather than treating one as evidence of the other.
+
+## Wait before blaming the buyer
+
+[Pull request #1065](https://github.com/MostroP2P/mostro/pull/1065) adds an LND monitor that polls every 15 seconds. After a sustained 60-second period of unsynced or unreachable LND, outgoing payments wait instead of repeatedly consuming the buyer's payment attempts. Startup also checks the backend before payment jobs begin.
+
+Automatic maintenance has a different threshold. By default, 600 seconds of reported chain desynchronization stops new orders and takes. Recovery requires 300 seconds of stable synchronization before the daemon clears its own automatic maintenance. An operator's separate maintenance decision is not automatically removed.
+
+Unreachable is not identical to unsynced. A backend that does not answer produces an `unknown` check rather than proof of chain desynchronization. Payments can still be deferred without that condition alone enabling automatic maintenance. These distinctions prevent a single green or red label from standing in for several different states.
+
+## A separate report for watchers
+
+[Pull request #1066](https://github.com/MostroP2P/mostro/pull/1066) introduces addressable `kind 38389` health events. The normal publication interval is 60 seconds, with earlier reports when relevant states change. Public tags describe checks such as LND synchronization, payouts, relays and the database, together with an overall status.
+
+Detailed operational metrics can be encrypted with NIP-44 for a configured watchdog public key. Without that configuration, the detailed content is empty. The event does not turn all internal metrics into a public dashboard.
+
+Freshness is part of the design. Reports carry sequence and expiration information. A reader that has no usable health report must not treat its absence as `ok`. Existing clients that do not understand the new event do not gain monitoring merely because the daemon was upgraded.
+
+## What the controls cannot establish
+
+The tagged health documentation explicitly warns that a node reports what its own backend knows. A stale backend may not recognize its own stale view. Comparing the advertised block height with an independent reference remains useful; a signed report identifies its author, not the truth of every operational claim.
+
+The release provides downloadable binaries, source and signed-manifest files. Their presence establishes availability, not successful installation on a particular node. The upstream PRs describe automated coverage and a local Cashu-mode check, but also identify gaps in manual Lightning testing. This source-based review did not run a trading node or send payments.
+
+For builders, the useful discovery is the interface: distinguish identity and configuration announcements from fresh operational health, preserve `unknown` as a real state, and do not turn a backend failure into a buyer's exhausted retry allowance.

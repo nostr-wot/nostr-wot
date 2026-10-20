@@ -91,9 +91,14 @@ test('matching is case insensitive on the slug and survives real data', async ()
     const r = relatedReports(p, data);
     return r.news.length + r.security.length > 0;
   });
-  // Measured on the 2026-10-04 dataset. If this number moves, the dataset
-  // changed; confirm the new value is right rather than loosening the test.
-  assert.equal(matched.length, 5);
+  // These exact projects have repository-linked reports in the reviewed
+  // dataset. Mostro joins the original five with its v0.20.0 report.
+  // Pin identities, not just a count that could hide an unrelated match.
+  assert.deepEqual(matched.map((project: EcosystemProject) => project.id).sort(),
+    ['amber', 'amethyst', 'mostro', 'nips', 'nostur', 'strfry']);
+  const amber = data.projects.find((project: EcosystemProject) => project.id === 'amber');
+  const mixedCase = { ...amber, repository: 'https://github.com/GreenArt7C3/aMbEr' };
+  assert.deepEqual(relatedReports(mixedCase, data), relatedReports(amber, data));
 });
 
 test('every project composes a title and description inside the policy window', async () => {

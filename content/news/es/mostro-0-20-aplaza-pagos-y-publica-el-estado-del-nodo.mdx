@@ -1,0 +1,68 @@
+---
+title: "Mostro 0.20 aplaza pagos y publica el estado del nodo"
+description: "Mostro v0.20.0 incorpora supervisión de LND, aplazamiento de pagos y eventos de estado firmados, con límites importantes para clientes y operadores."
+excerpt: "Un nodo puede seguir anunciándose mientras fallan los pagos. Mostro añade señales de estado y controles automáticos para un backend Lightning desincronizado."
+date: "2026-10-15"
+publishedAt: "2026-10-20"
+backfilled: false
+type: "story"
+tags: ["Nostr","Lightning","Infrastructure","Ecosystem"]
+featuredImage: "/images/news/mostro-0-20-health-and-payment-deferral.svg"
+translationKey: "mostro-0-20-health-and-payment-deferral"
+sources:
+  - title: "Mostro v0.20.0 release"
+    url: "https://github.com/MostroP2P/mostro/releases/tag/v0.20.0"
+    publisher: "MostroP2P/mostro"
+    date: "2026-10-15"
+  - title: "Released README"
+    url: "https://github.com/MostroP2P/mostro/blob/v0.20.0/README.md"
+    publisher: "MostroP2P/mostro"
+    date: "2026-10-15"
+  - title: "Released health documentation"
+    url: "https://github.com/MostroP2P/mostro/blob/v0.20.0/docs/HEALTH.md"
+    publisher: "MostroP2P/mostro"
+    date: "2026-10-15"
+  - title: "LND sync and payment deferral PR #1065"
+    url: "https://github.com/MostroP2P/mostro/pull/1065"
+    publisher: "MostroP2P/mostro"
+    date: "2026-10-15"
+  - title: "Health event PR #1066"
+    url: "https://github.com/MostroP2P/mostro/pull/1066"
+    publisher: "MostroP2P/mostro"
+    date: "2026-10-15"
+published: true
+---
+
+Que un nodo aparezca en Nostr no demuestra que pueda pagar. [Mostro v0.20.0](https://github.com/MostroP2P/mostro/releases/tag/v0.20.0), publicado el 15 de octubre de 2026, incorpora informes de estado independientes y controles para un backend Lightning desincronizado. Es una actualización de un daemon de intercambio existente, no el lanzamiento de una nueva plataforma.
+
+Mostro transporta mensajes de operaciones entre pares mediante Nostr y coordina pagos Lightning. Su [README de la versión](https://github.com/MostroP2P/mostro/blob/v0.20.0/README.md) distingue el daemon de los clientes que se utilizan para operar. La diferencia importa: los controles nuevos se ejecutan en el nodo, mientras que los clientes y las herramientas de supervisión deben interpretar sus informes.
+
+## Por qué no bastaba con anunciarse
+
+La [documentación de estado](https://github.com/MostroP2P/mostro/blob/v0.20.0/docs/HEALTH.md) describe un fallo operativo del 14 de octubre. LND dejó de seguir la cadena, fallaron los pagos salientes y todavía podían abrirse operaciones nuevas. El evento informativo habitual seguía apareciendo, de modo que su presencia no mostraba el problema de pagos.
+
+La lección es más concreta que una afirmación general de seguridad. Anunciar la configuración o responder a un relay no equivale a completar el recorrido del pago. La versión 0.20.0 separa estas cuestiones en lugar de utilizar una como prueba de la otra.
+
+## Esperar antes de responsabilizar al comprador
+
+El [PR #1065](https://github.com/MostroP2P/mostro/pull/1065) añade un supervisor de LND que consulta cada 15 segundos. Tras 60 segundos continuados de desincronización o falta de respuesta de LND, los pagos salientes esperan en vez de consumir repetidamente los intentos del comprador. El arranque también comprueba el backend antes de iniciar las tareas de pago.
+
+El mantenimiento automático tiene otro umbral. Por defecto, 600 segundos de desincronización declarada detienen las órdenes nuevas y su aceptación. Para salir de su propio mantenimiento automático, el daemon exige 300 segundos de sincronización estable. Una decisión de mantenimiento independiente del operador no se elimina automáticamente.
+
+La falta de respuesta no equivale a desincronización. Un backend que no responde genera una comprobación `unknown`, no una prueba de desincronización de la cadena. Los pagos pueden seguir aplazados sin que esa condición, por sí sola, active el mantenimiento automático. Estas diferencias evitan que una etiqueta verde o roja represente estados distintos.
+
+## Un informe separado para supervisores
+
+El [PR #1066](https://github.com/MostroP2P/mostro/pull/1066) incorpora eventos de estado direccionables `kind 38389`. El intervalo normal de publicación es de 60 segundos, con informes anteriores cuando cambian estados relevantes. Las etiquetas públicas describen comprobaciones de sincronización de LND, pagos, relays y base de datos, además de un estado general.
+
+Las métricas operativas detalladas pueden cifrarse con NIP-44 para una clave pública de supervisión configurada. Sin esa configuración, el contenido detallado queda vacío. El evento no convierte todas las métricas internas en un panel público.
+
+La vigencia forma parte del diseño. Los informes incluyen información de secuencia y caducidad. Si no hay un informe utilizable, su ausencia no debe interpretarse como `ok`. Los clientes existentes que no entienden el evento nuevo no adquieren supervisión simplemente porque se haya actualizado el daemon.
+
+## Lo que los controles no demuestran
+
+La documentación etiquetada advierte que el nodo informa de lo que sabe su propio backend. Un backend atrasado puede no reconocer que su visión está desactualizada. Comparar la altura anunciada con una referencia independiente sigue siendo útil; un informe firmado identifica al autor, no garantiza la verdad de cada afirmación operativa.
+
+La versión ofrece binarios descargables, código fuente y archivos de manifiesto firmados. Su presencia demuestra disponibilidad, no una instalación satisfactoria en un nodo concreto. Los PR originales describen cobertura automatizada y una comprobación local en modo Cashu, pero también señalan carencias en las pruebas manuales de Lightning. Esta revisión documental no ejecutó un nodo de intercambio ni envió pagos.
+
+Para quienes desarrollan herramientas, la aportación útil es la interfaz: separar los anuncios de identidad y configuración del estado operativo reciente, conservar `unknown` como estado real y no convertir un fallo del backend en el agotamiento de los reintentos del comprador.
