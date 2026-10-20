@@ -1,3 +1,4 @@
+import { IntegrationRecipes } from '@/components/docs/IntegrationRecipes';
 import { withMetadataPolicy } from '@/lib/metadata-policy';
 import type { Metadata } from "next";
 import { getTranslations } from "next-intl/server";
@@ -9,19 +10,24 @@ import { type Locale } from "@/i18n/config";
 type Props = { params: Promise<{ locale: string }> };
 
 const packages = [
-  ["nostr-wot-sdk", "1.0.1"],
-  ["@nostr-wot/data", "0.5.1"],
-  ["@nostr-wot/relay", "0.1.1"],
+  ["nostr-wot-sdk", "2.0.0"],
+  ["@nostr-wot/data", "1.0.0"],
+  ["@nostr-wot/relay", "1.0.0"],
   ["@nostr-wot/vault", "1.1.0"],
-  ["@nostr-wot/signers", "1.2.0"],
-  ["@nostr-wot/blossom", "0.1.7"],
-  ["@nostr-wot/dm", "0.6.2"],
-  ["@nostr-wot/wallet", "0.3.4"],
-  ["@nostr-wot/wot", "1.0.0"],
-  ["@nostr-wot/graph", "0.2.0"],
-  ["@nostr-wot/ui", "0.7.1"],
-  ["@nostr-wot/auth", "3.0.0"],
-  ["@nostr-wot/pq", "0.2.2"],
+  ["@nostr-wot/signers", "2.0.0"],
+  ["@nostr-wot/blossom", "1.0.0"],
+  ["@nostr-wot/dm", "1.0.0"],
+  ["@nostr-wot/wallet", "1.0.0"],
+  ["@nostr-wot/wot", "2.0.0"],
+  ["@nostr-wot/graph", "1.0.0"],
+  ["@nostr-wot/ui", "1.0.0"],
+  ["@nostr-wot/auth", "4.0.0"],
+  ["@nostr-wot/pq", "1.0.0"],
+  ["@nostr-wot/accounts", "1.0.0"],
+  ["@nostr-wot/bunker", "1.0.0"],
+  ["@nostr-wot/permissions", "1.0.0"],
+  ["@nostr-wot/signer-core", "1.0.0"],
+  ["@nostr-wot/storage", "1.0.0"],
 ] as const;
 
 async function pageMetadata({ params }: Props): Promise<Metadata> {
@@ -55,10 +61,12 @@ export default async function SDKDocsPage() {
             <thead className="bg-gray-50 dark:bg-gray-800"><tr>
               <th scope="col" className="text-left p-3">{t("package")}</th>
               <th scope="col" className="text-left p-3">{t("version")}</th>
+              <th scope="col" className="text-left p-3">{t("purpose")}</th>
             </tr></thead>
             <tbody>{packages.map(([name, version]) => <tr key={name}>
               <td className="p-3 border-t border-gray-200 dark:border-gray-700"><a className="underline" href={`https://www.npmjs.com/package/${name}/v/${version}`}><code>{name}</code></a></td>
               <td className="p-3 border-t border-gray-200 dark:border-gray-700">{version}</td>
+              <td className="p-3 border-t border-gray-200 dark:border-gray-700">{t(`roles.${name === "nostr-wot-sdk" ? "sdk" : name.split("/")[1]}`)}</td>
             </tr>)}</tbody>
           </table>
         </div>
@@ -66,7 +74,7 @@ export default async function SDKDocsPage() {
 
       <section id="setup" className="scroll-mt-24">
         <h2>{t("installTitle")}</h2>
-        <TerminalBlock commands={["npm install nostr-wot-sdk@1.0.1"]} />
+        <TerminalBlock commands={["npm install nostr-wot-sdk@2.0.0"]} />
         <h3>{t("setupTitle")}</h3>
         <p>{t("setupDescription")}</p>
         <CodeBlock language="tsx" code={`"use client";
@@ -103,7 +111,7 @@ export function Providers({ children }: { children: ReactNode }) {
       <section id="data" className="scroll-mt-24">
         <h2>{t("dataTitle")}</h2>
         <p>{t("dataDescription")}</p>
-        <TerminalBlock commands={["npm install @nostr-wot/data@0.5.1"]} />
+        <TerminalBlock commands={["npm install @nostr-wot/data@1.0.0"]} />
         <CodeBlock language="typescript" code={`import {
   fetchProfile, fetchNotesByAuthor, fetchEngagement, setDefaultRelays,
 } from "@nostr-wot/data";
@@ -122,14 +130,14 @@ import { useProfile } from "@nostr-wot/data/react";
 function ProfileCard({ pubkey }: { pubkey: string }) {
   const profile = useProfile(pubkey);
   if (!profile) return null;
-  return <h1>{profile.displayName ?? profile.name ?? pubkey}</h1>;
+  return <h2>{profile.displayName ?? profile.name ?? pubkey}</h2>;
 }`} />
       </section>
 
       <section id="relay" className="scroll-mt-24">
         <h2>{t("relayTitle")}</h2>
         <p>{t("relayDescription")}</p>
-        <TerminalBlock commands={["npm install @nostr-wot/relay@0.1.1"]} />
+        <TerminalBlock commands={["npm install @nostr-wot/relay@1.0.0"]} />
         <CodeBlock language="typescript" code={`import { RelayPool, type PoolLike, type NostrEvent } from "@nostr-wot/relay";
 
 function watchNotes(transport: PoolLike, onEvent: (event: NostrEvent) => void) {
@@ -193,7 +201,7 @@ export async function readRecoveryFile(file: string, proof: PasskeyProof) {
       <section id="ui" className="scroll-mt-24">
         <h2>{t("uiTitle")}</h2>
         <p>{t("uiDescription")}</p>
-        <TerminalBlock commands={["npm install @nostr-wot/ui@0.7.1"]} />
+        <TerminalBlock commands={["npm install @nostr-wot/ui@1.0.0"]} />
         <CodeBlock language="tsx" code={`"use client";
 import { LoginButton, useSession } from "@nostr-wot/ui";
 import { NostrSdkProvider } from "nostr-wot-sdk/react";
@@ -216,7 +224,7 @@ function App() {
         <p>{t("migrationDescription")}</p>
         <h3>{t("localTitle")}</h3>
         <p>{t("localDescription")}</p>
-        <TerminalBlock commands={["npm install @nostr-wot/wot@1.0.0 @nostr-wot/graph@0.2.0"]} />
+        <TerminalBlock commands={["npm install @nostr-wot/wot@2.0.0 @nostr-wot/graph@1.0.0"]} />
         <CodeBlock language="typescript" code={`import { WotGraph } from "@nostr-wot/graph";
 import { WoT } from "@nostr-wot/wot";
 
@@ -250,6 +258,7 @@ function LocalTrust({ graph, pubkey }: { graph: WotGraph; pubkey: string }) {
   );
 }`} />
       </section>
+      <IntegrationRecipes area="sdk" />
       <div className="not-prose mt-12 flex justify-between items-center pt-8 border-t border-gray-200 dark:border-gray-800">
         <Link href="/docs/extension" className="hover:text-primary">{t("previous")}</Link>
         <Link href="/docs/oracle" className="hover:text-primary">{t("next")}</Link>

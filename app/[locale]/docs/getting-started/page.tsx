@@ -1,3 +1,4 @@
+import { IntegrationLinks } from '@/components/docs/IntegrationRecipes';
 import { withMetadataPolicy } from '@/lib/metadata-policy';
 import type { Metadata } from "next";
 import { getTranslations } from "next-intl/server";
@@ -40,6 +41,8 @@ export default async function GettingStartedPage() {
 
         <p className="lead text-xl text-gray-600 dark:text-gray-400">{t("start.intro")}</p>
       </ScrollReveal>
+
+      <IntegrationLinks />
 
       <ScrollReveal animation="fade-up" delay={100}>
         <h2>{t("start.queryTitle")}</h2>

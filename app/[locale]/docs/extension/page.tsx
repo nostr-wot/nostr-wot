@@ -1,3 +1,4 @@
+import { IntegrationRecipes } from '@/components/docs/IntegrationRecipes';
 import { withMetadataPolicy } from '@/lib/metadata-policy';
 import type { Metadata } from "next";
 import { getTranslations } from "next-intl/server";
@@ -294,6 +295,8 @@ console.log(plaintext); // "Secret message"`}
           })}
         </p>
       </div>
+
+      <IntegrationRecipes area="extension" />
 
       {/* Navigation */}
       <div className="not-prose mt-12 flex justify-between items-center pt-8 border-t border-gray-200 dark:border-gray-800">

@@ -280,6 +280,27 @@
       "protocolLink": "Protocole, contrats et format",
       "extensionLink": "Récupération dans l’extension",
       "guidesLink": "Guides utilisateur"
+    },
+    "purpose": "Utilisation",
+    "roles": {
+      "sdk": "Points d’entrée et fournisseurs React",
+      "data": "Profils, notes et caches partagés",
+      "relay": "Connexions, requêtes et abonnements aux relais",
+      "vault": "Coffre chiffré et récupération par passkey",
+      "signers": "Adaptateurs de signature navigateur, distante et locale",
+      "blossom": "Téléversement, réplication et suppression",
+      "dm": "Messages privés, boîte de réception et hooks",
+      "wallet": "Zaps, WebLN, NWC et validation des reçus",
+      "wot": "Requêtes de confiance sur une source fournie",
+      "graph": "Indexation et parcours du graphe local",
+      "ui": "Contrôles de connexion et interface de session",
+      "auth": "Connexion NIP-98 et sessions serveur",
+      "pq": "Primitives cryptographiques post-quantiques",
+      "accounts": "Modèles et cycle de vie des comptes",
+      "bunker": "Hébergement d’un signataire NIP-46",
+      "permissions": "Politiques de permissions et autorisations",
+      "signer-core": "Orchestration partagée des signatures",
+      "storage": "Adaptateurs de persistance"
     }
   },
   "rateLimits": {
@@ -356,7 +377,62 @@
     "sdkLink": "Documentation du SDK →",
     "exampleTitle": "Exemple rapide",
     "exampleDescription": "Interrogez directement l’API de l’Oracle v0.3.0. Remplacez ces clés d’exemple par vos propres clés publiques hexadécimales de 64 caractères :",
-    "sdkCompatibilityLink": "<link0>Compatibilité du SDK et requêtes de graphe local</link0>"
+    "sdkCompatibilityLink": "<link0>Compatibilité du SDK et requêtes de graphe local</link0>",
+    "example": "Exemple",
+    "notes": "Notes d’intégration",
+    "reference": "Référence et options supplémentaires",
+    "signers": {
+      "title": "Signer avec une extension ou un compte distant",
+      "intro": "Utilisez @nostr-wot/signers pour l’identité et les signatures. Nip07Signer utilise l’extension installée ; Nip46Signer se connecte à un signataire distant. Réutilisez le même signataire dans les outils du SDK pendant la session.",
+      "notes": "L’exemple renvoie une note signée, pas publiée. Gérez les refus dans le bouton et laissez l’utilisateur réessayer. PrivateKeySigner convient aux applications qui détiennent elles-mêmes les clés ; une intégration avec l’extension ne demande ni phrase de récupération ni clé privée."
+    },
+    "messages": {
+      "title": "Envoyer et lire des messages privés",
+      "intro": "@nostr-wot/dm construit les messages NIP-17 et vérifie leur ouverture. Les deux participants doivent disposer de signataires NIP-44. L’exemple prépare une enveloppe et lit son contenu avec le signataire du destinataire.",
+      "notes": "Publiez le type 1059 sur les relais de réception découverts via le type 10050. Créez une enveloppe distincte pour l’historique de l’expéditeur. Ne publiez jamais directement le message intérieur ou le sceau. Le tag extérieur du destinataire reste visible. /cache et /react fournissent historique et vues ; fermez les abonnements à la déconnexion."
+    },
+    "payments": {
+      "title": "Payer des factures et envoyer des zaps",
+      "intro": "@nostr-wot/wallet fournit les zaps WebLN, les connexions NWC et la validation des reçus. L’exemple envoie 21 sats après autorisation WebLN, découverte LNURL et signature d’une demande de type 9734.",
+      "notes": "Utilisez la vraie clé publique et l’adresse Lightning du destinataire. Désactivez le bouton pendant le paiement. Un délai dépassé ne prouve pas un échec : vérifiez l’historique avant de réessayer. Les URI NWC contiennent des identifiants secrets. Les permissions WebLN et Nostr sont distinctes."
+    },
+    "http-auth": {
+      "title": "Authentifier une session HTTP",
+      "intro": "Utilisez @nostr-wot/auth sur le serveur et /client dans le navigateur. Montez les quatre routes, puis appelez loginWithSigner depuis un bouton. La session repose sur un événement NIP-98 de type 27235.",
+      "notes": "Remplacez example.com par l’origine et l’URL de vérification exactes. Gardez un secret aléatoire robuste côté serveur, jamais dans NEXT_PUBLIC. Vérifiez session et permissions sur les routes protégées. Le défi est sans état ; un usage strictement unique exige un stockage de consommation. Le type 22242 concerne les relais, pas HTTP."
+    },
+    "uploads": {
+      "title": "Téléverser avec Blossom",
+      "intro": "@nostr-wot/blossom téléverse le fichier choisi vers un serveur explicite, signe l’autorisation et renvoie URL, empreinte et taille validées. Insérez ensuite cette URL dans un profil ou une note signée séparément.",
+      "notes": "Le téléversement public ne chiffre pas le fichier. Chiffrez les pièces jointes privées avant uploadEncryptedBlob et partagez le matériel de déchiffrement uniquement dans le message chiffré. Annulez avec AbortController lors d’un changement de vue ou de compte. Le téléversement ne publie aucun événement Nostr."
+    },
+    "lifecycle": {
+      "title": "Cycle de session et erreurs",
+      "intro": "Initialisez une fois les fournisseurs et connexions partagées. La lecture de profils publics ne demande pas de signature. Réservez signatures, déchiffrement et paiements aux actions explicites et distinguez attente, refus et échec.",
+      "notes": "À la déconnexion ou au changement de compte, arrêtez les abonnements, effacez les vues déchiffrées et ignorez les réponses tardives. Distinguez fin de requête et acceptation de publication. Conservez les succès partiels. Testez extension absente, annulation, coffre verrouillé, signataire distant hors ligne, refus du relais et paiement incertain."
+    },
+    "capabilities": {
+      "title": "Ce que les sites peuvent utiliser",
+      "intro": "window.nostr expose identité NIP-07, signatures et méthodes de chiffrement disponibles ; window.webln expose les opérations du portefeuille. Détectez les méthodes optionnelles. Les comptes par passkey, phrase ou signataire distant partagent cette interface.",
+      "notes": "Le coffre, les fichiers de récupération, les archives et les RPC internes ne sont pas des API web publiques. Ne demandez jamais la phrase secrète. Un compte en lecture seule ne signe pas ; un signataire distant peut demander une approbation externe. Utilisez les outils graphe et Oracle du SDK pour la confiance."
+    },
+    "publish": {
+      "title": "Signer, publier et afficher les résultats",
+      "intro": "La signature et la publication sont distinctes. Obtenez un événement signé par NIP-07, puis envoyez-le aux relais choisis. L’exemple indique l’acceptation par relais et ferme son pool temporaire.",
+      "notes": "La signature prouve l’auteur, pas la livraison. N’indiquez un succès que pour les relais ayant accepté l’événement. Conservez les succès partiels et réutilisez le même événement signé lors des reprises. Dans une application durable, réutilisez le transport existant."
+    },
+    "permissions": {
+      "title": "Permissions et changements de compte",
+      "intro": "Demandez la clé publique depuis Connexion et les signatures depuis l’action correspondante. L’extension peut demander connexion, déverrouillage ou approbation. Une permission passée ne couvre pas automatiquement un autre compte.",
+      "notes": "Le signal de changement de compte est spécifique à Nostr WoT. Revérifiez l’identité avant une action sensible et ignorez les réponses obsolètes. Conservez le brouillon et proposez une reprise après un refus, sans boucle automatique de demandes. HTTP utilise le type 27235 ; AUTH de relais utilise 22242."
+    },
+    "chooseTitle": "Choisir une intégration",
+    "chooseDescription": "Partez de la tâche de votre application. Utilisez l’extension pour les signatures contrôlées par l’utilisateur, les modules SDK pour les fonctionnalités et Oracle HTTP pour les requêtes de graphe serveur. Installez seulement les paquets nécessaires ; les exemples précisent où chaque partie s’exécute.",
+    "webln": {
+      "title": "Utiliser le portefeuille avec WebLN",
+      "intro": "Appelez enable() avant les opérations. sendPayment() reçoit une facture BOLT11 et renvoie une préimage après paiement. L’extension expose aussi getInfo(), makeInvoice() et getBalance() ; vérifiez ces capacités optionnelles.",
+      "notes": "Une connexion Nostr n’autorise pas le portefeuille. L’utilisateur doit le configurer et peut devoir approuver le paiement. Évitez les envois en double et affichez leur état. Après un délai dépassé, vérifiez le résultat dans le portefeuille avant de réessayer."
+    }
   },
   "start": {
     "intro": "Commencez à utiliser Web of Trust en quelques minutes.",
