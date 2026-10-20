@@ -27,3 +27,9 @@ Own work was checked first. Extension v0.8.13 has published GitHub downloads and
 ## Publication state
 
 Seven article editions, one deterministic visually inspected illustration and Nostr-only copy are prepared. Hosted exact-tree typechecking, tests, parity, social lint, build and rendered SEO/preview audit remain required before merge. Deployment, live pages/metadata and the durable Nostr receipt must be verified separately. LinkedIn is explicitly `linkedin_skipped` under the own-platform/team-only policy. No newsletter work, subscriber access, email, social dispatch, credential or schedule change is part of this issue.
+
+## Validation checkpoint
+
+Initial hosted run 39392866511 passed 361 of 363 unit tests. Two old dataset-count assumptions failed: the new Mostro report makes six projects with matched reports, and removing unsupported Mostro credits leaves 39 people. The focused test update pins all six matched project IDs, adds an explicit mixed-case repository check, and independently compares the people index inventory against raw source credits while preserving every link/name/no-duplication assertion. It does not restore unsupported people, skip a test or change production logic. Full hosted revalidation remains mandatory.
+
+While this issue was prepared, a separate worker merged own-platform PR #102. Its article files and appended editorial log are preserved when reconciling main; this run neither merges nor edits that PR.

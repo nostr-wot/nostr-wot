@@ -1,0 +1,61 @@
+---
+title: "Nostr WoT 0.8.13 ajoute la récupération passkey et les archives d'événements"
+description: "La version 0.8.13 est disponible sur Chrome et Firefox avec récupération du coffre par passkey, explorateur d'événements et paiements NWC plus sûrs."
+seoDescription: "Nostr WoT 0.8.13 arrive sur Chrome et Firefox avec récupération du coffre par passkey, archives d'événements, démarrage plus rapide et paiements NWC plus sûrs."
+excerpt: "L'extension protège et restaure désormais un coffre avec des passkeys compatibles, explore les événements archivés et évite de répéter les paiements NWC incertains."
+date: "2026-10-17"
+publishedAt: "2026-10-20"
+backfilled: false
+type: "story"
+tags: ["Nostr", "Nostr WoT", "Passkeys", "Sécurité"]
+featuredImage: "/images/news/nostr-wot-0-8-13-adds-passkey-recovery-and-event-archives.svg"
+translationKey: "nostr-wot-0-8-13-adds-passkey-recovery-and-event-archives"
+sources:
+  - title: "Version 0.8.13 de l'extension Nostr WoT"
+    url: "https://github.com/nostr-wot/nostr-wot-extension/releases/tag/v0.8.13"
+    publisher: "nostr-wot/nostr-wot-extension"
+    date: "2026-10-17"
+  - title: "Journal des modifications de Nostr WoT 0.8.13"
+    url: "https://github.com/nostr-wot/nostr-wot-extension/blob/v0.8.13/CHANGELOG.md"
+    publisher: "nostr-wot/nostr-wot-extension"
+    date: "2026-10-16"
+  - title: "Nostr WoT Extension sur le Chrome Web Store"
+    url: "https://chromewebstore.google.com/detail/nostr-wot-extension/gfmefgdkmjpjinecjchlangpamhclhdo"
+    publisher: "Chrome Web Store"
+    date: "2026-10-17"
+  - title: "Nostr WoT Extension sur Firefox Add-ons"
+    url: "https://addons.mozilla.org/en-US/firefox/addon/nostr-wot-extension/"
+    publisher: "Mozilla Add-ons"
+    date: "2026-10-17"
+published: true
+---
+
+[Nostr WoT 0.8.13](https://github.com/nostr-wot/nostr-wot-extension/releases/tag/v0.8.13) est disponible dans les deux boutiques prises en charge. Les fiches [Chrome](https://chromewebstore.google.com/detail/nostr-wot-extension/gfmefgdkmjpjinecjchlangpamhclhdo) et [Firefox](https://addons.mozilla.org/en-US/firefox/addon/nostr-wot-extension/) affichent la version `0.8.13`, mise à jour le 17 octobre 2026. Cette version ajoute la création et la récupération du coffre par passkey, un explorateur complet des archives, des améliorations de fiabilité et un traitement plus prudent des paiements Lightning incertains.
+
+## Une passkey peut protéger et récupérer le coffre
+
+La version 0.8.13 peut créer ou déverrouiller un coffre avec une passkey compatible. Le fournisseur doit prendre en charge les identifiants découvrables, la vérification de l'utilisateur et l'extension PRF de WebAuthn. Le mot de passe et la phrase seed restent disponibles.
+
+La récupération ne dépend pas d'un seul fournisseur. L'extension peut enregistrer une copie chiffrée du coffre complet dans le stockage compatible du fournisseur, créer un fichier de récupération chiffré et publier une copie plus limitée sur des relais choisis explicitement. La publication sur les relais nécessite une action distincte. Quand le stockage est confirmé, le flux passe aux préférences de protection; les alternatives restent accessibles dans les réglages Passkey.
+
+Les signaux restent séparés. La prise en charge du stockage ne prouve pas qu'un autre appareil a synchronisé la copie. Un événement signé renvoyé par un relais ne prouve ni sa fraîcheur ni sa conservation future. L'interface distingue confirmations, disponibilité et récupération effective.
+
+Les passkeys restent aussi liées à leur relying party. La récupération avancée peut utiliser un domaine d'origine autorisé puis enregistrer un identifiant pour `passkeys.nostrwot.com`, mais ce n'est pas un transfert universel entre applications.
+
+## Les archives s'ouvrent dans un onglet complet
+
+Account Archive devient un explorateur d'événements dans un onglet dédié. Il permet de changer de compte, de rechercher avec des limites, de paginer les résultats, de regrouper chats publics et messages chiffrés et de révéler le contenu privé compatible uniquement sur demande. Les vues profil, contacts et relais montrent la dernière version enregistrée et sa date.
+
+Supprimer un enregistrement sélectionné retire la copie locale. Cela ne publie pas une demande de suppression Nostr et ne prétend pas que les relais ont effacé l'événement original. Les images de profil et bannières externes peuvent toujours charger leurs URL d'origine, un point distinct du déchiffrement local.
+
+## Un paiement incertain n'est pas répété automatiquement
+
+Lorsqu'un fournisseur renvoie un devis de frais, l'extension réserve le montant de la facture plus ces frais dans la limite silencieuse glissante de 24 heures. Un devis ultérieur plus élevé ne peut dépasser la réserve ou la politique configurée sans nouvelle approbation.
+
+Nostr Wallet Connect ne fournit pas de plafond de frais applicable. Son budget silencieux reste donc limité au montant de la facture, et un plafond explicite est refusé au lieu d'être présenté comme garanti. Si un relais refuse la requête après l'envoi du paiement, le résultat reste inconnu et n'est pas automatiquement répété.
+
+## La disponibilité dépend du canal
+
+Les boutiques publiques confirment `0.8.13` pour Chrome et Firefox. GitHub fournit aussi des ZIP séparés, le code source et des sommes de contrôle. Cela ne prouve pas une version Safari ni la prise en charge de tous les fournisseurs de passkeys.
+
+Le changement élargit les solutions de récupération sans supprimer la nécessité de les vérifier. Il faut confirmer les capacités du fournisseur, conserver une solution de repli adaptée et vérifier que la clé publique restaurée correspond au compte attendu.

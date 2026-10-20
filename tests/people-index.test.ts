@@ -32,10 +32,18 @@ const render = (locale: string) => {
 test('the index links to every credited person, so none of the pages is orphaned', () => {
   // WHY THIS EXISTS. Before the index, each person's page had exactly one
   // inbound link, inside a tab panel on a single project page. A crawler that
-  // never opened that tab had no path to any of the 40.
+  // never opened that tab had no path to the credited people.
   for (const locale of locales) {
     const { people, html, prefix } = render(locale);
-    assert.ok(people.length >= 40, `${locale}: only ${people.length} people`);
+    // The dataset is evidence-driven: removing an unsupported attribution must
+    // not require inventing a replacement person to satisfy a minimum count.
+    // Independently enumerate raw credits, then require the index inventory
+    // to retain every credited name and invent none.
+    const creditedNames = new Set(ecosystemDataFor(locale).projects
+      .flatMap(project => project.people.map(person => person.name)));
+    assert.ok(creditedNames.size > 0, `${locale}: empty credited-person dataset`);
+    assert.deepEqual(new Set(people.map(person => person.name)), creditedNames,
+      `${locale}: indexed people do not match the source credits`);
     for (const person of people) {
       assert.ok(html.includes(`href="${prefix}/people/${person.slug}"`),
         `${locale}: no link to ${person.slug}`);
