@@ -1,0 +1,61 @@
+---
+title: "Nostr WoT 0.8.13 adds passkey recovery and event archives"
+description: "Version 0.8.13 is live in Chrome and Firefox with passkey-protected vault recovery, a full event archive view and stricter NWC payment handling."
+seoDescription: "Nostr WoT 0.8.13 reaches Chrome and Firefox with passkey vault recovery, an event archive explorer, faster startup and safer NWC payment retries."
+excerpt: "The extension can now protect and restore a vault with compatible passkeys, inspect archived events in a full tab and preserve uncertain NWC payments from automatic retry."
+date: "2026-10-17"
+publishedAt: "2026-10-20"
+backfilled: false
+type: "story"
+tags: ["Nostr", "Nostr WoT", "Passkeys", "Security"]
+featuredImage: "/images/news/nostr-wot-0-8-13-adds-passkey-recovery-and-event-archives.svg"
+translationKey: "nostr-wot-0-8-13-adds-passkey-recovery-and-event-archives"
+sources:
+  - title: "Nostr WoT extension v0.8.13 release"
+    url: "https://github.com/nostr-wot/nostr-wot-extension/releases/tag/v0.8.13"
+    publisher: "nostr-wot/nostr-wot-extension"
+    date: "2026-10-17"
+  - title: "Nostr WoT extension changelog for 0.8.13"
+    url: "https://github.com/nostr-wot/nostr-wot-extension/blob/v0.8.13/CHANGELOG.md"
+    publisher: "nostr-wot/nostr-wot-extension"
+    date: "2026-10-16"
+  - title: "Nostr WoT Extension on Chrome Web Store"
+    url: "https://chromewebstore.google.com/detail/nostr-wot-extension/gfmefgdkmjpjinecjchlangpamhclhdo"
+    publisher: "Chrome Web Store"
+    date: "2026-10-17"
+  - title: "Nostr WoT Extension on Firefox Add-ons"
+    url: "https://addons.mozilla.org/en-US/firefox/addon/nostr-wot-extension/"
+    publisher: "Mozilla Add-ons"
+    date: "2026-10-17"
+published: true
+---
+
+[Nostr WoT extension 0.8.13](https://github.com/nostr-wot/nostr-wot-extension/releases/tag/v0.8.13) is available in both supported browser stores. The [Chrome listing](https://chromewebstore.google.com/detail/nostr-wot-extension/gfmefgdkmjpjinecjchlangpamhclhdo) and [Firefox listing](https://addons.mozilla.org/en-US/firefox/addon/nostr-wot-extension/) each show version `0.8.13`, updated on 17 October 2026. The release adds passkey-protected vault creation and recovery, a larger event archive interface, popup reliability work and stricter handling of uncertain Lightning payments.
+
+## A passkey can protect and recover the vault
+
+Version 0.8.13 can create or unlock a vault with a compatible passkey. The provider must support discoverable credentials, user verification and the WebAuthn PRF extension. Password and seed-based setup remain available when that path is not suitable.
+
+Recovery is not reduced to one provider. The extension can save an encrypted full-vault snapshot in supported provider storage, create an encrypted recovery file and publish a narrower recovery snapshot to explicitly selected relays. Relay publication remains a separate user action. When provider storage succeeds during setup, the flow moves directly to protection preferences; file and relay alternatives remain available from Passkey settings.
+
+The distinction matters. A provider reporting storage support does not prove that another device has synchronized the blob. A relay returning a signed recovery event does not prove that the snapshot is current or will remain available. The interface therefore separates recorded acknowledgements, availability checks and actual recovery.
+
+Passkeys also stay bound to their relying party. Advanced recovery can use an authorized original domain and then add a new credential for `passkeys.nostrwot.com`, but this is not universal passkey transfer between unrelated applications.
+
+## The archive moves into a full browser tab
+
+The release expands Account Archive from background storage and import tools into a full event explorer. It can switch accounts, show bounded search and paginated results, group public chats and encrypted messages, and reveal supported private content only when requested. Profile, contact and relay-list views show their latest stored versions and update dates.
+
+Deleting a selected local record removes it from the local archive. It does not publish a Nostr deletion request and does not claim that relays erased the original event. External profile images and banners may still load from their source URLs, which is a separate privacy consideration from decrypting message content locally.
+
+## Payment safeguards treat uncertainty as uncertainty
+
+For wallet providers that return a fee quote, the extension reserves the invoice amount plus the quoted fee against the rolling 24-hour silent-payment allowance. A later quote cannot exceed the reservation or the configured fee policy without another approval.
+
+Nostr Wallet Connect does not provide an enforceable fee-limit capability. Its silent-payment budget therefore remains invoice-only, and an explicit fee ceiling is refused instead of being presented as enforced. If a relay rejects a request after payment dispatch, the result stays unknown and the extension does not automatically retry it. A relay acknowledgement alone cannot establish whether the wallet paid.
+
+## Availability is channel-specific
+
+The public stores establish availability for Chrome and Firefox at version `0.8.13`. The GitHub release also provides separate Chrome and Firefox ZIP files, source and checksums. Those facts do not establish a Safari release or support from every passkey provider.
+
+The practical change is a broader recovery boundary, not the removal of recovery responsibility. Users still need to verify that their provider supports the required passkey features, retain an appropriate fallback and test that the recovered public key matches the intended account.
