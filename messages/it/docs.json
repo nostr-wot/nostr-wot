@@ -280,6 +280,27 @@
       "protocolLink": "Protocollo, contratti e formato",
       "extensionLink": "Recupero nell’estensione",
       "guidesLink": "Guide utente"
+    },
+    "purpose": "Utilizzo",
+    "roles": {
+      "sdk": "Punti di accesso e provider React",
+      "data": "Profili, note e cache condivise",
+      "relay": "Connessioni, query e sottoscrizioni relay",
+      "vault": "Vault cifrato e recupero passkey",
+      "signers": "Adattatori di firma browser, remota e locale",
+      "blossom": "Caricamento, replica ed eliminazione file",
+      "dm": "Messaggi privati, inbox e hook",
+      "wallet": "Zap, WebLN, NWC e verifica ricevute",
+      "wot": "Query di fiducia su una fonte dati",
+      "graph": "Indice e attraversamento del grafo locale",
+      "ui": "Controlli di accesso e interfaccia sessione",
+      "auth": "Login NIP-98 e sessioni server",
+      "pq": "Primitive crittografiche post-quantistiche",
+      "accounts": "Modelli e ciclo degli account",
+      "bunker": "Hosting di un firmatario NIP-46",
+      "permissions": "Politiche di permessi e autorizzazioni",
+      "signer-core": "Coordinamento condiviso delle firme",
+      "storage": "Adattatori di persistenza"
     }
   },
   "rateLimits": {
@@ -356,7 +377,62 @@
     "sdkLink": "Documentazione SDK →",
     "exampleTitle": "Esempio rapido",
     "exampleDescription": "Interroga direttamente l’API dell’Oracle v0.3.0. Sostituisci queste chiavi di esempio con le tue chiavi pubbliche esadecimali di 64 caratteri:",
-    "sdkCompatibilityLink": "<link0>Compatibilità SDK e query del grafo locale</link0>"
+    "sdkCompatibilityLink": "<link0>Compatibilità SDK e query del grafo locale</link0>",
+    "example": "Esempio",
+    "notes": "Note di integrazione",
+    "reference": "Riferimento e altre opzioni",
+    "signers": {
+      "title": "Firmare con un’estensione o un account remoto",
+      "intro": "Usa @nostr-wot/signers per identità e firme. Nip07Signer usa l’estensione installata; Nip46Signer collega un firmatario remoto. Riutilizza lo stesso firmatario negli strumenti SDK durante la sessione.",
+      "notes": "L’esempio restituisce una nota firmata, non pubblicata. Gestisci il rifiuto nel pulsante e consenti un nuovo tentativo esplicito. PrivateKeySigner serve alle app che custodiscono le chiavi; l’integrazione con l’estensione non richiede seed o chiavi private."
+    },
+    "messages": {
+      "title": "Inviare e leggere messaggi privati",
+      "intro": "@nostr-wot/dm costruisce messaggi NIP-17 e ne verifica l’apertura. Entrambi i partecipanti devono supportare NIP-44. L’esempio prepara un involucro e legge il contenuto con il firmatario del destinatario.",
+      "notes": "Pubblica il tipo 1059 sui relay di ricezione scoperti tramite il tipo 10050. Crea un involucro separato per la cronologia del mittente. Non pubblicare direttamente messaggio interno o sigillo. Il tag esterno del destinatario resta visibile. Usa /cache e /react per cronologia e viste; chiudi le sottoscrizioni al logout."
+    },
+    "payments": {
+      "title": "Pagare fatture e inviare zap",
+      "intro": "@nostr-wot/wallet offre zap WebLN, connessioni NWC e verifica delle ricevute. L’esempio invia 21 sats dopo autorizzazione WebLN, ricerca LNURL e firma della richiesta di tipo 9734.",
+      "notes": "Usa chiave pubblica e indirizzo Lightning reali del destinatario. Disabilita l’invio durante l’attesa. Un timeout non dimostra un pagamento fallito: controlla la cronologia prima di riprovare. Le URI NWC contengono credenziali: escludile da log, URL pubblici e analisi. I permessi wallet e firma sono separati."
+    },
+    "http-auth": {
+      "title": "Autenticare una sessione HTTP",
+      "intro": "Usa @nostr-wot/auth sul server e /client nel browser. Monta le quattro rotte e chiama loginWithSigner da un’azione utente. La sessione usa un evento NIP-98 di tipo 27235.",
+      "notes": "Sostituisci example.com con origine e URL di verifica esatti. Genera un segreto casuale robusto sul server, mai in NEXT_PUBLIC. Verifica sessione e permessi sulle rotte protette. La challenge è stateless: l’uso unico rigoroso richiede un archivio di consumo. Il tipo 22242 autentica relay, non HTTP."
+    },
+    "uploads": {
+      "title": "Caricare file con Blossom",
+      "intro": "@nostr-wot/blossom carica il file selezionato su un server scelto esplicitamente, firma l’autorizzazione e restituisce URL, hash e dimensione verificati. Usa l’URL in un profilo o una nota firmata separatamente.",
+      "notes": "Il caricamento pubblico non cifra il file. Cifra prima gli allegati privati, poi usa uploadEncryptedBlob. Condividi i dati di decifratura solo nel messaggio cifrato. Annulla con AbortController al cambio di vista o account. Il caricamento non pubblica un evento Nostr."
+    },
+    "lifecycle": {
+      "title": "Ciclo della sessione ed errori",
+      "intro": "Inizializza provider e connessioni condivise una volta per sessione. I profili pubblici non richiedono firme. Riserva firma, decifratura e pagamenti ad azioni esplicite e distingui attesa, rifiuto ed errore.",
+      "notes": "Al cambio account o logout interrompi le sottoscrizioni, cancella le viste decifrate e scarta risposte tardive. Fine query e accettazione della pubblicazione sono diverse. Conserva i successi parziali. Prova estensione assente, annullamento, vault bloccato, firmatario offline, rifiuto del relay e pagamento incerto."
+    },
+    "capabilities": {
+      "title": "Cosa possono usare i siti",
+      "intro": "window.nostr espone identità NIP-07, firme e cifratura supportata; window.webln espone la wallet. Rileva i metodi opzionali prima dell’uso. Account passkey, seed e remoti condividono l’interfaccia per i siti.",
+      "notes": "Vault, file di recupero, archivio e RPC interni non sono API pubbliche per i siti. L’app non richiede il seed. Gli account di sola lettura non firmano; un firmatario remoto può richiedere approvazione esterna. Usa grafo SDK e Oracle per interrogazioni sulla fiducia."
+    },
+    "publish": {
+      "title": "Firmare, pubblicare e mostrare i risultati",
+      "intro": "Firma e pubblicazione sono operazioni separate. Ottieni l’evento firmato via NIP-07 e invialo ai relay scelti. L’esempio restituisce l’accettazione per relay e chiude il pool temporaneo.",
+      "notes": "La firma prova l’autore, non la consegna. Mostra successo solo per i relay che hanno accettato. Conserva i successi parziali e riusa evento firmato e ID nei tentativi successivi. Nelle app persistenti riutilizza il trasporto relay esistente."
+    },
+    "permissions": {
+      "title": "Permessi e cambio account",
+      "intro": "Richiedi la chiave pubblica da Connetti e le firme dall’azione corrispondente. L’estensione può chiedere connessione, sblocco o approvazione. Un permesso passato non copre automaticamente altri account o operazioni.",
+      "notes": "L’evento di cambio account è specifico di Nostr WoT. Ricontrolla l’identità prima di azioni sensibili e scarta risposte obsolete. Cattura i rifiuti, conserva la bozza e offri un nuovo tentativo. Non ripetere automaticamente richieste annullate. HTTP usa il tipo 27235, AUTH relay il 22242."
+    },
+    "chooseTitle": "Scegliere un’integrazione",
+    "chooseDescription": "Parti dal compito della tua app. Usa l’estensione per firme controllate dall’utente, i moduli SDK per le funzionalità e Oracle HTTP per query del grafo sul server. Installa solo i pacchetti necessari; gli esempi indicano dove eseguire ogni parte.",
+    "webln": {
+      "title": "Usare la wallet dell’estensione con WebLN",
+      "intro": "Chiama enable() prima delle operazioni. sendPayment() accetta una fattura BOLT11 e restituisce una preimmagine dopo il pagamento. Sono disponibili anche getInfo(), makeInvoice() e getBalance(); verifica le capacità opzionali.",
+      "notes": "Una connessione Nostr non autorizza la wallet. L’utente deve configurarla e potrebbe dover approvare il pagamento. Evita invii duplicati e mostra lo stato. Dopo un timeout controlla il risultato nella wallet prima di riprovare."
+    }
   },
   "start": {
     "intro": "Inizia a usare Web of Trust in pochi minuti.",

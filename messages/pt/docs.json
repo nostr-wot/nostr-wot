@@ -280,6 +280,27 @@
       "protocolLink": "Protocolo, contratos e formato",
       "extensionLink": "Recuperação na extensão",
       "guidesLink": "Guias do usuário"
+    },
+    "purpose": "Finalidade",
+    "roles": {
+      "sdk": "Pontos de entrada e provedores React",
+      "data": "Perfis, notas e caches compartilhados",
+      "relay": "Conexões, consultas e assinaturas de relays",
+      "vault": "Cofre cifrado e recuperação por passkey",
+      "signers": "Adaptadores de assinatura local, remota e de navegador",
+      "blossom": "Upload, espelhamento e remoção de arquivos",
+      "dm": "Mensagens privadas, caixa de entrada e hooks",
+      "wallet": "Zaps, WebLN, NWC e validação de recibos",
+      "wot": "Consultas de confiança sobre uma fonte de dados",
+      "graph": "Índice e navegação do grafo local",
+      "ui": "Controles de login e interface de sessão",
+      "auth": "Login NIP-98 e sessões no servidor",
+      "pq": "Primitivas criptográficas pós-quânticas",
+      "accounts": "Modelos e ciclo de contas",
+      "bunker": "Hospedagem de assinador NIP-46",
+      "permissions": "Políticas de permissão e autorizações",
+      "signer-core": "Coordenação compartilhada de assinaturas",
+      "storage": "Adaptadores de persistência"
     }
   },
   "rateLimits": {
@@ -356,7 +377,62 @@
     "sdkLink": "Documentação do SDK →",
     "exampleTitle": "Exemplo rápido",
     "exampleDescription": "Consulte diretamente a API do Oracle v0.3.0. Substitua estas chaves de exemplo pelas suas próprias chaves públicas hexadecimais de 64 caracteres:",
-    "sdkCompatibilityLink": "<link0>Compatibilidade do SDK e consultas do grafo local</link0>"
+    "sdkCompatibilityLink": "<link0>Compatibilidade do SDK e consultas do grafo local</link0>",
+    "example": "Exemplo",
+    "notes": "Notas de integração",
+    "reference": "Referência e opções adicionais",
+    "signers": {
+      "title": "Assinar com extensão ou conta remota",
+      "intro": "Use @nostr-wot/signers para identidade e assinaturas. Nip07Signer utiliza a extensão instalada; Nip46Signer conecta um assinador remoto. Reutilize o mesmo assinador nas ferramentas do SDK durante a sessão.",
+      "notes": "O exemplo retorna uma nota assinada, ainda não publicada. Trate recusas no botão e permita nova tentativa explícita. PrivateKeySigner é para apps que guardam as próprias chaves; integrar a extensão não exige frase-semente nem chave privada."
+    },
+    "messages": {
+      "title": "Enviar e ler mensagens privadas",
+      "intro": "@nostr-wot/dm cria mensagens NIP-17 e verifica sua abertura. Ambos os participantes precisam de assinadores NIP-44. O exemplo prepara um envelope e lê seu conteúdo com o assinador do destinatário.",
+      "notes": "Publique o tipo 1059 nos relays de entrada descobertos pelo tipo 10050. Crie outro envelope para o histórico do remetente. Nunca publique diretamente a mensagem interna ou o selo. A tag externa do destinatário continua visível. Use /cache e /react para histórico e telas; encerre assinaturas ao sair."
+    },
+    "payments": {
+      "title": "Pagar faturas e enviar zaps",
+      "intro": "@nostr-wot/wallet oferece zaps WebLN, conexões NWC e validação de recibos. O exemplo envia 21 sats após permissão WebLN, descoberta LNURL e assinatura da solicitação de tipo 9734.",
+      "notes": "Use a chave pública real e o endereço Lightning do destinatário. Desative o envio enquanto aguarda. Um timeout não comprova falha: consulte o histórico antes de repetir. URIs NWC contêm credenciais; não as coloque em logs, URLs públicas ou análise. Permissões da carteira e de assinatura são separadas."
+    },
+    "http-auth": {
+      "title": "Autenticar uma sessão HTTP",
+      "intro": "Use @nostr-wot/auth no servidor e /client no navegador. Monte as quatro rotas e chame loginWithSigner por uma ação do usuário. A sessão usa um evento NIP-98 de tipo 27235.",
+      "notes": "Substitua example.com pela origem e URL de verificação exatas. Gere um segredo aleatório forte no servidor, nunca em NEXT_PUBLIC. Verifique sessão e permissões nas rotas protegidas. O desafio não guarda estado: uso único estrito exige armazenamento de consumo. O tipo 22242 autentica relays, não HTTP."
+    },
+    "uploads": {
+      "title": "Enviar arquivos com Blossom",
+      "intro": "@nostr-wot/blossom envia o arquivo escolhido a um servidor explícito, assina a autorização e retorna URL, hash e tamanho validados. Use a URL em um perfil ou nota assinado separadamente.",
+      "notes": "O envio público não cifra o arquivo. Cifre anexos privados antes de uploadEncryptedBlob e compartilhe o material de decifragem apenas dentro da mensagem cifrada. Cancele com AbortController ao mudar de tela ou conta. O envio não publica um evento Nostr."
+    },
+    "lifecycle": {
+      "title": "Ciclo da sessão e erros",
+      "intro": "Inicialize provedores e conexões compartilhadas uma vez por sessão. Perfis públicos não exigem assinatura. Reserve assinatura, decifragem e pagamentos para ações explícitas e diferencie pendência, recusa e falha.",
+      "notes": "Ao mudar de conta ou sair, encerre assinaturas, limpe telas decifradas e descarte respostas atrasadas. Fim de consulta e aceitação de publicação são distintos. Preserve sucessos parciais. Teste extensão ausente, cancelamento, cofre bloqueado, assinador offline, recusa de relay e pagamento incerto."
+    },
+    "capabilities": {
+      "title": "O que os sites podem usar",
+      "intro": "window.nostr expõe identidade NIP-07, assinaturas e cifragem disponível; window.webln expõe a carteira. Detecte métodos opcionais. Contas com passkey, semente ou assinador remoto compartilham a interface para sites.",
+      "notes": "Cofre, arquivos de recuperação, arquivo de eventos e RPCs internos não são APIs públicas de sites. O app não precisa da semente. Contas somente leitura não assinam; assinadores remotos podem exigir aprovação externa. Use grafo do SDK e Oracle para consultas de confiança."
+    },
+    "publish": {
+      "title": "Assinar, publicar e mostrar resultados",
+      "intro": "Assinatura e publicação são etapas separadas. Obtenha o evento assinado via NIP-07 e envie aos relays escolhidos. O exemplo retorna aceitação por relay e fecha seu pool temporário.",
+      "notes": "A assinatura prova autoria, não entrega. Mostre sucesso apenas onde houve aceitação. Preserve sucessos parciais e reutilize evento assinado e ID nas novas tentativas. Em apps persistentes, reutilize o transporte relay existente."
+    },
+    "permissions": {
+      "title": "Permissões e troca de conta",
+      "intro": "Peça a chave pública pelo botão Conectar e assinaturas pela ação correspondente. A extensão pode pedir conexão, desbloqueio ou aprovação. Uma permissão anterior não cobre automaticamente outra conta ou operação.",
+      "notes": "O evento de troca de conta é específico do Nostr WoT. Confira a identidade antes de ações sensíveis e descarte respostas antigas. Capture recusas, preserve o rascunho e ofereça nova tentativa. Não repita automaticamente prompts cancelados. HTTP usa tipo 27235; AUTH de relay usa 22242."
+    },
+    "chooseTitle": "Escolha sua integração",
+    "chooseDescription": "Comece pela tarefa do seu app. Use a extensão para assinaturas controladas pelo usuário, módulos SDK para funcionalidades e Oracle HTTP para consultas de grafo no servidor. Instale apenas os pacotes necessários; os exemplos indicam onde executar cada parte.",
+    "webln": {
+      "title": "Usar a carteira da extensão com WebLN",
+      "intro": "Chame enable() antes das operações. sendPayment() recebe uma fatura BOLT11 e retorna uma pré-imagem após o pagamento. A extensão também oferece getInfo(), makeInvoice() e getBalance(); detecte essas capacidades opcionais.",
+      "notes": "Uma conexão Nostr não autoriza a carteira. O usuário precisa configurá-la e pode ter de aprovar o pagamento. Evite envios duplicados e mostre o estado. Após um timeout, confira primeiro o resultado na carteira antes de tentar novamente."
+    }
   },
   "start": {
     "intro": "Comece a usar Web of Trust em poucos minutos.",

@@ -1,3 +1,4 @@
+import { integrationExamples } from '@/components/docs/integration-examples';
 import { ReactNode } from "react";
 import { getTranslations } from "next-intl/server";
 import { DocsNav } from "@/components/docs/DocsNav";
@@ -31,6 +32,7 @@ export default async function DocsLayout({ children }: DocsLayoutProps) {
         { href: "/docs/extension#nip44decrypt", label: "nip44.decrypt" },
         { href: "/docs/extension#getrelays", label: "getRelays" },
         { href: "/docs/extension#errors", label: t("extensionApi.errorsTitle") },
+        ...integrationExamples.extension.map(({ id }) => ({ href: `/docs/extension#${id}`, label: t(`integration.${id}.title`) })),
       ],
     },
     {
@@ -44,6 +46,7 @@ export default async function DocsLayout({ children }: DocsLayoutProps) {
         { href: "/docs/sdk#passkey-interoperability", label: t("sidebar.sdkPasskeyInterop") },
         { href: "/docs/sdk#ui", label: t("sidebar.sdkUi") },
         { href: "/docs/sdk#wot", label: t("sidebar.sdkWot") },
+        ...integrationExamples.sdk.map(({ id }) => ({ href: `/docs/sdk#${id}`, label: t(`integration.${id}.title`) })),
       ],
     },
     {

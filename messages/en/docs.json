@@ -280,6 +280,27 @@
       "protocolLink": "Protocol, adapter contracts and wire format",
       "extensionLink": "Extension recovery behavior",
       "guidesLink": "User guides"
+    },
+    "purpose": "Use it for",
+    "roles": {
+      "sdk": "Convenience entry points and React providers",
+      "data": "Public profiles, notes and shared caches",
+      "relay": "Relay connections, queries and subscriptions",
+      "vault": "Encrypted vault and passkey recovery primitives",
+      "signers": "Browser, remote and local signing adapters",
+      "blossom": "File uploads, mirrors and deletion",
+      "dm": "Private messages, inbox state and hooks",
+      "wallet": "Zaps, WebLN, NWC and receipt validation",
+      "wot": "Trust queries over a supplied data source",
+      "graph": "Local follow-graph indexing and traversal",
+      "ui": "Reusable login controls and session UI",
+      "auth": "Server-side NIP-98 login and sessions",
+      "pq": "Post-quantum cryptographic primitives",
+      "accounts": "Account models and lifecycle",
+      "bunker": "Hosting a NIP-46 remote signer",
+      "permissions": "Permission policy and grants",
+      "signer-core": "Shared signing orchestration",
+      "storage": "Persistence adapters"
     }
   },
   "rateLimits": {
@@ -356,7 +377,62 @@
     "sdkLink": "SDK Docs →",
     "exampleTitle": "Quick Example",
     "exampleDescription": "Query the Oracle v0.3.0 API directly. Replace these example keys with your own 64-character hexadecimal pubkeys:",
-    "sdkCompatibilityLink": "<link0>SDK compatibility and local graph queries</link0>"
+    "sdkCompatibilityLink": "<link0>SDK compatibility and local graph queries</link0>",
+    "example": "Example",
+    "notes": "Integration notes",
+    "reference": "Package reference and additional options",
+    "signers": {
+      "title": "Sign with an extension or remote account",
+      "intro": "Use @nostr-wot/signers when your app needs an identity and signatures. Nip07Signer uses the installed extension; Nip46Signer connects to a remote signer. Keep one signer for the active session and pass it to other SDK tools.",
+      "notes": "The example returns a signed note, not a published note. Handle rejection in your button handler and let the user retry explicitly. PrivateKeySigner is for applications that deliberately hold keys themselves; an extension integration does not need to request a seed or private key."
+    },
+    "messages": {
+      "title": "Send and read private messages",
+      "intro": "Use @nostr-wot/dm for NIP-17 message construction and verified unwrapping. Both participants need NIP-44-capable signers. The example prepares a recipient gift wrap and returns readable content when the recipient decrypts it.",
+      "notes": "Publish the returned kind-1059 event to the recipient’s inbox relays, discovered from kind 10050. Create a separate wrap for the sender’s history. Never publish the inner message or seal directly. The outer recipient tag remains visible. For an inbox with history and React views, use the /cache and /react entry points; dispose subscriptions on logout."
+    },
+    "payments": {
+      "title": "Pay invoices and send zaps",
+      "intro": "Use @nostr-wot/wallet for WebLN zaps, NWC connections and zap receipt validation. The example sends 21 sats to a Lightning Address after WebLN permission, LNURL discovery and signing a kind-9734 zap request.",
+      "notes": "Use a real recipient public key and their Lightning Address. Disable the send control while pending. A timeout does not prove payment failed: check wallet history before retrying. NWC connection URIs contain credentials; keep them out of logs, public URLs and analytics. WebLN wallet permission is separate from Nostr signing permission."
+    },
+    "http-auth": {
+      "title": "Authenticate an HTTP session",
+      "intro": "Use @nostr-wot/auth on your server and /client in the browser. Mount the four routes shown below, then call loginWithSigner from a user action. This creates a server session using a kind-27235 NIP-98 event.",
+      "notes": "Replace example.com with the exact production origin and verification URL. Generate a strong random server secret and never expose it through NEXT_PUBLIC variables. Check the session and application permissions on protected routes. The default challenge is stateless: strict one-time use requires a consume-once store. Kind 22242 is relay authentication, not HTTP login."
+    },
+    "uploads": {
+      "title": "Upload files with Blossom",
+      "intro": "Use @nostr-wot/blossom to upload a user-selected file to an explicitly chosen server. The helper signs the upload authorization and returns the validated URL, hash and size. Use that URL in a separately signed profile or note.",
+      "notes": "Public upload does not encrypt the file. For private attachments, encrypt first, then use uploadEncryptedBlob with the ciphertext. Share the decryption material only inside the encrypted message. Keep one AbortController per operation and cancel when the view or account changes; uploading a file does not publish a Nostr event."
+    },
+    "lifecycle": {
+      "title": "Session lifecycle and error handling",
+      "intro": "Initialize providers and shared relay connections once per application session. Fetch public profiles without requesting a signature. Keep signing, decryption and payments behind explicit user actions; show pending, declined and failed states separately.",
+      "notes": "On account change or logout, stop inbox subscriptions, clear decrypted views and discard late results from the old account. Treat relay completion and relay acceptance separately. Keep successful per-relay results when another relay fails. Test missing extension, user cancellation, locked vault, remote signer offline, relay rejection and uncertain payment outcomes."
+    },
+    "capabilities": {
+      "title": "What websites can use",
+      "intro": "The extension exposes window.nostr for NIP-07 identity, signing and supported encryption methods, plus window.webln for wallet operations. Detect each optional method before using it. Passkey, seed and remote-signer accounts use the same website-facing signing interface.",
+      "notes": "The vault, passkey recovery files, archive database and internal extension RPCs are not public website APIs. Your app never needs the user’s seed. Watch-only accounts cannot sign. A configured remote signer may require an external approval. Use the SDK’s graph and Oracle tools for trust queries rather than assuming window.nostr includes a trust-scoring API."
+    },
+    "publish": {
+      "title": "Sign, publish and report relay results",
+      "intro": "Signing and publishing are separate operations. First obtain a signed event through NIP-07, then send that event to relays chosen by your application and user. The example returns an acceptance result for each relay and closes its temporary pool.",
+      "notes": "A signature proves authorship, not delivery. Report success only for relays that accepted the event; a partial result should retain successes. Retrying publication should reuse the same signed event and ID. In a long-lived application, reuse your existing relay transport rather than creating a pool per note."
+    },
+    "permissions": {
+      "title": "Permissions, account changes and cancellation",
+      "intro": "Request the public key from a Connect button and request signatures only when the user takes the corresponding action. The extension can ask for connection permission, unlock or approval. Never assume a previous approval covers a new account or operation.",
+      "notes": "The account-change listener is specific to Nostr WoT. Recheck the selected identity before completing a sensitive action and discard stale responses. Catch rejected promises, preserve the user’s draft and show a retry action. Do not automatically loop signing or decryption prompts after cancellation. HTTP authentication signs kind 27235; relay AUTH uses kind 22242."
+    },
+    "chooseTitle": "Choose your integration",
+    "chooseDescription": "Start with the task your application needs. Use the extension for user-controlled signing, SDK modules for application features, and Oracle HTTP endpoints for server-side graph queries. Install only the packages you need; the examples below state where each part runs.",
+    "webln": {
+      "title": "Use the extension wallet through WebLN",
+      "intro": "Call enable() before requesting wallet operations. sendPayment() takes a BOLT11 invoice and returns a preimage after payment succeeds. The extension also exposes getInfo(), makeInvoice() and getBalance(); check availability before using these optional capabilities.",
+      "notes": "A Nostr connection does not authorize wallet access. The user needs a configured wallet and may be asked to approve payment or connect it. Avoid concurrent duplicate sends and keep payment state visible. Do not retry automatically after a timeout; reconcile the outcome with the wallet first."
+    }
   },
   "start": {
     "intro": "Get up and running with Web of Trust in just a few minutes.",

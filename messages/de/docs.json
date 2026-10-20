@@ -280,6 +280,27 @@
       "protocolLink": "Protokoll, Verträge und Format",
       "extensionLink": "Wiederherstellung der Extension",
       "guidesLink": "Benutzeranleitungen"
+    },
+    "purpose": "Einsatz",
+    "roles": {
+      "sdk": "Einstiegspunkte und React-Provider",
+      "data": "Profile, Notizen und gemeinsame Caches",
+      "relay": "Relay-Verbindungen, Abfragen und Abonnements",
+      "vault": "Verschlüsselter Tresor und Passkey-Wiederherstellung",
+      "signers": "Browser-, Remote- und lokale Signieradapter",
+      "blossom": "Datei-Upload, Spiegelung und Löschung",
+      "dm": "Private Nachrichten, Posteingang und Hooks",
+      "wallet": "Zaps, WebLN, NWC und Belegprüfung",
+      "wot": "Vertrauensabfragen auf einer Datenquelle",
+      "graph": "Lokaler Kontaktgraph und Traversierung",
+      "ui": "Login-Steuerung und Sitzungsoberfläche",
+      "auth": "Serverseitiges NIP-98-Login und Sitzungen",
+      "pq": "Postquanten-Kryptografiebausteine",
+      "accounts": "Kontomodelle und Lebenszyklus",
+      "bunker": "Betrieb eines NIP-46-Signierers",
+      "permissions": "Berechtigungsrichtlinien und Freigaben",
+      "signer-core": "Gemeinsame Signierkoordination",
+      "storage": "Persistenzadapter"
     }
   },
   "rateLimits": {
@@ -356,7 +377,62 @@
     "sdkLink": "SDK-Dokumentation →",
     "exampleTitle": "Kurzes Beispiel",
     "exampleDescription": "Frage die API von Oracle v0.3.0 direkt ab. Ersetze diese Beispielschlüssel durch deine eigenen öffentlichen Schlüssel mit 64 Hexadezimalzeichen:",
-    "sdkCompatibilityLink": "<link0>SDK-Kompatibilität und lokale Graphabfragen</link0>"
+    "sdkCompatibilityLink": "<link0>SDK-Kompatibilität und lokale Graphabfragen</link0>",
+    "example": "Beispiel",
+    "notes": "Integrationshinweise",
+    "reference": "Referenz und weitere Optionen",
+    "signers": {
+      "title": "Mit Erweiterung oder Remote-Konto signieren",
+      "intro": "@nostr-wot/signers stellt Identität und Signaturen bereit. Nip07Signer nutzt die installierte Erweiterung, Nip46Signer einen entfernten Signierer. Verwenden Sie denselben Signierer während der Sitzung für die weiteren SDK-Werkzeuge.",
+      "notes": "Das Beispiel liefert eine signierte, noch nicht veröffentlichte Notiz. Behandeln Sie Ablehnungen im Button und lassen Sie Nutzer ausdrücklich erneut versuchen. PrivateKeySigner ist für Apps gedacht, die Schlüssel selbst verwalten. Bei der Erweiterung sind weder Seed-Phrase noch privater Schlüssel nötig."
+    },
+    "messages": {
+      "title": "Private Nachrichten senden und lesen",
+      "intro": "@nostr-wot/dm erstellt NIP-17-Nachrichten und prüft deren Entschlüsselung. Beide Teilnehmer benötigen NIP-44-fähige Signierer. Das Beispiel erstellt eine Hülle für den Empfänger und liest sie mit dessen Signierer.",
+      "notes": "Veröffentlichen Sie Kind 1059 auf den über Kind 10050 ermittelten Empfangsrelays. Erstellen Sie eine eigene Hülle für den Verlauf des Absenders. Veröffentlichen Sie niemals innere Nachricht oder Siegel direkt. Der äußere Empfänger-Tag bleibt sichtbar. /cache und /react bieten Verlauf und Ansichten; beenden Sie Abonnements beim Abmelden."
+    },
+    "payments": {
+      "title": "Rechnungen bezahlen und Zaps senden",
+      "intro": "@nostr-wot/wallet bietet WebLN-Zaps, NWC-Verbindungen und Belegprüfung. Das Beispiel sendet 21 Sats nach WebLN-Freigabe, LNURL-Abfrage und Signatur einer Zap-Anfrage mit Kind 9734.",
+      "notes": "Nutzen Sie den echten öffentlichen Schlüssel und die Lightning-Adresse des Empfängers. Deaktivieren Sie Senden während der Verarbeitung. Ein Timeout beweist keinen Fehlschlag: prüfen Sie vor Wiederholung den Zahlungsverlauf. NWC-URIs enthalten Zugangsdaten und gehören nicht in Logs oder öffentliche URLs. Wallet- und Signierberechtigungen sind getrennt."
+    },
+    "http-auth": {
+      "title": "Eine HTTP-Sitzung authentifizieren",
+      "intro": "Nutzen Sie @nostr-wot/auth auf dem Server und /client im Browser. Binden Sie die vier Routen ein und rufen Sie loginWithSigner über eine Nutzeraktion auf. Die Sitzung verwendet NIP-98 mit Kind 27235.",
+      "notes": "Ersetzen Sie example.com durch die genaue Produktionsadresse und Prüf-URL. Halten Sie ein starkes zufälliges Servergeheimnis außerhalb von NEXT_PUBLIC. Prüfen Sie Sitzung und Rechte auf geschützten Routen. Die Challenge ist zustandslos; strikt einmalige Nutzung benötigt einen Verbrauchsspeicher. Kind 22242 ist Relay-Authentifizierung, kein HTTP-Login."
+    },
+    "uploads": {
+      "title": "Dateien mit Blossom hochladen",
+      "intro": "@nostr-wot/blossom lädt eine ausgewählte Datei auf einen ausdrücklich gewählten Server, signiert die Berechtigung und liefert geprüfte URL, Hash und Größe. Verwenden Sie die URL anschließend in einer separat signierten Notiz oder einem Profil.",
+      "notes": "Öffentliche Uploads verschlüsseln nicht. Verschlüsseln Sie private Anhänge vor uploadEncryptedBlob und teilen Sie Entschlüsselungsdaten nur innerhalb der verschlüsselten Nachricht. Brechen Sie beim Konto- oder Ansichtswechsel mit AbortController ab. Ein Upload veröffentlicht kein Nostr-Ereignis."
+    },
+    "lifecycle": {
+      "title": "Sitzungsablauf und Fehlerbehandlung",
+      "intro": "Initialisieren Sie Provider und gemeinsame Verbindungen einmal pro Sitzung. Öffentliche Profile benötigen keine Signatur. Signieren, Entschlüsseln und Bezahlen gehören hinter bewusste Nutzeraktionen. Unterscheiden Sie ausstehende, abgelehnte und fehlgeschlagene Vorgänge.",
+      "notes": "Stoppen Sie beim Konto- oder Sitzungswechsel Abonnements, löschen Sie entschlüsselte Ansichten und verwerfen Sie verspätete Antworten. Abfrageende und Annahme einer Veröffentlichung sind verschieden. Bewahren Sie Teilerfolge. Testen Sie fehlende Erweiterung, Abbruch, gesperrten Tresor, unerreichbaren Signierer, Relay-Ablehnung und unklaren Zahlungsstatus."
+    },
+    "capabilities": {
+      "title": "Was Websites verwenden können",
+      "intro": "window.nostr bietet NIP-07-Identität, Signaturen und unterstützte Verschlüsselung; window.webln bietet Wallet-Funktionen. Prüfen Sie optionale Methoden. Passkey-, Seed- und Remote-Konten verwenden dieselbe Schnittstelle für Websites.",
+      "notes": "Tresor, Wiederherstellungsdateien, Archivdatenbank und interne RPCs sind keine öffentlichen Website-APIs. Eine App braucht keinen Seed. Nur-Lese-Konten können nicht signieren; Remote-Signierer können externe Freigaben verlangen. Verwenden Sie SDK-Graph und Oracle für Vertrauensabfragen."
+    },
+    "publish": {
+      "title": "Signieren, veröffentlichen und Ergebnisse melden",
+      "intro": "Signieren und Veröffentlichen sind getrennte Schritte. Lassen Sie das Ereignis über NIP-07 signieren und senden Sie es an die gewählten Relays. Das Beispiel liefert Annahmeergebnisse je Relay und schließt seinen temporären Pool.",
+      "notes": "Eine Signatur belegt Urheberschaft, keine Zustellung. Melden Sie nur bestätigte Annahmen als Erfolg. Bewahren Sie Teilerfolge und verwenden Sie bei Wiederholungen dasselbe signierte Ereignis mit derselben ID. Dauerhafte Apps sollten vorhandene Relay-Verbindungen wiederverwenden."
+    },
+    "permissions": {
+      "title": "Berechtigungen und Kontowechsel",
+      "intro": "Fordern Sie den öffentlichen Schlüssel über Verbinden und Signaturen über die passende Nutzeraktion an. Die Erweiterung kann Verbindung, Entsperren oder Freigabe verlangen. Frühere Freigaben gelten nicht automatisch für andere Konten oder Aktionen.",
+      "notes": "Das Kontowechsel-Ereignis ist Nostr-WoT-spezifisch. Prüfen Sie vor sensiblen Aktionen die Identität erneut und verwerfen Sie alte Antworten. Fangen Sie Ablehnungen ab und behalten Sie Entwürfe. Keine automatischen Wiederholungen von Signierdialogen nach Abbruch. HTTP verwendet Kind 27235, Relay-AUTH Kind 22242."
+    },
+    "chooseTitle": "Integration auswählen",
+    "chooseDescription": "Beginnen Sie mit der Aufgabe Ihrer App. Nutzen Sie die Erweiterung für nutzergesteuerte Signaturen, SDK-Module für Funktionen und Oracle-HTTP-Endpunkte für serverseitige Graphabfragen. Installieren Sie nur benötigte Pakete; die Beispiele nennen die jeweilige Ausführungsumgebung.",
+    "webln": {
+      "title": "Die Erweiterungs-Wallet über WebLN nutzen",
+      "intro": "Rufen Sie zuerst enable() auf. sendPayment() erhält eine BOLT11-Rechnung und liefert nach erfolgreicher Zahlung ein Preimage. Die Erweiterung bietet auch getInfo(), makeInvoice() und getBalance(); prüfen Sie diese optionalen Funktionen.",
+      "notes": "Eine Nostr-Verbindung erlaubt keinen Wallet-Zugriff. Nutzer benötigen eine konfigurierte Wallet und müssen möglicherweise Verbindung oder Zahlung bestätigen. Vermeiden Sie doppelte Sendungen und zeigen Sie den Status. Prüfen Sie nach einem Timeout zuerst das Ergebnis in der Wallet."
+    }
   },
   "start": {
     "intro": "Starte in wenigen Minuten mit Web of Trust.",
