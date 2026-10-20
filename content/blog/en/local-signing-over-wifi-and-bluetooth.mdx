@@ -1,0 +1,49 @@
+---
+featuredImage: "/images/blog/local-bridge/en.svg"
+previewImage: "/images/blog/local-bridge/en.jpg"
+ogImage: "/images/blog/local-bridge/en.jpg"
+title: "A local bridge between your browser and your Nostr signer"
+description: "An experimental Wi-Fi and Bluetooth bridge, a draft protocol, and a path toward reusable local signing."
+excerpt: "Keep your identity key on your signer while a nearby browser requests signatures over Wi-Fi or Bluetooth."
+date: "2026-10-20"
+author: {"name": "Nostr WoT Team"}
+tags: ["Nostr WoT", "Signing", "Bluetooth", "Protocol"]
+published: true
+translationKey: "local-signing-over-wifi-and-bluetooth"
+---
+
+Your browser and your phone can be next to each other while signing requests travel through an internet relay. Nostr Connect makes remote signing possible, but a nearby signer can also be reached directly.
+
+We are developing an experimental local bridge for Nostr WoT. The desktop extension connects to the signer over Wi-Fi or Bluetooth Low Energy (BLE), while the identity key stays on the signer. The signing connection uses no public relay. Publishing the resulting event to Nostr is still the client application's responsibility and may require internet access.
+
+## One protocol, two ways to connect
+
+Wi-Fi uses a local WebSocket connection. Bluetooth uses a GATT connection to the phone. Both carry the same authenticated session and encrypted request format, called `nwlan/2`.
+
+The signer displays a pairing code. The browser reads or pastes that code, verifies the signer's transport key, and asks to pair. You approve the connection on the signer. Pairing does not automatically authorize every operation: the signer's permissions still apply, along with the extension's website permissions.
+
+The connection uses transport keys separate from your Nostr identity. A new session gets its own encryption and authentication keys. Closing the connection, changing accounts or revoking access invalidates pending work. The extension does not silently switch to another signing key when the phone disconnects.
+
+## A proposal other applications can implement
+
+We have written an [experimental protocol draft](https://github.com/nostr-wot/nostr-wot-extension/blob/main/nips/signing/02-local-signer-bridge.md) with pairing formats, authentication transcripts, transport mappings, replay rules and [public test vectors](https://github.com/nostr-wot/nostr-wot-extension/blob/main/nips/signing/local-bridge-vectors.json). It is an unnumbered proposal, not an accepted NIP.
+
+The draft reuses the request objects familiar from [NIP-46](https://github.com/nostr-protocol/nips/blob/master/46.md), with a different local transport envelope. It does not require applications to copy the Nostr WoT interface. A compatible client could be a desktop app, an extension or another native application.
+
+The existing [NIP-BE](https://github.com/nostr-protocol/nips/blob/master/BE.md) describes BLE communication between Nostr clients and relays. Our proposal addresses communication with a signer and uses a different handshake and frame format. These are distinct protocols.
+
+## What is ready, and what still needs testing
+
+The browser client and wallet session have automated interoperability tests for signing, encryption, approval and revocation. That is useful evidence, but it does not replace testing Bluetooth on real phones or implementing the protocol independently. Browser support and mobile background restrictions also affect availability. The current browser connection lives in an extension tab, which must remain open; its transport key is kept only in memory.
+
+The draft lists a replay-cache retention edge case that needs correction before full conformance is claimed. It also states the security limits: local connectivity does not prove physical proximity, observers can see traffic timing and size, and this version does not provide forward secrecy. Session separation prevents cross-session replay; it is not a ratchet.
+
+Treat this as developer work in progress. The feature is opt-in, and availability depends on the particular extension and wallet build. This post does not announce availability in every browser store.
+
+## A shared SDK is the next step
+
+A small `@nostr-wot/local-bridge` package would let applications reuse pairing validation, transcript construction, session state and BLE framing. Browser WebSocket and Web Bluetooth adapters can sit alongside it, while native apps provide platform-specific listeners and permission handling.
+
+The package should reuse existing Nostr cryptography and signing contracts. It should not contain a second wallet, permission database or copy of the application UI. Migrating the extension and wallet onto the same tested core would reduce duplicated protocol code and give other implementers a practical starting point.
+
+That package is a proposed next step, not an npm release announcement. Feedback on the draft, independent implementations and physical-device interoperability results will help determine what should become stable.
