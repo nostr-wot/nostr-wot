@@ -1,0 +1,60 @@
+---
+title: "Criar uma frase de recuperação com dados"
+description: "Crie sua frase de recuperação do Nostr com jogadas de dados ou lançamentos de moeda reais em vez da aleatoriedade do computador e faça o backup como qualquer outra frase."
+excerpt: "Crie sua frase de recuperação do Nostr com jogadas de dados ou lançamentos de moeda reais em vez da aleatoriedade do computador."
+date: "2026-10-21"
+author: {"name": "Leon Acosta", "avatar": "/authors/leon-profile.jpg"}
+tags: ["Extension", "Identity", "Recovery"]
+published: true
+translationKey: "create-recovery-phrase-with-dice"
+difficulty: "intermediate"
+order: 1.15
+---
+
+Ao criar uma conta com uma frase-semente, a extensão gera 24 palavras de recuperação com a aleatoriedade do seu computador. Se preferir não depender dela, você pode criar a frase com jogadas de dados ou lançamentos de moeda reais. É necessário o Nostr WoT 0.8.15 ou posterior.
+
+## Antes de começar
+
+Tenha um dado comum de seis faces ou uma moeda, e alguns minutos tranquilos. Com dados são 100 jogadas; com moeda, 256 lançamentos. Registre apenas jogadas reais: números inventados são bem menos aleatórios do que parecem.
+
+## Abra o jogo de dados
+
+1. Comece a configuração e escolha **Criar com uma frase-semente**.
+2. Abaixo da frase gerada, encontre **Crie sua própria semente** e escolha **Usar dados ou uma moeda**. O jogo abre em uma aba própria, então uma sessão longa não se perde quando o popup fecha.
+
+![Crie sua própria semente abaixo da frase de recuperação gerada](/images/guides/extension/dice-seed-create.png)
+
+## Registre suas jogadas
+
+1. Escolha **Dados** ou **Moeda**. A escolha fica travada ao registrar o primeiro resultado, então os dois nunca se misturam.
+2. Jogue o dado e toque na face que caiu para cima, ou pressione de **1** a **6** no teclado. Na moeda, cara é 1 e coroa é 0.
+3. Cada resultado rola o dado na tela e enche a barra rumo a 256 bits. Pressione **Backspace** ou **Desfazer último** para remover um erro.
+
+![Escolha entre dados ou moeda antes da primeira jogada](/images/guides/extension/dice-seed-choose.png)
+
+![Cem jogadas registradas que chegam a 256 bits](/images/guides/extension/dice-seed-rolls.png)
+
+## Use a frase
+
+1. Com 100 jogadas (ou 256 lançamentos), escolha **Usar esta semente**. Se a criação falhar, suas jogadas ficam guardadas para tentar de novo.
+2. A aba nunca mostra as palavras. Escolha **Fechar esta aba** e volte à configuração.
+
+![O jogo concluído, que pede para voltar à configuração](/images/guides/extension/dice-seed-done.png)
+
+3. De volta à tela de criação, a nova frase substitui a gerada. Ela começa oculta, e um aviso confirma que veio das suas jogadas.
+4. Revele-a em um lugar reservado, faça o backup como de costume e continue a configuração. Veja [Criar uma conta Nostr](/guides/create-nostr-account) para a verificação do backup e a senha.
+
+![A nova frase, oculta até você revelar, com o aviso dos dados](/images/guides/extension/dice-seed-handoff.png)
+
+<Callout type="warning">
+Se você levar mais de cinco minutos para voltar à configuração, a frase dos dados expira antes de ser salva. A tela de criação avisa e mostra uma nova frase gerada. Jogue de novo se quiser a sua.
+</Callout>
+
+## Confira as palavras offline
+
+A frase não é misturada com a aleatoriedade do computador, então as mesmas jogadas sempre geram as mesmas palavras:
+
+- **Moeda:** os 256 lançamentos são os bits de entropia BIP-39, a partir do primeiro.
+- **Dados:** as jogadas são escritas como dígitos e processadas com SHA-256, o mesmo método do Coldcard.
+
+Uma ferramenta offline que use o mesmo método deve gerar as mesmas 24 palavras. Use-a apenas em um computador sem conexão com a internet.

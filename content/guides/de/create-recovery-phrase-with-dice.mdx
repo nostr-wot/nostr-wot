@@ -1,0 +1,60 @@
+---
+title: "Eine Wiederherstellungsphrase mit Würfeln erstellen"
+description: "Erstellen Sie Ihre Nostr-Wiederherstellungsphrase mit echten Würfel- oder Münzwürfen statt mit dem Zufall Ihres Computers und sichern Sie sie wie jede andere Phrase."
+excerpt: "Erstellen Sie Ihre Nostr-Wiederherstellungsphrase mit echten Würfel- oder Münzwürfen statt mit dem Zufall Ihres Computers."
+date: "2026-10-21"
+author: {"name": "Leon Acosta", "avatar": "/authors/leon-profile.jpg"}
+tags: ["Extension", "Identity", "Recovery"]
+published: true
+translationKey: "create-recovery-phrase-with-dice"
+difficulty: "intermediate"
+order: 1.15
+---
+
+Wenn Sie ein Konto mit einer Seed-Phrase erstellen, erzeugt die Erweiterung 24 Wiederherstellungswörter aus dem Zufall Ihres Computers. Wenn Sie sich darauf nicht verlassen möchten, können Sie die Phrase stattdessen aus echten Würfel- oder Münzwürfen erstellen. Dafür brauchen Sie Nostr WoT 0.8.15 oder neuer.
+
+## Bevor Sie beginnen
+
+Halten Sie einen normalen sechsseitigen Würfel oder eine Münze bereit und nehmen Sie sich ein paar ruhige Minuten. Mit Würfeln sind es 100 Würfe, mit einer Münze 256. Erfassen Sie nur echte Würfe: Ausgedachte Zahlen sind viel weniger zufällig, als sie wirken.
+
+## Das Würfelspiel öffnen
+
+1. Starten Sie die Einrichtung und wählen Sie **Mit Seed-Phrase erstellen**.
+2. Unter der erzeugten Phrase finden Sie **Eigenen Seed würfeln**. Wählen Sie **Würfel oder Münze verwenden**. Das Spiel öffnet sich in einem eigenen Tab, damit eine lange Sitzung nicht verloren geht, wenn sich das Popup schließt.
+
+![Eigenen Seed würfeln unter der erzeugten Wiederherstellungsphrase](/images/guides/extension/dice-seed-create.png)
+
+## Würfe erfassen
+
+1. Wählen Sie **Würfel** oder **Münze**. Die Auswahl wird mit dem ersten Ergebnis gesperrt, damit sich beides nie mischt.
+2. Werfen Sie den Würfel und tippen Sie die oben liegende Seite an, oder drücken Sie **1** bis **6** auf der Tastatur. Bei der Münze ist Kopf 1 und Zahl 0.
+3. Jedes Ergebnis lässt den Würfel auf dem Bildschirm rollen und füllt den Balken bis 256 Bit. Mit der **Rücktaste** oder **Letzten rückgängig** entfernen Sie einen Fehler.
+
+![Auswahl zwischen Würfel und Münze vor dem ersten Wurf](/images/guides/extension/dice-seed-choose.png)
+
+![Hundert erfasste Würfe, die 256 Bit erreichen](/images/guides/extension/dice-seed-rolls.png)
+
+## Die Phrase verwenden
+
+1. Bei 100 Würfen (oder 256 Münzwürfen) wählen Sie **Diesen Seed verwenden**. Schlägt das Erstellen fehl, bleiben Ihre Würfe für einen neuen Versuch erhalten.
+2. Der Tab zeigt die Wörter nie an. Wählen Sie **Diesen Tab schließen** und kehren Sie zur Einrichtung zurück.
+
+![Das abgeschlossene Spiel mit dem Hinweis, zur Einrichtung zurückzukehren](/images/guides/extension/dice-seed-done.png)
+
+3. Zurück auf dem Erstellungsbildschirm ersetzt Ihre neue Phrase die erzeugte. Sie ist zunächst verborgen, und ein Hinweis bestätigt, dass sie aus Ihren Würfen stammt.
+4. Zeigen Sie sie an einem ungestörten Ort an, sichern Sie sie wie gewohnt und setzen Sie die Einrichtung fort. Die Sicherungsprüfung und das Passwort beschreibt [Ein Nostr-Konto erstellen](/guides/create-nostr-account).
+
+![Die neue Phrase, verborgen bis zum Anzeigen, mit dem Würfelhinweis](/images/guides/extension/dice-seed-handoff.png)
+
+<Callout type="warning">
+Wenn Sie länger als fünf Minuten brauchen, um zur Einrichtung zurückzukehren, läuft die gewürfelte Phrase ab, bevor sie gespeichert ist. Der Erstellungsbildschirm sagt Ihnen das und zeigt eine neu erzeugte Phrase. Würfeln Sie erneut, wenn Sie Ihre eigene möchten.
+</Callout>
+
+## Die Wörter offline prüfen
+
+Die Phrase wird nicht mit dem Zufall des Computers gemischt, daher ergeben dieselben Würfe immer dieselben Wörter:
+
+- **Münze:** Die 256 Würfe sind die BIP-39-Entropiebits, der erste Wurf zuerst.
+- **Würfel:** Die Würfe werden als Ziffern geschrieben und mit SHA-256 gehasht, wie bei Coldcard.
+
+Ein Offline-Werkzeug mit derselben Methode sollte dieselben 24 Wörter liefern. Verwenden Sie es nur auf einem Computer ohne Internetverbindung.

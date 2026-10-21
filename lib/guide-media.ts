@@ -19,6 +19,7 @@ export const GUIDE_VIDEOS = {
   archive: { id: "He4gz4occgY", title: "How to Back Up and Migrate Nostr Events with Nostr WoT" },
   authentication: { id: "4TmndKyE8D4", title: "Nostr Backend and Relay Authentication: Choose Who Can Log You In" },
   connect: { id: "e-E9u2UyL3E", title: "Nostr Connect: Use Your Remote Signer in the Browser" },
+  diceSeed: { id: null as string | null, title: "Create a Nostr Recovery Phrase with Real Dice" },
 } as const;
 
 export type GuideVideo = keyof typeof GUIDE_VIDEOS;
@@ -38,6 +39,7 @@ export const GUIDE_MEDIA: Record<string, GuideMedia> = {
   'account-archive': { screenshots: [], videos: ['archive'] },
   'getting-started': { screenshots: ['account-methods'], videos: ['account'] },
   'create-nostr-account': { screenshots: ['account-methods', 'security'], videos: ['account'] },
+  'create-recovery-phrase-with-dice': { screenshots: [], videos: ['diceSeed'] },
   'import-nostr-account': { screenshots: ['import-key'], videos: ['backup'] },
   'connect-nostr-signer': { screenshots: ['remote-signer'], videos: ['connect'] },
   'watch-only-nostr-account': { screenshots: ['watch-only'] },
