@@ -23,7 +23,7 @@ const ogLocaleMap: Record<Locale, string> = {
 };
 import { BlogContent, BlogCard, BlogSidebar, BlogPostWrapper } from '@/components/blog';
 import { ScrollReveal, Section } from '@/components/ui';
-import Breadcrumbs from '@/components/ui/Breadcrumbs';
+import {ArticleLayout} from '@/components/layout/ArticleLayout';
 import { BlogAuthorFollow } from '@/components/blog/BlogSidebar';
 import {NewsletterSection} from "@/components/layout/NewsletterSection";
 
@@ -131,26 +131,19 @@ export default async function BlogPostPage({ params }: Props) {
     <BlogPostWrapper translations={post.translations}>
       <JsonLd data={[postLd, crumbsLd]} />
       <main className="py-4 mb-14">
-        <div className="mx-auto max-w-5xl px-6 pt-4 pb-6">
-          <Breadcrumbs items={crumbs} label={t('breadcrumb')} />
-        </div>
-        <article>
-          {/* Featured Image */}
-            <div className="max-w-4xl mx-auto px-6 mb-10">
-              <div className="relative aspect-[2/1] rounded-2xl overflow-hidden">
-                <Image
-                  src={post.featuredImage}
-                  alt={post.title}
-                  fill
-                  className="object-cover"
-                  priority
-                  sizes="(max-width: 1200px) 100vw, 1200px"
-                />
-              </div>
-            </div>
-
-          <div className="mx-auto grid max-w-5xl gap-10 px-6 pb-16 lg:grid-cols-[minmax(0,1fr)_16rem] lg:gap-12">
-            <div className="min-w-0">
+        <ArticleLayout crumbs={crumbs} breadcrumbLabel={t('breadcrumb')} image={post.featuredImage} title={post.title} sidebar={
+                  <BlogSidebar
+                    tags={allTags}
+                    currentLocale={locale as Locale}
+                    translations={post.translations}
+                    allPosts={allPosts.map((p) => ({
+                      slug: p.slug,
+                      title: p.title,
+                      excerpt: p.excerpt,
+                      tags: p.tags,
+                    }))}
+                  />
+        }>
               {/* Article header */}
               <header className="relative pb-8">
                 <div className="min-w-0">
@@ -251,24 +244,7 @@ export default async function BlogPostPage({ params }: Props) {
 
                 </div>
               </div>
-            </div>
-            <div className="order-first min-w-0 lg:order-last">
-              <div className="rounded-xl border border-gray-200 bg-white p-5 dark:border-gray-800 dark:bg-gray-900 lg:sticky lg:top-24">
-                  <BlogSidebar
-                    tags={allTags}
-                    currentLocale={locale as Locale}
-                    translations={post.translations}
-                    allPosts={allPosts.map((p) => ({
-                      slug: p.slug,
-                      title: p.title,
-                      excerpt: p.excerpt,
-                      tags: p.tags,
-                    }))}
-                  />
-              </div>
-            </div>
-          </div>
-        </article>
+        </ArticleLayout>
 
         {/* Related Posts */}
         {relatedPosts.length > 0 && (

@@ -1,3 +1,4 @@
+import {matchesBlogTopics} from '@/lib/blog-filters';
 import { serializeJsonLd } from '@/lib/serialize-jsonld';
 import { withMetadataPolicy } from '@/lib/metadata-policy';
 import type { Metadata } from 'next';
@@ -12,7 +13,7 @@ import {NewsletterSection} from "@/components/layout/NewsletterSection";
 
 type Props = {
   params: Promise<{ locale: string }>;
-  searchParams: Promise<{ q?: string; tag?: string }>;
+  searchParams: Promise<{ q?: string; tag?: string | string[] }>;
 };
 
 async function pageMetadata({ params }: Props): Promise<Metadata> {
@@ -39,6 +40,7 @@ async function pageMetadata({ params }: Props): Promise<Metadata> {
 export default async function BlogPage({ params, searchParams }: Props) {
   const { locale } = await params;
   const { q: searchQuery, tag: tagFilter } = await searchParams;
+  const selectedTags = (Array.isArray(tagFilter) ? tagFilter : tagFilter ? [tagFilter] : []).filter(Boolean);
   const t = await getTranslations('blog');
   const allPosts = getAllBlogPosts(locale as Locale);
   const allTags = getAllTags(locale as Locale);
@@ -50,8 +52,7 @@ export default async function BlogPage({ params, searchParams }: Props) {
       post.excerpt.toLowerCase().includes(searchQuery.toLowerCase()) ||
       post.tags.some(tag => tag.toLowerCase().includes(searchQuery.toLowerCase()));
 
-    const matchesTag = !tagFilter ||
-      post.tags.some(tag => tag.toLowerCase() === tagFilter.toLowerCase());
+    const matchesTag = matchesBlogTopics(post.tags, selectedTags);
 
     return matchesSearch && matchesTag;
   });
@@ -173,11 +174,13 @@ export default async function BlogPage({ params, searchParams }: Props) {
             </div>
 
             {/* Sidebar */}
-            <aside className="hidden lg:block w-80 flex-shrink-0">
+            <aside className="mt-8 w-full flex-shrink-0 lg:mt-0 lg:w-80">
               <div className="sticky top-24">
                 <BlogSidebar
                   tags={allTags}
-                  currentTag={tagFilter}
+                  currentTags={selectedTags}
+                  currentQuery={searchQuery || ''}
+                  key={JSON.stringify([selectedTags, searchQuery])}
                   currentLocale={locale as Locale}
                   allPosts={allPosts.map((p) => ({
                     slug: p.slug,
