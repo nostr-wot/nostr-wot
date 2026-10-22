@@ -41,10 +41,17 @@ export const EM_EN_DASH = /[—–]/;
 export const EMOJI =
   /[\u{1F300}-\u{1FAFF}\u{2600}-\u{27BF}\u{2190}-\u{21FF}\u{2B00}-\u{2BFF}\u{1F1E6}-\u{1F1FF}]/u;
 export const HARD_LINK = /https?:\/\//i;
-// Explicitly requested external links. Keep article URLs derived as before.
+// Explicitly requested external links, matched exactly. Keep article URLs derived as before.
+// docs/social-posting.md records why each one is here.
+const APPROVED_LINKS = new Set([
+  'https://lacrypta.ar/',
+  'https://youtu.be/He4gz4occgY', // Account Archive lesson
+  'https://youtu.be/e-E9u2UyL3E', // Nostr Connect lesson
+  'https://youtu.be/N0Kg5gZs5Ak', // Dice seed phrase lesson
+]);
 export function hasUnapprovedLink(text) {
   const links = text.match(/https?:\/\/[^\s]*/gi) ?? [];
-  return links.some((url) => url !== 'https://lacrypta.ar/' && url !== 'https://youtu.be/He4gz4occgY' && url !== 'https://youtu.be/e-E9u2UyL3E');
+  return links.some((url) => !APPROVED_LINKS.has(url));
 }
 // docs/social-voice.md section 5: dead calls to action. Narrow on purpose,
 // these are the ones that have actually shipped.
@@ -91,7 +98,7 @@ export function collectErrors() {
     }
     if (hasUnapprovedLink(text)) {
       errors.push(
-        `${rel}: "${key}" contains an unapproved hard-coded link. Only the verified La Crypta credit and Account Archive lesson URLs are allowed; the poster derives and appends the canonical URL. Use {url} only to place it somewhere other than the end.`,
+        `${rel}: "${key}" contains an unapproved hard-coded link. Only the verified La Crypta credit and published lesson URLs listed in checks.mjs are allowed; the poster derives and appends the canonical URL. Use {url} only to place it somewhere other than the end.`,
       );
     }
     if (EM_EN_DASH.test(text)) {
