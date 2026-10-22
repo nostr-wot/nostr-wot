@@ -360,3 +360,7 @@ lookalike hosts and altered paths in the social tests.
 ## Account Archive lesson link
 
 The user explicitly requested the published lesson URL https://youtu.be/He4gz4occgY alongside the derived Account Archive guide URL. That exact video URL is allowed in social copy; arbitrary YouTube URLs, query variants and lookalike hosts remain rejected. The account-archive entry publishes to LinkedIn only.
+
+## Dice seed phrase lesson link
+
+The user asked for the published lesson URL https://youtu.be/N0Kg5gZs5Ak in the posts for the dice seed phrase guide (`create-recovery-phrase-with-dice`), alongside the derived guide URL. The same exact-URL rule applies; the entry publishes to LinkedIn and Nostr.
