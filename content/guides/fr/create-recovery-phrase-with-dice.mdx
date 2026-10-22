@@ -1,0 +1,60 @@
+---
+title: "Créer une phrase de récupération avec des dés"
+description: "Créez votre phrase de récupération Nostr avec de vrais lancers de dés ou de pièce plutôt qu'avec le hasard de votre ordinateur, puis sauvegardez-la comme toute autre phrase."
+excerpt: "Créez votre phrase de récupération Nostr avec de vrais lancers de dés ou de pièce plutôt qu'avec le hasard de votre ordinateur."
+date: "2026-10-21"
+author: {"name": "Leon Acosta", "avatar": "/authors/leon-profile.jpg"}
+tags: ["Extension", "Identity", "Recovery"]
+published: true
+translationKey: "create-recovery-phrase-with-dice"
+difficulty: "intermediate"
+order: 1.15
+---
+
+Lorsque vous créez un compte avec une phrase seed, l'extension génère 24 mots de récupération à partir du hasard de votre ordinateur. Si vous préférez ne pas en dépendre, vous pouvez créer la phrase avec de vrais lancers de dés ou de pièce. Il faut Nostr WoT 0.8.15 ou une version ultérieure.
+
+## Avant de commencer
+
+Prévoyez un dé ordinaire à six faces ou une pièce, et quelques minutes au calme. Avec des dés, il faut 100 lancers ; avec une pièce, 256. Ne notez que de vrais lancers : les nombres inventés sont bien moins aléatoires qu'ils n'en ont l'air.
+
+## Ouvrir le jeu de dés
+
+1. Lancez la configuration et choisissez **Créer avec une phrase seed**.
+2. Sous la phrase générée, repérez **Créez votre propre graine** et choisissez **Utiliser des dés ou une pièce**. Le jeu s'ouvre dans son propre onglet, pour qu'une longue session ne soit pas perdue à la fermeture de la popup.
+
+![Créez votre propre graine sous la phrase de récupération générée](/images/guides/extension/dice-seed-create.png)
+
+## Noter vos lancers
+
+1. Choisissez **Dés** ou **Pièce**. Le choix se verrouille dès le premier résultat, pour que les deux ne se mélangent jamais.
+2. Lancez le dé et touchez la face obtenue, ou appuyez sur **1** à **6** au clavier. Pour une pièce, face vaut 1 et pile vaut 0.
+3. Chaque résultat fait rouler le dé à l'écran et remplit la barre vers 256 bits. Appuyez sur **Retour arrière** ou **Annuler le dernier** pour corriger une erreur.
+
+![Choix entre dés et pièce avant le premier lancer](/images/guides/extension/dice-seed-choose.png)
+
+![Cent lancers notés qui atteignent 256 bits](/images/guides/extension/dice-seed-rolls.png)
+
+## Utiliser la phrase
+
+1. À 100 lancers (ou 256 tirages), choisissez **Utiliser cette graine**. Si la création échoue, vos lancers sont conservés pour réessayer.
+2. L'onglet n'affiche jamais les mots. Choisissez **Fermer cet onglet** et revenez à la configuration.
+
+![Le jeu terminé, qui invite à revenir à la configuration](/images/guides/extension/dice-seed-done.png)
+
+3. De retour sur l'écran de création, votre nouvelle phrase remplace celle générée. Elle reste masquée au départ, et un message confirme qu'elle provient de vos lancers.
+4. Affichez-la dans un endroit privé, sauvegardez-la comme d'habitude et poursuivez la configuration. Voir [Créer un compte Nostr](/guides/create-nostr-account) pour la vérification de la sauvegarde et le mot de passe.
+
+![La nouvelle phrase, masquée jusqu'à ce que vous l'affichiez, avec le message des dés](/images/guides/extension/dice-seed-handoff.png)
+
+<Callout type="warning">
+Si vous mettez plus de cinq minutes à revenir à la configuration, la phrase issue des dés expire avant d'être enregistrée. L'écran de création vous le signale et affiche une nouvelle phrase générée. Relancez si vous voulez la vôtre.
+</Callout>
+
+## Vérifier les mots hors ligne
+
+La phrase n'est pas mélangée au hasard de l'ordinateur : les mêmes lancers donnent toujours les mêmes mots.
+
+- **Pièce :** les 256 tirages sont les bits d'entropie BIP-39, en commençant par le premier.
+- **Dés :** les lancers sont écrits en chiffres puis hachés avec SHA-256, la même méthode que Coldcard.
+
+Un outil hors ligne qui utilise la même méthode doit donner les mêmes 24 mots. Utilisez-le uniquement sur un ordinateur non connecté à internet.

@@ -1,0 +1,60 @@
+---
+title: "Creare una frase di recupero con i dadi"
+description: "Crea la tua frase di recupero Nostr con veri lanci di dadi o di moneta invece della casualità del computer, poi salvala come qualsiasi altra frase."
+excerpt: "Crea la tua frase di recupero Nostr con veri lanci di dadi o di moneta invece della casualità del computer."
+date: "2026-10-21"
+author: {"name": "Leon Acosta", "avatar": "/authors/leon-profile.jpg"}
+tags: ["Extension", "Identity", "Recovery"]
+published: true
+translationKey: "create-recovery-phrase-with-dice"
+difficulty: "intermediate"
+order: 1.15
+---
+
+Quando crei un account con una frase seed, l'estensione genera 24 parole di recupero dalla casualità del computer. Se preferisci non dipendere da essa, puoi creare la frase con veri lanci di dadi o di moneta. Serve Nostr WoT 0.8.15 o successivo.
+
+## Prima di iniziare
+
+Procurati un normale dado a sei facce o una moneta, e qualche minuto tranquillo. Con i dadi servono 100 lanci; con la moneta, 256. Registra solo lanci reali: i numeri inventati sono molto meno casuali di quanto sembri.
+
+## Apri il gioco dei dadi
+
+1. Avvia la configurazione e scegli **Crea con una frase seed**.
+2. Sotto la frase generata, trova **Crea il tuo seed** e scegli **Usa dadi o una moneta**. Il gioco si apre in una scheda propria, così una sessione lunga non va persa quando il popup si chiude.
+
+![Crea il tuo seed sotto la frase di recupero generata](/images/guides/extension/dice-seed-create.png)
+
+## Registra i lanci
+
+1. Scegli **Dadi** o **Moneta**. La scelta si blocca al primo risultato, così le due non si mescolano mai.
+2. Lancia il dado e tocca la faccia uscita, oppure premi da **1** a **6** sulla tastiera. Con la moneta, testa è 1 e croce è 0.
+3. Ogni risultato fa rotolare il dado sullo schermo e riempie la barra verso 256 bit. Premi **Backspace** o **Annulla l'ultimo** per togliere un errore.
+
+![Scelta tra dadi e moneta prima del primo lancio](/images/guides/extension/dice-seed-choose.png)
+
+![Cento lanci registrati che raggiungono 256 bit](/images/guides/extension/dice-seed-rolls.png)
+
+## Usa la frase
+
+1. A 100 lanci (o 256 lanci di moneta), scegli **Usa questo seed**. Se la creazione non riesce, i lanci restano per riprovare.
+2. La scheda non mostra mai le parole. Scegli **Chiudi questa scheda** e torna alla configurazione.
+
+![Il gioco completato, che invita a tornare alla configurazione](/images/guides/extension/dice-seed-done.png)
+
+3. Nella schermata di creazione, la nuova frase sostituisce quella generata. All'inizio è nascosta, e un avviso conferma che viene dai tuoi lanci.
+4. Mostrala in un luogo riservato, salvala come al solito e continua la configurazione. Vedi [Creare un account Nostr](/guides/create-nostr-account) per la verifica del backup e la password.
+
+![La nuova frase, nascosta finché non la mostri, con l'avviso dei dadi](/images/guides/extension/dice-seed-handoff.png)
+
+<Callout type="warning">
+Se impieghi più di cinque minuti a tornare alla configurazione, la frase dei dadi scade prima di essere salvata. La schermata di creazione te lo segnala e mostra una nuova frase generata. Lancia di nuovo se vuoi la tua.
+</Callout>
+
+## Verifica le parole offline
+
+La frase non viene mescolata con la casualità del computer, quindi gli stessi lanci danno sempre le stesse parole:
+
+- **Moneta:** i 256 lanci sono i bit di entropia BIP-39, a partire dal primo.
+- **Dadi:** i lanci vengono scritti come cifre ed elaborati con SHA-256, lo stesso metodo di Coldcard.
+
+Uno strumento offline che usa lo stesso metodo dovrebbe darti le stesse 24 parole. Usalo solo su un computer non connesso a internet.
