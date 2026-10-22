@@ -47,3 +47,9 @@ Documentation-only pushes are still ignored. Social/test-only changes run the fa
 Deployment checks the live homepage and freshly generated sitemap, then submits changed URLs and the homepage to IndexNow. Undated URLs use a stable cache marker, and each successful run saves a fresh cache key. Indexing requests do not guarantee that a search engine will reindex a URL or when it will do so.
 
 Rollback: if deployment health checks or the public flows fail, revert the release merge on main and let the same verified deployment pipeline restore the previous application. Do not remove or replace `data/newsletter` during rollback.
+
+## Shared article layout and filters
+
+Blog posts and guides use `ArticleLayout` for localized breadcrumbs, a full-width featured image, and the article/sidebar grid. The sidebar begins beside the article tags on desktop and follows the article on mobile. Preserve this DOM order when changing responsive styles. Guide breadcrumb JSON-LD uses the same localized items as the visible navigation.
+
+`ArticleSidebar` shares language selection, keyword search and topic chips across both sections. It initially shows six topics and keeps selected topics visible when searching. Multiple selected topics match any selected topic; repeated `tag` query parameters preserve names containing commas. Keyword searches retain the selected topics. Each section keeps its own routes and localized content.

@@ -1,3 +1,4 @@
+import {matchesBlogTopics} from '@/lib/blog-filters';
 import { serializeJsonLd } from '@/lib/serialize-jsonld';
 import { withMetadataPolicy } from '@/lib/metadata-policy';
 import type { Metadata } from 'next';
@@ -12,7 +13,7 @@ import { NewsletterSection } from '@/components/layout/NewsletterSection';
 
 type Props = {
   params: Promise<{ locale: string }>;
-  searchParams: Promise<{ q?: string; tag?: string }>;
+  searchParams: Promise<{ q?: string; tag?: string | string[] }>;
 };
 
 async function pageMetadata({ params }: Props): Promise<Metadata> {
@@ -39,6 +40,7 @@ async function pageMetadata({ params }: Props): Promise<Metadata> {
 export default async function GuidesPage({ params, searchParams }: Props) {
   const { locale } = await params;
   const { q: searchQuery, tag: tagFilter } = await searchParams;
+  const selectedTags = (Array.isArray(tagFilter) ? tagFilter : tagFilter ? [tagFilter] : []).filter(Boolean);
   const t = await getTranslations('guides');
   const allGuides = getAllGuides(locale as Locale);
   const allTags = getAllGuideTags(locale as Locale);
@@ -50,8 +52,7 @@ export default async function GuidesPage({ params, searchParams }: Props) {
       guide.excerpt.toLowerCase().includes(searchQuery.toLowerCase()) ||
       guide.tags.some(tag => tag.toLowerCase().includes(searchQuery.toLowerCase()));
 
-    const matchesTag = !tagFilter ||
-      guide.tags.some(tag => tag.toLowerCase() === tagFilter.toLowerCase());
+    const matchesTag = matchesBlogTopics(guide.tags, selectedTags);
 
     return matchesSearch && matchesTag;
   });
@@ -159,7 +160,9 @@ export default async function GuidesPage({ params, searchParams }: Props) {
               <div className="sticky top-24">
                 <GuideSidebar
                   tags={allTags}
-                  currentTag={tagFilter}
+                  currentTags={selectedTags}
+                  currentQuery={searchQuery || ''}
+                  key={JSON.stringify([selectedTags, searchQuery])}
                   currentLocale={locale as Locale}
                   allGuides={allGuides.map((g) => ({
                     slug: g.slug,

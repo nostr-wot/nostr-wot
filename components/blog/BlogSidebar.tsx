@@ -15,7 +15,8 @@ interface SearchablePost {
 
 interface BlogSidebarProps {
   tags: string[];
-  currentTag?: string;
+  currentTags?: string[];
+  currentQuery?: string;
   authorNpub?: string;
   authorSocials?: AuthorSocials;
   currentLocale?: Locale;

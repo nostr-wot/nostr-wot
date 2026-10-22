@@ -7,7 +7,8 @@ import { type Locale } from '@/i18n/config';
 
 interface GuideSidebarProps {
   tags?: string[];
-  currentTag?: string;
+  currentTags?: string[];
+  currentQuery?: string;
   relatedGuides?: { slug: string; title: string; date: string }[];
   currentLocale: Locale;
   translations?: Partial<Record<Locale, string>>;
@@ -16,7 +17,8 @@ interface GuideSidebarProps {
 
 export function GuideSidebar({
   tags,
-  currentTag,
+  currentTags,
+  currentQuery,
   relatedGuides,
   currentLocale,
   translations,
@@ -25,7 +27,7 @@ export function GuideSidebar({
   const t = useTranslations('guides.sidebar');
   return (
     <div className="space-y-5">
-      <ArticleSidebar section="guides" tags={tags || []} currentTag={currentTag} currentLocale={currentLocale} translations={translations} allPosts={allGuides}/>
+      <ArticleSidebar section="guides" tags={tags || []} currentTags={currentTags} currentQuery={currentQuery} currentLocale={currentLocale} translations={translations} allPosts={allGuides}/>
       {/* Related Guides */}
       {relatedGuides && relatedGuides.length > 0 && (
         <div>
