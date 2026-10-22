@@ -77,4 +77,4 @@ Lesson 18 was aligned with the parent’s real Chrome recording: existing local 
 
 ## Dice recovery phrase lesson
 
-`/guides/create-recovery-phrase-with-dice` covers the extension 0.8.15 dice and coin game in all seven locales. Its five screenshots in `public/images/guides/extension/dice-seed-*.png` come from content-operations lesson 19's capture of the released 0.8.15 build; the handoff picture is taken before the phrase is revealed, so no recovery words appear. The `diceSeed` entry in `GUIDE_VIDEOS` holds lesson 19; keep its ID null until the upload is published and verified, then set the verified 11-character ID.
+`/guides/create-recovery-phrase-with-dice` covers the extension 0.8.15 dice and coin game in all seven locales. Its five screenshots in `public/images/guides/extension/dice-seed-*.png` come from content-operations lesson 19's capture of the released 0.8.15 build; the handoff picture is taken before the phrase is revealed, so no recovery words appear. The `diceSeed` entry in `GUIDE_VIDEOS` is lesson 19, published 21 October 2026 at https://youtu.be/N0Kg5gZs5Ak (1:24) and verified through YouTube's public oEmbed on the Nostr WoT channel.
