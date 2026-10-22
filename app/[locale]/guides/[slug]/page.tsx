@@ -3,7 +3,6 @@ import { withMetadataPolicy } from '@/lib/metadata-policy';
 import ReadingTime from '@/components/ui/ReadingTime';
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
-import Image from 'next/image';
 import { getTranslations } from 'next-intl/server';
 import { getGuide, getGuideSlugs, getRelatedGuides, getAllGuideTags, getAllGuides } from '@/lib/guides';
 import { generateBlogAlternates, getFullUrl } from '@/lib/metadata';
@@ -25,8 +24,9 @@ import { BlogContent } from '@/components/blog';
 import { GuideSidebar, GuidePostWrapper } from '@/components/guides';
 import { GuideMedia } from '@/components/guides/GuideMedia';
 import { GuideCard } from '@/components/guides';
-import { ScrollReveal, Section, LinkButton } from '@/components/ui';
-import { ArrowLeftIcon } from '@/components/icons';
+import { ScrollReveal, Section } from '@/components/ui';
+import {ArticleLayout} from '@/components/layout/ArticleLayout';
+import {breadcrumbJsonLd as makeBreadcrumbJsonLd} from '@/lib/jsonld';
 import { NewsletterSection } from '@/components/layout/NewsletterSection';
 
 type Props = {
@@ -136,30 +136,14 @@ export default async function GuidePostPage({ params }: Props) {
     'keywords': guide.tags.join(', '),
   };
 
-  const breadcrumbJsonLd = {
-    '@context': 'https://schema.org',
-    '@type': 'BreadcrumbList',
-    'itemListElement': [
-      {
-        '@type': 'ListItem',
-        'position': 1,
-        'name': 'Home',
-        'item': 'https://nostrwot.com',
-      },
-      {
-        '@type': 'ListItem',
-        'position': 2,
-        'name': 'Guides',
-        'item': getFullUrl('/guides', locale as Locale),
-      },
-      {
-        '@type': 'ListItem',
-        'position': 3,
-        'name': guide.title,
-        'item': getFullUrl(`/guides/${slug}`, locale as Locale),
-      },
-    ],
-  };
+  const blogLabels = await getTranslations('blog');
+  const prefix = locale === 'en' ? '' : `/${locale}`;
+  const crumbs = [
+    {name: blogLabels('home'), path: prefix || '/'},
+    {name: t('title'), path: `${prefix}/guides`},
+    {name: guide.title, path: `${prefix}/guides/${slug}`},
+  ];
+  const breadcrumbJsonLd = makeBreadcrumbJsonLd(crumbs.map(crumb=>({name:crumb.name,url:new URL(crumb.path, BASE_URL).href})));
 
   const formatDate = (dateString: string, loc: string = 'en') => {
     const date = new Date(dateString);
@@ -182,23 +166,25 @@ export default async function GuidePostPage({ params }: Props) {
         dangerouslySetInnerHTML={{ __html: serializeJsonLd(breadcrumbJsonLd) }}
       />
       <main className="py-4 mb-14">
-        <article>
-          {/* Hero */}
-          <header className="relative pt-24 pb-16">
-            <div className="max-w-4xl mx-auto px-6">
-              <ScrollReveal animation="fade-up" immediate>
-                <LinkButton
-                  href="/guides"
-                  variant="secondary"
-                  className="mb-8 inline-flex items-center gap-2 !px-4 !py-2 text-sm"
-                >
-                  <span className="inline-flex items-center gap-2 whitespace-nowrap">
-                    <ArrowLeftIcon className="w-4 h-4 shrink-0" />
-                    <span>{t('backToGuides')}</span>
-                  </span>
-                </LinkButton>
-              </ScrollReveal>
-
+        <ArticleLayout crumbs={crumbs} breadcrumbLabel={blogLabels('breadcrumb')} image={guide.featuredImage} title={guide.title} sidebar={
+                  <GuideSidebar
+                    tags={allTags}
+                    relatedGuides={relatedGuides.map((g) => ({
+                      slug: g.slug,
+                      title: g.title,
+                      date: g.date,
+                    }))}
+                    currentLocale={locale as Locale}
+                    translations={guide.translations}
+                    allGuides={allGuides.map((g) => ({
+                      slug: g.slug,
+                      title: g.title,
+                      excerpt: g.excerpt,
+                      tags: g.tags,
+                    }))}
+                  />
+        }>
+          <header className="relative pb-8">
               <ScrollReveal animation="fade-up" delay={100} immediate>
                 <div className="flex flex-wrap gap-2 mb-6">
                   {guide.difficulty && (
@@ -244,58 +230,10 @@ export default async function GuidePostPage({ params }: Props) {
                   </div>
                 </div>
               </ScrollReveal>
-            </div>
           </header>
-
-          {/* Featured Image */}
-          <ScrollReveal animation="fade-up" delay={300} immediate>
-            <div className="max-w-5xl mx-auto px-6 mb-12">
-              <div className="relative aspect-[2/1] rounded-2xl overflow-hidden">
-                <Image
-                  src={guide.featuredImage}
-                  alt={guide.title}
-                  fill
-                  className="object-cover"
-                  priority
-                  sizes="(max-width: 1200px) 100vw, 1200px"
-                />
-              </div>
-            </div>
-          </ScrollReveal>
-
-          {/* Content + Sidebar */}
-          <div className="flex justify-center max-w-7xl mx-auto px-6 pb-16">
-            <div className="min-w-0 lg:flex lg:gap-12">
-              {/* Main Content */}
-              <article className="flex-1 min-w-0 max-w-prose">
-                <BlogContent content={guide.content} />
-                <GuideMedia guideKey={guide.translationKey} />
-              </article>
-
-              {/* Sidebar */}
-              <aside className="hidden lg:block w-72 flex-shrink-0">
-                <div className="sticky top-24">
-                  <GuideSidebar
-                    tags={allTags}
-                    relatedGuides={relatedGuides.map((g) => ({
-                      slug: g.slug,
-                      title: g.title,
-                      date: g.date,
-                    }))}
-                    currentLocale={locale as Locale}
-                    translations={guide.translations}
-                    allGuides={allGuides.map((g) => ({
-                      slug: g.slug,
-                      title: g.title,
-                      excerpt: g.excerpt,
-                      tags: g.tags,
-                    }))}
-                  />
-                </div>
-              </aside>
-            </div>
-          </div>
-        </article>
+          <BlogContent content={guide.content} />
+          <GuideMedia guideKey={guide.translationKey} />
+        </ArticleLayout>
 
         {/* Related Guides */}
         {relatedGuides.length > 0 && (
