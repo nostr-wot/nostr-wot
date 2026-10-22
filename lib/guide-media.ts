@@ -19,7 +19,7 @@ export const GUIDE_VIDEOS = {
   archive: { id: "He4gz4occgY", title: "How to Back Up and Migrate Nostr Events with Nostr WoT" },
   authentication: { id: "4TmndKyE8D4", title: "Nostr Backend and Relay Authentication: Choose Who Can Log You In" },
   connect: { id: "e-E9u2UyL3E", title: "Nostr Connect: Use Your Remote Signer in the Browser" },
-  diceSeed: { id: null as string | null, title: "Create a Nostr Recovery Phrase with Real Dice" },
+  diceSeed: { id: "N0Kg5gZs5Ak", title: "Create Your Nostr Seed Phrase with Real Dice" },
 } as const;
 
 export type GuideVideo = keyof typeof GUIDE_VIDEOS;
