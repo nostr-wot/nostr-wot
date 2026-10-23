@@ -35,6 +35,7 @@ async function pageMetadata({ params }: Props): Promise<Metadata> {
 export default async function DocsOverviewPage() {
   const t = await getTranslations("docs");
   const help = await getTranslations("help");
+  const integrations = await getTranslations("passkeyIntegrations");
 
   // JSON-LD structured data
   const jsonLd = {
@@ -69,6 +70,10 @@ export default async function DocsOverviewPage() {
 
         <ScrollReveal animation="fade-up" delay={100}>
         <div className="grid md:grid-cols-2 gap-6 not-prose my-8">
+          <Link href="/passkey-integrations" className="block p-6 bg-gray-50 dark:bg-gray-900 rounded-xl border border-gray-200 dark:border-gray-800 hover:border-primary dark:hover:border-primary transition-colors">
+            <h3 className="font-semibold text-lg mb-2">{integrations("cardTitle")}</h3>
+            <p className="text-gray-600 dark:text-gray-400 text-sm">{integrations("cardBody")}</p>
+          </Link>
           <Link
             href="/docs/extension"
             className="block p-6 bg-gray-50 dark:bg-gray-900 rounded-xl border border-gray-200 dark:border-gray-800 hover:border-primary dark:hover:border-primary transition-colors"
