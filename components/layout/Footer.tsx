@@ -10,6 +10,7 @@ const socialIcons = { GitHub: GitHubIcon, LinkedIn: LinkedInIcon, Medium: Medium
 
 export default function Footer() {
   const u = useTranslations("ui");
+  const integrations = useTranslations("passkeyIntegrations");
   const t = useTranslations("common");
   const currentYear = new Date().getFullYear();
 
@@ -86,6 +87,9 @@ export default function Footer() {
                 <Link href="/help" className="text-gray-600 dark:text-gray-400 text-sm hover:text-primary transition-colors">
                   {t("nav.help")}
                 </Link>
+              </li>
+              <li>
+                <Link href="/passkey-integrations" className="text-gray-600 dark:text-gray-400 text-sm hover:text-primary transition-colors">{integrations("footerLabel")}</Link>
               </li>
               <li>
                 <Link href="/docs" className="text-gray-600 dark:text-gray-400 text-sm hover:text-primary transition-colors">

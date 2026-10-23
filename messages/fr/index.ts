@@ -1,5 +1,6 @@
 import help from './help.json';
 import uninstall from './uninstall.json';
+import passkeyIntegrations from './passkeyIntegrations.json';
 import ui from './ui.json';
 import common from './common.json';
 import home from './home.json';
@@ -30,6 +31,7 @@ import news from './news.json';
 const messages = {
   help,
   uninstall,
+  passkeyIntegrations,
   ui,
   common,
   home,
