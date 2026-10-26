@@ -1,0 +1,73 @@
+---
+title: "Nostr WoT SDK stabilizes passkey recovery and provider signing"
+description: "Stable npm packages now expose explicit passkey modes, encrypted recovery records and a provider signer with strict origin and account checks."
+seoDescription: "Nostr WoT SDK publishes stable passkey recovery packages with explicit key modes, encrypted vault records and pinned provider signing."
+excerpt: "The stable SDK release separates derived and stored passkeys, preserves recovery choices and adds provider signing without guessing an account mode."
+date: "2026-10-23"
+publishedAt: "2026-10-26"
+backfilled: false
+type: "story"
+tags: ["Nostr", "Nostr WoT", "SDK", "Passkeys", "Developers"]
+featuredImage: "/images/news/nostr-wot-sdk-stabilizes-passkey-recovery-and-provider-signing.svg"
+translationKey: "nostr-wot-sdk-stabilizes-passkey-recovery-and-provider-signing"
+sources:
+  - title: "Release stable passkey interoperability packages"
+    url: "https://github.com/nostr-wot/nostr-wot-sdk/pull/23"
+    publisher: "nostr-wot/nostr-wot-sdk"
+    date: "2026-10-23"
+  - title: "Passkey recovery for applications"
+    url: "https://github.com/nostr-wot/nostr-wot-sdk/blob/384023f947e7dcfe4d54f7862308cdf78040067c/docs/passkey-recovery.md"
+    publisher: "nostr-wot/nostr-wot-sdk"
+    date: "2026-10-23"
+  - title: "@nostr-wot/identity npm registry metadata"
+    url: "https://registry.npmjs.org/@nostr-wot%2Fidentity"
+    publisher: "npm"
+    date: "2026-10-23"
+  - title: "nostr-wot-sdk npm registry metadata"
+    url: "https://registry.npmjs.org/nostr-wot-sdk"
+    publisher: "npm"
+    date: "2026-10-23"
+  - title: "Support Nosskey account recovery and provider signing"
+    url: "https://github.com/nostr-wot/nostr-wot-sdk/pull/22"
+    publisher: "nostr-wot/nostr-wot-sdk"
+    date: "2026-10-23"
+published: true
+---
+
+The Nostr WoT SDK passkey work is now on stable npm tags. The npm registry lists [`@nostr-wot/identity` 1.1.0](https://registry.npmjs.org/@nostr-wot%2Fidentity) and [`nostr-wot-sdk` 3.0.1](https://registry.npmjs.org/nostr-wot-sdk) as `latest`, both published on 23 October 2026 from the commit that merged the [stable release pull request](https://github.com/nostr-wot/nostr-wot-sdk/pull/23). The package source is unchanged from the tested release candidates.
+
+This release is for developers building signers and Nostr applications. It makes passkey identity modes explicit, adds encrypted recovery records that can move through several host-controlled storage paths and supports an independently implemented provider signer for existing Nosskey accounts.
+
+## Derived and stored passkeys are different systems
+
+The identity package treats a passkey in one of two modes. A derived passkey deterministically produces the Nostr private key from WebAuthn PRF output. A stored passkey protects an existing private key, seed or multi-account vault encrypted under that output.
+
+New credentials carry a tagged user handle that identifies the mode before storage is read. A stored credential is never silently interpreted as derived. When an older untagged credential does not provide enough evidence, `resolvePasskeyIdentity` returns `ambiguous` with a public-key candidate instead of guessing. The application must show that key and obtain confirmation before deriving a secret.
+
+The distinction protects identity continuity. Derived mode ties the identity to the passkey calculation. Stored mode lets the same identity be protected again under another relying party, provided the host imports and re-encrypts it deliberately.
+
+## Recovery stays under host control
+
+[`@nostr-wot/identity/vault`](https://github.com/nostr-wot/nostr-wot-sdk/blob/384023f947e7dcfe4d54f7862308cdf78040067c/docs/passkey-recovery.md) supplies portable cryptography, record validation and orchestration. It does not call authenticators or open relay connections itself. The host provides WebAuthn or native credential operations, relay transport, event signing, signature verification and the user interface around consent.
+
+Stored records can contain one key or a vault with several accounts. The encrypted record binds its type, relying-party ID, author and credential ID as authenticated data. A provider write must first inspect existing storage. Any nonempty blob requires explicit overwrite confirmation, including when the old data cannot be decoded. A refused or failed provider write is an error and is not silently redirected to relays.
+
+Relay recovery is also explicit. The host must allow it, name the relays and receive at least one acknowledgement. New records use provisional kind `31778`, which is not reserved by an upstream NIP. Existing legacy records remain readable. A local largeBlob write, a relay acknowledgement or a provider claim each proves only that operation, not that another device can recover the account.
+
+## Existing Nosskey accounts get two integration paths
+
+[`nostr-wot-sdk` 3.0.1](https://github.com/nostr-wot/nostr-wot-sdk/pull/22) can read explicit Nosskey backups in direct-key or NIP-44 wrapped-key form while preserving their original PRF inputs. The recovered public key is checked against the backup, and the reader does not fall back between modes when evidence is missing.
+
+Applications that do not want to import a private key can use `NosskeyIframeSigner`. It pins the iframe window, HTTPS origin and selected account, verifies returned event content and signatures, applies request timeouts and requires explicit teardown. Provider consent and browser iframe or WebAuthn support are still external requirements. Protocol compatibility alone does not establish availability on every device or browser.
+
+## What changes for implementers
+
+Install the stable packages rather than the `next` candidates:
+
+```bash
+npm install @nostr-wot/identity@1.1.0 nostr-wot-sdk@3.0.1 nostr-tools
+```
+
+Hosts still need device-level tests for their authenticators and provider synchronization. They need to preserve unknown vault fields when rewriting a record, clear returned secret buffers, confirm the public key during migration and show whether recovery data is local, provider-backed or relay-backed. Recovery records are snapshots, so applications also need a policy for refreshing them after account changes.
+
+The stable tags make the tested APIs installable without a prerelease selector. They do not turn passkeys into a universal backup layer. Relying-party authorization remains a trust decision, provisional relay records may evolve, and every application remains responsible for consent, storage durability and a recovery path that users can verify.

@@ -1,0 +1,73 @@
+---
+title: "Nostr WoT SDK stabilisiert Passkey-Wiederherstellung und Provider-Signaturen"
+description: "Stabile npm-Pakete liefern eindeutige Passkey-Modi, verschlüsselte Wiederherstellungsdaten und Provider-Signaturen mit strengen Prüfungen."
+seoDescription: "Nostr WoT SDK veröffentlicht stabile Passkey-Pakete mit verschlüsselten Vault-Daten und fest gebundenen Provider-Signaturen."
+excerpt: "Die stabile Version trennt abgeleitete und gespeicherte Passkeys, erhält mehrere Wiederherstellungswege und vermeidet unsichere Annahmen."
+date: "2026-10-23"
+publishedAt: "2026-10-26"
+backfilled: false
+type: "story"
+tags: ["Nostr", "Nostr WoT", "SDK", "Passkeys", "Entwicklung"]
+featuredImage: "/images/news/nostr-wot-sdk-stabilizes-passkey-recovery-and-provider-signing.svg"
+translationKey: "nostr-wot-sdk-stabilizes-passkey-recovery-and-provider-signing"
+sources:
+  - title: "Stabile Veröffentlichung der Passkey-Interoperabilitätspakete"
+    url: "https://github.com/nostr-wot/nostr-wot-sdk/pull/23"
+    publisher: "nostr-wot/nostr-wot-sdk"
+    date: "2026-10-23"
+  - title: "Passkey-Wiederherstellung für Anwendungen"
+    url: "https://github.com/nostr-wot/nostr-wot-sdk/blob/384023f947e7dcfe4d54f7862308cdf78040067c/docs/passkey-recovery.md"
+    publisher: "nostr-wot/nostr-wot-sdk"
+    date: "2026-10-23"
+  - title: "npm-Metadaten für @nostr-wot/identity"
+    url: "https://registry.npmjs.org/@nostr-wot%2Fidentity"
+    publisher: "npm"
+    date: "2026-10-23"
+  - title: "npm-Metadaten für nostr-wot-sdk"
+    url: "https://registry.npmjs.org/nostr-wot-sdk"
+    publisher: "npm"
+    date: "2026-10-23"
+  - title: "Unterstützung für Nosskey-Wiederherstellung und Provider-Signaturen"
+    url: "https://github.com/nostr-wot/nostr-wot-sdk/pull/22"
+    publisher: "nostr-wot/nostr-wot-sdk"
+    date: "2026-10-23"
+published: true
+---
+
+Die Passkey-Arbeit des Nostr WoT SDK ist jetzt unter stabilen npm-Tags verfügbar. Die Registry führt [`@nostr-wot/identity` 1.1.0](https://registry.npmjs.org/@nostr-wot%2Fidentity) und [`nostr-wot-sdk` 3.0.1](https://registry.npmjs.org/nostr-wot-sdk) als `latest`. Beide Pakete wurden am 23. Oktober 2026 aus dem Commit der [stabilen Veröffentlichung](https://github.com/nostr-wot/nostr-wot-sdk/pull/23) publiziert. Der Paketquelltext entspricht den bereits getesteten Release-Kandidaten.
+
+Die Veröffentlichung richtet sich an Entwickler von Signern und Nostr-Anwendungen. Sie macht Passkey-Identitätsmodi eindeutig, fügt verschlüsselte Wiederherstellungsdaten für mehrere hostgesteuerte Speicherwege hinzu und unterstützt Provider-Signaturen für bestehende Nosskey-Konten.
+
+## Abgeleitete und gespeicherte Passkeys sind verschiedene Systeme
+
+Das Identity-Paket unterscheidet zwei Modi. Bei einem abgeleiteten Passkey wird der private Nostr-Schlüssel deterministisch aus der WebAuthn-PRF-Ausgabe berechnet. Ein gespeicherter Passkey schützt dagegen einen vorhandenen privaten Schlüssel, einen Seed oder einen Vault mit mehreren Konten.
+
+Neue Anmeldedaten tragen eine markierte Benutzerkennung, die den Modus vor dem Lesen des Speichers angibt. Ein gespeicherter Passkey wird nie stillschweigend als abgeleitet interpretiert. Fehlen bei einem älteren unmarkierten Passkey ausreichende Belege, liefert `resolvePasskeyIdentity` den Status `ambiguous` und einen Kandidaten für den öffentlichen Schlüssel. Die Anwendung muss ihn anzeigen und bestätigen lassen, bevor sie ein Geheimnis ableitet.
+
+Diese Trennung schützt die Kontinuität der Identität. Der abgeleitete Modus bindet die Identität an die Passkey-Berechnung. Im gespeicherten Modus kann dieselbe Identität unter einer anderen Relying Party neu geschützt werden, wenn der Host sie bewusst importiert und neu verschlüsselt.
+
+## Die Wiederherstellung bleibt unter Kontrolle des Hosts
+
+[`@nostr-wot/identity/vault`](https://github.com/nostr-wot/nostr-wot-sdk/blob/384023f947e7dcfe4d54f7862308cdf78040067c/docs/passkey-recovery.md) stellt portable Kryptografie, Datensatzprüfung und Ablaufsteuerung bereit. Das Paket ruft keine Authenticatoren auf und öffnet keine Relay-Verbindungen. Der Host stellt WebAuthn oder den nativen Client, Transport, Ereignissignatur und Signaturprüfung sowie die Einwilligungsoberfläche bereit.
+
+Ein Datensatz kann einen Schlüssel oder einen Vault mit mehreren Konten enthalten. Die Verschlüsselung bindet Typ, Relying-Party-ID, Autor und Credential-ID als authentifizierte Daten. Vor dem Schreiben muss der Provider vorhandenen Speicher prüfen. Jeder nicht leere Blob verlangt eine ausdrückliche Bestätigung zum Überschreiben, auch wenn die alten Daten nicht gelesen werden können. Fehler oder Ablehnung führen nicht automatisch zu einer Relay-Speicherung.
+
+Auch Relay-Wiederherstellung ist ausdrücklich. Der Host muss sie erlauben, Relays benennen und mindestens eine Bestätigung erhalten. Neue Datensätze verwenden den vorläufigen Kind `31778`, der noch nicht durch einen NIP reserviert ist. Frühere Formate bleiben lesbar. Ein lokaler Schreibvorgang oder eine Relay-Bestätigung beweist nicht, dass ein anderes Gerät das Konto wiederherstellen kann.
+
+## Zwei Wege für bestehende Nosskey-Konten
+
+[`nostr-wot-sdk` 3.0.1](https://github.com/nostr-wot/nostr-wot-sdk/pull/22) liest eindeutige Nosskey-Sicherungen mit direktem Schlüssel oder NIP-44-Umhüllung und behält deren ursprüngliche PRF-Eingaben bei. Der wiederhergestellte öffentliche Schlüssel wird mit der Sicherung verglichen. Bei fehlenden Belegen wechselt der Leser nicht zu einem anderen Modus.
+
+Anwendungen, die keinen privaten Schlüssel importieren möchten, können `NosskeyIframeSigner` einsetzen. Er bindet das iframe-Fenster, den HTTPS-Ursprung und das ausgewählte Konto, prüft Ereignisinhalt und Signaturen, begrenzt Anfragen zeitlich und verlangt einen ausdrücklichen Abschluss. Provider-Einwilligung und Browser-Unterstützung bleiben externe Voraussetzungen.
+
+## Was sich für Integratoren ändert
+
+Die stabilen Pakete lassen sich ohne Vorabversions-Tag installieren:
+
+```bash
+npm install @nostr-wot/identity@1.1.0 nostr-wot-sdk@3.0.1 nostr-tools
+```
+
+Hosts müssen Authenticatoren und Provider-Synchronisierung weiterhin auf realen Geräten testen. Sie müssen unbekannte Vault-Felder bei einer Neuschreibung erhalten, geheime Puffer löschen, den öffentlichen Schlüssel bei Migrationen bestätigen und den Speicherort der Wiederherstellung erklären. Datensätze sind Momentaufnahmen und brauchen nach Kontoänderungen eine Aktualisierungsstrategie.
+
+Die stabilen Tags machen die getesteten APIs ohne `next` installierbar. Sie machen Passkeys nicht zu einer universellen Sicherung. Die Freigabe einer Relying Party bleibt eine Vertrauensentscheidung, der vorläufige Kind kann sich ändern und jede Anwendung bleibt für Einwilligung, Haltbarkeit und überprüfbare Wiederherstellung verantwortlich.
