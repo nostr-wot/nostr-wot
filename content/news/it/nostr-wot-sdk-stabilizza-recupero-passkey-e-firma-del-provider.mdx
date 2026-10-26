@@ -1,0 +1,73 @@
+---
+title: "Nostr WoT SDK stabilizza il recupero passkey e la firma del provider"
+description: "I pacchetti npm stabili offrono modalità passkey esplicite, record di recupero cifrati e firma del provider con controlli rigorosi."
+seoDescription: "Nostr WoT SDK pubblica pacchetti stabili per recupero passkey, vault cifrati e firma del provider con origine vincolata."
+excerpt: "La versione stabile separa passkey derivate e memorizzate, conserva diverse vie di recupero e non indovina la modalità di un account."
+date: "2026-10-23"
+publishedAt: "2026-10-26"
+backfilled: false
+type: "story"
+tags: ["Nostr", "Nostr WoT", "SDK", "Passkeys", "Sviluppo"]
+featuredImage: "/images/news/nostr-wot-sdk-stabilizes-passkey-recovery-and-provider-signing.svg"
+translationKey: "nostr-wot-sdk-stabilizes-passkey-recovery-and-provider-signing"
+sources:
+  - title: "Pubblicazione stabile dei pacchetti per l'interoperabilità passkey"
+    url: "https://github.com/nostr-wot/nostr-wot-sdk/pull/23"
+    publisher: "nostr-wot/nostr-wot-sdk"
+    date: "2026-10-23"
+  - title: "Recupero passkey per applicazioni"
+    url: "https://github.com/nostr-wot/nostr-wot-sdk/blob/384023f947e7dcfe4d54f7862308cdf78040067c/docs/passkey-recovery.md"
+    publisher: "nostr-wot/nostr-wot-sdk"
+    date: "2026-10-23"
+  - title: "Metadati npm di @nostr-wot/identity"
+    url: "https://registry.npmjs.org/@nostr-wot%2Fidentity"
+    publisher: "npm"
+    date: "2026-10-23"
+  - title: "Metadati npm di nostr-wot-sdk"
+    url: "https://registry.npmjs.org/nostr-wot-sdk"
+    publisher: "npm"
+    date: "2026-10-23"
+  - title: "Supporto al recupero degli account Nosskey e alla firma del provider"
+    url: "https://github.com/nostr-wot/nostr-wot-sdk/pull/22"
+    publisher: "nostr-wot/nostr-wot-sdk"
+    date: "2026-10-23"
+published: true
+---
+
+Il lavoro del Nostr WoT SDK sulle passkey è ora disponibile con tag stabili su npm. Il registro indica [`@nostr-wot/identity` 1.1.0](https://registry.npmjs.org/@nostr-wot%2Fidentity) e [`nostr-wot-sdk` 3.0.1](https://registry.npmjs.org/nostr-wot-sdk) come versioni `latest`. Entrambi i pacchetti sono stati pubblicati il 23 ottobre 2026 dal commit della [release stabile](https://github.com/nostr-wot/nostr-wot-sdk/pull/23). Il codice non è cambiato rispetto ai candidati già sottoposti a test.
+
+La release è pensata per chi sviluppa signer e applicazioni Nostr. Rende esplicite le modalità di identità con passkey, aggiunge record cifrati che l'host può conservare attraverso più percorsi e supporta la firma tramite provider per account Nosskey esistenti.
+
+## Passkey derivate e memorizzate sono sistemi diversi
+
+Il pacchetto identity riconosce due modalità. In quella derivata, la chiave privata Nostr viene calcolata in modo deterministico dall'output PRF di WebAuthn. In quella memorizzata, lo stesso output protegge una chiave privata esistente, un seed o un vault con più account.
+
+Le nuove credenziali includono un identificatore marcato che dichiara la modalità prima di leggere lo storage. Una credenziale memorizzata non viene mai interpretata silenziosamente come derivata. Se una vecchia credenziale senza marcatore non offre prove sufficienti, `resolvePasskeyIdentity` restituisce `ambiguous` insieme a una chiave pubblica candidata. L'applicazione deve mostrarla e chiedere conferma prima di derivare un segreto.
+
+Questa separazione protegge la continuità dell'identità. La modalità derivata lega l'identità al calcolo della passkey. Quella memorizzata consente di proteggere di nuovo la stessa identità sotto un altro relying party, a condizione che l'host la importi e la cifri di nuovo in modo deliberato.
+
+## Il recupero resta sotto il controllo dell'host
+
+[`@nostr-wot/identity/vault`](https://github.com/nostr-wot/nostr-wot-sdk/blob/384023f947e7dcfe4d54f7862308cdf78040067c/docs/passkey-recovery.md) fornisce crittografia portabile, validazione dei record e orchestrazione. Non chiama autenticatori e non apre connessioni relay. L'host fornisce WebAuthn o il client nativo, il trasporto, la firma e verifica degli eventi e l'interfaccia per il consenso.
+
+Un record può contenere una chiave o un vault con più account. La cifratura autentica tipo, ID del relying party, autore e ID della credenziale. Prima di scrivere, il provider deve ispezionare lo storage esistente. Qualunque blob non vuoto richiede conferma prima della sostituzione, anche se i dati precedenti non sono decodificabili. Un rifiuto o un errore non viene dirottato automaticamente sui relay.
+
+Anche il recupero tramite relay è esplicito. L'host deve abilitarlo, scegliere i relay e ricevere almeno una conferma. I nuovi record usano il kind provvisorio `31778`, non ancora riservato da un NIP. I formati precedenti restano leggibili. Una scrittura locale o una risposta del provider dimostra solo quell'operazione, non che un altro dispositivo possa ripristinare l'account.
+
+## Due percorsi per gli account Nosskey esistenti
+
+[`nostr-wot-sdk` 3.0.1](https://github.com/nostr-wot/nostr-wot-sdk/pull/22) legge backup Nosskey espliciti con chiave diretta o avvolta tramite NIP-44, mantenendo gli input PRF originali. La chiave pubblica recuperata viene confrontata con il backup e il lettore non cambia modalità quando mancano prove.
+
+Le applicazioni che non vogliono importare la chiave privata possono usare `NosskeyIframeSigner`. Il signer vincola la finestra iframe, l'origine HTTPS e l'account selezionato, verifica contenuto e firme, limita la durata delle richieste e richiede la chiusura esplicita. Il consenso del provider e il supporto del browser restano requisiti esterni.
+
+## Cosa cambia per chi integra il SDK
+
+I pacchetti stabili si installano senza selettore prerelease:
+
+```bash
+npm install @nostr-wot/identity@1.1.0 nostr-wot-sdk@3.0.1 nostr-tools
+```
+
+L'host deve ancora testare autenticatori e sincronizzazione su dispositivi reali. Deve inoltre conservare i campi sconosciuti quando riscrive un vault, azzerare i buffer dei segreti, confermare la chiave pubblica durante una migrazione e spiegare dove risiedono i dati di recupero. I record sono istantanee e vanno aggiornati dopo le modifiche agli account.
+
+I tag stabili rendono installabili le API testate senza `next`. Non trasformano le passkey in un backup universale. Autorizzare un relying party resta una decisione di fiducia, il kind provvisorio può evolvere e ogni applicazione rimane responsabile di consenso, durata dello storage e recupero verificabile.
