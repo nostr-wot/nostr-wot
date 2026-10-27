@@ -48,3 +48,12 @@ PR #103 merged exact green head 128ca5786b489b54a5eb6d81ca0e85d86d793ebd as 2be0
 Outcome remains **partial**, not fully delivered. Direct article-body/canonical/metadata and localized directory checks cannot be confirmed: the cloud browser gives a generic Site Unavailable page; the public reader cannot open the new EN/ES articles or Spanish directory, and its English Mostro response still shows v0.19.2, two credited people and an October 6 directory check. Freshness is unknown, not proof of an origin outage. One dated-query read was also unavailable. Preserve the deployment and verify fresh pages separately; no blind deployment retry.
 
 The main social ledger contains no receipt for this issue. Nostr awaits the existing hosted queue and its real durable receipt. LinkedIn remains intentionally ineligible, with no copy or fabricated receipt. Previous receipts/reservations are preserved. No newsletter work, subscriber access, email, credential or schedule change. Current durable checkpoint: https://github.com/nostr-wot/nostr-wot/pull/103#issuecomment-6287856420.
+
+
+## Receipt reconciliation and alternate-week checkpoint (2026-10-27T08:58:52Z)
+
+The durable social ledger now confirms the Nostr delivery at 2026-10-20T15:49:18.294Z with receipt [nevent1qy28…pf7vht2mce](https://njump.me/nevent1qy28wumn8ghj7un9d3shjtnyv9kh2uewd9hszrthwden5te0dehhxtnvdakqqgyz97kj8ev9qd5djrqem4we9ny5xrjdy5f0y5p5f3a0lf4nc4pf7vht2mce). No sender retry or workflow dispatch was performed. LinkedIn remains intentionally ineligible because Mostro and Amber are third-party ecosystem projects.
+
+The English article is indexed with its published title and v0.20.0 summary, and the English Mostro directory renders the v0.20.0 release, 20 October evidence date and removal of unsupported person credits. Direct dated-page inspection still returns a generic Site Unavailable page in the cloud browser; the public reader cannot directly open the English or Spanish article or Spanish directory. This is a monitoring limitation, not evidence of an origin outage. Do not claim direct canonical, hreflang, JSON-LD or Spanish-route verification beyond the passing rendered CI audit and deployment record.
+
+27 October is the expected alternate Tuesday in the fortnightly cadence anchored 8 September. No new ecosystem research issue, directory change, article, illustration, social copy or delivery attempt was created. The next eligible ecosystem slot is 3 November 2026. Newsletter preparation and delivery systems were untouched.
