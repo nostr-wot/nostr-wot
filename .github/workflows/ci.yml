@@ -62,6 +62,11 @@ jobs:
       - name: Unit tests
         run: npm test
 
+      - name: Workshop lab tests
+        run: |
+          npm ci --prefix workshops/nostr
+          npm test --prefix workshops/nostr
+
       - name: Cache generator parity
         run: npm run test:parity
 

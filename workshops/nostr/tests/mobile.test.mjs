@@ -1,0 +1,2 @@
+import test from 'node:test';import assert from 'node:assert/strict';import {validateBunker} from '../src/mobile.js';
+test('bunker input requires a public signer key and secure credential-free relays',()=>{const valid='bunker://'+'a'.repeat(64)+'?relay=wss%3A%2F%2Fnos.lol&secret=fixture';assert.equal(validateBunker(valid),valid);for(const bad of ['nsec1private','https://example.org', 'bunker://'+'a'.repeat(64)+'?relay=ws://example.org'])assert.throws(()=>validateBunker(bad))});

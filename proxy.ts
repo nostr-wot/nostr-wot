@@ -18,7 +18,7 @@ export const config = {
   // back in individually rather than loosening the general dot exclusion,
   // which would risk pulling real static assets through the locale rewrite.
   matcher: [
-    '/((?!api|_next|_vercel|.*\\..*).*)',
+    '/((?!labs(?:/|$)|api|_next|_vercel|.*\\..*).*)',
     '/news/feed.xml',
     '/news/feed.json',
   ],
