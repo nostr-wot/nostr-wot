@@ -13,8 +13,8 @@ export class PracticeBunker{
  constructor({signer,userPubkey,approve,pool=new SimplePool(),onStatus=()=>{},now=()=>Math.floor(Date.now()/1000)}){
   this.signer=signer;this.userPubkey=userPubkey;this.approve=approve;this.pool=pool;this.onStatus=onStatus;this.now=now;this.sk=generateSecretKey();this.pubkey=getPublicKey(this.sk);this.token=Array.from(crypto.getRandomValues(new Uint8Array(24)),b=>b.toString(16).padStart(2,'0')).join('');this.started=now();this.closed=false;this.client=null;this.seen=new Set();this.pending=0;this.chain=Promise.resolve();
  }
- async start(relays=['wss://relay.nsec.app','wss://relay.damus.io']){
-  this.relays=relays;await Promise.any(relays.map(r=>this.pool.ensureRelay(r,{connectionTimeout:8000})));if(this.closed)throw Error('Sesión cerrada');
+ async start(relays=['wss://relay.nsec.app','wss://nos.lol','wss://relay.damus.io']){
+  this.relays=relays;try{await Promise.any(relays.map(r=>this.pool.ensureRelay(r,{connectionTimeout:8000})))}catch{throw Error('No pudimos conectar. Revisá tu conexión y volvé a intentar.')}if(this.closed)throw Error('Sesión cerrada');
   this.sub=this.pool.subscribeMany(relays,{kinds:[24133],'#p':[this.pubkey],since:this.started-30},{onevent:e=>{void this.receive(e)},onclose:()=>this.onStatus('Se perdió la conexión. Volvé a generar el enlace.')});
   const u=new URL('bunker://'+this.pubkey);for(const r of relays)u.searchParams.append('relay',r);u.searchParams.set('secret',this.token);return u.href;
  }
