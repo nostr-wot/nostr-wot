@@ -1,0 +1,3 @@
+import test from 'node:test';import assert from 'node:assert/strict';import {detectDevice,hasBrowserSigner} from '../src/device.js';
+test('device paths include iPad desktop user-agent and retain desktop fallback',()=>{assert.equal(detectDevice({userAgent:'Mozilla Android'}),'android');assert.equal(detectDevice({userAgent:'Mozilla iPhone'}),'ios');assert.equal(detectDevice({platform:'MacIntel',maxTouchPoints:5}),'ios');assert.equal(detectDevice({platform:'MacIntel',maxTouchPoints:0}),'desktop')});
+test('detecting a signer never calls it',()=>{let called=false;const fn=()=>{called=true};assert.equal(hasBrowserSigner({nostr:{getPublicKey:fn,signEvent:fn}}),true);assert.equal(called,false);assert.equal(hasBrowserSigner({}),false)});

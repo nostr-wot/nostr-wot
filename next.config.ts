@@ -40,7 +40,7 @@ const nextConfig: NextConfig = {
         "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
         "img-src 'self' data: https: blob:",
         "font-src 'self' https://fonts.gstatic.com",
-        "connect-src 'self' wss: wss://relay.damus.io wss://relay.nostr.band wss://nos.lol wss://relay.snort.social wss://purplepag.es wss://relay.primal.net https://www.google.com https://www.google.com/recaptcha/ https://www.gstatic.com https://*.google-analytics.com https://*.analytics.google.com https://region1.google-analytics.com https://wot-oracle.mappingbitcoin.com https://analytics.ahrefs.com https://cloudflareinsights.com",
+        "connect-src 'self' wss: wss://relay.damus.io wss://relay.nostr.band wss://nos.lol wss://relay.snort.social wss://purplepag.es wss://relay.primal.net https://www.google.com https://www.google.com/recaptcha/ https://www.gstatic.com https://*.google-analytics.com https://*.analytics.google.com https://region1.google-analytics.com https://wot-oracle.mappingbitcoin.com https://blossom.primal.net https://analytics.ahrefs.com https://cloudflareinsights.com",
         "frame-src 'self' https://www.youtube-nocookie.com https://www.google.com/recaptcha/ https://recaptcha.google.com/",
         "base-uri 'self'",
         "form-action 'self'",
@@ -150,6 +150,7 @@ const nextConfig: NextConfig = {
     ];
 
     return [
+      { source: "/labs/nostr", destination: "/labs/nostr/index.html", permanent: false },
       ...['', '/en', '/es', '/pt', '/ru', '/it', '/fr', '/de'].map(prefix => ({
         source: `${prefix}/blog/extension-themes-la-crypta`,
         destination: `${prefix}/blog/extension-themes`,

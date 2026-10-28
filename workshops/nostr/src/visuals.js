@@ -1,0 +1,2 @@
+const illustrations=["assets/official/PitchIdentityIcon.svg", "assets/official/PitchDocsIcon.svg", "assets/official/PitchShieldIcon.svg", "assets/official/PitchNetworkGraph.svg", "assets/official/PitchAskIcon.svg"];
+export function illustration(n){return `<img class="workshop-art" src="${illustrations[n]}" alt="${["Tu identidad","Firmar un mensaje","Verificar una firma","Tu red de confianza","Compartir con otras personas"][n]}" width="420" height="160" decoding="async">`}

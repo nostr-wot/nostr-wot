@@ -1,0 +1,4 @@
+import test from 'node:test';import assert from 'node:assert/strict';
+import {mergeFollows,people} from '../src/follows.js';
+test('adding follows preserves existing contact metadata, other tags and content',()=>{const a='a'.repeat(64),b='b'.repeat(64);const prior={created_at:10,content:'legacy relay metadata',tags:[['p',a,'wss://example.org','Alice'],['custom','keep']]};const result=mergeFollows(prior,[a,b,b],20);assert.deepEqual(result.tags,[...prior.tags,['p',b]]);assert.equal(result.content,prior.content);assert.equal(result.kind,3);assert.equal(prior.tags.length,2)});
+test('follow updates reject invalid identities and non-newer timestamps',()=>{assert.throws(()=>mergeFollows(null,['not a key']));assert.throws(()=>mergeFollows({created_at:20,tags:[]},['a'.repeat(64)],20));assert.ok(people.length>0);assert.ok(people.every(p=>/^[a-f0-9]{64}$/.test(p.pubkey)))});
