@@ -64,6 +64,9 @@ const nextConfig: NextConfig = {
       },
     ];
   },
+  async rewrites() {
+    return { beforeFiles: [{ source: "/labs", destination: "/labs/nostr/index.html" }], afterFiles: [], fallback: [] };
+  },
   async redirects() {
     // Old news URLs carried a YYYY-MM-DD- date prefix on the slug; the prefix
     // was dropped in favor of plain descriptive slugs. One entry per locale per
