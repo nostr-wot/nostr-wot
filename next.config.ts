@@ -65,7 +65,19 @@ const nextConfig: NextConfig = {
     ];
   },
   async rewrites() {
-    return { beforeFiles: [{ source: "/labs", destination: "/labs/nostr/index.html" }], afterFiles: [], fallback: [] };
+    return {
+      beforeFiles: [
+        { source: "/labs", destination: "/labs/nostr/index.html" },
+        // Lightning Address aliases share the zap service's username ownership,
+        // metadata and callback, so both domains receive into the same wallet.
+        {
+          source: "/.well-known/lnurlp/:username",
+          destination: "https://zaps.nostr-wot.com/.well-known/lnurlp/:username",
+        },
+      ],
+      afterFiles: [],
+      fallback: [],
+    };
   },
   async redirects() {
     // Old news URLs carried a YYYY-MM-DD- date prefix on the slug; the prefix
