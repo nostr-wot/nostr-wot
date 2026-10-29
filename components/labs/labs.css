@@ -1,0 +1,26 @@
+.lab-welcome{min-height:calc(100svh - 132px)}.lab-session{height:100svh;min-height:0}.lab-step{animation:lab-step-in .2s ease-out}.lab-native button:disabled{opacity:.5;cursor:not-allowed}@keyframes lab-step-in{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}@media(prefers-reduced-motion:reduce){.lab-step{animation:none}}@media(max-width:640px){.lab-session{min-height:0}.lab-native .btn{min-height:44px}.lab-native .lab-step{border-radius:16px}}
+
+@media(min-width:768px){.lab-content{display:flex;flex-direction:column}.lab-content-inner{width:100%;flex-shrink:0;margin-block:auto;padding-block:12px}}
+
+.lab-tour-layer{position:fixed;inset:0;z-index:1000;isolation:isolate}.lab-tour-shade{position:absolute;inset:0;width:100%;height:100%;pointer-events:auto}.lab-tour-panel{position:absolute;width:min(340px,calc(100vw - 24px));max-height:calc(100svh - 24px);overflow:auto;outline:none;animation:lab-step-in .2s ease-out}@media(prefers-reduced-motion:reduce){.lab-tour-panel{animation:none}}
+
+.lab-content-inner.lab-people-content{height:100%;min-height:0;flex:1;margin:0;padding:0}
+
+.lab-illustration{animation:lab-illustration-float 5s ease-in-out infinite;transform-origin:center;transition:transform .25s ease}
+.lab-illustration:hover{animation-play-state:paused;transform:translateY(-3px) rotate(-3deg)}
+@keyframes lab-illustration-float{0%,100%{transform:translateY(0)}50%{transform:translateY(-4px)}}
+.lab-step{animation:lab-screen-enter .28s ease-out both}
+@keyframes lab-screen-enter{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+@media(prefers-reduced-motion:reduce){.lab-illustration,.lab-step{animation:none;transition:none}.lab-illustration:hover{transform:none}}
+
+html:has(.lab-scroll-cue){scroll-behavior:smooth}
+.lab-scroll-arrow{animation:lab-scroll-arrow 1.8s ease-in-out infinite}
+@keyframes lab-scroll-arrow{0%,100%{transform:translateY(0);opacity:.65}50%{transform:translateY(7px);opacity:1}}
+@media(prefers-reduced-motion:reduce){html:has(.lab-scroll-cue){scroll-behavior:auto}.lab-scroll-arrow{animation:none}}
+
+.lab-step-tab{position:relative;flex:none;min-height:32px;padding:7px 12px;border:1px solid transparent;border-radius:10px 10px 0 0;font-size:12px;line-height:18px;font-weight:500;color:#4b5563;background:rgba(99,102,241,.04);opacity:.7;transition:color .15s,background .15s,opacity .15s}
+.dark .lab-step-tab{color:#d1d5db;background:rgba(99,102,241,.06)}
+.lab-step-tab:hover{opacity:1;background:rgba(99,102,241,.12)}
+.lab-step-tab.is-active{min-height:38px;padding-top:9px;padding-bottom:9px;font-size:14px;font-weight:600;opacity:1;background:#fff;color:#111827;border-color:#e5e7eb;border-bottom-color:#fff}
+.dark .lab-step-tab.is-active{background:#1f2937;color:#f9fafb;border-color:#374151;border-bottom-color:#1f2937}
+.lab-step-tab:focus-visible{outline:2px solid var(--color-primary,#6366f1);outline-offset:-3px}

@@ -152,3 +152,21 @@ test("a crashed sync retains its last attempt and the preceding successful sync 
   assert.equal(recovered.lastSync, saved.lastSync); assert.equal(recovered.durationMs, null);
   await next.close();
 });
+
+
+test("lab signed follows seed the graph without waiting for relay propagation", async () => {
+  const graph = new LocalGraphSource(keys[0], {subscribe(){throw new Error("Relay should not be needed");}}, event(0,[keys[1],keys[2]],300));
+  await graph.ready;
+  assert.deepEqual(await graph.follows(keys[0],new AbortController().signal),[keys[1],keys[2]]);
+  await graph.close();
+  const reopened = new LocalGraphSource(keys[0], transport([]), event(0,[keys[3]],100));
+  await reopened.ready;
+  assert.deepEqual(await reopened.follows(keys[0],new AbortController().signal),[keys[1],keys[2]]);
+  await reopened.close();
+});
+test("lab graph rejects another author's seed", async () => {
+  const graph = new LocalGraphSource(keys[0], transport([event(0,[keys[2]])]),event(1,[keys[3]],300));
+  await graph.ready;
+  assert.deepEqual(await graph.follows(keys[0],new AbortController().signal),[keys[2]]);
+  await graph.close();
+});

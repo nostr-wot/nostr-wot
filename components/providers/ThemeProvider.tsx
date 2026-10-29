@@ -1,5 +1,6 @@
 "use client";
 
+import { usePathname } from "next/navigation";
 import { createContext, useContext, useEffect, useState } from "react";
 
 type Theme = "system" | "light" | "dark";
@@ -26,16 +27,23 @@ function getSystemTheme(): "light" | "dark" {
 }
 
 export function ThemeProvider({ children }: { children: React.ReactNode }) {
-  const [theme, setTheme] = useState<Theme>("system");
+  const [preference, setPreference] = useState<Theme | null>(null);
+  const pathname = usePathname();
+  const theme: Theme = preference ?? (/(^|\/)labs(\/|$)/.test(pathname) ? "dark" : "system");
+  const setTheme = (value: Theme) => {
+    setPreference(value);
+    try { localStorage.setItem("theme", value); localStorage.setItem("theme-manual", "true"); } catch {}
+  };
   const [resolvedTheme, setResolvedTheme] = useState<"light" | "dark">("light");
   const [mounted, setMounted] = useState(false);
 
   // Load saved theme from localStorage on mount
   useEffect(() => {
-    const savedTheme = localStorage.getItem("theme") as Theme | null;
-    if (savedTheme && ["system", "light", "dark"].includes(savedTheme)) {
-      setTheme(savedTheme);
-    }
+    try {
+      const savedTheme = localStorage.getItem("theme") as Theme | null;
+      if (savedTheme && ["system", "light", "dark"].includes(savedTheme) &&
+        (savedTheme !== "system" || localStorage.getItem("theme-manual") === "true")) setPreference(savedTheme);
+    } catch {}
     setMounted(true);
   }, []);
 
@@ -60,13 +68,6 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
       const handleChange = () => updateResolvedTheme();
       mediaQuery.addEventListener("change", handleChange);
       return () => mediaQuery.removeEventListener("change", handleChange);
-    }
-  }, [theme, mounted]);
-
-  // Save theme to localStorage when it changes
-  useEffect(() => {
-    if (mounted) {
-      localStorage.setItem("theme", theme);
     }
   }, [theme, mounted]);
 

@@ -67,7 +67,6 @@ const nextConfig: NextConfig = {
   async rewrites() {
     return {
       beforeFiles: [
-        { source: "/labs", destination: "/labs/nostr/index.html" },
         // Lightning Address aliases share the zap service's username ownership,
         // metadata and callback, so both domains receive into the same wallet.
         {
@@ -165,7 +164,7 @@ const nextConfig: NextConfig = {
     ];
 
     return [
-      { source: "/labs/nostr", destination: "/labs/nostr/index.html", permanent: false },
+      { source: "/labs/nostr", destination: "/labs/labitconf", permanent: false },
       ...['', '/en', '/es', '/pt', '/ru', '/it', '/fr', '/de'].map(prefix => ({
         source: `${prefix}/blog/extension-themes-la-crypta`,
         destination: `${prefix}/blog/extension-themes`,

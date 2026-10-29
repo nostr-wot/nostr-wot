@@ -4,7 +4,7 @@ import { notFound } from "next/navigation";
 import { NextIntlClientProvider } from "next-intl";
 import { getMessages, getTranslations, setRequestLocale } from "next-intl/server";
 import { GoogleAnalytics } from "@next/third-parties/google";
-import { Header, Footer, PageTransition } from "@/components/layout";
+import SiteFrame from "@/components/layout/SiteFrame";
 import { ThemeProvider } from "@/components/providers";
 import { WotProvider } from "@/components/providers/WotProvider";
 import { BlogTranslationsProvider } from "@/contexts/BlogTranslationsContext";
@@ -73,7 +73,10 @@ export default async function LocaleLayout({ children, params }: Props) {
           dangerouslySetInnerHTML={{
             __html: `
               (function() {
-                const theme = localStorage.getItem('theme') || 'system';
+                let saved = null, manual = false;
+                try { saved = localStorage.getItem('theme'); manual = localStorage.getItem('theme-manual') === 'true'; } catch {}
+                const valid = ['light', 'dark', 'system'].includes(saved) && (saved !== 'system' || manual);
+                const theme = valid ? saved : (location.pathname.split('/').includes('labs') ? 'dark' : 'system');
                 const systemDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
                 const resolved = theme === 'system' ? (systemDark ? 'dark' : 'light') : theme;
                 document.documentElement.classList.add(resolved);
@@ -104,11 +107,7 @@ export default async function LocaleLayout({ children, params }: Props) {
           <NextIntlClientProvider messages={messages}>
             <BlogTranslationsProvider>
               <WotProvider>
-                <Header />
-                <div className="pt-16">
-                  <PageTransition>{children}</PageTransition>
-                </div>
-                <Footer />
+                <SiteFrame>{children}</SiteFrame>
               </WotProvider>
             </BlogTranslationsProvider>
           </NextIntlClientProvider>

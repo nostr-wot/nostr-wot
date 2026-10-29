@@ -1,5 +1,6 @@
 "use client";
 
+import {createPortal} from "react-dom";
 import { useEffect, useRef, type ReactNode } from "react";
 
 /**
@@ -11,6 +12,7 @@ import { useEffect, useRef, type ReactNode } from "react";
  */
 export function Modal({
   open,
+  centered = true,
   onClose,
   title,
   subtitle,
@@ -20,6 +22,7 @@ export function Modal({
   children,
 }: {
   open: boolean;
+  centered?: boolean;
   onClose: () => void;
   title: string;
   subtitle?: string;
@@ -78,11 +81,11 @@ export function Modal({
     };
   }, [open, onClose]);
 
-  if (!open) return null;
+  if (!open || typeof document === "undefined") return null;
 
-  return (
+  return createPortal(
     <div
-      className="fixed inset-0 z-50 flex items-start justify-center bg-black/50 p-2 sm:p-6"
+      className={`modal-backdrop-fade fixed inset-0 z-[200] flex ${centered ? "items-center" : "items-start"} justify-center bg-gray-950/80 backdrop-blur-sm p-3 sm:p-6`}
       role="dialog"
       aria-modal="true"
       aria-label={title}
@@ -90,11 +93,11 @@ export function Modal({
     >
       <div
         ref={panelRef}
-        className={`flex max-h-full w-full flex-col overflow-hidden rounded-2xl bg-white shadow-2xl dark:bg-gray-950 ${
+        className={`modal-content-in flex max-h-full w-full flex-col overflow-hidden rounded-2xl border border-gray-300 bg-white shadow-[0_24px_90px_rgba(0,0,0,0.6)] ring-1 ring-black/5 dark:border-gray-600 dark:bg-gray-900 dark:ring-white/10 ${
           size === "xl" ? "max-w-6xl" : "max-w-2xl"
         }`}
       >
-        <header className="flex items-center justify-between gap-4 border-b border-gray-200 p-4 dark:border-gray-800">
+        <header className="flex shrink-0 items-center justify-between gap-4 border-b border-gray-200 bg-gray-50 p-4 dark:bg-gray-800 dark:border-gray-600">
           <div className="min-w-0">
             <h2 className="font-semibold text-gray-900 dark:text-white">{title}</h2>
             {subtitle && <p className="text-xs text-gray-500 dark:text-gray-400">{subtitle}</p>}
@@ -112,6 +115,6 @@ export function Modal({
 
         {footer}
       </div>
-    </div>
+    </div>, document.body
   );
 }

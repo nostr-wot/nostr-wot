@@ -1,0 +1,10 @@
+import {test} from 'node:test';
+import assert from 'node:assert/strict';
+import type {Event} from 'nostr-tools';
+import {resolveFollowList} from '../lib/labs/follow-list';
+const old={id:'a',created_at:1} as Event,newer={id:'b',created_at:2} as Event;
+test('fresh temporary identities never query relays',async()=>{assert.equal(await resolveFollowList('local',undefined,async()=>{throw Error('Must not query')}),undefined)});
+test('temporary identities reuse contacts already followed',async()=>{assert.equal(await resolveFollowList('local',old,async()=>{throw Error('Must not query')}),old)});
+test('empty completed query allows a first follow despite unavailable relays',async()=>{assert.equal(await resolveFollowList('extension',undefined,async()=>[{status:'complete',events:[]},{status:'unknown',events:[]}]),undefined)});
+test('retains newest known contacts when a relay is unavailable or stale',async()=>{assert.equal(await resolveFollowList('extension',newer,async()=>[{status:'complete',events:[old]},{status:'unknown',events:[]}]),newer)});
+test('does not assume an existing account is empty when every relay fails',async()=>{await assert.rejects(resolveFollowList('extension',undefined,async()=>[{status:'unknown',events:[]}]),/Volvé a intentar/)});
