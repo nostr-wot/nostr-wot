@@ -1,6 +1,13 @@
 import {PracticeBunker} from './practice-bunker.js';
 import {escapeHTML as esc} from './events.js';
-const apps={obelisk:{name:'Obelisk',url:'https://obelisk.ar/app',image:'PitchNetworkGraph',description:'Conversá con personas y comunidades.'},wallet:{name:'La Wallet',url:'https://beta.lawallet.io/wallet/login/nostr',image:'PitchAskIcon',description:'Explorá una wallet con acceso por Nostr.'}};
+const apps={
+ obelisk:{name:'Obelisk',url:'https://obelisk.ar/app',image:'obelisk.png',description:'Conversá con personas y comunidades.',connect:true},
+ sky:{name:'Sky · Obelisk',url:'https://sky.obelisk.ar/app',image:'sky.svg',description:'Explorá un mundo de encuentros y conversaciones.'},
+ wallet:{name:'La Wallet',url:'https://beta.lawallet.io/wallet/login/nostr',image:'lawallet.png',description:'Descubrí pagos con acceso por Nostr.',connect:true},
+ coracle:{name:'Coracle',url:'https://app.coracle.social',image:'coracle.png',description:'Leé, publicá y explorá tus conexiones.',connect:true},
+ primal:{name:'Primal',url:'https://primal.net',image:'primal.png',description:'Descubrí notas, perfiles y conversaciones.'},
+ nostrich:{name:'Nostrich',url:'https://nostrich.org',image:'nostrich.svg',description:'Explorá otra forma de usar tu identidad social.'}
+};
 export function setupAppConnections({getSession}){
  let bunker=null,resolveApproval=null;
  const dialog=document.createElement('dialog');dialog.id='app-connect-dialog';dialog.innerHTML='<div class="dialog-heading"><h2 id="app-connect-title"></h2><button id="close-app-connect" aria-label="Cerrar conexión">✕</button></div><div id="app-connect-body"></div>';document.body.append(dialog);
@@ -15,6 +22,7 @@ export function setupAppConnections({getSession}){
  if(local){$('create-bunker').onclick=async()=>{try{$('create-bunker').disabled=true;$('app-connect-status').textContent='Preparando conexión…';await create()}catch(e){$('app-connect-status').textContent=e.message}finally{$('create-bunker').disabled=false}};$('copy-bunker').onclick=async()=>{try{await navigator.clipboard.writeText($('bunker-code').value);$('app-connect-status').textContent='Enlace copiado. Elegí Bunker en la otra app y pegalo allí.'}catch{$('app-connect-status').textContent='No pudimos copiar el enlace. Revisá el permiso del navegador.'}};$('pair-app-uri').onclick=async()=>{const uri=$('app-nostrconnect').value;try{await create(uri)}catch(e){$('app-connect-status').textContent=e.message}};$('stop-bunker').onclick=stop}
  dialog.showModal();}
  $('close-app-connect').onclick=()=>dialog.close();
- const grid=document.querySelector('#recursos .resources');grid.innerHTML=Object.entries(apps).map(([key,a])=>`<button class="option-card" data-connect-app="${key}"><img src="assets/official/${a.image}.svg" alt=""><span class="option-title">${a.name}</span><span class="option-description">${a.description}</span><span class="text-button">Usar mi identidad ↗</span></button>`).join('');for(const b of grid.querySelectorAll('[data-connect-app]'))b.onclick=()=>open(b.dataset.connectApp);
+ const grid=document.querySelector('#recursos .resources');grid.innerHTML=Object.entries(apps).map(([key,a])=>`<article class="app-card"><a class="app-card-main" href="${a.url}" target="_blank" rel="noopener noreferrer"><img src="assets/apps/${a.image}" width="64" height="64" alt="Logo de ${a.name}" loading="lazy"><h3>${a.name} <span aria-hidden="true">↗</span></h3><p>${a.description}</p></a>${a.connect?`<button class="text-button" data-connect-app="${key}">Usar mi identidad</button>`:''}</article>`).join('');for(const b of grid.querySelectorAll('[data-connect-app]'))b.onclick=()=>open(b.dataset.connectApp);
+
  window.addEventListener('pagehide',stop);return {stop};
 }
