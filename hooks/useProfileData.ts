@@ -14,6 +14,8 @@ const FETCH_TIMEOUT = 5000;
 
 interface UseProfileDataResult {
   profile: NodeProfile | null;
+  profileEvent: Event | null;
+  followingEvent: Event | null;
   followingCount: number | null;
   isLoadingProfile: boolean;
   isLoadingFollowing: boolean;
@@ -23,6 +25,8 @@ interface UseProfileDataResult {
 
 /** Fetch verified profile and following events progressively across relays. */
 export function useProfileData(): UseProfileDataResult {
+  const [profileEvent, setProfileEvent] = useState<Event | null>(null);
+  const [followingEvent, setFollowingEvent] = useState<Event | null>(null);
   const [profile, setProfile] = useState<NodeProfile | null>(null);
   const [followingCount, setFollowingCount] = useState<number | null>(null);
   const [isLoadingProfile, setIsLoadingProfile] = useState(false);
@@ -40,6 +44,8 @@ export function useProfileData(): UseProfileDataResult {
   const fetchProfile = useCallback((pubkey: string) => {
     cancelFetch();
     setProfile(null);
+    setProfileEvent(null);
+    setFollowingEvent(null);
     setFollowingCount(null);
     const validPubkey = /^[0-9a-f]{64}$/.test(pubkey);
     setIsLoadingProfile(validPubkey);
@@ -82,6 +88,7 @@ export function useProfileData(): UseProfileDataResult {
             const selected = selectProfileEvent(newestProfile, event, pubkey, 0);
             if (selected !== newestProfile && selected) {
               newestProfile = selected;
+              setProfileEvent(selected);
               setProfile(profileFromEvent(selected));
               setIsLoadingProfile(false);
             }
@@ -89,6 +96,7 @@ export function useProfileData(): UseProfileDataResult {
             const selected = selectProfileEvent(newestFollows, event, pubkey, 3);
             if (selected !== newestFollows && selected) {
               newestFollows = selected;
+              setFollowingEvent(selected);
               setFollowingCount(followingCountFromEvent(selected));
               setIsLoadingFollowing(false);
             }
@@ -106,6 +114,8 @@ export function useProfileData(): UseProfileDataResult {
   const reset = useCallback(() => {
     cancelFetch();
     setProfile(null);
+    setProfileEvent(null);
+    setFollowingEvent(null);
     setFollowingCount(null);
     setIsLoadingProfile(false);
     setIsLoadingFollowing(false);
@@ -117,5 +127,5 @@ export function useProfileData(): UseProfileDataResult {
     poolRef.current = null;
   }, [cancelFetch]);
 
-  return { profile, followingCount, isLoadingProfile, isLoadingFollowing, fetchProfile, reset };
+  return { profile, profileEvent, followingEvent, followingCount, isLoadingProfile, isLoadingFollowing, fetchProfile, reset };
 }

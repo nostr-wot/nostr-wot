@@ -1,5 +1,5 @@
 import { GraphStorage, LocalGraph, GraphCrawler, calculateScore, type CrawlPool, type CrawlProgress } from "@nostr-wot/graph";
-import { SimplePool } from "nostr-tools";
+import { SimplePool, verifyEvent, type Event } from "nostr-tools";
 import { isPubkey, type OracleDistance } from "./oracle";
 import { namespaceFor, registerGraph, saveGraphRecord, withDatabaseLock, type SavedGraph } from "./databases";
 import type { GraphExtension } from "./extension";
@@ -32,7 +32,7 @@ export class LocalGraphSource implements GraphSource {
   private unlock = () => {};
   private lockDone: Promise<void>;
 
-  constructor(readonly root: string, customPool?: CrawlPool) {
+  constructor(readonly root: string, customPool?: CrawlPool, initialFollows?: Event) {
     this.storage = new GraphStorage(namespaceFor(root));
     this.graph = new LocalGraph(this.storage);
     const pool: CrawlPool = customPool ?? discoveryPool(this.pool);
@@ -49,6 +49,13 @@ export class LocalGraphSource implements GraphSource {
         if (typeof indexedDB === "undefined") throw new Error("Local graph storage is unavailable in this browser.");
         this.record = registerGraph(root);
         await this.storage.open();
+        // A lab publication has already been verified and accepted by a relay.
+        // Seed its signed list so propagation delays cannot hide newly followed people.
+        if (initialFollows?.kind === 3 && initialFollows.pubkey === root && verifyEvent(initialFollows)) {
+          const keys = [...new Set(initialFollows.tags.filter(t => t[0] === "p" && isPubkey(t[1])).map(t => t[1]))];
+          this.storage.saveFollows(root, keys, { createdAt: initialFollows.created_at, id: initialFollows.id });
+          await this.storage.flush();
+        }
         const saved = this.storage.getMeta<SavedGraph>("playground");
         if (saved?.pubkey === root && (this.record.status === "new" || (saved.lastAttempt ?? 0) > (this.record.lastAttempt ?? 0))) this.record = saved;
         if (this.record.status === "syncing") this.record = { ...this.record, status: "stopped", durationMs: null };

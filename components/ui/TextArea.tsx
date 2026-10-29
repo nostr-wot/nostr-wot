@@ -29,10 +29,10 @@ export const TextArea = forwardRef<HTMLTextAreaElement, TextAreaProps>(
           id={textareaId}
           className={`
             w-full px-4 py-3 rounded-lg
-            border border-gray-200 dark:border-gray-700
+            border border-gray-500 dark:border-gray-500
             bg-white dark:bg-gray-800
             text-gray-900 dark:text-gray-100
-            placeholder:text-gray-400 dark:placeholder:text-gray-500
+            placeholder:text-gray-500 dark:placeholder:text-gray-400
             focus:ring-2 focus:ring-primary focus:border-transparent
             outline-none transition-all resize-none
             disabled:opacity-60 disabled:cursor-not-allowed
@@ -45,7 +45,7 @@ export const TextArea = forwardRef<HTMLTextAreaElement, TextAreaProps>(
           <p className="mt-1 text-sm text-trust-red">{error}</p>
         )}
         {hint && !error && (
-          <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">{hint}</p>
+          <p className="mt-1 text-sm text-gray-600 dark:text-gray-300">{hint}</p>
         )}
       </div>
     );

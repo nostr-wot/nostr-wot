@@ -2,7 +2,7 @@
 
 import { createContext, useCallback, useEffect, useRef, useState, type ReactNode } from "react";
 import { SimplePool } from "nostr-tools/pool";
-import type { Event } from "nostr-tools";
+import { verifyEvent, type Event } from "nostr-tools";
 import { selectProfileEvent, profileFromEvent } from "@/lib/graph/profile-events";
 import { useGraph } from "@/contexts/GraphContext";
 import { buildExpansion } from "@/lib/graph/expansion";
@@ -17,6 +17,7 @@ const RELAYS = ["wss://purplepag.es", "wss://relay.damus.io", "wss://nos.lol"];
 interface PageState { offset: number; hasMore: boolean; total: number }
 interface DataContext {
   expandNodeFollows: (pubkey: string) => Promise<void>;
+  expandLevelTwo: () => Promise<void>;
   loadMoreFollows: (pubkey: string) => Promise<void>;
   collapseNodeFollows: (pubkey: string) => void;
   hasMoreFollows: (pubkey: string) => boolean;
@@ -37,7 +38,7 @@ interface DataContext {
 }
 export const GraphDataContext = createContext<DataContext | null>(null);
 
-export function GraphDataProvider({ rootPubkey, sourceKind, extension, children }: { rootPubkey: string; sourceKind: "local" | "extension"; extension?: GraphExtension; children: ReactNode }) {
+export function GraphDataProvider({ rootPubkey, sourceKind, extension, initialFollows, children }: { rootPubkey: string; sourceKind: "local" | "extension"; extension?: GraphExtension; initialFollows?: Event; children: ReactNode }) {
   const graph = useGraph();
   const graphRef = useRef(graph);
   graphRef.current = graph;
@@ -113,12 +114,20 @@ export function GraphDataProvider({ rootPubkey, sourceKind, extension, children 
     try {
       const backend = source.current;
       if (!backend) return;
-      const follows = await backend.follows(pubkey, signal);
+      const signedRootList = pubkey === rootPubkey && initialFollows?.pubkey === rootPubkey && initialFollows.kind === 3 && verifyEvent(initialFollows) ? initialFollows : undefined;
+      const follows = signedRootList && backend.kind === "extension"
+        ? [...new Set(signedRootList.tags.filter(t => t[0] === "p" && isPubkey(t[1])).map(t => t[1]))]
+        : await backend.follows(pubkey, signal);
       const offset = previous?.offset ?? 0;
       const page = { follows: follows.slice(offset, offset + Math.min(250, capacity)), nextOffset: Math.min(follows.length, offset + Math.min(250, capacity)), total: follows.length };
       const hasMore = page.nextOffset < page.total;
       const targets = page.follows.filter(key => key !== rootPubkey && key !== pubkey);
       const distances = await backend.metrics(targets, signal);
+      if (signedRootList) for (const key of targets) {
+        // A signed direct follow is authoritative even while the extension catches up.
+        const prior = distances.get(key);
+        distances.set(key, { hops: 1, pathCount: 1, score: 1, mutual: prior?.mutual ?? false });
+      }
       if (signal.aborted || session.current !== lifetime) return;
       const { nodes, links } = buildExpansion(node, rootPubkey, page.follows, distances, graphRef.current.state.data.nodes);
       current.mergeData({ nodes, links });
@@ -137,7 +146,28 @@ export function GraphDataProvider({ rootPubkey, sourceKind, extension, children 
         if (session.current === lifetime && !lifetime.signal.aborted) current.setLoading(false);
       }
     }
-  }, [rootPubkey, fetchProfiles]);
+  }, [rootPubkey, fetchProfiles, initialFollows]);
+
+  const expandLevelTwo = useCallback(async () => {
+    const lifetime = session.current;
+    if (!lifetime || active.current) return;
+    const available = () => !lifetime.signal.aborted && graphRef.current.state.data.nodes.length < Math.min(500, graphRef.current.state.settings.maxNodes);
+    await load(rootPubkey);
+    while (available() && pagesRef.current.get(rootPubkey)?.hasMore) { const before = pagesRef.current.get(rootPubkey)?.offset; await load(rootPubkey, true); await new Promise(resolve => setTimeout(resolve, 0)); if (pagesRef.current.get(rootPubkey)?.offset === before) break; }
+    await new Promise(resolve => setTimeout(resolve, 0));
+    const direct = graphRef.current.state.data.nodes.filter(node => node.distance === 1).map(node => node.id);
+    for (const key of direct) {
+      if (!available()) break;
+      await load(key);
+      await new Promise(resolve => setTimeout(resolve, 0));
+      while (available() && pagesRef.current.get(key)?.hasMore) {
+        const before = pagesRef.current.get(key)?.offset;
+        await load(key, true);
+        await new Promise(resolve => setTimeout(resolve, 0));
+        if (pagesRef.current.get(key)?.offset === before) break;
+      }
+    }
+  }, [load, rootPubkey]);
 
   const initialize = useCallback(() => {
     session.current?.abort();
@@ -162,7 +192,7 @@ export function GraphDataProvider({ rootPubkey, sourceKind, extension, children 
 
   useEffect(() => {
     pool.current = new SimplePool();
-    const backend = sourceKind === "local" ? new LocalGraphSource(rootPubkey) : new ExtensionGraphSource(rootPubkey, extension!);
+    const backend = sourceKind === "local" ? new LocalGraphSource(rootPubkey, undefined, initialFollows) : new ExtensionGraphSource(rootPubkey, extension!);
     source.current = backend;
     initializationFailed.current = false;
     // The loader reports initialization errors; attach immediately to avoid unhandled rejections.
@@ -175,7 +205,7 @@ export function GraphDataProvider({ rootPubkey, sourceKind, extension, children 
       pool.current?.close(RELAYS);
       pool.current = null;
     };
-  }, [initialize, sourceKind, rootPubkey, extension, generation]);
+  }, [initialize, sourceKind, rootPubkey, extension, generation, initialFollows]);
 
   // GraphContext's existing reset button clears its root; reinitialize the same identity.
   useEffect(() => {
@@ -241,7 +271,7 @@ export function GraphDataProvider({ rootPubkey, sourceKind, extension, children 
   }, []);
 
   return <GraphDataContext.Provider value={{
-    expandNodeFollows: key => load(key), loadMoreFollows: key => load(key, true),
+    expandLevelTwo, expandNodeFollows: key => load(key), loadMoreFollows: key => load(key, true),
     collapseNodeFollows, hasMoreFollows: key => pages.get(key)?.hasMore ?? false,
     resetGraph, buildInitialGraph: resetGraph,
     isLoading: graph.state.isLoading, error: graph.state.error, isReady: isPubkey(rootPubkey),

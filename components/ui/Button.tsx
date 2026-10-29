@@ -49,12 +49,13 @@ export const Button = forwardRef<
     size = "md",
     className = "",
     children,
+    as: elementType,
     ...rest
   } = props;
 
   const baseClasses = `${variantStyles[variant]} ${sizeStyles[size]} ${className}`.trim();
 
-  if (props.as === "link") {
+  if (elementType === "link") {
     const { href, external, ...linkProps } = rest as Omit<
       ButtonAsLink,
       "variant" | "size" | "className" | "children" | "as"
