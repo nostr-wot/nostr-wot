@@ -1,8 +1,10 @@
 "use client";
 
+import { BrandLockup } from "@/components/icons/BrandLockup";
+
 import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/routing";
-import { LogoIcon, GitHubIcon, LinkedInIcon, MediumIcon, YouTubeIcon } from "@/components/icons";
+import { GitHubIcon, LinkedInIcon, MediumIcon, YouTubeIcon } from "@/components/icons";
 
 import { socialLinks } from "@/lib/social-links";
 
@@ -21,8 +23,7 @@ export default function Footer() {
           {/* Brand */}
           <div className="lg:col-span-2">
             <Link href="/" className="flex items-center gap-2 font-semibold text-xl text-gray-900 dark:text-white hover:no-underline mb-4">
-              <LogoIcon />
-              <span>Nostr WoT</span>
+              <BrandLockup />
             </Link>
             <p className="text-gray-600 dark:text-gray-400 text-sm mb-6">
               {t("footer.tagline")}

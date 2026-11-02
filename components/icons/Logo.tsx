@@ -7,7 +7,7 @@ export function LogoIcon({ className }: { className?: string }) {
       height="26"
       viewBox="0 0 48 48"
       fill="none"
-      className={className || "text-primary shrink-0"}
+      className={className || "text-primary dark:text-indigo-300 shrink-0"}
     >
       <g stroke="currentColor" strokeOpacity="0.5" strokeWidth="1.5">
         <line x1="24" y1="24" x2="24" y2="12" />
