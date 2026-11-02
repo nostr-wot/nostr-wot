@@ -3,7 +3,7 @@ import { withMetadataPolicy } from '@/lib/metadata-policy';
 import type { Metadata } from "next";
 import { getTranslations } from "next-intl/server";
 import { Link } from "@/i18n/routing";
-import { Badge, LinkButton, ExternalLinkButton, ScrollReveal } from "@/components/ui";
+import { Badge, LinkButton, ExternalLinkButton, ScrollReveal, focusRing } from "@/components/ui";
 import { generateAlternates, generateOpenGraph, generateTwitter } from "@/lib/metadata";
 import { type Locale } from "@/i18n/config";
 
@@ -114,6 +114,9 @@ export default async function MediaKitPage() {
               <p className="text-xl text-gray-600 dark:text-gray-400 max-w-2xl mx-auto">
                 {t("hero.subtitle")}
               </p>
+              <a href="/brand-guidelines.md" className={`mt-6 inline-block rounded text-sm font-medium text-primary-dark dark:text-indigo-300 underline underline-offset-4 ${focusRing}`}>
+                {t("hero.agentGuide")}
+              </a>
             </div>
           </div>
         </ScrollReveal>
