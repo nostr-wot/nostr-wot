@@ -2,13 +2,16 @@ import { serializeJsonLd } from '@/lib/serialize-jsonld';
 import { withMetadataPolicy } from '@/lib/metadata-policy';
 import type { Metadata } from "next";
 import { getTranslations } from "next-intl/server";
-import { ScrollReveal, LinkButton, Section, SectionHeader, CodeBlock, TerminalBlock, WotGraphIllustration } from "@/components/ui";
+import { ScrollReveal, LinkButton, Section, SectionHeader, FeatureCard, CodeBlock, TerminalBlock, WotGraphIllustration } from "@/components/ui";
 import {
   ShieldIcon,
   BellIcon,
   SearchIcon,
   StarIcon,
   ArrowDownIcon,
+  KeyIcon,
+  LightningIcon,
+  CodeBracketsIcon,
 } from "@/components/icons";
 import { ReactNode } from "react";
 import { generateAlternates, generateOpenGraph, generateTwitter } from "@/lib/metadata";
@@ -27,7 +30,7 @@ async function pageMetadata({ params }: Props): Promise<Metadata> {
   return {
     title,
     description,
-    keywords: ["nostr web of trust", "decentralized trust"],
+    keywords: ["nostr signer", "lightning wallet", "nostr identity", "nostr interoperability", "web of trust"],
     alternates: generateAlternates("/about", locale as Locale),
     openGraph: generateOpenGraph({
       title,
@@ -118,7 +121,27 @@ export default async function AboutPage() {
         </div>
       </section>
 
-      {/* Problem Section */}
+      <Section padding="md">
+        <SectionHeader title={t("product.title")} description={t("product.subtitle")} />
+        <div className="grid sm:grid-cols-2 gap-6">
+          {[
+            { key: "identity", Icon: KeyIcon },
+            { key: "signing", Icon: ShieldIcon },
+            { key: "wallet", Icon: LightningIcon },
+            { key: "developers", Icon: CodeBracketsIcon },
+          ].map(({ key, Icon }) => (
+            <FeatureCard key={key}
+              icon={<span aria-hidden="true"><Icon className="w-7 h-7 text-primary" /></span>}
+              title={t(`product.${key}.title`)} description={t(`product.${key}.description`)} />
+          ))}
+        </div>
+        <div className="mt-8 flex flex-wrap justify-center gap-4">
+          <LinkButton href="/download">{t("cta.getExtension")}</LinkButton>
+          <LinkButton href="/docs" variant="outline">{t("cta.readDocs")}</LinkButton>
+        </div>
+      </Section>
+
+      {/* Web of Trust capability */}
       <Section padding="md">
         <ScrollReveal animation="fade-up">
           <SectionHeader title={t("problem.title")} />
@@ -246,7 +269,7 @@ const wot = new WoT({ rootPubkey: myPubkey, maxHops: 2 });
 const result = await wot.getDistance(pubkey);
 
 if (result && result.hops <= 2) {
-  console.log("Trusted! " + result.hops + " hops away");
+  console.log("Social distance: " + result.hops + " hops away");
 }`}
             />
           </ScrollReveal>

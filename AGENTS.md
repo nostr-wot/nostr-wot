@@ -3,7 +3,7 @@
 ## Brand and interface work
 
 - Read [the agent brand guidelines](public/brand-guidelines.md) before changing website UI, brand assets or product copy. Reuse the linked components, tokens, illustrations and localization patterns.
-- Keep the guide aligned with implementation changes; do not treat a known inconsistency as a new standard. The dated audit and pending owner decisions live in [the brand audit](docs/design/brand-audit-2026-11-02.md).
+- Keep the guide aligned with implementation changes; do not treat a known inconsistency as a new standard. The dated audit and correction status live in [the brand audit](docs/design/brand-audit-2026-11-02.md).
 
 ## LinkedIn eligibility (owner policy, 6 October 2026)
 

@@ -177,7 +177,7 @@ export default async function MediaKitPage() {
             <div className="bg-white dark:bg-gray-800 rounded-xl p-6 border border-gray-200 dark:border-gray-700 text-center">
               <div className="flex items-center justify-center gap-2 mb-4 py-4 bg-trust-green/10 rounded-lg px-4">
                 <WotLogo className="w-6 h-6 text-trust-green" />
-                <span className="text-sm font-medium text-trust-green">{t("logo.wotVerified")}</span>
+                <span className="text-sm font-medium text-green-800 dark:text-green-300">{t("logo.integrationLabel")}</span>
               </div>
               <span className="text-sm text-gray-500 dark:text-gray-400">{t("logo.integrationBadge")}</span>
             </div>
@@ -286,16 +286,16 @@ export default async function MediaKitPage() {
 
           <div className="space-y-8">
             <div className="bg-white dark:bg-gray-800 rounded-xl p-6 border border-gray-200 dark:border-gray-700">
-              <h3 className="font-semibold mb-2">{t("integrationExamples.trustBadge.title")}</h3>
-              <p className="text-gray-600 dark:text-gray-400 mb-4">{t("integrationExamples.trustBadge.description")}</p>
+              <h3 className="font-semibold mb-2">{t("integrationExamples.distanceBadge.title")}</h3>
+              <p className="text-gray-600 dark:text-gray-400 mb-4">{t("integrationExamples.distanceBadge.description")}</p>
               <div className="flex gap-4 flex-wrap">
-                <div className="inline-flex items-center gap-2 px-3 py-1.5 bg-trust-green/10 text-trust-green rounded-full">
+                <div className="inline-flex items-center gap-2 px-3 py-1.5 bg-trust-green/10 text-green-800 dark:text-green-300 rounded-full">
                   <WotLogo className="w-5 h-5" />
-                  <span className="text-sm font-medium">{t("integrationExamples.trustBadge.trusted")} (2 {t("integrationExamples.trustBadge.hops")})</span>
+                  <span className="text-sm font-medium">{t("integrationExamples.distanceBadge.connected")} (2 {t("integrationExamples.distanceBadge.hops")})</span>
                 </div>
                 <div className="inline-flex items-center gap-2 px-3 py-1.5 bg-gray-100 dark:bg-gray-700 text-gray-500 dark:text-gray-400 rounded-full">
                   <WotLogo className="w-5 h-5" />
-                  <span className="text-sm font-medium">{t("integrationExamples.trustBadge.unknown")}</span>
+                  <span className="text-sm font-medium">{t("integrationExamples.distanceBadge.unknown")}</span>
                 </div>
               </div>
             </div>
@@ -304,9 +304,9 @@ export default async function MediaKitPage() {
               <h3 className="font-semibold mb-2">{t("integrationExamples.hopIndicator.title")}</h3>
               <p className="text-gray-600 dark:text-gray-400 mb-4">{t("integrationExamples.hopIndicator.description")}</p>
               <div className="flex gap-3 flex-wrap">
-                <span className="px-3 py-1 bg-trust-green text-white text-sm font-medium rounded-full">1 {t("integrationExamples.hopIndicator.hop")}</span>
-                <span className="px-3 py-1 bg-trust-yellow text-white text-sm font-medium rounded-full">2 {t("integrationExamples.hopIndicator.hops")}</span>
-                <span className="px-3 py-1 bg-trust-red text-white text-sm font-medium rounded-full">3+ {t("integrationExamples.hopIndicator.hops")}</span>
+                <span className="px-3 py-1 bg-trust-green text-gray-950 text-sm font-medium rounded-full">1 {t("integrationExamples.hopIndicator.hop")}</span>
+                <span className="px-3 py-1 bg-trust-yellow text-gray-950 text-sm font-medium rounded-full">2 {t("integrationExamples.hopIndicator.hops")}</span>
+                <span className="px-3 py-1 bg-trust-red text-gray-950 text-sm font-medium rounded-full">3+ {t("integrationExamples.hopIndicator.hops")}</span>
               </div>
             </div>
 

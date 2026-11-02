@@ -79,3 +79,14 @@ for label, pattern in patterns.items():
 ```
 
 Contrast calculations use sRGB relative luminance, `(Llighter + 0.05) / (Ldarker + 0.05)`. These are solid-color calculations, not measurements of every rendered state. `#6366F1` against white is 4.47:1; `#4F46E5` against white is 6.29:1, supporting the existing darker CTA treatment.
+
+## Owner-approved corrections applied
+
+The owner approved all three decisions: signer/wallet positioning with interoperability and easy onboarding; distinct brand indigo and darker action indigo; descriptive integration/distance labels instead of verification or distrust claims.
+
+- B01: About now leads with four product capabilities and links to download/docs, before the retained Web of Trust explanation. Media-kit copy describes signer, access and payment integrations. All seven locales updated. Other surfaces, including the legacy SDK description in llms.txt, remain a separate copy review.
+- B02: Media-kit verification badges now say Nostr WoT integration; distance examples show connections or no path found. About hop descriptions explain graph paths without certifying reliability. All seven locales updated.
+- B03: The guide and media-kit palette distinguish brand #6366F1 from primary action #4F46E5 and hover #4338CA. Existing button styling is preserved; extracting further tokens remains optional follow-up work.
+- B04 (media-kit examples only): Solid green/yellow/red chips use dark text; tinted green integration/distance labels use darker light-theme text and lighter dark-theme text. General shared Badge variants still need a broader audit.
+
+Remaining findings are not silently marked fixed by these changes. Product metadata, existing screenshots, historical publications and unrelated feature copy have not been globally rewritten.

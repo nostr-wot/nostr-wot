@@ -10,7 +10,7 @@ Use this guide when writing copy, changing website UI, creating illustrations or
 4. Keep product facts separate from positioning. Verify platform, release channel and compatibility before claiming a capability is available.
 5. Inspect the final light/dark, mobile/desktop, keyboard and expanded/collapsed states. Preserve existing content and working interactions.
 
-The implementation map below uses repository-relative paths in [nostr-wot/nostr-wot](https://github.com/nostr-wot/nostr-wot). Source code defines current behavior; an inconsistency is not permission to copy it into new work. The dated audit in `docs/design/brand-audit-2026-11-02.md` records unresolved decisions separately from these durable guidelines.
+The implementation map below uses repository-relative paths in [nostr-wot/nostr-wot](https://github.com/nostr-wot/nostr-wot). Source code defines current behavior; an inconsistency is not permission to copy it into new work. The dated audit in `docs/design/brand-audit-2026-11-02.md` records findings and correction status separately from these durable guidelines.
 
 ## Brand, audience and language
 
@@ -21,7 +21,7 @@ The implementation map below uses repository-relative paths in [nostr-wot/nostr-
 - Distinguish identity, signer, wallet and app. A signature is not a payment; a connection is not unlimited permission; a remote signer connection is not a copy of the private key.
 - Describe supported clients as **compatible apps**. Check platform and pairing requirements before describing a phone-to-device flow. Do not reuse generated concept art as evidence of shipped UI, iOS support or background operation.
 - Describe experimental cryptography as experimental and specify its scope. Avoid promises of permanent security or compatibility with every client.
-- Social distance is a graph measurement. Do not introduce new claims that a distant account is malicious or that proximity certifies a person. Existing verification/trust wording requires the owner's decision before a broad migration.
+- Social distance is a graph measurement. Do not introduce new claims that a distant account is malicious or that proximity certifies a person. The owner approved descriptive integration and social-distance wording. Use “Nostr WoT integration” and explicit hop counts; do not reintroduce verification labels.
 - Use plain language, preserve technical accuracy, and avoid em dashes and invented personal experience in new editorial copy.
 
 **Copy pattern:** “Connect a compatible wallet to send Lightning payments.” Explain a protocol name in developer documentation or a relevant technical detail, rather than making it the first thing a new user must understand.
@@ -67,7 +67,7 @@ The token source is `app/globals.css` (`@theme`). Read the entire file: later ru
 | `trust-yellow` | `#EAB308` | Existing warning/distance visualization color. |
 | `trust-red` | `#EF4444` | Existing error/distance visualization color. |
 
-**Actual primary buttons:** final `.btn-primary` rules use `#4F46E5`, hover `#4338CA`, with white text. Do not rebuild a primary button using only `bg-primary`; it would bypass the current button treatment. The media kit does not yet explain this distinction.
+**Actual primary buttons:** final `.btn-primary` rules use `#4F46E5`, hover `#4338CA`, with white text. Do not rebuild a primary button using only `bg-primary`; it would bypass the current button treatment. The media kit documents this approved distinction between brand indigo and action indigo.
 
 **Surfaces:** root body uses `bg-gray-50 dark:bg-gray-950 text-gray-900 dark:text-gray-100`. Shared cards use white/gray-800; directory and article sidebar surfaces use white/gray-900. These are contextual patterns, not evidence that every card must have the same background.
 
