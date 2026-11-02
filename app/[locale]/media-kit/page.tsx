@@ -1,3 +1,6 @@
+import { LogoIcon } from "@/components/icons";
+import { BrandLockup } from "@/components/icons/BrandLockup";
+import { BrandPatterns } from "@/components/brand/BrandPatterns";
 import { serializeJsonLd } from '@/lib/serialize-jsonld';
 import { withMetadataPolicy } from '@/lib/metadata-policy';
 import type { Metadata } from "next";
@@ -30,52 +33,6 @@ async function pageMetadata({ params }: Props): Promise<Metadata> {
     }),
     twitter: generateTwitter({ title, description }),
   };
-}
-
-function WotLogo({ className }: { className?: string }) {
-  return (
-    <svg
-      width="48"
-      height="48"
-      viewBox="0 0 48 48"
-      fill="none"
-      className={className}
-    >
-      <g stroke="currentColor" strokeOpacity="0.5" strokeWidth="1.5">
-        <line x1="24" y1="24" x2="24" y2="12" />
-        <line x1="24" y1="24" x2="34" y2="17" />
-        <line x1="24" y1="24" x2="36" y2="27" />
-        <line x1="24" y1="24" x2="30" y2="35" />
-        <line x1="24" y1="24" x2="17" y2="34" />
-        <line x1="24" y1="24" x2="12" y2="22" />
-        <line x1="24" y1="12" x2="18" y2="6" />
-        <line x1="24" y1="12" x2="30" y2="6" />
-        <line x1="34" y1="17" x2="42" y2="12" />
-        <line x1="36" y1="27" x2="43" y2="30" />
-        <line x1="30" y1="35" x2="35" y2="42" />
-        <line x1="17" y1="34" x2="12" y2="42" />
-        <line x1="12" y1="22" x2="5" y2="18" />
-      </g>
-      <g fill="currentColor" fillOpacity="0.6">
-        <circle cx="18" cy="6" r="2.5" />
-        <circle cx="30" cy="6" r="2.5" />
-        <circle cx="42" cy="12" r="2.5" />
-        <circle cx="43" cy="30" r="2.5" />
-        <circle cx="35" cy="42" r="2.5" />
-        <circle cx="12" cy="42" r="2.5" />
-        <circle cx="5" cy="18" r="2.5" />
-      </g>
-      <g fill="currentColor" fillOpacity="0.9">
-        <circle cx="24" cy="12" r="3.5" />
-        <circle cx="34" cy="17" r="3.5" />
-        <circle cx="36" cy="27" r="3.5" />
-        <circle cx="30" cy="35" r="3.5" />
-        <circle cx="17" cy="34" r="3.5" />
-        <circle cx="12" cy="22" r="3.5" />
-      </g>
-      <circle cx="24" cy="24" r="5" fill="currentColor" />
-    </svg>
-  );
 }
 
 export default async function MediaKitPage() {
@@ -150,33 +107,36 @@ export default async function MediaKitPage() {
 
           <div className="grid md:grid-cols-2 gap-6 mb-12">
             <div className="bg-white rounded-xl p-12 flex flex-col items-center justify-center border border-gray-200">
-              <WotLogo className="w-24 h-24 text-primary mb-4" />
+              <BrandLockup tone="light" className="h-10 max-w-full mb-6" />
               <span className="text-sm text-gray-500">{t("logo.lightBackground")}</span>
             </div>
             <div className="bg-gray-900 rounded-xl p-12 flex flex-col items-center justify-center border border-gray-700">
-              <WotLogo className="w-24 h-24 text-white mb-4" />
+              <BrandLockup tone="dark" className="h-10 max-w-full mb-6" />
               <span className="text-sm text-gray-400">{t("logo.darkBackground")}</span>
             </div>
           </div>
 
+          <p className="text-gray-600 dark:text-gray-400 mb-6">{t("logo.specification")}</p>
+          <div className="flex flex-wrap justify-center gap-4 mb-12">
+            {(["light", "dark"] as const).map(tone => <a key={tone} download href={`/brand/nostr-wot/lockup-${tone}.svg`} className={`rounded-lg px-4 py-3 border border-gray-300 dark:border-gray-600 ${focusRing}`}>{t(`logo.download${tone === "light" ? "Light" : "Dark"}`)}</a>)}
+          </div>
           <h3 className="text-xl font-semibold text-center mb-6">{t("logo.variants")}</h3>
           <div className="grid sm:grid-cols-3 gap-6">
             <div className="bg-white dark:bg-gray-800 rounded-xl p-6 border border-gray-200 dark:border-gray-700 text-center">
               <div className="flex items-center justify-center gap-2 mb-4 py-4">
-                <WotLogo className="w-10 h-10 text-primary" />
-                <span className="font-semibold text-lg">Nostr WoT</span>
+                <BrandLockup />
               </div>
               <span className="text-sm text-gray-500 dark:text-gray-400">{t("logo.logoWordmark")}</span>
             </div>
             <div className="bg-white dark:bg-gray-800 rounded-xl p-6 border border-gray-200 dark:border-gray-700 text-center">
               <div className="flex items-center justify-center mb-4 py-4">
-                <WotLogo className="w-10 h-10 text-primary" />
+                <LogoIcon className="w-10 h-10 text-primary dark:text-indigo-300" />
               </div>
               <span className="text-sm text-gray-500 dark:text-gray-400">{t("logo.logoOnly")}</span>
             </div>
             <div className="bg-white dark:bg-gray-800 rounded-xl p-6 border border-gray-200 dark:border-gray-700 text-center">
               <div className="flex items-center justify-center gap-2 mb-4 py-4 bg-trust-green/10 rounded-lg px-4">
-                <WotLogo className="w-6 h-6 text-trust-green" />
+                <LogoIcon className="w-6 h-6 text-trust-green" />
                 <span className="text-sm font-medium text-green-800 dark:text-green-300">{t("logo.integrationLabel")}</span>
               </div>
               <span className="text-sm text-gray-500 dark:text-gray-400">{t("logo.integrationBadge")}</span>
@@ -184,6 +144,8 @@ export default async function MediaKitPage() {
           </div>
         </div>
       </section>
+
+      <BrandPatterns />
 
       {/* Colors Section */}
       <section className="py-16">
@@ -194,6 +156,10 @@ export default async function MediaKitPage() {
           </p>
 
           <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
+            <div className="bg-white dark:bg-gray-800 rounded-xl overflow-hidden border border-gray-200 dark:border-gray-700">
+              <div className="h-24 bg-indigo-300" />
+              <div className="p-4"><span className="font-semibold block">{t("logo.darkBackground")}</span><code className="text-sm text-gray-600 dark:text-gray-400">#A5B4FC</code><p className="text-sm text-gray-500 dark:text-gray-400 mt-2">{t("logo.logoWordmark")}</p></div>
+            </div>
             <div className="bg-white dark:bg-gray-800 rounded-xl overflow-hidden border border-gray-200 dark:border-gray-700">
               <div className="h-24 bg-primary" />
               <div className="p-4">
@@ -290,11 +256,11 @@ export default async function MediaKitPage() {
               <p className="text-gray-600 dark:text-gray-400 mb-4">{t("integrationExamples.distanceBadge.description")}</p>
               <div className="flex gap-4 flex-wrap">
                 <div className="inline-flex items-center gap-2 px-3 py-1.5 bg-trust-green/10 text-green-800 dark:text-green-300 rounded-full">
-                  <WotLogo className="w-5 h-5" />
+                  <LogoIcon className="w-5 h-5" />
                   <span className="text-sm font-medium">{t("integrationExamples.distanceBadge.connected")} (2 {t("integrationExamples.distanceBadge.hops")})</span>
                 </div>
                 <div className="inline-flex items-center gap-2 px-3 py-1.5 bg-gray-100 dark:bg-gray-700 text-gray-500 dark:text-gray-400 rounded-full">
-                  <WotLogo className="w-5 h-5" />
+                  <LogoIcon className="w-5 h-5" />
                   <span className="text-sm font-medium">{t("integrationExamples.distanceBadge.unknown")}</span>
                 </div>
               </div>
@@ -314,7 +280,7 @@ export default async function MediaKitPage() {
               <h3 className="font-semibold mb-2">{t("integrationExamples.poweredBy.title")}</h3>
               <p className="text-gray-600 dark:text-gray-400 mb-4">{t("integrationExamples.poweredBy.description")}</p>
               <div className="inline-flex items-center gap-2 px-4 py-2 bg-gray-100 dark:bg-gray-700 rounded-lg">
-                <WotLogo className="w-5 h-5 text-primary" />
+                <LogoIcon className="w-5 h-5 text-primary dark:text-indigo-300" />
                 <span className="text-sm">{t("integrationExamples.poweredBy.text")}</span>
               </div>
             </div>

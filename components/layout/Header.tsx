@@ -5,7 +5,7 @@ import { usePathname } from "@/i18n/routing";
 import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/routing";
 import { LinkButton, ThemeToggle, LanguageSwitcher } from "../ui";
-import { LogoIcon } from "@/components/icons";
+import { BrandLockup } from "@/components/icons/BrandLockup";
 
 const navLinkStyles = "text-gray-600 dark:text-gray-400 font-medium hover:text-gray-900 dark:hover:text-white transition-colors hidden md:block";
 
@@ -43,8 +43,7 @@ export default function Header() {
           href="/"
           className="flex items-center gap-2 font-semibold text-xl text-gray-900 dark:text-white hover:no-underline"
         >
-          <LogoIcon />
-          <span>Nostr WoT</span>
+          <BrandLockup />
         </Link>
 
         <nav className="flex items-center gap-2 md:gap-4">

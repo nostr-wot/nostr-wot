@@ -32,25 +32,28 @@ The implementation map below uses repository-relative paths in [nostr-wot/nostr-
 
 | Use | Existing source | Rule |
 | --- | --- | --- |
-| Website logo | `components/icons/Logo.tsx` → `LogoIcon` | Reuse the connected-node SVG. Default size is 26×26, viewBox 48×48, default class is `text-primary shrink-0`. |
-| Header/footer lockup | `components/layout/Header.tsx`, `components/layout/Footer.tsx` | `flex items-center gap-2`, logo plus “Nostr WoT”, `font-semibold text-xl`, neutral text adapting to theme. |
+| Website logo | `components/icons/Logo.tsx` → `LogoIcon` | Reuse the connected-node SVG. Default size is 26×26, viewBox 48×48, default class is `text-primary dark:text-indigo-300 shrink-0`. |
+| Header/footer lockup | `components/layout/Header.tsx`, `components/layout/Footer.tsx` | `BrandLockup` in `components/icons/BrandLockup.tsx`, 26px high, theme-aware SVG assets containing the symbol beside outlined Inter Semibold lettering. |
 | Animated logo | `components/icons/AnimatedWotLogo.tsx` | Reuse the existing animation where appropriate; review reduced-motion behavior. |
 | App icon | `app/icon.svg`, `app/icon.png`, `public/icon-192.png`, `public/icon-512.png` | Use existing assets. Check vector/raster consistency before exporting; do not trace or regenerate the logo with an image model. |
 | Social preview mark | `components/icons/SocialLogo.tsx`, `lib/social-image.tsx` | Use the existing renderer and original geometry. |
 | Nostr ecosystem symbol | `NostrLogo` in `components/icons/Logo.tsx` | Keep its meaning separate from the Nostr WoT product mark. |
 | Partner marks | `public/brand/` | Preserve provided geometry and colors; use the appropriate light/dark asset. |
 
-`className` on `LogoIcon` replaces its default class string. Include `text-primary shrink-0` yourself when customizing size. The component does not accept arbitrary SVG props; wrap it when adding decorative accessibility semantics.
+`className` on `LogoIcon` replaces its default class string. Include `text-primary dark:text-indigo-300 shrink-0` yourself when customizing size. The component does not accept arbitrary SVG props; wrap it when adding decorative accessibility semantics.
 
 ```tsx
 import { Link } from '@/i18n/routing';
-import { LogoIcon } from '@/components/icons';
+import { BrandLockup } from '@/components/icons/BrandLockup';
 
 <Link href="/" className="flex items-center gap-2 font-semibold text-xl text-gray-900 dark:text-white hover:no-underline">
-  <span aria-hidden="true"><LogoIcon /></span>
-  <span>Nostr WoT</span>
+  <BrandLockup />
 </Link>
 ```
+
+The canonical downloadable lockups live in `public/brand/nostr-wot/lockup-light.svg` and `lockup-dark.svg`; matching standalone symbols are `symbol-light.svg` and `symbol-dark.svg`. They contain paths, not SVG text or an external font reference. Inter Semibold at optical size 20 supplies the wordmark; this is a fixed brand asset, while page copy still uses the system font. Regenerate using `scripts/brand/export-wordmark.py` with the official Inter variable TTF. Keep the adjacent Inter OFL license with distributed assets. Do not export Apple system fonts or replace the outlined wordmark with live text.
+
+Use brand indigo #6366F1 with neutral lettering on light backgrounds. On dark backgrounds, the symbol and lettering use light purple #A5B4FC. Keep clear space of at least half the symbol height around the lockup. Minimum display height: 26px for the lockup and 24px for a standalone symbol. Preserve proportions and do not crop the mark. `BrandLockup` defaults to the page theme; `tone="light"` and `tone="dark"` are for explicitly colored preview surfaces.
 
 Do not substitute the egg concept, generated poster typography or a newly drawn node arrangement for these assets. Those earlier creative explorations are not the website's identity system.
 
@@ -61,6 +64,7 @@ The token source is `app/globals.css` (`@theme`). Read the entire file: later ru
 | Token | Value | Existing use |
 | --- | --- | --- |
 | `primary` | `#6366F1` | Product mark, accents, borders, decorative fills. |
+| Dark-background logo | `#A5B4FC` | Symbol and wordmark on dark surfaces; not a primary button fill. |
 | `primary-dark` | `#4F46E5` | Darker indigo, including active tab text on light surfaces. |
 | `nostr` | `#8B5CF6` | Nostr accent. |
 | `trust-green` | `#22C55E` | Existing success/trust visualization color. |
@@ -111,6 +115,28 @@ Import shared controls from `@/components/ui` and icons from `@/components/icons
 | Tooltip | `Tooltip`, `label`, `trigger="self\|child"`, `announce` | Use `child` for an already focusable link/button; avoid duplicate tab stops. |
 | Code sample | `CodeBlock`, `code`, `language`, `showCopy`, `showLineNumbers` | Reuse instead of duplicating syntax/copy UI. |
 | Breadcrumbs | `Breadcrumbs`, `items`, `label` | Shared by article and documentation layouts. |
+
+### Cards: select by purpose
+
+| Pattern | Use | Composition and behavior |
+| --- | --- | --- |
+| `Card` default | Settings summary, grouped facts, explanation | A short heading, supporting text and optional explicit action. Default padding 24px; compact 16px; spacious 32px. A div is not a click target. |
+| `Card` interactive | Destination or next step | Include an actual link/button with visible focus. Hover styling alone never creates navigation. Avoid nesting actions inside a whole-card link. |
+| `FeatureCard` | Product capability in a marketing grid | One decorative icon, short title, concise description. Built-in 32px padding, 16px corners and 56px icon container. Its visual hover is not an action. |
+| `Card` gradient | Introduction or selected callout | Use subtle purple for brand emphasis. Keep ordinary content neutral; do not use a gradient on every card or imply a semantic state from hue alone. |
+
+Keep one purpose per card. Align padding within a row; use 24px grid gaps and stack on small screens. Let long translations wrap instead of clipping or fixing content heights. Put the most important information before optional detail. Preserve shared family differences rather than forcing all cards into the same corner radius.
+
+The media kit's `components/brand/BrandPatterns.tsx` provides live default, interactive, feature and gradient examples, composed from production components. Use these as a starting point and retain real link/button semantics.
+
+### Forms, feedback and composition
+
+- One primary action per decision. Use outline/secondary actions for supporting choices and text links for navigation. A disabled or pending action needs a clear label and a reason where the context does not explain it. Preserve context and prevent duplicate submission.
+- Status badges state a fact, such as “Connected” or “No connection”. Use text plus color; do not imply certification. The live kit uses neutral badges to avoid copying the known saturated-text contrast issue.
+- Keep labels above fields. Provide expected-format guidance before an error, specific recovery guidance after one, and native ARIA links between the field and help/error. The kit's examples are explicitly read-only demonstrations, not a submission form.
+- Empty states explain what is absent and provide a relevant next step. Error states preserve entered data; loading states communicate progress without clearing the context.
+- Disclosures hold optional details, never the only copy of essential instructions. Verify expanded and collapsed states and keyboard operation with `AccordionList`. Dialogs use the existing Modal focus/escape behavior.
+- Check both themes, visible keyboard focus, hover, disabled and pending behavior. No essential action may depend on hover. Keep dense controls at 8px corners, standard cards at 12px, feature cards at 16px, and marketing sections within `max-w-6xl px-6`.
 
 ### Compose a marketing section
 

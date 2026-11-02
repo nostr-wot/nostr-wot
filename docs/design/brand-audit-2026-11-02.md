@@ -90,3 +90,7 @@ The owner approved all three decisions: signer/wallet positioning with interoper
 - B04 (media-kit examples only): Solid green/yellow/red chips use dark text; tinted green integration/distance labels use darker light-theme text and lighter dark-theme text. General shared Badge variants still need a broader audit.
 
 Remaining findings are not silently marked fixed by these changes. Product metadata, existing screenshots, historical publications and unrelated feature copy have not been globally rewritten.
+
+## Expanded kit and fixed wordmark
+
+Owner requested light purple for the dark logo, a symbol-plus-name lockup with consistent lettering across devices, and practical component usage guidance. The media kit now uses the shared LogoIcon, removing its duplicated WotLogo geometry (part of B05). Header/footer use BrandLockup with path-only Inter Semibold SVG exports; dark assets use #A5B4FC. Added four live card patterns, action and status examples, linked field help/errors, spacing guidance and disclosures in all seven locales. The system font remains intentional for body text. Other logo renderers and remaining audit items retain their existing scope.
