@@ -7,7 +7,7 @@ export async function BrandPatterns() {
   const t = await getTranslations('mediaKit.patterns');
   const heading = 'text-2xl font-bold mb-3';
   const copy = 'text-gray-600 dark:text-gray-400 leading-relaxed';
-  return <section id="components" className="py-16">
+  return <section id="components" className="scroll-mt-20 py-16">
     <div className="max-w-6xl mx-auto px-6 space-y-12">
       <div className="max-w-3xl"><h2 className="text-3xl font-bold mb-4">{t('title')}</h2><p className={copy}>{t('intro')}</p></div>
       <div>

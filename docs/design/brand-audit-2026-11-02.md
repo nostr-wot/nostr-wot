@@ -94,3 +94,19 @@ Remaining findings are not silently marked fixed by these changes. Product metad
 ## Expanded kit and fixed wordmark
 
 Owner requested light purple for the dark logo, a symbol-plus-name lockup with consistent lettering across devices, and practical component usage guidance. The media kit now uses the shared LogoIcon, removing its duplicated WotLogo geometry (part of B05). Header/footer use BrandLockup with path-only Inter Semibold SVG exports; dark assets use #A5B4FC. Added four live card patterns, action and status examples, linked field help/errors, spacing guidance and disclosures in all seven locales. The system font remains intentional for body text. Other logo renderers and remaining audit items retain their existing scope.
+
+## Second review: brand-system coverage
+
+The previous dark SVG incorrectly made the wordmark purple, and the integration example still recolored the mark green. Both contradicted the owner's intended separation of symbol and lettering. Corrected the generator and downloadable SVG to light-purple symbol plus white lettering, and the integration badge to purple symbol plus neutral lettering. Status examples now use dots rather than recolored product marks; the 2-hop example no longer uses a green background. Brand-colored badges and low-contrast Do/Don't headings on this page were replaced with neutral or darker text treatments.
+
+| Gap in the kit | Correction |
+| --- | --- |
+| No navigable hierarchy | Section links; foundations → logo → colors → type → imagery → components → usage. |
+| Logo spacing stated only in prose | Clear-space diagram, explicit paired colors, minimum sizes and downloadable standalone symbols alongside lockups. |
+| Brand/action/status colors mixed | Separate role guidance and explicit prohibition on status-colored logos; ecosystem color is identified separately. |
+| No practical type scale | Responsive size/line-height/weight specimen table using actual Tailwind values. |
+| Audience and voice omitted from public kit | Product statement, audience, character and an action-copy example. |
+| Imagery only described in agent Markdown | Existing home/developer art specimens, icon examples and composition/motion guidance. |
+| Essential page sections hidden until observer | Removed reveal wrappers from the kit hero and integration notice; foundations and specimens render directly. |
+
+Coverage was benchmarked against IBM's official logo guidance (https://www.ibm.com/design/language/ibm-logos/8-bar/) and Atlassian's official foundations (https://atlassian.design/foundations). Their designs, measurements and identity assets were not copied. Shared component audit items outside this page remain separately tracked; this review does not claim a repository-wide accessibility certification.

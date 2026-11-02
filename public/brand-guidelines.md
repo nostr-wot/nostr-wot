@@ -53,7 +53,7 @@ import { BrandLockup } from '@/components/icons/BrandLockup';
 
 The canonical downloadable lockups live in `public/brand/nostr-wot/lockup-light.svg` and `lockup-dark.svg`; matching standalone symbols are `symbol-light.svg` and `symbol-dark.svg`. They contain paths, not SVG text or an external font reference. Inter Semibold at optical size 20 supplies the wordmark; this is a fixed brand asset, while page copy still uses the system font. Regenerate using `scripts/brand/export-wordmark.py` with the official Inter variable TTF. Keep the adjacent Inter OFL license with distributed assets. Do not export Apple system fonts or replace the outlined wordmark with live text.
 
-Use brand indigo #6366F1 with neutral lettering on light backgrounds. On dark backgrounds, the symbol and lettering use light purple #A5B4FC. Keep clear space of at least half the symbol height around the lockup. Minimum display height: 26px for the lockup and 24px for a standalone symbol. Preserve proportions and do not crop the mark. `BrandLockup` defaults to the page theme; `tone="light"` and `tone="dark"` are for explicitly colored preview surfaces.
+Use brand indigo #6366F1 with neutral lettering on light backgrounds. On dark backgrounds, the symbol uses light purple #A5B4FC and the lettering is white #FFFFFF. On light backgrounds, the lettering is near-black #111827. Integration badges keep the same purple symbol and neutral lettering; never apply status green, yellow or red to the product mark. Keep clear space of at least half the symbol height around the lockup. Minimum display height: 26px for the lockup and 24px for a standalone symbol. Preserve proportions and do not crop the mark. `BrandLockup` defaults to the page theme; `tone="light"` and `tone="dark"` are for explicitly colored preview surfaces.
 
 Do not substitute the egg concept, generated poster typography or a newly drawn node arrangement for these assets. Those earlier creative explorations are not the website's identity system.
 
@@ -64,7 +64,7 @@ The token source is `app/globals.css` (`@theme`). Read the entire file: later ru
 | Token | Value | Existing use |
 | --- | --- | --- |
 | `primary` | `#6366F1` | Product mark, accents, borders, decorative fills. |
-| Dark-background logo | `#A5B4FC` | Symbol and wordmark on dark surfaces; not a primary button fill. |
+| Dark-background logo | `#A5B4FC` | Symbol only on dark surfaces; white wordmark. Not a primary button fill. |
 | `primary-dark` | `#4F46E5` | Darker indigo, including active tab text on light surfaces. |
 | `nostr` | `#8B5CF6` | Nostr accent. |
 | `trust-green` | `#22C55E` | Existing success/trust visualization color. |
@@ -241,3 +241,15 @@ Verify actual focus treatment, hover, active/selected, disabled, pending, empty,
 - For code changes, use the repo's current tests and typecheck/build as appropriate. `package.json` still contains `next lint`; check tooling support before claiming that script validates the site.
 - Report observed limitations and owner decisions separately. Do not present scan counts as a visual audit or claim screenshots were checked when only source was inspected.
 - Keep this file, the media kit and shared components aligned when a decision changes. Avoid duplicating this guide into another independently maintained document.
+
+## Brand-kit structure and editorial applications
+
+The public kit progresses from brand foundations to logo rules, color roles, typography, imagery, interface patterns and usage. `components/brand/BrandStandards.tsx` supplies the live foundations, clear-space diagram, color-role guidance, type scale and illustration examples. Its labels live in all seven `mediaKit` message files; section links use local anchors and keep guidance reachable without animation.
+
+- Clear space is half the displayed symbol height on each side of the complete lockup. The 26px specimen has 13px surrounding clear space. Minimum display heights remain 26px for the lockup and 24px for the standalone symbol. Do not enlarge the symbol independently of the wordmark.
+- Brand mark: #6366F1 symbol with #111827 wordmark on light neutral surfaces; #A5B4FC symbol with #FFFFFF wordmark on dark neutral surfaces. Integration badges follow that exact color relationship. Status colors are reserved for separate state/distance indicators, with descriptive labels. Do not reuse the product symbol as a status dot.
+- At default root sizing, this kit uses 36px/40px mobile page headings and 48px/48px desktop headings, 30px/36px section headings, 20px/28px card headings, 16px/26px explanatory body text, and 14px/20px labels. Preserve the font weights and responsive classes shown in the implementation. These are kit/comparable-layout conventions, not a mandate to flatten other editorial layouts.
+- Voice is clear, approachable and precise. Lead with an action and its result. Distinguish signing from payment approval and supported compatibility from a universal promise. Use “Review the signing request” as a concrete-action model; translate the intent, not technical jargon.
+- Imagery uses the existing home/developer art as visual examples. Keep localized text and original vectors separate from art, preserve genuine UI screenshots, and avoid generating new logo geometry. Interface icons generally use 20–24px boxes; larger feature icons remain appropriate in their existing components.
+
+Professional references informed coverage and organization, not Nostr WoT geometry, colors or measurements: [IBM logo guidance](https://www.ibm.com/design/language/ibm-logos/8-bar/) for explicit pairings, clear space and misuse rules; [Atlassian foundations](https://atlassian.design/foundations) for the separation of type, color, layout, imagery and component foundations. Owner instructions and this repository define Nostr WoT's actual rules.

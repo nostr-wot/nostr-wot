@@ -28,7 +28,7 @@ source = Path('components/icons/Logo.tsx').read_text()
 mark = source[source.index('      <g stroke='):source.index('    </svg>')]
 mark = mark.replace('strokeOpacity', 'stroke-opacity').replace('strokeWidth', 'stroke-width').replace('fillOpacity', 'fill-opacity')
 width = round(x + 1, 3)
-for mode, color, ink in [('light', '#6366F1', '#111827'), ('dark', '#A5B4FC', '#A5B4FC')]:
+for mode, color, ink in [('light', '#6366F1', '#111827'), ('dark', '#A5B4FC', '#FFFFFF')]:
     svg = f'<svg xmlns="http://www.w3.org/2000/svg" width="{width}" height="26" viewBox="0 0 {width} 26" role="img" aria-label="Nostr WoT"><g transform="scale(0.5416666667)" color="{color}">{mark}</g><g fill="{ink}">{wordmark}</g></svg>\n'
     Path(f'public/brand/nostr-wot/lockup-{mode}.svg').write_text(svg)
     Path(f'public/brand/nostr-wot/symbol-{mode}.svg').write_text(f'<svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 48 48" role="img" aria-label="Nostr WoT" color="{color}">{mark}</svg>\n')
