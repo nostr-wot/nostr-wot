@@ -1,0 +1,50 @@
+---
+title: "Amethyst 1.21 porta le NApplets nelle note e semplifica la Web of Trust"
+description: "Amethyst v1.21.0 esegue NApplets e app WebXDC nelle note e aggiunge una configurazione guidata della Web of Trust con limiti espliciti."
+excerpt: "Il client apre piccole app Nostr nelle note e guida la scelta di un provider di fiducia, restringendo l’accesso del codice incorporato."
+date: "2026-11-01"
+publishedAt: "2026-11-03"
+backfilled: false
+type: "story"
+tags: ["Nostr","Client","Web of Trust","Ecosistema"]
+featuredImage: "/images/news/amethyst-1-21-napplets-and-web-of-trust.svg"
+translationKey: "amethyst-1-21-napplets-and-web-of-trust"
+sources:
+  - title: "Release Amethyst v1.21.0"
+    url: "https://github.com/vitorpamplona/amethyst/releases/tag/v1.21.0"
+    publisher: "vitorpamplona/amethyst"
+    date: "2026-11-01"
+  - title: "Changelog v1.21.0 con tag"
+    url: "https://github.com/vitorpamplona/amethyst/blob/v1.21.0/docs/changelog/v1.21.00.md"
+    publisher: "vitorpamplona/amethyst"
+    date: "2026-11-01"
+  - title: "Commit della release v1.21.0"
+    url: "https://github.com/vitorpamplona/amethyst/commit/f3e6a6de6fd52ab182971807304793f266c7b4df"
+    publisher: "vitorpamplona/amethyst"
+    date: "2026-11-01"
+published: true
+---
+
+[Amethyst v1.21.0](https://github.com/vitorpamplona/amethyst/releases/tag/v1.21.0), pubblicata il 1° novembre 2026, esegue NApplets e app WebXDC nelle note che le contengono. Aggiunge inoltre una scheda per configurare la Web of Trust, ascolto tramite drss.io, cartucce Pico-8 e più tipi di contenuto nella Home. È un aggiornamento pubblicato di un client esistente, non il lancio di un nuovo client.
+
+## App dentro le note
+
+Su Android 11 o successivo e su desktop, una NApplet può offrire Esegui qui e restare nella nota. Se un’azione richiederebbe una conferma, il feed la rifiuta e propone di aprire l’app separatamente.
+
+Le app WebXDC usano uno spazio separato per account e app, senza rete, WebRTC o accesso alle chiavi. Amethyst aggiunge anche interfacce per file scelti dal sistema, caricamenti Blossom e azioni Nostr comuni. Sono capacità concesse dall’host, non accesso diretto al segreto dell’account.
+
+Le versioni desktop includono Chromium per NApplets e nSites. Il changelog indica che i vecchi manifest aggregati devono essere ripubblicati nel formato corrente a singolo artefatto.
+
+## Ingresso guidato alla Web of Trust
+
+Gli account che seguono almeno dieci persone e non hanno un provider di fiducia possono vedere una scheda nella Home. Prima della registrazione, Amethyst invia al provider scelto profilo, persone seguite, silenziamenti ed elenco dei relay. Poi adotta il relay del provider per fiducia, ricerca, indicizzazione e preferiti e vi sposta i feed Globali.
+
+È una procedura comoda, ma anche una decisione su dati e instradamento. Il provider resta visibile e la scheda avverte che i primi punteggi possono richiedere circa dieci minuti. Le note non dimostrano che tutti i provider usino lo stesso modello o la stessa politica sulla privacy.
+
+## Rafforzamento dopo una revisione di sicurezza
+
+Leggere messaggi diretti cifrati, gift wrap o liste private richiede un permesso di decifratura separato. Solo eventi con firma valida arrivano all’app. Cookie e WebRTC vengono rimossi dai frame incorporati, le fughe verso rete locale e DNS vengono chiuse e il prefetch usa solo server HTTPS pubblici entro un budget comune.
+
+Sono misure di rafforzamento pubblicate, non prova di un incidente sfruttato. La fonte non cita CVE né un attacco osservato. Questa analisi ha verificato fonte con tag ed evidenza di rilascio; non ha eseguito NApplets, un provider o test su Android e desktop.
+
+La release riproduce anche Pico-8, legge programmi e progressi drss.io, amplia la Home e offre un feed di scacchi. Per chi sviluppa, la scoperta è un’architettura che tratta le piccole app come ospiti non affidabili. Per chi usa il client, la domanda è quali dati riceve ogni app o provider e se il permesso richiesto corrisponde al compito.
