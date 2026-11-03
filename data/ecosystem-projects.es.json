@@ -1,5 +1,5 @@
 {
-  "checkedAt": "2026-10-20",
+  "checkedAt": "2026-11-03",
   "projects": [
     {
       "id": "damus",
@@ -87,10 +87,10 @@
       "summary": "Cliente de Nostr con opciones de instalación para Android y escritorio documentadas en su README oficial.",
       "category": "social-client",
       "status": "active",
-      "statusNote": "Comprobado el 2026-09-22: el repositorio no está archivado; se revisó la versión publicada v1.16.0, fechada el 2026-09-17. El estado activo describe el desarrollo observado, no la disponibilidad, la estabilidad ni la seguridad. No se probó la equivalencia de funciones entre Android y escritorio. Reverificado el 2026-10-04: el repositorio sigue sin estar archivado, con su último push público el 2026-10-02.",
+      "statusNote": "Reverificado el 2026-11-03: el repositorio no está archivado; se revisaron la versión publicada v1.21.0 del 2026-11-01 y su registro etiquetado. Activo describe el desarrollo observado, no disponibilidad, estabilidad o seguridad. No se probaron de forma independiente Android, escritorio, NApplets ni proveedores de confianza.",
       "website": "https://amethyst.social",
       "repository": "https://github.com/vitorpamplona/amethyst",
-      "lastVerified": "2026-10-04",
+      "lastVerified": "2026-11-03",
       "people": [
         {
           "name": "Vitor Pamplona",
@@ -140,12 +140,20 @@
         {
           "label": "Metadatos del repositorio comprobados de nuevo el 2026-10-04",
           "url": "https://api.github.com/repos/vitorpamplona/amethyst"
+        },
+        {
+          "label": "Versión v1.21.0, publicada el 2026-11-01",
+          "url": "https://github.com/vitorpamplona/amethyst/releases/tag/v1.21.0"
+        },
+        {
+          "label": "Registro de cambios etiquetado v1.21.0",
+          "url": "https://github.com/vitorpamplona/amethyst/blob/v1.21.0/docs/changelog/v1.21.00.md"
         }
       ],
       "latestUpdate": {
-        "date": "2026-09-17",
-        "title": "Amethyst v1.16.0 añade rutas de pago BOLT12 y un panel personal de actividad física",
-        "url": "https://github.com/vitorpamplona/amethyst/releases/tag/v1.16.0"
+        "date": "2026-11-01",
+        "title": "Amethyst v1.21.0 añade NApplets integradas, WebXDC, escucha con drss.io y configuración de Web de Confianza",
+        "url": "https://github.com/vitorpamplona/amethyst/releases/tag/v1.21.0"
       },
       "story": {
         "launched": "2023-01-11",
@@ -3011,6 +3019,18 @@
   ],
   "news": [
     {
+      "title": "Amethyst v1.21.0 añade NApplets integradas y configuración de Web de Confianza",
+      "date": "2026-11-01",
+      "url": "https://github.com/vitorpamplona/amethyst/releases/tag/v1.21.0",
+      "summary": "La versión ejecuta NApplets dentro de notas en Android 11+ y escritorio, aísla WebXDC sin red ni acceso a claves, añade escucha con drss.io y ofrece una configuración guiada de proveedor de confianza. Son funciones publicadas, no una prueba independiente de cada plataforma o proveedor.",
+      "sources": [
+        {
+          "label": "Registro de cambios etiquetado v1.21.0",
+          "url": "https://github.com/vitorpamplona/amethyst/blob/v1.21.0/docs/changelog/v1.21.00.md"
+        }
+      ]
+    },
+    {
       "title": "Mostro v0.20.0 añade aplazamiento de pagos y eventos de estado del nodo",
       "date": "2026-10-15",
       "url": "https://github.com/MostroP2P/mostro/releases/tag/v0.20.0",
@@ -3142,12 +3162,26 @@
   ],
   "security": [
     {
+      "title": "Amethyst v1.21.0 refuerza las aplicaciones integradas tras una revisión de seguridad",
+      "date": "2026-11-01",
+      "url": "https://github.com/vitorpamplona/amethyst/blob/v1.21.0/docs/changelog/v1.21.00.md",
+      "summary": "El registro etiquetado describe permisos separados de descifrado para eventos privados, validación de firmas antes de entregar eventos, eliminación de cookies y WebRTC de los marcos, controles de fugas de red local y DNS y precarga HTTPS pública limitada. Es refuerzo, no evidencia de explotación observada.",
+      "type": "hardening",
+      "coverage": "current",
+      "sources": [
+        {
+          "label": "Versión v1.21.0, publicada el 2026-11-01",
+          "url": "https://github.com/vitorpamplona/amethyst/releases/tag/v1.21.0"
+        }
+      ]
+    },
+    {
       "title": "Amber 6.6.9: dos avisos de gravedad alta y un fallo moderado de pérdida de claves",
       "date": "2026-10-14",
       "url": "https://github.com/greenart7c3/Amber/security/advisories/GHSA-8f7m-9g64-vrjw",
       "summary": "Los avisos de revocación de permisos y portapapeles de Android tienen gravedad alta y afectan a versiones <= 6.6.8. El fallo de pérdida de claves al cambiar la configuración tiene gravedad moderada y afecta a >= 6.5.0, <= 6.6.8. Todos indican 6.6.9 como versión corregida. La corrección no recupera secretos ya perdidos. Cada aviso enlazado detalla su alcance y mitigaciones.",
       "type": "advisory",
-      "coverage": "current",
+      "coverage": "baseline",
       "sources": [
         {
           "label": "Aviso publicado GHSA-g62f-m6pm-jv9p",
@@ -3254,12 +3288,12 @@
     }
   ],
   "coverage": {
-    "start": "2026-10-06T08:00:00Z",
-    "end": "2026-10-20T08:00:00Z",
+    "start": "2026-10-20T08:00:00Z",
+    "end": "2026-11-03T09:00:00Z",
     "timezone": "UTC",
     "endIsPartialDay": true,
-    "issue": "2026-10-20-fortnightly-ecosystem",
-    "projectEntries": "verified-existing-project-updates",
-    "newsSelection": "selected-primary-verified-updates"
+    "issue": "2026-11-03-fortnightly-ecosystem",
+    "projectEntries": "verified-existing-project-update",
+    "newsSelection": "selected-primary-verified-update"
   }
 }

@@ -1,0 +1,56 @@
+---
+title: "Amethyst 1.21 brings NApplets into notes and simplifies Web of Trust setup"
+description: "Amethyst v1.21.0 runs NApplets and WebXDC apps inside notes, adds listening and game formats, and introduces a guided Web of Trust setup with explicit security limits."
+excerpt: "The client can now open small Nostr apps inside a note and guide eligible accounts through trust-provider setup, while tightening what embedded code may access."
+date: "2026-11-01"
+publishedAt: "2026-11-03"
+backfilled: false
+type: "story"
+tags: ["Nostr","Clients","Web of Trust","Ecosystem"]
+featuredImage: "/images/news/amethyst-1-21-napplets-and-web-of-trust.svg"
+translationKey: "amethyst-1-21-napplets-and-web-of-trust"
+sources:
+  - title: "Amethyst v1.21.0 release"
+    url: "https://github.com/vitorpamplona/amethyst/releases/tag/v1.21.0"
+    publisher: "vitorpamplona/amethyst"
+    date: "2026-11-01"
+  - title: "Tagged v1.21.0 changelog"
+    url: "https://github.com/vitorpamplona/amethyst/blob/v1.21.0/docs/changelog/v1.21.00.md"
+    publisher: "vitorpamplona/amethyst"
+    date: "2026-11-01"
+  - title: "v1.21.0 release commit"
+    url: "https://github.com/vitorpamplona/amethyst/commit/f3e6a6de6fd52ab182971807304793f266c7b4df"
+    publisher: "vitorpamplona/amethyst"
+    date: "2026-11-01"
+published: true
+---
+
+[Amethyst v1.21.0](https://github.com/vitorpamplona/amethyst/releases/tag/v1.21.0), published on 1 November 2026, can run NApplets and WebXDC apps inside the notes that carry them. It also adds a Web of Trust setup card, drss.io listening, Pico-8 cartridges and more kinds of content to Home. This is a released update to an existing client, not a new client launch.
+
+The useful change is not just another media renderer. A note can now be an entry point to a small application while the host client remains responsible for storage, network access, signing and decryption. That makes the permission boundary part of the user experience.
+
+## Apps inside notes
+
+On Android 11 or newer and on desktop, a NApplet can show a Run here action. It stays inside the note with controls to open or stop it. If an action would require a prompt, the feed refuses it and offers to open the app separately instead.
+
+WebXDC attachments run in separate storage for each account and app, with no network, WebRTC or key access. Amethyst also adds interfaces for files chosen through the operating system, Blossom uploads, common Nostr actions and handing a task to another NApplet. These are permissions exposed by the host, not direct access to an account secret.
+
+Desktop builds now bundle Chromium for NApplets and nSites. The tagged changelog also says older aggregate manifests must be republished for the current single-artifact format. A signed old package does not automatically become compatible with the new host rules.
+
+## A guided Web of Trust entry point
+
+Accounts that follow at least ten people and do not have a trust provider can see a Web of Trust card on Home. Before sign-up, Amethyst sends the profile, follows, mutes and relay list to the selected provider. It then adopts the provider relay for trusted, search, indexer and favorite roles and moves Global feeds to it.
+
+That is a convenient setup path, but it is also a data and routing decision. The provider remains visible to the user, and the card says initial scores may take about ten minutes. The release notes do not establish that every provider uses the same scoring model or privacy policy.
+
+## Hardening after a security review
+
+The release narrows what embedded code can do. Reading encrypted direct messages, gift wraps or private lists requires a separate decrypt grant. Only events with valid signatures reach an app. Cookies and WebRTC are removed from every embedded frame, local-network and DNS leaks are closed, and site-card prefetching is limited to public HTTPS servers within a shared budget.
+
+These are published hardening changes, not evidence of an exploited incident. The upstream changelog does not cite a CVE or say that an attack was observed. This review inspected tagged source and release evidence; it did not execute third-party NApplets, inspect a trust provider or test Android and desktop behavior.
+
+## What else changed
+
+The same release can play Pico-8 cartridges, read drss.io shows and listening progress, display more Home content types, and offer a chess feed in release builds. Those additions make Amethyst a broader host, which is why the capability boundary deserves as much attention as the feature list.
+
+For builders, the main discovery is a client architecture that treats small apps as untrusted guests. For users, the practical question is narrower: which provider or embedded app receives which data, and whether the requested capability matches the task.

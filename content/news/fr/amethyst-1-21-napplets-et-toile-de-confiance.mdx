@@ -1,0 +1,50 @@
+---
+title: "Amethyst 1.21 intègre les NApplets aux notes et simplifie la toile de confiance"
+description: "Amethyst v1.21.0 exécute des NApplets et applications WebXDC dans les notes et ajoute une configuration guidée de la toile de confiance avec des limites explicites."
+excerpt: "Le client ouvre de petites applications Nostr dans les notes et guide le choix d’un fournisseur de confiance, tout en limitant le code intégré."
+date: "2026-11-01"
+publishedAt: "2026-11-03"
+backfilled: false
+type: "story"
+tags: ["Nostr","Clients","Toile de confiance","Écosystème"]
+featuredImage: "/images/news/amethyst-1-21-napplets-and-web-of-trust.svg"
+translationKey: "amethyst-1-21-napplets-and-web-of-trust"
+sources:
+  - title: "Version Amethyst v1.21.0"
+    url: "https://github.com/vitorpamplona/amethyst/releases/tag/v1.21.0"
+    publisher: "vitorpamplona/amethyst"
+    date: "2026-11-01"
+  - title: "Journal des changements étiqueté v1.21.0"
+    url: "https://github.com/vitorpamplona/amethyst/blob/v1.21.0/docs/changelog/v1.21.00.md"
+    publisher: "vitorpamplona/amethyst"
+    date: "2026-11-01"
+  - title: "Commit de la version v1.21.0"
+    url: "https://github.com/vitorpamplona/amethyst/commit/f3e6a6de6fd52ab182971807304793f266c7b4df"
+    publisher: "vitorpamplona/amethyst"
+    date: "2026-11-01"
+published: true
+---
+
+[Amethyst v1.21.0](https://github.com/vitorpamplona/amethyst/releases/tag/v1.21.0), publiée le 1er novembre 2026, exécute des NApplets et applications WebXDC dans les notes qui les transportent. Elle ajoute aussi une carte de configuration de la toile de confiance, l’écoute via drss.io, les cartouches Pico-8 et davantage de contenus dans l’accueil. C’est une mise à jour publiée d’un client existant, pas le lancement d’un nouveau client.
+
+## Des applications dans les notes
+
+Sur Android 11 ou plus récent et sur ordinateur, une NApplet peut proposer Exécuter ici et rester dans la note. Si une action demanderait une confirmation, le fil la refuse et propose d’ouvrir l’application séparément.
+
+Les applications WebXDC utilisent un stockage séparé par compte et application, sans réseau, WebRTC ni accès aux clés. Amethyst ajoute aussi des interfaces pour les fichiers choisis par le système, les envois Blossom et les actions Nostr courantes. Ce sont des permissions accordées par l’hôte, pas un accès direct au secret du compte.
+
+Les versions de bureau incluent Chromium pour les NApplets et nSites. Le journal étiqueté précise que les anciens manifestes agrégés doivent être republiés au format actuel à artefact unique.
+
+## Une entrée guidée dans la toile de confiance
+
+Les comptes qui suivent au moins dix personnes et n’ont pas de fournisseur de confiance peuvent voir une carte dans l’accueil. Avant l’inscription, Amethyst transmet au fournisseur choisi le profil, les abonnements, les comptes masqués et la liste des relais. Il adopte ensuite le relais du fournisseur pour la confiance, la recherche, l’indexation et les favoris, et y déplace les fils Globaux.
+
+C’est pratique, mais aussi une décision sur les données et le routage. Le fournisseur reste visible et la carte indique que les premiers scores peuvent demander environ dix minutes. Les notes ne prouvent pas que tous les fournisseurs emploient le même modèle ou la même politique de confidentialité.
+
+## Renforcement après une revue de sécurité
+
+La lecture des messages directs chiffrés, gift wraps ou listes privées exige une permission de déchiffrement distincte. Seuls les événements valablement signés atteignent l’application. Cookies et WebRTC sont retirés des cadres intégrés, les fuites vers le réseau local et DNS sont fermées et la prélecture utilise seulement des serveurs HTTPS publics dans un budget commun.
+
+Ce sont des renforcements publiés, pas la preuve d’un incident exploité. La source ne cite ni CVE ni attaque observée. Cette analyse a vérifié la source étiquetée et les éléments de publication; elle n’a exécuté ni NApplet, ni fournisseur, ni test Android ou ordinateur.
+
+La version lit aussi Pico-8, les programmes et la progression drss.io, davantage de contenus d’accueil et un fil d’échecs. Pour les développeurs, l’intérêt est une architecture qui traite les petites applications comme des invitées non fiables. Pour l’utilisateur, la question est de savoir quelles données reçoit chaque application ou fournisseur et si la permission demandée correspond à la tâche.

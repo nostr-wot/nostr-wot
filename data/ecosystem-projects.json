@@ -1,5 +1,5 @@
 {
-  "checkedAt": "2026-10-20",
+  "checkedAt": "2026-11-03",
   "projects": [
     {
       "id": "damus",
@@ -87,10 +87,10 @@
       "summary": "Nostr client with Android and desktop installation paths documented in its official README.",
       "category": "social-client",
       "status": "active",
-      "statusNote": "Checked 2026-09-22: repository is not archived; reviewed published release v1.16.0 dated 2026-09-17. Active describes observed development, not availability, stability or security. Android and desktop feature parity was not tested. Re-verified 2026-10-04: the repository is still not archived, with its most recent public push on 2026-10-02.",
+      "statusNote": "Re-verified 2026-11-03: repository is not archived; reviewed published release v1.21.0 dated 2026-11-01 and its tagged changelog. Active describes observed development, not availability, stability or security. Android, desktop, NApplet and trust-provider behavior was not independently tested.",
       "website": "https://amethyst.social",
       "repository": "https://github.com/vitorpamplona/amethyst",
-      "lastVerified": "2026-10-04",
+      "lastVerified": "2026-11-03",
       "people": [
         {
           "name": "Vitor Pamplona",
@@ -140,12 +140,20 @@
         {
           "label": "Repository metadata re-checked 2026-10-04",
           "url": "https://api.github.com/repos/vitorpamplona/amethyst"
+        },
+        {
+          "label": "Release v1.21.0, published 2026-11-01",
+          "url": "https://github.com/vitorpamplona/amethyst/releases/tag/v1.21.0"
+        },
+        {
+          "label": "Tagged v1.21.0 changelog",
+          "url": "https://github.com/vitorpamplona/amethyst/blob/v1.21.0/docs/changelog/v1.21.00.md"
         }
       ],
       "latestUpdate": {
-        "date": "2026-09-17",
-        "title": "Amethyst v1.16.0 adds BOLT12 payment paths and a personal fitness dashboard",
-        "url": "https://github.com/vitorpamplona/amethyst/releases/tag/v1.16.0"
+        "date": "2026-11-01",
+        "title": "Amethyst v1.21.0 adds inline NApplets, WebXDC, drss.io listening and Web of Trust setup",
+        "url": "https://github.com/vitorpamplona/amethyst/releases/tag/v1.21.0"
       },
       "story": {
         "launched": "2023-01-11",
@@ -3011,6 +3019,18 @@
   ],
   "news": [
     {
+      "title": "Amethyst v1.21.0 adds inline NApplets and Web of Trust setup",
+      "date": "2026-11-01",
+      "url": "https://github.com/vitorpamplona/amethyst/releases/tag/v1.21.0",
+      "summary": "The release runs NApplets inside notes on Android 11+ and desktop, sandboxes WebXDC without network or key access, adds drss.io listening and offers a guided trust-provider setup. These are published client features, not independent proof of every platform or provider.",
+      "sources": [
+        {
+          "label": "Tagged v1.21.0 changelog",
+          "url": "https://github.com/vitorpamplona/amethyst/blob/v1.21.0/docs/changelog/v1.21.00.md"
+        }
+      ]
+    },
+    {
       "title": "Mostro v0.20.0 adds payment deferral and node health events",
       "date": "2026-10-15",
       "url": "https://github.com/MostroP2P/mostro/releases/tag/v0.20.0",
@@ -3142,12 +3162,26 @@
   ],
   "security": [
     {
+      "title": "Amethyst v1.21.0 hardens embedded apps after a security review",
+      "date": "2026-11-01",
+      "url": "https://github.com/vitorpamplona/amethyst/blob/v1.21.0/docs/changelog/v1.21.00.md",
+      "summary": "The tagged changelog describes separate decrypt grants for private-event reads, signature validation before events reach apps, removal of cookies and WebRTC from embedded frames, local-network and DNS leak controls, and bounded public-HTTPS prefetch. This is hardening, not evidence of observed exploitation.",
+      "type": "hardening",
+      "coverage": "current",
+      "sources": [
+        {
+          "label": "Release v1.21.0, published 2026-11-01",
+          "url": "https://github.com/vitorpamplona/amethyst/releases/tag/v1.21.0"
+        }
+      ]
+    },
+    {
       "title": "Amber 6.6.9: two High advisories and a Moderate key-loss bug",
       "date": "2026-10-14",
       "url": "https://github.com/greenart7c3/Amber/security/advisories/GHSA-8f7m-9g64-vrjw",
       "summary": "The permission-revocation and Android clipboard advisories are rated High and affect versions <= 6.6.8. The settings-triggered key-loss advisory is Moderate and affects >= 6.5.0, <= 6.6.8. All list 6.6.9 as patched. The key-loss fix cannot recover secrets already lost. Consult each linked advisory for its exact scope and workaround.",
       "type": "advisory",
-      "coverage": "current",
+      "coverage": "baseline",
       "sources": [
         {
           "label": "Published advisory GHSA-g62f-m6pm-jv9p",
@@ -3254,12 +3288,12 @@
     }
   ],
   "coverage": {
-    "start": "2026-10-06T08:00:00Z",
-    "end": "2026-10-20T08:00:00Z",
+    "start": "2026-10-20T08:00:00Z",
+    "end": "2026-11-03T09:00:00Z",
     "timezone": "UTC",
     "endIsPartialDay": true,
-    "issue": "2026-10-20-fortnightly-ecosystem",
-    "projectEntries": "verified-existing-project-updates",
-    "newsSelection": "selected-primary-verified-updates"
+    "issue": "2026-11-03-fortnightly-ecosystem",
+    "projectEntries": "verified-existing-project-update",
+    "newsSelection": "selected-primary-verified-update"
   }
 }

@@ -1,0 +1,56 @@
+---
+title: "Amethyst 1.21 integra NApplets en notas y simplifica la Web de Confianza"
+description: "Amethyst v1.21.0 ejecuta NApplets y aplicaciones WebXDC dentro de notas, añade escucha y juegos e incorpora una configuración guiada de Web de Confianza con límites explícitos."
+excerpt: "El cliente puede abrir pequeñas aplicaciones Nostr dentro de una nota y guiar la configuración de un proveedor de confianza, mientras restringe lo que puede acceder el código integrado."
+date: "2026-11-01"
+publishedAt: "2026-11-03"
+backfilled: false
+type: "story"
+tags: ["Nostr","Clientes","Web de Confianza","Ecosistema"]
+featuredImage: "/images/news/amethyst-1-21-napplets-and-web-of-trust.svg"
+translationKey: "amethyst-1-21-napplets-and-web-of-trust"
+sources:
+  - title: "Versión Amethyst v1.21.0"
+    url: "https://github.com/vitorpamplona/amethyst/releases/tag/v1.21.0"
+    publisher: "vitorpamplona/amethyst"
+    date: "2026-11-01"
+  - title: "Registro de cambios etiquetado v1.21.0"
+    url: "https://github.com/vitorpamplona/amethyst/blob/v1.21.0/docs/changelog/v1.21.00.md"
+    publisher: "vitorpamplona/amethyst"
+    date: "2026-11-01"
+  - title: "Commit de la versión v1.21.0"
+    url: "https://github.com/vitorpamplona/amethyst/commit/f3e6a6de6fd52ab182971807304793f266c7b4df"
+    publisher: "vitorpamplona/amethyst"
+    date: "2026-11-01"
+published: true
+---
+
+[Amethyst v1.21.0](https://github.com/vitorpamplona/amethyst/releases/tag/v1.21.0), publicada el 1 de noviembre de 2026, puede ejecutar NApplets y aplicaciones WebXDC dentro de las notas que las contienen. También añade una tarjeta para configurar la Web de Confianza, escucha mediante drss.io, cartuchos Pico-8 y más tipos de contenido en Inicio. Es una actualización publicada de un cliente existente, no el lanzamiento de un cliente nuevo.
+
+El cambio útil no es solo otro reproductor. Una nota puede convertirse en la entrada a una pequeña aplicación mientras el cliente anfitrión controla el almacenamiento, la red, la firma y el descifrado. Así, el límite de permisos forma parte de la experiencia.
+
+## Aplicaciones dentro de notas
+
+En Android 11 o posterior y en escritorio, una NApplet puede mostrar la acción Ejecutar aquí. Permanece dentro de la nota con controles para abrirla o detenerla. Si una acción exigiría una confirmación, el feed la rechaza y ofrece abrir la aplicación por separado.
+
+Los archivos WebXDC se ejecutan con almacenamiento separado por cuenta y aplicación, sin red, WebRTC ni acceso a claves. Amethyst también incorpora interfaces para archivos elegidos mediante el sistema operativo, subidas a Blossom, acciones comunes de Nostr y tareas transferidas a otra NApplet. Son permisos concedidos por el anfitrión, no acceso directo al secreto de la cuenta.
+
+Las versiones de escritorio incluyen Chromium para NApplets y nSites. El registro etiquetado indica además que los manifiestos agregados antiguos deben volver a publicarse con el formato actual de un solo artefacto.
+
+## Entrada guiada a la Web de Confianza
+
+Las cuentas que siguen al menos a diez personas y no tienen proveedor de confianza pueden ver una tarjeta en Inicio. Antes del alta, Amethyst envía al proveedor elegido el perfil, los seguidos, los silenciados y la lista de relays. Después incorpora el relay del proveedor como confiable, de búsqueda, indexación y favorito, y mueve allí los feeds Globales.
+
+Es una ruta cómoda, pero también una decisión sobre datos y enrutamiento. El proveedor sigue visible para la persona usuaria y la tarjeta indica que las primeras puntuaciones pueden tardar unos diez minutos. Las notas no demuestran que todos los proveedores utilicen el mismo modelo de puntuación o política de privacidad.
+
+## Refuerzo tras una revisión de seguridad
+
+La versión limita lo que puede hacer el código integrado. Leer mensajes directos cifrados, gift wraps o listas privadas exige un permiso de descifrado independiente. Solo llegan a una aplicación eventos con firma válida. Se eliminan cookies y WebRTC de todos los marcos, se cierran fugas de red local y DNS y la precarga de tarjetas se limita a servidores HTTPS públicos dentro de un presupuesto compartido.
+
+Son cambios de refuerzo publicados, no pruebas de un incidente explotado. El registro original no cita un CVE ni afirma que se observara un ataque. Esta revisión inspeccionó código etiquetado y evidencia de publicación; no ejecutó NApplets de terceros, examinó un proveedor ni probó Android y escritorio.
+
+## Más cambios
+
+La misma versión reproduce cartuchos Pico-8, lee programas y progreso de drss.io, muestra más tipos de contenido en Inicio y ofrece un feed de ajedrez. Amethyst se convierte así en un anfitrión más amplio, por lo que el límite de capacidades merece tanta atención como la lista de funciones.
+
+Para quienes desarrollan, el hallazgo principal es una arquitectura que trata las pequeñas aplicaciones como invitadas no confiables. Para quien usa el cliente, la pregunta práctica es qué datos recibe cada proveedor o aplicación y si el permiso solicitado corresponde con la tarea.

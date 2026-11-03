@@ -1,0 +1,50 @@
+---
+title: "Amethyst 1.21 leva NApplets às notas e simplifica a Web de Confiança"
+description: "Amethyst v1.21.0 executa NApplets e apps WebXDC dentro de notas e adiciona uma configuração guiada da Web de Confiança com limites explícitos."
+excerpt: "O cliente abre pequenos apps Nostr dentro de notas e guia a escolha de um provedor de confiança, restringindo o acesso do código incorporado."
+date: "2026-11-01"
+publishedAt: "2026-11-03"
+backfilled: false
+type: "story"
+tags: ["Nostr","Clientes","Web de Confiança","Ecossistema"]
+featuredImage: "/images/news/amethyst-1-21-napplets-and-web-of-trust.svg"
+translationKey: "amethyst-1-21-napplets-and-web-of-trust"
+sources:
+  - title: "Versão Amethyst v1.21.0"
+    url: "https://github.com/vitorpamplona/amethyst/releases/tag/v1.21.0"
+    publisher: "vitorpamplona/amethyst"
+    date: "2026-11-01"
+  - title: "Changelog marcado v1.21.0"
+    url: "https://github.com/vitorpamplona/amethyst/blob/v1.21.0/docs/changelog/v1.21.00.md"
+    publisher: "vitorpamplona/amethyst"
+    date: "2026-11-01"
+  - title: "Commit da versão v1.21.0"
+    url: "https://github.com/vitorpamplona/amethyst/commit/f3e6a6de6fd52ab182971807304793f266c7b4df"
+    publisher: "vitorpamplona/amethyst"
+    date: "2026-11-01"
+published: true
+---
+
+[Amethyst v1.21.0](https://github.com/vitorpamplona/amethyst/releases/tag/v1.21.0), publicada em 1º de novembro de 2026, executa NApplets e apps WebXDC dentro das notas que os carregam. Também adiciona um cartão para configurar a Web de Confiança, reprodução via drss.io, cartuchos Pico-8 e mais tipos de conteúdo na tela inicial. É uma atualização publicada de um cliente existente, não o lançamento de um novo cliente.
+
+## Apps dentro de notas
+
+No Android 11 ou mais recente e no desktop, uma NApplet pode oferecer Executar aqui e permanecer dentro da nota. Quando uma ação exigiria uma confirmação, o feed a recusa e oferece abrir o app separadamente.
+
+Apps WebXDC usam armazenamento separado por conta e app, sem rede, WebRTC ou acesso às chaves. Amethyst também oferece interfaces para arquivos escolhidos pelo sistema, uploads Blossom e ações Nostr comuns. São permissões do host, não acesso direto ao segredo da conta.
+
+As versões desktop incluem Chromium para NApplets e nSites. O changelog marcado informa que manifestos agregados antigos precisam ser republicados no formato atual de artefato único.
+
+## Entrada guiada para a Web de Confiança
+
+Contas que seguem pelo menos dez pessoas e ainda não usam um provedor de confiança podem ver um cartão na tela inicial. Antes do cadastro, Amethyst envia ao provedor escolhido o perfil, as contas seguidas, os silenciamentos e a lista de relays. Depois adota o relay do provedor para confiança, busca, indexação e favoritos, e move para ele os feeds Globais.
+
+É um caminho conveniente, mas também uma decisão sobre dados e roteamento. O provedor continua visível e o cartão avisa que as primeiras pontuações podem levar cerca de dez minutos. As notas da versão não demonstram que todos os provedores usem o mesmo modelo ou política de privacidade.
+
+## Reforço após revisão de segurança
+
+Ler mensagens diretas cifradas, gift wraps ou listas privadas exige uma permissão de decodificação própria. Só eventos com assinatura válida chegam ao app. Cookies e WebRTC são removidos dos frames incorporados, vazamentos de rede local e DNS são fechados e a pré-busca usa apenas servidores HTTPS públicos dentro de um orçamento comum.
+
+São reforços publicados, não evidência de incidente explorado. A fonte não cita CVE nem relata ataque observado. Esta análise verificou fonte marcada e evidência de lançamento; não executou NApplets, um provedor ou testes em Android e desktop.
+
+A mesma versão também reproduz Pico-8, lê programas e progresso do drss.io, amplia a tela inicial e oferece um feed de xadrez. Para quem desenvolve, a descoberta principal é uma arquitetura que trata pequenos apps como convidados não confiáveis. Para quem usa, a pergunta é quais dados cada app ou provedor recebe e se a permissão pedida corresponde à tarefa.
