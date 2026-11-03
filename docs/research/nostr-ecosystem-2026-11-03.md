@@ -32,4 +32,10 @@ The article is Nostr-eligible after verified live publication. LinkedIn is inten
 
 ## Publication state
 
-The seven authored editions, synchronized directory evidence, deterministic inspected illustration and Nostr-only copy are prepared. Hosted checks, merge, deployment, live routes and a durable Nostr receipt remain pending and must be recorded without blind retries.
+[PR #141](https://github.com/nostr-wot/nostr-wot/pull/141) merged as `1c6b42b37f8f0c91b4fb99bf7e4baf500f5a4716`. [Exact-head checks](https://github.com/nostr-wot/nostr-wot/actions/runs/41609170042) passed typecheck, unit and workshop tests, cache parity, social lint, production build, and the rendered sitemap, metadata, JSON-LD and preview-image audit.
+
+[Production run 41611186722](https://github.com/nostr-wot/nostr-wot/actions/runs/41611186722) passed the same exact-tree verification, artifact packaging, healthy release activation, live homepage and refreshed sitemap checks, and IndexNow submission.
+
+The [English article](https://nostrwot.com/news/2026-11-03/amethyst-1-21-napplets-and-web-of-trust) and [Spanish article](https://nostrwot.com/es/news/2026-11-03/amethyst-1-21-napplets-y-web-de-confianza) were opened after deployment and rendered their localized title, publication date, article body, illustration and primary-source links. The [Amethyst directory record](https://nostrwot.com/projects/amethyst) rendered v1.21.0, the 1 November release date and the 3 November evidence refresh.
+
+Nostr is live and queued, but `data/social-posted.json` has no receipt for this slug yet. The existing hosted sender remains authoritative; no manual or uncertain dispatch was attempted. LinkedIn remains intentionally ineligible. No email, subscriber, newsletter or schedule action was taken.
