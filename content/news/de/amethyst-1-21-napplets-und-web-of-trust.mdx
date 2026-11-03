@@ -1,0 +1,50 @@
+---
+title: "Amethyst 1.21 bringt NApplets in Notizen und vereinfacht Web of Trust"
+description: "Amethyst v1.21.0 führt NApplets und WebXDC-Apps in Notizen aus und ergänzt eine geführte Web-of-Trust-Einrichtung mit klaren Grenzen."
+excerpt: "Der Client öffnet kleine Nostr-Apps in Notizen und führt durch die Wahl eines Vertrauensanbieters, während eingebetteter Code enger begrenzt wird."
+date: "2026-11-01"
+publishedAt: "2026-11-03"
+backfilled: false
+type: "story"
+tags: ["Nostr","Clients","Web of Trust","Ökosystem"]
+featuredImage: "/images/news/amethyst-1-21-napplets-and-web-of-trust.svg"
+translationKey: "amethyst-1-21-napplets-and-web-of-trust"
+sources:
+  - title: "Amethyst v1.21.0 Release"
+    url: "https://github.com/vitorpamplona/amethyst/releases/tag/v1.21.0"
+    publisher: "vitorpamplona/amethyst"
+    date: "2026-11-01"
+  - title: "Markiertes Änderungsprotokoll v1.21.0"
+    url: "https://github.com/vitorpamplona/amethyst/blob/v1.21.0/docs/changelog/v1.21.00.md"
+    publisher: "vitorpamplona/amethyst"
+    date: "2026-11-01"
+  - title: "Release-Commit v1.21.0"
+    url: "https://github.com/vitorpamplona/amethyst/commit/f3e6a6de6fd52ab182971807304793f266c7b4df"
+    publisher: "vitorpamplona/amethyst"
+    date: "2026-11-01"
+published: true
+---
+
+[Amethyst v1.21.0](https://github.com/vitorpamplona/amethyst/releases/tag/v1.21.0), veröffentlicht am 1. November 2026, führt NApplets und WebXDC-Apps in den Notizen aus, die sie enthalten. Die Version ergänzt außerdem eine Web-of-Trust-Karte, drss.io-Wiedergabe, Pico-8-Cartridges und weitere Inhaltstypen auf Home. Es ist ein veröffentlichtes Update eines bestehenden Clients, kein neuer Client-Start.
+
+## Apps in Notizen
+
+Unter Android 11 oder neuer und auf dem Desktop kann ein NApplet Hier ausführen anbieten und in der Notiz bleiben. Würde eine Aktion eine Nachfrage erfordern, lehnt der Feed sie ab und bietet stattdessen das separate Öffnen an.
+
+WebXDC-Apps erhalten getrennten Speicher pro Konto und App, ohne Netzwerk, WebRTC oder Schlüsselzugriff. Amethyst ergänzt außerdem Schnittstellen für systemseitig ausgewählte Dateien, Blossom-Uploads und übliche Nostr-Aktionen. Das sind vom Host erteilte Fähigkeiten, kein direkter Zugriff auf das Kontogeheimnis.
+
+Desktop-Versionen bündeln Chromium für NApplets und nSites. Das markierte Änderungsprotokoll sagt auch, dass alte Sammel-Manifeste im aktuellen Ein-Artefakt-Format neu veröffentlicht werden müssen.
+
+## Geführter Einstieg in Web of Trust
+
+Konten, die mindestens zehn Personen folgen und keinen Vertrauensanbieter haben, können auf Home eine Karte sehen. Vor der Anmeldung sendet Amethyst Profil, Follows, Stummschaltungen und Relaisliste an den gewählten Anbieter. Danach übernimmt der Client dessen Relais für Vertrauen, Suche, Indexierung und Favoriten und verschiebt globale Feeds dorthin.
+
+Das ist bequem, aber auch eine Daten- und Routingentscheidung. Der Anbieter bleibt sichtbar und die Karte weist darauf hin, dass erste Bewertungen etwa zehn Minuten brauchen können. Die Versionshinweise belegen nicht, dass alle Anbieter dasselbe Modell oder dieselbe Datenschutzpraxis verwenden.
+
+## Härtung nach einer Sicherheitsprüfung
+
+Das Lesen verschlüsselter Direktnachrichten, Gift Wraps oder privater Listen braucht eine eigene Entschlüsselungsfreigabe. Nur gültig signierte Ereignisse erreichen die App. Cookies und WebRTC werden aus eingebetteten Frames entfernt, Lecks zu lokalem Netzwerk und DNS geschlossen und Vorabrufe auf öffentliche HTTPS-Server innerhalb eines gemeinsamen Budgets begrenzt.
+
+Das sind veröffentlichte Härtungen, kein Beleg für einen ausgenutzten Vorfall. Die Quelle nennt weder CVE noch beobachteten Angriff. Diese Prüfung untersuchte markierte Quellen und Release-Belege; sie führte keine NApplets, Anbieter oder Android- und Desktop-Tests aus.
+
+Die Version spielt außerdem Pico-8, liest drss.io-Sendungen und Fortschritt, erweitert Home und bietet einen Schach-Feed. Für Entwickler ist die Entdeckung eine Architektur, die kleine Apps als nicht vertrauenswürdige Gäste behandelt. Für Nutzer lautet die Frage, welche Daten App oder Anbieter erhalten und ob die angeforderte Fähigkeit zur Aufgabe passt.
