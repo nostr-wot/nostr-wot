@@ -169,7 +169,7 @@ export default async function SupportPage() {
         <section id="delete-data" className="py-12">
           <div className="max-w-3xl mx-auto px-6">
             <h2 className="text-2xl font-bold mb-4">{t("deleteData.title")}</h2>
-            <p className="text-gray-600 dark:text-gray-400 mb-4">{t("deleteData.description")}</p>
+            <p className="text-gray-600 dark:text-gray-400 mb-4">{t("android")}</p>
             <ul className="list-disc pl-6 text-gray-600 dark:text-gray-400 space-y-2 mb-4">
               {DELETE_KEYS.map((key) => (
                 <li key={key}>

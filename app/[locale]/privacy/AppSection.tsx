@@ -54,8 +54,15 @@ export default async function AppSection() {
     </li>
   );
 
+  const android = await getTranslations("privacy.android");
+
   return (
     <section id="app" className="mb-12">
+      <h2 className="text-2xl font-bold mb-4">Nostr WoT (Android)</h2>
+      <p className="text-gray-600 dark:text-gray-400 mb-4">{android("keys")}</p>
+      <p className="text-gray-600 dark:text-gray-400 mb-4">{android("network")}</p>
+      <p className="text-gray-600 dark:text-gray-400 mb-4">{android("wallet")}</p>
+      <p className="mb-6"><Link href="/support#delete-data" className="text-primary hover:underline">{t("delete.title")}</Link></p>
       <h2 className="text-2xl font-bold mb-4">{t("title")}</h2>
       <p className="text-gray-600 dark:text-gray-400 mb-4">{t("intro")}</p>
       <p className="text-gray-600 dark:text-gray-400 mb-6">{t("publisher")}</p>
