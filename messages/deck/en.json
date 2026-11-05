@@ -1,0 +1,389 @@
+{
+  "slides": [
+    {
+      "title": "Your digital life, under your control",
+      "summary": "Understand Nostr and discover how to take your identity, connections and posts across applications.",
+      "points": [],
+      "body": "This guide starts with the limits of closed platforms, explains how Nostr works, and shows how Nostr WoT helps you use it. Explore each slide and open the information bubble for more detail.",
+      "cta": "Meet Nostr WoT",
+      "takeaway": ""
+    },
+    {
+      "title": "Can we own our digital lives?",
+      "summary": "Your identity. Your connections. What you publish. What do you keep when a platform changes its rules?",
+      "points": [
+        "Keep access to your identity when you change services.",
+        "Choose how your experience is organized and what you see."
+      ],
+      "body": "Today, companies administer many of the accounts we use to participate online. When a service changes or closes, the question is whether you can keep your identity and reach your community. Ownership begins with being able to choose without starting over.",
+      "cta": "",
+      "takeaway": ""
+    },
+    {
+      "title": "The problem: your whole community depends on an account",
+      "summary": "A suspended account, a service shutting down or an algorithm hiding posts can cut you off from your community.",
+      "points": [
+        "Shutdown: your community loses its meeting place.",
+        "Bans and shadowbans: a company decides whether you can participate and who sees you."
+      ],
+      "body": "A platform can remove your access or reduce your reach without making that decision obvious. It also controls its recommendation algorithm. The structural problem is concentrating identity, distribution and social connections in one service.",
+      "cta": "",
+      "takeaway": ""
+    },
+    {
+      "title": "Changing apps should not erase your history",
+      "summary": "Moving to another app should not mean rebuilding your profile, finding your contacts again and starting from scratch.",
+      "points": [
+        "An export is not enough if another app cannot interpret it.",
+        "Portability needs a shared identity and common formats."
+      ],
+      "body": "Downloading your data is useful, but a file alone does not reconnect you with people. Other tools need to understand the data, recognize the same identity and find the content. Shared protocols make that possible.",
+      "cta": "",
+      "takeaway": ""
+    },
+    {
+      "title": "Nostr: an open protocol for signed events",
+      "summary": "Nostr is a shared set of rules for creating, signing and exchanging information between independent apps.",
+      "points": [
+        "It is not one app or company: different tools implement the same protocol.",
+        "Signed events let others verify authorship without a central server."
+      ],
+      "body": "Nostr defines how to create, sign, publish and query events. Apps use these rules for profiles, notes, reactions and other content. There is no central server that owns the entire network. Apps can change while continuing to understand one another.",
+      "cta": "Understand the protocol",
+      "takeaway": ""
+    },
+    {
+      "title": "Think of email",
+      "summary": "Different email apps communicate through shared protocols. Nostr applies that idea to signed events.",
+      "points": [
+        "Different clients understand each other because they share rules.",
+        "With Nostr, changing clients does not require changing your keys."
+      ],
+      "body": "You can choose different tools to read and send email. Nostr similarly lets different clients read the same information. The key difference is identity: a Nostr account is based on keys, rather than an address controlled by an email provider.",
+      "cta": "Read the introduction to Nostr",
+      "takeaway": ""
+    },
+    {
+      "title": "Three pieces working together",
+      "summary": "The app prepares and displays. The signer authorizes. Relays receive and serve events.",
+      "points": [
+        "An app does not need to store your private key to request a signature.",
+        "Each relay decides what to accept; apps choose which relays to query."
+      ],
+      "body": "An app creates requests and shows content. A signer holds the key and signs authorized actions; it may be an extension or a remote device. Relays store and deliver events according to their own policies. One product can combine these roles, but they remain different functions.",
+      "cta": "How the pieces connect",
+      "takeaway": ""
+    },
+    {
+      "title": "Your identity is based on a key pair",
+      "summary": "The public key identifies your account. The private key authorizes actions in its name and must stay secret.",
+      "points": [
+        "Share your npub; never publish your private key.",
+        "Separate work, personal life and anonymous participation with different identities."
+      ],
+      "body": "Apps often display the public key as an npub. The private key signs events for that identity. A visible name can change or be copied; the public key continues to identify the account. You can create separate key pairs for different contexts.",
+      "cta": "Manage my identities",
+      "takeaway": ""
+    },
+    {
+      "title": "Your profile is information you publish",
+      "summary": "Your name, photo and bio are published information. You can change them without changing your account's public key.",
+      "points": [
+        "Editing a profile publishes a new signed version.",
+        "Names can repeat: the public key distinguishes accounts."
+      ],
+      "body": "A profile event contains fields such as name, picture, banner and bio. Compatible apps can find the latest version and display it. These fields describe you; they do not replace your cryptographic identity.",
+      "cta": "Edit and manage my profile",
+      "takeaway": ""
+    },
+    {
+      "title": "Every action has a shared format",
+      "summary": "Profiles, notes and reactions are signed events. Their signatures verify authorship and integrity, not the truth of their content.",
+      "points": [
+        "Author, timestamp, type, content and references are part of an event.",
+        "The kind tells apps how to interpret it: profile 0, note 1, reaction 7."
+      ],
+      "body": "Different actions use different event kinds. A signature lets an app check which key signed an event and whether its data changed. A valid signature is not evidence that a claim is true or that the author is trustworthy.",
+      "cta": "See what an event contains",
+      "takeaway": ""
+    },
+    {
+      "title": "How a post travels",
+      "summary": "You write in an app. Your signer signs. Relays store the event. Other apps query and display it.",
+      "points": [
+        "Receiving apps verify the signature before displaying the content.",
+        "Signing and publishing are separate steps."
+      ],
+      "body": "First, the app prepares an event. Your signer authorizes and signs it. The app sends it to one or more relays. Other apps query those relays, verify the signature and interpret the event. The same event can appear in several apps without being written again.",
+      "cta": "Follow an event's journey",
+      "takeaway": ""
+    },
+    {
+      "title": "Multiple relays provide redundancy",
+      "summary": "If one relay rejects an event or stops working, others may keep serving a copy. No single relay controls the network.",
+      "points": [
+        "One relay may reject an event while others accept it.",
+        "Multiple copies help, but do not guarantee permanent storage."
+      ],
+      "body": "Relays may charge, filter content or go offline. Apps must know which relays to query to find an event. Keeping copies on several relays reduces dependence on one provider; maintaining your own archive is still useful.",
+      "cta": "Understand Nostr's resilience",
+      "takeaway": ""
+    },
+    {
+      "title": "The same identity, different apps",
+      "summary": "Use your identity in compatible apps. Each can offer a different experience using the same events.",
+      "points": [
+        "Each app interprets the event kinds it supports.",
+        "Signing in does not automatically connect a wallet or authorize payments."
+      ],
+      "body": "You can keep the same identity while choosing different experiences. Available posts and connections can be reused when apps support their formats and find them on relays. Compatibility varies, and payment features require separate wallet permissions.",
+      "cta": "",
+      "takeaway": ""
+    },
+    {
+      "title": "What changes with Nostr",
+      "summary": "Your identity no longer depends on one application. Choose other clients, relays and filters without creating another identity.",
+      "points": [
+        "A key identifies your account, rather than a platform granting it to you.",
+        "You choose clients, relays and filters; keeping backups still matters."
+      ],
+      "body": "Shared formats allow compatible clients to read events created elsewhere. Relays distribute those events, and using several reduces reliance on one. Portability still depends on compatible event types and being able to locate the relays holding your data.",
+      "cta": "Explore the benefits and limits",
+      "takeaway": ""
+    },
+    {
+      "title": "An open network still needs filters",
+      "summary": "A signature identifies the key that published something. Deciding whom to listen to takes more context.",
+      "points": [
+        "A valid identity can still send spam or try to deceive you.",
+        "The question shifts from “who signed?” to “why should I listen?”"
+      ],
+      "body": "Anyone can create an identity without asking permission. That openness also enables bots, spam and visual impersonation. Signatures establish authorship, while social context helps you decide which sources deserve your attention.",
+      "cta": "Understand trust signals",
+      "takeaway": ""
+    },
+    {
+      "title": "Web of Trust: trust starts with your network",
+      "summary": "The people you follow are the starting point. Their connections and shared paths provide signals of trust.",
+      "points": [
+        "One hop: someone you follow. Two hops: someone your contacts follow.",
+        "More paths add context, but do not guarantee honesty."
+      ],
+      "body": "A web of trust uses social connections to help discover people and filter content. Distance and multiple paths can reveal connections to your existing network. A network can still be mistaken or manipulated; these are signals, not guarantees.",
+      "cta": "Explore Web of Trust",
+      "takeaway": ""
+    },
+    {
+      "title": "You choose whom to listen to",
+      "summary": "Follow people, explore connections and mute what you do not want to see. Your filters need not match everyone else's.",
+      "points": [
+        "Following builds your network; muting adapts your view.",
+        "Your preferences do not erase content or impose filters on others."
+      ],
+      "body": "Your follow list provides the starting point for trust filtering. Mutes hide accounts or content in your experience. They do not remove events from every relay. You and your chosen app decide how to use these signals.",
+      "cta": "Configure my filters",
+      "takeaway": ""
+    },
+    {
+      "title": "Why Nostr WoT?",
+      "summary": "Nostr provides the protocol. Nostr WoT brings identity, signing, permissions, connections and trust together to make it easier to use.",
+      "points": [
+        "Manage identities and permissions in one place across apps.",
+        "Explore trust signals without handing your identity to a platform."
+      ],
+      "body": "Using Nostr involves keys, relays, signatures and permissions. Nostr WoT brings these tasks into an extension so that you can participate through different apps with clearer controls. Your identity remains a Nostr identity, independent of that interface.",
+      "cta": "See the extension's features",
+      "takeaway": ""
+    },
+    {
+      "title": "One identity, several ways to use it",
+      "summary": "Create or import an account, then choose a local vault, a passkey in supported flows or a remote signer.",
+      "points": [
+        "Choose which identity each site uses.",
+        "Convenient access still needs a recovery plan."
+      ],
+      "body": "You can manage several identities and choose the account for each site. Signing may happen in a local vault or through a remote signer. Passkeys simplify supported account flows; prepare the recovery method appropriate to the way your account was created.",
+      "cta": "Create an account with a passkey",
+      "takeaway": ""
+    },
+    {
+      "title": "Connecting is not unlimited authorization",
+      "summary": "Choose what each site can do, with which identity and for which actions. Review and revoke permissions.",
+      "points": [
+        "Check the site, account and requested action before approving.",
+        "Knowing your public key does not grant unlimited signing permission."
+      ],
+      "body": "Nostr WoT supports global and per-site rules. A site that requests your public key does not necessarily need permission to sign every kind of event. Read requests carefully, restrict access to what is needed and revoke permissions you no longer want.",
+      "cta": "Configure per-site permissions",
+      "takeaway": ""
+    },
+    {
+      "title": "Publishing, step by step",
+      "summary": "The app prepares an event. You authorize its signature. The app then publishes the signed event to relays.",
+      "points": [
+        "Read the action before authorizing the signature.",
+        "Once published, compatible apps may find and display the event."
+      ],
+      "body": "Write a note or edit your profile in a compatible app. The app constructs an event and requests a signature. After approval, it publishes the signed event. Signing and publishing are distinct operations, even if the interface combines them.",
+      "cta": "Publish my first note",
+      "takeaway": ""
+    },
+    {
+      "title": "Standards connect the pieces",
+      "summary": "NIPs are shared specifications that let apps, extensions, relays and signers work together.",
+      "points": [
+        "Nostr Connect (NIP-46): signing requests to a remote signer.",
+        "NWC (NIP-47): wallet requests with independent permissions."
+      ],
+      "body": "NIP-07 describes a website's interface to a browser extension for public keys and signing. NIP-46 carries signing requests to remote signers. NIP-47 connects apps to wallets. Both ends must support the relevant standard; signing in does not authorize payments.",
+      "cta": "View supported standards",
+      "takeaway": ""
+    },
+    {
+      "title": "The extension can also be a bridge",
+      "summary": "A website can request signatures or payments through familiar interfaces. Nostr WoT can forward those requests to your signer or wallet.",
+      "points": [
+        "The private key stays with the signer; the app receives the signature result.",
+        "Connecting a wallet requires separate authorization from signing in."
+      ],
+      "body": "Nostr Connect lets an app request signatures without receiving your private key. Nostr Wallet Connect lets an app request permitted wallet operations. Nostr WoT can bridge browser interfaces to those tools, keeping the two sets of permissions separate.",
+      "cta": "Connect a remote signer",
+      "takeaway": ""
+    },
+    {
+      "title": "Zaps and payments: choose your wallet",
+      "summary": "Connect a compatible wallet. NWC supports authorized operations and, depending on the wallet, spending limits for each connection.",
+      "points": [
+        "A zap associates a Lightning payment with an identity or post.",
+        "Budgets depend on the wallet; NWC does not determine custody."
+      ],
+      "body": "Zaps express support through Lightning payments. With NWC, a wallet may offer permissions and budgets per app, like separate spending pockets. The wallet determines who holds the funds. The app does not need unrestricted control over your balance.",
+      "cta": "Connect apps to my wallet",
+      "takeaway": ""
+    },
+    {
+      "title": "Backup & Archive: protect two different things",
+      "summary": "Back up access to your identity and keep copies of your events. One task does not replace the other.",
+      "points": [
+        "Identity recovery: what you need to regain access to your keys.",
+        "Event archive: your history, kept locally or sent to another relay."
+      ],
+      "body": "The recovery method depends on how the account was created. An event archive preserves posts and other signed events so they can be stored or republished. Locking an extension does not create a backup. An archive of events cannot recover a lost private key.",
+      "cta": "Learn to archive my events",
+      "takeaway": ""
+    },
+    {
+      "title": "Try a guided practice",
+      "summary": "Connect an identity, edit your profile, follow people, explore your network and publish a first note.",
+      "points": [
+        "Try profiles, contacts, posts and the trust graph.",
+        "A temporary account can still publish persistent public content."
+      ],
+      "body": "Connect your own identity or use a temporary practice account. Try following, publishing, reacting, exploring apps and archiving events. Use a test identity if you do not want the activity linked to your usual account. Public events may remain on relays.",
+      "cta": "Open the guided practice",
+      "takeaway": ""
+    },
+    {
+      "title": "Choose your next step",
+      "summary": "Install the extension, read a guide, explore your network or practice.",
+      "points": [],
+      "body": "If you are new, start with the guided practice. If you already use Nostr, review permissions and recovery, or explore your network in the playground. Choose the route that fits what you want to learn next.",
+      "cta": "",
+      "takeaway": ""
+    },
+    {
+      "title": "Go deeper",
+      "summary": "Continue with Nostr WoT guides and the open specifications that connect the pieces.",
+      "points": [],
+      "body": "Guides explain concepts and everyday flows. NIPs describe the formats and messages tools implement. Start with the guides for using the extension; consult the specifications when building an integration and check compatibility on both sides.",
+      "cta": "",
+      "takeaway": ""
+    },
+    {
+      "title": "Let's stay in touch",
+      "summary": "Have a question, want to organize a workshop or build an integration? Talk to us.",
+      "points": [],
+      "body": "Use the team's contact form for support, workshops, media inquiries and collaboration. You can also explore the projects and report issues on GitHub.",
+      "cta": "",
+      "takeaway": ""
+    }
+  ],
+  "ui": {
+    "nav": [
+      "Previous",
+      "Next",
+      "Slides",
+      "More information about this slide",
+      "Close",
+      "Choose a slide",
+      "Learn more",
+      "Navigation tutorial",
+      "Language",
+      "Slide navigation",
+      "Open related resource"
+    ],
+    "tour": [
+      [
+        "More information on every slide",
+        "Tap the “i” bubble at the bottom right for explanations, examples and related resources."
+      ],
+      [
+        "Move at your own pace",
+        "Click Previous or Next, or use the ← and → keyboard arrows. On your phone, you can also swipe sideways."
+      ],
+      [
+        "Jump straight to a topic",
+        "Open the slide selector to browse the index and choose a slide. Replay this tutorial with the “?” button."
+      ]
+    ],
+    "tourButtons": [
+      "Close tutorial",
+      "Skip",
+      "Back",
+      "Next",
+      "Got it"
+    ],
+    "resources": [
+      [
+        "Get the extension",
+        "Installation and options"
+      ],
+      [
+        "Step-by-step guides",
+        "Learn at your own pace"
+      ],
+      [
+        "Explore your network",
+        "Open the playground"
+      ],
+      [
+        "Practice",
+        "Workshops and activities"
+      ],
+      [
+        "What is Nostr?",
+        "Protocol and identity"
+      ],
+      [
+        "Web of Trust",
+        "Connections and filters"
+      ],
+      [
+        "Nostr standards",
+        "NIP specifications"
+      ],
+      [
+        "Nostr Wallet Connect",
+        "Apps and wallets"
+      ],
+      [
+        "Contact the team",
+        "Support, workshops and collaboration"
+      ],
+      [
+        "Nostr WoT on GitHub",
+        "Projects and community"
+      ]
+    ]
+  }
+}
