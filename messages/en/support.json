@@ -1,5 +1,4 @@
 {
-  "android": "For passkey recovery, encrypted copies held by a credential provider or a relay can remain after you erase the phone. To delete a hosted wallet without the app, use the contact form below.",
   "meta": {
     "title": "Nostr WoT App Support: Help, Bug Reports and Your Data",
     "description": "Help for the Nostr WoT app for Android and iPhone: answers to common questions, how to contact us, how to report a bug or request a feature, and how to delete your data."
@@ -22,94 +21,53 @@
       "title": "Request a feature",
       "description": "Suggest an improvement on GitHub. Requests are public too."
     },
-    "inApp": "In the app, Settings > Help > Report a bug opens the same form with the app version, iOS version and device model already filled in."
+    "inApp": "In the app, Settings > Help > Report a bug opens the same form with the app version, iOS / Android version and device model already filled in."
   },
   "include": {
     "title": "What to include in a report",
     "description": "To help us reproduce a problem, include:",
     "items": {
       "version": "The app version and build, shown at the bottom of Settings, for example 1.0.0 (42)",
-      "os": "Your iOS version",
-      "device": "Your iPhone model",
+      "os": "Your iOS / Android version",
+      "device": "Your iPhone / Android model",
       "language": "The language the app is set to",
       "steps": "What you did, what you expected and what happened instead, with screenshots if they help"
     },
     "never": "Never send your seed phrase, private key (nsec), password or PIN to us or to anyone else. We will never ask for them."
   },
   "faq": {
-    "title": "Frequently asked questions (iPhone)",
+    "title": "Nostr WoT app (iOS and Android)",
     "items": {
       "createAccount": {
-        "question": "How do I create or import an account?",
-        "answer": "On first launch, create a new identity or import one from an nsec, a seed phrase or an encrypted backup, then set a password or a PIN to protect the vault. You can add more accounts later from the Accounts screen."
+        "question": "Creating or recovering an identity",
+        "answer": "Create an identity with a passkey or recovery phrase, or import an existing identity. Recovery options include your saved phrase, a supported passkey recovery copy or an exported encrypted backup. A passkey backup restores the seed; do not assume it restores every setting or imported key. Choose your lock timer and PIN during setup."
       },
       "backup": {
-        "question": "How do I back up my keys?",
-        "answer": "Write down your seed phrase when the app shows it and keep it somewhere safe and offline. You can also export your keys from the security settings. Your seed phrase is the only way to recover your accounts if you lose your phone or forget your password."
+        "question": "Keys, unlocking and recovery",
+        "answer": "Passkey recovery encrypts your seed phrase. New backups do not include account names, account lists or derivation paths; older backups may include them. Your credential provider can store the encrypted recovery copy. If you consent to relay storage, it can instead be published to Nostr relays. Recovery uses the provider and, when needed, configured recovery relays (currently nos.lol, relay.damus.io and nostr-01.yakihonne.com). Passkey availability and synchronization depend on your provider. Keep an independent recovery copy."
       },
       "pairRemote": {
-        "question": "How do I sign in to a Nostr app on the web or my computer?",
-        "answer": "In that app, choose to log in with a remote signer (NIP-46, sometimes called bunker or nostrconnect). In Nostr WoT, open remote signing and scan the code it shows, or paste it, then approve the request on your phone. Requests travel over the relays set in Settings > Remote signing relays."
-      },
-      "sameDevice": {
-        "question": "Can other apps on my iPhone use Nostr WoT to sign?",
-        "answer": "Yes, if they support it. They offer a \"Sign with Nostr WoT\" action, which shows you the request and signs only after you approve it. This extension never connects to the network."
-      },
-      "lanBridge": {
-        "question": "What is the local network bridge?",
-        "answer": "It lets a paired computer on the same network send requests to the app directly, without relays. Switch it on in the app when you need it: it is off by default and does not stay on between launches. iOS asks for permission to use the local network the first time."
-      },
-      "permissions": {
-        "question": "How do I control what an app may sign?",
-        "answer": "Each connected app has rules for each kind of request: always allow, ask, or deny. You can review and change them in the app's permissions, and the activity log shows what was signed."
+        "question": "Network connections and recipients",
+        "answer": "Remote signing (NIP-46), profiles, relay lists, published events, Archive synchronization and NWC use Nostr relays. Encrypted requests hide their content from relays, but relays can see public keys, IP addresses and connection times. Published events and profile information can be public. Paired devices can also exchange encrypted requests over the local network or Bluetooth where supported. Android supports NIP-55; compatible iPhone apps can use the signing action extension."
       },
       "wallet": {
-        "question": "Which wallet options are there?",
-        "answer": "Three: connect your own wallet with Nostr Wallet Connect (\"Your own wallet\"), use the self-custodial wallet built on the Breez SDK and Spark (\"Self-custodial\"), or use the hosted wallet we operate (\"Held by us\"). Payments ask for your approval unless you set a limit for an app."
+        "question": "Optional hosted wallet and retention",
+        "answer": "DANDELION LABS JOINT STOCK COMPANY holds the hosted wallet funds. The service stores your Nostr public key, wallet identifiers, balance, invoices, payment amounts, dates and status, claimed public Lightning address and NWC app connections with their limits. It processes network request data and operational logs to provide and secure the service. Wallet records remain while the wallet exists; we do not promise a fixed deletion period for operational logs or backups. The hosted service can move its funds, and access depends on its availability. Connecting another wallet does not by itself make that wallet self-custodial: custody depends on its operator."
       },
-      "hostedWallet": {
-        "question": "What should I know about the hosted wallet?",
-        "answer": "It is the quickest to set up and gives you a Lightning address (name@zaps.nostr-wot.com), but it is custodial: we hold the balance. Keep only small amounts in it. To hold your own funds, use the self-custodial wallet or connect your own wallet."
-      },
-      "tor": {
-        "question": "How do I use Tor?",
-        "answer": "Turn on Tor in the app's network settings. Relays, remote signing, wallet requests and images then go through Tor, which is built into the app. The local network bridge and the self-custodial wallet do not use Tor, and connections can be slower while it is on."
-      },
-      "archive": {
-        "question": "What does the Archive do?",
-        "answer": "It keeps an encrypted copy of your own signed events on your phone, one database per account, and can copy them to relays you choose. You can also export it to a password-protected file and import it again later."
+      "network": {
+        "question": "Network connections and recipients",
+        "answer": "LNbits receives requests at the server you configure; NWC sends encrypted requests through its configured relay to your wallet provider. Those operators process payment data under their own policies. Lightning address services receive invoice lookups. Image hosts receive image requests; Google’s favicon service receives connected-site domains and your IP address. Public GitHub support reports contain whatever you submit, including any prefilled app, OS and device details. The current mobile apps have no built-in Tor, embedded Breez/Spark wallet or post-quantum signing. The app has no advertising or analytics tracking; these service connections still process data. NIP-05 verification contacts the identifier’s domain. Fiat conversion rates are requested from Coinbase. LNURL and compatible NFC card operations contact the service encoded in the address or card. These services receive your IP address and request data. Privacy mode limits activity recording and third-party profile content; it does not make all network use anonymous."
       },
       "forgotPassword": {
-        "question": "I forgot my password or PIN. Can you reset it?",
-        "answer": "No. We never have your password, PIN or keys, so we cannot reset or recover them. On the unlock screen, \"Forgot password?\" lets you reset the vault, which deletes everything on the phone; you can then import your accounts again from your seed phrase."
-      },
-      "newPhone": {
-        "question": "How do I move to a new iPhone?",
-        "answer": "Install the app on the new phone and import your accounts with your seed phrase or an encrypted backup. A PIN only works on the phone where you set it, so choose a new one. You can import an exported Archive file too."
+        "question": "Deleting data and getting help",
+        "answer": "Local deletion does not remove passkeys, recovery copies held by credential providers, exported files or published relay data. Manage passkeys with your credential provider and delete exported copies where you saved them. Relays and recipients may retain copies even after a deletion request. We cannot guarantee erasure of those copies or recover your keys if all recovery methods are lost."
       }
     }
   },
   "deleteData": {
     "title": "Deleting your data",
-    "description": "Everything the app knows about you is on your phone, except the hosted wallet if you use it.",
-    "items": {
-      "account": {
-        "title": "One account:",
-        "description": "Remove it from the Accounts screen."
-      },
-      "everything": {
-        "title": "Everything on this phone:",
-        "description": "Use \"Delete all data\" in Settings. It erases the vault, every account, permissions, pairings, the Archive and wallet data. Back up your seed phrase first."
-      },
-      "hostedWallet": {
-        "title": "Hosted wallet:",
-        "description": "\"Delete all data\" asks you separately whether to delete your hosted wallet on our server too: your Lightning address, app connections, wallet and payment history. Move any balance out first."
-      },
-      "relays": {
-        "title": "Nostr relays:",
-        "description": "Events you published are stored on relays we do not operate. Relays may honour a deletion request, but none can be guaranteed."
-      }
-    },
+    "description": "Remove an account in Accounts or use Delete all data in Settings to erase local app data. Move hosted funds out first and select the separate hosted-wallet deletion option; local erasure alone does not delete the server wallet. The deletion flow reports server failures. A completed hosted deletion removes the wallet, payment history, Lightning address, app connections and account association. If you no longer have the app, use our contact form to request deletion. Never send a seed phrase, private key, PIN or wallet connection secret. Local deletion does not remove passkeys, recovery copies held by credential providers, exported files or published relay data. Manage passkeys with your credential provider and delete exported copies where you saved them. Relays and recipients may retain copies even after a deletion request. We cannot guarantee erasure of those copies or recover your keys if all recovery methods are lost.",
+    "items": {},
     "contact": "If you no longer have the app and want your hosted wallet deleted, or have a question about your data, write to us through the",
     "contactLink": "contact form"
   },

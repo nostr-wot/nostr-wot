@@ -5,7 +5,7 @@
   },
   "hero": {
     "title": "Términos y Condiciones",
-    "lastUpdated": "Última actualización: Octubre 2026"
+    "lastUpdated": "Última actualización: noviembre de 2026"
   },
   "intro": {
     "description": "Por favor, lea estos términos y condiciones cuidadosamente antes de usar el sitio web de Nostr Web of Trust, la extensión del navegador, la app Nostr WoT o los servicios de la API Oracle. Al acceder o usar nuestros servicios, usted acepta estar sujeto a estos términos."
@@ -17,7 +17,7 @@
     "useRestrictions": "3. Restricciones de Uso",
     "extension": "4. Extensión del Navegador",
     "oracle": "5. API Oracle",
-    "app": "6. App Nostr WoT (iOS)",
+    "app": "6. Aplicación Nostr WoT (iOS y Android)",
     "disclaimer": "7. Descargo de Responsabilidad",
     "limitation": "8. Limitación de Responsabilidad",
     "changes": "9. Cambios en los Términos",
@@ -87,11 +87,11 @@
     }
   },
   "app": {
-    "title": "6. App Nostr WoT (iOS)",
-    "description": "Estos términos también se aplican a la app Nostr WoT para iOS, publicada por DANDELION LABS JOINT STOCK COMPANY. Los puntos siguientes los complementan en lo que respecta a la app y sus billeteras.",
+    "title": "6. Aplicación Nostr WoT (iOS y Android)",
+    "description": "Nostr WoT firma solicitudes de Nostr para aplicaciones compatibles. Conecta tu propio nodo mediante LNbits o una cartera mediante Nostr Wallet Connect (NWC). La cartera alojada opcional es un servicio de custodia separado de DANDELION LABS JOINT STOCK COMPANY en zaps.nostr-wot.com: la empresa mantiene sus fondos.",
     "selfCustody": {
-      "title": "Sus claves son su responsabilidad",
-      "description": "Sus claves y su frase semilla existen solo en su dispositivo. No podemos verlas, restablecer su contraseña o PIN, ni recuperar sus claves. Si pierde su teléfono y su frase semilla, o si otra persona se hace con ellos, no podemos devolverle su identidad ni sus fondos. Anote su frase semilla y guárdela en un lugar seguro."
+      "title": "Claves, desbloqueo y recuperación",
+      "description": "Las claves privadas, los secretos de conexión de las carteras, los permisos, los ajustes y la actividad se guardan en el teléfono; las claves están protegidas en una bóveda cifrada. La configuración ofrece un temporizador de bloqueo automático y un PIN de seis dígitos del dispositivo, con biometría opcional gestionada por el sistema operativo. Elegir no bloquear omite el PIN. No podemos restablecer tu PIN ni recuperar una frase semilla perdida. La recuperación con passkey cifra tu frase semilla. Las copias nuevas no incluyen nombres, listas de cuentas ni rutas de derivación; las antiguas pueden incluirlos. Tu proveedor de credenciales puede almacenar la copia cifrada. Si autorizas el almacenamiento en relays, puede publicarse allí en su lugar. La recuperación usa el proveedor y, cuando es necesario, los relays configurados (actualmente nos.lol, relay.damus.io y nostr-01.yakihonne.com). La disponibilidad y sincronización de passkeys dependen del proveedor. Conserva una copia de recuperación independiente."
     },
     "signing": {
       "title": "Lo que usted firma",
@@ -99,15 +99,11 @@
     },
     "hostedWallet": {
       "title": "Billetera Lightning alojada (custodiada por nosotros)",
-      "description": "La billetera alojada en zaps.nostr-wot.com es opcional y de custodia: nosotros guardamos su saldo, por lo que usted depende de nosotros y de la disponibilidad del servicio. No es una cuenta bancaria, no genera intereses y no está cubierta por ningún seguro de depósitos. Mantenga en ella solo cantidades pequeñas. Podemos establecer o cambiar límites, por ejemplo en las conexiones de apps y en los importes de pago, y podemos suspender o cerrar el servicio. Si lo cerramos, avisaremos con antelación y, cuando sea posible, ofreceremos una forma de retirar los saldos restantes. Puede eliminar la billetera desde la app; antes, retire su saldo."
-    },
-    "selfCustodialWallet": {
-      "title": "Billetera en autocustodia (Breez SDK, Spark)",
-      "description": "La billetera en autocustodia guarda sus claves en su teléfono, derivadas de su frase semilla. Funciona en la red Spark a través del Breez SDK, ambos operados por terceros cuyos términos se aplican a sus servicios. No custodiamos estos fondos y no podemos revertir, recuperar ni bloquear los pagos realizados con ella."
+      "description": "DANDELION LABS JOINT STOCK COMPANY mantiene los fondos de la cartera alojada. El servicio almacena tu clave pública Nostr, identificadores, saldo, facturas, importes, fechas y estados de pagos, dirección Lightning pública y conexiones NWC con sus límites. Procesa datos de solicitudes y registros operativos para prestar y proteger el servicio. Los registros de la cartera permanecen mientras exista; no prometemos un plazo fijo de eliminación de registros operativos o copias de seguridad. El servicio puede mover sus fondos y el acceso depende de su disponibilidad. Conectar otra cartera no implica autocustodia: depende de su operador. Elimina una cuenta desde Cuentas o usa Eliminar todos los datos en Ajustes para borrar los datos locales. Retira primero los fondos alojados y selecciona por separado la eliminación de la cartera alojada; borrar el teléfono no elimina la cartera del servidor. El proceso informa de fallos del servidor. Una eliminación alojada completada borra la cartera, historial de pagos, dirección Lightning, conexiones y asociación de cuenta. Sin la aplicación, solicita la eliminación mediante nuestro formulario de contacto. Nunca envíes tu frase semilla, clave privada, PIN ni secretos de conexión."
     },
     "externalWallets": {
       "title": "Su propia billetera (Nostr Wallet Connect)",
-      "description": "Si conecta su propia billetera con Nostr Wallet Connect, el proveedor de esa billetera es responsable de ella y se aplican sus términos. No somos responsables de billeteras, relays ni servicios que no operamos."
+      "description": "Revisa las solicitudes de firma, aprobaciones automáticas y límites de pago. Protege tu material de recuperación y comprueba dirección e importe antes de enviar. Los proveedores de carteras y relays tienen sus propios términos. La cartera alojada opcional es custodial y depende de nuestro servicio; retira el saldo antes de eliminarla. No podemos revertir pagos Lightning ni restaurar claves sin material de recuperación."
     },
     "noAdvice": {
       "title": "Sin asesoramiento financiero",
@@ -120,10 +116,6 @@
     "fees": {
       "title": "Comisiones",
       "description": "La app se descarga gratis. Los pagos Lightning pueden conllevar comisiones de enrutamiento o de red, que forman parte del pago."
-    },
-    "openSource": {
-      "title": "Componentes de código abierto",
-      "description": "La app está construida con software de código abierto, incluidos React Native, el Breez SDK, Arti (Tor) y bibliotecas de la comunidad Nostr. Cada componente está cubierto por su propia licencia."
     },
     "appStore": {
       "title": "App Store",

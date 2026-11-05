@@ -1,5 +1,4 @@
 {
-  "android": "Des copies de récupération chiffrées peuvent rester chez votre gestionnaire d’identifiants ou sur un relais après l’effacement du téléphone. Pour supprimer un portefeuille hébergé sans l’application, utilisez le formulaire de contact ci-dessous.",
   "meta": {
     "title": "Assistance de l'application Nostr WoT : aide, signalement de bugs et vos données",
     "description": "Aide pour l'application Nostr WoT sur Android et iPhone : réponses aux questions fréquentes, comment nous contacter, comment signaler un bug ou proposer une fonctionnalité, et comment supprimer vos données."
@@ -22,94 +21,53 @@
       "title": "Proposer une fonctionnalité",
       "description": "Suggérez une amélioration sur GitHub. Les propositions sont également publiques."
     },
-    "inApp": "Dans l'application, Paramètres > Aide > Signaler un bug ouvre le même formulaire, avec la version de l'application, la version d'iOS et le modèle de l'appareil déjà renseignés."
+    "inApp": "Dans l'application, Paramètres > Aide > Signaler un bug ouvre le même formulaire, avec la version de l'application, la version d'iOS / Android et le modèle de l'appareil déjà renseignés."
   },
   "include": {
     "title": "Que mettre dans un signalement",
     "description": "Pour nous aider à reproduire un problème, indiquez :",
     "items": {
       "version": "La version et le build de l'application, affichés en bas des Paramètres, par exemple 1.0.0 (42)",
-      "os": "Votre version d'iOS",
-      "device": "Votre modèle d'iPhone",
+      "os": "Votre version d'iOS / Android",
+      "device": "Votre modèle d'iPhone / Android",
       "language": "La langue configurée dans l'application",
       "steps": "Ce que vous avez fait, ce que vous attendiez et ce qui s'est passé à la place, avec des captures d'écran si elles sont utiles"
     },
     "never": "N'envoyez jamais votre phrase de récupération, votre clé privée (nsec), votre mot de passe ou votre PIN, ni à nous ni à personne d'autre. Nous ne vous les demanderons jamais."
   },
   "faq": {
-    "title": "Questions fréquentes (iPhone)",
+    "title": "Application Nostr WoT (iOS et Android)",
     "items": {
       "createAccount": {
-        "question": "Comment créer ou importer un compte ?",
-        "answer": "Au premier lancement, créez une nouvelle identité ou importez-en une à partir d'une nsec, d'une phrase de récupération ou d'une sauvegarde chiffrée, puis définissez un mot de passe ou un PIN pour protéger le coffre. Vous pourrez ajouter d'autres comptes plus tard depuis l'écran Comptes."
+        "question": "Créer ou récupérer une identité",
+        "answer": "Créez une identité avec une passkey ou une phrase de récupération, ou importez une identité existante. Utilisez votre phrase sauvegardée, une copie passkey compatible ou une sauvegarde exportée chiffrée pour récupérer. La copie passkey restaure la graine ; elle ne restaure pas nécessairement tous les réglages ou clés importées. Choisissez le délai de verrouillage et le PIN pendant la configuration."
       },
       "backup": {
-        "question": "Comment sauvegarder mes clés ?",
-        "answer": "Notez votre phrase de récupération lorsque l'application l'affiche et conservez-la dans un endroit sûr, hors ligne. Vous pouvez aussi exporter vos clés depuis les paramètres de sécurité. Votre phrase de récupération est le seul moyen de récupérer vos comptes si vous perdez votre téléphone ou oubliez votre mot de passe."
+        "question": "Clés, déverrouillage et récupération",
+        "answer": "La récupération par passkey chiffre votre phrase de récupération. Les nouvelles copies ne contiennent ni noms, ni listes de comptes, ni chemins de dérivation ; les anciennes peuvent en contenir. Votre fournisseur d’identifiants peut stocker la copie chiffrée. Avec votre consentement, elle peut être publiée sur des relais. La récupération utilise le fournisseur et, si nécessaire, les relais configurés (actuellement nos.lol, relay.damus.io et nostr-01.yakihonne.com). Disponibilité et synchronisation dépendent du fournisseur. Conservez une copie de récupération indépendante."
       },
       "pairRemote": {
-        "question": "Comment me connecter à une application Nostr sur le web ou sur mon ordinateur ?",
-        "answer": "Dans cette application, choisissez de vous connecter avec un signataire distant (NIP-46, parfois appelé bunker ou nostrconnect). Dans Nostr WoT, ouvrez la signature à distance et scannez le code affiché, ou collez-le, puis approuvez la demande sur votre téléphone. Les demandes transitent par les relais définis dans Paramètres > Relais de signature à distance."
-      },
-      "sameDevice": {
-        "question": "D'autres applications sur mon iPhone peuvent-elles utiliser Nostr WoT pour signer ?",
-        "answer": "Oui, si elles le prennent en charge. Elles proposent une action « Signer avec Nostr WoT », qui vous montre la demande et ne signe qu'après votre approbation. Cette extension ne se connecte jamais au réseau."
-      },
-      "lanBridge": {
-        "question": "Qu'est-ce que le pont réseau local ?",
-        "answer": "Il permet à un ordinateur associé, sur le même réseau, d'envoyer des demandes directement à l'application, sans relais. Activez-le dans l'application lorsque vous en avez besoin : il est désactivé par défaut et ne reste pas activé d'un lancement à l'autre. iOS demande l'autorisation d'utiliser le réseau local la première fois."
-      },
-      "permissions": {
-        "question": "Comment contrôler ce qu'une application peut signer ?",
-        "answer": "Chaque application connectée a des règles pour chaque type de demande : toujours autoriser, demander ou refuser. Vous pouvez les consulter et les modifier dans les permissions de l'application, et le journal d'activité montre ce qui a été signé."
+        "question": "Connexions réseau et destinataires",
+        "answer": "La signature distante (NIP-46), les profils, listes de relais, événements publiés, synchronisation des Archives et NWC utilisent des relais Nostr. Le contenu des demandes est chiffré, mais les relais peuvent voir les clés publiques, adresses IP et horaires de connexion. Événements et profils publiés peuvent être publics. Les appareils associés peuvent aussi échanger des demandes chiffrées via le réseau local ou Bluetooth si compatibles. Android prend en charge NIP-55 ; les applications iPhone compatibles peuvent utiliser l’extension de signature."
       },
       "wallet": {
-        "question": "Quelles options de portefeuille existe-t-il ?",
-        "answer": "Trois : connecter votre propre portefeuille avec Nostr Wallet Connect (« Votre propre portefeuille »), utiliser le portefeuille en auto-garde basé sur le Breez SDK et Spark (« En auto-garde »), ou utiliser le portefeuille hébergé que nous exploitons (« Détenu par nous »). Les paiements demandent votre approbation, sauf si vous fixez une limite pour une application."
+        "question": "Portefeuille hébergé facultatif et conservation",
+        "answer": "DANDELION LABS JOINT STOCK COMPANY détient les fonds du portefeuille hébergé. Le service stocke clé publique Nostr, identifiants, solde, factures, montants, dates et états des paiements, adresse Lightning publique et connexions NWC avec leurs limites. Il traite les données des requêtes et journaux opérationnels pour fournir et sécuriser le service. Les données du portefeuille restent tant qu’il existe ; aucun délai fixe de suppression des journaux ou sauvegardes n’est promis. Le service peut déplacer les fonds et leur accès dépend de sa disponibilité. Connecter un autre portefeuille ne garantit pas la garde personnelle : cela dépend de son opérateur."
       },
-      "hostedWallet": {
-        "question": "Que dois-je savoir sur le portefeuille hébergé ?",
-        "answer": "C'est le plus rapide à configurer et il vous donne une adresse Lightning (name@zaps.nostr-wot.com), mais il est dépositaire : c'est nous qui détenons le solde. N'y conservez que de petits montants. Pour détenir vous-même vos fonds, utilisez le portefeuille en auto-garde ou connectez votre propre portefeuille."
-      },
-      "tor": {
-        "question": "Comment utiliser Tor ?",
-        "answer": "Activez Tor dans les paramètres réseau de l'application. Les relais, la signature à distance, les requêtes du portefeuille et les images passent alors par Tor, qui est intégré à l'application. Le pont réseau local et le portefeuille en auto-garde n'utilisent pas Tor, et les connexions peuvent être plus lentes lorsqu'il est activé."
-      },
-      "archive": {
-        "question": "À quoi servent les Archives ?",
-        "answer": "Elles conservent sur votre téléphone une copie chiffrée de vos propres événements signés, avec une base de données par compte, et peuvent les copier vers les relais de votre choix. Vous pouvez aussi les exporter dans un fichier protégé par mot de passe et les réimporter plus tard."
+      "network": {
+        "question": "Connexions réseau et destinataires",
+        "answer": "LNbits reçoit les demandes sur le serveur configuré ; NWC les transmet chiffrées au fournisseur du portefeuille par son relais. Ces opérateurs traitent les données de paiement selon leurs politiques. Les services d’adresses Lightning reçoivent les demandes de factures. Les hébergeurs d’images reçoivent des requêtes ; le service d’icônes de Google reçoit les domaines des sites connectés et votre IP. Les signalements publics GitHub contiennent vos envois, y compris les détails préremplis sur l’application, le système et l’appareil. Les applications mobiles actuelles n’intègrent ni Tor, ni portefeuille Breez/Spark, ni signature post-quantique. L’application ne fait pas de suivi publicitaire ou analytique ; ces connexions traitent néanmoins des données. La vérification NIP-05 contacte le domaine de l’identifiant. Les taux de conversion sont demandés à Coinbase. Les opérations LNURL et avec cartes NFC compatibles contactent le service indiqué dans l’adresse ou la carte. Ces services reçoivent votre IP et les données de la requête. Le mode privé limite l’enregistrement d’activité et les contenus de profils tiers ; il ne rend pas tout usage du réseau anonyme."
       },
       "forgotPassword": {
-        "question": "J'ai oublié mon mot de passe ou mon PIN. Pouvez-vous le réinitialiser ?",
-        "answer": "Non. Nous n'avons jamais votre mot de passe, votre PIN ni vos clés, nous ne pouvons donc pas les réinitialiser ni les récupérer. Sur l'écran de déverrouillage, « Mot de passe oublié ? » vous permet de réinitialiser le coffre, ce qui supprime tout ce qui se trouve sur le téléphone ; vous pouvez ensuite réimporter vos comptes à partir de votre phrase de récupération."
-      },
-      "newPhone": {
-        "question": "Comment passer à un nouvel iPhone ?",
-        "answer": "Installez l'application sur le nouveau téléphone et importez vos comptes avec votre phrase de récupération ou une sauvegarde chiffrée. Un PIN ne fonctionne que sur le téléphone où vous l'avez défini, choisissez-en donc un nouveau. Vous pouvez aussi importer un fichier d'Archives exporté."
+        "question": "Suppression des données et assistance",
+        "answer": "L’effacement local ne supprime pas les passkeys, copies de récupération du fournisseur, fichiers exportés ou données publiées sur les relais. Gérez les passkeys auprès du fournisseur et effacez les fichiers là où vous les avez enregistrés. Relais et destinataires peuvent conserver des copies malgré une demande de suppression. Nous ne pouvons garantir leur effacement ni retrouver vos clés si tous vos moyens de récupération sont perdus."
       }
     }
   },
   "deleteData": {
     "title": "Supprimer vos données",
-    "description": "Tout ce que l'application sait de vous se trouve sur votre téléphone, à l'exception du portefeuille hébergé si vous l'utilisez.",
-    "items": {
-      "account": {
-        "title": "Un compte :",
-        "description": "Supprimez-le depuis l'écran Comptes."
-      },
-      "everything": {
-        "title": "Tout ce qui se trouve sur ce téléphone :",
-        "description": "Utilisez « Supprimer toutes les données » dans les Paramètres. Cela efface le coffre, tous les comptes, les permissions, les associations, les Archives et les données du portefeuille. Sauvegardez d'abord votre phrase de récupération."
-      },
-      "hostedWallet": {
-        "title": "Portefeuille hébergé :",
-        "description": "« Supprimer toutes les données » vous demande séparément s'il faut aussi supprimer votre portefeuille hébergé sur notre serveur : votre adresse Lightning, les connexions d'applications, le portefeuille et l'historique des paiements. Transférez d'abord tout solde restant."
-      },
-      "relays": {
-        "title": "Relais Nostr :",
-        "description": "Les événements que vous avez publiés sont stockés sur des relais que nous n'exploitons pas. Les relais peuvent donner suite à une demande de suppression, mais aucun ne peut le garantir."
-      }
-    },
+    "description": "Supprimez un compte dans Comptes ou utilisez Supprimer toutes les données dans les Réglages pour effacer les données locales. Retirez d’abord les fonds hébergés et sélectionnez séparément la suppression du portefeuille hébergé ; l’effacement local ne supprime pas le portefeuille du serveur. Le processus signale les échecs du serveur. Une suppression hébergée réussie retire portefeuille, historique des paiements, adresse Lightning, connexions et association du compte. Sans l’application, demandez la suppression via notre formulaire de contact. N’envoyez jamais phrase de récupération, clé privée, PIN ou secret de connexion. L’effacement local ne supprime pas les passkeys, copies de récupération du fournisseur, fichiers exportés ou données publiées sur les relais. Gérez les passkeys auprès du fournisseur et effacez les fichiers là où vous les avez enregistrés. Relais et destinataires peuvent conserver des copies malgré une demande de suppression. Nous ne pouvons garantir leur effacement ni retrouver vos clés si tous vos moyens de récupération sont perdus.",
+    "items": {},
     "contact": "Si vous n'avez plus l'application et souhaitez que votre portefeuille hébergé soit supprimé, ou si vous avez une question sur vos données, écrivez-nous via le",
     "contactLink": "formulaire de contact"
   },

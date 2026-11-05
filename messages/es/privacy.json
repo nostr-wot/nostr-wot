@@ -1,26 +1,21 @@
 {
-  "android": {
-    "keys": "Tus claves se guardan en la bóveda cifrada del teléfono. Si activas la recuperación con una llave de acceso, la app cifra tu frase semilla y los nombres, claves públicas y rutas de derivación de sus cuentas. Tu proveedor de credenciales puede guardar esa copia cifrada. Con tu permiso, la app también puede publicarla en relés Nostr. Borrar los datos locales no elimina esas copias.",
-    "network": "Las apps de Android pueden solicitar firmas mediante NIP-55. Los dispositivos vinculados pueden enviar solicitudes cifradas por Bluetooth o Wi-Fi. En la firma remota, los relés pueden ver tu dirección IP, las claves públicas y las horas de conexión. La app de Android no incorpora Tor.",
-    "wallet": "DANDELION LABS JOINT STOCK COMPANY custodia los fondos de la billetera Lightning opcional de zaps.nostr-wot.com. Mientras exista la billetera, guardamos tu clave pública, los identificadores de la billetera, el saldo, los pagos, la dirección Lightning que reclames y las conexiones de apps. Si conectas una billetera externa mediante Nostr Wallet Connect, su proveedor procesa los pagos. La app de Android no incluye una billetera Breez/Spark."
-  },
   "meta": {
     "title": "Política de Privacidad",
-    "description": "Cómo trata Nostr WoT tus datos en el sitio web, en la extensión del navegador, en la app Nostr WoT para iOS y su billetera Lightning alojada, y en la API Oracle."
+    "description": "Cómo trata Nostr WoT tus datos en el sitio web, en la extensión del navegador, en la app Nostr WoT para iOS / Android y su billetera Lightning alojada, y en la API Oracle."
   },
   "hero": {
     "title": "Política de Privacidad",
-    "lastUpdated": "Última actualización: Octubre 2026"
+    "lastUpdated": "Última actualización: noviembre de 2026"
   },
   "intro": {
-    "description": "Esta Política de Privacidad describe cómo Nostr Web of Trust (\"nosotros\", \"nos\" o \"nuestro\") recopila, usa y protege tu información cuando usas nuestro sitio web (nostrwot.com), nuestra extensión de navegador (Extensión WoT) y la app Nostr WoT para iOS.",
+    "description": "Esta Política de Privacidad describe cómo Nostr Web of Trust (\"nosotros\", \"nos\" o \"nuestro\") recopila, usa y protege tu información cuando usas nuestro sitio web (nostrwot.com), nuestra extensión de navegador (Extensión WoT) y la app Nostr WoT para iOS / Android.",
     "commitment": "Estamos comprometidos a proteger tu privacidad. Como proyecto construido para el ecosistema Nostr, entendemos la importancia de la descentralización y la soberanía del usuario sobre los datos personales."
   },
   "contents": {
     "title": "Contenido",
     "website": "Privacidad del Sitio Web",
     "extension": "Privacidad de la Extensión de Navegador",
-    "app": "App Nostr WoT (iOS)",
+    "app": "Aplicación Nostr WoT (iOS y Android)",
     "oracle": "API WoT Oracle",
     "thirdParty": "Servicios de Terceros",
     "dataRetention": "Retención de Datos",
@@ -128,153 +123,42 @@
     }
   },
   "app": {
-    "title": "App Nostr WoT (iOS)",
-    "intro": "Nostr WoT es una app para iPhone que guarda tus claves de Nostr en tu teléfono, firma para las apps que usas y puede conectar una billetera Lightning. Esta sección explica qué guarda la app en tu teléfono, qué envía por la red y a quién, y cómo eliminarlo.",
-    "publisher": "La app la publica en la App Store DANDELION LABS JOINT STOCK COMPANY, que también opera la billetera Lightning alojada en zaps.nostr-wot.com. En esta sección, «nosotros» se refiere a esa empresa.",
-    "summary": {
-      "title": "En resumen",
-      "description": "No necesitas una cuenta con nosotros para usar la app. Tus claves y tu frase semilla se cifran en tu teléfono y nunca se nos envían. La app no tiene analítica, ni anuncios, ni rastreo, y no vendemos datos. Los únicos datos tuyos que tenemos son los de la billetera Lightning alojada, y solo si decides usarla."
-    },
-    "onDevice": {
-      "title": "Lo que se queda en tu teléfono",
-      "description": "Lo siguiente se guarda solo en tu teléfono. No podemos leerlo y no se nos envía.",
-      "items": {
-        "vault": {
-          "title": "Claves y frases semilla:",
-          "description": "Tus claves privadas y tu frase semilla se guardan en una bóveda cifrada (AES-256-GCM, con una clave derivada de tu contraseña o PIN mediante PBKDF2-SHA-256 y 600.000 iteraciones). Una copia de seguridad del iPhone puede incluir la bóveda, pero solo en forma cifrada."
-        },
-        "unlock": {
-          "title": "Contraseña, PIN y Face ID:",
-          "description": "Desbloqueas la bóveda con una contraseña o, si lo prefieres, con un PIN que solo funciona en este teléfono. Face ID es opcional y lo gestiona iOS: la app solo sabe si la comprobación se superó y nunca ve los datos de tu cara."
-        },
-        "settings": {
-          "title": "Permisos, actividad y ajustes:",
-          "description": "Las reglas que estableces para cada app, tus clientes emparejados, el registro de actividad, tus listas de relays y el resto de tus ajustes."
-        },
-        "archive": {
-          "title": "Archivo:",
-          "description": "Si usas el Archivo, cada cuenta guarda una copia de sus propios eventos de Nostr firmados en una base de datos local, con cada registro cifrado con una clave guardada en tu bóveda. Las exportaciones del Archivo se cifran con una contraseña que tú eliges."
-        },
-        "walletSecrets": {
-          "title": "Secretos de la billetera:",
-          "description": "Las cadenas de conexión de Nostr Wallet Connect y las claves de la billetera en autocustodia se guardan en la bóveda cifrada o se cifran con su clave."
-        }
-      }
-    },
-    "connections": {
-      "title": "Lo que la app envía por la red",
-      "description": "La app se conecta a otros servicios solo para hacer lo que le pides. Para cada conexión, esto es quién recibe qué.",
-      "items": {
-        "relays": {
-          "title": "Relays de Nostr:",
-          "description": "La firma remota (NIP-46), los eventos que firmas y publicas, tu atestación de clave poscuántica y el Archivo usan relays de Nostr, que puedes elegir y cambiar. Las solicitudes de firma están cifradas de extremo a extremo, pero los relays ven tu dirección IP, el momento de cada solicitud y las claves públicas implicadas, y los eventos que publicas son públicos. No operamos estos relays, y eliminar algo de ellos se intenta sin garantías."
-        },
-        "lan": {
-          "title": "Puente de red local:",
-          "description": "Cuando lo activas, un ordenador emparejado puede enviar solicitudes de firma a la app directamente a través de tu red local, cifradas de extremo a extremo, sin relays ni nuestros servidores. Está desactivado por defecto y hay que activarlo cada vez."
-        },
-        "sameDevice": {
-          "title": "Firma para apps de este iPhone:",
-          "description": "La extensión de acción «Firmar con Nostr WoT» firma solicitudes de otras apps del mismo teléfono. No establece ninguna conexión de red."
-        },
-        "hostedWallet": {
-          "title": "Billetera Lightning alojada:",
-          "description": "Si configuras la billetera custodiada por nosotros, la app se conecta a zaps.nostr-wot.com. La sección <strong>Billetera Lightning alojada</strong>, más abajo, detalla lo que almacenamos."
-        },
-        "nwc": {
-          "title": "Tu propia billetera (Nostr Wallet Connect):",
-          "description": "Si conectas una billetera externa, su cadena de conexión se queda en tu bóveda. Las solicitudes de pago van cifradas al relay indicado en esa conexión y de ahí a tu proveedor de billetera, que aplica su propia política."
-        },
-        "spark": {
-          "title": "Billetera en autocustodia (Breez SDK, Spark):",
-          "description": "La billetera en autocustodia funciona en la red Spark a través del Breez SDK. Sus claves se derivan de tu frase semilla y se quedan en tu teléfono, pero los operadores de Spark, entre ellos Breez, procesan los datos de pago necesarios para que la billetera funcione y ven tu dirección IP. Consulta la <breez>política de privacidad de Breez</breez> y la <spark>política de privacidad de Spark</spark>."
-        },
-        "lightningAddress": {
-          "title": "Pagar a una dirección Lightning:",
-          "description": "Cuando pagas a una dirección Lightning, la app pide una factura al dominio de esa dirección, como hace cualquier billetera Lightning."
-        },
-        "tor": {
-          "title": "Tor (opcional):",
-          "description": "Puedes enrutar el tráfico de la app a través de Tor, que viene integrado en la app. Con Tor activado, los relays, la firma remota, el Archivo, las solicitudes de la billetera y las imágenes pasan por Tor y no ven tu dirección IP. El puente de red local y la billetera en autocustodia no usan Tor. Tor está desactivado por defecto."
-        },
-        "favicons": {
-          "title": "Iconos de sitios:",
-          "description": "Para mostrar el icono de un sitio conectado, la app consulta el <google>servicio de favicons de Google</google> (www.google.com/s2/favicons), que recibe el dominio de ese sitio y tu dirección IP. La app no contacta con Google para obtener iconos mientras Tor está activado. Tus propias fotos de perfil se cargan desde la dirección indicada en tu perfil de Nostr."
-        },
-        "feedback": {
-          "title": "Enlaces de comentarios:",
-          "description": "«Informar de un error» y «Pedir una función» abren en tu navegador un formulario de issue de GitHub en un repositorio público. Un informe de error viene rellenado con la versión de la app, la versión de iOS, el modelo del dispositivo y el idioma de la app. Puedes editarlo antes de enviarlo, y lo que envíes es público y se trata según la <github>declaración de privacidad de GitHub</github>."
-        }
-      }
-    },
-    "hostedWallet": {
-      "title": "Billetera Lightning alojada (zaps.nostr-wot.com)",
-      "description": "La billetera alojada es opcional. Es de custodia: guardamos su saldo por ti. Si la usas, almacenamos:",
-      "items": {
-        "identity": {
-          "title": "Tu clave pública de Nostr:",
-          "description": "Identifica tu billetera. La app demuestra que es tuya firmando cada solicitud de inicio de sesión; tu clave privada nunca se envía."
-        },
-        "wallet": {
-          "title": "Registros de la billetera:",
-          "description": "Los identificadores internos de tu billetera y de su cuenta, y tu saldo."
-        },
-        "address": {
-          "title": "Dirección Lightning:",
-          "description": "El nombre de usuario que reclamas (name@zaps.nostr-wot.com). Es público y cualquiera puede consultarlo a partir de tu clave pública."
-        },
-        "payments": {
-          "title": "Pagos y conexiones de apps:",
-          "description": "Facturas, importes, fechas y estado de los pagos que envías y recibes, y las conexiones de apps (NWC) que crees, con sus límites."
-        },
-        "requests": {
-          "title": "Datos de las solicitudes:",
-          "description": "Tu dirección IP se usa para limitar la tasa de solicitudes y se mantiene en memoria durante aproximadamente un minuto. Los registros de nuestro servidor guardan las rutas de las solicitudes y los errores para que podamos operar y proteger el servicio."
-        }
+    "title": "Aplicación Nostr WoT (iOS y Android)",
+    "intro": "Nostr WoT firma solicitudes de Nostr para aplicaciones compatibles. Conecta tu propio nodo mediante LNbits o una cartera mediante Nostr Wallet Connect (NWC). La cartera alojada opcional es un servicio de custodia separado de DANDELION LABS JOINT STOCK COMPANY en zaps.nostr-wot.com: la empresa mantiene sus fondos.",
+    "topics": {
+      "keys": {
+        "title": "Claves, desbloqueo y recuperación",
+        "description": "Las claves privadas, los secretos de conexión de las carteras, los permisos, los ajustes y la actividad se guardan en el teléfono; las claves están protegidas en una bóveda cifrada. La configuración ofrece un temporizador de bloqueo automático y un PIN de seis dígitos del dispositivo, con biometría opcional gestionada por el sistema operativo. Elegir no bloquear omite el PIN. No podemos restablecer tu PIN ni recuperar una frase semilla perdida."
       },
-      "custody": "Como la billetera es de custodia, podemos mover sus fondos, y tu saldo depende de nuestro servicio. Mantén en ella solo cantidades pequeñas.",
-      "retention": "Conservamos estos registros mientras exista tu billetera alojada. Cuando la eliminas, borramos tu dirección Lightning, tus conexiones de apps, la billetera con su historial de pagos y el vínculo entre tu clave pública y la billetera."
-    },
-    "privacyMode": {
-      "title": "Modo privado",
-      "description": "Con el modo privado activado, la app deja de guardar su registro de actividad, el momento en que cada cliente emparejado estuvo activo por última vez y los perfiles de otras personas que has visto. También puedes borrar el registro de actividad en cualquier momento."
-    },
-    "doesNot": {
-      "title": "Lo que la app no hace",
-      "items": {
-        "analytics": "Sin analítica, informes de fallos ni telemetría",
-        "ads": "Sin anuncios",
-        "tracking": "Sin rastreo entre apps o sitios web, y sin identificador publicitario",
-        "sell": "No vendemos ni compartimos tus datos",
-        "keys": "Nunca recibimos tus claves privadas, tu frase semilla, tu contraseña ni tu PIN"
+      "recovery": {
+        "title": "Crear o recuperar una identidad",
+        "description": "La recuperación con passkey cifra tu frase semilla. Las copias nuevas no incluyen nombres, listas de cuentas ni rutas de derivación; las antiguas pueden incluirlos. Tu proveedor de credenciales puede almacenar la copia cifrada. Si autorizas el almacenamiento en relays, puede publicarse allí en su lugar. La recuperación usa el proveedor y, cuando es necesario, los relays configurados (actualmente nos.lol, relay.damus.io y nostr-01.yakihonne.com). La disponibilidad y sincronización de passkeys dependen del proveedor. Conserva una copia de recuperación independiente."
+      },
+      "network": {
+        "title": "Conexiones de red y destinatarios",
+        "description": "La firma remota (NIP-46), los perfiles, las listas de relays, los eventos publicados, la sincronización del Archivo y NWC usan relays de Nostr. El cifrado oculta el contenido de las solicitudes, pero los relays pueden ver claves públicas, direcciones IP y horarios de conexión. Los eventos y perfiles publicados pueden ser públicos. Los dispositivos vinculados también pueden intercambiar solicitudes cifradas por red local o Bluetooth cuando sea compatible. Android admite NIP-55; las aplicaciones compatibles de iPhone pueden usar la extensión de firma."
+      },
+      "providers": {
+        "title": "Servicios de Terceros",
+        "description": "LNbits recibe solicitudes en el servidor configurado; NWC envía solicitudes cifradas a tu proveedor mediante su relay. Estos operadores procesan datos de pago según sus políticas. Los servicios de direcciones Lightning reciben consultas de facturas. Los servidores de imágenes reciben solicitudes; el servicio de iconos de Google recibe dominios de sitios conectados y tu IP. Los informes públicos de GitHub contienen lo que envías, incluidos datos precargados de la aplicación, sistema y dispositivo. Las aplicaciones móviles actuales no incluyen Tor, una cartera Breez/Spark integrada ni firma poscuántica. No hay seguimiento publicitario ni analítico en la aplicación; estas conexiones sí procesan datos. La verificación NIP-05 contacta con el dominio del identificador. Los tipos de cambio se solicitan a Coinbase. Las operaciones LNURL y con tarjetas NFC compatibles contactan con el servicio indicado en la dirección o tarjeta. Estos servicios reciben tu IP y datos de la solicitud. El modo de privacidad limita el registro de actividad y el contenido de perfiles de terceros; no anonimiza todo el uso de la red."
+      },
+      "hostedWallet": {
+        "title": "Cartera alojada opcional y conservación",
+        "description": "DANDELION LABS JOINT STOCK COMPANY mantiene los fondos de la cartera alojada. El servicio almacena tu clave pública Nostr, identificadores, saldo, facturas, importes, fechas y estados de pagos, dirección Lightning pública y conexiones NWC con sus límites. Procesa datos de solicitudes y registros operativos para prestar y proteger el servicio. Los registros de la cartera permanecen mientras exista; no prometemos un plazo fijo de eliminación de registros operativos o copias de seguridad. El servicio puede mover sus fondos y el acceso depende de su disponibilidad. Conectar otra cartera no implica autocustodia: depende de su operador."
+      },
+      "delete": {
+        "title": "Eliminar datos y obtener ayuda",
+        "description": "Elimina una cuenta desde Cuentas o usa Eliminar todos los datos en Ajustes para borrar los datos locales. Retira primero los fondos alojados y selecciona por separado la eliminación de la cartera alojada; borrar el teléfono no elimina la cartera del servidor. El proceso informa de fallos del servidor. Una eliminación alojada completada borra la cartera, historial de pagos, dirección Lightning, conexiones y asociación de cuenta. Sin la aplicación, solicita la eliminación mediante nuestro formulario de contacto. Nunca envíes tu frase semilla, clave privada, PIN ni secretos de conexión."
+      },
+      "copies": {
+        "title": "Retención de Datos",
+        "description": "El borrado local no elimina passkeys, copias de recuperación del proveedor, archivos exportados ni datos publicados en relays. Gestiona las passkeys con tu proveedor y elimina las copias exportadas donde las guardaste. Los relays y destinatarios pueden conservar copias incluso tras una solicitud de eliminación. No podemos garantizar su borrado ni recuperar tus claves si pierdes todos los métodos de recuperación."
       }
     },
-    "delete": {
-      "title": "Eliminar tus datos",
-      "description": "Puedes eliminar tus datos desde la propia app:",
-      "items": {
-        "account": {
-          "title": "Una cuenta:",
-          "description": "Elimínala desde la pantalla Cuentas. Sus claves, permisos y autorizaciones de inicio de sesión se borran de este teléfono."
-        },
-        "everything": {
-          "title": "Todo lo que hay en este teléfono:",
-          "description": "«Borrar todos los datos» en Configuración borra de este teléfono la bóveda, todas las cuentas, los permisos, los emparejamientos, el Archivo y los datos de la billetera. Desinstalar la app también los elimina. Antes, haz una copia de seguridad de tu frase semilla: sin ella, tus claves no se pueden recuperar."
-        },
-        "hostedWallet": {
-          "title": "Billetera alojada:",
-          "description": "Cuando borras todos los datos, la app te pregunta por separado si también quieres eliminar tu billetera alojada en nuestro servidor. Si dices que sí, la eliminamos como se describe arriba. Antes, retira el saldo que tengas."
-        },
-        "relays": {
-          "title": "Relays de Nostr:",
-          "description": "Los eventos que publicaste se almacenan en relays que no controlamos. Los relays pueden atender una solicitud de eliminación, pero no podemos garantizar que eliminen nada."
-        }
-      },
-      "contact": "Si ya no tienes la app, o tienes alguna pregunta sobre tus datos, contáctanos a través de la",
-      "supportLink": "página de soporte",
-      "or": "o del",
-      "contactLink": "formulario de contacto"
-    },
+    "contact": "Si ya no tienes la app, o tienes alguna pregunta sobre tus datos, contáctanos a través de la",
+    "supportLink": "página de soporte",
+    "or": "o del",
+    "contactLink": "formulario de contacto",
     "children": {
       "title": "Menores",
       "description": "La app no está dirigida a menores y no recopilamos a sabiendas datos personales de menores. Si crees que un menor ha configurado una billetera alojada, contáctanos y la eliminaremos."
