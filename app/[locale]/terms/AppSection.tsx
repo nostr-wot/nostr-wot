@@ -2,14 +2,15 @@ import { getTranslations } from "next-intl/server";
 import { Link } from "@/i18n/routing";
 
 /**
- * The Nostr WoT app (iOS) section of the terms. Grounded in what the app
+ * The Nostr WoT app (iOS and Android) section of the terms. Grounded in what the app
  * (nostr-wot-wallet) and the hosted wallet (LNbits-proxy) do today.
  */
 
-const TOPICS = ["selfCustody", "signing", "hostedWallet", "selfCustodialWallet", "externalWallets", "noAdvice", "availability", "fees", "openSource", "appStore", "liability"] as const;
+const TOPICS = ["selfCustody", "signing", "hostedWallet", "externalWallets", "noAdvice", "availability", "fees", "appStore", "liability"] as const;
 
 export default async function AppSection() {
   const t = await getTranslations("terms.app");
+
 
   return (
     <section id="app" className="mb-12">

@@ -1,21 +1,21 @@
 {
   "meta": {
     "title": "Privacy Policy",
-    "description": "How Nostr WoT handles your data on the website, in the browser extension, in the Nostr WoT iOS app and its hosted Lightning wallet, and in the Oracle API."
+    "description": "How Nostr WoT handles your data on the website, in the browser extension, in the Nostr WoT iOS / Android app and its hosted Lightning wallet, and in the Oracle API."
   },
   "hero": {
     "title": "Privacy Policy",
-    "lastUpdated": "Last updated: October 2026"
+    "lastUpdated": "Last updated: November 2026"
   },
   "intro": {
-    "description": "This Privacy Policy describes how Nostr Web of Trust (\"we\", \"us\", or \"our\") collects, uses, and protects your information when you use our website (nostrwot.com), our browser extension (WoT Extension) and the Nostr WoT app for iOS.",
+    "description": "This Privacy Policy describes how Nostr Web of Trust (\"we\", \"us\", or \"our\") collects, uses, and protects your information when you use our website (nostrwot.com), our browser extension (WoT Extension) and the Nostr WoT app for iOS / Android.",
     "commitment": "We are committed to protecting your privacy. As a project built for the Nostr ecosystem, we understand the importance of decentralization and user sovereignty over personal data."
   },
   "contents": {
     "title": "Contents",
     "website": "Website Privacy",
     "extension": "Browser Extension Privacy",
-    "app": "Nostr WoT App (iOS)",
+    "app": "Nostr WoT app (iOS and Android)",
     "oracle": "WoT Oracle API",
     "thirdParty": "Third-Party Services",
     "dataRetention": "Data Retention",
@@ -123,153 +123,42 @@
     }
   },
   "app": {
-    "title": "Nostr WoT App (iOS)",
-    "intro": "Nostr WoT is an iPhone app that keeps your Nostr keys on your phone, signs for the apps you use and can connect a Lightning wallet. This section explains what the app keeps on your phone, what it sends over the network and to whom, and how to delete it.",
-    "publisher": "The app is published on the App Store by DANDELION LABS JOINT STOCK COMPANY, which also operates the hosted Lightning wallet at zaps.nostr-wot.com. In this section, \"we\" means that company.",
-    "summary": {
-      "title": "In short",
-      "description": "You do not need an account with us to use the app. Your keys and seed phrase are encrypted on your phone and are never sent to us. The app has no analytics, no ads and no tracking, and we do not sell data. The only data we hold about you belongs to the hosted Lightning wallet, and only if you choose to use it."
-    },
-    "onDevice": {
-      "title": "What stays on your phone",
-      "description": "The following is stored only on your phone. We cannot read it and it is not sent to us.",
-      "items": {
-        "vault": {
-          "title": "Keys and seed phrases:",
-          "description": "Your private keys and seed phrase are kept in an encrypted vault (AES-256-GCM, with a key derived from your password or PIN using PBKDF2-SHA-256 and 600,000 iterations). An iPhone backup can include the vault, but only in encrypted form."
-        },
-        "unlock": {
-          "title": "Password, PIN and Face ID:",
-          "description": "You unlock the vault with a password or, if you prefer, a PIN that only works on this phone. Face ID is optional and handled by iOS: the app only learns whether the check passed and never sees your face data."
-        },
-        "settings": {
-          "title": "Permissions, activity and settings:",
-          "description": "The rules you set for each app, your paired clients, the activity log, your relay lists and your other settings."
-        },
-        "archive": {
-          "title": "Archive:",
-          "description": "If you use the Archive, each account keeps a copy of its own signed Nostr events in a local database, with every record encrypted under a key held in your vault. Archive files you export are encrypted with a password you choose."
-        },
-        "walletSecrets": {
-          "title": "Wallet secrets:",
-          "description": "Nostr Wallet Connect connection strings and the keys of the self-custodial wallet are kept in the encrypted vault or encrypted with its key."
-        }
-      }
-    },
-    "connections": {
-      "title": "What the app sends over the network",
-      "description": "The app connects to other services only to do what you ask. For each connection, here is who receives what.",
-      "items": {
-        "relays": {
-          "title": "Nostr relays:",
-          "description": "Remote signing (NIP-46), the events you sign and publish, your post-quantum key attestation and the Archive use Nostr relays, which you can choose and change. Signing requests are end-to-end encrypted, but relays see your IP address, the timing and the public keys involved, and events you publish are public. We do not operate these relays, and removing something from them is best effort."
-        },
-        "lan": {
-          "title": "Local network bridge:",
-          "description": "When you switch it on, a paired computer can send signing requests to the app directly over your local network, encrypted end to end, without relays or our servers. It is off by default and has to be switched on each time."
-        },
-        "sameDevice": {
-          "title": "Signing for apps on this iPhone:",
-          "description": "The \"Sign with Nostr WoT\" action extension signs requests from other apps on the same phone. It makes no network connections."
-        },
-        "hostedWallet": {
-          "title": "Hosted Lightning wallet:",
-          "description": "If you set up the wallet held by us, the app connects to zaps.nostr-wot.com. The <strong>Hosted Lightning wallet</strong> section below lists what we store."
-        },
-        "nwc": {
-          "title": "Your own wallet (Nostr Wallet Connect):",
-          "description": "If you connect an external wallet, its connection string stays in your vault. Payment requests go encrypted to the relay named in that connection and on to your wallet provider, whose own policy applies."
-        },
-        "spark": {
-          "title": "Self-custodial wallet (Breez SDK, Spark):",
-          "description": "The self-custodial wallet runs on the Spark network through the Breez SDK. Its keys come from your seed phrase and stay on your phone, but the Spark operators, Breez among them, process the payment data needed to run the wallet and see your IP address. See the <breez>Breez privacy policy</breez> and the <spark>Spark privacy policy</spark>."
-        },
-        "lightningAddress": {
-          "title": "Paying a Lightning address:",
-          "description": "When you pay a Lightning address, the app asks the domain in that address for an invoice, as any Lightning wallet does."
-        },
-        "tor": {
-          "title": "Tor (optional):",
-          "description": "You can route the app's traffic through Tor, which is built into the app. With Tor on, relays, remote signing, the Archive, wallet requests and images go through Tor and do not see your IP address. The local network bridge and the self-custodial wallet do not use Tor. Tor is off by default."
-        },
-        "favicons": {
-          "title": "Site icons:",
-          "description": "To show the icon of a connected site, the app asks <google>Google's favicon service</google> (www.google.com/s2/favicons), which receives that site's domain and your IP address. The app does not contact Google for icons while Tor is on. Your own profile pictures load from the address set in your Nostr profile."
-        },
-        "feedback": {
-          "title": "Feedback links:",
-          "description": "\"Report a bug\" and \"Request a feature\" open a GitHub issue form on a public repository in your browser. A bug report comes prefilled with the app version, iOS version, device model and app language. You can edit it before sending, and what you submit is public and handled under <github>GitHub's privacy statement</github>."
-        }
-      }
-    },
-    "hostedWallet": {
-      "title": "Hosted Lightning wallet (zaps.nostr-wot.com)",
-      "description": "The hosted wallet is optional. It is custodial: we hold its balance for you. If you use it, we store:",
-      "items": {
-        "identity": {
-          "title": "Your Nostr public key:",
-          "description": "It identifies your wallet. The app proves that you own it by signing each sign-in request; your private key is never sent."
-        },
-        "wallet": {
-          "title": "Wallet records:",
-          "description": "The internal identifiers of your wallet and its account, and your balance."
-        },
-        "address": {
-          "title": "Lightning address:",
-          "description": "The username you claim (name@zaps.nostr-wot.com). It is public, and anyone can look it up from your public key."
-        },
-        "payments": {
-          "title": "Payments and app connections:",
-          "description": "Invoices, amounts, dates and the status of payments you send and receive, and any app connections (NWC) you create, with their limits."
-        },
-        "requests": {
-          "title": "Request data:",
-          "description": "Your IP address is used for rate limiting and kept in memory for about a minute. Our server logs record request paths and errors so we can run and secure the service."
-        }
+    "title": "Nostr WoT app (iOS and Android)",
+    "intro": "Nostr WoT signs Nostr requests for compatible apps. Connect your own node through LNbits or a wallet through Nostr Wallet Connect (NWC). The optional hosted wallet is a separate custodial service operated by DANDELION LABS JOINT STOCK COMPANY at zaps.nostr-wot.com: the company holds its funds.",
+    "topics": {
+      "keys": {
+        "title": "Keys, unlocking and recovery",
+        "description": "Private keys, wallet connection secrets, permissions, settings and activity are stored on your phone; keys are protected in an encrypted vault. Onboarding offers an automatic lock timer and a six-digit device PIN, with optional biometrics handled by the operating system. Choosing never to lock skips the PIN. We cannot reset your PIN or recover a lost seed phrase."
       },
-      "custody": "Because the wallet is custodial, we can move its funds, and your balance depends on our service. Keep only small amounts in it.",
-      "retention": "We keep these records while your hosted wallet exists. When you delete it, we delete your Lightning address, your app connections, the wallet with its payment history and the link between your public key and the wallet."
-    },
-    "privacyMode": {
-      "title": "Privacy mode",
-      "description": "With privacy mode on, the app stops recording its activity log, when each paired client was last active and the profiles of other people you viewed. You can also clear the activity log at any time."
-    },
-    "doesNot": {
-      "title": "What the app does not do",
-      "items": {
-        "analytics": "No analytics, crash reporting or telemetry",
-        "ads": "No ads",
-        "tracking": "No tracking across apps or websites, and no advertising identifier",
-        "sell": "We do not sell or share your data",
-        "keys": "We never receive your private keys, seed phrase, password or PIN"
+      "recovery": {
+        "title": "Creating or recovering an identity",
+        "description": "Passkey recovery encrypts your seed phrase. New backups do not include account names, account lists or derivation paths; older backups may include them. Your credential provider can store the encrypted recovery copy. If you consent to relay storage, it can instead be published to Nostr relays. Recovery uses the provider and, when needed, configured recovery relays (currently nos.lol, relay.damus.io and nostr-01.yakihonne.com). Passkey availability and synchronization depend on your provider. Keep an independent recovery copy."
+      },
+      "network": {
+        "title": "Network connections and recipients",
+        "description": "Remote signing (NIP-46), profiles, relay lists, published events, Archive synchronization and NWC use Nostr relays. Encrypted requests hide their content from relays, but relays can see public keys, IP addresses and connection times. Published events and profile information can be public. Paired devices can also exchange encrypted requests over the local network or Bluetooth where supported. Android supports NIP-55; compatible iPhone apps can use the signing action extension."
+      },
+      "providers": {
+        "title": "Third-Party Services",
+        "description": "LNbits receives requests at the server you configure; NWC sends encrypted requests through its configured relay to your wallet provider. Those operators process payment data under their own policies. Lightning address services receive invoice lookups. Image hosts receive image requests; Google’s favicon service receives connected-site domains and your IP address. Public GitHub support reports contain whatever you submit, including any prefilled app, OS and device details. The current mobile apps have no built-in Tor, embedded Breez/Spark wallet or post-quantum signing. The app has no advertising or analytics tracking; these service connections still process data. NIP-05 verification contacts the identifier’s domain. Fiat conversion rates are requested from Coinbase. LNURL and compatible NFC card operations contact the service encoded in the address or card. These services receive your IP address and request data. Privacy mode limits activity recording and third-party profile content; it does not make all network use anonymous."
+      },
+      "hostedWallet": {
+        "title": "Optional hosted wallet and retention",
+        "description": "DANDELION LABS JOINT STOCK COMPANY holds the hosted wallet funds. The service stores your Nostr public key, wallet identifiers, balance, invoices, payment amounts, dates and status, claimed public Lightning address and NWC app connections with their limits. It processes network request data and operational logs to provide and secure the service. Wallet records remain while the wallet exists; we do not promise a fixed deletion period for operational logs or backups. The hosted service can move its funds, and access depends on its availability. Connecting another wallet does not by itself make that wallet self-custodial: custody depends on its operator."
+      },
+      "delete": {
+        "title": "Deleting data and getting help",
+        "description": "Remove an account in Accounts or use Delete all data in Settings to erase local app data. Move hosted funds out first and select the separate hosted-wallet deletion option; local erasure alone does not delete the server wallet. The deletion flow reports server failures. A completed hosted deletion removes the wallet, payment history, Lightning address, app connections and account association. If you no longer have the app, use our contact form to request deletion. Never send a seed phrase, private key, PIN or wallet connection secret."
+      },
+      "copies": {
+        "title": "Data Retention",
+        "description": "Local deletion does not remove passkeys, recovery copies held by credential providers, exported files or published relay data. Manage passkeys with your credential provider and delete exported copies where you saved them. Relays and recipients may retain copies even after a deletion request. We cannot guarantee erasure of those copies or recover your keys if all recovery methods are lost."
       }
     },
-    "delete": {
-      "title": "Deleting your data",
-      "description": "You can delete your data from inside the app:",
-      "items": {
-        "account": {
-          "title": "One account:",
-          "description": "Remove it from the Accounts screen. Its keys, permissions and sign-in grants are deleted from this phone."
-        },
-        "everything": {
-          "title": "Everything on this phone:",
-          "description": "\"Delete all data\" in Settings erases the vault, every account, permissions, pairings, the Archive and wallet data from this phone. Uninstalling the app removes them too. Back up your seed phrase first: without it, your keys cannot be recovered."
-        },
-        "hostedWallet": {
-          "title": "Hosted wallet:",
-          "description": "When you delete all data, the app asks you separately whether to delete your hosted wallet on our server as well. If you say yes, we delete it as described above. Move any balance out first."
-        },
-        "relays": {
-          "title": "Nostr relays:",
-          "description": "Events you published are stored on relays we do not control. Relays may honour a deletion request, but we cannot guarantee that they remove anything."
-        }
-      },
-      "contact": "If you no longer have the app, or have a question about your data, reach us through the",
-      "supportLink": "support page",
-      "or": "or the",
-      "contactLink": "contact form"
-    },
+    "contact": "If you no longer have the app, or have a question about your data, reach us through the",
+    "supportLink": "support page",
+    "or": "or the",
+    "contactLink": "contact form",
     "children": {
       "title": "Children",
       "description": "The app is not directed at children, and we do not knowingly collect personal data from children. If you believe a child has set up a hosted wallet, contact us and we will delete it."
@@ -356,11 +245,11 @@
       },
       "appData": {
         "title": "Nostr WoT App Data:",
-        "description": "Stored on your phone until you remove the account, delete all data or uninstall the app"
+        "description": "Local data stays until removed in the app. Provider recovery copies, exported files and relay data are separate; see the app section above."
       },
       "hostedWallet": {
         "title": "Hosted Wallet Records:",
-        "description": "Kept while your hosted wallet exists and deleted when you delete it"
+        "description": "Wallet records remain while the wallet exists. Server deletion and the limits for operational logs and backups are explained in the app section above."
       },
       "rateLimit": {
         "title": "Oracle Rate Limit Data:",

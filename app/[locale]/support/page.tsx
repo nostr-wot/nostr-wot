@@ -14,29 +14,15 @@ type Props = {
 /**
  * The app's feedback forms, the same ones its Settings screen opens
  * (nostr-wot-wallet `src/constants/about.ts`): the extension's public tracker,
- * with the title marked as coming from the iOS app.
+ * with the title marked as coming from the mobile app.
  */
 const ISSUE_FORMS = "https://github.com/nostr-wot/nostr-wot-extension/issues/new";
-const BUG_REPORT_URL = `${ISSUE_FORMS}?template=bug_report.yml&title=${encodeURIComponent("[iOS app] ")}`;
-const FEATURE_REQUEST_URL = `${ISSUE_FORMS}?template=feature_request.yml&title=${encodeURIComponent("[iOS app] ")}`;
+const BUG_REPORT_URL = `${ISSUE_FORMS}?template=bug_report.yml&title=${encodeURIComponent("[Mobile app] ")}`;
+const FEATURE_REQUEST_URL = `${ISSUE_FORMS}?template=feature_request.yml&title=${encodeURIComponent("[Mobile app] ")}`;
 
-const FAQ_KEYS = [
-  "createAccount",
-  "backup",
-  "pairRemote",
-  "sameDevice",
-  "lanBridge",
-  "permissions",
-  "wallet",
-  "hostedWallet",
-  "tor",
-  "archive",
-  "forgotPassword",
-  "newPhone",
-] as const;
+const FAQ_KEYS = ["createAccount", "backup", "pairRemote", "wallet", "network", "forgotPassword"] as const;
 
 const INCLUDE_KEYS = ["version", "os", "device", "language", "steps"] as const;
-const DELETE_KEYS = ["account", "everything", "hostedWallet", "relays"] as const;
 
 async function pageMetadata({ params }: Props): Promise<Metadata> {
   const { locale } = await params;
@@ -170,14 +156,7 @@ export default async function SupportPage() {
           <div className="max-w-3xl mx-auto px-6">
             <h2 className="text-2xl font-bold mb-4">{t("deleteData.title")}</h2>
             <p className="text-gray-600 dark:text-gray-400 mb-4">{t("deleteData.description")}</p>
-            <ul className="list-disc pl-6 text-gray-600 dark:text-gray-400 space-y-2 mb-4">
-              {DELETE_KEYS.map((key) => (
-                <li key={key}>
-                  <strong className="text-gray-900 dark:text-white">{t(`deleteData.items.${key}.title`)}</strong>{" "}
-                  {t(`deleteData.items.${key}.description`)}
-                </li>
-              ))}
-            </ul>
+
             <p className="text-gray-600 dark:text-gray-400">
               {t("deleteData.contact")}{" "}
               <Link href="/contact" className="text-primary hover:underline">{t("deleteData.contactLink")}</Link>.
