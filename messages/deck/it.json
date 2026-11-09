@@ -1,0 +1,389 @@
+{
+  "slides": [
+    {
+      "title": "La tua vita digitale, sotto il tuo controllo",
+      "summary": "Scopri Nostr e come portare identità, relazioni e pubblicazioni da un'app all'altra.",
+      "points": [],
+      "body": "Questa guida parte dai limiti delle piattaforme chiuse, spiega Nostr e mostra come Nostr WoT ne facilita l'uso. Apri il pulsante informazioni di ogni diapositiva per approfondire.",
+      "cta": "Scopri Nostr WoT",
+      "takeaway": ""
+    },
+    {
+      "title": "Possiamo controllare la nostra vita digitale?",
+      "summary": "La tua identità. Le tue relazioni. Ciò che pubblichi. Cosa conservi quando una piattaforma cambia le regole?",
+      "points": [
+        "Mantenere l'accesso alla tua identità quando cambi servizio.",
+        "Scegliere come viene organizzata la tua esperienza e cosa vedere."
+      ],
+      "body": "Oggi molte aziende amministrano gli account che usiamo online. Se un servizio cambia o chiude, possiamo mantenere l'identità e raggiungere la comunità? Avere controllo significa poter scegliere senza ricominciare da zero.",
+      "cta": "",
+      "takeaway": ""
+    },
+    {
+      "title": "Il problema: tutta la comunità dipende da un account",
+      "summary": "Un account sospeso, un servizio che chiude o un algoritmo che nasconde i post può separarti dalla comunità.",
+      "points": [
+        "Chiusura: la comunità perde il suo punto d'incontro.",
+        "Ban o shadowban: un'azienda decide chi partecipa e chi viene visto."
+      ],
+      "body": "Una piattaforma può bloccare l'accesso o ridurre la visibilità senza comunicarlo chiaramente. Controlla anche il proprio algoritmo di raccomandazione. Il problema strutturale è concentrare identità, distribuzione e relazioni in un unico servizio.",
+      "cta": "",
+      "takeaway": ""
+    },
+    {
+      "title": "Cambiare app non dovrebbe cancellare la tua storia",
+      "summary": "Cambiare app non dovrebbe richiedere di ricostruire il profilo, ritrovare i contatti e ripartire da zero.",
+      "points": [
+        "Esportare dati non basta se un'altra app non sa interpretarli.",
+        "La portabilità richiede identità e formati condivisi."
+      ],
+      "body": "Scaricare i dati è utile, ma un file da solo non ti riconnette alle persone. Gli strumenti devono capire i dati, riconoscere la stessa identità e trovare i contenuti. I protocolli condivisi lo rendono possibile.",
+      "cta": "",
+      "takeaway": ""
+    },
+    {
+      "title": "Nostr: un protocollo aperto per eventi firmati",
+      "summary": "Nostr è un insieme di regole per creare, firmare e scambiare informazioni tra app indipendenti.",
+      "points": [
+        "Non è una sola app o azienda: strumenti diversi implementano lo stesso protocollo.",
+        "Gli eventi firmati consentono di verificare l'autore senza un server centrale."
+      ],
+      "body": "Nostr definisce come creare, firmare, pubblicare e cercare eventi. Le app usano queste regole per profili, note, reazioni e altri contenuti. Nessun server centrale possiede l'intera rete. Le app possono cambiare continuando a capirsi.",
+      "cta": "Comprendi il protocollo",
+      "takeaway": ""
+    },
+    {
+      "title": "Pensa all'email",
+      "summary": "Le app di posta comunicano tramite protocolli condivisi. Nostr applica questa idea agli eventi firmati.",
+      "points": [
+        "Client diversi si capiscono perché condividono regole.",
+        "Con Nostr, cambiare client non richiede di cambiare le chiavi."
+      ],
+      "body": "Puoi scegliere strumenti diversi per leggere e inviare email. Anche diversi client Nostr possono leggere le stesse informazioni. La differenza è l'identità: un account Nostr si basa su chiavi, non su un indirizzo controllato da un provider di posta.",
+      "cta": "Leggi l'introduzione a Nostr",
+      "takeaway": ""
+    },
+    {
+      "title": "Tre elementi che lavorano insieme",
+      "summary": "L'app prepara e mostra. Il firmatario autorizza. I relay ricevono e distribuiscono eventi.",
+      "points": [
+        "L'app non deve conservare la chiave privata per richiedere una firma.",
+        "Ogni relay decide cosa accettare; le app scelgono quali interrogare."
+      ],
+      "body": "L'app crea richieste e mostra contenuti. Il firmatario custodisce la chiave e firma azioni autorizzate, localmente o da remoto. I relay archiviano e distribuiscono secondo le proprie regole. Un prodotto può unire questi ruoli, che restano però distinti.",
+      "cta": "Come si collegano gli elementi",
+      "takeaway": ""
+    },
+    {
+      "title": "La tua identità si basa su una coppia di chiavi",
+      "summary": "La chiave pubblica identifica l'account. La chiave privata autorizza azioni a suo nome e deve restare segreta.",
+      "points": [
+        "Condividi il tuo npub, mai la chiave privata.",
+        "Separa lavoro, vita personale e partecipazione anonima con identità diverse."
+      ],
+      "body": "Le app spesso mostrano la chiave pubblica come npub. La chiave privata firma gli eventi di quell'identità. Un nome può cambiare o essere copiato; la chiave pubblica continua a identificare l'account. Puoi creare coppie separate per contesti diversi.",
+      "cta": "Gestisci le tue identità",
+      "takeaway": ""
+    },
+    {
+      "title": "Il profilo è informazione che pubblichi",
+      "summary": "Nome, foto e biografia sono informazioni pubblicate. Puoi modificarle senza cambiare la chiave pubblica dell'account.",
+      "points": [
+        "Modificare il profilo pubblica una nuova versione firmata.",
+        "I nomi possono ripetersi: la chiave pubblica distingue gli account."
+      ],
+      "body": "Un evento di profilo contiene nome, foto, copertina e biografia. Le app compatibili possono trovare e mostrare l'ultima versione. Questi campi ti descrivono; non sostituiscono l'identità crittografica.",
+      "cta": "Modifica e gestisci il profilo",
+      "takeaway": ""
+    },
+    {
+      "title": "Ogni azione ha un formato condiviso",
+      "summary": "Profili, note e reazioni sono eventi firmati. La firma verifica autore e integrità, non la verità del contenuto.",
+      "points": [
+        "Autore, data, tipo, contenuto e riferimenti fanno parte di un evento.",
+        "Il tipo (kind) indica l'interpretazione: profilo 0, nota 1, reazione 7."
+      ],
+      "body": "Azioni diverse usano tipi di eventi diversi. La firma permette di controllare quale chiave ha firmato e se i dati sono cambiati. Una firma valida non dimostra che un'affermazione sia vera o che l'autore sia affidabile.",
+      "cta": "Scopri cosa contiene un evento",
+      "takeaway": ""
+    },
+    {
+      "title": "Il percorso di una pubblicazione",
+      "summary": "Scrivi in un'app. Il firmatario firma. I relay archiviano. Altre app cercano e mostrano l'evento.",
+      "points": [
+        "Le app verificano la firma prima di mostrare il contenuto.",
+        "Firmare e pubblicare sono passaggi distinti."
+      ],
+      "body": "L'app prepara l'evento. Il firmatario lo autorizza e firma. L'app lo invia a uno o più relay. Altri client interrogano quei relay, verificano la firma e interpretano l'evento. Lo stesso evento può apparire in più app senza essere riscritto.",
+      "cta": "Segui il percorso di un evento",
+      "takeaway": ""
+    },
+    {
+      "title": "Più relay offrono ridondanza",
+      "summary": "Se un relay rifiuta un evento o smette di funzionare, altri possono continuare a fornire una copia. Nessuno controlla l'intera rete.",
+      "points": [
+        "Un relay può rifiutare ciò che altri accettano.",
+        "Più copie aiutano, ma non garantiscono conservazione permanente."
+      ],
+      "body": "I relay possono richiedere pagamenti, filtrare o chiudere. Le app devono sapere quali interrogare per trovare un evento. Copie su più relay riducono la dipendenza da un fornitore; conservare il proprio archivio resta utile.",
+      "cta": "Comprendi la resilienza di Nostr",
+      "takeaway": ""
+    },
+    {
+      "title": "La stessa identità, app diverse",
+      "summary": "Usa la tua identità nelle app compatibili. Ognuna può offrire un'esperienza diversa sugli stessi eventi.",
+      "points": [
+        "Ogni app interpreta i tipi di eventi che supporta.",
+        "Accedere non collega automaticamente un wallet e non autorizza pagamenti."
+      ],
+      "body": "Puoi mantenere la stessa identità scegliendo esperienze diverse. Post e relazioni disponibili si riutilizzano se le app supportano i formati e li trovano sui relay. La compatibilità varia; i pagamenti richiedono permessi separati.",
+      "cta": "",
+      "takeaway": ""
+    },
+    {
+      "title": "Cosa cambia con Nostr",
+      "summary": "L'identità non dipende più da una sola app. Scegli altri client, relay e filtri senza creare un'altra identità.",
+      "points": [
+        "Una chiave identifica l'account, anziché il permesso di una piattaforma.",
+        "Scegli client, relay e filtri; i backup restano importanti."
+      ],
+      "body": "Formati condivisi permettono di leggere eventi creati altrove. I relay li distribuiscono e usarne diversi riduce la dipendenza da uno solo. La portabilità dipende comunque dai tipi compatibili e dalla possibilità di trovare i relay che custodiscono i dati.",
+      "cta": "Scopri vantaggi e limiti",
+      "takeaway": ""
+    },
+    {
+      "title": "Anche una rete aperta ha bisogno di filtri",
+      "summary": "Una firma identifica la chiave che ha pubblicato. Decidere chi ascoltare richiede più contesto.",
+      "points": [
+        "Un'identità valida può comunque inviare spam o cercare di ingannarti.",
+        "La domanda passa da “chi ha firmato?” a “perché ascoltarlo?”."
+      ],
+      "body": "Chiunque può creare un'identità senza chiedere permesso. Questa apertura consente anche bot, spam e imitazioni visive di profili. Le firme stabiliscono l'autore; il contesto sociale aiuta a scegliere le fonti che meritano attenzione.",
+      "cta": "Comprendi i segnali di fiducia",
+      "takeaway": ""
+    },
+    {
+      "title": "Web of Trust: la fiducia parte dalla tua rete",
+      "summary": "Le persone che segui sono il punto di partenza. Le loro relazioni e i percorsi condivisi offrono segnali di fiducia.",
+      "points": [
+        "Un salto: una persona che segui. Due: qualcuno seguito dai tuoi contatti.",
+        "Più percorsi danno contesto, ma non garantiscono onestà."
+      ],
+      "body": "La rete di fiducia usa legami sociali per scoprire persone e filtrare contenuti. Distanza e percorsi multipli rivelano connessioni con la tua rete. Anche una rete può sbagliare o essere manipolata: sono segnali, non garanzie.",
+      "cta": "Esplora la rete di fiducia",
+      "takeaway": ""
+    },
+    {
+      "title": "Scegli tu chi ascoltare",
+      "summary": "Segui persone, esplora relazioni e silenzia ciò che non vuoi vedere. I tuoi filtri possono essere diversi da quelli degli altri.",
+      "points": [
+        "Seguire costruisce la rete; silenziare adatta la tua esperienza.",
+        "Le tue preferenze non cancellano contenuti né impongono filtri agli altri."
+      ],
+      "body": "L'elenco delle persone seguite è il punto di partenza dei filtri di fiducia. Silenziare nasconde account o contenuti nella tua esperienza, senza rimuovere eventi da tutti i relay. Tu e l'app scelta decidete come usare questi segnali.",
+      "cta": "Configura i tuoi filtri",
+      "takeaway": ""
+    },
+    {
+      "title": "Perché Nostr WoT?",
+      "summary": "Nostr fornisce il protocollo. Nostr WoT riunisce identità, firma, permessi, connessioni e fiducia per facilitarne l'uso.",
+      "points": [
+        "Gestisci identità e permessi in un punto comune alle app.",
+        "Esplora segnali di fiducia senza affidare l'identità a una piattaforma."
+      ],
+      "body": "Usare Nostr significa gestire chiavi, relay, firme e autorizzazioni. Nostr WoT riunisce queste attività in un'estensione, con controlli più chiari per app diverse. L'identità resta un'identità Nostr, indipendente da questa interfaccia.",
+      "cta": "Vedi le funzioni dell'estensione",
+      "takeaway": ""
+    },
+    {
+      "title": "Un'identità, diversi modi di usarla",
+      "summary": "Crea o importa un account e scegli un archivio locale protetto, una passkey nei flussi compatibili o un firmatario remoto.",
+      "points": [
+        "Scegli l'identità usata da ogni sito.",
+        "Un accesso comodo richiede anche un piano di recupero."
+      ],
+      "body": "Puoi gestire più identità e scegliere l'account per ogni sito. La firma può avvenire nell'archivio locale o tramite un firmatario remoto. Le passkey semplificano i flussi compatibili; prepara il recupero adatto al modo in cui hai creato l'account.",
+      "cta": "Crea un account con passkey",
+      "takeaway": ""
+    },
+    {
+      "title": "Connettersi non significa autorizzare tutto",
+      "summary": "Scegli cosa può fare ogni sito, con quale identità e per quali azioni. Controlla e revoca i permessi.",
+      "points": [
+        "Verifica sito, account e azione prima di approvare.",
+        "Conoscere la chiave pubblica non dà permessi illimitati di firma."
+      ],
+      "body": "Nostr WoT offre regole globali e per sito. Un sito che richiede la chiave pubblica non deve necessariamente firmare ogni tipo di evento. Leggi le richieste, limita l'accesso al necessario e revoca i permessi che non vuoi mantenere.",
+      "cta": "Configura i permessi per sito",
+      "takeaway": ""
+    },
+    {
+      "title": "Pubblicare, passo dopo passo",
+      "summary": "L'app prepara un evento. Tu autorizzi la firma. Poi l'app pubblica l'evento firmato sui relay.",
+      "points": [
+        "Leggi l'azione prima di autorizzare la firma.",
+        "Una volta pubblicato, le app compatibili possono trovare e mostrare l'evento."
+      ],
+      "body": "Scrivi una nota o modifica il profilo in un'app compatibile. L'app costruisce un evento e richiede la firma. Dopo l'approvazione lo pubblica. Firmare e pubblicare sono operazioni diverse, anche quando l'interfaccia le riunisce.",
+      "cta": "Pubblica la tua prima nota",
+      "takeaway": ""
+    },
+    {
+      "title": "Gli standard collegano gli elementi",
+      "summary": "Le NIP sono specifiche condivise che consentono ad app, estensioni, relay e firmatari di lavorare insieme.",
+      "points": [
+        "Nostr Connect (NIP-46): richieste di firma a un firmatario remoto.",
+        "NWC (NIP-47): richieste al wallet con permessi indipendenti."
+      ],
+      "body": "NIP-07 descrive l'interfaccia tra siti ed estensioni per chiavi pubbliche e firme. NIP-46 porta le richieste ai firmatari remoti. NIP-47 collega app e wallet. Entrambi i lati devono supportare lo standard; accedere non autorizza pagamenti.",
+      "cta": "Consulta gli standard compatibili",
+      "takeaway": ""
+    },
+    {
+      "title": "L'estensione può anche fare da ponte",
+      "summary": "Un sito richiede firme o pagamenti tramite interfacce note. Nostr WoT può inoltrarli al firmatario o al wallet.",
+      "points": [
+        "La chiave privata resta nel firmatario; l'app riceve il risultato della firma.",
+        "Collegare un wallet richiede un'autorizzazione distinta dall'accesso."
+      ],
+      "body": "Nostr Connect permette di richiedere firme senza ricevere la chiave privata. Nostr Wallet Connect permette di richiedere operazioni autorizzate al wallet. Nostr WoT collega le interfacce del browser a questi strumenti mantenendo separati i permessi.",
+      "cta": "Collega un firmatario remoto",
+      "takeaway": ""
+    },
+    {
+      "title": "Zap e pagamenti: scegli il tuo wallet",
+      "summary": "Collega un wallet compatibile. NWC consente operazioni autorizzate e, secondo il wallet, limiti di spesa per connessione.",
+      "points": [
+        "Uno zap associa un pagamento Lightning a un'identità o pubblicazione.",
+        "I budget dipendono dal wallet; NWC non determina la custodia."
+      ],
+      "body": "Gli zap esprimono sostegno tramite Lightning. Con NWC un wallet può offrire permessi e budget per app, come tasche di spesa separate. Il wallet determina chi custodisce i fondi. L'app non deve avere controllo illimitato sul saldo.",
+      "cta": "Collega app al tuo wallet",
+      "takeaway": ""
+    },
+    {
+      "title": "Backup & Archive: proteggi due cose diverse",
+      "summary": "Conserva il recupero dell'identità e copie degli eventi. Una di queste attività non sostituisce l'altra.",
+      "points": [
+        "Recupero dell'identità: ciò che serve per riaccedere alle chiavi.",
+        "Archivio eventi: la tua storia, conservata o inviata a un altro relay."
+      ],
+      "body": "Il metodo di recupero dipende da come è stato creato l'account. L'archivio conserva note e altri eventi firmati per salvarli o ripubblicarli. Bloccare l'estensione non crea un backup. Un archivio di eventi non recupera una chiave privata persa.",
+      "cta": "Impara ad archiviare gli eventi",
+      "takeaway": ""
+    },
+    {
+      "title": "Prova un percorso guidato",
+      "summary": "Collega un'identità, modifica il profilo, segui persone, esplora la rete e pubblica una prima nota.",
+      "points": [
+        "Prova profili, contatti, pubblicazioni e grafo di fiducia.",
+        "Anche un account temporaneo può pubblicare contenuti pubblici persistenti."
+      ],
+      "body": "Collega la tua identità o usa un account temporaneo. Prova a seguire, pubblicare, reagire, esplorare app e archiviare eventi. Usa un'identità di prova se non vuoi associare l'attività all'account abituale. Gli eventi pubblici possono restare sui relay.",
+      "cta": "Apri il percorso guidato",
+      "takeaway": ""
+    },
+    {
+      "title": "Scegli il prossimo passo",
+      "summary": "Installa l'estensione, leggi una guida, esplora la rete o fai pratica.",
+      "points": [],
+      "body": "Se inizi ora, apri il percorso guidato. Se usi già Nostr, controlla permessi e recupero o esplora la rete nel playground. Scegli in base a ciò che vuoi imparare.",
+      "cta": "",
+      "takeaway": ""
+    },
+    {
+      "title": "Per approfondire",
+      "summary": "Continua con le guide Nostr WoT e le specifiche aperte che collegano gli elementi.",
+      "points": [],
+      "body": "Le guide spiegano concetti e flussi d'uso. Le NIP descrivono formati e messaggi implementati dagli strumenti. Inizia dalle guide per usare l'estensione; consulta le specifiche per sviluppare integrazioni e verifica la compatibilità di entrambi i lati.",
+      "cta": "",
+      "takeaway": ""
+    },
+    {
+      "title": "Restiamo in contatto",
+      "summary": "Hai una domanda, vuoi organizzare un workshop o sviluppare un'integrazione? Parliamone.",
+      "points": [],
+      "body": "Usa il modulo di contatto per assistenza, workshop, richieste stampa e collaborazioni. Puoi anche esplorare i progetti e segnalare problemi su GitHub.",
+      "cta": "",
+      "takeaway": ""
+    }
+  ],
+  "ui": {
+    "nav": [
+      "Precedente",
+      "Successiva",
+      "Diapositive",
+      "Altre informazioni su questa diapositiva",
+      "Chiudi",
+      "Scegli una diapositiva",
+      "Per approfondire",
+      "Tutorial di navigazione",
+      "Lingua",
+      "Navigazione delle diapositive",
+      "Apri la risorsa correlata"
+    ],
+    "tour": [
+      [
+        "Ogni diapositiva offre di più",
+        "Tocca il pulsante «i» in basso a destra per aprire spiegazioni, esempi e risorse correlate."
+      ],
+      [
+        "Procedi al tuo ritmo",
+        "Fai clic su Precedente o Successiva, oppure usa le frecce ← e → della tastiera. Sul telefono puoi anche scorrere lateralmente."
+      ],
+      [
+        "Vai direttamente a un argomento",
+        "Apri il selettore per vedere l'indice e scegliere una diapositiva. Ripeti il tutorial con il pulsante «?». "
+      ]
+    ],
+    "tourButtons": [
+      "Chiudi il tutorial",
+      "Salta",
+      "Indietro",
+      "Avanti",
+      "Capito"
+    ],
+    "resources": [
+      [
+        "Ottieni l'estensione",
+        "Installazione e opzioni"
+      ],
+      [
+        "Guide passo dopo passo",
+        "Impara al tuo ritmo"
+      ],
+      [
+        "Esplora la tua rete",
+        "Apri il playground"
+      ],
+      [
+        "Fai pratica",
+        "Workshop e attività"
+      ],
+      [
+        "Cos'è Nostr",
+        "Protocollo e identità"
+      ],
+      [
+        "Rete di fiducia",
+        "Legami e filtri"
+      ],
+      [
+        "Standard Nostr",
+        "Specifiche NIP"
+      ],
+      [
+        "Nostr Wallet Connect",
+        "App e wallet"
+      ],
+      [
+        "Contatta il team",
+        "Assistenza, workshop e collaborazione"
+      ],
+      [
+        "Nostr WoT su GitHub",
+        "Progetti e comunità"
+      ]
+    ]
+  }
+}

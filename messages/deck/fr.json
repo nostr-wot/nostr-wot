@@ -1,0 +1,389 @@
+{
+  "slides": [
+    {
+      "title": "Votre vie numérique, sous votre contrôle",
+      "summary": "Comprenez Nostr et découvrez comment conserver votre identité, vos liens et vos publications d'une application à l'autre.",
+      "points": [],
+      "body": "Ce guide présente les limites des plateformes fermées, explique Nostr et montre comment Nostr WoT en facilite l'usage. Ouvrez la bulle d'information de chaque diapositive pour approfondir.",
+      "cta": "Découvrir Nostr WoT",
+      "takeaway": ""
+    },
+    {
+      "title": "Pouvons-nous maîtriser notre vie numérique ?",
+      "summary": "Votre identité. Vos liens. Vos publications. Que gardez-vous quand une plateforme change les règles ?",
+      "points": [
+        "Conserver l'accès à votre identité en changeant de service.",
+        "Choisir comment votre expérience est organisée et ce que vous voyez."
+      ],
+      "body": "Des entreprises administrent aujourd'hui beaucoup des comptes que nous utilisons en ligne. Si un service change ou ferme, pouvons-nous garder notre identité et retrouver notre communauté ? Le contrôle commence par la possibilité de choisir sans repartir de zéro.",
+      "cta": "",
+      "takeaway": ""
+    },
+    {
+      "title": "Le problème : toute votre communauté dépend d'un compte",
+      "summary": "Un compte suspendu, un service qui ferme ou un algorithme qui masque vos publications peut vous couper de votre communauté.",
+      "points": [
+        "Fermeture : la communauté perd son lieu de rencontre.",
+        "Bannissement ou shadowban : une entreprise décide qui participe et qui est visible."
+      ],
+      "body": "Une plateforme peut bloquer votre accès ou réduire votre portée sans l'indiquer clairement. Elle contrôle aussi son algorithme de recommandation. Le problème structurel est de concentrer identité, diffusion et relations dans un même service.",
+      "cta": "",
+      "takeaway": ""
+    },
+    {
+      "title": "Changer d'application ne devrait pas effacer votre histoire",
+      "summary": "Changer d'application ne devrait pas imposer de reconstruire votre profil, de retrouver vos contacts et de tout recommencer.",
+      "points": [
+        "Exporter les données ne suffit pas si une autre application ne peut pas les lire.",
+        "La portabilité exige une identité et des formats communs."
+      ],
+      "body": "Télécharger vos données est utile, mais un fichier ne vous reconnecte pas à lui seul aux autres. Les outils doivent comprendre ces données, reconnaître la même identité et trouver les contenus. Les protocoles communs rendent cela possible.",
+      "cta": "",
+      "takeaway": ""
+    },
+    {
+      "title": "Nostr : un protocole ouvert pour des événements signés",
+      "summary": "Nostr définit des règles communes pour créer, signer et échanger des informations entre applications indépendantes.",
+      "points": [
+        "Ce n'est ni une seule application ni une entreprise : différents outils appliquent le protocole.",
+        "Les événements signés permettent de vérifier l'auteur sans serveur central."
+      ],
+      "body": "Nostr définit comment créer, signer, publier et consulter des événements. Les applications utilisent ces règles pour les profils, notes, réactions et autres contenus. Aucun serveur central ne possède tout le réseau. Les applications peuvent évoluer tout en restant compatibles.",
+      "cta": "Comprendre le protocole",
+      "takeaway": ""
+    },
+    {
+      "title": "Pensez au courrier électronique",
+      "summary": "Les applications de messagerie communiquent grâce à des protocoles communs. Nostr applique cette idée aux événements signés.",
+      "points": [
+        "Des clients différents se comprennent parce qu'ils partagent des règles.",
+        "Avec Nostr, changer de client n'exige pas de changer de clés."
+      ],
+      "body": "Vous pouvez utiliser plusieurs logiciels pour lire et envoyer vos e-mails. De même, différents clients Nostr peuvent lire les mêmes informations. La différence essentielle est l'identité : elle repose sur des clés, pas sur une adresse contrôlée par un fournisseur de courrier.",
+      "cta": "Lire l'introduction à Nostr",
+      "takeaway": ""
+    },
+    {
+      "title": "Trois éléments qui travaillent ensemble",
+      "summary": "L'application prépare et affiche. Le signataire autorise. Les relais reçoivent et transmettent les événements.",
+      "points": [
+        "L'application n'a pas besoin de stocker votre clé privée pour demander une signature.",
+        "Chaque relais décide ce qu'il accepte ; les applications choisissent lesquels consulter."
+      ],
+      "body": "L'application prépare les demandes et affiche le contenu. Le signataire conserve la clé et signe les actions autorisées, localement ou à distance. Les relais stockent et transmettent selon leurs propres règles. Un produit peut réunir ces rôles, mais leurs fonctions restent distinctes.",
+      "cta": "Comment les éléments se connectent",
+      "takeaway": ""
+    },
+    {
+      "title": "Votre identité repose sur une paire de clés",
+      "summary": "La clé publique identifie votre compte. La clé privée autorise des actions en son nom et doit rester secrète.",
+      "points": [
+        "Partagez votre npub, jamais votre clé privée.",
+        "Séparez travail, vie personnelle et participation anonyme avec des identités différentes."
+      ],
+      "body": "Les applications affichent souvent la clé publique sous forme de npub. La clé privée signe les événements de cette identité. Un nom peut changer ou être copié ; la clé publique continue d'identifier le compte. Vous pouvez créer des paires distinctes pour chaque contexte.",
+      "cta": "Gérer mes identités",
+      "takeaway": ""
+    },
+    {
+      "title": "Votre profil est une information que vous publiez",
+      "summary": "Nom, photo et biographie sont des informations publiées. Vous pouvez les modifier sans changer la clé publique du compte.",
+      "points": [
+        "Modifier le profil publie une nouvelle version signée.",
+        "Les noms peuvent se répéter : la clé publique distingue les comptes."
+      ],
+      "body": "Un événement de profil contient notamment le nom, la photo, la bannière et la biographie. Les applications compatibles peuvent trouver sa dernière version et l'afficher. Ces champs vous décrivent ; ils ne remplacent pas votre identité cryptographique.",
+      "cta": "Modifier et gérer mon profil",
+      "takeaway": ""
+    },
+    {
+      "title": "Chaque action possède un format commun",
+      "summary": "Profils, notes et réactions sont des événements signés. La signature vérifie l'auteur et l'intégrité, pas la vérité du contenu.",
+      "points": [
+        "Auteur, date, type, contenu et références font partie d'un événement.",
+        "Le type (kind) précise l'interprétation : profil 0, note 1, réaction 7."
+      ],
+      "body": "Les actions utilisent différents types d'événements. Une signature permet de vérifier quelle clé a signé et si les données ont changé. Sa validité ne prouve ni qu'une affirmation est vraie, ni que son auteur mérite votre confiance.",
+      "cta": "Voir le contenu d'un événement",
+      "takeaway": ""
+    },
+    {
+      "title": "Le parcours d'une publication",
+      "summary": "Vous écrivez dans une application. Le signataire signe. Les relais stockent. D'autres applications consultent et affichent.",
+      "points": [
+        "Les applications vérifient la signature avant d'afficher le contenu.",
+        "Signer et publier sont deux étapes distinctes."
+      ],
+      "body": "L'application prépare l'événement. Votre signataire l'autorise et le signe. L'application l'envoie à un ou plusieurs relais. D'autres clients les consultent, vérifient la signature et interprètent l'événement. Il peut apparaître dans plusieurs applications sans être réécrit.",
+      "cta": "Suivre le parcours d'un événement",
+      "takeaway": ""
+    },
+    {
+      "title": "Plusieurs relais apportent de la redondance",
+      "summary": "Si un relais refuse un événement ou cesse de fonctionner, d'autres peuvent continuer à fournir une copie. Aucun ne contrôle tout le réseau.",
+      "points": [
+        "Un relais peut refuser ce que d'autres acceptent.",
+        "Plusieurs copies aident, mais ne garantissent pas une conservation permanente."
+      ],
+      "body": "Les relais peuvent facturer, filtrer ou disparaître. Pour trouver un événement, les applications doivent savoir quels relais consulter. Plusieurs copies réduisent la dépendance à un fournisseur ; conserver votre propre archive reste utile.",
+      "cta": "Comprendre la résilience de Nostr",
+      "takeaway": ""
+    },
+    {
+      "title": "La même identité, plusieurs applications",
+      "summary": "Utilisez votre identité dans des applications compatibles. Chacune peut proposer une expérience différente avec les mêmes événements.",
+      "points": [
+        "Chaque application interprète les types qu'elle prend en charge.",
+        "Se connecter ne relie pas automatiquement un portefeuille et n'autorise aucun paiement."
+      ],
+      "body": "Vous pouvez conserver votre identité en changeant d'expérience. Publications et relations disponibles sont réutilisables si les applications comprennent leurs formats et les trouvent sur les relais. La compatibilité varie ; les paiements demandent des autorisations séparées.",
+      "cta": "",
+      "takeaway": ""
+    },
+    {
+      "title": "Ce qui change avec Nostr",
+      "summary": "Votre identité ne dépend plus d'une seule application. Choisissez d'autres clients, relais et filtres sans recréer votre identité.",
+      "points": [
+        "Une clé identifie votre compte, plutôt que l'autorisation d'une plateforme.",
+        "Vous choisissez clients, relais et filtres ; les sauvegardes restent importantes."
+      ],
+      "body": "Les formats communs permettent de lire des événements créés ailleurs. Les relais les distribuent ; en utiliser plusieurs limite la dépendance à un seul. La portabilité dépend toujours des types compatibles et de la possibilité de retrouver les relais contenant vos données.",
+      "cta": "Découvrir les avantages et les limites",
+      "takeaway": ""
+    },
+    {
+      "title": "Un réseau ouvert a aussi besoin de filtres",
+      "summary": "Une signature identifie la clé qui a publié. Décider qui écouter exige davantage de contexte.",
+      "points": [
+        "Une identité valide peut aussi envoyer du spam ou tenter de vous tromper.",
+        "La question passe de « qui a signé ? » à « pourquoi l'écouter ? »."
+      ],
+      "body": "Chacun peut créer une identité sans permission. Cette ouverture facilite aussi les robots, le spam et l'imitation visuelle des profils. Les signatures établissent l'auteur ; le contexte social aide à choisir les sources qui méritent votre attention.",
+      "cta": "Comprendre les signaux de confiance",
+      "takeaway": ""
+    },
+    {
+      "title": "Web of Trust : la confiance part de votre réseau",
+      "summary": "Les personnes que vous suivez sont le point de départ. Leurs liens et les chemins communs apportent des signaux de confiance.",
+      "points": [
+        "Un saut : une personne suivie. Deux sauts : une personne suivie par vos contacts.",
+        "Plus de chemins apportent du contexte, sans garantir l'honnêteté."
+      ],
+      "body": "Le réseau de confiance utilise les relations sociales pour découvrir des personnes et filtrer le contenu. Distance et chemins multiples révèlent des liens avec votre réseau. Celui-ci peut aussi se tromper ou être manipulé : ce sont des signaux, pas des garanties.",
+      "cta": "Explorer le réseau de confiance",
+      "takeaway": ""
+    },
+    {
+      "title": "Vous choisissez qui écouter",
+      "summary": "Suivez des personnes, explorez les liens et masquez ce que vous ne souhaitez pas voir. Vos filtres peuvent différer de ceux des autres.",
+      "points": [
+        "Les abonnements construisent le réseau ; le masquage adapte votre expérience.",
+        "Vos préférences n'effacent pas les contenus et n'imposent rien aux autres."
+      ],
+      "body": "La liste des personnes suivies constitue le départ des filtres de confiance. Le masquage cache des comptes ou des contenus dans votre expérience sans supprimer leurs événements de tous les relais. Vous et votre application choisissez comment utiliser ces signaux.",
+      "cta": "Configurer mes filtres",
+      "takeaway": ""
+    },
+    {
+      "title": "Pourquoi Nostr WoT ?",
+      "summary": "Nostr fournit le protocole. Nostr WoT réunit identité, signature, permissions, connexions et confiance pour en faciliter l'usage.",
+      "points": [
+        "Gérez identités et permissions au même endroit pour vos applications.",
+        "Explorez la confiance sans remettre votre identité à une plateforme."
+      ],
+      "body": "Utiliser Nostr implique clés, relais, signatures et autorisations. Nostr WoT rassemble ces tâches dans une extension avec des contrôles plus clairs pour plusieurs applications. Votre identité reste une identité Nostr, indépendante de cette interface.",
+      "cta": "Voir les fonctions de l'extension",
+      "takeaway": ""
+    },
+    {
+      "title": "Une identité, plusieurs façons de l'utiliser",
+      "summary": "Créez ou importez un compte, puis choisissez un coffre local, une passkey dans les parcours compatibles ou un signataire distant.",
+      "points": [
+        "Choisissez l'identité utilisée par chaque site.",
+        "Un accès pratique exige aussi un plan de récupération."
+      ],
+      "body": "Vous pouvez gérer plusieurs identités et choisir un compte par site. La signature peut se faire dans un coffre local ou via un signataire distant. Les passkeys simplifient les parcours compatibles ; préparez une récupération adaptée au mode de création du compte.",
+      "cta": "Créer un compte avec une passkey",
+      "takeaway": ""
+    },
+    {
+      "title": "Se connecter n'autorise pas tout",
+      "summary": "Choisissez les actions permises à chaque site et l'identité utilisée. Vérifiez et révoquez les autorisations.",
+      "points": [
+        "Vérifiez le site, le compte et l'action avant d'approuver.",
+        "Connaître votre clé publique ne donne pas un droit illimité de signature."
+      ],
+      "body": "Nostr WoT propose des règles globales et par site. Un site demandant votre clé publique n'a pas forcément besoin de signer tous les types d'événements. Lisez les demandes, limitez l'accès au nécessaire et révoquez les permissions devenues inutiles.",
+      "cta": "Configurer les permissions par site",
+      "takeaway": ""
+    },
+    {
+      "title": "Publier, étape par étape",
+      "summary": "L'application prépare un événement. Vous autorisez sa signature. Elle publie ensuite l'événement signé sur les relais.",
+      "points": [
+        "Lisez l'action avant d'autoriser la signature.",
+        "Une fois publié, l'événement peut être trouvé et affiché par les applications compatibles."
+      ],
+      "body": "Écrivez une note ou modifiez votre profil dans une application compatible. Elle construit un événement et demande une signature. Après approbation, elle le publie. Signature et publication restent deux opérations différentes, même si l'interface les regroupe.",
+      "cta": "Publier ma première note",
+      "takeaway": ""
+    },
+    {
+      "title": "Les standards relient les éléments",
+      "summary": "Les NIPs sont des spécifications communes pour faire fonctionner ensemble applications, extensions, relais et signataires.",
+      "points": [
+        "Nostr Connect (NIP-46) : demandes de signature à distance.",
+        "NWC (NIP-47) : demandes au portefeuille avec des permissions indépendantes."
+      ],
+      "body": "NIP-07 décrit l'interface entre un site et une extension pour les clés publiques et signatures. NIP-46 transmet les demandes à un signataire distant. NIP-47 relie applications et portefeuilles. Les deux côtés doivent prendre en charge le standard ; une connexion n'autorise pas les paiements.",
+      "cta": "Consulter les standards compatibles",
+      "takeaway": ""
+    },
+    {
+      "title": "L'extension peut aussi servir de pont",
+      "summary": "Un site demande signatures ou paiements via des interfaces connues. Nostr WoT peut transmettre ces demandes au signataire ou au portefeuille.",
+      "points": [
+        "La clé privée reste chez le signataire ; l'application reçoit le résultat.",
+        "Connecter un portefeuille exige une autorisation distincte de la connexion au compte."
+      ],
+      "body": "Nostr Connect permet de demander une signature sans recevoir votre clé privée. Nostr Wallet Connect permet de demander des opérations autorisées au portefeuille. Nostr WoT relie les interfaces du navigateur à ces outils en séparant les permissions.",
+      "cta": "Connecter un signataire distant",
+      "takeaway": ""
+    },
+    {
+      "title": "Zaps et paiements : choisissez votre portefeuille",
+      "summary": "Connectez un portefeuille compatible. NWC permet des opérations autorisées et, selon le portefeuille, des budgets par connexion.",
+      "points": [
+        "Un zap associe un paiement Lightning à une identité ou publication.",
+        "Les budgets dépendent du portefeuille ; NWC ne définit pas la garde des fonds."
+      ],
+      "body": "Les zaps expriment un soutien par un paiement Lightning. Avec NWC, un portefeuille peut proposer permissions et budgets par application, comme des enveloppes de dépenses. Le portefeuille détermine qui conserve les fonds. L'application n'a pas besoin de contrôler tout le solde.",
+      "cta": "Connecter des applications à mon portefeuille",
+      "takeaway": ""
+    },
+    {
+      "title": "Backup & Archive : protégez deux choses distinctes",
+      "summary": "Sauvegardez l'accès à votre identité et conservez vos événements. L'une de ces tâches ne remplace pas l'autre.",
+      "points": [
+        "Récupération : le nécessaire pour retrouver l'accès aux clés.",
+        "Archive : votre historique, conservé ou envoyé à un autre relais."
+      ],
+      "body": "La récupération dépend de la création du compte. Une archive garde publications et événements signés pour les conserver ou les republier. Verrouiller l'extension ne crée pas de sauvegarde. Une archive d'événements ne récupère pas une clé privée perdue.",
+      "cta": "Apprendre à archiver mes événements",
+      "takeaway": ""
+    },
+    {
+      "title": "Essayez un parcours guidé",
+      "summary": "Connectez une identité, modifiez votre profil, suivez des personnes, explorez le réseau et publiez une première note.",
+      "points": [
+        "Essayez profils, contacts, publications et graphe de confiance.",
+        "Un compte temporaire peut aussi publier du contenu public persistant."
+      ],
+      "body": "Connectez votre identité ou utilisez un compte temporaire. Essayez de suivre, publier, réagir, explorer des applications et archiver. Choisissez une identité de test si vous ne voulez pas lier l'activité à votre compte habituel. Les événements publics peuvent rester sur les relais.",
+      "cta": "Ouvrir le parcours guidé",
+      "takeaway": ""
+    },
+    {
+      "title": "Choisissez la prochaine étape",
+      "summary": "Installez l'extension, lisez un guide, explorez votre réseau ou entraînez-vous.",
+      "points": [],
+      "body": "Pour commencer, ouvrez le parcours guidé. Si vous utilisez déjà Nostr, revoyez permissions et récupération, ou explorez votre réseau dans le playground. Choisissez selon ce que vous souhaitez apprendre ensuite.",
+      "cta": "",
+      "takeaway": ""
+    },
+    {
+      "title": "Pour approfondir",
+      "summary": "Continuez avec les guides Nostr WoT et les spécifications ouvertes qui relient les éléments.",
+      "points": [],
+      "body": "Les guides expliquent les concepts et les usages. Les NIPs décrivent les formats et messages implémentés. Commencez par les guides pour utiliser l'extension ; consultez les spécifications pour développer une intégration et vérifiez la compatibilité des deux côtés.",
+      "cta": "",
+      "takeaway": ""
+    },
+    {
+      "title": "Restons en contact",
+      "summary": "Une question, un atelier à organiser ou une intégration à construire ? Parlons-en.",
+      "points": [],
+      "body": "Utilisez le formulaire de contact pour l'assistance, les ateliers, les demandes de presse et les collaborations. Vous pouvez aussi explorer les projets et signaler des problèmes sur GitHub.",
+      "cta": "",
+      "takeaway": ""
+    }
+  ],
+  "ui": {
+    "nav": [
+      "Précédent",
+      "Suivant",
+      "Diapositives",
+      "Plus d'informations sur cette diapositive",
+      "Fermer",
+      "Choisissez une diapositive",
+      "Pour approfondir",
+      "Tutoriel de navigation",
+      "Langue",
+      "Navigation des diapositives",
+      "Ouvrir la ressource associée"
+    ],
+    "tour": [
+      [
+        "Chaque diapositive en dit davantage",
+        "Touchez la bulle « i » en bas à droite pour ouvrir explications, exemples et ressources associées."
+      ],
+      [
+        "Avancez à votre rythme",
+        "Cliquez sur Précédent ou Suivant, ou utilisez les flèches ← et → du clavier. Sur téléphone, vous pouvez aussi balayer latéralement."
+      ],
+      [
+        "Accédez directement à un sujet",
+        "Ouvrez le sélecteur pour parcourir le sommaire et choisir une diapositive. Relancez ce tutoriel avec le bouton « ? »."
+      ]
+    ],
+    "tourButtons": [
+      "Fermer le tutoriel",
+      "Passer",
+      "Retour",
+      "Suivant",
+      "Compris"
+    ],
+    "resources": [
+      [
+        "Obtenir l'extension",
+        "Installation et options"
+      ],
+      [
+        "Guides pas à pas",
+        "Apprendre à votre rythme"
+      ],
+      [
+        "Explorer votre réseau",
+        "Ouvrir le playground"
+      ],
+      [
+        "Pratiquer",
+        "Ateliers et activités"
+      ],
+      [
+        "Qu'est-ce que Nostr ?",
+        "Protocole et identité"
+      ],
+      [
+        "Réseau de confiance",
+        "Liens et filtres"
+      ],
+      [
+        "Standards Nostr",
+        "Spécifications NIP"
+      ],
+      [
+        "Nostr Wallet Connect",
+        "Applications et portefeuilles"
+      ],
+      [
+        "Contacter l'équipe",
+        "Assistance, ateliers et collaboration"
+      ],
+      [
+        "Nostr WoT sur GitHub",
+        "Projets et communauté"
+      ]
+    ]
+  }
+}
