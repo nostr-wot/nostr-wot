@@ -39,3 +39,11 @@ The article is Nostr-eligible after verified live publication. LinkedIn is inten
 The [English article](https://nostrwot.com/news/2026-11-03/amethyst-1-21-napplets-and-web-of-trust) and [Spanish article](https://nostrwot.com/es/news/2026-11-03/amethyst-1-21-napplets-y-web-de-confianza) were opened after deployment and rendered their localized title, publication date, article body, illustration and primary-source links. The [Amethyst directory record](https://nostrwot.com/projects/amethyst) rendered v1.21.0, the 1 November release date and the 3 November evidence refresh.
 
 Nostr is live and queued, but `data/social-posted.json` has no receipt for this slug yet. The existing hosted sender remains authoritative; no manual or uncertain dispatch was attempted. LinkedIn remains intentionally ineligible. No email, subscriber, newsletter or schedule action was taken.
+
+## Receipt reconciliation and alternate-week checkpoint (2026-11-10T08:59:24Z)
+
+The durable social ledger now confirms Nostr delivery at 2026-11-03T10:51:14.893Z with receipt [nevent1qy28…zerf50j42ng](https://njump.me/nevent1qy28wumn8ghj7un9d3shjtnyv9kh2uewd9hszrthwden5te0dehhxtnvdakqqg88c3n3kwwjg6y8crgsvc4fzxest6gq34f2hpada50qcqadmzerf50j42ng). No sender retry or workflow dispatch was performed. LinkedIn remains intentionally ineligible because Amethyst is a third-party client and ecosystem project.
+
+10 November is the expected alternate Tuesday in the fortnightly cadence anchored 8 September. No new ecosystem research issue, directory change, article, illustration, social copy or delivery attempt was created. The next eligible ecosystem slot is 17 November 2026.
+
+Newsletter preparation and delivery systems were untouched. No subscribers, mail credentials, preview or sender workflow, sent archive, email, social announcement or schedule setting was accessed. Newsletter delivery remains blocked pending fresh authorization.
