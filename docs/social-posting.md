@@ -76,7 +76,7 @@ added.
 | Path | Job |
 |---|---|
 | `social/<slug>.json` | The copy: `{"linkedin": "...", "x": "...", "xThread": [...], "nostr": "..."}`. At least one supported copy field is required: `nostr` or `linkedin`. LinkedIn is sent only with the explicit eligibility fields above. |
-| `scripts/social/entries.mjs` | Reads entries, joins them to the article they name, derives URLs, builds request bodies. Shared by the scripts below. |
+| `scripts/social/entries.mjs` | Reads entries, joins them to an article or a registered static route, derives URLs, and builds request bodies. Shared by the scripts below. |
 | `scripts/social/checks.mjs` | The house rules, as `collectErrors()`. Used by the linter **and** by the poster, so the two cannot drift. |
 | `scripts/social/lint-social.mjs` | `npm run social:lint`, a CLI over `checks.mjs`. Wired into `.github/workflows/ci.yml` on pull requests and pushes to `main`. |
 | `scripts/social/post-social.mjs` | `npm run social:post`, with `--dry-run`. Run by `.github/workflows/social.yml`. |
@@ -102,6 +102,8 @@ differences, both structural:
 
 `date` orders the batch, `publishedAt` supplies the URL date, and `type` (`story` or `digest`) is carried for reporting.
 
+A substantive published static resource can use `"collection": "static"`, a `path` registered in `lib/sitemap-routes.mjs`, and an explicit `publishedAt` date. The sender rejects unregistered paths and malformed dates. This is for first-party resources such as `/deck`, not a way to bypass article or guide routing.
+
 **Copy is English only**, even though every article ships in seven locales. The
 social accounts post in one language, so the derived link is the English one,
 which for the default locale takes no locale prefix
@@ -115,7 +117,7 @@ other than the end; otherwise it is appended on its own line by `withUrl()`. A
 second link uses `{url:/path}`, and a `/news/`, `/blog/` or `/guides/` path is
 checked against the files on disk.
 
-## 5. Post when the article is actually live, not when the commit lands
+## 5. Post when the resource is actually live, not when the commit lands
 
 Before posting, `post-social.mjs` fetches the derived URL and requires a `200`.
 "The commit landed on `main`" and "the site is serving the page" are different
@@ -140,7 +142,7 @@ lint" step). It enforces:
   followed by a blank line, and a closing block of 2 to 5 CamelCase hashtags
   with a `{url}` placed above them.
 - No hard-coded links, no unknown fields, no copy file that cannot be joined to
-  an article.
+  an article, guide, blog post or registered static route.
 
 **The rules live in `checks.mjs`, and both entry points use them.** This matters
 because the newsroom path does not go through a pull request: an article and its
