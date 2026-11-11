@@ -195,10 +195,10 @@ export function collectErrors() {
   for (const { path, data, url } of entries) {
     const rel = relative(ROOT, path);
 
-    const unknown = Object.keys(data).filter((k) => !["collection", "linkedinCategory", "linkedinReason"].includes(k) && !KNOWN_CHANNELS.includes(k));
+    const unknown = Object.keys(data).filter((k) => !["collection", "path", "publishedAt", "linkedinCategory", "linkedinReason"].includes(k) && !KNOWN_CHANNELS.includes(k));
     if (unknown.length) {
       errors.push(
-        `${rel}: unknown field(s) ${unknown.join(", ")}. Known fields: collection, linkedinCategory, linkedinReason, ${KNOWN_CHANNELS.join(", ")}.`,
+        `${rel}: unknown field(s) ${unknown.join(", ")}. Known fields: collection, path, publishedAt, linkedinCategory, linkedinReason, ${KNOWN_CHANNELS.join(", ")}.`,
       );
     }
 
