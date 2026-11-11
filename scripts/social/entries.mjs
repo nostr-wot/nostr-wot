@@ -30,6 +30,7 @@ import { join } from "node:path";
 import matter from "gray-matter";
 import { eligibleChannelKeys } from "./channel-policy.mjs";
 import { newsPath } from "../../lib/news-path.mjs";
+import { routes as staticRoutes } from "../../lib/sitemap-routes.mjs";
 
 export const ROOT = new URL("../..", import.meta.url).pathname;
 export const SOCIAL_DIR = join(ROOT, "social");
@@ -64,6 +65,7 @@ export const SUPPORTED_CHANNELS = ["linkedin", "nostr"];
 
 /** Site routes a copy file may link to with `{url:/path}`, for the existence check. */
 export const LINKABLE_COLLECTIONS = ["news", "blog", "guides"];
+export const STATIC_COLLECTION = "static";
 
 /**
  * YAML dates come back as a string when quoted (which the playbook's
@@ -170,6 +172,28 @@ export function buildEntries() {
   const entries = [];
   for (const { slug, path, data } of listSocialFiles()) {
     const collection = data.collection ?? "news";
+    if (collection === STATIC_COLLECTION) {
+      const routePath = typeof data.path === "string" ? data.path.replace(/\/$/, "") || "/" : "";
+      const publishedAt = toDateString(data.publishedAt);
+      if (!staticRoutes.some((route) => route.path === routePath)) {
+        errors.push(`social/${slug}.json: static path ${JSON.stringify(data.path)} is not registered in lib/sitemap-routes.mjs`);
+        continue;
+      }
+      if (!/^\d{4}-\d{2}-\d{2}$/.test(publishedAt)) {
+        errors.push(`social/${slug}.json: static entries require publishedAt as YYYY-MM-DD`);
+        continue;
+      }
+      entries.push({
+        slug,
+        path,
+        data,
+        date: publishedAt,
+        publishedAt,
+        type: "static",
+        url: `${BASE_URL}${routePath === "/" ? "" : routePath}`,
+      });
+      continue;
+    }
     if (!LINKABLE_COLLECTIONS.includes(collection)) {
       errors.push(`social/${slug}.json: unsupported collection ${collection}`);
       continue;

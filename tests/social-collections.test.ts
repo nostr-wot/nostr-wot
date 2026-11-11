@@ -11,6 +11,15 @@ test('guide social copy resolves the guide URL, never the news URL', () => {
 test('default collection preserves existing news routing', () => {
   for (const entry of loadNewsIndex().values()) assert.match(entry.url, /^https:\/\/nostrwot.com\/news\//);
 });
+test('registered static resource copy resolves its canonical route', () => {
+  const {entries, errors} = buildEntries();
+  assert.deepEqual(errors, []);
+  const deck = entries.find((e: {slug: string}) => e.slug === 'deck');
+  assert.equal(deck?.url, 'https://nostrwot.com/deck');
+  assert.equal(deck?.publishedAt, '2026-11-09');
+  assert.equal(deck?.type, 'static');
+});
+
 test('unrecognized collections cannot read arbitrary paths', () => {
   assert.throws(() => loadNewsIndex('../../'), /Unsupported social collection/);
 });
