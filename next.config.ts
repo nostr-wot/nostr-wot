@@ -67,6 +67,10 @@ const nextConfig: NextConfig = {
   async rewrites() {
     return {
       beforeFiles: [
+        {
+          source: "/.well-known/nostr.json",
+          destination: "https://zaps.nostr-wot.com/.well-known/nostr.json",
+        },
         // Lightning Address aliases share the zap service's username ownership,
         // metadata and callback, so both domains receive into the same wallet.
         {
