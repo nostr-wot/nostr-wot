@@ -1,7 +1,8 @@
 'use client';
 import {useCallback,useEffect,useRef,useState} from 'react';
 import {finalizeEvent,generateSecretKey,getPublicKey,nip19,verifyEvent,type Event,type EventTemplate} from 'nostr-tools';
-import {BunkerSigner,createNostrConnectURI} from 'nostr-tools/nip46';
+import {BunkerSigner} from 'nostr-tools/nip46';
+import {Nip46Signer} from 'nostr-connect-sdk/signers';
 import {QRCodeSVG} from 'qrcode.react';
 import {Button,Card,Input,TextArea,Modal,AccordionList} from '@/components/ui';
 import AnimatedWotLogo from '@/components/icons/AnimatedWotLogo';
@@ -46,7 +47,7 @@ export default function LabWorkshop(){
  const [session,setSession]=useState<Session>(),[step,setStep]=useState(0),[completed,setCompleted]=useState<number[]>([]),[busy,setBusy]=useState(false),[status,setStatus]=useState(''),[profile,setProfile]=useState<Profile>({}),[profileEvent,setProfileEvent]=useState<Event>(),[notes,setNotes]=useState<Event[]>([]),[following,setFollowing]=useState<Event>(),[profiles,setProfiles]=useState<Record<string,Profile>>({}),[relays,setRelays]=useState(DEFAULT_RELAYS),[relayInput,setRelayInput]=useState(DEFAULT_RELAYS.join('\n'));
  const [modal,setModal]=useState(''),[menu,setMenu]=useState(false),[edit,setEdit]=useState<Profile>({}),[photo,setPhoto]=useState<File>(),[banner,setBanner]=useState<File>(),[photoConsent,setPhotoConsent]=useState(false),[note,setNote]=useState(''),[pending,setPending]=useState<EventTemplate>(),[signed,setSigned]=useState<Event>(),[receipts,setReceipts]=useState<Report[]>([]),[published,setPublished]=useState(false),[tour,setTour]=useState(0),[extension,setExtension]=useState(false),[device,setDevice]=useState('desktop'),[bunker,setBunker]=useState(''),[pairURI,setPairURI]=useState(''),[authURL,setAuthURL]=useState(''),[networkExtra,setNetworkExtra]=useState(true),[technicalText,setTechnicalText]=useState('Hola, LABITCONF'),[technicalEvent,setTechnicalEvent]=useState<Event>();
  const [bunkerError,setBunkerError]=useState(''),[pairCopied,setPairCopied]=useState(false);
- const current=useRef<Session|undefined>(undefined),requestEpoch=useRef(0),pairAbort=useRef<AbortController|undefined>(undefined),remote=useRef<BunkerSigner|undefined>(undefined),busyRef=useRef(false);
+ const current=useRef<Session|undefined>(undefined),requestEpoch=useRef(0),pairAbort=useRef<AbortController|undefined>(undefined),remote=useRef<Signer|undefined>(undefined),busyRef=useRef(false);
  const mergeProfiles=useCallback((p:Record<string,Profile>)=>setProfiles(old=>({...old,...p})),[]);
  function working(v:boolean){busyRef.current=v;setBusy(v)}
  const close=useCallback(()=>{if(!busyRef.current){setModal('');pairAbort.current?.abort();setPairURI('');closeSigner(remote.current);remote.current=undefined}},[]);
@@ -70,12 +71,17 @@ export default function LabWorkshop(){
  setBunkerError('');setPairCopied(false);
  pairAbort.current?.abort();closeSigner(remote.current);remote.current=undefined;
  const abort=new AbortController();pairAbort.current=abort;const epoch=++requestEpoch.current;
- let signer:BunkerSigner|undefined,timer:ReturnType<typeof setTimeout>|undefined;const secret=generateSecretKey();let connected=false;
+ let signer:Signer|undefined,timer:ReturnType<typeof setTimeout>|undefined;const secret=generateSecretKey();let connected=false;
  working(true);setStatus('Esperando tu aprobación en el firmante…');setAuthURL('');if(!create)setPairURI('');
  try{
  const onauth=(url:string)=>{if(epoch!==requestEpoch.current)return;const safe=imageURL(url);if(safe)setAuthURL(safe)};
- if(create){const uri=createNostrConnectURI({clientPubkey:getPublicKey(secret),relays,secret:crypto.randomUUID(),name:'Nostr WoT · LABITCONF',url:location.origin,perms:['get_public_key','sign_event']});setPairURI(uri);signer=await BunkerSigner.fromURI(secret,uri,{onauth},abort.signal)}
- else{if(!pointer)return;signer=BunkerSigner.fromBunker(secret,pointer,{onauth});remote.current=signer;await Promise.race([signer.connect(),new Promise((_,reject)=>{timer=setTimeout(()=>reject(Error('La conexión venció. Volvé a intentar.')),120000)})])}
+ if(create){
+   const handle=Nip46Signer.startNostrConnect({relays,clientSecretKey:secret,perms:'get_public_key,sign_event',metadata:{name:'Nostr WoT · LABITCONF',url:location.origin},pairTimeoutMs:120000,onAuthChallenge:onauth});
+   abort.signal.addEventListener('abort',handle.cancel,{once:true});
+   setPairURI(handle.uri);
+   try{signer=await handle.ready}finally{abort.signal.removeEventListener('abort',handle.cancel)}
+ }
+ else{if(!pointer)return;const bunkerSigner=BunkerSigner.fromBunker(secret,pointer,{onauth});signer=bunkerSigner;remote.current=signer;await Promise.race([bunkerSigner.connect(),new Promise((_,reject)=>{timer=setTimeout(()=>reject(Error('La conexión venció. Volvé a intentar.')),120000)})])}
  if(epoch!==requestEpoch.current||abort.signal.aborted)return;remote.current=signer;
  const pubkey=await signer.getPublicKey();if(epoch!==requestEpoch.current||abort.signal.aborted)return;if(!/^[a-f0-9]{64}$/.test(pubkey))throw Error('Clave pública inválida');
  const s:Session={pubkey,signer,mode:'mobile',dispose:()=>secret.fill(0)};connected=true;current.current=s;remote.current=undefined;setSession(s);setProfile({});setCompleted([]);setStep(0);setModal('');setStatus('');setPairURI('');localStorage.removeItem(resumeKey);void loadAccount(s).catch(fail)
