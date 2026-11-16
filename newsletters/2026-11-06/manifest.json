@@ -126,13 +126,32 @@
     "template": "Authored bodies use headings, paragraphs and HTTPS links accepted by brand-v1.",
     "noEmDash": true,
     "evidenceWindowExact": true,
-    "hostedCI": "Required on the exact committed tree before merge.",
-    "archiveSafety": "Preparation files do not create sent archive records. Newsletter workflows remain undispatched."
+    "hostedCI": {
+      "status": "passed",
+      "head": "eb474cdf9369a1394816eca61ba925594e37c7e2",
+      "run": "https://github.com/nostr-wot/nostr-wot/actions/runs/43400556683",
+      "checks": [
+        "typecheck",
+        "unit tests",
+        "workshop lab tests",
+        "cache generator parity",
+        "social copy lint",
+        "production build",
+        "rendered sitemap, metadata, JSON-LD and preview-image audit"
+      ]
+    },
+    "archiveSafety": "Preparation files do not create sent archive records. Newsletter workflows remain undispatched.",
+    "merge": {
+      "pullRequest": "https://github.com/nostr-wot/nostr-wot/pull/156",
+      "commit": "dcd3b052082f91ccb9b0dfa03f9c1096a195d14e",
+      "postMergeWorkflows": "none triggered",
+      "deliverySafety": "No newsletter sender, preview sender, social announcement or sent-archive workflow ran."
+    }
   },
   "outcome": {
-    "recordedAt": "2026-11-13T09:05:00Z",
-    "status": "pending",
-    "stage": "prepared-awaiting-hosted-ci",
-    "reason": "Recovered the oldest missing Friday preparation issue with seven authored editions and exact evidence. No subscriber, sender, preview, email, social announcement or sent archive operation was invoked."
+    "recordedAt": "2026-11-13T09:35:50Z",
+    "status": "prepared",
+    "stage": "prepared-merged",
+    "reason": "Recovered the oldest missing Friday preparation issue with seven authored editions and exact evidence. Scoped PR #156 passed exact-head hosted CI and merged. No post-merge workflow was triggered; no subscriber, sender, preview, email, social announcement or sent archive operation was invoked."
   }
 }
