@@ -1,0 +1,60 @@
+---
+title: "LNbits 1.7 reagiert auf die November-Angriffe mit einem Wiederherstellungsplan"
+description: "LNbits berichtet, dass Angriffe am 8. November alte Erweiterungen ausnutzten, Gelder stahlen und Dienste störten. Die Versionen 1.7.0 und 1.7.1 reagieren auf den Vorfall, doch Betreiber müssen Server und Zugangsdaten wiederherstellen."
+excerpt: "Das Projekt bestätigt die Ausnutzung mehrerer Installationen und warnt, dass ein Update allein einen bestehenden Zugriff nicht zwingend entfernt."
+date: "2026-11-16"
+publishedAt: "2026-11-17"
+backfilled: false
+type: "story"
+tags: ["Nostr","Lightning","Sicherheit","Ökosystem"]
+featuredImage: "/images/news/lnbits-1-7-security-incident-recovery.svg"
+translationKey: "lnbits-1-7-security-incident-recovery"
+sources:
+  - title: "Bericht zum Vorfall vom 8. November"
+    url: "https://news.lnbits.com/news/november-8th-incident-report"
+    publisher: "LNbits"
+    date: "2026-11-16"
+  - title: "Sicherheitsupdate und Anleitung zu LNbits 1.7.0"
+    url: "https://news.lnbits.com/news/lnbits-1-7-0-security-update"
+    publisher: "LNbits"
+    date: "2026-11-10"
+  - title: "LNbits v1.7.1 Sicherheitspatch"
+    url: "https://github.com/lnbits/lnbits/releases/tag/v1.7.1"
+    publisher: "lnbits/lnbits"
+    date: "2026-11-11"
+  - title: "Dringendes Update LNbits v1.7.0"
+    url: "https://github.com/lnbits/lnbits/releases/tag/v1.7.0"
+    publisher: "lnbits/lnbits"
+    date: "2026-11-10"
+published: true
+---
+
+[LNbits berichtet](https://news.lnbits.com/news/november-8th-incident-report), dass am 8. November 2026 mehrere Installationen angegriffen wurden. Die eigene Infrastruktur und Systeme der Community waren betroffen, Gelder wurden gestohlen, Dienste gestört und Instanzen offline genommen. Dies ist ein bestätigter ausgenutzter Vorfall, keine vorsorgliche Veröffentlichung.
+
+[Version 1.7.0](https://github.com/lnbits/lnbits/releases/tag/v1.7.0) erschien am 10. November, [Version 1.7.1](https://github.com/lnbits/lnbits/releases/tag/v1.7.1) am folgenden Tag. Die neuere Version rotiert Authentifizierungsschlüssel.
+
+## Was das Projekt bestätigt hat
+
+LNbits identifizierte Server-Side-Request-Forgery-Schwachstellen in mehreren älteren Python-Erweiterungen. Solche Fehler können einen Server dazu bringen, interne Dienste aufzurufen, die von außen nicht direkt erreichbar sind. Das Projekt fand außerdem Angriffe auf Erweiterungen, für die Korrekturen verfügbar, aber noch nicht installiert waren.
+
+In schweren Fällen gelangten Angreifer über LNbits hinaus und kompromittierten den Host-Server. Der Bericht beschreibt Zugriffe auf interne Dienste, die Suche nach Zugangsdaten und bösartige Python-Erweiterungen für einzelne Umgebungen. Das Projekt bestätigt gestohlene Gelder und Störungen, nennt aber keine Zahl der Betroffenen und veröffentlicht keinen vollständigen technischen Exploit-Bericht.
+
+LNbits bewertet die Aktivität als vereinbar mit autonomen KI-gesteuerten Angriffen, kann die verwendeten Werkzeuge jedoch nicht abschließend bestimmen. Die Ausnutzung ist bestätigt, die konkrete Automatisierungszuordnung bleibt eine Einschätzung des Projekts.
+
+## Warum Version 1.7.1 wichtig ist
+
+Die [Sicherheitsanleitung](https://news.lnbits.com/news/lnbits-1-7-0-security-update) nennt Versionen vor 1.7.0 als betroffen. Version 1.7.0 verbindet die Korrekturen des Vorfalls mit Änderungen an Authentifizierung, Erweiterungen und Zahlungen. Version 1.7.1 ergänzt die Schlüsselrotation.
+
+Öffentliche Registrierung ist nun standardmäßig deaktiviert. LNbits berichtet, dass Installationen mit deaktivierter Registrierung nicht über die identifizierten Wege eingedrungen wurden. Automatische Erweiterungsupdates sind verfügbar, und das Projekt verlagert Erweiterungen weiter vom breiten Python-Zugriff in enger begrenzte WebAssembly-Sandboxes.
+
+Diese Kontrollen verringern die Angriffsfläche, beweisen aber nicht, dass ein bereits kompromittierter Server sauber ist.
+
+## Wiederherstellung braucht mehr als ein Update
+
+Bei Verdacht empfiehlt LNbits einen neuen Server und das Sichern relevanter Protokolle vor dem Austausch. Ein Update auf derselben Maschine entfernt keinen bereits erlangten Zugriff.
+
+Der Plan verlangt die Rotation von Benutzerschlüsseln, Zugangsdaten der Finanzierungsquelle und weiteren Geheimnissen. Erweiterungsverbindungen sollen widerrufen und neu erstellt werden. Verbundene Anwendungen brauchen danach eine neue Konfiguration.
+
+Vor dem Update offengelegte Zugangsdaten gelten weiterhin als offengelegt. Bei Nostr-Integrationen wie NWC Provider und LNDHub gehören alte Verbindungen zum Wiederherstellungsumfang.
+
+Diese Prüfung stützt sich auf den Bericht, die Anleitung und die veröffentlichten Versionen. Sie hat keine betroffenen Server untersucht, keine Schwachstellen reproduziert und die Zuschreibung KI-gesteuerter Aktivität nicht validiert.
