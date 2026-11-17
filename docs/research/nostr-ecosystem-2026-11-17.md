@@ -29,8 +29,17 @@ Nostur v1.35.0, Snort v0.5.6, Amber 7.0.0 prereleases and several other tagged r
 
 No relevant ecosystem issue or open PR existed for this window. Open PRs #67 and #61 are unrelated. The prior Amethyst Nostr receipt remains untouched.
 
-The new article is eligible for Nostr only after verified live publication. LinkedIn is intentionally ineligible because this is third-party ecosystem news, not a Nostr WoT platform or team announcement. No sender, email, subscriber, newsletter or schedule action was taken.
+The article is live and eligible for the existing Nostr queue. No durable Nostr receipt exists yet, so delivery remains unconfirmed and no retry was attempted. LinkedIn is intentionally ineligible because this is third-party ecosystem news, not a Nostr WoT platform or team announcement. No sender, email, subscriber, newsletter or schedule action was taken.
 
 ## Publication state
 
-Scoped PR, exact-head checks, production deployment and live-page verification are pending.
+Published through [PR #163](https://github.com/nostr-wot/nostr-wot/pull/163), merged as `4091ec0ff17777a37ed4b6851e121ece19422171`. Exact-head [PR CI 44053933765](https://github.com/nostr-wot/nostr-wot/actions/runs/44053933765) passed typecheck, unit and workshop tests, cache parity, social lint, the production build and rendered-site audits. Post-merge [CI and deployment 44055903901](https://github.com/nostr-wot/nostr-wot/actions/runs/44055903901) passed on the committed tree.
+
+Verified live pages:
+
+- [English article](https://nostrwot.com/news/2026-11-17/lnbits-1-7-security-incident-recovery)
+- [Spanish article](https://nostrwot.com/es/news/2026-11-17/lnbits-1-7-incidente-seguridad-recuperacion)
+- [English LNbits directory](https://nostrwot.com/projects/lnbits)
+- [Spanish LNbits directory](https://nostrwot.com/es/projects/lnbits)
+
+Both article routes expose localized canonical metadata, NewsArticle and breadcrumb JSON-LD, primary citations and the inspected illustration. Both directory routes show the 17 November evidence, v1.7.1 and the confirmed incident report. Nostr is live and queued without a durable receipt. LinkedIn remains intentionally ineligible.
