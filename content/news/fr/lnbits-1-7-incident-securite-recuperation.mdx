@@ -1,0 +1,60 @@
+---
+title: "LNbits 1.7 répond aux attaques de novembre avec un plan de récupération"
+description: "LNbits affirme que les attaques du 8 novembre ont exploité d’anciennes extensions, volé des fonds et interrompu des services. Les versions 1.7.0 et 1.7.1 répondent à l’incident, mais les opérateurs doivent encore récupérer serveurs et identifiants."
+excerpt: "Le projet a confirmé une exploitation sur plusieurs installations et avertit qu’une mise à jour seule ne supprime pas nécessairement une compromission existante."
+date: "2026-11-16"
+publishedAt: "2026-11-17"
+backfilled: false
+type: "story"
+tags: ["Nostr","Lightning","Sécurité","Écosystème"]
+featuredImage: "/images/news/lnbits-1-7-security-incident-recovery.svg"
+translationKey: "lnbits-1-7-security-incident-recovery"
+sources:
+  - title: "Rapport sur l’incident du 8 novembre"
+    url: "https://news.lnbits.com/news/november-8th-incident-report"
+    publisher: "LNbits"
+    date: "2026-11-16"
+  - title: "Mise à jour de sécurité et guide LNbits 1.7.0"
+    url: "https://news.lnbits.com/news/lnbits-1-7-0-security-update"
+    publisher: "LNbits"
+    date: "2026-11-10"
+  - title: "Correctif de sécurité LNbits v1.7.1"
+    url: "https://github.com/lnbits/lnbits/releases/tag/v1.7.1"
+    publisher: "lnbits/lnbits"
+    date: "2026-11-11"
+  - title: "Mise à jour urgente LNbits v1.7.0"
+    url: "https://github.com/lnbits/lnbits/releases/tag/v1.7.0"
+    publisher: "lnbits/lnbits"
+    date: "2026-11-10"
+published: true
+---
+
+[LNbits indique](https://news.lnbits.com/news/november-8th-incident-report) que plusieurs installations ont été attaquées le 8 novembre 2026. Sa propre infrastructure et des systèmes exploités par la communauté ont été touchés, avec des fonds volés, des services interrompus et des instances mises hors ligne. Il s’agit d’un incident exploité et confirmé, pas d’une simple mesure préventive.
+
+La [version 1.7.0](https://github.com/lnbits/lnbits/releases/tag/v1.7.0) a été publiée le 10 novembre et la [version 1.7.1](https://github.com/lnbits/lnbits/releases/tag/v1.7.1) le lendemain. Cette dernière effectue une rotation des clés d’authentification.
+
+## Ce que le projet a confirmé
+
+LNbits a identifié des failles de falsification de requêtes côté serveur dans plusieurs anciennes extensions Python. Ce type de faille peut amener un serveur à contacter des services internes qu’un acteur extérieur ne pourrait pas atteindre directement. Le projet a aussi constaté des attaques contre des extensions dont les correctifs existaient mais n’avaient pas été installés.
+
+Dans les cas les plus graves, les attaquants ont dépassé LNbits et compromis le serveur hôte. Le rapport décrit des tentatives d’accès à des services internes, la recherche d’identifiants et des extensions Python malveillantes adaptées aux environnements ciblés. Le projet confirme le vol de fonds et les perturbations, sans publier de nombre de victimes ni de rapport technique complet.
+
+LNbits estime que l’activité était compatible avec des attaques autonomes assistées par IA, mais ne peut pas identifier de façon concluante les outils employés. L’exploitation est confirmée, tandis que l’attribution précise de l’automatisation reste une évaluation du projet.
+
+## Pourquoi la version 1.7.1 compte
+
+Le [guide de sécurité](https://news.lnbits.com/news/lnbits-1-7-0-security-update) précise que les versions antérieures à 1.7.0 sont concernées. La version 1.7.0 associe les corrections de l’incident à des changements d’authentification, de gestion des extensions et de paiements. La 1.7.1 ajoute la rotation des clés.
+
+L’inscription publique est maintenant désactivée par défaut. LNbits indique que les installations où elle était désactivée n’ont pas été pénétrées par les chemins identifiés. Les mises à jour automatiques des extensions sont disponibles et le projet poursuit la migration de l’accès étendu de Python vers des environnements WebAssembly plus limités.
+
+Ces contrôles réduisent l’exposition, mais ne prouvent pas qu’un serveur déjà compromis est sain.
+
+## La récupération dépasse la mise à jour
+
+LNbits conseille un nouveau serveur en cas de suspicion et demande de conserver les journaux utiles avant de remplacer l’ancien système. Mettre à jour la même machine ne retire pas un accès déjà obtenu.
+
+Le plan demande de renouveler les clés utilisateurs, les identifiants de la source de fonds et les autres secrets. Les connexions d’extensions doivent être révoquées puis recréées. Les applications connectées doivent recevoir la nouvelle configuration.
+
+Les identifiants exposés avant la mise à jour doivent rester considérés comme exposés. Pour les intégrations Nostr comme NWC Provider et LNDHub, les anciennes connexions font partie de la récupération.
+
+Cette revue s’appuie sur le rapport, le guide et les versions publiées par le projet. Elle n’a pas inspecté les serveurs touchés, reproduit les vulnérabilités ni validé l’attribution d’une activité pilotée par IA.

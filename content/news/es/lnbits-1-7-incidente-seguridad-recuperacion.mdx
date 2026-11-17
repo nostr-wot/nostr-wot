@@ -1,0 +1,68 @@
+---
+title: "LNbits 1.7 responde a los ataques de noviembre con un plan de recuperación"
+description: "LNbits afirma que los ataques del 8 de noviembre explotaron extensiones antiguas, robaron fondos e interrumpieron servicios. Las versiones 1.7.0 y 1.7.1 responden al incidente, pero los operadores aún deben recuperar servidores y credenciales."
+excerpt: "El proyecto confirmó explotación en varias instalaciones y advierte que actualizar no basta para eliminar un compromiso existente ni revocar credenciales expuestas."
+date: "2026-11-16"
+publishedAt: "2026-11-17"
+backfilled: false
+type: "story"
+tags: ["Nostr","Lightning","Seguridad","Ecosistema"]
+featuredImage: "/images/news/lnbits-1-7-security-incident-recovery.svg"
+translationKey: "lnbits-1-7-security-incident-recovery"
+sources:
+  - title: "Informe del incidente del 8 de noviembre"
+    url: "https://news.lnbits.com/news/november-8th-incident-report"
+    publisher: "LNbits"
+    date: "2026-11-16"
+  - title: "Actualización de seguridad y guía de LNbits 1.7.0"
+    url: "https://news.lnbits.com/news/lnbits-1-7-0-security-update"
+    publisher: "LNbits"
+    date: "2026-11-10"
+  - title: "Parche de seguridad LNbits v1.7.1"
+    url: "https://github.com/lnbits/lnbits/releases/tag/v1.7.1"
+    publisher: "lnbits/lnbits"
+    date: "2026-11-11"
+  - title: "Actualización urgente LNbits v1.7.0"
+    url: "https://github.com/lnbits/lnbits/releases/tag/v1.7.0"
+    publisher: "lnbits/lnbits"
+    date: "2026-11-10"
+published: true
+---
+
+[LNbits informa](https://news.lnbits.com/news/november-8th-incident-report) de que varias instalaciones fueron atacadas el 8 de noviembre de 2026. Su propia infraestructura y sistemas operados por la comunidad resultaron afectados, hubo robo de fondos, servicios interrumpidos e instancias desconectadas. Es un incidente explotado y confirmado, no una publicación preventiva ni un compromiso inferido.
+
+El proyecto publicó la [versión 1.7.0](https://github.com/lnbits/lnbits/releases/tag/v1.7.0) el 10 de noviembre y la [versión 1.7.1](https://github.com/lnbits/lnbits/releases/tag/v1.7.1) al día siguiente. La versión posterior rota claves de autenticación y es la más reciente dentro de la ventana revisada. Los operadores deben seguir la guía de recuperación además de actualizar.
+
+## Qué confirmó el proyecto
+
+LNbits identificó fallos de falsificación de solicitudes del lado del servidor en varias extensiones antiguas de Python. Este tipo de fallo puede hacer que un servidor solicite servicios internos o destinos que una persona externa no podría alcanzar directamente. El equipo también encontró ataques contra extensiones con correcciones disponibles que aún no se habían instalado.
+
+En los casos más graves, los atacantes pasaron de LNbits al servidor anfitrión. El informe describe intentos de alcanzar servicios internos, búsqueda de credenciales y extensiones maliciosas de Python creadas para entornos concretos. El proyecto confirma fondos robados e interrupción de servicios, pero no publica un total de víctimas ni un informe técnico completo del exploit.
+
+LNbits considera que la actividad era compatible con ataques autónomos impulsados por IA porque las técnicas variaban entre instalaciones y parecían adaptarse con rapidez. También reconoce que no puede identificar de forma concluyente las herramientas o sistemas utilizados. La explotación está confirmada, mientras que la atribución concreta de la automatización sigue siendo una evaluación del proyecto.
+
+## Por qué importa 1.7.1
+
+La [guía de seguridad](https://news.lnbits.com/news/lnbits-1-7-0-security-update) indica que están afectadas las versiones anteriores a 1.7.0. La versión 1.7.0 combina las correcciones del incidente con cambios en autenticación, gestión de extensiones y pagos. La versión 1.7.1 añade la rotación de claves de autenticación.
+
+Las versiones también orientan la configuración predeterminada hacia la contención. El registro público queda desactivado salvo que un administrador lo habilite. LNbits afirma que las instalaciones con registro público desactivado no fueron penetradas por las rutas de ataque identificadas. Ahora existen actualizaciones automáticas de extensiones y el proyecto continúa trasladando extensiones desde el acceso amplio de Python hacia entornos WebAssembly con capacidades más limitadas.
+
+Estos controles reducen la exposición, pero no demuestran que un servidor comprometido esté limpio. Tampoco confirman que todas las extensiones hayan migrado al nuevo límite.
+
+## Recuperar exige más que actualizar
+
+LNbits indica a los operadores que sospechen un compromiso que prefieran un servidor nuevo y conserven registros relevantes antes de reemplazar el sistema antiguo. Actualizar en la misma máquina no elimina el acceso que un atacante ya haya conseguido.
+
+El plan también pide rotar claves de usuarios, credenciales de la fuente de fondos y otros secretos guardados en la configuración. Las conexiones existentes de extensiones deben revocarse y recrearse con las nuevas credenciales. Las aplicaciones conectadas necesitan una configuración actualizada tras el cambio de claves.
+
+Las credenciales expuestas antes de la actualización deben considerarse todavía expuestas. LNbits recomienda mantener en línea solo los fondos necesarios para la operación diaria y mover el exceso a un monedero en cadena con claves de gasto fuera de línea.
+
+## Qué significa para usuarios y desarrolladores
+
+Para los operadores, la tarea inmediata es instalar la versión más reciente y completar la lista de recuperación, no limitarse a reiniciar la instancia antigua. Un sistema que manejaba fondos reales necesita evidencias de que las credenciales, las integraciones y el entorno anfitrión fueron sustituidos o revisados.
+
+Para quienes crean extensiones, el incidente muestra por qué importa el límite de un complemento. Las extensiones flexibles de Python compartían un entorno potente con el anfitrión. Los entornos aislados, las capacidades explícitas y los valores predeterminados más seguros pueden limitar el alcance de un componente vulnerable.
+
+En integraciones Nostr como NWC Provider, LNDHub u otros servicios conectados, las conexiones antiguas forman parte de la recuperación. El proyecto pide revisarlas y recrearlas después de rotar los secretos.
+
+Esta revisión utilizó el informe del proyecto, su guía de recuperación y las versiones etiquetadas. No inspeccionó servidores afectados, no reprodujo las vulnerabilidades ni validó la atribución de actividad impulsada por IA.

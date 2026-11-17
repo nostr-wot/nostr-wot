@@ -1,0 +1,68 @@
+---
+title: "LNbits 1.7 follows November attacks with an operator recovery plan"
+description: "LNbits says attacks on 8 November exploited legacy extensions, stole funds and disrupted services. Versions 1.7.0 and 1.7.1 address the incident, but operators still need a full credential and server recovery process."
+excerpt: "The project confirmed exploitation across multiple installations and says updating alone may not remove an existing compromise or revoke exposed credentials."
+date: "2026-11-16"
+publishedAt: "2026-11-17"
+backfilled: false
+type: "story"
+tags: ["Nostr","Lightning","Security","Ecosystem"]
+featuredImage: "/images/news/lnbits-1-7-security-incident-recovery.svg"
+translationKey: "lnbits-1-7-security-incident-recovery"
+sources:
+  - title: "November 8th Incident Report"
+    url: "https://news.lnbits.com/news/november-8th-incident-report"
+    publisher: "LNbits"
+    date: "2026-11-16"
+  - title: "LNbits 1.7.0 security update and upgrade guidance"
+    url: "https://news.lnbits.com/news/lnbits-1-7-0-security-update"
+    publisher: "LNbits"
+    date: "2026-11-10"
+  - title: "LNbits v1.7.1 security patch"
+    url: "https://github.com/lnbits/lnbits/releases/tag/v1.7.1"
+    publisher: "lnbits/lnbits"
+    date: "2026-11-11"
+  - title: "LNbits v1.7.0 urgent security update"
+    url: "https://github.com/lnbits/lnbits/releases/tag/v1.7.0"
+    publisher: "lnbits/lnbits"
+    date: "2026-11-10"
+published: true
+---
+
+[LNbits says](https://news.lnbits.com/news/november-8th-incident-report) several installations were attacked on 8 November 2026. Its own infrastructure and community-operated systems were affected, funds were stolen, services were disrupted and operators took instances offline. This is a confirmed exploited incident, not a precautionary release or an inferred compromise.
+
+The project published [version 1.7.0](https://github.com/lnbits/lnbits/releases/tag/v1.7.0) on 10 November and [version 1.7.1](https://github.com/lnbits/lnbits/releases/tag/v1.7.1) the next day. The later release rotates authentication keys and is the current published version in the reviewed window. Operators should follow the project’s recovery guidance as well as update.
+
+## What the project confirmed
+
+LNbits identified server-side request forgery flaws in several legacy Python extensions. This class of flaw can make a server request internal services or destinations that an outside caller could not reach directly. The team also found attacks against extensions where fixes existed but had not been installed.
+
+In the most serious cases, attackers moved beyond LNbits and compromised the host server. The incident report describes attempts to reach internal services, credential probing and malicious Python extensions created for individual environments. The project confirms stolen funds and service disruption, but it does not publish victim totals or a complete technical exploit report.
+
+LNbits says the activity was consistent with autonomous AI-driven attacks because techniques varied across installations and appeared to adapt quickly. It also says it cannot conclusively identify the tools or systems used. That distinction matters: the exploitation is confirmed, while the specific automation attribution remains the project’s assessment.
+
+## Why 1.7.1 matters
+
+The project’s [security guidance](https://news.lnbits.com/news/lnbits-1-7-0-security-update) says versions before 1.7.0 are affected. Version 1.7.0 combines the incident fixes with changes to authentication, extension management and payment handling. Version 1.7.1 adds authentication-key rotation.
+
+The releases also move the default configuration toward containment. Public registration is disabled unless an administrator enables it. LNbits reports that installations with public registration disabled were not penetrated through the attack paths it identified. Automatic extension updates are now available, and the project continues moving extensions from broad Python runtime access toward WebAssembly sandboxes with narrower capabilities.
+
+These controls reduce exposure, but they do not prove that a previously compromised server is clean. They also do not establish that every extension has moved to the new boundary.
+
+## Recovery is more than an update
+
+LNbits tells operators who suspect compromise to prefer a fresh server and preserve relevant logs before replacing the old system. Updating software on the same machine cannot remove access an attacker may already have gained.
+
+The recovery plan also calls for rotating wallet user keys, funding-source credentials and other secrets stored in settings. Existing extension connections should be revoked and recreated with the new credentials. Connected apps need their configuration updated after keys change.
+
+Operators should treat credentials exposed before the update as still exposed. LNbits also recommends keeping only day-to-day operating funds online and moving excess funds to an on-chain wallet whose spending keys remain offline.
+
+## What users and builders should take from it
+
+For operators, the immediate task is to reach the latest release and complete the recovery checklist, not just restart the old instance. A system that handled real funds needs evidence that credentials, integrations and the host environment were replaced or reviewed.
+
+For extension builders, the incident shows why a plugin boundary matters. Flexible Python extensions shared a powerful runtime with the host. Sandboxed extensions, explicit capabilities and safer defaults can limit what one vulnerable component reaches.
+
+For Nostr integrations such as NWC Provider, LNDHub or other connected services, old connections are part of the recovery scope. The project specifically tells operators to review and recreate extension connections after rotating secrets.
+
+This review used the project’s incident report, recovery guidance and tagged releases. It did not inspect affected servers, reproduce the vulnerabilities or validate the project’s attribution of AI-driven activity.

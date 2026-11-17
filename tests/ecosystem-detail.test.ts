@@ -95,7 +95,7 @@ test('matching is case insensitive on the slug and survives real data', async ()
   // dataset. Mostro joins the original five with its v0.20.0 report.
   // Pin identities, not just a count that could hide an unrelated match.
   assert.deepEqual(matched.map((project: EcosystemProject) => project.id).sort(),
-    ['amber', 'amethyst', 'mostro', 'nips', 'nostur', 'strfry']);
+    ['amber', 'amethyst', 'lnbits', 'mostro', 'nips', 'nostur', 'strfry']);
   const amber = data.projects.find((project: EcosystemProject) => project.id === 'amber');
   const mixedCase = { ...amber, repository: 'https://github.com/GreenArt7C3/aMbEr' };
   assert.deepEqual(relatedReports(mixedCase, data), relatedReports(amber, data));
