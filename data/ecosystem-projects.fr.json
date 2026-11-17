@@ -1,5 +1,5 @@
 {
-  "checkedAt": "2026-11-03",
+  "checkedAt": "2026-11-17",
   "projects": [
     {
       "id": "damus",
@@ -2240,10 +2240,10 @@
       "summary": "Système libre et open source de portefeuilles et de comptes Lightning, souvent auto-hébergé aux côtés de déploiements Nostr.",
       "category": "wallet",
       "status": "active",
-      "statusNote": "Vérifié le 2026-10-04 : le dépôt n’est pas archivé et son dernier push public date du 2026-10-02. La version publiée la plus récente est v1.6.2, datée du 2026-09-18. Actif décrit le développement observé, et non la disponibilité, la stabilité ou la sécurité. Le site du projet a répondu avec un HTTP 200 lors de cette vérification. Aucun fondateur, responsable de maintenance ni créateur n’est attribué : les preuves de rôles individuels n’ont pas été vérifiées pour cette fiche.",
+      "statusNote": "Vérifié le 2026-11-17 : le dépôt n’est pas archivé et son dernier push public date du 2026-11-17. La version publiée la plus récente est v1.7.1, datée du 2026-11-11. LNbits indique que les versions antérieures à 1.7.0 ont été touchées par les attaques du 8 novembre. Actif décrit le développement observé, et non la disponibilité, la stabilité ou la sécurité. Les attributions existantes de créateur et de responsable de maintenance sont conservées sans changement.",
       "website": "https://lnbits.com",
       "repository": "https://github.com/lnbits/lnbits",
-      "lastVerified": "2026-10-04",
+      "lastVerified": "2026-11-17",
       "people": [
         {
           "name": "Arc",
@@ -2270,16 +2270,24 @@
       ],
       "sources": [
         {
-          "label": "README officiel",
-          "url": "https://github.com/lnbits/lnbits/blob/dev/README.md"
+          "label": "Rapport sur l’incident du 8 novembre, publié le 2026-11-16",
+          "url": "https://news.lnbits.com/news/november-8th-incident-report"
         },
         {
-          "label": "Métadonnées du dépôt vérifiées le 2026-10-04",
+          "label": "Mise à jour de sécurité et guide de récupération, publiés le 2026-11-10",
+          "url": "https://news.lnbits.com/news/lnbits-1-7-0-security-update"
+        },
+        {
+          "label": "Version v1.7.1, publiée le 2026-11-11",
+          "url": "https://github.com/lnbits/lnbits/releases/tag/v1.7.1"
+        },
+        {
+          "label": "Métadonnées du dépôt vérifiées le 2026-11-17",
           "url": "https://api.github.com/repos/lnbits/lnbits"
         },
         {
-          "label": "Version v1.6.2, publiée le 2026-09-18",
-          "url": "https://github.com/lnbits/lnbits/releases/tag/v1.6.2"
+          "label": "README officiel",
+          "url": "https://github.com/lnbits/lnbits/blob/dev/README.md"
         },
         {
           "label": "Site officiel",
@@ -2287,9 +2295,9 @@
         }
       ],
       "latestUpdate": {
-        "date": "2026-09-18",
-        "title": "LNbits a publié la version v1.6.2",
-        "url": "https://github.com/lnbits/lnbits/releases/tag/v1.6.2"
+        "date": "2026-11-11",
+        "title": "LNbits a publié le correctif de sécurité v1.7.1",
+        "url": "https://github.com/lnbits/lnbits/releases/tag/v1.7.1"
       },
       "story": {
         "nameOrigin": {
@@ -3019,6 +3027,22 @@
   ],
   "news": [
     {
+      "title": "LNbits signale des failles d’extensions exploitées et publie 1.7.1",
+      "date": "2026-11-16",
+      "url": "https://news.lnbits.com/news/november-8th-incident-report",
+      "summary": "LNbits signale des attaques coordonnées contre plusieurs installations le 8 novembre, des fonds volés et des interruptions de service. Son enquête identifie des failles de falsification de requêtes côté serveur dans d’anciennes extensions Python et des attaques contre des installations sans correctifs récents d’extensions. Les versions antérieures à 1.7.0 sont concernées et 1.7.1 est la version la plus récente. Le projet précise qu’une mise à jour seule peut ne pas supprimer une compromission existante du serveur ni invalider des identifiants exposés.",
+      "sources": [
+        {
+          "label": "Guide de récupération pour les opérateurs",
+          "url": "https://news.lnbits.com/news/lnbits-1-7-0-security-update"
+        },
+        {
+          "label": "Version v1.7.1",
+          "url": "https://github.com/lnbits/lnbits/releases/tag/v1.7.1"
+        }
+      ]
+    },
+    {
       "title": "Amethyst v1.21.0 ajoute des NApplets intégrées et la configuration de la toile de confiance",
       "date": "2026-11-01",
       "url": "https://github.com/vitorpamplona/amethyst/releases/tag/v1.21.0",
@@ -3162,6 +3186,28 @@
   ],
   "security": [
     {
+      "title": "Attaques LNbits du 8 novembre : anciennes extensions exploitées et fonds volés",
+      "date": "2026-11-16",
+      "url": "https://news.lnbits.com/news/november-8th-incident-report",
+      "summary": "Le projet confirme une exploitation sur plusieurs installations, avec des failles SSRF dans d’anciennes extensions Python, des serveurs compromis, des extensions malveillantes et des fonds volés. Le rapport indique que le comportement observé était compatible avec des attaques autonomes pilotées par l’IA, sans identifier de façon concluante les outils ou les opérateurs. Les versions antérieures à 1.7.0 sont concernées. Les opérateurs sont renvoyés vers la dernière version et un processus de récupération des identifiants, clés et intégrations.",
+      "type": "incident",
+      "coverage": "current",
+      "sources": [
+        {
+          "label": "Mise à jour de sécurité et guide de récupération",
+          "url": "https://news.lnbits.com/news/lnbits-1-7-0-security-update"
+        },
+        {
+          "label": "Version v1.7.0",
+          "url": "https://github.com/lnbits/lnbits/releases/tag/v1.7.0"
+        },
+        {
+          "label": "Version v1.7.1",
+          "url": "https://github.com/lnbits/lnbits/releases/tag/v1.7.1"
+        }
+      ]
+    },
+    {
       "title": "Amethyst v1.21.0 renforce les applications intégrées après une revue de sécurité",
       "date": "2026-11-01",
       "url": "https://github.com/vitorpamplona/amethyst/blob/v1.21.0/docs/changelog/v1.21.00.md",
@@ -3288,12 +3334,12 @@
     }
   ],
   "coverage": {
-    "start": "2026-10-20T08:00:00Z",
-    "end": "2026-11-03T09:00:00Z",
+    "start": "2026-11-03T09:00:00Z",
+    "end": "2026-11-17T09:00:00Z",
     "timezone": "UTC",
     "endIsPartialDay": true,
-    "issue": "2026-11-03-fortnightly-ecosystem",
+    "issue": "2026-11-17-fortnightly-ecosystem",
     "projectEntries": "verified-existing-project-update",
-    "newsSelection": "selected-primary-verified-update"
+    "newsSelection": "selected-confirmed-security-incident"
   }
 }
