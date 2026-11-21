@@ -1,0 +1,92 @@
+{
+  "runAt": "2026-11-21T09:04:00Z",
+  "lane": "guide-education",
+  "decision": "Recover the team's published backend and relay authentication tutorial with missing social copy instead of creating a duplicate article.",
+  "candidate": {
+    "slug": "backend-authentication",
+    "translationKey": "backend-authentication",
+    "title": "Nostr Backend and Relay Authentication: Choose Who Can Log You In",
+    "practicalProblem": "Users need to distinguish website identity access from backend HTTP authentication and relay authentication, inspect the exact destination and approval scope, and know how to revoke remembered grants.",
+    "guides": [
+      "https://nostrwot.com/guides/backend-authentication",
+      "https://nostrwot.com/guides/relay-authentication"
+    ],
+    "video": {
+      "url": "https://www.youtube.com/watch?v=4TmndKyE8D4",
+      "channel": "Nostr WoT",
+      "duration": "PT1M43S",
+      "availability": "Public watch page and official channel listing verified 2026-11-21."
+    }
+  },
+  "ownWorkReview": {
+    "guideMediaRegistry": "lib/guide-media.ts maps the public authentication video to the backend-authentication and relay-authentication guides.",
+    "locales": [
+      "en",
+      "es",
+      "pt",
+      "ru",
+      "it",
+      "fr",
+      "de"
+    ],
+    "extension": "No extension release or browser-store availability claim is made in this recovery.",
+    "sdk": "No SDK publication claim is made. Stable SDK 3.0.1 was already covered.",
+    "channel": "The official @nostr-wot channel listed 21 public videos. The newest visible French explainer overlapped previously covered basics and was rejected as a duplicate."
+  },
+  "deduplication": {
+    "socialFileBeforeRun": "social/backend-authentication.json did not exist.",
+    "ledgerBeforeRun": "data/social-posted.json had no backend-authentication receipt.",
+    "articleDecision": "No new article was created because the two live seven-language guides already solve the problem.",
+    "earlierReservations": [
+      "managing-identity",
+      "removing-accounts",
+      "change-language",
+      "deck",
+      "labitconf-workshop",
+      "create-extension-theme",
+      "zapping-auto-approve"
+    ]
+  },
+  "claims": [
+    {
+      "claim": "The tutorial explains backend and relay authentication, approval scopes, saved grants, and the default backend setting.",
+      "evidence": [
+        "https://www.youtube.com/watch?v=4TmndKyE8D4",
+        "lib/guide-media.ts"
+      ]
+    },
+    {
+      "claim": "The backend and relay guides are live with correct canonical URLs and structured Article data.",
+      "evidence": [
+        "https://nostrwot.com/guides/backend-authentication",
+        "https://nostrwot.com/guides/relay-authentication"
+      ]
+    }
+  ],
+  "channelEligibility": {
+    "linkedin": {
+      "eligible": true,
+      "category": "team-update",
+      "reason": "This is the team's own substantive authentication tutorial and guide pair."
+    },
+    "nostr": {
+      "eligible": true,
+      "reason": "The practical permission guidance is relevant to Nostr users."
+    }
+  },
+  "socialWorkflow": {
+    "latestRun": "https://github.com/nostr-wot/nostr-wot/actions/runs/44845885513",
+    "latestJob": 136665360329,
+    "outcome": "failed",
+    "exactFailure": "Post (or dry-run) failed on labitconf-workshop with HTTP 502. The ledger was unchanged.",
+    "action": "Preserve all earlier reservations and do not dispatch or retry an uncertain delivery."
+  },
+  "sources": [
+    "https://www.youtube.com/watch?v=4TmndKyE8D4",
+    "https://nostrwot.com/guides/backend-authentication",
+    "https://nostrwot.com/guides/relay-authentication",
+    "lib/guide-media.ts",
+    "lib/help-topics.ts",
+    "data/social-posted.json"
+  ]
+}
