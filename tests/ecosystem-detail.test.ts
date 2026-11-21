@@ -153,9 +153,12 @@ test('project JSON-LD describes the software, cites its sources and breadcrumbs 
 
   assert.equal(app.name, 'Snort');
   assert.equal(app.url, 'https://snort.social');
-  assert.equal(app.codeRepository, 'https://github.com/v0l/snort');
+  assert.equal(app.subjectOf['@type'], 'SoftwareSourceCode');
+  assert.equal(app.subjectOf.codeRepository, 'https://github.com/v0l/snort');
+  assert.ok(!('codeRepository' in app));
   assert.equal(app.license, 'https://spdx.org/licenses/MIT.html');
-  assert.equal(app.programmingLanguage, 'TypeScript');
+  assert.equal(app.subjectOf.programmingLanguage, 'TypeScript');
+  assert.ok(!('programmingLanguage' in app));
   assert.equal(app.datePublished, '2022-12-18');
   assert.equal(app.dateModified, '2026-09-30');
   // A prerelease must never be presented as the current version.
@@ -174,7 +177,7 @@ test('project JSON-LD describes the software, cites its sources and breadcrumbs 
   const bare = archived.find(g => g['@type'] === 'SoftwareApplication');
   assert.ok(!('url' in bare), 'unsafe website must be omitted, not rendered');
   assert.ok(!('license' in bare));
-  assert.ok(!('programmingLanguage' in bare));
+  assert.ok(!('programmingLanguage' in bare.subjectOf));
   assert.ok(!('softwareVersion' in bare));
   assert.ok(!JSON.stringify(archived).includes('javascript:'));
 });

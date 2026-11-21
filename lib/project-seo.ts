@@ -191,9 +191,15 @@ export function projectJsonLd({ project, snapshot, url, locale }: {
     applicationSubCategory: project.category,
     mainEntityOfPage: { '@id': url },
     ...(isSafeExternalUrl(project.website) ? { url: project.website } : {}),
-    ...(isSafeExternalUrl(project.repository) ? { codeRepository: project.repository } : {}),
     ...(snapshot?.license ? { license: `https://spdx.org/licenses/${snapshot.license}.html` } : {}),
-    ...(snapshot?.language ? { programmingLanguage: snapshot.language } : {}),
+    ...(isSafeExternalUrl(project.repository) ? {
+      subjectOf: {
+        '@type': 'SoftwareSourceCode',
+        name: project.name,
+        codeRepository: project.repository,
+        ...(snapshot?.language ? { programmingLanguage: snapshot.language } : {}),
+      },
+    } : {}),
     // The date the thing was published, which is what the story records from
     // the launch announcement. The repository's creation date stands in only
     // when no launch date was found: a repo exists before its first release,

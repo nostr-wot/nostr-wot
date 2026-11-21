@@ -24,7 +24,11 @@ async function pageMetadata({ params }: Props): Promise<Metadata> {
 }
 
 export default function PqcChatPage() {
-  return <ChatContent />;
+  return (
+    <main>
+      <ChatContent />
+    </main>
+  );
 }
 
 export const generateMetadata = withMetadataPolicy(pageMetadata);

@@ -55,6 +55,11 @@ const nextConfig: NextConfig = {
         headers: [...securityHeaders, cspHeader],
       },
       {
+        // Stream the large XML document through nginx without proxy temp files.
+        source: "/sitemap.xml",
+        headers: [{ key: "X-Accel-Buffering", value: "no" }],
+      },
+      {
         // Basic security headers on static assets (no CSP)
         source: "/images/(.*)",
         headers: [
