@@ -107,8 +107,11 @@ def audit(url):
                         else: images.add(value)
                     if isinstance(value, (dict, list)): graph_check(value)
         for graph in page.graphs: graph_check(graph)
-        help_path = re.sub(r'^/(es|pt|fr|de|it|ru)(?=/)', '', urllib.parse.urlsplit(url).path)
-        if help_path == '/help' or help_path.startswith('/help/'):
+        path = re.sub(r'^/(es|pt|fr|de|it|ru)(?=/)', '', urllib.parse.urlsplit(url).path)
+        if path == '/pqc/chat':
+            h1 = [text.strip() for level, text in page.headings if level == 1]
+            if len(h1) != 1 or not h1[0]: issues.append('PQ chat requires exactly one nonempty H1 in the initial HTML')
+        if path == '/help' or path.startswith('/help/'):
             h1 = [text.strip() for level, text in page.headings if level == 1]
             if len(h1) != 1 or not h1[0]: issues.append('Help requires exactly one nonempty H1')
             previous = 0
@@ -116,7 +119,7 @@ def audit(url):
                 if level > previous + 1: issues.append(f'Help heading skips from H{previous} to H{level}')
                 if not text.strip(): issues.append('Empty help heading')
                 previous = level
-            expected = 'CollectionPage' if help_path == '/help' else 'TechArticle'
+            expected = 'CollectionPage' if path == '/help' else 'TechArticle'
             matching = [g for g in page.graphs if isinstance(g, dict) and g.get('@type') == expected]
             crumbs = [g for g in page.graphs if isinstance(g, dict) and g.get('@type') == 'BreadcrumbList']
             if len(matching) != 1: issues.append('Help requires one ' + expected)

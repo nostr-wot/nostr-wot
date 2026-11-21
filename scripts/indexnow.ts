@@ -49,6 +49,9 @@ async function fetchSitemap(): Promise<SitemapEntry[]> {
   const response = await fetchWithRetry(`${SITE_URL}/sitemap.xml`);
 
   const xml = await response.text();
+  if (!xml.trimEnd().endsWith("</urlset>")) {
+    throw new Error("Incomplete sitemap response");
+  }
   const entries: SitemapEntry[] = [];
 
   // Simple XML parsing for sitemap
@@ -70,6 +73,7 @@ async function fetchSitemap(): Promise<SitemapEntry[]> {
     }
   }
 
+  if (entries.length === 0) throw new Error("Sitemap contains no URLs");
   console.log(`Found ${entries.length} URLs in sitemap`);
   return entries;
 }

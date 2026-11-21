@@ -815,10 +815,22 @@ export default function ChatContent() {
     return undefined;
   }, [phase, t]);
 
+  const intro = (
+    <>
+      <Badge>{t("badge")}</Badge>
+      <h1 className="mt-4 text-4xl font-bold text-gray-900 dark:text-white">{t("title")}</h1>
+      <p className="mt-4 text-lg text-gray-600 dark:text-gray-300">{t("subtitle")}</p>
+      <p className="mt-3 text-sm text-amber-700 dark:text-amber-400">{t("liveNotice")}</p>
+    </>
+  );
+
   if (!alice || !bob) {
     return (
       <Section>
-        <p className="text-center text-gray-500 dark:text-gray-400">{t("generating")}</p>
+        <div className="mx-auto max-w-5xl text-center">
+          {intro}
+          <p role="status" className="mt-6 text-gray-500 dark:text-gray-400">{t("generating")}</p>
+        </div>
       </Section>
     );
   }
@@ -834,10 +846,7 @@ export default function ChatContent() {
     <>
       <Section>
         <div className="mx-auto max-w-5xl text-center">
-          <Badge>{t("badge")}</Badge>
-          <h1 className="mt-4 text-4xl font-bold text-gray-900 dark:text-white">{t("title")}</h1>
-          <p className="mt-4 text-lg text-gray-600 dark:text-gray-300">{t("subtitle")}</p>
-          <p className="mt-3 text-sm text-amber-700 dark:text-amber-400">{t("liveNotice")}</p>
+          {intro}
 
           {/* Registering is the only thing to decide here. Once it is done the page has
               nothing left to ask for, so the whole card goes away rather than lingering
