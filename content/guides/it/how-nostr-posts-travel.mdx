@@ -1,0 +1,58 @@
+---
+title: "Come viaggiano i post Nostr tra client e relay"
+description: "Segui un evento firmato da un client a più relay e scopri perché un'altra applicazione può recuperare un feed diverso."
+excerpt: "Una spiegazione pratica di come i client pubblicano, i relay conservano e altri client recuperano gli eventi Nostr."
+date: "2026-11-23"
+featuredImage: "/images/guides/how-nostr-posts-travel/featured.svg"
+previewImage: "/images/guides/how-nostr-posts-travel/preview.svg"
+tags: ["Nostr", "Relay", "Protocollo"]
+published: true
+seoTitle: "Come viaggiano i post Nostr tra client e relay"
+seoDescription: "Scopri come un evento firmato raggiunge i relay, perché i feed differiscono e cosa controllare quando un post sembra mancare."
+ogImage: "/images/guides/how-nostr-posts-travel/og.svg"
+translationKey: "how-nostr-posts-travel"
+difficulty: "beginner"
+order: 0.3
+---
+
+Pubblicare su Nostr non significa caricare contenuti su un'unica piattaforma. Il client crea un evento, il firmatario lo autorizza e il client invia l'evento firmato a uno o più relay. Gli altri client lo trovano solo quando interrogano un relay che lo conserva. Due applicazioni corrette possono quindi mostrare feed diversi senza modificare l'evento firmato.
+
+![Un client invia un evento firmato a più relay e due client lettori lo recuperano tramite le proprie connessioni.](/images/guides/how-nostr-posts-travel/event-path.svg)
+
+## 1. Il client costruisce l'evento
+
+Quando scrivi una nota, il client prepara i campi definiti da [NIP-01](https://github.com/nostr-protocol/nips/blob/master/01.md): chiave pubblica, timestamp Unix, numero del tipo, tag e contenuto. Una normale nota breve usa `kind 1`.
+
+Il client prepara la bozza e sceglie dove pubblicare, ma non possiede la tua identità. Puoi usare la stessa chiave pubblica con un altro client compatibile.
+
+## 2. Il firmatario autorizza dati precisi
+
+L'evento riceve un ID derivato dai campi e una firma prodotta con la chiave privata. Un firmatario locale o remoto può eseguire questo passaggio. La firma consente di verificare che la chiave corrispondente abbia autorizzato esattamente quei dati.
+
+Non dimostra che tutti i relay abbiano ricevuto l'evento, che l'orario sia indipendente o che ogni lettore lo vedrà. La firma protegge l'integrità, non la consegna.
+
+## 3. Il client pubblica sui relay
+
+Il client apre connessioni WebSocket verso i relay di scrittura e invia l'evento a ciascuno. Un relay può accettarlo, rifiutarlo secondo una regola locale oppure essere offline. La risposta positiva di un relay non significa che gli altri lo abbiano memorizzato.
+
+[NIP-65](https://github.com/nostr-protocol/nips/blob/master/65.md) definisce una lista che può distinguere relay di lettura e scrittura. I client possono anche usare impostazioni locali o altri metodi di scoperta. Per questo la destinazione cambia tra applicazioni e account.
+
+## 4. I lettori interrogano il proprio insieme
+
+Un altro client invia una sottoscrizione ai relay che legge. Il filtro può chiedere autori, tipi, tag o un intervallo di tempo. Ogni relay connesso restituisce gli eventi corrispondenti che conserva. Il client verifica le firme, combina le risposte e decide come ordinare o filtrare.
+
+Non esiste un unico feed globale. Se lettore e autore non condividono un relay utile, il post può comparire in un'app e mancare in un'altra. Conservazione, moderazione, errori di connessione e filtri possono produrre lo stesso effetto.
+
+## Quando un post sembra mancare
+
+Controlla il percorso prima di pubblicare di nuovo:
+
+1. Conferma che l'evento compaia con un ID.
+2. Verifica quali relay di scrittura lo hanno accettato, se il client mostra le risposte.
+3. Confronta la lista dell'autore con i relay connessi del lettore.
+4. Cerca l'ID con un altro client o ispettore configurabile.
+5. Invia di nuovo lo stesso evento firmato solo dopo aver confermato una consegna incompleta. Un nuovo evento può creare duplicati.
+
+La sovrapposizione dei relay aiuta la scoperta, ma non garantisce l'archiviazione permanente. Se la conservazione è importante, scegli politiche adatte e mantieni un archivio personale.
+
+Il tutorial Nostr WoT qui sotto mostra visivamente lo stesso percorso. Spiega il flusso del protocollo, non una nuova versione del software.
