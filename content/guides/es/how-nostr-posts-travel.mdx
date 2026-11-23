@@ -1,0 +1,58 @@
+---
+title: "Cómo viajan las publicaciones de Nostr entre clientes y relays"
+description: "Sigue un evento firmado desde un cliente hasta varios relays y entiende por qué otra aplicación puede recuperar un feed diferente."
+excerpt: "Una explicación práctica de cómo los clientes publican, los relays almacenan y otros clientes recuperan eventos de Nostr."
+date: "2026-11-23"
+featuredImage: "/images/guides/how-nostr-posts-travel/featured.svg"
+previewImage: "/images/guides/how-nostr-posts-travel/preview.svg"
+tags: ["Nostr", "Relays", "Protocolo"]
+published: true
+seoTitle: "Cómo viajan las publicaciones de Nostr por los relays"
+seoDescription: "Aprende cómo un evento firmado pasa del cliente a los relays, por qué los feeds difieren y qué revisar cuando una publicación no aparece."
+ogImage: "/images/guides/how-nostr-posts-travel/og.svg"
+translationKey: "how-nostr-posts-travel"
+difficulty: "beginner"
+order: 0.3
+---
+
+Publicar en Nostr no significa subir contenido a una sola plataforma. Tu cliente crea un evento, tu firmante lo autoriza y el cliente envía el evento firmado a uno o más relays. Otros clientes solo lo encuentran cuando consultan un relay que lo conserva. Por eso dos aplicaciones honestas pueden mostrar feeds distintos sin alterar el evento firmado.
+
+![Un cliente envía un evento firmado a varios relays y dos clientes lectores lo recuperan desde sus propias conexiones.](/images/guides/how-nostr-posts-travel/event-path.svg)
+
+## 1. El cliente construye el evento
+
+Al escribir una nota, el cliente prepara los campos definidos por [NIP-01](https://github.com/nostr-protocol/nips/blob/master/01.md): clave pública, marca de tiempo Unix, número de tipo, etiquetas y contenido. Una nota breve normal usa `kind 1`.
+
+El cliente prepara el borrador y elige dónde publicarlo, pero no es dueño de tu identidad. Puedes usar la misma clave pública con otro cliente compatible.
+
+## 2. El firmante autoriza datos exactos
+
+El evento recibe un ID derivado de sus campos y una firma hecha con tu clave privada. Un firmante local o remoto puede completar este paso. La firma permite verificar que la clave correspondiente autorizó exactamente esos campos.
+
+No demuestra que todos los relays recibieron el evento, que la hora sea independiente ni que todos los lectores vayan a verlo. La firma protege la integridad, no la entrega.
+
+## 3. El cliente publica en relays
+
+El cliente abre conexiones WebSocket con los relays de escritura y envía el evento a cada uno. Un relay puede aceptarlo, rechazarlo por una regla local o estar desconectado. La aceptación de un relay no implica que los demás lo almacenaron.
+
+[NIP-65](https://github.com/nostr-protocol/nips/blob/master/65.md) define una lista que puede distinguir relays de lectura y escritura. Los clientes también pueden usar valores locales u otros métodos de descubrimiento. Por eso el conjunto de destinos cambia entre aplicaciones y cuentas.
+
+## 4. Los lectores consultan su propio conjunto
+
+Otro cliente envía una suscripción a los relays que lee. El filtro puede pedir autores, tipos, etiquetas o un intervalo de tiempo. Cada relay conectado devuelve los eventos coincidentes que conserva. El cliente verifica firmas, combina respuestas y decide cómo ordenar o filtrar.
+
+No existe un feed global único. Si lector y autor no comparten un relay útil, la publicación puede aparecer en una app y faltar en otra. La retención, moderación, fallos de conexión y filtros pueden producir el mismo síntoma.
+
+## Cuando una publicación parece perdida
+
+Revisa la ruta antes de publicar de nuevo:
+
+1. Confirma que el evento aparece con un ID.
+2. Comprueba qué relays de escritura lo aceptaron, si la app muestra acuses.
+3. Compara la lista del autor con los relays conectados del lector.
+4. Busca el ID en otro cliente o inspector que permita elegir relays.
+5. Reenvía el mismo evento firmado solo si confirmas una entrega incompleta. Crear otro evento puede duplicar la publicación.
+
+Compartir relays mejora el descubrimiento, pero no garantiza almacenamiento permanente. Si la retención importa, elige políticas adecuadas y conserva tu propio archivo.
+
+El tutorial de Nostr WoT que aparece abajo muestra visualmente la misma ruta. Explica el flujo del protocolo, no una nueva versión del software.

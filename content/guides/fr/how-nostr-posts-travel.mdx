@@ -1,0 +1,58 @@
+---
+title: "Comment les publications Nostr circulent entre clients et relais"
+description: "Suivez un événement signé depuis un client vers plusieurs relais et comprenez pourquoi une autre application peut afficher un flux différent."
+excerpt: "Une explication pratique de la publication, du stockage et de la récupération des événements Nostr."
+date: "2026-11-23"
+featuredImage: "/images/guides/how-nostr-posts-travel/featured.svg"
+previewImage: "/images/guides/how-nostr-posts-travel/preview.svg"
+tags: ["Nostr", "Relais", "Protocole"]
+published: true
+seoTitle: "Comment les publications Nostr circulent via les relais"
+seoDescription: "Comprenez comment un événement signé atteint les relais, pourquoi les flux diffèrent et quoi vérifier lorsqu'une publication manque."
+ogImage: "/images/guides/how-nostr-posts-travel/og.svg"
+translationKey: "how-nostr-posts-travel"
+difficulty: "beginner"
+order: 0.3
+---
+
+Publier sur Nostr ne consiste pas à envoyer un contenu vers une plateforme unique. Votre client crée un événement, votre signataire l'autorise, puis le client envoie l'événement signé à un ou plusieurs relais. Les autres clients ne le trouvent que s'ils interrogent un relais qui le conserve. Deux applications correctes peuvent donc afficher des flux différents sans modifier l'événement signé.
+
+![Un client envoie un événement signé à plusieurs relais, puis deux clients lecteurs le récupèrent via leurs propres connexions.](/images/guides/how-nostr-posts-travel/event-path.svg)
+
+## 1. Le client construit l'événement
+
+Lorsque vous écrivez une note, le client prépare les champs définis par [NIP-01](https://github.com/nostr-protocol/nips/blob/master/01.md) : clé publique, horodatage Unix, numéro de type, tags et contenu. Une note courte ordinaire utilise `kind 1`.
+
+Le client prépare le brouillon et choisit où publier, mais il ne possède pas votre identité. Vous pouvez utiliser la même clé publique avec un autre client compatible.
+
+## 2. Le signataire autorise des données précises
+
+L'événement reçoit un identifiant dérivé de ses champs et une signature produite avec votre clé privée. Un signataire local ou distant peut effectuer cette étape. La signature permet de vérifier que la clé correspondante a autorisé exactement ces données.
+
+Elle ne prouve pas que tous les relais ont reçu l'événement, que l'heure est indépendante ou que chaque lecteur le verra. La signature protège l'intégrité, pas la livraison.
+
+## 3. Le client publie vers les relais
+
+Le client ouvre des connexions WebSocket vers ses relais d'écriture et envoie l'événement à chacun. Un relais peut l'accepter, le refuser selon une règle locale ou être hors ligne. Une réponse positive ne signifie pas que les autres relais l'ont stocké.
+
+[NIP-65](https://github.com/nostr-protocol/nips/blob/master/65.md) définit une liste qui peut distinguer les relais de lecture et d'écriture. Les clients peuvent aussi utiliser des valeurs locales ou d'autres méthodes de découverte. La destination exacte varie donc selon l'application et le compte.
+
+## 4. Les lecteurs interrogent leur propre ensemble
+
+Un autre client envoie un abonnement aux relais qu'il lit. Le filtre peut demander des auteurs, des types, des tags ou une période. Chaque relais connecté renvoie les événements correspondants qu'il conserve. Le client vérifie les signatures, combine les réponses et choisit l'ordre ou les filtres.
+
+Il n'existe pas de flux mondial unique. Si le lecteur et l'auteur ne partagent aucun relais utile, la publication peut être visible dans une application et absente d'une autre. La conservation, la modération, les pannes et les filtres peuvent produire le même résultat.
+
+## Lorsqu'une publication semble manquer
+
+Vérifiez le trajet avant de republier :
+
+1. Confirmez que l'événement apparaît avec un identifiant.
+2. Vérifiez quels relais d'écriture l'ont accepté, si le client affiche les réponses.
+3. Comparez la liste de l'auteur aux relais connectés du lecteur.
+4. Recherchez l'identifiant avec un autre client ou inspecteur configurable.
+5. Renvoyez le même événement signé seulement si la livraison est incomplète. Créer un nouvel événement peut produire des doublons.
+
+Le chevauchement des relais facilite la découverte, sans garantir un stockage permanent. Si la conservation compte, choisissez des politiques adaptées et gardez votre propre archive.
+
+Le tutoriel Nostr WoT ci-dessous montre visuellement le même trajet. Il explique le protocole, pas une nouvelle version du logiciel.
