@@ -1,0 +1,58 @@
+---
+title: "Como publicações Nostr viajam entre clientes e relays"
+description: "Acompanhe um evento assinado do cliente até vários relays e entenda por que outro aplicativo pode recuperar um feed diferente."
+excerpt: "Uma explicação prática de como clientes publicam, relays armazenam e outros clientes recuperam eventos Nostr."
+date: "2026-11-23"
+featuredImage: "/images/guides/how-nostr-posts-travel/featured.svg"
+previewImage: "/images/guides/how-nostr-posts-travel/preview.svg"
+tags: ["Nostr", "Relays", "Protocolo"]
+published: true
+seoTitle: "Como publicações Nostr viajam por clientes e relays"
+seoDescription: "Entenda como um evento assinado chega aos relays, por que feeds diferem e o que verificar quando uma publicação parece ausente."
+ogImage: "/images/guides/how-nostr-posts-travel/og.svg"
+translationKey: "how-nostr-posts-travel"
+difficulty: "beginner"
+order: 0.3
+---
+
+Publicar no Nostr não é enviar conteúdo para uma única plataforma. Seu cliente cria um evento, o assinador autoriza e o cliente envia o evento assinado para um ou mais relays. Outros clientes só o encontram quando consultam um relay que o armazenou. Por isso dois aplicativos corretos podem mostrar feeds diferentes sem alterar o evento assinado.
+
+![Um cliente envia um evento assinado a vários relays, e dois clientes leitores o recuperam por suas próprias conexões.](/images/guides/how-nostr-posts-travel/event-path.svg)
+
+## 1. O cliente monta o evento
+
+Ao escrever uma nota, o cliente prepara os campos definidos pela [NIP-01](https://github.com/nostr-protocol/nips/blob/master/01.md): chave pública, horário Unix, número do tipo, tags e conteúdo. Uma nota curta comum usa `kind 1`.
+
+O cliente prepara o rascunho e escolhe onde publicar, mas não controla sua identidade. A mesma chave pública pode ser usada em outro cliente compatível.
+
+## 2. O assinador autoriza dados exatos
+
+O evento recebe um ID derivado dos campos e uma assinatura feita com sua chave privada. Um assinador local ou remoto pode executar essa etapa. A assinatura permite verificar que a chave correspondente autorizou exatamente aqueles dados.
+
+Ela não prova que todos os relays receberam o evento, que o horário foi confirmado de forma independente ou que todos os leitores o verão. A assinatura protege a integridade, não a entrega.
+
+## 3. O cliente publica nos relays
+
+O cliente abre conexões WebSocket com os relays de escrita e envia o evento para cada um. Um relay pode aceitar, rejeitar por uma regra local ou estar fora do ar. A resposta positiva de um relay não significa que os demais armazenaram o evento.
+
+A [NIP-65](https://github.com/nostr-protocol/nips/blob/master/65.md) define uma lista capaz de separar relays de leitura e escrita. Clientes também podem usar padrões locais ou outros métodos de descoberta. Assim, o conjunto de destinos varia entre aplicativos e contas.
+
+## 4. Leitores consultam seu próprio conjunto
+
+Outro cliente envia uma assinatura aos relays que lê. O filtro pode pedir autores, tipos, tags ou um período. Cada relay conectado devolve os eventos correspondentes que possui. O cliente verifica assinaturas, combina respostas e decide como ordenar ou filtrar.
+
+Não existe um feed global único. Se leitor e autor não compartilham um relay útil, a publicação pode aparecer em um aplicativo e faltar em outro. Retenção, moderação, falhas de conexão e filtros também causam esse efeito.
+
+## Quando uma publicação parece ausente
+
+Verifique o caminho antes de publicar novamente:
+
+1. Confirme que o evento aparece com um ID.
+2. Veja quais relays de escrita o aceitaram, se o cliente exibir confirmações.
+3. Compare a lista do autor com os relays conectados do leitor.
+4. Procure o ID em outro cliente ou inspetor com escolha de relays.
+5. Reenvie o mesmo evento assinado apenas após confirmar uma entrega incompleta. Criar outro evento pode gerar duplicatas.
+
+Compartilhar relays melhora a descoberta, mas não garante armazenamento permanente. Quando a retenção importa, escolha políticas adequadas e mantenha seu próprio arquivo.
+
+O tutorial da Nostr WoT abaixo mostra o mesmo caminho visualmente. Ele explica o fluxo do protocolo, não um novo lançamento de software.

@@ -1,0 +1,58 @@
+---
+title: "Wie Nostr-Beiträge durch Clients und Relays reisen"
+description: "Verfolge ein signiertes Ereignis vom Client zu mehreren Relays und erfahre, warum eine andere App einen anderen Feed abrufen kann."
+excerpt: "Eine praktische Erklärung dafür, wie Clients veröffentlichen, Relays speichern und andere Clients Nostr-Ereignisse abrufen."
+date: "2026-11-23"
+featuredImage: "/images/guides/how-nostr-posts-travel/featured.svg"
+previewImage: "/images/guides/how-nostr-posts-travel/preview.svg"
+tags: ["Nostr", "Relays", "Protokoll"]
+published: true
+seoTitle: "Wie Nostr-Beiträge durch Clients und Relays reisen"
+seoDescription: "Erfahre, wie ein signiertes Nostr-Ereignis Relays erreicht, warum Feeds abweichen und was bei einem fehlenden Beitrag zu prüfen ist."
+ogImage: "/images/guides/how-nostr-posts-travel/og.svg"
+translationKey: "how-nostr-posts-travel"
+difficulty: "beginner"
+order: 0.3
+---
+
+Auf Nostr zu veröffentlichen bedeutet nicht, Inhalte auf eine einzige Plattform hochzuladen. Dein Client erstellt ein Ereignis, dein Signer autorisiert es und der Client sendet das signierte Ereignis an ein oder mehrere Relays. Andere Clients finden es nur, wenn sie ein Relay abfragen, das es gespeichert hat. Zwei korrekt arbeitende Apps können deshalb unterschiedliche Feeds zeigen, ohne das signierte Ereignis zu verändern.
+
+![Ein Client sendet ein signiertes Ereignis an mehrere Relays, und zwei Leser-Clients rufen es über ihre eigenen Verbindungen ab.](/images/guides/how-nostr-posts-travel/event-path.svg)
+
+## 1. Der Client erstellt das Ereignis
+
+Wenn du eine Notiz schreibst, bereitet der Client die in [NIP-01](https://github.com/nostr-protocol/nips/blob/master/01.md) definierten Felder vor: öffentlicher Schlüssel, Unix-Zeitstempel, Kind-Nummer, Tags und Inhalt. Eine normale kurze Notiz nutzt `kind 1`.
+
+Der Client erstellt den Entwurf und wählt die Ziele, besitzt aber nicht deine Identität. Du kannst denselben öffentlichen Schlüssel mit einem anderen kompatiblen Client verwenden.
+
+## 2. Der Signer autorisiert genaue Daten
+
+Das Ereignis erhält eine aus den Feldern abgeleitete ID und eine Signatur mit deinem privaten Schlüssel. Ein lokaler oder entfernter Signer kann diesen Schritt ausführen. Damit lässt sich prüfen, dass der passende Schlüssel genau diese Daten signiert hat.
+
+Die Signatur beweist nicht, dass jedes Relay das Ereignis erhalten hat, dass die Zeit unabhängig bestätigt wurde oder dass jeder Leser es sieht. Sie schützt die Integrität, nicht die Zustellung.
+
+## 3. Der Client veröffentlicht auf Relays
+
+Der Client öffnet WebSocket-Verbindungen zu seinen Schreib-Relays und sendet das Ereignis an jedes davon. Ein Relay kann es annehmen, nach einer lokalen Regel ablehnen oder offline sein. Die positive Antwort eines Relays bedeutet nicht, dass die anderen es gespeichert haben.
+
+[NIP-65](https://github.com/nostr-protocol/nips/blob/master/65.md) definiert eine Relay-Liste, die Lese- und Schreib-Relays unterscheiden kann. Clients können außerdem lokale Vorgaben oder andere Suchmethoden nutzen. Deshalb unterscheiden sich die genauen Ziele je nach App und Konto.
+
+## 4. Leser fragen ihren eigenen Relay-Satz ab
+
+Ein anderer Client sendet eine Subscription an seine Lese-Relays. Der Filter kann Autoren, Kinds, Tags oder einen Zeitraum anfordern. Jedes verbundene Relay liefert passende Ereignisse, die es derzeit speichert. Der Client prüft Signaturen, kombiniert Antworten und entscheidet über Reihenfolge und Filter.
+
+Es gibt keinen einzigen globalen Feed. Teilen Leser und Autor kein geeignetes Relay, kann der Beitrag in einer App erscheinen und in einer anderen fehlen. Aufbewahrung, Moderation, Verbindungsfehler und Filter können denselben Effekt haben.
+
+## Wenn ein Beitrag zu fehlen scheint
+
+Prüfe den Pfad, bevor du erneut veröffentlichst:
+
+1. Bestätige, dass das Ereignis mit einer ID im Client erscheint.
+2. Prüfe, welche Schreib-Relays es angenommen haben, falls der Client Antworten zeigt.
+3. Vergleiche die Relay-Liste des Autors mit den verbundenen Relays des Lesers.
+4. Suche die ID mit einem anderen Client oder einem konfigurierbaren Inspektor.
+5. Sende dasselbe signierte Ereignis nur erneut, wenn die Zustellung nachweislich unvollständig ist. Ein neues Ereignis kann Duplikate erzeugen.
+
+Überschneidungen bei Relays verbessern die Auffindbarkeit, garantieren aber keine dauerhafte Speicherung. Wenn Aufbewahrung wichtig ist, wähle passende Richtlinien und behalte ein eigenes Archiv.
+
+Das zugehörige Nostr-WoT-Tutorial unten zeigt denselben Weg visuell. Es erklärt den Protokollfluss und ist keine Meldung über eine neue Softwareversion.
