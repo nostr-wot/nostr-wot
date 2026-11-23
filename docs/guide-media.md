@@ -27,6 +27,7 @@ These IDs and titles were verified against the public `@nostr-wot` channel and Y
 | ID | Topic | Guides |
 | --- | --- | --- |
 | eFoC8i0G4Fk | Nostr basics: keys, signed notes, relays and clients | What is Nostr? |
+| fx5km0YsXPg | How a signed event moves from a client through relays to readers | How Nostr posts travel |
 | pUBd2rgmhNc | Create a Nostr account | Getting started, create account |
 | 5nk687W76hE | Multiple identities from one seed | Custom identity paths |
 | Iu11fK9juzU | Site permissions and global rules | Site permissions |
@@ -42,6 +43,8 @@ These IDs and titles were verified against the public `@nostr-wot` channel and Y
 | He4gz4occgY | Back up and migrate events | Account Archive |
 
 Players use `youtube-nocookie.com`, lazy loading and a descriptive title, with a separate direct YouTube link below. The site's `frame-src` CSP permits only that YouTube embed origin. The video is in English; localized pages say so. The language guide uses the dedicated language video.
+
+The clients-and-relays tutorial (`fx5km0YsXPg`, "Nostr Clients and Relays: How a Post Travels") was verified on the official public channel on 2026-11-23. The channel reported 21 public videos and showed this 3:03 tutorial. It is embedded in all seven editions of the `how-nostr-posts-travel` guide without describing the existing protocol lesson as a new software release.
 
 ## Verification
 
