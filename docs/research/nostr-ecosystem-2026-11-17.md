@@ -29,7 +29,7 @@ Nostur v1.35.0, Snort v0.5.6, Amber 7.0.0 prereleases and several other tagged r
 
 No relevant ecosystem issue or open PR existed for this window. Open PRs #67 and #61 are unrelated. The prior Amethyst Nostr receipt remains untouched.
 
-The article is live and eligible for the existing Nostr queue. No durable Nostr receipt exists yet, so delivery remains unconfirmed and no retry was attempted. LinkedIn is intentionally ineligible because this is third-party ecosystem news, not a Nostr WoT platform or team announcement. No sender, email, subscriber, newsletter or schedule action was taken.
+The durable social ledger confirms Nostr delivery at 2026-11-17T11:50:36.968Z with [the platform receipt](https://njump.me/nevent1qy28wumn8ghj7un9d3shjtnyv9kh2uewd9hszrthwden5te0dehhxtnvdakqqgrvtr7gfume65gwpe6lpc68497l2de2770ernkdvn7lhgdgqlx4agj5mwpl). The expected alternate Tuesday on 24 November was used only to reconcile that existing delivery. No retry or workflow dispatch was attempted. LinkedIn remains intentionally ineligible because this is third-party ecosystem news, not a Nostr WoT platform or team announcement. No new issue, directory edit, article, illustration, social copy, newsletter, subscriber, email or schedule action was taken.
 
 ## Publication state
 
@@ -42,4 +42,4 @@ Verified live pages:
 - [English LNbits directory](https://nostrwot.com/projects/lnbits)
 - [Spanish LNbits directory](https://nostrwot.com/es/projects/lnbits)
 
-Both article routes expose localized canonical metadata, NewsArticle and breadcrumb JSON-LD, primary citations and the inspected illustration. Both directory routes show the 17 November evidence, v1.7.1 and the confirmed incident report. Nostr is live and queued without a durable receipt. LinkedIn remains intentionally ineligible.
+Both article routes expose localized canonical metadata, NewsArticle and breadcrumb JSON-LD, primary citations and the inspected illustration. Both directory routes show the 17 November evidence, v1.7.1 and the confirmed incident report. Nostr delivery is confirmed by the durable repository ledger. LinkedIn remains intentionally ineligible.
